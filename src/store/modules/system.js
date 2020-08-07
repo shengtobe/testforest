@@ -1,0 +1,72 @@
+import { 
+    SET_SYSTEM_DIALOG,
+    SET_SYSTEM_MSGBAR,
+    TOGGLE_SYSTEM_LOADING
+} from '../mutation-types'
+
+// state
+const state = {
+    dialog: {
+        show: false,  // 是否顯示
+        msg: '安安',  // 文字訊息
+    },
+    msgbar: {
+        show: false,  // 是否顯示
+        msg: '',  // 文字訊息
+        color: 'green accent-4',  // 顏色
+        icon: 'mdi-check-circle-outline',  // icon
+    },
+    loading: {
+        show: false  // 是否顯示
+    }
+}
+
+// getters
+const getters = {
+    
+}
+
+// mutations
+const mutations = {
+    // 設定 dialog
+    [SET_SYSTEM_DIALOG] (state, payload) {
+        state.dialog.show = payload.show  // dialog 是否顯示
+        state.dialog.msg = (payload.msg == undefined)? '' : payload.msg  // 沒內容就設為空字串
+    },
+    // 設定 messageBar
+    [SET_SYSTEM_MSGBAR] (state, payload) {
+        // 依是否成功來判斷樣式
+        state.msgbar.icon = (payload.success)? 'mdi-check-circle-outline' : 'mdi-alert-circle-outline'
+        state.msgbar.color = (payload.success)? 'green accent-4' : 'red'
+        state.msgbar.show = true  // 顯示 msgbar
+        state.msgbar.msg = (payload.msg == undefined)? '' : payload.msg  // 沒內容就設為空字串
+    },
+    // 切換 loading 圖顯示
+    [TOGGLE_SYSTEM_LOADING] (state) {
+        state.loading.show = !state.loading.show
+    },
+}
+
+// actions
+const actions = {
+    // 改變 dialog 內容
+    chDialog ({ commit }, payload) {
+        commit('SET_SYSTEM_DIALOG', payload)
+    },
+    // 改變 messageBar 內容
+    chMsgbar ({ commit }, payload) {
+        commit('SET_SYSTEM_MSGBAR', payload)
+    },
+    // 切換 loading 圖顯示
+    chLoadingShow ({ commit }) {
+        commit('TOGGLE_SYSTEM_LOADING')
+    },
+}
+
+export default {
+    namespaced: true,
+    state,
+    getters,
+    mutations,
+    actions
+}

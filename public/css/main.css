@@ -1,0 +1,21 @@
+[v-cloak] {
+    display: none;
+}
+#app {
+  font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
+  background-color: #dbe8f5;  /* 背景色 */
+}
+/* ------ scrollbar ------ */
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: #CFD8DC;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #5C6BC0;
+  border-radius: 3px;
+}
