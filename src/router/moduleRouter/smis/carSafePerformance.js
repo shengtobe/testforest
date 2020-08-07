@@ -1,5 +1,4 @@
 // -------- 行車安全績效管理 -------
-
 export const CarSafePerformanceRouter = [
     {
         linkText: '統計圖表',

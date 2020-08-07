@@ -1,5 +1,4 @@
 // -------- 行車安全資訊管理 -------
-
 export const CarSafeInfoRouter = [
     {
         linkText: '安全資訊查詢',  // 搜尋頁

@@ -1,5 +1,4 @@
 // -------- 行車事故事件管理 -------
-
 export const CarAccidentEventRouter = [
      {
         linkText: '人員傷亡名單查詢',  // 首頁
