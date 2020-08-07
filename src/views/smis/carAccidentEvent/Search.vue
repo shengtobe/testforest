@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1280px">
+<v-container style="max-width: 1200px">
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
@@ -140,7 +140,7 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:content="{ item }">
+                    <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             @click="redirect(item)"
                         >

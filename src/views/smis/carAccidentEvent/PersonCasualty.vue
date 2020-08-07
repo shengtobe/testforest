@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container style="max-width: 1200px">
     <h2 class="mb-4">
         人員傷亡名單
         <span class="mx-3">(事故事件編號：{{ routeId }})</span>
@@ -184,7 +184,7 @@
                         </v-dialog>
                     </template>
 
-                    <template v-slot:action="{ item }">
+                    <template v-slot:item.action="{ item }">
                         <a href="javascript:;" @click="editItem(item)">編輯</a><br>
                         <a href="javascript:;" @click="deleteItem(item)">刪除</a>
                     </template>

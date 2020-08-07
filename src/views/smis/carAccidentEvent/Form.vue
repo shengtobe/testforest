@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container style="max-width: 1200px">
     <h2 class="mb-4">
         {{ (this.isEdit)? `行車事故事件編輯 (編號：${ routeId })` : '行車事故事件新增' }}
     </h2>

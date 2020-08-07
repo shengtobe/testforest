@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container style="max-width: 1200px">
     <h2 class="mb-4">復原刪除</h2>
 
     <v-row no-gutters class="mb-8">
@@ -93,6 +93,7 @@ export default {
         // 復原
         recovery(item) {
             let index = this.tableItems.indexOf(item)
+            console.log(index)
             if (confirm(`你確定要復原編號「${item.id}」的資料嗎?`)) {
                 this.chLoadingShow()
 

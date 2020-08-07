@@ -1,6 +1,6 @@
 <template>
 <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
-    <v-container class="px-8">
+    <v-container  style="max-width: 1200px" class="px-8">
         <p class="font-weight-black title text-center">挖掘機定期檢查表(月檢表)</p>
 
         <v-row class="white px-4">

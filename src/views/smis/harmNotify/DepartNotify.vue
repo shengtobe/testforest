@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container style="max-width: 1200px">
     <h2 class="mb-4">各部門通報次數趨勢圖</h2>
     
     <p class="error--text">* 可點擊圖表上方色塊旁的名稱來隱藏該記錄</p>

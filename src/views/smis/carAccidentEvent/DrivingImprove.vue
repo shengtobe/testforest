@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container style="max-width: 1200px">
     <h2 class="mb-4">
         行安改善措施
         <span class="mx-3">(事故事件編號：{{ routeId }})</span>
@@ -21,7 +21,7 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
-                    <template v-slot:action="{ item }">
+                    <template v-slot:item.action="{ item }">
                         <v-radio-group v-model="fileId">
                             <v-radio
                                 class="ml-3 mt-1"
@@ -31,13 +31,13 @@
                         </v-radio-group>
                     </template>
 
-                    <template v-slot:desc="{ item }">
+                    <template v-slot:item.desc="{ item }">
                         <v-btn color="teal" dark
                             @click="showContent(item.desc)"
                         >檢視</v-btn>
                     </template>
 
-                    <template v-slot:download="{ item }">
+                    <template v-slot:item.download="{ item }">
                         <v-btn small dark fab color="indigo"
                             :href="item.file.path"
                             target="_blank"

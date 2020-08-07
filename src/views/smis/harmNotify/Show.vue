@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container style="max-width: 1200px">
     <h2 class="mb-4">通報編號：{{ routeId }}</h2>
 
     <!-- 上面的欄位 -->
