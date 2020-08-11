@@ -80,11 +80,11 @@
   </v-app-bar>
 
   <!-- right main content -->
-  <v-content>
+  <v-main>
     <!-- 組織表先暫時關閉，方便開放demo畫面 -->
     <!-- <OrganizeDialog /> -->
     <router-view></router-view>
-  </v-content>
+  </v-main>
 </v-app>
 </template>
 

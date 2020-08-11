@@ -188,10 +188,10 @@ export const MainTypeChartData = {
     major: [5, 8, 6, 4, 3],
 
     // 一般事故
-    general: [13, 10, 15, 14],
+    general: [13, 10, 15, 14, 9],
 
     // 異常事件
-    abnormal: [15, 24, 17, 19],
+    abnormal: [15, 24, 17, 19, 10],
 }
 
 // 重大事故類事故事件趨勢圖
@@ -241,3 +241,31 @@ export const AbnormalTypeChartData = {
     a16: [31, 2, 0, 21, 12],  // 列車取消
     a17: [13, 21, 5, 34, 3],  // 其他事件
 }
+
+// 危害資料庫-危害
+export const carHarmDBHarms = [
+    {
+        id: '11',
+        mode: '維修',
+        serious: '稍微',
+        frequency: '偶爾',
+        level: '可接受，持續控管',
+        status: '待送審',
+    },
+    {
+        id: '22',
+        mode: '緊急',
+        serious: '嚴重',
+        frequency: '幾乎不',
+        level: '中度風險',
+        status: '待核定',
+    },
+    {
+        id: '33',
+        mode: '正常',
+        serious: '極輕微',
+        frequency: '偶爾',
+        level: '可接受，持續控管',
+        status: '已核定',
+    },
+]
