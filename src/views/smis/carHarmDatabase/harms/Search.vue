@@ -14,10 +14,16 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3" align-self="end">
-            <v-btn color="green" dark large class="mb-1"
+            <v-btn color="green" dark large class="mb-1 mr-3"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+            </v-btn>
+
+            <v-btn color="indigo" dark large class="mb-1"
+                to="/smis/car-harmdb/harms/add"
+            >
+                <v-icon>mdi-plus</v-icon>新增
             </v-btn>
         </v-col>
 

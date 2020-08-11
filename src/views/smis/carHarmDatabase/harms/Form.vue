@@ -5,101 +5,187 @@
     </h2>
 
     <v-row class="px-2">
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" md="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發現日期
-            </h3>
-            <v-menu
-                v-model="dateMenuShow"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                max-width="290px"
-                min-width="290px"
-            >
-                <template v-slot:activator="{ on }">
-                    <v-text-field
-                        v-model.trim="ipt.date"
-                        solo
-                        v-on="on"
-                        readonly
-                    ></v-text-field>
-                </template>
-                <v-date-picker
-                    color="purple"
-                    v-model="ipt.date"
-                    @input="dateMenuShow = false"
-                    locale="zh-tw"
-                ></v-date-picker>
-            </v-menu>
-        </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發現時間 (小時)
-            </h3>
-            <v-select
-                v-model="ipt.hour"
-                :items="opts.hour"
-                solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發現時間 (分)
-            </h3>
-            <v-select
-                v-model="ipt.min"
-                :items="opts.min"
-                solo
-            ></v-select>
-        </v-col>
-    </v-row>
-
-    <!-- 發現地點 -->
-    <LocationSelect
-        @chLocation="setLocation"
-        :location="ipt.location"
-        :locationK="ipt.locationK"
-        :locationM="ipt.locationM"
-        :locationOther="ipt.locationOther"
-    />
-
-    <v-row class="px-2 mb-8">
-        <v-col cols="12" sm="6">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報摘要
-                <span class="red--text">*</span>
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.subject"
-                solo
-                placeholder="請輸入通報的主題或摘要"
-            ></v-text-field>
-        </v-col>
-
-        <v-col cols="12">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-note</v-icon>通報內容
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>危害說明
                 <span class="red--text">*</span>
             </h3>
             <v-textarea
                 auto-grow
                 solo
                 rows="6"
-                placeholder="請輸入通報內容"
-                v-model.trim="ipt.content"
+                placeholder="請輸入危害說明"
+                v-model.trim="ipt.desc"
             ></v-textarea>
         </v-col>
 
-        <!-- 上傳檔案 -->
-        <UploadFileAdd
-            :uploadDisnable="false"
-            :fileList="ipt.files"
-            @joinFile="joinFile"
-            @rmFile="rmFile"
-        />
+        <v-col cols="12" md="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>危害直接成因
+                <span class="red--text">*</span>
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入危害直接成因"
+                v-model.trim="ipt.reason"
+            ></v-textarea>
+        </v-col>
 
+        <v-col cols="12" md="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>可能的危害間接原因
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入間接原因"
+                v-model.trim="ipt.indirectReason"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12" md="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入備註"
+                v-model.trim="ipt.note"
+            ></v-textarea>
+        </v-col>
+    </v-row>
+
+    <v-divider class="mx-2 mt-5 mb-4"></v-divider>
+
+    <v-row class="px-2">
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>權責單位
+            </h3>
+            <v-select
+                v-model="ipt.depart"
+                :items="opts.depart"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>營運模式
+            </h3>
+            <v-select
+                v-model="ipt.mode"
+                :items="opts.mode"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>風險嚴重性
+            </h3>
+            <v-select
+                v-model="ipt.serious"
+                :items="opts.serious"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>風險頻率
+            </h3>
+            <v-select
+                v-model="ipt.frequency"
+                :items="opts.frequency"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>關聯子系統
+            </h3>
+            <v-select
+                v-model="ipt.wbs"
+                :items="opts.wbs"
+                solo
+            ></v-select>
+        </v-col>
+
+        <!-- 影響、營運衝擊 -->
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
+            </h3>
+            <v-sheet color="white" elevation="2" class="px-2 pb-4">
+                <v-row no-gutters>
+                    <v-col cols="6" sm="4" md="2">
+                        <v-checkbox
+                            v-model="ipt.affectTraveler"
+                            label="影響旅客"
+                            color="info"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="6" sm="4" md="2">
+                        <v-checkbox
+                            v-model="ipt.affectStaff"
+                            label="影響員工"
+                            color="info"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="6" sm="4" md="2">
+                        <v-checkbox
+                            v-model="ipt.affectPublic"
+                            label="影響大眾"
+                            color="info"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="6" sm="4" md="2">
+                        <v-checkbox
+                            v-model="ipt.trainLate"
+                            label="列車誤點"
+                            color="info"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="6" sm="4" md="2">
+                        <v-checkbox
+                            v-model="ipt.stopOperation"
+                            label="中斷營運"
+                            color="info"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+                </v-row>
+            </v-sheet>
+        </v-col>
+
+        <!-- 衍生事故 -->
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-arrow-expand</v-icon>衍生事故
+            </h3>
+            <AccidentCheckbox
+                :checkArr="ipt.accidents"
+                @checkAccident="setAccident"
+            />
+        </v-col>
+    </v-row>
+
+    <v-row class="px-2 mb-8">
         <v-col cols="12" class="text-center mt-8">
             <v-btn
                 color="success"
@@ -120,46 +206,63 @@
 </template>
 
 <script>
-// import { mapState, mapActions } from 'vuex'
-// import { getNowFullTime } from '@/assets/js/commonFun'
-// import { createWorkOrder } from '@/apis/workList/maintain'
-import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
-import LocationSelect from '@/components/smis/LocationSelect.vue'
-import UploadFileAdd from '@/components/UploadFileAdd.vue'
+import { mapActions } from 'vuex'
+import { departOptions } from '@/assets/js/departOption'
+import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
 
 export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
-        notifyNumber: '',  // 通報編號
-        ipt: {  // 給地點組件的預設值要先設
-            location: 'l1',  // 發現地點
-            locationK: '',  // 路線k
-            locationM: '',　// 路線m
-            locationOther: '',　// 其他地點
-        },
+        ipt: {},
         defaultIpt: {
-            date: new Date().toISOString().substr(0, 10),  // 發現日期
-            hour: '00',  // 發現時間(小時)
-            min: '00',  // 發現時間(分)
-            location: 'l1',  // 發現地點 (預設值要設，組件一開始不會傳值進來)
-            locationK: '',  // 路線k
-            locationM: '',　// 路線m
-            locationOther: '',　// 其他地點
-            subject: '',  // 通報摘要
-            content: '',  // 通報內容
-            files: [],  // 附件檔案
+            desc: '',  // 危害說明
+            reason: '',  // 危害直接成因
+            indirectReason: '',  // 可能的危害間接原因
+            note: '',  // 備註
+            depart: 'd1',// 權責部門
+            mode: 'm1',  // 營運模式
+            wbs: 'APC2',  // 關聯子系統
+            serious: 'S5',  // 風險嚴重性
+            frequency: 'P1',  // 風險頻率
+            affectTraveler: false,  // 影響旅客
+            affectStaff: false,  // 影響員工
+            affectPublic: false,  // 影響大眾
+            trainLate: false,  // 列車誤點
+            stopOperation: false,  // 中斷營運
+            accidents: [],  // 衍生事故
         },
-        dateMenuShow: false,  // 日曆是否顯示
         opts: {  // 下拉選單
-            hour: hourOptions,  // 小時
-            min: minOptions,  // 分
+            depart: departOptions,  // 權責部門
+            mode: [  // 營運模式
+                { text: '正常', value: 'm1' },
+                { text: '降級', value: 'm2' },
+                { text: '緊急', value: 'm3' },
+                { text: '維修', value: 'm4' },
+            ],
+            wbs: [  // 關聯子系統
+                { text: 'APC2', value: 'APC2' },
+                { text: '平甲6022', value: '平甲6022' },
+                { text: '祝8308', value: '祝8308' },
+                { text: '蓬甲6', value: '蓬甲6' },
+            ],
+            serious: [  // 風險嚴重性
+                { text: '極輕微', value: 'S5' },
+                { text: '稍微', value: 'S4' },
+                { text: '主要', value: 'S3' },
+                { text: '嚴重', value: 'S2' },
+                { text: '災難', value: 'S1' },
+            ],
+            frequency: [  // 風險頻率
+                { text: '經常', value: 'P1' },
+                { text: '很可能', value: 'P2' },
+                { text: '偶爾', value: 'P3' },
+                { text: '很少', value: 'P4' },
+                { text: '幾乎不', value: 'P5' },
+            ],
         },
     }),
-    components: {
-        LocationSelect,
-        UploadFileAdd,
-    },
+    components: { AccidentCheckbox },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -174,24 +277,13 @@ export default {
                 this.ipt = { ...this.defaultIpt }  // 初始化新增表單
             }, 1000)
         },
-        // 設定發現地點
-        setLocation(payload) {
-            this.ipt.location = payload.location
-            this.ipt.locationK = payload.locationK
-            this.ipt.locationM = payload.locationM
-            this.ipt.locationOther = payload.locationOther
+        // 延申事故
+        setAccident(arr) {
+            this.ipt.accidents = [ ...arr ]
         },
         // 送出
         save() {
             
-        },
-        // 加入要上傳的檔案
-        joinFile(file) {
-            this.ipt.files.push(file)
-        },
-        // 移除要上傳的檔案
-        rmFile(idx) {
-            this.ipt.files.splice(idx, 1)
         },
     },
     created() {
