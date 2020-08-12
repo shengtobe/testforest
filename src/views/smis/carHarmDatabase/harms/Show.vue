@@ -13,40 +13,12 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備損失
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ eqLoss }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>營運衝擊
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ serviceShock }}</v-col>
-            </v-row>
-        </v-col>
-        
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>處置過程
+                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>危害說明
                     </span>
                 </v-col>
 
                 <v-col class="white pa-3"
-                    v-html="handle"
+                    v-html="desc"
                 ></v-col>
             </v-row>
         </v-col>
@@ -57,23 +29,7 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>檢討過程
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="review"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>原因分析
+                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>直接成因
                     </span>
                 </v-col>
 
@@ -89,7 +45,23 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註說明
+                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>可能的間接原因
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3"
+                    v-html="indirectReason"
+                ></v-col>
+            </v-row>
+        </v-col>
+
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
                     </span>
                 </v-col>
 
@@ -105,62 +77,72 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-paperclip</v-icon>檔案附件
+                        <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
                     </span>
                 </v-col>
 
-                <v-col class="white pa-3">
-                    <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
-                        v-for="item in files"
-                        :key="item.fileName"
-                        :href="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
-                    >
-                        {{ item.fileName }}
-                    </v-chip>
-                </v-col>
+                <v-col class="white pa-3">{{ affectTxt }}</v-col>
             </v-row>
         </v-col>
 
-        <v-col cols="12" class="mt-8">
-            <v-row>
-                <v-col cols="12" sm="3" md="2">
-                    <v-badge overlap
-                        :color="(finishDeath)? 'success' : 'error'"
-                        :content="(finishDeath)? '已填寫' : '未填寫'"
-                    >
-                        <v-btn elevation="3" large  color="brown" dark tile
-                            :to="`/smis/car-accident-event/${routeId}/person-casualty`"
-                        >
-                            人員傷亡名單
-                        </v-btn>
-                    </v-badge>
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-arrow-expand</v-icon>衍生事故
+                    </span>
                 </v-col>
 
-                <v-col cols="12" sm="3" md="2">
-                    <v-badge overlap
-                        :color="(finishImprove)? 'success' : 'error'"
-                        :content="(finishImprove)? '已填寫' : '未填寫'"
-                    >
-                        <v-btn elevation="3" large color="brown" dark tile
-                            :to="`/smis/car-accident-event/${routeId}/driving-improve`"
-                        >
-                            改善措施檢討
-                        </v-btn>
-                    </v-badge>
-                </v-col>
+                <v-col class="white pa-3">{{ accidentsTxt }}</v-col>
             </v-row>
+        </v-col>
+
+        <!-- 控制措施 -->
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:item.desc="{ item }">
+                        <v-btn color="teal" dark
+                            @click="showContent(item.desc)"
+                        >檢視</v-btn>
+                    </template>
+
+                    <template v-slot:item.file="{ item }">
+                        <v-btn fab small dark color="brown"
+                            :href="item.file.link"
+                            target="_blank"
+                            rel="noopener norefferrer"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+                </v-data-table>
+            </v-card>
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/car-accident-event"
+                to="/smis/car-harmdb/harms"
             >回搜尋頁</v-btn>
 
             <v-btn dark class="ma-2"
                 color="indigo"
-                :to="`/smis/car-accident-event/${routeId}/edit`"
+                :to="`/smis/car-harmdb/harms/${routeId}/edit`"
             >編輯</v-btn>
 
             <v-btn dark  class="ma-2" color="error"
@@ -169,34 +151,66 @@
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-            >申請結案</v-btn>
+            >申請審核</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 顯示文字內容的 dialog -->
+    <v-dialog v-model="dialog.show" max-width="600">
+        <v-card>
+            <v-card-title
+                class="yellow lighten-3 py-2 px-3"
+                primary-title
+            >
+                <v-icon class="mr-2">mdi-file-document</v-icon>
+                <strong>檢視內容</strong>
+                <v-spacer></v-spacer>
+
+                <v-btn text fab small @click="dialog.show = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+
+            <v-sheet class="pa-4" v-html="dialog.content"></v-sheet>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import { locationOpts, evtTypes } from '@/assets/js/smisData'
 
 export default {
     data: () => ({
         routeId: '',
-        eqLoss: '',// 設備損失
-        serviceShock: '', // 營運衝擊
-        handle: '', // 處置過程
-        review: '', // 檢討過程
-        reason: '', // 原因分析
-        note: '', // 備註說明
-        files: [],  // 上傳的檔案
-        finishDeath: false,  // 是否完成人員傷亡名單
-        finishImprove: false,  // 是否完成改善措施
         topItems: {  // 上面的欄位
-            findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
-            findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
-            accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
+            depart: { icon: 'mdi-bank', title: '權責單位', text: '' },
+            mode: { icon: 'mdi-snowflake', title: '營運模式', text: '' },
+            wbs: { icon: 'mdi-source-branch', title: '關聯子系統', text: '' },
+            serious: { icon: 'mdi-format-line-spacing', title: '風險嚴重性', text: '' },
+            frequency: { icon: 'mdi-signal-variant', title: '風險頻率', text: '' },
         },
+        desc: '',  // 危害說明
+        reason: '',  // 危害直接成因
+        indirectReason: '',  // 可能的危害間接原因
+        note: '',  // 備註
+        controls: [],  // 控制措施
+        dialog: {  // 控制措施 dialog
+            show: false,
+            content: '',  // 內容
+        },
+        affectTxt: '',  // 影響、營運衝擊字串
+        accidentsTxt: '',  // 衍生事故字串
+        tableItems: [],  // 表格資料
+        headers: [  // 表格欄位
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
     }),
     components: { TopBasicTable },
     watch: {
@@ -218,29 +232,39 @@ export default {
             // 新增測試用資料
             setTimeout(() => {
                 let obj = {
-                    findDate: '2020-03-15',  // 發現日期
-                    findHour: '14',  // 發現日期(時)
-                    findMin: '00',  // 發現日期(分)
-                    location: 't17',  // 發現地點
-                    locationK: '',  // 路線k
-                    locationM: '',　// 路線m
-                    locationOther: '',　// 其他地點
-                    accidentType: 'A12',  // 事故類型
-                    eqLoss: '無',// 設備損失
-                    serviceShock: '列車停駛30分鐘', // 營運衝擊
-                    handle: '派三名人員至現場移除', // 處置過程
-                    review: '無', // 檢討過程
-                    reason: '樹木不明原因倒落', // 原因分析
-                    note: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
-                    files: [
-                        { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
-                        { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        { fileName: '123.docx', link: '/demofile/123.docx' },
-                        { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
+                    reason: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害直接成因
+                    indirectReason: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 可能的危害間接原因
+                    note: '',  // 備註
+                    depart: '鐵路服務科',// 權責部門
+                    mode: '正常',  // 營運模式
+                    wbs: 'APC2',  // 關聯子系統
+                    serious: '稍微',  // 風險嚴重性
+                    frequency: '很少',  // 風險頻率
+                    affectTraveler: true,  // 影響旅客
+                    affectStaff: true,  // 影響員工
+                    affectPublic: false,  // 影響大眾
+                    trainLate: false,  // 列車誤點
+                    stopOperation: false,  // 中斷營運
+                    accidents: ['側線火災事故', '設備損壞事故'],  // 衍生事故
+                    controls: [  // 控制措施
+                        {
+                            id: 123,
+                            subject: '火災處理要點',
+                            desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                            depart: '綜合企劃科',
+                            file: { link: '/demofile/123.pdf' },
+                            note: ''
+                        },
+                        {
+                            id: 456,
+                            subject: '中暑急救要點',
+                            desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                            depart: '綜合企劃科',
+                            file: { link: '/demofile/123.docx' },
+                            note: ''
+                        },
                     ],
-                    finishDeath: true,  // 是否完成人員傷亡名單
-                    finishImprove: false,  // 是否完成改善措施
                 }
 
                 this.setShowData(obj)
@@ -249,19 +273,31 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
-            this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
-            this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
-            this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
+            this.topItems.depart.text = obj.depart  // 權責部門
+            this.topItems.mode.text = obj.mode  // 營運模式
+            this.topItems.wbs.text = obj.wbs  // 關聯子系統
+            this.topItems.serious.text = obj.serious  // 風險嚴重性
+            this.topItems.frequency.text = obj.frequency  // 風險頻率
 
-            this.eqLoss = obj.eqLoss  // 設備損失
-            this.serviceShock = obj.serviceShock  // 營運衝擊
-            this.handle = obj.handle  // 處置過程
-            this.review = obj.review  // 檢討過程
-            this.reason = obj.reason  // 原因分析
-            this.note = obj.note // 備註說明
-            this.files = [ ...obj.files ]  // 檔案附件
-            this.finishDeath = obj.finishDeath // 是否完成人員傷亡名單
-            this.finishImprove = obj.finishImprove // 是否完成改善措施
+            this.desc = obj.desc.replace(/\n/g, '<br>')  // 危害說明
+            this.reason = obj.reason.replace(/\n/g, '<br>')  // 危害直接成因
+            this.indirectReason = obj.indirectReason.replace(/\n/g, '<br>')  // 可能的危害間接原因
+            this.note = obj.note.replace(/\n/g, '<br>')  // 備註
+            this.controls = [ ...obj.controls ]  // 控制措施
+            
+            // 影響、營運衝擊字串
+            let arr = []
+            if (obj.affectTraveler) arr.push('影響旅客')
+            if (obj.affectStaff) arr.push('影響員工')
+            if (obj.affectPublic) arr.push('影響大眾')
+            if (obj.trainLate) arr.push('列車誤點')
+            if (obj.stopOperation) arr.push('中斷營運')
+            this.affectTxt = arr.join('、')  
+
+            // 衍生事故字串
+            this.accidentsTxt = obj.accidents.join('、')
+
+            this.tableItems = [ ...obj.controls ]
         },
         // 刪除
         del() {
@@ -269,28 +305,26 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: '/smis/car-accident-event' })
+                    this.$router.push({ path: '/smis/car-harmdb/harms' })
                     this.chMsgbar({ success: true, msg: '刪除成功'})
                     this.chLoadingShow()
                 }, 1000)
             }
         },
-        // 申請結案
+        // 申請審核
         save() {
-            let errArr = []
-            if (!this.finishDeath) errArr.push('人員傷亡名單')
-            if (!this.finishImprove) errArr.push('改善措施檢討')
+            this.chLoadingShow()
 
-            if (this.finishDeath && this.finishImprove) {  // 都有填寫
+            setTimeout(() => {
+                this.$router.push({ path: '/smis/car-harmdb/harms' })
+                this.chMsgbar({ success: true, msg: '申請審核成功'})
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chLoadingShow()
-                }, 1000)
-            } else {
-                let errLog = '你還未填寫「'+ errArr.join('、') + '」'
-                alert(errLog)
-            }
+            }, 1000)
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            this.dialog.content = txt.replace(/\n/g, '<br>')
+            this.dialog.show = true
         },
     },
     created() {

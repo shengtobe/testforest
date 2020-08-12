@@ -87,7 +87,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>風險嚴重性
+                <v-icon class="mr-1 mb-1">mdi-format-line-spacing</v-icon>風險嚴重性
             </h3>
             <v-select
                 v-model="ipt.serious"
@@ -98,7 +98,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>風險頻率
+                <v-icon class="mr-1 mb-1">mdi-signal-variant</v-icon>風險頻率
             </h3>
             <v-select
                 v-model="ipt.frequency"
@@ -254,7 +254,7 @@
 
         <v-col cols="12" class="mt-8">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>已選的控制措施
+                <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>已選的控制措施
             </h3>
             <v-card>
                 <v-data-table

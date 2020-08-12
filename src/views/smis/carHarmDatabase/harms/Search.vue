@@ -113,6 +113,29 @@
 
             </v-sheet>
         </v-col>
+
+        <!-- 快速查詢 -->
+        <v-col cols="12" class="mt-5">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>快速查詢
+            </h3>
+            
+            <v-btn dark color="brown" class="mb-2 mr-3"
+                @click="fastFetch"
+            >全部危害</v-btn>
+
+            <v-btn dark color="brown" class="mb-2 mr-3"
+                @click="fastFetch"
+            >待送審</v-btn>
+
+            <v-btn dark color="brown" class="mb-2 mr-3"
+                @click="fastFetch"
+            >審核中</v-btn>
+
+            <v-btn dark color="brown" class="mb-2 mr-3"
+                @click="fastFetch"
+            >殘餘風險</v-btn>
+        </v-col>
                 
         <!-- 表格資料 -->
         <v-col cols="12" class="mt-8">
@@ -182,7 +205,7 @@ export default {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 搜尋
+        // 簡易搜尋
         search() {
             this.chLoadingShow()
 
@@ -192,6 +215,16 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
+        // 快速查詢
+        fastFetch() {
+            this.chLoadingShow()
+
+            // 新增測試用資料
+            setTimeout(() => {
+                this.tableItems = carHarmDBHarms
+                this.chLoadingShow()
+            }, 1000)
+        }, 
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
@@ -202,7 +235,7 @@ export default {
                 case '待送審':
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/show` })
                     break
-                case '待核定':
+                case '審核中':
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/review` })
                     break
                 case '已核定':

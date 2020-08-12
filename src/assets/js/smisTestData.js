@@ -258,7 +258,7 @@ export const carHarmDBHarms = [
         serious: '嚴重',
         frequency: '幾乎不',
         level: '中度風險',
-        status: '待核定',
+        status: '審核中',
     },
     {
         id: '33',
