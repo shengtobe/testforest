@@ -214,7 +214,9 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
-        ipt: {},
+        ipt: {
+            accidents: [],  // 衍生事故(給組件的預設值)
+        },
         defaultIpt: {
             desc: '',  // 危害說明
             reason: '',  // 危害直接成因
