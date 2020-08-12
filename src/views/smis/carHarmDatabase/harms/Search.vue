@@ -28,7 +28,7 @@
         </v-col>
 
         <v-col cols="12">
-            <v-sheet color="white" class="px-2 pb-4">
+            <v-sheet color="white" class="px-2 pb-1">
                 <v-row no-gutters>
                     <v-col cols="12" sm="4" md="3">
                         <v-checkbox
@@ -109,8 +109,11 @@
                             hide-details
                         ></v-checkbox>
                     </v-col>
-                </v-row>
 
+                    <v-col cols="12" class="mt-2">
+                        <span class="error--text">* 請至要勾選上述其中一個項目</span>
+                    </v-col>
+                </v-row>
             </v-sheet>
         </v-col>
 
