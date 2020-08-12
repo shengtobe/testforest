@@ -114,7 +114,7 @@
                 </v-btn>
             </v-card-title>
 
-            <v-sheet class="pa-4" v-html="transContent"></v-sheet>
+            <v-sheet class="pa-4" v-html="content"></v-sheet>
         </v-card>
     </v-dialog>
 </v-dialog>
@@ -134,11 +134,6 @@ export default {
         items: [],
     }),
     components: { CarHarmSearch, JobHarmSearch },
-    computed: {
-        transContent() {
-            return this.content.replace(/\n/g, '<br>')
-        }
-    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -153,7 +148,7 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            this.content = txt
+            this.content = txt.replace(/\n/g, '<br>')
             this.show = true
         },
         // 連結資料

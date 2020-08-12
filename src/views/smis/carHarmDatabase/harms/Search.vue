@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <v-row class="px-2 mb-8">
-        <v-col cols="12" sm="8" md="9">
+        <v-col cols="12" md="5">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>簡易查詢
             </h3>
@@ -13,7 +13,7 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3" align-self="end">
+        <v-col cols="12" md="3" align-self="end">
             <v-btn color="green" dark large class="mb-1 mr-3"
                 @click="search"
             >

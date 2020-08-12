@@ -178,22 +178,154 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-arrow-expand</v-icon>衍生事故
             </h3>
+
             <AccidentCheckbox
                 :checkArr="ipt.accidents"
                 @checkAccident="setAccident"
             />
         </v-col>
-    </v-row>
 
-    <v-row class="px-2 mb-8">
-        <v-col cols="12" class="text-center mt-8">
+        <!-- 控制措施 -->
+        <v-col cols="12" sm="4" md="3" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>控制措施權責部門
+            </h3>
+            <v-select
+                v-model="controlDepart"
+                :items="opts.depart"
+                solo
+                hide-details
+                @change="chControlDepart"
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12">
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.desc="{ item }">
+                        <v-btn color="teal" dark
+                            @click="showContent(item.desc)"
+                        >檢視</v-btn>
+                    </template>
+
+                    <template v-slot:item.file="{ item }">
+                        <v-btn fab small dark color="brown"
+                            :href="item.file.link"
+                            target="_blank"
+                            rel="noopener norefferrer"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:item.action="{ item }">
+                        <v-btn fab small dark color="indigo"
+                            @click="addControl(item)"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>已選的控制措施
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="chooseHeaders"
+                    :items="ipt.controlChoose"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:item.desc="{ item }">
+                        <v-btn color="teal" dark
+                            @click="showContent(item.desc)"
+                        >檢視</v-btn>
+                    </template>
+
+                    <template v-slot:item.file="{ item }">
+                        <v-btn fab small dark color="brown"
+                            :href="item.file.link"
+                            target="_blank"
+                            rel="noopener norefferrer"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:item.action="{ item }">
+                        <v-btn fab small color="error"
+                            @click="delControl(item.id)"
+                        >
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
+        <v-col cols="12" class="text-center my-8">
+            <v-btn dark class="mr-4"
+                to="/smis/car-harmdb/harms"
+            >回搜尋頁</v-btn>
+            
             <v-btn
                 color="success"
                 @click="save"
-                large
             >送出</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 顯示文字內容的 dialog -->
+    <v-dialog v-model="dialog.show" max-width="600">
+        <v-card>
+            <v-card-title
+                class="yellow lighten-3 py-2 px-3"
+                primary-title
+            >
+                <v-icon class="mr-2">mdi-file-document</v-icon>
+                <strong>檢視內容</strong>
+                <v-spacer></v-spacer>
+
+                <v-btn text fab small @click="dialog.show = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+
+            <v-sheet class="pa-4" v-html="dialog.content"></v-sheet>
+        </v-card>
+    </v-dialog>
 
     <!-- <v-form
         ref="form"
@@ -209,6 +341,7 @@
 import { mapActions } from 'vuex'
 import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
+import Pagination from '@/components/Pagination.vue'
 
 export default {
     data: () => ({
@@ -233,6 +366,7 @@ export default {
             trainLate: false,  // 列車誤點
             stopOperation: false,  // 中斷營運
             accidents: [],  // 衍生事故
+            controlChoose: [],  // 已選的控制措施
         },
         opts: {  // 下拉選單
             depart: departOptions,  // 權責部門
@@ -263,8 +397,36 @@ export default {
                 { text: '幾乎不', value: 'P5' },
             ],
         },
+        controlDepart: '',  // 控制措施權責部門
+        pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
+        tableItems: [],  // 控制措施權責部門的表格資料
+        headers: [  // 控制措施權責部門的表格欄位
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        chooseHeaders: [  // 已選的表格欄位
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        dialog: {
+            show: false,
+            content: '',  // 內容
+        },
     }),
-    components: { AccidentCheckbox },
+    components: {
+        AccidentCheckbox,
+        Pagination,
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -272,6 +434,10 @@ export default {
         },
     },
     methods: {
+        ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
         // 初始化資料
         initData() {
             // 範例效果
@@ -283,9 +449,83 @@ export default {
         setAccident(arr) {
             this.ipt.accidents = [ ...arr ]
         },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
         // 送出
         save() {
-            
+            this.chLoadingShow()
+
+            // 測試用資料
+            setTimeout(() => {
+                this.$router.push({ path: '/smis/car-harmdb/harms' })
+                this.chMsgbar({ success: true, msg: '資料新增成功'})
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 選擇控制措施權責部門
+        chControlDepart() {
+            this.chLoadingShow()
+
+            // 測試用資料
+            setTimeout(() => {
+                switch(this.controlDepart) {
+                    case 'd1':  // 綜合企劃科
+                        this.tableItems = [
+                            {
+                                id: 123,
+                                subject: '火災處理要點',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '綜合企劃科',
+                                file: { link: '/demofile/123.pdf' },
+                                note: ''
+                            },
+                            {
+                                id: 456,
+                                subject: '中暑急救要點',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '綜合企劃科',
+                                file: { link: '/demofile/123.docx' },
+                                note: ''
+                            },
+                        ]
+                        break
+                    case 'd2':  // 鐵路服務科
+                        this.tableItems = [
+                            {
+                                id: 789,
+                                subject: '火車誤點處理措施',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '鐵路服務科',
+                                file: { link: '/demofile/456.xlsx' },
+                                note: ''
+                            },
+                        ]
+                        break
+                    default:
+                        break
+                }
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            this.dialog.content = txt.replace(/\n/g, '<br>')
+            this.dialog.show = true
+        },
+        // 增加已選的控制措施
+        addControl(item) {
+            // 沒找到才新增
+            let arr = this.ipt.controlChoose.find(ele => ele.id == item.id)
+            if (arr == undefined) {
+                this.ipt.controlChoose.push(item)
+            }
+        },
+        // 刪除已選的控制措施
+        delControl(id) {
+            let idx = this.ipt.controlChoose.findIndex(ele => ele.id == id)
+            this.ipt.controlChoose.splice(idx, 1)
         },
     },
     created() {
