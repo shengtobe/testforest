@@ -417,12 +417,77 @@ export default {
         ]),
         // 初始化資料
         initData() {
-            // 範例效果
-            setTimeout(() => {
-                this.ipt = { ...this.defaultIpt }  // 初始化新增表單
-            }, 1000)
+            this.ipt = { ...this.defaultIpt }  // 初始化表單
+
+            // -------------- 編輯時 -------------- 
+            if (this.$route.params.id != undefined) {
+                this.chLoadingShow()
+                this.routeId = this.$route.params.id  // 路由參數(id)
+                this.isEdit = true
+
+                // 範例效果
+                setTimeout(() => {
+                    let obj = {
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
+                        reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
+                        indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
+                        note: '',  // 備註
+                        depart: 'd2',// 權責部門
+                        mode: 'm2',  // 營運模式
+                        wbs: 'APC2',  // 關聯子系統
+                        serious: 'S4',  // 風險嚴重性
+                        frequency: 'P2',  // 風險頻率
+                        affectTraveler: true,  // 影響旅客
+                        affectStaff: true,  // 影響員工
+                        affectPublic: false,  // 影響大眾
+                        trainLate: false,  // 列車誤點
+                        stopOperation: false,  // 中斷營運
+                        accidents: ['G3', 'G6'],  // 衍生事故
+                        controls: [  // 控制措施
+                            {
+                                id: 123,
+                                subject: '火災處理要點',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '綜合企劃科',
+                                file: { link: '/demofile/123.pdf' },
+                                note: ''
+                            },
+                            {
+                                id: 456,
+                                subject: '中暑急救要點',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '綜合企劃科',
+                                file: { link: '/demofile/123.docx' },
+                                note: ''
+                            },
+                        ],
+                    }
+                    
+                    this.setInitDate(obj)
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
-        // 延申事故
+        // 設定資料(編輯時)
+        setInitDate(obj) {
+            this.ipt.desc = obj.desc // 危害說明
+            this.ipt.reason = obj.reason  // 危害直接成因
+            this.ipt.indirectReason = obj.indirectReason  // 可能的危害間接原因
+            this.ipt.note = obj.note  // 備註
+            this.ipt.depart = obj.depart  // 權責部門
+            this.ipt.mode = obj.mode  // 營運模式
+            this.ipt.wbs = obj.wbs  // 關聯子系統
+            this.ipt.serious = obj.serious  // 風險嚴重性
+            this.ipt.frequency = obj.frequency  // 風險頻率
+            this.ipt.affectTraveler = obj.affectTraveler  // 影響旅客
+            this.ipt.affectStaff = obj.affectStaff  // 影響員工
+            this.ipt.affectPublic = obj.affectPublic  // 影響大眾
+            this.ipt.trainLate = obj.trainLate  // 列車誤點
+            this.ipt.stopOperation = obj.stopOperation  // 中斷營運
+            this.ipt.accidents = [ ...obj.accidents ]  // 衍生事故
+            this.ipt.controlChoose = [ ...obj.controls ]   // 已選控制錯施
+        },
+        // 設定勾選的延申事故
         setAccident(arr) {
             this.ipt.accidents = [ ...arr ]
         },

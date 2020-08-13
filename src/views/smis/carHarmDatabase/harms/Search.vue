@@ -137,6 +137,10 @@
 
             <v-btn dark color="brown" class="mb-2 mr-3"
                 @click="fastFetch"
+            >申請作廢中</v-btn>
+
+            <v-btn dark color="brown" class="mb-2 mr-3"
+                @click="fastFetch"
             >殘餘風險</v-btn>
         </v-col>
                 
@@ -243,6 +247,9 @@ export default {
                     break
                 case '已核定':
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
+                    break
+                case '申請作廢中':
+                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/invalid` })
                     break
                 default:
                     break

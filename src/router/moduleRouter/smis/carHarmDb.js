@@ -22,14 +22,27 @@ export const CarHarmdbRouter = [
         component: () => import('@/views/smis/carHarmDatabase/harms/Show.vue')
     },
     {
-        linkText: '待核定',
+        linkText: '審核中',
         path: '/smis/car-harmdb/harms/:id/review',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Review.vue')
+        component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
+        props: { closeStatus: '審核中' }
     },
     {
         linkText: '已核定',
         path: '/smis/car-harmdb/harms/:id/complated',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Complated.vue')
+        component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
+        props: { closeStatus: '已核定' }
+    },
+    {
+        linkText: '申請作廢中',
+        path: '/smis/car-harmdb/harms/:id/invalid',
+        component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
+        props: { closeStatus: '申請作廢中' }
+    },
+    {
+        linkText: '危害更新',  // 增加新版本
+        path: '/smis/car-harmdb/harms/:id/update',
+        component: () => import('@/views/smis/carHarmDatabase/harms/Update.vue')
     },
     
     // ------------- 危害控制措施 ----------------------

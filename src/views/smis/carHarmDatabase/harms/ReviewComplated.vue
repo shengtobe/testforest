@@ -141,19 +141,67 @@
             >回搜尋頁</v-btn>
 
             <v-btn dark class="ma-2"
+                v-if="status == '已核定'"
                 color="indigo"
-                :to="`/smis/car-harmdb/harms/${routeId}/edit`"
-            >編輯</v-btn>
+                :to="`/smis/car-harmdb/harms/${routeId}/update`"
+            >危害更新</v-btn>
+
+            <v-btn dark  class="ma-2" color="orange"
+                @click="invalid"
+                v-if="status == '已核定'"
+            >申請作廢</v-btn>
 
             <v-btn dark  class="ma-2" color="error"
-                @click="del"
-            >刪除</v-btn>
+                @click="dialog = true"
+                v-if="status == '審核中'"
+            >退回</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-            >申請審核</v-btn>
+                v-if="status == '審核中'"
+            >結案</v-btn>
+
+            <v-btn dark  class="ma-2" color="success"
+                @click="agreeVoid"
+                v-if="status == '申請作廢中'"
+            >同意作廢</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 退回 dialog -->
+    <v-dialog v-model="dialog" max-width="600px"
+        v-if="status == '審核中'"
+    >
+        <v-card>
+            <v-toolbar dark flat dense color="error" class="mb-2">
+                <v-toolbar-title>退回原因</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12">
+                        <v-textarea
+                            hide-details
+                            solo
+                            rows="8"
+                            placeholder="請輸入原因"
+                            v-model.trim="backReason"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -162,8 +210,10 @@ import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
 export default {
+    props: ['closeStatus'],  // 測試用屬性
     data: () => ({
         routeId: '',
+        status: '',  // 處理狀態
         topItems: {  // 上面的欄位
             depart: { icon: 'mdi-bank', title: '權責單位', text: '' },
             mode: { icon: 'mdi-snowflake', title: '營運模式', text: '' },
@@ -187,6 +237,9 @@ export default {
             { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        dialog: false,  // 退回dialog是否顯示
+        isLoading: false,  // 是否讀取中
+        backReason: '',  // 退回原因
     }),
     components: { TopBasicTable },
     watch: {
@@ -275,28 +328,55 @@ export default {
             this.accidentsTxt = obj.accidents.join('、')
 
             this.tableItems = [ ...obj.controls ]
+
+            // 設定狀態(測試資料)
+            this.status = this.closeStatus
         },
-        // 刪除
-        del() {
-            if (confirm('你確定要刪除嗎?')) {
+        // 退回
+        withdraw() {
+            this.isLoading = true
+
+            setTimeout(() => {
+                this.chMsgbar({ success: true, msg: '退回成功'})
+                this.$router.push({ path: '/smis/car-harmdb/harms' })
+                this.isLoading = false
+            }, 1000)
+        },
+        // 結案 (變為已核定)
+        save() {
+            if (confirm('結案後無法再退回並修改內容，你確定要結案嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '結案成功'})
                     this.$router.push({ path: '/smis/car-harmdb/harms' })
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
                     this.chLoadingShow()
                 }, 1000)
             }
         },
-        // 申請審核
-        save() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
-                this.chMsgbar({ success: true, msg: '申請審核成功'})
+        // 申請作廢
+        invalid() {
+            if (confirm('你確定要申請作廢嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請作廢成功'})
+                    this.$router.push({ path: '/smis/car-harmdb/harms' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 同意作廢
+        agreeVoid() {
+            if (confirm('你確定要作廢嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '作廢成功'})
+                    this.$router.push({ path: '/smis/car-harmdb/harms' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 顯示檢視內容
         showContent(txt) {

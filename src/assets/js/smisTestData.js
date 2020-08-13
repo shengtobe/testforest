@@ -268,4 +268,12 @@ export const carHarmDBHarms = [
         level: '可接受，持續控管',
         status: '已核定',
     },
+    {
+        id: '44',
+        mode: '正常',
+        serious: '極輕微',
+        frequency: '偶爾',
+        level: '可接受，持續控管',
+        status: '申請作廢中',
+    },
 ]

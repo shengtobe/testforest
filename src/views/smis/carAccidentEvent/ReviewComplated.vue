@@ -196,19 +196,19 @@
 
             <v-btn dark  class="ma-2" color="error"
                 @click="dialog = true"
-                v-if="closeStatus == '申請結案中'"
+                v-if="status == '申請結案中'"
             >退回</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-                v-if="closeStatus == '申請結案中'"
+                v-if="status == '申請結案中'"
             >同意結案</v-btn>
         </v-col>
     </v-row>
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
-        v-if="closeStatus == '申請結案中'"
+        v-if="status == '申請結案中'"
     >
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
@@ -249,9 +249,10 @@ import TopBasicTable from '@/components/TopBasicTable.vue'
 import { locationOpts, evtTypes } from '@/assets/js/smisData'
 
 export default {
-    props: ['closeStatus'],
+    props: ['closeStatus'],  // 測試用屬性
     data: () => ({
         routeId: '',
+        status: '',  // 處理狀態
         eqLoss: '',// 設備損失
         serviceShock: '', // 營運衝擊
         handle: '', // 處置過程
@@ -369,6 +370,9 @@ export default {
             this.deathData = [ ...obj.deathData ]  // 死傷資料
             this.summary = obj.summary.replace(/\n/g, '<br>')  // 檢討摘要
             this.improveFile = { ...obj.improveFile }  // 改善措施文件
+
+            // 設定狀態(測試資料)
+            this.status = this.closeStatus
         },
         // 退回
         withdraw() {
