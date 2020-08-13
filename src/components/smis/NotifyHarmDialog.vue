@@ -97,26 +97,6 @@
             </v-card>
         </div>
     </v-card>
-
-    <!-- 顯示文字內容的 dialog -->
-    <v-dialog v-model="show" max-width="600">
-        <v-card>
-            <v-card-title
-                class="yellow lighten-3 py-2 px-3"
-                primary-title
-            >
-                <v-icon class="mr-2">mdi-file-document</v-icon>
-                <strong>檢視內容</strong>
-                <v-spacer></v-spacer>
-
-                <v-btn text fab small @click="show = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-sheet class="pa-4" v-html="content"></v-sheet>
-        </v-card>
-    </v-dialog>
 </v-dialog>
 </template>
 
@@ -129,14 +109,13 @@ export default {
     props: ['id', 'dialogShow', 'headers', 'dialog'],
     data: () => ({
         loading: false,
-        show: false,
-        content: '',
         items: [],
     }),
     components: { CarHarmSearch, JobHarmSearch },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         // 關閉 dialog
         closeShow() {
@@ -148,8 +127,7 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            this.content = txt.replace(/\n/g, '<br>')
-            this.show = true
+            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 連結資料
         connect(item) {

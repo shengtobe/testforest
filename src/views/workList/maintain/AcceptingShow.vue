@@ -233,17 +233,17 @@
             </template>
 
             <!-- 插入 id 欄位 -->
-            <template v-slot:uid="{ item }">
+            <template v-slot:item.uid="{ item }">
                 {{ getJobMemberName(item.uid) }}
             </template>
 
             <!-- 插入 price 欄位 -->
-            <template v-slot:price="{ item }">
+            <template v-slot:item.price="{ item }">
                 {{ new Intl.NumberFormat().format(item.price) }}
             </template>
 
             <!-- 插入 action 欄位編輯 -->
-            <template v-slot:action="{ item }">
+            <template v-slot:item.action="{ item }">
                 <v-btn small dark fab color="info darken-1"
                     @click="setJobHour(true, item)"
                 >

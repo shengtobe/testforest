@@ -307,26 +307,6 @@
         </v-col>
     </v-row>
 
-    <!-- 顯示文字內容的 dialog -->
-    <v-dialog v-model="dialog.show" max-width="600">
-        <v-card>
-            <v-card-title
-                class="yellow lighten-3 py-2 px-3"
-                primary-title
-            >
-                <v-icon class="mr-2">mdi-file-document</v-icon>
-                <strong>檢視內容</strong>
-                <v-spacer></v-spacer>
-
-                <v-btn text fab small @click="dialog.show = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-sheet class="pa-4" v-html="dialog.content"></v-sheet>
-        </v-card>
-    </v-dialog>
-
     <!-- <v-form
         ref="form"
         v-model="valid"
@@ -418,10 +398,6 @@ export default {
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        dialog: {
-            show: false,
-            content: '',  // 內容
-        },
     }),
     components: {
         AccidentCheckbox,
@@ -437,6 +413,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         // 初始化資料
         initData() {
@@ -511,8 +488,7 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            this.dialog.content = txt.replace(/\n/g, '<br>')
-            this.dialog.show = true
+            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 增加已選的控制措施
         addControl(item) {

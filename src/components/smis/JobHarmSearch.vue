@@ -64,16 +64,7 @@ export default {
         },
         harmTypeOpts: jobHarmType,
     }),
-    computed: {
-        // subEvtOpts() {
-        //     return SubEvt[this.ipt.mainEvt]
-        // }
-    },
     methods: {
-        // 改變子事故
-        // chSubEvt() {
-        //     this.ipt.subEvt = this.subEvtOpts[0].value
-        // },
         // 重置表單
         reset() {
             this.ipt = { ...this.defaultIpt }

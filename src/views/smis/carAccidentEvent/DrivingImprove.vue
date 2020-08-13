@@ -81,26 +81,6 @@
             >送出</v-btn>
         </v-col>
     </v-row>
-
-    <!-- 顯示文字內容的 dialog -->
-    <v-dialog v-model="show" max-width="600">
-        <v-card>
-            <v-card-title
-                class="yellow lighten-3 py-2 px-3"
-                primary-title
-            >
-                <v-icon class="mr-2">mdi-file-document</v-icon>
-                <strong>措施說明</strong>
-                <v-spacer></v-spacer>
-
-                <v-btn text fab small @click="show = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-sheet class="pa-4" v-html="transContent"></v-sheet>
-        </v-card>
-    </v-dialog>
 </v-container>
 </template>
 
@@ -123,16 +103,8 @@ export default {
         ],
         fileId: '',  // 連結的措施附件檔案id
         summary: '',  // 檢討摘要
-        show: false,  // 措施內容 dialog 是否顯示
-        content: '',  // dialog 內容
     }),
     components: { Pagination },
-    computed: {
-        // dialog 轉換後的內容內容
-        transContent() {
-            return this.content.replace(/\n/g, '<br>')
-        },
-    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -143,6 +115,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         // 向後端取得資料
         fetchData() {
@@ -203,8 +176,7 @@ export default {
         },
         // 顯示措施說明
         showContent(txt) {
-            this.content = txt
-            this.show = true
+            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
     },
     created() {

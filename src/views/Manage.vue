@@ -2,6 +2,7 @@
 <v-app>
   <SystemDialog />
   <SystemLoading />
+  <SystemViewDialog />
   <MessageBar />
 
   <!-- left sidebar -->
@@ -91,6 +92,7 @@
 <script>
 import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
+import SystemViewDialog from '@/components/SystemViewDialog.vue'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
 import ProfileNav from '@/components/navs/ProfileNav.vue'
@@ -108,8 +110,9 @@ export default {
     drawer: null,
   }),
   components: {
-    SystemDialog,  // 系統 Dialog
+    SystemDialog,  // 系統重要訊息 Dialog
     SystemLoading,  // 系統 Loading 圖
+    SystemViewDialog,  // 系統檢視內容 Dialog
     OrganizeDialog,  // 組職表 Dialog
     MessageBar,  // 題示訊息
     ProfileNav,  // (sidebar) 個人資訊管理

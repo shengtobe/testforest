@@ -154,26 +154,6 @@
             >申請審核</v-btn>
         </v-col>
     </v-row>
-
-    <!-- 顯示文字內容的 dialog -->
-    <v-dialog v-model="dialog.show" max-width="600">
-        <v-card>
-            <v-card-title
-                class="yellow lighten-3 py-2 px-3"
-                primary-title
-            >
-                <v-icon class="mr-2">mdi-file-document</v-icon>
-                <strong>檢視內容</strong>
-                <v-spacer></v-spacer>
-
-                <v-btn text fab small @click="dialog.show = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-sheet class="pa-4" v-html="dialog.content"></v-sheet>
-        </v-card>
-    </v-dialog>
 </v-container>
 </template>
 
@@ -196,10 +176,6 @@ export default {
         indirectReason: '',  // 可能的危害間接原因
         note: '',  // 備註
         controls: [],  // 控制措施
-        dialog: {  // 控制措施 dialog
-            show: false,
-            content: '',  // 內容
-        },
         affectTxt: '',  // 影響、營運衝擊字串
         accidentsTxt: '',  // 衍生事故字串
         tableItems: [],  // 表格資料
@@ -223,6 +199,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         // 向後端取得資料
         fetchData() {
@@ -323,8 +300,7 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            this.dialog.content = txt.replace(/\n/g, '<br>')
-            this.dialog.show = true
+            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
     },
     created() {

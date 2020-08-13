@@ -20,30 +20,6 @@
         ></v-text-field>
     </v-col>
 
-    <!-- <v-col cols="12" sm="6" md="3">
-        <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故主類
-        </h3>
-        <v-select
-            v-model="ipt.mainEvt"
-            :items="MainEvtOpts"
-            solo
-            @change="chSubEvt"
-        ></v-select>
-    </v-col>
-
-    <v-col cols="12" sm="6" md="3">
-        <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故子類
-        </h3>
-        <v-select
-            v-model="ipt.subEvt"
-            :items="subEvtOpts"
-            solo
-            :disabled="ipt.mainEvt == ''"
-        ></v-select>
-    </v-col> -->
-
     <v-col cols="12" sm="6" md="3">
         <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
@@ -81,27 +57,15 @@ import { carHarmItems } from '@/assets/js/smisTestData'
 export default {
     data: () => ({
         loading: false,
-        MainEvtOpts: MainEvt,
         ipt: {},
         defaultIpt: {
             harmNumber: '',  // 危害編號
             caption: '',  // 危害說明
-            // mainEvt: '',  // 事故主類
-            // subEvt: '',  // 事故子類
             evtType: '',  // 事故類型
         },
         evtTypeOpts: evtTypes,
     }),
-    computed: {
-        subEvtOpts() {
-            return SubEvt[this.ipt.mainEvt]
-        }
-    },
     methods: {
-        // 改變子事故
-        chSubEvt() {
-            this.ipt.subEvt = this.subEvtOpts[0].value
-        },
         // 重置表單
         reset() {
             this.ipt = { ...this.defaultIpt }

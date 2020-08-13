@@ -368,7 +368,7 @@ export default {
                     this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/closedShow` })
                     break
                 case '已結案':
-                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/complateShow` })
+                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/complated` })
                     break
                 default:
                     break
