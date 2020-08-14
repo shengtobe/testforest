@@ -1,5 +1,239 @@
 <template>
 <v-container style="max-width: 1200px">
-表單
+    <h2 class="mb-4">
+        {{ (this.isEdit)? `控制措施編輯 (編號：${ routeId })` : '控制措施新增' }}
+    </h2>
+
+    <v-row class="px-2">
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>管控單位
+            </h3>
+            <v-select
+                v-model="ipt.depart"
+                :items="departOpts"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>措施簡述
+                <span class="red--text">*</span>
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.subject"
+                solo
+                placeholder="請輸入措施簡述"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>措施說明
+                <span class="red--text">*</span>
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入措施說明"
+                v-model.trim="ipt.desc"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>安全文件
+                <span class="red--text">*</span>
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.action="{ item }">
+                        <v-radio-group v-model="ipt.docId">
+                            <v-radio
+                                class="ml-3 mt-1"
+                                color="success"
+                                :value="item.id"
+                            ></v-radio>
+                        </v-radio-group>
+                    </template>
+
+                    <template v-slot:item.file="{ item }">
+                        <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
+                            :href="item.file.link"
+                            target="_blank"
+                            rel="noopener norefferrer"
+                        >
+                            {{ item.file.name }}
+                        </v-chip>
+                    </template>
+
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+            <span class="error--text" v-if="ipt.docId == ''">*你尚未選擇安全文件!</span>
+            <span v-else>你目前選擇了編號 {{ ipt.docId }} 的文件</span>
+        </v-col>
+
+        <v-col cols="12" class="text-center my-8">
+            <v-btn dark class="mr-4"
+                to="/smis/car-harmdb/control-measures"
+            >回搜尋頁</v-btn>
+            
+            <v-btn
+                color="success"
+                @click="save"
+            >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
+        </v-col>
+    </v-row>
+
+    <!-- <v-form
+        ref="form"
+        v-model="valid"
+        lazy-validation
+    >
+
+    </v-form> -->
 </v-container>
 </template>
+
+<script>
+import { mapActions } from 'vuex'
+import { departOptions } from '@/assets/js/departOption'
+import Pagination from '@/components/Pagination.vue'
+import { safeDocs } from '@/assets/js/smisTestData'
+
+export default {
+    data: () => ({
+        valid: true,  // 表單是否驗證欄位
+        isEdit: false,  // 是否為編輯
+        ipt: {},
+        defaultIpt: {
+            depart: 'd1',  // 管控單位
+            subject: '',  // 措施簡述
+            desc: '',  // 措施說明
+            docId: '',  // 連結的安全文件id
+        },
+        departOpts: departOptions,  // 管控單位下拉選單
+        pageOpt: { page: 1 },  // 目前頁數
+        tableItems: [],  // 資料
+        headers: [  // 欄位
+            { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '版本', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+    }),
+    components: { Pagination },
+    watch: {
+        // 路由參數變化時，重新向後端取資料
+        $route(to, from) {
+            // … 
+        },
+    },
+    methods: {
+        ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
+            'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
+        ]),
+        // 初始化資料
+        initData() {
+            this.chLoadingShow()
+            this.ipt = { ...this.defaultIpt }  // 初始化表單
+            this.tableItems = [ ...safeDocs ]  // fetch 安全文件的資料
+
+            // -------------- 編輯時 -------------- 
+            if (this.$route.params.id != undefined) {
+                this.routeId = this.$route.params.id  // 路由參數(id)
+                this.isEdit = true
+                
+
+                // 範例效果
+                setTimeout(() => {
+                    let obj = {
+                        depart: 'd3',  // 管控單位
+                        subject: '車輛維修作業要點',  // 措施簡述
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
+                        docId: 18,  // 連結的安全文件id
+                    }
+                    
+                    this.setInitDate(obj)
+                    this.chLoadingShow()
+                }, 1000)
+            } else {
+                setTimeout(() => {
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 設定資料(編輯時)
+        setInitDate(obj) {
+            this.ipt.depart = obj.depart // 管控單位
+            this.ipt.subject = obj.subject // 措施簡述
+            this.ipt.desc = obj.desc // 措施說明
+            this.ipt.docId = obj.docId // 連結的安全文件id
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
+        // 送出
+        save() {
+            if (this.ipt.docId == '') {
+                alert('請選擇要連結的安全文件')
+                return
+            }
+
+            this.chLoadingShow()
+
+            // 測試用資料
+            setTimeout(() => {
+                if (this.isEdit) {
+                    // 編輯時
+                    this.chMsgbar({ success: true, msg: '更新成功'})
+                } else {
+                    // 新增時
+                    this.$router.push({ path: '/smis/car-harmdb/control-measures' })
+                    this.chMsgbar({ success: true, msg: '資料新增成功'})
+                    
+                }
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
+    },
+    created() {
+        this.initData()
+    }
+}
+</script>

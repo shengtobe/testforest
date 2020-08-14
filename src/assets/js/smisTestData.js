@@ -305,3 +305,44 @@ export const carHarmDBControls = [
         note: ''
     },
 ]
+
+
+// 安全文件
+export const safeDocs = [
+    {
+        id: 20,
+        depart: '鐵路服務科',
+        file: {
+            name: '456.xlsx',
+            link: '/demofile/456.xlsx'
+        },
+        note: '',
+        type: '品質文件',
+        version: '1.0.0',
+        updateTime: '2019-05-11 12:20:00',
+    },
+    {
+        id: 18,
+        depart: '綜合企劃科',
+        file: {
+            name: '123.pdf',
+            link: '/demofile/123.pdf'
+        },
+        note: '',
+        type: '品質文件',
+        version: '2.1.0',
+        updateTime: '2019-11-20 16:30:00',
+    },
+    {
+        id: 45,
+        depart: '鐵路維護科',
+        file: {
+            name: '123.docx',
+            link: '/demofile/123.docx'
+        },
+        note: '',
+        type: '維修管理文件',
+        version: '1.5.7',
+        updateTime: '2020-01-06 09:10:00',
+    },
+]
