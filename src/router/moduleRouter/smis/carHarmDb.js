@@ -51,4 +51,14 @@ export const CarHarmdbRouter = [
         path: '/smis/car-harmdb/control-measures',
         component: () => import('@/views/smis/carHarmDatabase/controlMeasures/Search.vue')
     },
+    {
+        linkText: '新增',
+        path: '/smis/car-harmdb/control-measures/add',
+        component: () => import('@/views/smis/carHarmDatabase/controlMeasures/Form.vue')
+    },
+    {
+        linkText: '編輯',
+        path: '/smis/car-harmdb/control-measures/:id/edit',
+        component: () => import('@/views/smis/carHarmDatabase/controlMeasures/Form.vue')
+    },
 ]

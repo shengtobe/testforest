@@ -277,3 +277,31 @@ export const carHarmDBHarms = [
         status: '申請作廢中',
     },
 ]
+
+// 危害資料庫-控制措施
+export const carHarmDBControls = [
+    {
+        id: 123,
+        subject: '火災處理要點',
+        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+        depart: '綜合企劃科',
+        file: { link: '/demofile/123.pdf' },
+        note: ''
+    },
+    {
+        id: 456,
+        subject: '中暑急救要點',
+        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+        depart: '綜合企劃科',
+        file: { link: '/demofile/123.docx' },
+        note: ''
+    },
+    {
+        id: 789,
+        subject: '火車誤點處理措施',
+        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+        depart: '鐵路服務科',
+        file: { link: '/demofile/456.xlsx' },
+        note: ''
+    },
+]
