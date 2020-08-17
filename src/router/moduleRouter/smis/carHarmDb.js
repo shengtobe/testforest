@@ -44,6 +44,11 @@ export const CarHarmdbRouter = [
         path: '/smis/car-harmdb/harms/:id/update',
         component: () => import('@/views/smis/carHarmDatabase/harms/Update.vue')
     },
+    {
+        linkText: '危害更新核定',  // 更新審核中
+        path: '/smis/car-harmdb/harms/:id/update-review',
+        component: () => import('@/views/smis/carHarmDatabase/harms/UpdateReview.vue')
+    },
     
     // ------------- 危害控制措施 ----------------------
     {

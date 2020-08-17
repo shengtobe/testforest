@@ -141,6 +141,7 @@
             >回搜尋頁</v-btn>
 
             <v-btn dark  class="ma-2" color="brown"
+                v-if="status == '已核定'"
                 @click="showVersion"
             >版本清單</v-btn>
 
@@ -332,6 +333,7 @@ export default {
                             note: ''
                         },
                     ],
+                    lastVersionId: 2,  // 最新版本號id
                 }
 
                 this.setShowData(obj)
@@ -367,7 +369,7 @@ export default {
             this.tableItems = [ ...obj.controls ]
 
             // 版本那張 table 內最新版本、目前的id
-            this.version.lasterId = this.version.nowId = 2
+            this.version.lasterId = this.version.nowId = obj.lastVersionId
 
             // 設定狀態(測試資料)
             this.status = this.closeStatus

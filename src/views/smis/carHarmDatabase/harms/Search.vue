@@ -137,13 +137,17 @@
 
             <v-btn dark color="brown" class="mb-2 mr-3"
                 @click="fastFetch"
-            >申請作廢中</v-btn>
+            >殘餘風險</v-btn>
 
             <v-btn dark color="brown" class="mb-2 mr-3"
                 @click="fastFetch"
-            >殘餘風險</v-btn>
+            >更新審核中</v-btn>
+
+            <v-btn dark color="brown" class="mb-2 mr-3"
+                @click="fastFetch"
+            >作廢審核中</v-btn>
         </v-col>
-                
+
         <!-- 表格資料 -->
         <v-col cols="12" class="mt-8">
             <v-card>
@@ -228,7 +232,7 @@ export default {
 
             // 新增測試用資料
             setTimeout(() => {
-                this.tableItems = carHarmDBHarms
+                this.tableItems = [ ...carHarmDBHarms ]
                 this.chLoadingShow()
             }, 1000)
         }, 
@@ -248,7 +252,10 @@ export default {
                 case '已核定':
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
                     break
-                case '申請作廢中':
+                case '更新審核中':
+                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/update-review` })
+                    break
+                case '作廢審核中':
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/invalid` })
                     break
                 default:
