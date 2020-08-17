@@ -137,7 +137,7 @@ export default {
 
             // 新增測試用資料
             setTimeout(() => {
-                this.tableItems = carHarmDBControls
+                this.tableItems = [ ...carHarmDBControls ]
                 this.chLoadingShow()
             }, 1000)
         },
