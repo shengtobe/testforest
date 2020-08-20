@@ -1,5 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
+    <h2 class="mb-4">危害通報新增</h2>
+
     <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
