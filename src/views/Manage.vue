@@ -13,13 +13,13 @@
     <ProfileNav />
     <v-divider></v-divider>
 
-    <AccessNav />
-    <v-divider></v-divider>
+    <!-- <AccessNav />
+    <v-divider></v-divider> -->
 
     <SmisNav />
     <v-divider></v-divider>
 
-    <EqInfoNav />
+    <!-- <EqInfoNav />
     <v-divider></v-divider>
 
     <EqRepairNav />
@@ -29,7 +29,7 @@
     <v-divider></v-divider>
 
     <RepairAnalysisNav />
-    <v-divider></v-divider>
+    <v-divider></v-divider> -->
 
     <WorkListNav />
     <v-divider></v-divider>

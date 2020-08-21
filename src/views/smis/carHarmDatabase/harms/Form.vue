@@ -174,7 +174,7 @@
         </v-col>
 
         <!-- 衍生事故 -->
-        <v-col cols="12" class="mt-8">
+        <v-col cols="12" class="my-8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-arrow-expand</v-icon>衍生事故
             </h3>
@@ -186,17 +186,35 @@
         </v-col>
 
         <!-- 控制措施 -->
-        <v-col cols="12" sm="4" md="3" class="mt-8">
+        <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-bank</v-icon>控制措施權責部門
             </h3>
             <v-select
-                v-model="controlDepart"
+                v-model="controlSearch.depart"
                 :items="opts.depart"
                 solo
                 hide-details
-                @change="chControlDepart"
             ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="8" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
+            </h3>
+            <v-text-field
+                v-model.trim="controlSearch.subject"
+                solo
+                placeholder="請輸入關鍵字"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="3" align-self="center">
+            <v-btn color="green" dark large
+                @click="search"
+            >
+                <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+            </v-btn>
         </v-col>
 
         <v-col cols="12">
@@ -377,7 +395,10 @@ export default {
                 { text: '幾乎不', value: 'P5' },
             ],
         },
-        controlDepart: '',  // 控制措施權責部門
+        controlSearch: {  // 控制措施搜尋
+            depart: 'all',  // 部門
+            subject: '',  // 簡述
+        },
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
         tableItems: [],  // 控制措施權責部門的表格資料
         headers: [  // 控制措施權責部門的表格欄位
@@ -506,48 +527,38 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
-        // 選擇控制措施權責部門
-        chControlDepart() {
+        // 搜尋控制措施
+        search() {
             this.chLoadingShow()
 
             // 測試用資料
             setTimeout(() => {
-                switch(this.controlDepart) {
-                    case 'd1':  // 綜合企劃科
-                        this.tableItems = [
-                            {
-                                id: 123,
-                                subject: '火災處理要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.pdf' },
-                                note: ''
-                            },
-                            {
-                                id: 456,
-                                subject: '中暑急救要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.docx' },
-                                note: ''
-                            },
-                        ]
-                        break
-                    case 'd2':  // 鐵路服務科
-                        this.tableItems = [
-                            {
-                                id: 789,
-                                subject: '火車誤點處理措施',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '鐵路服務科',
-                                file: { link: '/demofile/456.xlsx' },
-                                note: ''
-                            },
-                        ]
-                        break
-                    default:
-                        break
-                }
+                this.tableItems = [
+                    {
+                        id: 123,
+                        subject: '火災處理要點',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '綜合企劃科',
+                        file: { link: '/demofile/123.pdf' },
+                        note: ''
+                    },
+                    {
+                        id: 456,
+                        subject: '中暑急救要點',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '綜合企劃科',
+                        file: { link: '/demofile/123.docx' },
+                        note: ''
+                    },
+                    {
+                        id: 789,
+                        subject: '火車誤點處理措施',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '鐵路服務科',
+                        file: { link: '/demofile/456.xlsx' },
+                        note: ''
+                    },
+                ]
                 this.chLoadingShow()
             }, 1000)
         },

@@ -1,6 +1,7 @@
 // -------- 組織下拉選單 --------
 
 export const departOptions = [
+    { text: '不限', value: 'all' },
     { text: '綜合企劃科', value: 'd1' },
     { text: '鐵路服務科', value: 'd2' },
     { text: '鐵路維護科', value: 'd3' },

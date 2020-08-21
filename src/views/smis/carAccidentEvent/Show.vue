@@ -165,7 +165,7 @@
 
             <v-btn dark  class="ma-2" color="error"
                 @click="del"
-            >刪除</v-btn>
+            >作廢</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
@@ -263,14 +263,14 @@ export default {
             this.finishDeath = obj.finishDeath // 是否完成人員傷亡名單
             this.finishImprove = obj.finishImprove // 是否完成改善措施
         },
-        // 刪除
+        // 作廢
         del() {
-            if (confirm('你確定要刪除嗎?')) {
+            if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
                     this.$router.push({ path: '/smis/car-accident-event' })
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                    this.chMsgbar({ success: true, msg: '作廢成功'})
                     this.chLoadingShow()
                 }, 1000)
             }

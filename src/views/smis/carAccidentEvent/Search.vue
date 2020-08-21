@@ -87,7 +87,7 @@
 
         <v-col cols="12" sm="4" md="3">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>結案狀態
+                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>事故狀態
                 </h3>
                 <v-select
                     v-model="ipt.closeSate"
@@ -97,7 +97,7 @@
             </v-col>
 
         <!-- <v-col cols="12" align-self="center" class="mb-8"> -->
-        <v-col cols="12" md="9" class="text-right" align-self="center">
+        <v-col cols="12" md="9" class="text-md-right" align-self="center">
             <v-btn color="pink" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
                 to="/smis/car-accident-event/del-recovery"
             >
