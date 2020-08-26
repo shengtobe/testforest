@@ -65,7 +65,7 @@
             </h3>
             <v-select
                 v-model="ipt.case"
-                :items="[{ text: '未審核', value: 'F' }, { text: '已審核', value: 'T' }]"
+                :items="['未審核', '審核中', '已結案']"
                 solo
             ></v-select>
         </v-col>
@@ -100,7 +100,7 @@
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
-                            :to="`/smis/harmnotify/${item.id}/show`"
+                            @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -153,7 +153,7 @@ export default {
         ipt: {
             dateStart:  new Date().toISOString().substr(0, 10),  // 通報日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 通報日期(迄)
-            case: 'F',  // 審核狀態
+            case: '未審核',  // 審核狀態
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
@@ -192,28 +192,14 @@ export default {
                         date: new Date().toISOString().substr(0, 10),
                         name: '陳小華',
                         title: '嘉義車庫失火',
-                        status: '未審核',
+                        status: '審核中',
                     },
                     {
                         id: 'SH785641',
                         date: new Date().toISOString().substr(0, 10),
                         name: '王小明',
                         title: '主線 5K+60 M 處發現落石',
-                        status: '未審核',
-                    },
-                    {
-                        id: 'SH222353',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '劉明凱',
-                        title: '二萬平車站門口人行道有坑洞',
-                        status: '未審核',
-                    },
-                    {
-                        id: 'SH568428',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '王永慶',
-                        title: '眠月線發現二處斷軌，並有落石',
-                        status: '未審核',
+                        status: '已結案',
                     },
                 ]
                 this.chLoadingShow()
@@ -223,14 +209,22 @@ export default {
         search() {
 
         },
-        // 顯示通報內容
-        // view(item) {
-        //     if (item.status == '未審核') {
-        //         this.$router.push({ path: `/smis/harmnotify/${item.id}/confirm` })
-        //     } else {
-        //         this.$router.push({ path: `/smis/harmnotify/${item.id}/show` })
-        //     }
-        // },
+        // 重新導向 (依結案狀態)
+        redirect(item) {
+            switch(item.status) {
+                case '未審核':
+                    this.$router.push({ path: `/smis/harmnotify/${item.id}/show` })
+                    break
+                case '審核中':
+                    this.$router.push({ path: `/smis/harmnotify/${item.id}/review` })
+                    break
+                case '已結案':
+                    this.$router.push({ path: `/smis/harmnotify/${item.id}/complated` })
+                    break
+                default:
+                    break
+            }
+        },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n

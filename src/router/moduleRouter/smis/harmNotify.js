@@ -2,19 +2,31 @@
 
 export const HarmnotifyRouter = [
     {
-        linkText: '通報新增',
+        linkText: '通報新增',  // 危害通報
         path: '/smis/harmnotify/notify', 
         component: () => import('@/views/smis/harmNotify/Form.vue')
     },
     {
-        linkText: '通報查詢',  // 通報審核首頁
+        linkText: '通報查詢',
         path: '/smis/harmnotify/audit', 
         component: () => import('@/views/smis/harmNotify/Search.vue')
     },
     {
-        linkText: '通報詳細內容',  // 職安人員的編輯通報頁面
+        linkText: '通報詳細內容',
         path: '/smis/harmnotify/:id/show', 
         component: () => import('@/views/smis/harmNotify/Show.vue')
+    },
+    {
+        linkText: '審核中',
+        path: '/smis/harmnotify/:id/review',
+        component: () => import('@/views/smis/harmNotify/ReviewComplated.vue'),
+        props: { closeStatus: '審核中' }
+    },
+    {
+        linkText: '已結案',
+        path: '/smis/harmnotify/:id/complated',
+        component: () => import('@/views/smis/harmNotify/ReviewComplated.vue'),
+        props: { closeStatus: '已結案' }
     },
     {
         linkText: '各部門通報次數趨勢',

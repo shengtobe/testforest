@@ -262,7 +262,7 @@ export default {
         replay: {
             replied: false,  // 是否已回覆
             msg: '',  // 回覆的訊息
-            time: '',  // 回覆時間
+            time: '',  // 回覆日期
         },
         cacheData: {},  // 暫存資料 (sessionStorage 會取用)
         topItems: {  // 上面的欄位
@@ -271,7 +271,7 @@ export default {
             findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
             createDate: { icon: 'mdi-calendar-text', title: '填報日期', text: '' },
             findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
-            caseStatus: { icon: 'mdi-ray-vertex', title: '立案狀態', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '審核狀態', text: '' },
         },
         subject: '',  // 通報主旨
         content: '',  // 通報內容
@@ -281,13 +281,6 @@ export default {
             replyOther: '',  // 回覆處理-自訂訊息
             caseChose: '',  // 立案處理選擇的方式
         },
-        stateRadios: [
-            { text: '未立案', value: 1 },
-            { text: '以行車事故事件立案', value: 2 },
-            { text: '以行車危害立案', value: 3 },
-            { text: '以職安事故立案', value: 4 },
-            { text: '以職安危害立案', value: 5 },
-        ],
         replyRadios: [
             { text: '感謝通報，已通知相關單位處理', value: 1 },
             { text: '感謝通報，已採「危害」立案管理之', value: 2 },
@@ -391,7 +384,7 @@ export default {
                     locationK: '',  // 路線k
                     locationM: '',　// 路線m
                     locationOther: '',　// 其他地點
-                    caseStatus: '',  // 立案狀態
+                    status: '未審核',  // 審核狀態
                     subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報主旨
                     content: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
                     files: [
@@ -415,7 +408,7 @@ export default {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
             this.topItems.createDate.text = obj.createDate  // 填表日期
             this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
-            this.topItems.caseStatus.text = obj.caseStatus  // 立案狀態
+            this.topItems.status.text = obj.status  // 審核狀態
 
             this.subject = obj.subject  // 通報主旨
             this.content = obj.content // 通報內容
@@ -508,6 +501,10 @@ export default {
         save() {
             // 後端記得要危害狀態在還未申請審核時，才更改成已申請審核
             // 防止使用者開二個視窗，一邊用新登錄、一邊又用連結or未處理造成資料錯亂
+            if (!this.replay.replied) {
+                alert('請先完成回覆處理!')
+                return
+            }
 
             this.chLoadingShow()
 
