@@ -96,7 +96,6 @@
                 ></v-select>
             </v-col>
 
-        <!-- <v-col cols="12" align-self="center" class="mb-8"> -->
         <v-col cols="12" md="9" class="text-md-right" align-self="center">
             <v-btn color="pink" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
                 to="/smis/car-accident-event/del-recovery"

@@ -153,11 +153,11 @@
         
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
-                <v-col class="light-blue darken-1 pl-3 pb-2 pt-3"
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
                 >
-                    <span class="font-weight-black white--text">
-                        <v-icon class="mr-1 mb-1" dark>mdi-pen</v-icon>措施摘要
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>措施摘要
                     </span>
                 </v-col>
 
@@ -169,11 +169,11 @@
 
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
-                <v-col class="light-blue darken-1 pl-3 pb-2 pt-3"
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
                 >
-                    <span class="font-weight-black white--text">
-                        <v-icon class="mr-1 mb-1" dark>mdi-paperclip</v-icon>措施附件
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-paperclip</v-icon>措施附件
                     </span>
                 </v-col>
 

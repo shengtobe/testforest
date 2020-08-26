@@ -123,34 +123,60 @@
             </v-row>
         </v-col>
 
-        <v-col cols="12" class="mt-8">
-            <v-row>
-                <v-col cols="12" sm="3" md="2">
-                    <v-badge overlap
-                        :color="(finishDeath)? 'success' : 'error'"
-                        :content="(finishDeath)? '已填寫' : '未填寫'"
-                    >
-                        <v-btn elevation="3" large  color="brown" dark tile
-                            :to="`/smis/car-accident-event/${routeId}/person-casualty`"
-                        >
-                            人員傷亡名單
-                        </v-btn>
-                    </v-badge>
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-ungroup</v-icon>通報連結
+                    </span>
                 </v-col>
 
-                <v-col cols="12" sm="3" md="2">
-                    <v-badge overlap
-                        :color="(finishImprove)? 'success' : 'error'"
-                        :content="(finishImprove)? '已填寫' : '未填寫'"
+                <v-col class="white pa-3">
+                    <v-chip small label color="teal" class="mr-2 mb-2 mb-sm-0"
+                        v-for="item in notifyLinks"
+                        :key="item.id"
+                        :to="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                        dark
                     >
-                        <v-btn elevation="3" large color="brown" dark tile
-                            :to="`/smis/car-accident-event/${routeId}/driving-improve`"
-                        >
-                            改善措施檢討
-                        </v-btn>
-                    </v-badge>
+                        <v-avatar left>
+                            <v-icon>mdi-link-variant</v-icon>
+                        </v-avatar>
+                        {{ item.id }}
+                    </v-chip>
                 </v-col>
             </v-row>
+        </v-col>
+
+        <v-col cols="12" class="mt-8 text-center">
+            <v-badge overlap
+                :color="(finishDeath)? 'success' : 'error'"
+                :content="(finishDeath)? '已填寫' : '未填寫'"
+                class="mr-13 mb-4"
+            >
+                <v-btn elevation="3" large  color="brown" dark tile
+                    :to="`/smis/car-accident-event/${routeId}/person-casualty`"
+                >
+                    <v-icon class="mr-1">mdi-file-document</v-icon>
+                    人員傷亡名單
+                </v-btn>
+            </v-badge>
+
+            <v-badge overlap
+                :color="(finishImprove)? 'success' : 'error'"
+                :content="(finishImprove)? '已填寫' : '未填寫'"
+                    class="mr-13 mb-4"
+            >
+                <v-btn elevation="3" large color="brown" dark tile
+                    :to="`/smis/car-accident-event/${routeId}/driving-improve`"
+                >
+                    <v-icon class="mr-1">mdi-file-document</v-icon>
+                    改善措施檢討
+                </v-btn>
+            </v-badge>
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
@@ -197,6 +223,7 @@ export default {
             findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
             accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
         },
+        notifyLinks: [],  // 連結的通報
     }),
     components: { TopBasicTable },
     watch: {
@@ -241,6 +268,16 @@ export default {
                     ],
                     finishDeath: true,  // 是否完成人員傷亡名單
                     finishImprove: false,  // 是否完成改善措施
+                    notifyLinks: [  // 連結的通報
+                        {
+                            id: 'SH458987',
+                            status: '審核中',
+                        },
+                        {
+                            id: 'SH378011',
+                            status: '已結案',
+                        },
+                    ],
                 }
 
                 this.setShowData(obj)
@@ -262,6 +299,30 @@ export default {
             this.files = [ ...obj.files ]  // 檔案附件
             this.finishDeath = obj.finishDeath // 是否完成人員傷亡名單
             this.finishImprove = obj.finishImprove // 是否完成改善措施
+
+            // 危害通報連結
+            let arr = obj.notifyLinks.map(item => {
+                let link = ''
+                switch(item.status) {
+                    case '未審核':
+                        link = `/smis/harmnotify/${item.id}/show`
+                        break
+                    case '審核中':
+                        link = `/smis/harmnotify/${item.id}/review`
+                        break
+                    case '已結案':
+                        link = `/smis/harmnotify/${item.id}/complated`
+                        break
+                    default:
+                        break
+                }
+
+                return {
+                    id: item.id,
+                    link: link,
+                }
+            })
+            this.notifyLinks = [ ...arr ]
         },
         // 作廢
         del() {
