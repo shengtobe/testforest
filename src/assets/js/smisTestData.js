@@ -9,6 +9,8 @@ export const carEventItems = [
         evtType: '車輛故障',
         deathCount: 0,
         closeStatus: '未結案',
+        eqLoss: '',
+        serviceShock: '停駛',
     },
     {
         id: '982',
@@ -17,6 +19,8 @@ export const carEventItems = [
         evtType: '平交道事故',
         deathCount: 0,
         closeStatus: '申請結案中',
+        eqLoss: '柵欄損壞',
+        serviceShock: '誤點10分鐘',
     },
     {
         id: '977',
@@ -25,6 +29,8 @@ export const carEventItems = [
         evtType: '其他事件',
         deathCount: 0,
         closeStatus: '已結案',
+        eqLoss: '',
+        serviceShock: '',
     },
 ]
 

@@ -66,13 +66,13 @@
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報摘要
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報主旨
                 <span class="red--text">*</span>
             </h3>
             <v-text-field
                 v-model.trim="ipt.subject"
                 solo
-                placeholder="請輸入通報的主題或摘要"
+                placeholder="請輸入通報的主題或主旨"
             ></v-text-field>
         </v-col>
 
@@ -144,7 +144,7 @@ export default {
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
-            subject: '',  // 通報摘要
+            subject: '',  // 通報主旨
             content: '',  // 通報內容
             files: [],  // 附件檔案
         },

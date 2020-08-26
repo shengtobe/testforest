@@ -63,7 +63,7 @@
                     <template v-slot:item.action="{ item }">
                         <v-btn color="success"
                             :loading="loading"
-                            @click="connect(item)"
+                            @click="connect(item.id)"
                         >連結</v-btn>
                     </template>
                 </v-data-table>
@@ -90,7 +90,7 @@
                     <template v-slot:item.action="{ item }">
                         <v-btn color="success"
                             :loading="loading"
-                            @click="connect(item)"
+                            @click="connect(item.id)"
                         >連結</v-btn>
                     </template>
                 </v-data-table>
@@ -129,21 +129,9 @@ export default {
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
-        // 連結資料
-        connect(item) {
-            this.loading = true
-
-            // if (dialog == 'carHarm') {
-
-            // } else {
-
-            // }
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '連結成功'})
-                this.$emit('closeShow')
-                this.loading = false
-            }, 1000)
+        // 確認連結
+        connect(id) {
+            this.$emit('connect', id, this.dialog)
         },
     },
 }

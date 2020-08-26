@@ -29,8 +29,7 @@
 
                 <template v-slot:item.action="{ item }">
                     <v-btn color="success"
-                        :loading="loading"
-                        @click="connect(item)"
+                        @click="connect(item.id)"
                     >連結</v-btn>
                 </template>
             </v-data-table>
@@ -44,9 +43,6 @@ import { mapActions } from 'vuex'
 
 export default {
     props: ['id', 'dialogShow', 'headers', 'items', 'dialog'],
-    data: () => ({
-        loading: false,
-    }),
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -55,21 +51,9 @@ export default {
         closeShow() {
             this.$emit('closeShow')
         },
-        // 連結資料 (送給後端)
-        connect(item) {
-            this.loading = true
-
-            // if (dialog == 'carEvt') {
-
-            // } else {
-
-            // }
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '連結成功'})
-                this.$emit('closeShow')
-                this.loading = false
-            }, 1000)
+        // 確認連結
+        connect(id) {
+            this.$emit('connect', id, this.dialog)
         },
     },
 }

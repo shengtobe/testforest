@@ -13,7 +13,7 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報摘要
+                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報主旨
                     </span>
                 </v-col>
 
@@ -68,7 +68,12 @@
                 <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>回覆處理
             </h3>
             
-            <v-sheet elevation="2" class="px-3 mb-5 pt-2">
+            <p v-if="replay.replied" class="mt-4">
+                <span class="font-weight-bold">已於 {{ replay.time }} 回覆：</span>
+                <span class="error--text">{{ replay.msg }}</span>
+            </p>
+
+            <v-sheet elevation="2" class="px-3 mb-5 pt-2" v-else>
                 <v-radio-group hide-details v-model="ipt.reply" class="py-3 ma-0">
                     <v-radio
                         v-for="item in replyRadios"
@@ -89,14 +94,10 @@
             </v-sheet>
         </v-col>
 
-        <v-col cols="12" class="text-center">
-            <v-btn dark class="mr-4"
-                to="/smis/harmnotify/audit"
-            >回搜尋頁</v-btn>
-
+        <v-col cols="12" class="text-center" v-if="!replay.replied">
             <v-btn dark color="success"
-                @click="save"
-            >確定送出</v-btn>
+                @click="sendReplay"
+            >送出回覆</v-btn>
         </v-col>
     </v-row>
 
@@ -129,7 +130,7 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        @click="showCaseMsg('你確定要新登錄至「行車危害」嗎?')"
+                        
                     >
                         新登錄至行車危害
                     </v-btn>
@@ -145,7 +146,7 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        @click="showCaseMsg('你確定要新登錄至「職災事故紀錄」嗎?')"
+                        
                     >
                         新登錄至職災事故紀錄
                     </v-btn>
@@ -161,7 +162,7 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        @click="showCaseMsg('你確定要新登錄至「職災危害」嗎?')"
+                        
                     >
                         新登錄至職災危害
                     </v-btn>
@@ -177,13 +178,30 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        @click="showCaseMsg('你確定要「不予處理」嗎?')"
+                        @click="noAction"
                     >
                         不予處理
                     </v-btn>
                 </v-col>
+
+                <v-col cols="12" sm="6" align-self="center"
+                    v-if="caseMsg != ''"
+                >
+                    <span class="red--text">*</span> 
+                    <span>{{ caseMsg }}</span>
+                </v-col>
             </v-row>
         </v-sheet>
+
+        <v-col cols="12" class="text-center">
+            <v-btn dark class="mr-4"
+                to="/smis/harmnotify/audit"
+            >回搜尋頁</v-btn>
+
+            <v-btn dark color="success"
+                @click="save"
+            >申請審核</v-btn>
+        </v-col>
     </div>
 
     <!-- dialog - 行車事故事件 -->
@@ -194,6 +212,7 @@
         :items="dialogTableItems.carEvt"
         dialog="carEvt"
         @closeShow="dialogShow.carEvt = false"
+        @connect="connect"
     />
 
     <!-- dialog - 行車危害 -->
@@ -203,6 +222,7 @@
         :headers="headers.carHarm"
         dialog="carHarm"
         @closeShow="dialogShow.carHarm = false"
+        @connect="connect"
     />
 
     <!-- dialog - 職災事故 -->
@@ -213,6 +233,7 @@
         :items="dialogTableItems.jobEvt"
         dialog="jobEvt"
         @closeShow="dialogShow.jobEvt = false"
+        @connect="connect"
     />
 
     <!-- dialog - 職災危害 -->
@@ -222,32 +243,8 @@
         :headers="headers.jobHarm"
         dialog="jobHarm"
         @closeShow="dialogShow.jobHarm = false"
+        @connect="connect"
     />
-
-    <!-- 立案處理新登錄的 dialog -->
-    <v-dialog v-model="caseDialogShow" max-width="450">
-        <v-card>
-            <v-card-title
-                class="yellow lighten-3 py-2 px-3"
-                primary-title
-            >
-                <strong>重要訊息</strong>
-                <v-spacer></v-spacer>
-
-                <v-btn text fab small @click="caseDialogShow = false">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-sheet class="pa-4">{{ caseMode }}</v-sheet>
-
-            <v-card-actions class="px-5 pb-5">
-                <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="caseDialogLoading" @click="caseDialogShow = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="caseDialogLoading" @click="caseAdd">確定</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
 </v-container>
 </template>
 
@@ -262,6 +259,11 @@ import { locationOpts } from '@/assets/js/smisData'
 export default {
     data: () => ({
         routeId: '',
+        replay: {
+            replied: false,  // 是否已回覆
+            msg: '',  // 回覆的訊息
+            time: '',  // 回覆時間
+        },
         cacheData: {},  // 暫存資料 (sessionStorage 會取用)
         topItems: {  // 上面的欄位
             creater: { icon: 'mdi-account', title: '通報人', text: '' },
@@ -271,7 +273,7 @@ export default {
             findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
             caseStatus: { icon: 'mdi-ray-vertex', title: '立案狀態', text: '' },
         },
-        subject: '',  // 通報摘要
+        subject: '',  // 通報主旨
         content: '',  // 通報內容
         files: [],  // 檔案附件
         ipt: {
@@ -292,15 +294,17 @@ export default {
             { text: '感謝通報，已採「事故/事件」立案', value: 3 },
             { text: '自訂回覆訊息', value: 4 },
         ],
-        caseDialogShow: false,  // 立案處理新登錄 dialog 是否顯示
-        caseMode: '',  // 新登入模組名稱(用於組合訊息)
-        caseDialogLoading: false,
         dialogShow: {  // dialog 是否顯示
             carEvt: false,  // 行車事故事件
             carHarm: false,  // 行車危害
             jobEvt: false,  // 職災事故事件
             jobHarm: false,  // 職災危害
         },
+        connData: {  // 連結資料
+            id: '',  // 編號
+            model: '',  // 模組名稱
+        },
+        caseMsg: '',  // 立案處理題示字
         dialogTableItems: {  // dialog 表格資料
             carEvt: [],  // 行車事故事件
             carHarm: [],  // 行車危害
@@ -313,8 +317,7 @@ export default {
                 { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '死亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '受傷人數', value: 'injuredCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '死傷人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '設備損失', value: 'eqLoss', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '營運衝擊', value: 'serviceShock', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -388,8 +391,8 @@ export default {
                     locationK: '',  // 路線k
                     locationM: '',　// 路線m
                     locationOther: '',　// 其他地點
-                    caseStatus: '未立案',  // 立案狀態
-                    subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報摘要
+                    caseStatus: '',  // 立案狀態
+                    subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報主旨
                     content: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
                     files: [
                         { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
@@ -414,7 +417,7 @@ export default {
             this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
             this.topItems.caseStatus.text = obj.caseStatus  // 立案狀態
 
-            this.subject = obj.subject  // 通報摘要
+            this.subject = obj.subject  // 通報主旨
             this.content = obj.content // 通報內容
             this.files = [ ...obj.files ]  // 檔案附件
         },
@@ -448,25 +451,69 @@ export default {
         connJobHarm() {
             this.dialogShow.jobHarm = true
         },
-        showCaseMsg(txt) {
-            this.caseMode = txt
-            this.caseDialogShow = true
+        // 確認連結 (接收子組件傳來的資料)
+        connect(id, model) {
+            let modelName = ''
+            this.cacheData.id = id
+            this.dialogShow[model] = false  // 關閉 dialog
+            
+            switch(model) {
+                case 'carEvt':
+                    modelName = '行車事故事件'
+                    this.ipt.caseChose = 2
+                    break;
+                case 'carHarm':
+                    modelName = '行車危害'
+                    this.ipt.caseChose = 4
+                    break;
+                case 'jobEvt':
+                    modelName = '職災事故'
+                    this.ipt.caseChose = 6
+                    break;
+                case 'jobHarm':
+                    modelName = '職災危害'
+                    this.ipt.caseChose = 8
+                    break;
+                default:
+                    break;
+            }
+            this.caseMsg = `你選擇連結「${modelName}」，編號 ${id}`
         },
-        // 立案處理新登入確定
-        caseAdd() {
-            this.caseDialogLoading = true
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '資料更新成功'})
-                this.caseDialogLoading = false
-                this.caseDialogShow = false
-            }, 1000)
+        // 立案處理-不予處理
+        noAction() {
+            this.ipt.caseChose = 9
+            this.caseMsg = '你選擇「不予處理」'
+        },
+        // 送出回覆
+        sendReplay() {
+            if (confirm('送出後無法再修改內容，你確定要送出回覆嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.replay.replied = true
+                    this.replay.time = '2020-10-01 09:34:00'
+
+                    if (this.ipt.reply != 4) {
+                        this.replay.msg = this.replyRadios.find(item => item.value == this.ipt.reply).text
+                    } else {
+                        this.replay.msg = this.ipt.replyOther
+                    }
+                    
+                    this.chMsgbar({ success: true, msg: '回覆成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 送出
         save() {
+            // 後端記得要危害狀態在還未申請審核時，才更改成已申請審核
+            // 防止使用者開二個視窗，一邊用新登錄、一邊又用連結or未處理造成資料錯亂
+
             this.chLoadingShow()
 
             setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '資料更新成功'})
+                this.chMsgbar({ success: true, msg: '申請審核成功'})
+                this.$router.push({ path: '/smis/harmnotify/audit' })
                 this.chLoadingShow()
             }, 1000)
         },

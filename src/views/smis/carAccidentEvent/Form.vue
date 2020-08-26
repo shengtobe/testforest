@@ -147,17 +147,10 @@
 
         <!-- 上傳檔案 (新增時) -->
         <template v-if="!isEdit">
-            <UploadFileAdd
-                :uploadDisnable="isExtendAnnex"
-                :fileList="ipt.files"
-                @joinFile="joinFile"
-                @rmFile="rmFile"
-            />
-
             <v-col cols="12" class="mb-8" v-if="notify.id != ''">
                 <v-checkbox
                     v-model="isExtendAnnex"
-                    label="使用通報附件 (不使用上面已加入的檔案)"
+                    label="直接使用通報附件 (不自行上傳檔案)"
                 ></v-checkbox>
 
                 <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
@@ -170,6 +163,13 @@
                     {{ item.fileName }}
                 </v-chip>
             </v-col>
+
+            <UploadFileAdd
+                :uploadDisnable="isExtendAnnex"
+                :fileList="ipt.files"
+                @joinFile="joinFile"
+                @rmFile="rmFile"
+            />
         </template>
         
 
@@ -242,11 +242,11 @@ export default {
         },
         evtTypeOpts: evtTypes,  // 事故類型下拉選單
         isExtendAnnex: false,  // 是否延用通報附件
-        notify: {  // 通報資料
+        notify: {  // 危害通報資料
             id: '',  // id
             files: [],  // 附件
+            isNew: false,  // 是否為新登錄
         },
-        notifyId: '',  
         notifyFiles: [
             
         ],  // 通報附件
@@ -309,17 +309,18 @@ export default {
                 // 若由通報新登錄轉至此頁，則指派初始值
                 if (sessionStorage.getItem('notifyItem') !== null) {
                     let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
-
+                    
                     this.notify.id = obj.id,  // 通報id
                     this.notify.files = [ ...obj.files ]  // 通報附件
-                    this.ipt.date = obj.date,  // 發現日期
-                    this.ipt.hour = obj.hour,  // 發現時間(小時)
-                    this.ipt.min = obj.min,  // 發現時間(分)
-                    this.ipt.note = obj.content, // 備註說明
-                    this.ipt.location = obj.location,  // 發現地點
-                    this.ipt.locationK = obj.locationK,  // 路線k
-                    this.ipt.locationM = obj.locationM,　// 路線m
-                    this.ipt.locationOther = obj.locationOther,　// 其他地點
+                    this.notify.isNew = true  // 是否為危害通報的新登錄
+                    this.ipt.date = obj.date  // 發現日期
+                    this.ipt.hour = obj.hour  // 發現時間(小時)
+                    this.ipt.min = obj.min  // 發現時間(分)
+                    this.ipt.note = obj.content // 備註說明
+                    this.ipt.location = obj.location  // 發現地點
+                    this.ipt.locationK = obj.locationK  // 路線k
+                    this.ipt.locationM = obj.locationM　// 路線m
+                    this.ipt.locationOther = obj.locationOther　// 其他地點
                     this.isExtendAnnex = true  // 延用通報附件
 
                     sessionStorage.removeItem('notifyItem')  // 清除 sessionStorage
@@ -357,6 +358,9 @@ export default {
 
             // 新增測試用資料
             setTimeout(() => {
+                // 都要順便傳危害通報新登錄 (this.notify.id)、危害通報id (this.notify.id) 欄位給後端
+                // 讓後端判斷為新登錄，就更改危害通報的立案狀態，並且順便申請審核
+
                 this.$router.push({ path: '/smis/car-accident-event' })
                 this.chMsgbar({ success: true, msg: '資料新增成功'})
                 this.chLoadingShow()

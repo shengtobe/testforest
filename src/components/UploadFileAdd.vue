@@ -1,7 +1,7 @@
 <template>
 <v-col cols="12">
     <h3 class="mb-1">
-        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>附件上傳
+        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>檔案上傳
     </h3>
 
     <v-row>
