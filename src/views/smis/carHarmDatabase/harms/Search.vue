@@ -125,29 +125,29 @@
                 <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>快速查詢
             </h3>
             
-            <v-btn dark color="brown" class="mb-2 mr-3"
+            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
             >全部危害</v-btn>
 
-            <v-btn dark color="brown" class="mb-2 mr-3"
-                @click="fastFetch"
-            >待送審</v-btn>
-
-            <v-btn dark color="brown" class="mb-2 mr-3"
-                @click="fastFetch"
-            >審核中</v-btn>
-
-            <v-btn dark color="brown" class="mb-2 mr-3"
+            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
             >殘餘風險</v-btn>
 
-            <v-btn dark color="brown" class="mb-2 mr-3"
+            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >更新審核中</v-btn>
+            >待送審 (1)</v-btn>
 
-            <v-btn dark color="brown" class="mb-2 mr-3"
+            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >作廢審核中</v-btn>
+            >審核中 (1)</v-btn>
+
+            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
+                @click="fastFetch"
+            >更新審核中 (1)</v-btn>
+
+            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
+                @click="fastFetch"
+            >作廢審核中 (0)</v-btn>
         </v-col>
 
         <!-- 表格資料 -->

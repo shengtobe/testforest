@@ -300,7 +300,17 @@ export const carHarmDBControls = [
         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
         depart: '綜合企劃科',
         file: { link: '/demofile/123.pdf' },
-        note: ''
+        note: '',
+        evidences: [
+            {
+                name: '456.xlsx',
+                link: '/demofile/456.xlsx'
+            },
+            {
+                name: '123.pdf',
+                link: '/demofile/123.pdf'
+            },
+        ],
     },
     {
         id: 456,
@@ -308,7 +318,13 @@ export const carHarmDBControls = [
         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
         depart: '綜合企劃科',
         file: { link: '/demofile/123.docx' },
-        note: ''
+        note: '',
+        evidences: [
+            {
+                name: '123.pdf',
+                link: '/demofile/123.pdf'
+            },
+        ],
     },
     {
         id: 789,
@@ -316,7 +332,17 @@ export const carHarmDBControls = [
         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
         depart: '鐵路服務科',
         file: { link: '/demofile/456.xlsx' },
-        note: ''
+        note: '',
+        evidences: [
+            {
+                name: '123.pdf',
+                link: '/demofile/123.pdf'
+            },
+            {
+                name: '123.docx',
+                link: '/demofile/123.docx'
+            },
+        ],
     },
 ]
 

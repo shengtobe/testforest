@@ -187,7 +187,7 @@
                 <v-col cols="12" sm="6" align-self="center"
                     v-if="caseMsg != ''"
                 >
-                    <span class="red--text">*</span> 
+                    <v-icon class="mb-2 mr-1">mdi-lightbulb-on</v-icon> 
                     <span>{{ caseMsg }}</span>
                 </v-col>
             </v-row>

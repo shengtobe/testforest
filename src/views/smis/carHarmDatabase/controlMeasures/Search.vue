@@ -74,6 +74,14 @@
                         </v-btn>
                     </template>
 
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="primary"
                             class="mr-3"
@@ -100,6 +108,39 @@
             </v-card>
         </v-col>
     </v-row>
+
+    <!-- 證據 -->
+    <v-dialog v-model="dialogShow" max-width="400px">
+        <v-card>
+            <v-toolbar flat dense dark color="purple lighten-2">
+                <v-toolbar-title>證據</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-list-item-group>
+                <template v-for="(item, idx) in evidences">
+                    <v-list-item
+                        :key="item.name"
+                        :href="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-divider
+                        v-if="idx + 1 < evidences.length"
+                        :key="idx"
+                    ></v-divider>
+                </template>
+            </v-list-item-group>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -121,10 +162,13 @@ export default {
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        evidences: [],  // 證據
+        dialogShow: false,  // 證據dialog是否顯示
     }),
     components: { Pagination },
     methods: {
@@ -163,6 +207,11 @@ export default {
                     this.chLoadingShow()
                 }, 1000)
             }
+        },
+        // 顯示證據
+        showEvidences(arr) {
+            this.evidences = [ ...arr ]
+            this.dialogShow = true
         },
     }
 }

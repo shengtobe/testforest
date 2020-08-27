@@ -5,10 +5,10 @@
     </h3>
 
     <v-row>
-        <v-col cols="12" sm="8" md="10">
+        <v-col cols="12" sm="8">
             <v-file-input
                 hide-details
-                label="請點此選要新增檔案"
+                label="請點此選擇要新增檔案"
                 solo
                 v-model="choseFile"
                 @change="select"
@@ -20,43 +20,44 @@
             </v-file-input>
         </v-col>
 
-        <v-col cols="12" sm="2">
+        <v-col cols="12" sm="2" class="text-right text-md-left">
             <v-btn large
                 color="primary"
                 @click="upload"
             >檔案上傳</v-btn>
         </v-col>
 
-        <v-col cols="12" class="d-flex flex-wrap">
-            <v-card
-                v-for="(item, idx) in fileList"
-                :key="item.fileName"
-                elevation="4"
-                class="mr-4 mt-3"
-            >
-                <div class="py-2 px-3">
-                    <h4>{{ item.fileName }}</h4>
-                </div>
-                <v-card-actions>
+        <!-- 檔案 -->
+        <v-col
+            cols="12"
+            sm="6"
+            v-for="(item, i) in fileList"
+            :key="item.fileName"
+        >
+            <v-row class="mx-2 elevation-4">
+                <v-col cols="12" md="8" class="white">
+                    <v-icon>mdi-file-document</v-icon>
+                    {{ item.fileName }}
+                </v-col>
+
+                <v-col cols="12" md="4" class="white text-right">
                     <v-btn
-                        color="info"
+                        dark
+                        small
+                        color="teal"
                         :href="item.link"
                         target="_blank"
                         rel="noopener norefferrer"
-                        
-                    >
-                        <v-icon class="mr-1">mdi-file-document</v-icon>查看
-                    </v-btn>
+                        class="mr-3"
+                    >查看</v-btn>
 
                     <v-btn
+                        small
                         color="error"
-                        
-                        @click="delFile(item.id, idx)"
-                    >
-                        <v-icon class="mr-1">mdi-delete</v-icon>刪除
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                        @click="delFile(item.id, i)"
+                    >刪除</v-btn>
+                </v-col>
+            </v-row>
         </v-col>
     </v-row>
 </v-col>

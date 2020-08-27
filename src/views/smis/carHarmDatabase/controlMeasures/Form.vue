@@ -42,7 +42,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" class="mb-5">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>安全文件
                 <span class="red--text">*</span>
@@ -94,8 +94,21 @@
                 </v-data-table>
             </v-card>
             <span class="error--text" v-if="ipt.docId == ''">*你尚未選擇安全文件!</span>
-            <span v-else>你目前選擇了編號 {{ ipt.docId }} 的文件</span>
+            <span v-else>
+                <v-icon class="mb-2 mr-1">mdi-lightbulb-on</v-icon>
+                你選擇了編號 {{ ipt.docId }} 的安全文件
+            </span>
         </v-col>
+
+        <!-- 檔案上傳 (證據)，新增時 -->
+        <template v-if="!isEdit">
+            <UploadFileAdd
+                :uploadDisnable="false"
+                :fileList="ipt.files"
+                @joinFile="joinFile"
+                @rmFile="rmFile"
+            />
+        </template>
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
@@ -107,6 +120,20 @@
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
+
+        <!-- 上傳檔案 (編輯時) -->
+        <template v-if="isEdit">
+            <v-col cols="12" class="mt-8 mb-2">
+                <v-divider></v-divider>
+            </v-col>
+
+            <UploadFileEdit
+                :fileList="ipt.files"
+                @uploadFile="uploadFile"
+                @deleteFile="deleteFile"
+                class="mb-10"
+            />
+        </template>
     </v-row>
 
     <!-- <v-form
@@ -123,6 +150,8 @@
 import { mapActions } from 'vuex'
 import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
+import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import { safeDocs } from '@/assets/js/smisTestData'
 
 export default {
@@ -135,6 +164,7 @@ export default {
             subject: '',  // 措施簡述
             desc: '',  // 措施說明
             docId: '',  // 連結的安全文件id
+            files: [],  // 檔案(證據)
         },
         departOpts: departOptions,  // 管控單位下拉選單
         pageOpt: { page: 1 },  // 目前頁數
@@ -150,7 +180,11 @@ export default {
             { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
     }),
-    components: { Pagination },
+    components: {
+        Pagination,
+        UploadFileAdd,
+        UploadFileEdit,
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -178,10 +212,21 @@ export default {
                 // 範例效果
                 setTimeout(() => {
                     let obj = {
+                        id: 123,
                         depart: 'd3',  // 管控單位
                         subject: '車輛維修作業要點',  // 措施簡述
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
                         docId: 18,  // 連結的安全文件id
+                        files: [
+                            {
+                                fileName: '456.xlsx',
+                                link: '/demofile/456.xlsx'
+                            },
+                            {
+                                fileName: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
                     }
                     
                     this.setInitDate(obj)
@@ -199,6 +244,7 @@ export default {
             this.ipt.subject = obj.subject // 措施簡述
             this.ipt.desc = obj.desc // 措施說明
             this.ipt.docId = obj.docId // 連結的安全文件id
+            this.ipt.files = [ ...obj.files ]  // 檔案 (證據)
         },
         // 更換頁數
         chPage(n) {
@@ -217,7 +263,9 @@ export default {
             setTimeout(() => {
                 if (this.isEdit) {
                     // 編輯時
-                    this.chMsgbar({ success: true, msg: '更新成功'})
+                    if (confirm('修改內容後，有用到此措施的行車危害全部要重新審核，你確定要存檔嗎?')) {
+                        this.chMsgbar({ success: true, msg: '更新成功'})
+                    }
                 } else {
                     // 新增時
                     this.$router.push({ path: '/smis/car-harmdb/control-measures' })
@@ -227,9 +275,37 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
-        // 顯示檢視內容
-        showContent(txt) {
-            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        // 加入要上傳的檔案
+        joinFile(file) {
+            this.ipt.files.push(file)
+        },
+        // 移除要上傳的檔案
+        rmFile(idx) {
+            this.ipt.files.splice(idx, 1)
+        },
+        // 上傳檔案 (編輯時)
+        uploadFile(file) {
+            this.chLoadingShow()
+
+            setTimeout(() => {
+                // 後端請求後，回傳檔案資料 (id、filename、link)
+                // this.ipt.files.push(fileData)
+                this.chMsgbar({ success: true, msg: '檔案新增成功'})
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 刪除檔案 (編輯時)
+        deleteFile(id, idx) {
+            if (confirm('你確定要刪除嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    // 後端請求後，移除檔案列表
+                    // this.ipt.files.splice(idx, 1)
+                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
     },
     created() {
