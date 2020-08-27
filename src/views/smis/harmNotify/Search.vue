@@ -127,6 +127,11 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
+                    <v-list-item to="/smis/harmnotify/case-type">
+                        <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
+                        立案類型統計圖
+                    </v-list-item>
+                    <v-divider></v-divider>
                     <v-list-item to="/smis/harmnotify/department-notify">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         各部門通報次數趨勢圖

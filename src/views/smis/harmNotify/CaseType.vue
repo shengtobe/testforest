@@ -20,7 +20,7 @@
 <script>
 import Chart from 'chart.js'
 import { mapActions } from 'vuex'
-import { departChartData } from '@/assets/js/smisTestData'
+import { caseTypeChartData } from '@/assets/js/smisTestData'
 
 export default {
     data: () => ({
@@ -37,7 +37,7 @@ export default {
             // 測試用資料
             setTimeout(() => {
                 // 向後端取得資料後
-                this.createChart(departChartData)  // 繪製圖表
+                this.createChart(caseTypeChartData)  // 繪製圖表
                 this.show = true
                 this.chLoadingShow()
             }, 1000)
@@ -51,60 +51,74 @@ export default {
                     labels: data.labels,
                     datasets: [
                         {
-                            label: '綜合企劃科',
+                            label: '以行車事故事件立案(新登錄)',
                             backgroundColor: '#FFB300',  // 節點的顏色
                             borderColor: '#FFB300',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.planning,
+                            data: data.c1,
                         },
                         {
-                            label: '鐵路服務科',
+                            label: '以行車事故事件立案(已登錄)',
                             backgroundColor: '#00E676',  // 節點的顏色
                             borderColor: '#00E676',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.serve,
+                            data: data.c2,
                         },
                         {
-                            label: '鐵路維護科',
+                            label: '以行車危害立案(新登錄)',
                             backgroundColor: '#FF4081',  // 節點的顏色
                             borderColor: '#FF4081',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.maintain,
+                            data: data.c3,
                         },
                         {
-                            label: '車輛養護科',
+                            label: '以行車危害立案(已登錄)',
                             backgroundColor: '#E040FB',  // 節點的顏色
                             borderColor: '#E040FB',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.curing,
+                            data: data.c4,
                         },
                         {
-                            label: '祕書室',
+                            label: '以職災事故事件立案(新登錄)',
                             backgroundColor: '#3949AB',  // 節點的顏色
                             borderColor: '#3949AB',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.secretary,
+                            data: data.c5,
                         },
                         {
-                            label: '人事室',
+                            label: '以職災事故事件立案(已登錄)',
                             backgroundColor: '#00796B',  // 節點的顏色
                             borderColor: '#00796B',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.personnel,
+                            data: data.c6,
                         },
                         {
-                            label: '主計室',
+                            label: '以職災危害立案(新登錄)',
                             backgroundColor: '#F4511E',  // 節點的顏色
                             borderColor: '#F4511E',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.accountant,
+                            data: data.c7,
                         },
                         {
-                            label: '政風室',
+                            label: '以職災危害立案(已登錄)',
                             backgroundColor: '#5D4037',  // 節點的顏色
                             borderColor: '#5D4037',  // 線的顏色
                             fill: false,  // 不要有下方填滿
-                            data: data.political,
+                            data: data.c8,
+                        },
+                        {
+                            label: '不立案',
+                            backgroundColor: '#29B6F6',  // 節點的顏色
+                            borderColor: '#29B6F6',  // 線的顏色
+                            fill: false,  // 不要有下方填滿
+                            data: data.c9,
+                        },
+                        {
+                            label: '未立案',
+                            backgroundColor: '#CDDC39',  // 節點的顏色
+                            borderColor: '#CDDC39',  // 線的顏色
+                            fill: false,  // 不要有下方填滿
+                            data: data.c10,
                         },
                     ]
                 },

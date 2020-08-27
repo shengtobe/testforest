@@ -104,9 +104,14 @@
         </v-col>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-2"
                 to="/smis/harmnotify/audit"
             >回搜尋頁</v-btn>
+
+            <v-btn dark  class="ma-2" color="primary"
+                @click="edit"
+                v-if="closeStatus == '已立案'"
+            >變更立案類型</v-btn>
 
              <v-btn dark  class="ma-2" color="error"
                 @click="dialog = true"
@@ -279,6 +284,18 @@ export default {
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '結案成功'})
                     this.$router.push({ path: '/smis/harmnotify/audit' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 變更立案類型
+        edit() {
+            // 請後端更改危害狀態為2 (已回覆尚未立案)
+            // 收到後端回應後，重新導向回 show 的路由
+            if (confirm('你確定要變更立案類型嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
                     this.chLoadingShow()
                 }, 1000)
             }
