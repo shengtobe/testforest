@@ -116,7 +116,7 @@
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
                 v-if="closeStatus == '審核中'"
-            >同意結案</v-btn>
+            >同意不立案</v-btn>
         </v-col>
     </v-row>
 
@@ -210,6 +210,9 @@ export default {
 
             // 新增測試用資料
             setTimeout(() => {
+                let caseTxt = (this.closeStatus == '審核中')? '不立案' : '以行車事故事件立案'
+                let repTxt = (this.closeStatus == '審核中')? '感謝通報，已通知相關單位處理' : '感謝通報，已採「事故/事件」立案'
+                
                 let obj = {
                     id: 'a201586369',  // 通報id
                     creater: '王小明',  // 通報人
@@ -224,7 +227,7 @@ export default {
                     locationM: '',　// 路線m
                     locationOther: '',　// 其他地點
                     status: this.closeStatus,  // 審核狀態
-                    caseStatus: '以行車事故事件立案',  // 立案狀態
+                    caseStatus: caseTxt,  // 立案狀態
                     subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報主旨
                     content: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
                     files: [
@@ -234,7 +237,7 @@ export default {
                         { fileName: '123.docx', link: '/demofile/123.docx' },
                         { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
                     ],
-                    replayMsg: '感謝通報，已採「事故/事件」立案',  // 回覆的訊息
+                    replayMsg: repTxt,  // 回覆的訊息
                     replayTime: '2020-03-16 09:15:00',  // 回覆日期
                 }
 

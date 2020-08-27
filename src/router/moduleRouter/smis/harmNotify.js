@@ -23,10 +23,10 @@ export const HarmnotifyRouter = [
         props: { closeStatus: '審核中' }
     },
     {
-        linkText: '已結案',
+        linkText: '已立案',
         path: '/smis/harmnotify/:id/complated',
         component: () => import('@/views/smis/harmNotify/ReviewComplated.vue'),
-        props: { closeStatus: '已結案' }
+        props: { closeStatus: '已立案' }
     },
     {
         linkText: '各部門通報次數趨勢',

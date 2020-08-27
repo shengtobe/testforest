@@ -61,11 +61,11 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>審核狀態
+                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>通報狀態
             </h3>
             <v-select
                 v-model="ipt.case"
-                :items="['未審核', '審核中', '已結案']"
+                :items="['未回覆', '已回覆尚未立案', '已立案', '審核中']"
                 solo
             ></v-select>
         </v-col>
@@ -153,7 +153,7 @@ export default {
         ipt: {
             dateStart:  new Date().toISOString().substr(0, 10),  // 通報日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 通報日期(迄)
-            case: '未審核',  // 審核狀態
+            case: '未回覆',  // 通報狀態
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
@@ -165,7 +165,7 @@ export default {
             { text: '通報日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '通報人', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '通報主旨', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '審核狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
     }),
@@ -185,21 +185,21 @@ export default {
                         date: new Date().toISOString().substr(0, 10),
                         name: '王小明',
                         title: '阿里山站外發現鐵軌上有倒下的樹木',
-                        status: '未審核',
-                    },
-                    {
-                        id: 'SH995413',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '陳小華',
-                        title: '嘉義車庫失火',
-                        status: '審核中',
+                        status: '未回覆',
                     },
                     {
                         id: 'SH785641',
                         date: new Date().toISOString().substr(0, 10),
                         name: '王小明',
                         title: '主線 5K+60 M 處發現落石',
-                        status: '已結案',
+                        status: '審核中',
+                    },
+                    {
+                        id: 'SH995413',
+                        date: new Date().toISOString().substr(0, 10),
+                        name: '陳小華',
+                        title: '嘉義車庫失火',
+                        status: '已立案',
                     },
                 ]
                 this.chLoadingShow()
@@ -207,18 +207,25 @@ export default {
         },
         // 搜尋
         search() {
+            this.chLoadingShow()
 
+            setTimeout(() => {
+                this.chLoadingShow()
+            }, 1000)
         },
         // 重新導向 (依結案狀態)
         redirect(item) {
             switch(item.status) {
-                case '未審核':
+                case '未回覆':
+                    this.$router.push({ path: `/smis/harmnotify/${item.id}/show` })
+                    break
+                case '已回覆尚未立案':
                     this.$router.push({ path: `/smis/harmnotify/${item.id}/show` })
                     break
                 case '審核中':
                     this.$router.push({ path: `/smis/harmnotify/${item.id}/review` })
                     break
-                case '已結案':
+                case '已立案':
                     this.$router.push({ path: `/smis/harmnotify/${item.id}/complated` })
                     break
                 default:

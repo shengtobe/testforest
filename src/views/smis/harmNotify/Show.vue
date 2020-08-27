@@ -200,7 +200,7 @@
 
             <v-btn dark color="success"
                 @click="save"
-            >申請審核</v-btn>
+            >確定立案</v-btn>
         </v-col>
     </div>
 
@@ -497,10 +497,8 @@ export default {
                 }, 1000)
             }
         },
-        // 送出
+        // 確定立案(用在立案處理是連結跟不予處理的情況)
         save() {
-            // 後端記得要危害狀態在還未申請審核時，才更改成已申請審核
-            // 防止使用者開二個視窗，一邊用新登錄、一邊又用連結or未處理造成資料錯亂
             if (!this.replay.replied) {
                 alert('請先完成回覆處理!')
                 return
@@ -509,7 +507,7 @@ export default {
             this.chLoadingShow()
 
             setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '申請審核成功'})
+                this.chMsgbar({ success: true, msg: '立案成功'})
                 this.$router.push({ path: '/smis/harmnotify/audit' })
                 this.chLoadingShow()
             }, 1000)
