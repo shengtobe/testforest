@@ -190,6 +190,15 @@
                     <v-icon class="mb-2 mr-1">mdi-lightbulb-on</v-icon> 
                     <span>{{ caseMsg }}</span>
                 </v-col>
+
+                <v-col cols="12" v-if="noActionShow">
+                    <v-text-field
+                        v-model.trim="noActionReason"
+                        solo
+                        label="請輸入不予處理的原因"
+                        hide-details
+                    ></v-text-field>
+                </v-col>
             </v-row>
         </v-sheet>
 
@@ -347,6 +356,8 @@ export default {
                 { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             ],
         },
+        noActionShow: false,  // 不予處理原因欄位是否顯示
+        noActionReason: '',  // 不予處理原因
     }),
     components: {
         TopBasicTable,
@@ -416,6 +427,7 @@ export default {
         },
         // 連結行車事故事件
         connCarEvt() {
+            this.noActionShow = false  // 關閉不予處理原因欄位
             this.chLoadingShow()
 
             // 向後端請求資料
@@ -427,10 +439,12 @@ export default {
         },
         // 連結行車危害
         connCarHarm() {
+            this.noActionShow = false  // 關閉不予處理原因欄位
             this.dialogShow.carHarm = true
         },
         // 連結職災事故
         connJobEvt() {
+            this.noActionShow = false  // 關閉不予處理原因欄位
             this.chLoadingShow()
 
             // 向後端請求資料
@@ -442,6 +456,7 @@ export default {
         },
         // 連結職災危害
         connJobHarm() {
+            this.noActionShow = false  // 關閉不予處理原因欄位
             this.dialogShow.jobHarm = true
         },
         // 確認連結 (接收子組件傳來的資料)
@@ -476,6 +491,7 @@ export default {
         noAction() {
             this.ipt.caseChose = 9
             this.caseMsg = '你選擇「不予處理」'
+            this.noActionShow = true
         },
         // 送出回覆
         sendReplay() {

@@ -103,6 +103,23 @@
             </v-row>
         </v-col>
 
+        <!-- 不立案才顯示 -->
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            v-if="closeStatus == '審核中'"
+        >
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>不立案原因
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">{{ noActionReason }}</v-col>
+            </v-row>
+        </v-col>
+
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-2"
                 to="/smis/harmnotify/audit"
@@ -192,6 +209,7 @@ export default {
             { text: '自訂回覆訊息', value: 4 },
         ],
         caseStatus: '',  // 立案狀態
+        noActionReason: '',  // 不立案原因
         isLoading: false,  // 是否讀取中
         dialog: false,  // dialog 是否顯示
         backReason: '',  // 退回原因
@@ -244,6 +262,7 @@ export default {
                     ],
                     replayMsg: repTxt,  // 回覆的訊息
                     replayTime: '2020-03-16 09:15:00',  // 回覆日期
+                    noActionReason: '重覆通報',  // 不立案原因
                 }
 
                 this.setShowData(obj)
@@ -265,6 +284,7 @@ export default {
             this.replayMsg = obj.replayMsg // 回覆的訊息
             this.replayTime = obj.replayTime // 回覆日期
             this.caseStatus = obj.caseStatus // 立案狀態
+            this.noActionReason = obj.noActionReason  // 不立案原因
         },
         // 退回
         withdraw() {
@@ -276,17 +296,15 @@ export default {
                 this.isLoading = false
             }, 1000)
         },
-        // 結案
+        // 同意不立案
         save() {
-            if (confirm('結案後無法再退回並修改內容，你確定要結案嗎?')) {
-                this.chLoadingShow()
+            this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '結案成功'})
-                    this.$router.push({ path: '/smis/harmnotify/audit' })
-                    this.chLoadingShow()
-                }, 1000)
-            }
+            setTimeout(() => {
+                this.chMsgbar({ success: true, msg: '同意不立案成功'})
+                this.$router.push({ path: '/smis/harmnotify/audit' })
+                this.chLoadingShow()
+            }, 1000)
         },
         // 變更立案類型
         edit() {
