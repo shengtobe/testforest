@@ -7,7 +7,7 @@
 
     <h3 class="mt-8 error--text">同類型危害已核定採用之控制措施：</h3>
     <v-row no-gutters class="mb-8">
-        <v-col cols="12" class="mb-10">
+        <v-col cols="12" class="mb-12">
             <v-card>
                 <v-data-table
                     :headers="headers"
@@ -22,13 +22,11 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-radio-group v-model="fileId">
-                            <v-radio
-                                class="ml-3 mt-1"
-                                color="success"
-                                :value="item.file.id"
-                            ></v-radio>
-                        </v-radio-group>
+                        <v-checkbox
+                            class="mr-n3 ml-2"
+                            v-model="selected"
+                            :value="item.id"
+                        ></v-checkbox>
                     </template>
 
                     <template v-slot:item.desc="{ item }">
@@ -37,13 +35,21 @@
                         >檢視</v-btn>
                     </template>
 
-                    <template v-slot:item.download="{ item }">
+                    <template v-slot:item.file="{ item }">
                         <v-btn small dark fab color="indigo"
-                            :href="item.file.path"
+                            :href="item.file.link"
                             target="_blank"
                             rel="noopener norefferrer"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                     <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
 
@@ -56,6 +62,11 @@
                     </template>
                 </v-data-table>
             </v-card>
+
+            <span>
+                <v-icon class="mb-2 mr-1">mdi-lightbulb-on</v-icon>
+                你選擇的控制措施編號： {{ selectedMsg }}
+            </span>
         </v-col>
 
         <v-col cols="12">
@@ -81,6 +92,39 @@
             >送出</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 證據 -->
+    <v-dialog v-model="dialogShow" max-width="400px">
+        <v-card>
+            <v-toolbar flat dense dark color="purple lighten-2">
+                <v-toolbar-title>證據</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-list-item-group>
+                <template v-for="(item, idx) in evidences">
+                    <v-list-item
+                        :key="item.name"
+                        :href="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-divider
+                        v-if="idx + 1 < evidences.length"
+                        :key="idx"
+                    ></v-divider>
+                </template>
+            </v-list-item-group>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -94,21 +138,30 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80' },
+            { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
             { text: '措施編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '附件下載', value: 'download', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120'},
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120'},
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        fileId: '',  // 連結的措施附件檔案id
         summary: '',  // 檢討摘要
+        selected: [],  // 所選的控制措施 id
+        evidences: [],  // 證據
+        dialogShow: false,  // 證據dialog是否顯示
     }),
     components: { Pagination },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
+        },
+    },
+    computed: {
+        selectedMsg() {
+            return this.selected.join('、')
         },
     },
     methods: {
@@ -131,28 +184,34 @@ export default {
                         subject: '鐵軌異物處理規定',
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '服務科',
-                        file: {
-                            id: '14',
-                            name: '123.pdf',
-                            path: '/demofile/123.pdf',
-                        }
+                        file: { link: '/demofile/123.pdf' },
+                        note: '',
+                        evidences: [
+                            {
+                                name: '456.xlsx',
+                                link: '/demofile/456.xlsx'
+                            },
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
                     },
                     {
                         id: 36,
                         subject: '大型樹木移除注意事項',
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '服務科',
-                        file: {
-                            id: '99',
-                            name: '123.docx',
-                            path: '/demofile/123.docx',
-                        }
+                        file: { link: '/demofile/123.docx' },
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
                     },
                 ]
-
-                // 已儲存的資料
-                // this.fileId = '99'
-                // this.summary = '檢討摘要文字...'
 
                 this.chLoadingShow()
             }, 1000)
@@ -163,8 +222,8 @@ export default {
         },
         // 送出
         save() {
-            if (this.fileId == '') {
-                alert('請選擇要連結的附件')
+            if (this.selected.length == 0) {
+                alert('請選擇要連結的控制措施')
                 return
             }
 
@@ -177,6 +236,11 @@ export default {
         // 顯示措施說明
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
+        // 顯示證據
+        showEvidences(arr) {
+            this.evidences = [ ...arr ]
+            this.dialogShow = true
         },
     },
     created() {

@@ -87,11 +87,11 @@
 
         <v-col cols="12" sm="4" md="3">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>事故狀態
+                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>事故事件狀態
                 </h3>
                 <v-select
-                    v-model="ipt.closeSate"
-                    :items="closeSateOpts"
+                    v-model="ipt.status"
+                    :items="statusOpts"
                     solo
                 ></v-select>
             </v-col>
@@ -147,6 +147,10 @@
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        {{ transferStatusText(item.status) }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -213,14 +217,15 @@ export default {
             review: '', // 檢討過程
             reason: '', // 原因分析
             note: '', // 備註
-            closeStatus: '1',  // 結案狀態
+            status: '已立案',  // 事故事件狀態
         },
         evtTypeOpts: evtTypes,
         locationOpts: locationOpts,
-        closeSateOpts: [  // 結案狀態下拉選單
-            { text: '未結案', value: '1' },
-            { text: '申請結案中', value: '2' },
-            { text: '已結案', value: '3' },
+        statusOpts: [  // 事故事件狀態下拉選單
+            '已立案',
+            '已完備資料',
+            '改善措施已落實',
+            '審核中',
         ],
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
@@ -230,7 +235,7 @@ export default {
             { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '傷亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '結案狀態', value: 'closeStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
     }),
@@ -249,7 +254,7 @@ export default {
 
             // 新增測試用資料
             setTimeout(() => {
-                this.tableItems = carEventItems
+                this.tableItems = [ ...carEventItems ]
                 this.chLoadingShow()
             }, 1000)
         },
@@ -257,16 +262,44 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 重新導向 (依結案狀態)
+        // 轉換事故事件狀態文字
+        transferStatusText(status) {
+            switch(status) {
+                case 1:
+                    return '已立案'
+                    break
+                case 2:  // 審核完備資料
+                    return '審核中'
+                    break
+                case 3:
+                    return '已完備資料'
+                    break
+                case 4:  // 審核措施落實
+                    return '審核中'
+                    break
+                case 5:
+                    return '改善措施已落實'
+                    break
+                default:
+                    break
+            }
+        },
+        // 重新導向 (依事故事件狀態)
         redirect(item) {
-            switch(item.closeStatus) {
-                case '未結案':
+            switch(item.status) {
+                case 1:  // 已立案
                     this.$router.push({ path: `/smis/car-accident-event/${item.id}/show` })
                     break
-                case '申請結案中':
+                case 2:  // 審核中 (審核完備資料)
                     this.$router.push({ path: `/smis/car-accident-event/${item.id}/review` })
                     break
-                case '已結案':
+                case 3:  // 已完備資料
+                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
+                    break
+                case 4: // 審核中 (審核措施落實)
+                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
+                    break
+                case 5: // 改善措施已落實
                     this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
                     break
                 default:

@@ -151,32 +151,50 @@
             </v-row>
         </v-col>
 
-        <v-col cols="12" class="mt-8 text-center">
-            <v-badge overlap
-                :color="(finishDeath)? 'success' : 'error'"
-                :content="(finishDeath)? '已填寫' : '未填寫'"
-                class="mr-13 mb-4"
-            >
-                <v-btn elevation="3" large  color="brown" dark tile
-                    :to="`/smis/car-accident-event/${routeId}/person-casualty`"
-                >
-                    <v-icon class="mr-1">mdi-file-document</v-icon>
-                    人員傷亡名單
-                </v-btn>
-            </v-badge>
+        <v-col cols="12" class="mt-10">
+            <v-card tile>
+                <v-toolbar flat dense dark color="brown">
+                    <v-toolbar-title>
+                        <v-icon class="mb-1 mr-2">mdi-pen</v-icon>相關表單填寫
+                    </v-toolbar-title>
+                </v-toolbar>
 
-            <v-badge overlap
-                :color="(finishImprove)? 'success' : 'error'"
-                :content="(finishImprove)? '已填寫' : '未填寫'"
-                    class="mr-13 mb-4"
-            >
-                <v-btn elevation="3" large color="brown" dark tile
-                    :to="`/smis/car-accident-event/${routeId}/driving-improve`"
-                >
-                    <v-icon class="mr-1">mdi-file-document</v-icon>
-                    改善措施檢討
-                </v-btn>
-            </v-badge>
+                <v-list-item-group>
+                        <v-list-item append
+                            :to="`/smis/car-accident-event/${routeId}/person-casualty`"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="d-flex align-center">
+                                    <v-btn x-small depressed rounded
+                                        :color="(finishDeath)? 'success' : 'error'"
+                                        class="mr-3"
+                                    >
+                                        {{ (finishDeath)? '已填寫' : '未填寫' }}
+                                    </v-btn>
+                                    人員傷亡名單
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                        <v-divider></v-divider>
+
+                        <v-list-item
+                            :to="`/smis/car-accident-event/${routeId}/driving-improve`"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="d-flex align-center">
+                                    <v-btn x-small depressed rounded
+                                        :color="(finishImprove)? 'success' : 'error'"
+                                        class="mr-3"
+                                    >
+                                        {{ (finishImprove)? '已填寫' : '未填寫' }}
+                                    </v-btn>
+                                    改善措施
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                </v-list-item-group>
+            </v-card>
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">

@@ -207,7 +207,7 @@
 
             <v-btn dark color="success"
                 @click="noDeath"
-            >無人傷亡</v-btn>
+            >設為無人傷亡</v-btn>
         </v-col>
     </v-row>
 </v-container>
