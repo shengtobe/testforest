@@ -297,10 +297,10 @@ export default {
                     this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
                     break
                 case 4: // 審核中 (審核措施落實)
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
+                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
                     break
                 case 5: // 改善措施已落實
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
+                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
                     break
                 default:
                     break

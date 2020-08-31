@@ -195,7 +195,7 @@ export default {
             findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
             createDate: { icon: 'mdi-calendar-text', title: '填報日期', text: '' },
             findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '審核狀態', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '通報狀態', text: '' },
         },
         subject: '',  // 通報主旨
         content: '',  // 通報內容
@@ -249,7 +249,7 @@ export default {
                     locationK: '',  // 路線k
                     locationM: '',　// 路線m
                     locationOther: '',　// 其他地點
-                    status: this.closeStatus,  // 審核狀態
+                    status: this.closeStatus,  // 通報狀態
                     caseStatus: caseTxt,  // 立案狀態
                     subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報主旨
                     content: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
@@ -276,7 +276,7 @@ export default {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
             this.topItems.createDate.text = obj.createDate  // 填表日期
             this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
-            this.topItems.status.text = obj.status  // 審核狀態
+            this.topItems.status.text = obj.status  // 通報狀態
 
             this.subject = obj.subject  // 通報主旨
             this.content = obj.content // 通報內容
@@ -315,6 +315,7 @@ export default {
 
                 setTimeout(() => {
                     this.chLoadingShow()
+                    this.$router.push({ path: `/smis/harmnotify/${this.routeId}/show` })
                 }, 1000)
             }
         },

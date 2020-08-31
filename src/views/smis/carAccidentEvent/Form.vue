@@ -165,6 +165,7 @@
             </v-col>
 
             <UploadFileAdd
+                title="檔案上傳"
                 :uploadDisnable="isExtendAnnex"
                 :fileList="ipt.files"
                 @joinFile="joinFile"

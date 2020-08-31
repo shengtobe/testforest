@@ -71,13 +71,13 @@
 
         <v-col cols="12">
             <h3 class="mb-2">
-                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>檢討摘要
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>改善措施摘要
             </h3>
             <v-textarea
                 auto-grow
                 solo
                 rows="6"
-                placeholder="請輸入檢討摘要"
+                placeholder="請輸入改善措施摘要"
                 v-model.trim="summary"
             ></v-textarea>
         </v-col>
@@ -147,7 +147,7 @@ export default {
             { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        summary: '',  // 檢討摘要
+        summary: '',  // 改善措施摘要
         selected: [],  // 所選的控制措施 id
         evidences: [],  // 證據
         dialogShow: false,  // 證據dialog是否顯示
@@ -161,7 +161,11 @@ export default {
     },
     computed: {
         selectedMsg() {
-            return this.selected.join('、')
+            // 重新排序
+            let arr = this.selected.sort(function(a, b) {
+                return a - b
+            })
+            return arr.join('、')
         },
     },
     methods: {

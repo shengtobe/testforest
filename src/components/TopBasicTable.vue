@@ -5,7 +5,6 @@
         :key="item.title"
     >
         <v-row no-gutters>
-            <!-- <v-col class="light-blue darken-1 pl-3 pb-2 pt-3" -->
             <v-col class="teal pl-3 pb-2 pt-3"
                 style="max-width: 160px"
             >

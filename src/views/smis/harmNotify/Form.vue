@@ -92,6 +92,7 @@
 
         <!-- 上傳檔案 -->
         <UploadFileAdd
+            title="檔案上傳"
             :uploadDisnable="false"
             :fileList="ipt.files"
             @joinFile="joinFile"

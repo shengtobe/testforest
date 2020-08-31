@@ -189,7 +189,7 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC" class="mb-4">
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
@@ -205,33 +205,46 @@
             </v-row>
         </v-col>
 
-        <!-- 檢討摘要、證據上傳 -->
-        <template v-if="status == 3">
-            <v-col cols="12" class="mt-12 mb-8">
-                <v-divider></v-divider>
-            </v-col>
+        <!-- 檢討摘要、證據 -->
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施檢討摘要
+                    </span>
+                </v-col>
 
-            <v-col cols="12" class="mb-8">
-                <h3 class="mb-2">
-                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>措施檢討摘要
-                </h3>
-                <v-textarea
-                    auto-grow
-                    solo
-                    rows="6"
-                    placeholder="請輸入措施檢討摘要"
-                    v-model.trim="controlReview"
-                ></v-textarea>
-            </v-col>
+                <v-col class="white pa-3"
+                    v-html="controlReview"
+                ></v-col>
+            </v-row>
+        </v-col>
 
-            <UploadFileAdd
-                title="證據上傳"
-                :uploadDisnable="false"
-                :fileList="evidences"
-                @joinFile="joinFile"
-                @rmFile="rmFile"
-            />
-        </template>
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-file</v-icon>證據
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">
+                    <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
+                        v-for="item in evidences"
+                        :key="item.fileName"
+                        :href="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        {{ item.fileName }}
+                    </v-chip>
+                </v-col>
+            </v-row>
+        </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
@@ -240,23 +253,18 @@
 
             <v-btn dark  class="ma-2" color="error"
                 @click="dialog = true"
-                v-if="status == 2"
+                v-if="status == 4"
             >退回</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-                v-if="status == 2"
-            >同意措施執行</v-btn>
+                v-if="status == 4"
+            >同意結案</v-btn>
 
             <v-btn dark  class="ma-2" color="error"
                 @click="del"
-                v-if="status == 3"
+                v-if="status == 5"
             >作廢</v-btn>
-
-            <v-btn dark  class="ma-2" color="success"
-                @click="closeCase"
-                v-if="status == 3"
-            >申請結案</v-btn>
         </v-col>
     </v-row>
 
@@ -448,6 +456,11 @@ export default {
                         },
                     ],
                     summary: '摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字',  // 改善措施摘要
+                    controlReview: ' 檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要',  // 檢討摘要
+                    evidences: [  // 改善措施證據
+                        { fileName: '123.docx', link: '/demofile/123.docx' },
+                        { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                    ],
                 }
 
                 this.setShowData(obj)
@@ -487,6 +500,8 @@ export default {
                 },
             ]
             this.summary = obj.summary.replace(/\n/g, '<br>')  // 改善措施摘要
+            this.evidences = [ ...obj.evidences ]  // 改善措施證據
+            this.controlReview = obj.controlReview.replace(/\n/g, '<br>')  // 措施檢討摘要
 
             // 設定狀態(測試資料)
             this.status = this.closeStatus
@@ -501,25 +516,17 @@ export default {
                 this.isLoading = false
             }, 1000)
         },
-        // 同意措施執行
+        // 同意結案
         save() {
-            if (confirm('你確定要同意措施執行嗎?')) {
+            if (confirm('你確定要結案嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '資料儲存成功'})
+                    this.chMsgbar({ success: true, msg: '結案成功'})
                     this.$router.push({ path: '/smis/car-accident-event' })
                     this.chLoadingShow()
                 }, 1000)
             }
-        },
-        // 加入要上傳的檔案
-        joinFile(file) {
-            this.evidences.push(file)
-        },
-        // 移除要上傳的檔案
-        rmFile(idx) {
-            this.evidences.splice(idx, 1)
         },
         // 作廢
         del() {
@@ -532,16 +539,6 @@ export default {
                     this.chLoadingShow()
                 }, 1000)
             }
-        },
-        // 申請結案
-        closeCase() {
-             this.chLoadingShow()
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '申請結案成功'})
-                this.$router.push({ path: '/smis/car-accident-event' })
-                this.chLoadingShow()
-            }, 1000)
         },
         // 顯示控制措施說明
         showContent(txt) {

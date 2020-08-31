@@ -213,7 +213,7 @@
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-            >申請結案</v-btn>
+            >申請措施審核</v-btn>
         </v-col>
     </v-row>
 </v-container>
@@ -240,6 +240,7 @@ export default {
             findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
             findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
             accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: '' },
         },
         notifyLinks: [],  // 連結的通報
     }),
@@ -307,6 +308,7 @@ export default {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
             this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
             this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
+            this.topItems.status.text = '已立案'  // 事故事件狀態
 
             this.eqLoss = obj.eqLoss  // 設備損失
             this.serviceShock = obj.serviceShock  // 營運衝擊
@@ -318,7 +320,7 @@ export default {
             this.finishDeath = obj.finishDeath // 是否完成人員傷亡名單
             this.finishImprove = obj.finishImprove // 是否完成改善措施
 
-            // 危害通報連結
+            // 危害通報連結 (依通報狀態連至不同頁面)
             let arr = obj.notifyLinks.map(item => {
                 let link = ''
                 switch(item.status) {
@@ -354,7 +356,7 @@ export default {
                 }, 1000)
             }
         },
-        // 申請結案
+        // 申請措施審核
         save() {
             let errArr = []
             if (!this.finishDeath) errArr.push('人員傷亡名單')

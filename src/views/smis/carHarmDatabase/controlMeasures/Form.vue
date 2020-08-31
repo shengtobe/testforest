@@ -103,6 +103,7 @@
         <!-- 檔案上傳 (證據)，新增時 -->
         <template v-if="!isEdit">
             <UploadFileAdd
+                title="證據上傳"
                 :uploadDisnable="false"
                 :fileList="ipt.files"
                 @joinFile="joinFile"

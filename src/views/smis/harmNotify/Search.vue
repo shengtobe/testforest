@@ -193,18 +193,18 @@ export default {
                         status: '未回覆',
                     },
                     {
-                        id: 'SH785641',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '王小明',
-                        title: '主線 5K+60 M 處發現落石',
-                        status: '審核中',
-                    },
-                    {
                         id: 'SH995413',
                         date: new Date().toISOString().substr(0, 10),
                         name: '陳小華',
                         title: '嘉義車庫失火',
                         status: '已立案',
+                    },
+                    {
+                        id: 'SH785641',
+                        date: new Date().toISOString().substr(0, 10),
+                        name: '王小明',
+                        title: '主線 5K+60 M 處發現落石',
+                        status: '審核中',
                     },
                 ]
                 this.chLoadingShow()

@@ -1,7 +1,7 @@
 <template>
 <v-col cols="12">
     <h3 class="mb-1">
-        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>檔案上傳
+        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>{{ title }}
     </h3>
 
     <v-row>
@@ -21,28 +21,38 @@
             </v-file-input>
         </v-col>
 
-        <v-col cols="12" sm="2">
+        <v-col cols="12" sm="2" class="text-right text-md-left">
             <v-btn large
                 color="primary"
                 @click="join"
             >加入檔案</v-btn>
         </v-col>
 
-        <v-col cols="12" class="d-flex flex-wrap align-center">
-            <span class="font-weight-bold mt-1">已加入的檔案：</span>
-            <v-chip
-                v-for="(item, idx) in fileList"
-                :key="item.name"
-                class="mr-3 mt-2"
-                label
-                color="teal"
-                dark
-            >
-                {{ item.name }} 
-                <v-icon right
-                    @click="del(idx)"
-                >mdi-close-circle</v-icon>
-            </v-chip>
+        <v-col cols="12" class="mt-2">
+            <v-card flat>
+                <v-card-title
+                    class="purple lighten-3 py-2 px-3"
+                    primary-title
+                >
+                    <h5>已加入的檔案</h5>
+                </v-card-title>
+
+                <div class="d-flex flex-wrap px-3 pt-2 pb-4">
+                    <v-chip
+                        v-for="(item, idx) in fileList"
+                        :key="item.name"
+                        class="mr-3 mt-2"
+                        label
+                        color="teal"
+                        dark
+                    >
+                        {{ item.name }} 
+                        <v-icon right
+                            @click="del(idx)"
+                        >mdi-close-circle</v-icon>
+                    </v-chip>
+                </div>
+            </v-card>
         </v-col>
     </v-row>
 </v-col>
@@ -50,7 +60,7 @@
 
 <script>
 export default {
-    props: ['uploadDisnable', 'fileList'],  // props：是否disabled、檔案列表
+    props: ['uploadDisnable', 'fileList', 'title'],  // props：是否disabled、檔案列表、標題
     data: () => ({
         choseFiles: null,  // 所選的檔案
     }),
