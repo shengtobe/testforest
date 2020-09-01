@@ -60,6 +60,7 @@ import { mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
+    // props：危害通報id、dialog是否顯示、表格標題、表格資料、事故事件or危害的模組名稱
     props: ['id', 'dialogShow', 'headers', 'items', 'dialog'],
     data: () => ({
         isLoading: false,  // 是否讀取中

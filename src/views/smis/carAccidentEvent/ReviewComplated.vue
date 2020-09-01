@@ -248,6 +248,11 @@
                 v-if="status == 2"
             >同意措施執行</v-btn>
 
+            <v-btn dark  class="ma-2" color="primary"
+                @click="rerun"
+                v-if="status == 3"
+            >重提事故事件</v-btn>
+
             <v-btn dark  class="ma-2" color="error"
                 @click="del"
                 v-if="status == 3"
@@ -551,6 +556,17 @@ export default {
         showEvidences(arr) {
             this.evidences = [ ...arr ]
             this.dialogShow = true
+        },
+        // 重提事故事件
+        rerun() {
+            if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.$router.push({ path: `/smis/car-accident-event/${this.routeId}/show` })
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
     },
     created() {

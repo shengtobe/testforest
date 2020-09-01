@@ -100,7 +100,7 @@
             <v-btn color="pink" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
                 to="/smis/car-accident-event/del-recovery"
             >
-                <v-icon class="mr-1">mdi-alert-circle</v-icon>復原刪除
+                <v-icon class="mr-1">mdi-alert-circle</v-icon>作廢復原
             </v-btn>
 
             <v-btn elevation="3" large class="mr-3 mb-4 mb-sm-0"

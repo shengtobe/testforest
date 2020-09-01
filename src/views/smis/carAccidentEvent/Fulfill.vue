@@ -252,7 +252,7 @@
             >回搜尋頁</v-btn>
 
             <v-btn dark  class="ma-2" color="error"
-                @click="dialog = true"
+                @click="backDialog = true"
                 v-if="status == 4"
             >退回</v-btn>
 
@@ -269,14 +269,12 @@
     </v-row>
 
     <!-- 退回 dialog -->
-    <v-dialog v-model="dialog" max-width="600px"
-        v-if="status == 2"
-    >
+    <v-dialog v-model="backDialog" max-width="600px" v-if="status == 4">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
+                <v-btn fab small text @click="backDialog = false" class="mr-n2">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
@@ -297,7 +295,7 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="backDialog = false">取消</v-btn>
                 <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
@@ -391,7 +389,7 @@ export default {
         dialogShow: false,  // 控制措施證據dialog是否顯示
         summary: '',  // 改善措施摘要
         isLoading: false,  // 是否讀取中
-        dialog: false,  // dialog 是否顯示
+        backDialog: false,  // dialog 是否顯示
         backReason: '',  // 退回原因
     }),
     components: {
