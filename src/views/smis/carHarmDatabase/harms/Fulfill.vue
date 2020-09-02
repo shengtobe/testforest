@@ -202,7 +202,7 @@
             <v-btn dark  class="ma-2" color="brown"
                 @click="showVersion"
                 v-if="status == 5"
-            >版本清單</v-btn>
+            >編修歷程紀錄</v-btn>
 
             <v-btn dark  class="ma-2" color="indigo"
                 :to="`/smis/car-harmdb/harms/${routeId}/update`"
@@ -284,7 +284,7 @@
         </v-card>
     </v-dialog>
 
-    <!-- 版本清單 -->
+    <!-- 編修歷程紀錄 -->
     <v-dialog v-model="verDialogShow" max-width="500px">
         <v-card>
             <v-card>
@@ -351,7 +351,7 @@ export default {
         verDialogShow: false,  // 版本清單 dialog 是否顯示
         verTableItems: [],  // 版本清單表格資料
         verHeaders: [  // 版本清單表格欄位
-            { text: '版本', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '項次', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '更新時間', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '查看內容', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
