@@ -54,7 +54,7 @@ export const CarHarmdbRouter = [
     {
         linkText: '審核中',  // 審核作廢
         path: '/smis/car-harmdb/harms/:id/invalid',
-        component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
+        component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
         props: { closeStatus: 7 }
     },
     {

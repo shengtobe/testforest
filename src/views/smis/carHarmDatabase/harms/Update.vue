@@ -172,7 +172,7 @@
         </v-col>
 
         <!-- 衍生事故 -->
-        <v-col cols="12" class="mt-8">
+        <v-col cols="12" class="my-8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-arrow-expand</v-icon>衍生事故
             </h3>
@@ -184,17 +184,35 @@
         </v-col>
 
         <!-- 控制措施 -->
-        <v-col cols="12" sm="4" md="3" class="mt-8">
+        <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-bank</v-icon>控制措施權責部門
             </h3>
             <v-select
-                v-model="controlDepart"
+                v-model="controlSearch.depart"
                 :items="opts.depart"
                 solo
                 hide-details
-                @change="chControlDepart"
             ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="8" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
+            </h3>
+            <v-text-field
+                v-model.trim="controlSearch.subject"
+                solo
+                placeholder="請輸入關鍵字"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="3" align-self="center">
+            <v-btn color="green" dark large
+                @click="search"
+            >
+                <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+            </v-btn>
         </v-col>
 
         <v-col cols="12">
@@ -226,6 +244,14 @@
                             :href="item.file.link"
                             target="_blank"
                             rel="noopener norefferrer"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -282,6 +308,14 @@
                         </v-btn>
                     </template>
 
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="error"
                             @click="delControl(item.id)"
@@ -292,6 +326,83 @@
                 </v-data-table>
             </v-card>
         </v-col>
+    </v-row>
+
+    <v-divider class="mx-2 mt-12 mb-4"></v-divider>
+
+    <v-row no-gutters class="px-2">
+        <!-- 證據上傳 -->
+        <v-col cols="12">
+            <v-row>
+                <v-col cols="12" sm="4" md="3">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>控制措施編號
+                    </h3>
+                    <v-select
+                        v-model="controlId"
+                        :items="controlIdOpts"
+                        solo
+                    ></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="7">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>證據上傳
+                    </h3>
+                    
+                    <v-file-input
+                        label="請點此選要上傳的檔案，選擇時可按 ctrl 或 shift 複選"
+                        solo
+                        multiple
+                        v-model="choose"
+                        @change="select"
+                    >
+                        <template v-slot:selection="{ text }">
+                            <v-chip small label color="primary" class="pa-4">{{ text }}</v-chip>
+                        </template>
+                    </v-file-input>
+                </v-col>
+
+                <v-col cols="12" sm="2" class="text-right text-md-left" align-self="center">
+                    <v-btn large
+                        color="primary"
+                        @click="join"
+                    >加入檔案</v-btn>
+                </v-col>
+            </v-row>
+        </v-col>
+
+        <!-- 上傳的檔案列表 -->
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            v-for="(list, i) in uploads"
+            :key="list.controlId"
+        >
+            <v-row no-gutters>
+                <v-col class="purple lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        措施編號 {{ list.controlId }}
+                    </span>
+                </v-col>
+
+                <v-col class="white px-3 d-flex flex-wrap">
+                    <v-chip
+                        v-for="(file, idx) in list.files"
+                        :key="file.name"
+                        class="mr-3 my-2"
+                        label
+                        color="teal"
+                        dark
+                    >
+                        {{ file.name }} 
+                        <v-icon right
+                            @click="rmFile(i, idx)"
+                        >mdi-close-circle</v-icon>
+                    </v-chip>
+                </v-col>
+            </v-row>
+        </v-col>
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
@@ -301,9 +412,42 @@
             <v-btn
                 color="success"
                 @click="save"
-            >送出</v-btn>
+            >申請更新</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 證據 dialog -->
+    <v-dialog v-model="dialogShow" max-width="400px">
+        <v-card>
+            <v-toolbar flat dense dark color="purple lighten-2">
+                <v-toolbar-title>證據</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-list-item-group>
+                <template v-for="(item, idx) in evidences">
+                    <v-list-item
+                        :key="item.name"
+                        :href="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-divider
+                        v-if="idx + 1 < evidences.length"
+                        :key="idx"
+                    ></v-divider>
+                </template>
+            </v-list-item-group>
+        </v-card>
+    </v-dialog>
 
     <!-- <v-form
         ref="form"
@@ -374,7 +518,10 @@ export default {
                 { text: '幾乎不', value: 'P5' },
             ],
         },
-        controlDepart: '',  // 控制措施權責部門
+        controlSearch: {  // 控制措施搜尋
+            depart: 'all',  // 部門
+            subject: '',  // 簡述
+        },
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
         tableItems: [],  // 控制措施權責部門的表格資料
         headers: [  // 控制措施權責部門的表格欄位
@@ -382,7 +529,8 @@ export default {
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -391,10 +539,17 @@ export default {
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        evidences: [],  // 控制措施證據
+        dialogShow: false,  // 控制措施證據dialog是否顯示
+        controlIdOpts: [],  // 證據上傳下拉選單 (選控制措施編號)
+        choose: null,  // 上傳時所選的檔案
+        controlId: null,  // 控制措施編號 (證據上傳時用)
+        uploads: [],  // 證據上傳檔案列表
     }),
     components: {
         AccidentCheckbox,
@@ -444,7 +599,17 @@ export default {
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
                             file: { link: '/demofile/123.pdf' },
-                            note: ''
+                            note: '',
+                            evidences: [
+                                {
+                                    name: '456.xlsx',
+                                    link: '/demofile/456.xlsx'
+                                },
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ],
                         },
                         {
                             id: 456,
@@ -452,7 +617,13 @@ export default {
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
                             file: { link: '/demofile/123.docx' },
-                            note: ''
+                            note: '',
+                            evidences: [
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ],
                         },
                     ],
                 }
@@ -479,6 +650,15 @@ export default {
             this.ipt.stopOperation = obj.stopOperation  // 中斷營運
             this.ipt.accidents = [ ...obj.accidents ]  // 衍生事故
             this.ipt.controlChoose = [ ...obj.controls ]   // 已選控制錯施
+
+            // 重組上傳檔案的控制措施編號下拉選單、檔案列表
+            obj.controls.forEach(item => {
+                this.controlIdOpts.push(item.id)
+            })
+            
+            this.uploads = this.controlIdOpts.map(ele => {
+                return { controlId: ele, files: []}
+            })
         },
         // 設定勾選的延申事故
         setAccident(arr) {
@@ -488,60 +668,74 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 送出
+        // 申請更新
         save() {
-            if (confirm('送出後無法再修改內容，你確定要送出嗎?')) {
-                this.chLoadingShow()
+            this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請更新成功'})
-                    this.$router.push({ path: '/smis/car-harmdb/harms' })
-                    this.chLoadingShow()
-                }, 1000)
-            }
+            setTimeout(() => {
+                this.chMsgbar({ success: true, msg: '申請更新成功'})
+                this.$router.push({ path: '/smis/car-harmdb/harms' })
+                this.chLoadingShow()
+            }, 1000)
         },
-        // 選擇控制措施權責部門
-        chControlDepart() {
+        // 搜尋控制措施
+        search() {
             this.chLoadingShow()
 
             // 測試用資料
             setTimeout(() => {
-                switch(this.controlDepart) {
-                    case 'd1':  // 綜合企劃科
-                        this.tableItems = [
+                this.tableItems = [
+                    {
+                        id: 123,
+                        subject: '火災處理要點',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '綜合企劃科',
+                        file: { link: '/demofile/123.pdf' },
+                        note: '',
+                        evidences: [
                             {
-                                id: 123,
-                                subject: '火災處理要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.pdf' },
-                                note: ''
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
+                    },
+                    {
+                        id: 456,
+                        subject: '中暑急救要點',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '綜合企劃科',
+                        file: { link: '/demofile/123.docx' },
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
                             },
                             {
-                                id: 456,
-                                subject: '中暑急救要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.docx' },
-                                note: ''
+                                name: '123.docx',
+                                link: '/demofile/123.docx'
                             },
-                        ]
-                        break
-                    case 'd2':  // 鐵路服務科
-                        this.tableItems = [
+                        ],
+                    },
+                    {
+                        id: 789,
+                        subject: '火車誤點處理措施',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '鐵路服務科',
+                        file: { link: '/demofile/456.xlsx' },
+                        note: '',
+                        evidences: [
                             {
-                                id: 789,
-                                subject: '火車誤點處理措施',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '鐵路服務科',
-                                file: { link: '/demofile/456.xlsx' },
-                                note: ''
+                                name: '456.xlsx',
+                                link: '/demofile/456.xlsx'
                             },
-                        ]
-                        break
-                    default:
-                        break
-                }
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
+                    },
+                ]
                 this.chLoadingShow()
             }, 1000)
         },
@@ -549,18 +743,71 @@ export default {
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
+        // 顯示證據
+        showEvidences(arr) {
+            this.evidences = [ ...arr ]
+            this.dialogShow = true
+        },
         // 增加已選的控制措施
         addControl(item) {
             // 沒找到才新增
             let arr = this.ipt.controlChoose.find(ele => ele.id == item.id)
             if (arr == undefined) {
                 this.ipt.controlChoose.push(item)
+                this.controlIdOpts.push(item.id)  // 加入上傳檔案的控制措施編號下拉選單
+                this.uploads.push({ controlId: item.id, files: []})  // 加入檔案列表
             }
         },
         // 刪除已選的控制措施
         delControl(id) {
             let idx = this.ipt.controlChoose.findIndex(ele => ele.id == id)
             this.ipt.controlChoose.splice(idx, 1)
+
+            // 移除上傳檔案的控制措施編號下拉選單
+            let idx2 = this.controlIdOpts.findIndex(ele => ele == id)
+            this.controlIdOpts.splice(idx2, 1)
+
+            // 移除檔案列表
+            let idx3 = this.uploads.findIndex(ele => ele.controlId == id)
+            this.uploads.splice(idx3, 1)
+
+            // 若上傳檔案下拉選單已選的措施編號，已不在下拉選單中，則設為空值
+            if (this.controlId == id) {
+                this.controlId = null
+            }
+        },
+        // 選擇上傳的檔案
+        select(file) {
+            this.choose = file
+        },
+        // 加入要上傳的檔案
+        join() {
+            if (this.choose != null) {
+                if (this.controlId == null) {
+                    alert('你還沒選擇控制措施編號')
+                    return
+                } 
+
+                // 找出目前所選的控制措施 id 檔案列表的索引值
+                let idx = this.uploads.findIndex(ele => {
+                    return ele.controlId == this.controlId
+                })
+
+                // 已加入的檔案不重覆增加
+                this.choose.forEach(ele => {
+                    let file = this.uploads[idx].files.find(item => {
+                        return item.name == ele.name && item.size == ele.size
+                    })
+                    
+                    // // 若已加入列表中沒找到檔案則加入
+                    if (file == undefined) this.uploads[idx].files.push(ele)
+                })
+                this.choose = null
+            }
+        },
+        // 刪除要上傳的檔案
+        rmFile(fileListIdx, itemIdx) {
+            this.uploads[fileListIdx].files.splice(itemIdx, 1)
         },
     },
     created() {

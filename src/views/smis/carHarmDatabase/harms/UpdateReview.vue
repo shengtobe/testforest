@@ -3,7 +3,7 @@
     <h2 class="mb-4">危害更新審核 (編號：{{ routeId }})</h2>
 
     <!-- 下面的欄位 -->
-    <v-row no-gutters class="mt-8">
+    <v-row no-gutters class="mt-12">
         <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-bank</v-icon>權責單位
         </h3>
@@ -12,7 +12,7 @@
             :after="after.depart"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>營運模式
         </h3>
         <VersionDiff
@@ -20,7 +20,7 @@
             :after="after.mode"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>關聯子系統
         </h3>
         <VersionDiff
@@ -28,7 +28,7 @@
             :after="after.wbs"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-format-line-spacing</v-icon>風險嚴重性
         </h3>
         <VersionDiff
@@ -36,7 +36,7 @@
             :after="after.serious"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-signal-variant</v-icon>風險頻率
         </h3>
         <VersionDiff
@@ -44,7 +44,7 @@
             :after="after.frequency"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>營運模式
         </h3>
         <VersionDiff
@@ -52,7 +52,7 @@
             :after="after.mode"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-pen</v-icon>危害說明
         </h3>
         <VersionDiff
@@ -60,7 +60,7 @@
             :after="after.desc"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-pen</v-icon>直接成因
         </h3>
         <VersionDiff
@@ -68,7 +68,7 @@
             :after="after.reason"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-pen</v-icon>可能的間接原因
         </h3>
         <VersionDiff
@@ -76,7 +76,7 @@
             :after="after.indirectReason"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
         </h3>
         <VersionDiff
@@ -84,7 +84,7 @@
             :after="after.note"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
         </h3>
         <VersionDiff
@@ -92,7 +92,7 @@
             :after="after.affectTxt"
         />
 
-        <h3 class="mb-1 mt-8">
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-arrow-expand</v-icon>衍生事故
         </h3>
         <VersionDiff
@@ -101,7 +101,7 @@
         />
 
         <!-- 控制措施 -->
-        <v-col cols="12" class="mt-8">
+        <v-col cols="12" class="mt-12">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施<br>
                 (變更前)
@@ -129,6 +129,14 @@
                             :href="item.file.link"
                             target="_blank"
                             rel="noopener norefferrer"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -166,8 +174,77 @@
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
+
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
                 </v-data-table>
             </v-card>
+        </v-col>
+
+        <!-- 本案上傳之證據 -->
+        <h3 class="mb-1 mt-12">
+            <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>本案上傳之證據<br>
+            (變更前)
+        </h3>
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            v-for="list in before.uploads"
+            :key="list.controlId"
+        >
+            <v-row no-gutters>
+                <v-col class="purple lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        措施編號 {{ list.controlId }}
+                    </span>
+                </v-col>
+
+                <v-col class="white px-3 pt-1 d-flex flex-wrap">
+                    <v-chip small label color="primary" class="mr-3 my-2"
+                        v-for="file in list.files"
+                        :key="file.name"
+                        :href="file.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        {{ file.name }}
+                    </v-chip>
+                </v-col>
+            </v-row>
+        </v-col>
+
+        
+        <h3 class="mb-1 mt-8">(變更後)</h3>
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            v-for="list in after.uploads"
+            :key="list.controlId"
+        >
+            <v-row no-gutters>
+                <v-col class="purple lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        措施編號 {{ list.controlId }}
+                    </span>
+                </v-col>
+
+                <v-col class="white px-3 pt-1 d-flex flex-wrap">
+                    <v-chip small label color="primary" class="mr-3 my-2"
+                        v-for="file in list.files"
+                        :key="file.name"
+                        :href="file.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        {{ file.name }}
+                    </v-chip>
+                </v-col>
+            </v-row>
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
@@ -217,6 +294,39 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
+
+    <!-- 證據 dialog -->
+    <v-dialog v-model="dialogShow" max-width="400px">
+        <v-card>
+            <v-toolbar flat dense dark color="purple lighten-2">
+                <v-toolbar-title>證據</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-list-item-group>
+                <template v-for="(item, idx) in evidences">
+                    <v-list-item
+                        :key="item.name"
+                        :href="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-divider
+                        v-if="idx + 1 < evidences.length"
+                        :key="idx"
+                    ></v-divider>
+                </template>
+            </v-list-item-group>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -240,6 +350,7 @@ export default {
             controls: [],  // 控制措施
             affectTxt: '',  // 影響、營運衝擊字串
             accidentsTxt: '',  // 衍生事故字串
+            uploads: [],  // 上傳之證據
         },
         after: {  // 變更後
             depart: '',
@@ -254,18 +365,22 @@ export default {
             controls: [],
             affectTxt: '',
             accidentsTxt: '',
+            uploads: [],
         },
         headers: [  // 表格欄位
             { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         dialog: false,  // 退回dialog是否顯示
         isLoading: false,  // 是否讀取中
         backReason: '',  // 退回原因
+        evidences: [],  // 控制措施證據
+        dialogShow: false,  // 控制措施證據dialog是否顯示
     }),
     components: { VersionDiff },
     watch: {
@@ -310,7 +425,18 @@ export default {
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
                             file: { link: '/demofile/123.pdf' },
-                            note: ''
+                            note: '',
+                            evidences: [
+                                {
+                                    name: '456.xlsx',
+                                    link: '/demofile/456.xlsx'
+                                },
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ],
+                            
                         },
                         {
                             id: 456,
@@ -318,9 +444,26 @@ export default {
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
                             file: { link: '/demofile/123.docx' },
-                            note: ''
+                            note: '',
+                            evidences: [
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ],
                         },
                     ],
+                    uploads: [
+                        {
+                            controlId: '123',
+                            files: [
+                                {
+                                    name: '456.xlsx',
+                                    link: '/demofile/456.xlsx'
+                                },
+                            ]
+                        },
+                    ]
                 }
 
                 let obj2 = {
@@ -346,9 +489,35 @@ export default {
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
                             file: { link: '/demofile/123.pdf' },
-                            note: ''
+                            note: '',
+                            evidences: [
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ],
                         },
                     ],
+                    uploads: [
+                        {
+                            controlId: '123',
+                            files: [
+                                {
+                                    name: '456.xlsx',
+                                    link: '/demofile/456.xlsx'
+                                },
+                            ]
+                        },
+                        { 
+                            controlId: '456', 
+                            files: [
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ]
+                        },
+                    ]
                 }
 
                 this.setShowData(obj1, obj2)
@@ -417,10 +586,14 @@ export default {
             // 控制措施
             this.before.controls = [ ...before.controls ]
             this.after.controls = [ ...after.controls ]
+
+            // 上傳之證據
+            this.before.uploads = [ ...before.uploads ]
+            this.after.uploads = [ ...after.uploads ]
         },
         // 同意更新
         save() {
-            if (confirm('同意後無法再退回並修改內容，你確定要結案嗎?')) {
+            if (confirm('你確定要更新嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
@@ -433,6 +606,11 @@ export default {
         // 顯示檢視內容
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
+        // 顯示證據
+        showEvidences(arr) {
+            this.evidences = [ ...arr ]
+            this.dialogShow = true
         },
         // 退回
         withdraw() {

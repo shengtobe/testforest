@@ -161,20 +161,6 @@
                 </v-col>
 
                 <v-col class="white px-3 pt-1 d-flex flex-wrap">
-                    <!-- <v-chip
-                        v-for="(file, idx) in list.files"
-                        :key="file.name"
-                        class="mr-3 my-2"
-                        label
-                        color="teal"
-                        dark
-                    >
-                        {{ file.name }} 
-                        <v-icon right
-                            @click="rmFile(i, idx)"
-                        >mdi-close-circle</v-icon>
-                    </v-chip> -->
-
                     <v-chip small label color="primary" class="mr-3 my-2"
                         v-for="file in list.files"
                         :key="file.name"
@@ -195,7 +181,7 @@
 
             <v-btn dark  class="ma-2" color="error"
                 @click="dialog = true"
-                v-if="status == 4"
+                v-if="status == 4 || 7"
             >退回</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
@@ -217,12 +203,22 @@
                 @click="showVersion"
                 v-if="status == 5"
             >版本清單</v-btn>
+
+            <v-btn dark  class="ma-2" color="indigo"
+                :to="`/smis/car-harmdb/harms/${routeId}/update`"
+                v-if="status == 5"
+            >危害更新</v-btn>
+
+            <v-btn dark  class="ma-2" color="success"
+                @click="agreeDel"
+                v-if="status == 7"
+            >同意作廢</v-btn>
         </v-col>
     </v-row>
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
-        v-if="status == 4"
+        v-if="status == 4 || 7"
     >
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
@@ -503,8 +499,22 @@ export default {
                 this.isLoading = false
             }, 1000)
         },
-        // 作廢
+        // 申請作廢
         del() {
+            // 已跑到最後流程的作廢之後要請長官同意
+
+            if (confirm('已結案的危害需經長官同意後才正式作廢，你確定要申請作廢嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請作廢成功'})
+                    this.$router.push({ path: '/smis/car-harmdb/harms' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 同意作廢
+        agreeDel() {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
