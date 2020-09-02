@@ -191,12 +191,12 @@
 
             <v-btn dark  class="ma-2" color="error"
                 @click="del"
-                v-if="status == 5"
+                v-if="status == 5 && version.nowId == version.lasterId"
             >作廢</v-btn>
 
             <v-btn dark  class="ma-2" color="primary"
                 @click="rerun"
-                v-if="status == 5"
+                v-if="status == 5 && version.nowId == version.lasterId"
             >重提危害</v-btn>
 
             <v-btn dark  class="ma-2" color="brown"
@@ -206,7 +206,7 @@
 
             <v-btn dark  class="ma-2" color="indigo"
                 :to="`/smis/car-harmdb/harms/${routeId}/update`"
-                v-if="status == 5"
+                v-if="status == 5 && version.nowId == version.lasterId"
             >危害更新</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
@@ -396,6 +396,7 @@ export default {
                     trainLate: false,  // 列車誤點
                     stopOperation: false,  // 中斷營運
                     accidents: ['側線火災事故', '設備損壞事故'],  // 衍生事故
+                    versionId: 2,  // 版本id (不是版本號)
                     controls: [  // 控制措施
                         {
                             id: 123,
@@ -485,6 +486,8 @@ export default {
 
             this.tableItems = [ ...obj.controls ]
             this.uploads = obj.uploads  // 證據
+
+            this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
 
             // 設定狀態(測試資料)
             this.status = this.closeStatus

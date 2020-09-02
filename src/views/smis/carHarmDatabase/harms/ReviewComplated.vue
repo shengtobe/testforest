@@ -143,12 +143,12 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12" class="mt-12 mb-8">
+        <v-col cols="12" class="mt-12 mb-8" v-if="status == 3">
             <v-divider></v-divider>
         </v-col>
 
         <!-- 證據上傳 -->
-        <v-col cols="12">
+        <v-col cols="12" v-if="status == 3">
             <v-row>
                 <v-col cols="12" sm="4" md="3">
                     <h3 class="mb-1">
@@ -190,6 +190,7 @@
 
         <!-- 上傳的檔案列表 -->
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            v-if="status == 3"
             v-for="(list, i) in uploads"
             :key="list.controlId"
         >
