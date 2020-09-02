@@ -100,7 +100,7 @@
         </v-col>
 
         <!-- 控制措施 -->
-        <v-col cols="12" class="mt-8">
+        <v-col cols="12" class="mt-8 mb-10">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
             </h3>
@@ -143,69 +143,86 @@
             </v-card>
         </v-col>
 
+        <!-- 上傳的證據檔案列表 -->
+        <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>本案上傳之證據
+        </h3>
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            v-for="list in uploads"
+            :key="list.controlId"
+        >
+            <v-row no-gutters>
+                <v-col class="purple lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        措施編號 {{ list.controlId }}
+                    </span>
+                </v-col>
+
+                <v-col class="white px-3 pt-1 d-flex flex-wrap">
+                    <!-- <v-chip
+                        v-for="(file, idx) in list.files"
+                        :key="file.name"
+                        class="mr-3 my-2"
+                        label
+                        color="teal"
+                        dark
+                    >
+                        {{ file.name }} 
+                        <v-icon right
+                            @click="rmFile(i, idx)"
+                        >mdi-close-circle</v-icon>
+                    </v-chip> -->
+
+                    <v-chip small label color="primary" class="mr-3 my-2"
+                        v-for="file in list.files"
+                        :key="file.name"
+                        :href="file.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        {{ file.name }}
+                    </v-chip>
+                </v-col>
+            </v-row>
+        </v-col>
+
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
                 to="/smis/car-harmdb/harms"
             >回搜尋頁</v-btn>
 
-            <v-btn dark  class="ma-2" color="brown"
-                v-if="status == 3"
-                @click="showVersion"
-            >版本清單</v-btn>
-
-            <v-btn dark class="ma-2"
-                v-if="status == 3 && (this.version.lasterId == this.version.nowId)"
-                color="indigo"
-                :to="`/smis/car-harmdb/harms/${routeId}/update`"
-            >危害更新</v-btn>
-
-            <v-btn dark  class="ma-2" color="orange"
-                @click="invalid"
-                v-if="status == 3 && (this.version.lasterId == this.version.nowId)"
-            >申請作廢</v-btn>
-
             <v-btn dark  class="ma-2" color="error"
                 @click="dialog = true"
-                v-if="status == 2"
+                v-if="status == 4"
             >退回</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-                v-if="status == 2"
-            >結案</v-btn>
+                v-if="status == 4"
+            >同意結案</v-btn>
+
+            <v-btn dark  class="ma-2" color="error"
+                @click="del"
+                v-if="status == 5"
+            >作廢</v-btn>
+
+            <v-btn dark  class="ma-2" color="primary"
+                @click="rerun"
+                v-if="status == 5"
+            >重提危害</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
-                @click="agreeVoid"
-                v-if="status == '申請作廢中'"
-            >同意作廢</v-btn>
+                @click="closeCase"
+                v-if="status == 5"
+            >申請結案</v-btn>
         </v-col>
     </v-row>
 
-    <!-- 版本清單 -->
-    <v-dialog v-model="verDialogShow" max-width="500px">
-        <v-card>
-            <v-card>
-                <v-data-table
-                    :headers="verHeaders"
-                    :items="verTableItems"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
-                >
-                    <template v-slot:item.action="{ item }">
-                        <v-btn color="teal" dark
-                            :loading="isLoading"
-                            @click="chVersion(item.id)"
-                        >檢視</v-btn>
-                    </template>
-                </v-data-table>
-            </v-card>
-        </v-card>
-    </v-dialog>
-
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
-        v-if="status == '審核中'"
+        v-if="status == 4"
     >
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
@@ -238,7 +255,7 @@
         </v-card>
     </v-dialog>
 
-    <!-- 證據 -->
+    <!-- 控制措施證據 dialog -->
     <v-dialog v-model="dialogShow" max-width="400px">
         <v-card>
             <v-toolbar flat dense dark color="purple lighten-2">
@@ -288,6 +305,7 @@ export default {
             wbs: { icon: 'mdi-source-branch', title: '關聯子系統', text: '' },
             serious: { icon: 'mdi-format-line-spacing', title: '風險嚴重性', text: '' },
             frequency: { icon: 'mdi-signal-variant', title: '風險頻率', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '危害狀態', text: '' },
         },
         desc: '',  // 危害說明
         reason: '',  // 危害直接成因
@@ -306,22 +324,12 @@ export default {
             { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        dialog: false,  // 退回dialog是否顯示
+        evidences: [],  // 控制措施證據
+        dialogShow: false,  // 控制措施證據 dialog 是否顯示
         isLoading: false,  // 是否讀取中
+        dialog: false,  // 退回 dialog 是否顯示
         backReason: '',  // 退回原因
-        verDialogShow: false,  // 版本清單 dialog 是否顯示
-        verTableItems: [],  // 版本清單表格資料
-        verHeaders: [  // 版本清單表格欄位
-            { text: '版本', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新時間', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '查看', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        ],
-        version: {  // 版本
-            lasterId: '',  // 最新版本id
-            nowId: '',  // 目前版本id
-        },
-        evidences: [],  // 證據
-        dialogShow: false,  // 證據dialog是否顯示
+        uploads: [],  // 上傳的證據檔案列表  
     }),
     components: { TopBasicTable },
     watch: {
@@ -393,7 +401,26 @@ export default {
                             ],
                         },
                     ],
-                    lastVersionId: 2,  // 最新版本號id
+                    uploads: [
+                        {
+                            controlId: '123',
+                            files: [
+                                {
+                                    name: '456.xlsx',
+                                    link: '/demofile/456.xlsx'
+                                },
+                            ]
+                        },
+                        { 
+                            controlId: '456', 
+                            files: [
+                                {
+                                    name: '123.pdf',
+                                    link: '/demofile/123.pdf'
+                                },
+                            ]
+                        },
+                    ]
                 }
 
                 this.setShowData(obj)
@@ -407,6 +434,7 @@ export default {
             this.topItems.wbs.text = obj.wbs  // 關聯子系統
             this.topItems.serious.text = obj.serious  // 風險嚴重性
             this.topItems.frequency.text = obj.frequency  // 風險頻率
+            this.topItems.status.text = (this.closeStatus == 5)? '風險已可接受' : '審核中'  // 危害狀態
 
             this.desc = obj.desc.replace(/\n/g, '<br>')  // 危害說明
             this.reason = obj.reason.replace(/\n/g, '<br>')  // 危害直接成因
@@ -427,9 +455,7 @@ export default {
             this.accidentsTxt = obj.accidents.join('、')
 
             this.tableItems = [ ...obj.controls ]
-
-            // 版本那張 table 內最新版本、目前的id
-            this.version.lasterId = this.version.nowId = obj.lastVersionId
+            this.uploads = obj.uploads  // 證據
 
             // 設定狀態(測試資料)
             this.status = this.closeStatus
@@ -444,37 +470,25 @@ export default {
                 this.isLoading = false
             }, 1000)
         },
-        // 結案 (變為已核定)
-        save() {
-            if (confirm('結案後無法再退回並修改內容，你確定要結案嗎?')) {
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '結案成功'})
-                    this.$router.push({ path: '/smis/car-harmdb/harms' })
-                    this.chLoadingShow()
-                }, 1000)
-            }
-        },
-        // 申請作廢
-        invalid() {
-            if (confirm('你確定要申請作廢嗎?')) {
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請作廢成功'})
-                    this.$router.push({ path: '/smis/car-harmdb/harms' })
-                    this.chLoadingShow()
-                }, 1000)
-            }
-        },
-        // 同意作廢
-        agreeVoid() {
+        // 作廢
+        del() {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '作廢成功'})
+                    this.$router.push({ path: '/smis/car-harmdb/harms' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 結案
+        save() {
+            if (confirm('你確定要結案嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '結案成功'})
                     this.$router.push({ path: '/smis/car-harmdb/harms' })
                     this.chLoadingShow()
                 }, 1000)
@@ -488,39 +502,6 @@ export default {
         showEvidences(arr) {
             this.evidences = [ ...arr ]
             this.dialogShow = true
-        },
-        // 顯示版本清單 dialog
-        showVersion() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                let arr = [
-                    {
-                        id: 1,  // id
-                        version: 1,  // 版本號
-                        updateTime: '2019-05-02 11:09:00',  // 更新時間
-                    },
-                    {
-                        id: 2,
-                        version: 2,
-                        updateTime: '2019-12-28 14:30:00',
-                    },
-                ]
-
-                this.verTableItems = [ ...arr ]
-                this.chLoadingShow()
-                this.verDialogShow = true
-            }, 1000)
-        },
-        // 切換版本 (顯示不同版本的內容)
-        chVersion(id) {
-            // 點擊時 data 內的變數記目前要看的版本id，後端取得資料後更新 data 的值
-            this.isLoading = true
-
-            setTimeout(() => {
-                this.version.nowId = id
-                this.verDialogShow = this.isLoading = false
-            }, 1000)
         },
     },
     created() {

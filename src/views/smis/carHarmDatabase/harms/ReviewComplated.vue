@@ -167,7 +167,6 @@
                     </h3>
                     
                     <v-file-input
-                        hide-details
                         label="請點此選要上傳的檔案，選擇時可按 ctrl 或 shift 複選"
                         solo
                         multiple

@@ -269,19 +269,25 @@ export default {
         // 重新導向 (依結案狀態)
         redirect(item) {
             switch(item.status) {
-                case 1:
+                case 1:  // 已立案
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/show` })
                     break
-                case 2:
+                case 2:  // 審核完備資料
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/review` })
                     break
-                case 3:
+                case 3:  // 已完備資料
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
                     break
-                case 4:
+                case 4:  // 審核風險已可接受
+                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-review` })
+                    break
+                case 5:  // 風險已可接受
+                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-complated` })
+                    break
+                case 6:  // 審核更新
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/update-review` })
                     break
-                case '作廢審核中':
+                case 7:  // 審核作廢
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/invalid` })
                     break
                 default:
