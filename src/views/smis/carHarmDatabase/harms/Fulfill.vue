@@ -181,7 +181,7 @@
 
             <v-btn dark  class="ma-2" color="error"
                 @click="dialog = true"
-                v-if="status == 4 || 7"
+                v-if="status == 4 || status == 7"
             >退回</v-btn>
 
             <v-btn dark  class="ma-2" color="success"
@@ -218,7 +218,7 @@
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
-        v-if="status == 4 || 7"
+        v-if="status == 4 || status == 7"
     >
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
