@@ -312,7 +312,7 @@ export const carHarmDBHarms = [
         serious: '稍微',
         frequency: '偶爾',
         level: '可接受，持續控管',
-        status: '待送審',
+        status: 1,
     },
     {
         id: '22',
@@ -320,7 +320,7 @@ export const carHarmDBHarms = [
         serious: '嚴重',
         frequency: '幾乎不',
         level: '中度風險',
-        status: '審核中',
+        status: 2,
     },
     {
         id: '33',
@@ -328,7 +328,7 @@ export const carHarmDBHarms = [
         serious: '極輕微',
         frequency: '偶爾',
         level: '可接受，持續控管',
-        status: '已核定',
+        status: 3,
     },
     {
         id: '44',
@@ -336,7 +336,7 @@ export const carHarmDBHarms = [
         serious: '極輕微',
         frequency: '幾乎不',
         level: '可接受，持續控管',
-        status: '更新審核中',
+        status: 4,
     },
     {
         id: '55',
@@ -344,7 +344,23 @@ export const carHarmDBHarms = [
         serious: '極輕微',
         frequency: '偶爾',
         level: '可接受，持續控管',
-        status: '作廢審核中',
+        status: 5,
+    },
+    {
+        id: '66',
+        mode: '正常',
+        serious: '極輕微',
+        frequency: '幾乎不',
+        level: '可接受，持續控管',
+        status: 6,
+    },
+    {
+        id: '77',
+        mode: '正常',
+        serious: '嚴重',
+        frequency: '偶爾',
+        level: '中度風險',
+        status: 7,
     },
 ]
 

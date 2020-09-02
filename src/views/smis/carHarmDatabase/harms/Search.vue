@@ -135,19 +135,11 @@
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >待送審 (1)</v-btn>
+            >已立案 (1)</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >審核中 (1)</v-btn>
-
-            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
-                @click="fastFetch"
-            >更新審核中 (1)</v-btn>
-
-            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
-                @click="fastFetch"
-            >作廢審核中 (0)</v-btn>
+            >審核中 (4)</v-btn>
         </v-col>
 
         <!-- 表格資料 -->
@@ -175,6 +167,10 @@
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        {{ transferStatusText(item.status) }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -242,19 +238,47 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
+        // 轉換事故事件狀態文字
+        transferStatusText(status) {
+            switch(status) {
+                case 1:
+                    return '已立案'
+                    break
+                case 2:  // 審核完備資料
+                    return '審核中'
+                    break
+                case 3:
+                    return '已完備資料'
+                    break
+                case 4:  // 審核風險已可接受
+                    return '審核中'
+                    break
+                case 5:
+                    return '風險已可接受'
+                    break
+                case 6:  // 審核更新
+                    return '審核中'
+                    break
+                case 7:  // 審核作廢
+                    return '審核中'
+                    break
+                default:
+                    break
+            }
+        },
         // 重新導向 (依結案狀態)
         redirect(item) {
             switch(item.status) {
-                case '待送審':
+                case 1:
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/show` })
                     break
-                case '審核中':
+                case 2:
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/review` })
                     break
-                case '已核定':
+                case 3:
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
                     break
-                case '更新審核中':
+                case 4:
                     this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/update-review` })
                     break
                 case '作廢審核中':

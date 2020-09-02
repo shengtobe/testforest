@@ -251,6 +251,14 @@
                         </v-btn>
                     </template>
 
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small dark color="indigo"
                             @click="addControl(item)"
@@ -302,6 +310,14 @@
                         </v-btn>
                     </template>
 
+                    <template v-slot:item.evidences="{ item }">
+                        <v-btn fab small dark color="purple lighten-2"
+                            @click="showEvidences(item.evidences)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="error"
                             @click="delControl(item.id)"
@@ -324,6 +340,39 @@
             >送出</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 證據 -->
+    <v-dialog v-model="dialogShow" max-width="400px">
+        <v-card>
+            <v-toolbar flat dense dark color="purple lighten-2">
+                <v-toolbar-title>證據</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-list-item-group>
+                <template v-for="(item, idx) in evidences">
+                    <v-list-item
+                        :key="item.name"
+                        :href="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                    <v-divider
+                        v-if="idx + 1 < evidences.length"
+                        :key="idx"
+                    ></v-divider>
+                </template>
+            </v-list-item-group>
+        </v-card>
+    </v-dialog>
 
     <!-- <v-form
         ref="form"
@@ -406,7 +455,8 @@ export default {
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -415,10 +465,13 @@ export default {
             { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        evidences: [],  // 證據
+        dialogShow: false,  // 證據dialog是否顯示
     }),
     components: {
         AccidentCheckbox,
@@ -471,7 +524,17 @@ export default {
                                 desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                                 depart: '綜合企劃科',
                                 file: { link: '/demofile/123.pdf' },
-                                note: ''
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '456.xlsx',
+                                        link: '/demofile/456.xlsx'
+                                    },
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
                             },
                             {
                                 id: 456,
@@ -479,7 +542,13 @@ export default {
                                 desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                                 depart: '綜合企劃科',
                                 file: { link: '/demofile/123.docx' },
-                                note: ''
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
                             },
                         ],
                     }
@@ -540,7 +609,13 @@ export default {
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '綜合企劃科',
                         file: { link: '/demofile/123.pdf' },
-                        note: ''
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
                     },
                     {
                         id: 456,
@@ -548,7 +623,17 @@ export default {
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '綜合企劃科',
                         file: { link: '/demofile/123.docx' },
-                        note: ''
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                            {
+                                name: '123.docx',
+                                link: '/demofile/123.docx'
+                            },
+                        ],
                     },
                     {
                         id: 789,
@@ -556,7 +641,17 @@ export default {
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '鐵路服務科',
                         file: { link: '/demofile/456.xlsx' },
-                        note: ''
+                        note: '',
+                        evidences: [
+                            {
+                                name: '456.xlsx',
+                                link: '/demofile/456.xlsx'
+                            },
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
                     },
                 ]
                 this.chLoadingShow()
@@ -565,6 +660,11 @@ export default {
         // 顯示檢視內容
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
+        // 顯示證據
+        showEvidences(arr) {
+            this.evidences = [ ...arr ]
+            this.dialogShow = true
         },
         // 增加已選的控制措施
         addControl(item) {

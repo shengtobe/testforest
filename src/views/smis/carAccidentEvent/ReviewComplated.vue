@@ -388,7 +388,7 @@ export default {
         dialogShow: false,  // 控制措施證據dialog是否顯示
         summary: '',  // 改善措施摘要
         isLoading: false,  // 是否讀取中
-        dialog: false,  // dialog 是否顯示
+        dialog: false,  // 退回 dialog 是否顯示
         backReason: '',  // 退回原因
     }),
     components: {

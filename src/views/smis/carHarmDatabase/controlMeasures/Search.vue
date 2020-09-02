@@ -210,7 +210,7 @@ export default {
         },
         // 顯示證據
         showEvidences(arr) {
-            this.evidences = [ ...arr ]
+            if (arr.length > 0) this.evidences = [ ...arr ]
             this.dialogShow = true
         },
     }

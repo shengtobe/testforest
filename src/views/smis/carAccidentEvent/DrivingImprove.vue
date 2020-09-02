@@ -45,7 +45,7 @@
                         </v-btn>
                     </template>
 
-                     <template v-slot:item.evidences="{ item }">
+                    <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
                             @click="showEvidences(item.evidences)"
                         >

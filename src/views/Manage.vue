@@ -37,10 +37,21 @@
     <!-- 表單管理 -->
     <v-list-item to="/form-manage" class="white--text">
       <v-list-item-icon>
-        <v-icon>mdi-file-document</v-icon>
+        <v-icon>mdi-file</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
-          <v-list-item-title>表單</v-list-item-title>
+        <v-list-item-title>表單</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-divider></v-divider>
+
+    <!-- 監控系統 -->
+    <v-list-item to="/" class="white--text">
+      <v-list-item-icon>
+        <v-icon>mdi-eye</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>監控系統</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
     <v-divider></v-divider>
