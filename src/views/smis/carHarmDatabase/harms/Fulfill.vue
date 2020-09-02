@@ -213,10 +213,10 @@
                 v-if="status == 5"
             >重提危害</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="closeCase"
+            <v-btn dark  class="ma-2" color="brown"
+                @click="showVersion"
                 v-if="status == 5"
-            >申請結案</v-btn>
+            >版本清單</v-btn>
         </v-col>
     </v-row>
 
@@ -287,6 +287,28 @@
             </v-list-item-group>
         </v-card>
     </v-dialog>
+
+    <!-- 版本清單 -->
+    <v-dialog v-model="verDialogShow" max-width="500px">
+        <v-card>
+            <v-card>
+                <v-data-table
+                    :headers="verHeaders"
+                    :items="verTableItems"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:item.action="{ item }">
+                        <v-btn color="teal" dark
+                            :loading="isLoading"
+                            @click="chVersion(item.id)"
+                        >切換</v-btn>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -329,7 +351,18 @@ export default {
         isLoading: false,  // 是否讀取中
         dialog: false,  // 退回 dialog 是否顯示
         backReason: '',  // 退回原因
-        uploads: [],  // 上傳的證據檔案列表  
+        uploads: [],  // 上傳的證據檔案列表
+        verDialogShow: false,  // 版本清單 dialog 是否顯示
+        verTableItems: [],  // 版本清單表格資料
+        verHeaders: [  // 版本清單表格欄位
+            { text: '版本', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '更新時間', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '查看內容', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        version: {  // 版本
+            lasterId: '',  // 最新版本id
+            nowId: '',  // 目前版本id
+        },
     }),
     components: { TopBasicTable },
     watch: {
@@ -502,6 +535,39 @@ export default {
         showEvidences(arr) {
             this.evidences = [ ...arr ]
             this.dialogShow = true
+        },
+        // 顯示版本清單 dialog
+        showVersion() {
+            this.chLoadingShow()
+
+            setTimeout(() => {
+                let arr = [
+                    {
+                        id: 1,  // id
+                        version: 1,  // 版本號
+                        updateTime: '2019-05-02 11:09:00',  // 更新時間
+                    },
+                    {
+                        id: 2,
+                        version: 2,
+                        updateTime: '2019-12-28 14:30:00',
+                    },
+                ]
+
+                this.verTableItems = [ ...arr ]
+                this.chLoadingShow()
+                this.verDialogShow = true
+            }, 1000)
+        },
+        // 切換版本 (顯示不同版本的內容)
+        chVersion(id) {
+            // 點擊時 data 內的變數記目前要看的版本id，後端取得資料後更新 data 的值
+            this.isLoading = true
+
+            setTimeout(() => {
+                this.version.nowId = id
+                this.verDialogShow = this.isLoading = false
+            }, 1000)
         },
     },
     created() {

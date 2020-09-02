@@ -46,7 +46,7 @@
     <v-divider></v-divider>
 
     <!-- 監控系統 -->
-    <v-list-item to="/" class="white--text">
+    <v-list-item to="/monitor" class="white--text">
       <v-list-item-icon>
         <v-icon>mdi-eye</v-icon>
       </v-list-item-icon>

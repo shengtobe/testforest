@@ -17,6 +17,7 @@ import { RepairAnalysisRouter } from './moduleRouter/repairAnalysis'
 import { WorkListRouter } from './moduleRouter/workList'
 import { FormManageRouter } from './moduleRouter/formManage'
 import { LicenseRouter } from './moduleRouter/license'
+import { MonitorRouter } from './moduleRouter/monitor'
 
 import { DemoFormRouter } from './moduleRouter/demoForm'
 
@@ -56,7 +57,7 @@ const routes = [
       ...WorkListRouter,  // 工單
       ...FormManageRouter,  // 表單
       ...LicenseRouter,  // 證照管理
-
+      ...MonitorRouter,  // 監控系統
       ...DemoFormRouter,  // demo 表單
     ],
     beforeEnter: (to, from, next) => {
