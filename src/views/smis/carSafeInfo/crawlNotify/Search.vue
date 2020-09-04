@@ -60,7 +60,7 @@
         </v-col>
 
         <v-col cols="12" md="6" align-self="center" class="mb-8 mb-md-0">
-            <v-btn color="green" dark large
+            <v-btn color="success" large
                 @click="search"
                 class="mr-3"
             >
@@ -68,7 +68,7 @@
             </v-btn>
 
             <v-btn color="indigo" dark large
-                
+                to="/smis/car-safeinfo/crawl-notify/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -113,21 +113,18 @@
                         {{ item.slow }} km/h
                     </template>
 
-                    <!-- 收件人 欄位 -->
-                    <template v-slot:item.receivers="{ item }">
-                        <v-btn small dark fab color="purple lighten-2"
-                            @click="showReceiver(item.receivers)"
-                        >
-                            <v-icon dark>mdi-account-multiple</v-icon>
-                        </v-btn>
-                    </template>
-
-                    <!-- 管理 欄位 -->
                     <template v-slot:item.action="{ item }">
-                        <v-btn small dark fab color="teal"
-                            @click="manageDialogShow = true"
+                        <v-btn fab small color="primary" class="mr-3"
+                            :to="`/smis/car-safeinfo/crawl-notify/${item.id}/edit`"
                         >
-                            <v-icon dark>mdi-apps</v-icon>
+                            <v-icon>mdi-pen</v-icon>
+                        </v-btn>
+
+                        <v-btn fab small color="success"
+                            :disabled="item.isStop"
+                            @click="stop(item.id)"
+                        >
+                            <v-icon>mdi-backup-restore</v-icon>
                         </v-btn>
                     </template>
 
@@ -143,96 +140,12 @@
             </v-card>
         </v-col>
     </v-row>
-
-    <!-- 收件人 -->
-    <v-dialog v-model="receiveDialog.show" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
-                <v-toolbar-title>收件人姓名</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn fab small text @click="receiveDialog.show = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-
-            <v-list-item-group>
-                <template v-for="(list, idx) in receiveDialog.items">
-                    <v-list-item :key="list.name">
-                        <v-list-item-content>
-                            <v-list-item-title>{{ list.name }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider
-                        v-if="idx + 1 < receiveDialog.items.length"
-                        :key="idx"
-                    ></v-divider>
-                </template>
-            </v-list-item-group>
-        </v-card>
-    </v-dialog>
-
-    <!-- 管理 dialog -->
-    <v-dialog v-model="manageDialogShow" max-width="450px">
-        <v-card>
-            <v-toolbar dark flat dense color="teal" class="mb-2">
-                <v-toolbar-title>管理</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn fab small text @click="manageDialogShow = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-
-            <v-card-text>
-                <v-row>
-                    <v-col cols="12" sm="5">
-                        <h3 class="mb-1">
-                            <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>延長日期
-                        </h3>
-                        <v-menu
-                            v-model="extend.show"
-                            :close-on-content-click="false"
-                            transition="scale-transition"
-                            max-width="290px"
-                            min-width="290px"
-                        >
-                            <template v-slot:activator="{ on }">
-                                <v-text-field
-                                    v-model="extend.date"
-                                    solo
-                                    v-on="on"
-                                    readonly
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                color="purple"
-                                v-model="extend.date"
-                                @input="extend.show = false"
-                                locale="zh-tw"
-                            ></v-date-picker>
-                        </v-menu>
-                    </v-col>
-
-                    <v-col cols="12" sm="7" align-self="center">
-                        <v-btn color="green" dark large class="mr-3"
-                            
-                        >確認延長</v-btn>
-
-                        <v-btn color="blue" dark large
-                            
-                        >解除慢行</v-btn>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
-    </v-dialog>
 </v-container>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
-// import { fetchOrderList } from '@/apis/workList/maintain'
 
 export default {
     data: () => ({
@@ -255,22 +168,13 @@ export default {
             { text: '限制日期(起)', value: 'dateStart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '限制日期(迄)', value: 'dateEnd', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '通報人', value: 'creater', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '收件人', value: 'receivers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管理', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        receiveDialog: {  // 收件人 dialog
-            show: false,
-            items: [],
-        },
-        manageDialogShow: false,  // 管理 dialog 是否顯示
-        extend: {  // 延長日期
-            show: false,
-            date: new Date().toISOString().substr(0, 10),
-        },
     }),
     components: { Pagination },  // 頁碼
     methods: {
         ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 搜尋
@@ -290,7 +194,7 @@ export default {
                         dateStart: '2019-05-10',
                         dateEnd: '2019-05-22',
                         creater: '王小明',
-                        receivers: ['陳小華 (AA012563)', '王永慶 (BA044639)', '趙力雄 (BA000854)', '韓志誠 (AA000032)'],
+                        isStop: false,  // 是否解除
                     },
                     {
                         id: '2',
@@ -302,7 +206,7 @@ export default {
                         dateStart: '2019-06-13',
                         dateEnd: '2019-06-30',
                         creater: '王小明',
-                        receivers: ['趙力雄 (BA000854)', '韓志誠 (AA000032)'],
+                        isStop: true,  // 是否解除
                     },
                     {
                         id: '3',
@@ -314,7 +218,7 @@ export default {
                         dateStart: '2019-10-01',
                         dateEnd: '2019-10-20',
                         creater: '王小明',
-                        receivers: ['王永慶 (BA044639)', '趙力雄 (BA000854)', '韓志誠 (AA000032)'],
+                        isStop: false,  // 是否解除
                     },
                 ]
                 this.chLoadingShow()
@@ -324,16 +228,18 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 顯示收件人
-        showReceiver(item) {
-            this.receiveDialog.items = item.map((ele, index) => {
-                return {
-                    idx: index + 1,
-                    name: ele,
-                }
-            })
+        // 解除
+        stop(id) {
+            if (confirm('解除後無法再次編輯，你確定要解除嗎?')) {
+                this.chLoadingShow()
 
-            this.receiveDialog.show = true
+                setTimeout(() => {
+                    let idx = this.tableItems.findIndex(item => item.id == id)
+                    this.tableItems.splice(idx, 1)
+                    this.chMsgbar({ success: true, msg: '解除成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
     },
 }

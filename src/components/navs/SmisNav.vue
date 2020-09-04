@@ -50,12 +50,16 @@
             <v-list-item-title class="white--text">行車安全資訊</v-list-item-title>
         </template>
 
-        <v-list-item to="/smis/car-safeinfo" class="white--text">
+        <v-list-item to="/smis/car-safeinfo/info" class="white--text">
             <v-list-item-title>安全資訊</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/smis/car-safeinfo/crawl-notify" class="white--text">
             <v-list-item-title>慢行通報</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item to="/smis/car-safeinfo/read-track" class="white--text">
+            <v-list-item-title>資訊讀取追蹤</v-list-item-title>
         </v-list-item>
     </v-list-group>
 

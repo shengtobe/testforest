@@ -655,13 +655,13 @@ export default {
         // 儲存工作表單
         saveJob() {
              if (this.jobHour.isEdit == false) {
-                // 新增時
+                // 新增時 (照林鐵人員要求，新增後不關閉視窗)
                 this.jobHour.items.push(this.jobForm)
             } else {
                 // 編輯時
                 Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
+                this.jobHour.dialogShow = false
             }
-            this.jobHour.dialogShow = false
         },
         // 依 uid 查詢工時成員的名稱
         getJobMemberName(uid) {
