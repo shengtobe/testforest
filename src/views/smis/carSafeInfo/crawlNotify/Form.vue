@@ -16,7 +16,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>速限起點(km)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限起點(km)
             </h3>
             <v-text-field
                 v-model.trim="ipt.pointStart"
@@ -26,7 +26,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>速限終點(km)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限終點(km)
             </h3>
             <v-text-field
                 v-model.trim="ipt.pointEnd"
@@ -36,7 +36,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>常態速限(km/h)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>常態速限(km/h)
             </h3>
             <v-text-field
                 v-model.trim="ipt.normal"
@@ -46,7 +46,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>慢行速限(km/h)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>慢行速限(km/h)
             </h3>
             <v-text-field
                 v-model.trim="ipt.slow"
@@ -110,6 +110,83 @@
             </v-menu>
         </v-col>
 
+        <!-- 收件人 -->
+        <v-col cols="12" class="mt-12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
+            </h3>
+            <v-row>
+                <v-col cols="12" sm="4" md="3">
+                    <v-select
+                        hide-details
+                        v-model="choose"
+                        :items="dapartOpts"
+                        @change="changeDepart"
+                        solo
+                    ></v-select>
+                </v-col>
+            </v-row>
+            <v-sheet color="white" elevation="2" class="px-2 pb-2 mt-3">
+                <v-row no-gutters>
+                    <v-col cols="12" class="mt-2">
+                        <v-btn
+                            class="mr-3"
+                            dark
+                            color="indigo"
+                            @click="joinAll"
+                        >加入全部</v-btn>
+
+                        <v-btn
+                            dark
+                            color="indigo"
+                            @click="join"
+                        >加入勾選</v-btn>
+                    </v-col>
+
+                    <v-col cols="12" sm="3" md="2"
+                        v-for="item in checkboxs"
+                        :key="item.value"
+                    >
+                        <v-checkbox
+                            v-model="chooseMembers"
+                            :label="item.name"
+                            color="blue"
+                            :value="item.value"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+                </v-row>
+            </v-sheet>
+        </v-col>
+
+        <v-col cols="12">
+            <h4 class="mb-1">
+                <v-icon class="mr-1 mb-2">mdi-lightbulb-on</v-icon>已加入的收件人：
+                <v-btn
+                    small
+                    color="error"
+                    @click="delAll"
+                    class="mb-1"
+                >移除全部</v-btn>
+            </h4>
+            
+            <div>
+                <v-chip
+                    v-for="(item, idx) in ipt.recipients"
+                    :key="item"
+                    class="mr-3 mt-2"
+                    label
+                    color="teal"
+                    dark
+                >
+                    {{ transferName(item) }} 
+                    <v-icon right
+                        @click="delMember(idx)"
+                    >mdi-close-circle</v-icon>
+                </v-chip>
+            </div>
+        </v-col>
+
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
                 to="/smis/car-safeinfo/crawl-notify"
@@ -126,9 +203,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { departOptions } from '@/assets/js/departOption'
-import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
-import Pagination from '@/components/Pagination.vue'
+import { dapartOptsForMember } from '@/assets/js/departOption'
 
 export default {
     data: () => ({
@@ -147,128 +222,65 @@ export default {
             start: false,
             end: false,
         },
-        members: [  // 員工資料
-            { name: '趙國強 (K59632)', val: '1'},
-            { name: '錢光華 (K12584)', val: '2'},
-            { name: '孫文豪 (K69584)', val: '3'},
-            { name: '李運深 (K24785)', val: '4'},
-            { name: '周寶盛 (K65241)', val: '5'},
-            { name: '吳泓吉 (K58963)', val: '6'},
-            { name: '鄭家豪 (K24758)', val: '7'},
-            { name: '王永慶 (K25896)', val: '8'},
+        choose: '',  // 所選部門,
+        chooseMembers: [],  // 勾選的收件人
+        dapartOpts: dapartOptsForMember,  // 部門下拉選單
+        checkboxs: [],  // 選單
+        members: [  // 所有員工資料
+            { name: '趙國強 (K59632)', value: '1'},
+            { name: '錢光華 (K12584)', value: '2'},
+            { name: '孫文豪 (K69584)', value: '3'},
+            { name: '李運深 (K24785)', value: '4'},
+            { name: '周寶盛 (K65241)', value: '5'},
+            { name: '吳泓吉 (K58963)', value: '6'},
+            { name: '鄭家豪 (K24758)', value: '7'},
+            { name: '王永慶 (K25896)', value: '8'},
         ],
     }),
-    components: {
-        AccidentCheckbox,
-        Pagination,
-    },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
-    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
-            'chViewDialog',  // 檢視內容 dialog
         ]),
-        // 初始化資料
-        initData() {
-            this.ipt = { ...this.defaultIpt }  // 初始化表單
+        // 切換部門成員
+        changeDepart() {
+            this.chLoadingShow()
 
-            // -------------- 編輯時 -------------- 
-            if (this.$route.params.id != undefined) {
+            // 範例效果
+            setTimeout(() => {
+                this.checkboxs = [ ...this.members ]  // 測試用先不過慮部門全列出
                 this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
-                this.isEdit = true
-
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
-                        reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
-                        indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
-                        note: '',  // 備註
-                        depart: 'd2',// 權責部門
-                        mode: 'm2',  // 營運模式
-                        wbs: 'APC2',  // 關聯子系統
-                        serious: 'S4',  // 風險嚴重性
-                        frequency: 'P2',  // 風險頻率
-                        affectTraveler: true,  // 影響旅客
-                        affectStaff: true,  // 影響員工
-                        affectPublic: false,  // 影響大眾
-                        trainLate: false,  // 列車誤點
-                        stopOperation: false,  // 中斷營運
-                        accidents: ['G3', 'G6'],  // 衍生事故
-                        controls: [  // 控制措施
-                            {
-                                id: 123,
-                                subject: '火災處理要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.pdf' },
-                                note: '',
-                                evidences: [
-                                    {
-                                        name: '456.xlsx',
-                                        link: '/demofile/456.xlsx'
-                                    },
-                                    {
-                                        name: '123.pdf',
-                                        link: '/demofile/123.pdf'
-                                    },
-                                ],
-                            },
-                            {
-                                id: 456,
-                                subject: '中暑急救要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.docx' },
-                                note: '',
-                                evidences: [
-                                    {
-                                        name: '123.pdf',
-                                        link: '/demofile/123.pdf'
-                                    },
-                                ],
-                            },
-                        ],
-                    }
-                    
-                    this.setInitDate(obj)
-                    this.chLoadingShow()
-                }, 1000)
-            }
+            }, 1000)
+            
         },
-        // 設定資料(編輯時)
-        setInitDate(obj) {
-            this.ipt.desc = obj.desc // 危害說明
-            this.ipt.reason = obj.reason  // 危害直接成因
-            this.ipt.indirectReason = obj.indirectReason  // 可能的危害間接原因
-            this.ipt.note = obj.note  // 備註
-            this.ipt.depart = obj.depart  // 權責部門
-            this.ipt.mode = obj.mode  // 營運模式
-            this.ipt.wbs = obj.wbs  // 關聯子系統
-            this.ipt.serious = obj.serious  // 風險嚴重性
-            this.ipt.frequency = obj.frequency  // 風險頻率
-            this.ipt.affectTraveler = obj.affectTraveler  // 影響旅客
-            this.ipt.affectStaff = obj.affectStaff  // 影響員工
-            this.ipt.affectPublic = obj.affectPublic  // 影響大眾
-            this.ipt.trainLate = obj.trainLate  // 列車誤點
-            this.ipt.stopOperation = obj.stopOperation  // 中斷營運
-            this.ipt.accidents = [ ...obj.accidents ]  // 衍生事故
-            this.ipt.controlChoose = [ ...obj.controls ]   // 已選控制錯施
+        // 加入全部 (checkboxs 陣列元素是物件)
+        joinAll() {
+            this.checkboxs.forEach(ele => {
+                // 若未選取則加入
+                let member = this.ipt.recipients.find(item => item == ele.value)
+                if (member == undefined) this.ipt.recipients.push(ele.value)
+            })
         },
-        // 設定勾選的延申事故
-        setAccident(arr) {
-            this.ipt.accidents = [ ...arr ]
+        // 加入勾選 (chooseMembers 陣列元素是物件的value屬性)
+        join() {
+            this.chooseMembers.forEach(ele => {
+                // 若未選取則加入
+                let member = this.ipt.recipients.find(item => item == ele)
+                if (member == undefined) this.ipt.recipients.push(ele)
+            })
+            this.chooseMembers = [ ...[] ]
         },
-        // 更換頁數
-        chPage(n) {
-            this.pageOpt.page = n
+        // 查詢名稱
+        transferName(val) {
+            return this.members.find(ele => ele.value == val).name
+        },
+        // 移除收件人
+        delMember(idx) {
+            this.ipt.recipients.splice(idx, 1)
+        },
+        // 移除全部收件人
+        delAll() {
+            this.ipt.recipients = [ ...[] ]
         },
         // 送出
         save() {
@@ -276,97 +288,11 @@ export default {
 
             // 測試用資料
             setTimeout(() => {
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
+                this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
                 this.chMsgbar({ success: true, msg: '資料新增成功'})
                 this.chLoadingShow()
             }, 1000)
         },
-        // 搜尋控制措施
-        search() {
-            this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 123,
-                        subject: '火災處理要點',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '綜合企劃科',
-                        file: { link: '/demofile/123.pdf' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                    {
-                        id: 456,
-                        subject: '中暑急救要點',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '綜合企劃科',
-                        file: { link: '/demofile/123.docx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                            {
-                                name: '123.docx',
-                                link: '/demofile/123.docx'
-                            },
-                        ],
-                    },
-                    {
-                        id: 789,
-                        subject: '火車誤點處理措施',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '鐵路服務科',
-                        file: { link: '/demofile/456.xlsx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                ]
-                this.chLoadingShow()
-            }, 1000)
-        },
-        // 顯示檢視內容
-        showContent(txt) {
-            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
-        },
-        // 顯示證據
-        showEvidences(arr) {
-            this.evidences = [ ...arr ]
-            this.dialogShow = true
-        },
-        // 增加已選的控制措施
-        addControl(item) {
-            // 沒找到才新增
-            let arr = this.ipt.controlChoose.find(ele => ele.id == item.id)
-            if (arr == undefined) {
-                this.ipt.controlChoose.push(item)
-            }
-        },
-        // 刪除已選的控制措施
-        delControl(id) {
-            let idx = this.ipt.controlChoose.findIndex(ele => ele.id == id)
-            this.ipt.controlChoose.splice(idx, 1)
-        },
     },
-    created() {
-        this.initData()
-    }
 }
 </script>
