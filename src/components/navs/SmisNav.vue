@@ -57,10 +57,6 @@
         <v-list-item to="/smis/car-safeinfo/crawl-notify" class="white--text">
             <v-list-item-title>慢行通報</v-list-item-title>
         </v-list-item>
-
-        <v-list-item to="/smis/car-safeinfo/read-track" class="white--text">
-            <v-list-item-title>資訊讀取追蹤</v-list-item-title>
-        </v-list-item>
     </v-list-group>
 
     <!-- 安全文件 -->

@@ -11,12 +11,10 @@ export const CarSafeInfoRouter = [
         path: '/smis/car-safeinfo/info/add',
         component: () => import('@/views/smis/carSafeInfo/info/Form.vue')
     },
-
-    // ------------- 資訊讀取追蹤 -------------
     {
-        linkText: '資訊讀取追蹤',
-        path: '/smis/car-safeinfo/read-track',
-        component: () => import('@/views/smis/carSafeInfo/readTrack/Search.vue')
+        linkText: '安全資訊讀取追蹤', 
+        path: '/smis/car-safeinfo/info/:id/read-track',
+        component: () => import('@/views/smis/carSafeInfo/info/ReadTrack.vue')
     },
 
     // ------------- 慢行通報 -------------
@@ -34,5 +32,10 @@ export const CarSafeInfoRouter = [
         linkText: '慢行通報編輯',
         path: '/smis/car-safeinfo/crawl-notify/:id/edit',
         component: () => import('@/views/smis/carSafeInfo/crawlNotify/Edit.vue')
+    },
+    {
+        linkText: '慢行通報讀取追蹤',
+        path: '/smis/car-safeinfo/crawl-notify/:id/read-track',
+        component: () => import('@/views/smis/carSafeInfo/crawlNotify/ReadTrack.vue')
     },
 ]

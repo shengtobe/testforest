@@ -93,28 +93,30 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <!-- 速限起點 欄位 -->
-                    <template v-slot:item.pointStart="{ item }">
-                        {{ item.pointStart }} km
+                    <template v-slot:item.location="{ item }">
+                        {{ `${item.pointStart} ~ ${item.pointEnd} km` }}
                     </template>
 
-                    <!-- 速限終點 欄位 -->
-                    <template v-slot:item.pointEnd="{ item }">
-                        {{ item.pointEnd }} km
-                    </template>
-
-                    <!-- 常態速限 欄位 -->
                     <template v-slot:item.normal="{ item }">
                         {{ item.normal }} km/h
                     </template>
 
-                    <!-- 慢行速限 欄位 -->
                     <template v-slot:item.slow="{ item }">
                         {{ item.slow }} km/h
                     </template>
 
+                    <template v-slot:item.date="{ item }">
+                        {{ `${item.dateStart} ~ ${item.dateEnd}` }}
+                    </template>
+
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary" class="mr-3"
+                        <v-btn fab small dark color="brown" class="mr-2"
+                            :to="`/smis/car-safeinfo/crawl-notify/${item.id}/read-track`"
+                        >
+                            <v-icon>mdi-radar</v-icon>
+                        </v-btn>
+
+                        <v-btn fab small color="primary" class="mr-2"
                             :to="`/smis/car-safeinfo/crawl-notify/${item.id}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
@@ -124,7 +126,7 @@
                             :disabled="item.isStop"
                             @click="stop(item.id)"
                         >
-                            <v-icon>mdi-backup-restore</v-icon>
+                            <v-icon>mdi-share</v-icon>
                         </v-btn>
                     </template>
 
@@ -160,15 +162,14 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '路線', value: 'line', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '速限起點', value: 'pointStart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '速限終點', value: 'pointEnd', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '限制日期(起)', value: 'dateStart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '限制日期(迄)', value: 'dateEnd', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '通報人', value: 'creater', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '讀取追蹤、編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
     }),
     components: { Pagination },  // 頁碼
@@ -185,7 +186,7 @@ export default {
             setTimeout(() => {
                 this.tableItems = [
                     {
-                        id: '1',
+                        id: '111',
                         line: '本線',
                         pointStart: '5.7',
                         pointEnd: '8',
@@ -197,7 +198,7 @@ export default {
                         isStop: false,  // 是否解除
                     },
                     {
-                        id: '2',
+                        id: '222',
                         line: '眠月線',
                         pointStart: '210.3',
                         pointEnd: '211.5',
@@ -209,7 +210,7 @@ export default {
                         isStop: true,  // 是否解除
                     },
                     {
-                        id: '3',
+                        id: '333',
                         line: '本線',
                         pointStart: '33',
                         pointEnd: '35.2',
