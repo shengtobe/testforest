@@ -31,10 +31,10 @@
         <v-col cols="12" class="mt-2">
             <v-card flat>
                 <v-card-title
-                    class="purple lighten-3 py-2 px-3"
+                    class="purple lighten-3 py-2 px-3 white--text"
                     primary-title
                 >
-                    <h5>已加入的檔案</h5>
+                    <h5>檔案列表</h5>
                 </v-card-title>
 
                 <div class="d-flex flex-wrap px-3 pt-2 pb-4">

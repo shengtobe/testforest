@@ -49,7 +49,7 @@
         <!-- 收件人 -->
         <v-col cols="12" class="mt-12">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
+                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件同仁
             </h3>
             <v-row>
                 <v-col cols="12" sm="4" md="3">
@@ -97,12 +97,12 @@
 
         <v-col cols="12">
             <h4 class="mb-1">
-                <v-icon class="mr-1 mb-2">mdi-lightbulb-on</v-icon>已加入的收件人：
+                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
                 <v-btn
                     small
                     color="error"
                     @click="delAll"
-                    class="mb-1"
+                    class="mb-1 ml-2"
                 >移除全部</v-btn>
             </h4>
             
@@ -112,8 +112,7 @@
                     :key="item"
                     class="mr-3 mt-2"
                     label
-                    color="teal"
-                    dark
+                    color="yellow lighten-3"
                 >
                     {{ transferName(item) }} 
                     <v-icon right
