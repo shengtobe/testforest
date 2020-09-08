@@ -152,8 +152,11 @@ import { carHarmDBControls } from '@/assets/js/smisTestData'
 
 export default {
     data: () => ({
-        depart: 'all',  // 管控單位
-        departOpts: departOptions,  // 管控單位下拉選單
+        depart: '',  // 管控單位
+        departOpts: [  // 管控單位下拉選單
+            { text: '不限', value: '' },
+            ...departOptions,
+        ],
         subject: '',  // 措施簡述
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料

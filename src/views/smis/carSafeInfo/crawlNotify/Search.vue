@@ -231,7 +231,7 @@ export default {
         },
         // 解除
         stop(id) {
-            if (confirm('解除後無法再次編輯，你確定要解除嗎?')) {
+            if (confirm('解除會發通知給所有收件人，並且之後無法再編輯，你確定要解除嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {

@@ -7,9 +7,32 @@ export const CarSafeInfoRouter = [
         component: () => import('@/views/smis/carSafeInfo/info/Search.vue')
     },
     {
-        linkText: '安全資訊發布', 
+        linkText: '新增', 
         path: '/smis/car-safeinfo/info/add',
         component: () => import('@/views/smis/carSafeInfo/info/Form.vue')
+    },
+    {
+        linkText: '詳細資訊', 
+        path: '/smis/car-safeinfo/info/:id/show',
+        component: () => import('@/views/smis/carSafeInfo/info/Show.vue')
+    },
+    {
+        linkText: '審核中',
+        path: '/smis/car-safeinfo/info/:id/review',
+        component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
+        props: { closeStatus: 2 }
+    },
+    {
+        linkText: '加會中',
+        path: '/smis/car-safeinfo/info/:id/join',
+        component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
+        props: { closeStatus: 3 }
+    },
+    {
+        linkText: '已發布',
+        path: '/smis/car-safeinfo/info/:id/complated',
+        component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
+        props: { closeStatus: 4 }
     },
     {
         linkText: '安全資訊讀取追蹤', 

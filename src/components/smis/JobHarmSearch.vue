@@ -36,7 +36,7 @@
             :loading="loading"
             @click="reset"
         >
-            <v-icon>mdi-reload</v-icon>清空表單
+            <v-icon>mdi-reload</v-icon>重置
         </v-btn>
 
         <v-btn color="green" dark large class="mr-3" elevation="3"
@@ -65,7 +65,7 @@ export default {
         harmTypeOpts: jobHarmType,
     }),
     methods: {
-        // 重置表單
+        // 重置
         reset() {
             this.ipt = { ...this.defaultIpt }
         },

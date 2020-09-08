@@ -168,12 +168,17 @@
                 </v-row>
             </v-col>
 
-            <!-- <v-col cols="12" md="5" class="text-right mb-4"> -->
             <v-col cols="12" class="mb-4">
-                <v-btn elevation="3" large class="mr-3 mb-4 mb-sm-0"
-                    @click="reset"
+                <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
+                    @click="search"
                 >
-                    <v-icon>mdi-reload</v-icon>清空表單
+                    <v-icon>mdi-magnify</v-icon>查詢
+                </v-btn>
+
+                <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
+                    @click="demo"
+                >
+                    <v-icon>mdi-magnify</v-icon>Demo
                 </v-btn>
 
                 <v-btn color="indigo" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
@@ -182,16 +187,10 @@
                     <v-icon>mdi-plus</v-icon>新增
                 </v-btn>
 
-                <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
-                    @click="search"
+                <v-btn elevation="3" large class="mr-3 mb-4 mb-sm-0"
+                    @click="reset"
                 >
-                    <v-icon>mdi-magnify</v-icon>查詢
-                </v-btn>
-
-                <v-btn color="green" dark large class="mb-4 mb-sm-0"
-                    @click="demo"
-                >
-                    <v-icon>mdi-magnify</v-icon>Demo
+                    <v-icon>mdi-reload</v-icon>重置
                 </v-btn>
             </v-col>
         </v-row>
@@ -376,7 +375,7 @@ export default {
                     break
             }
         },
-        // 清空表單
+        // 重置
         reset() {
             this.ipt = { ...this.defaultIpt }
         },

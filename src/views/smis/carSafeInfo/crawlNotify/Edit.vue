@@ -182,7 +182,7 @@ export default {
 
                 // 範例效果
                 setTimeout(() => {
-                    if (this.routeId == 2) this.isStop = true  // 設定已解除的範例
+                    if (this.routeId == 222) this.isStop = true  // 設定已解除的範例
 
                     this.recipients = ['2', '3', '5', '7']
                     this.chLoadingShow()

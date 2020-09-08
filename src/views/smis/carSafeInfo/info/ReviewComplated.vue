@@ -1,5 +1,5 @@
 <template>
 <v-container style="max-width: 1200px">
-    新增
+    審核、發布
 </v-container>
 </template>

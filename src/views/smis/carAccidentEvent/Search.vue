@@ -97,16 +97,10 @@
         </v-col>
 
         <v-col cols="12" md="9" class="text-md-right" align-self="center">
-            <v-btn color="pink" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
-                to="/smis/car-accident-event/del-recovery"
+            <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
+                @click="search"
             >
-                <v-icon class="mr-1">mdi-alert-circle</v-icon>作廢復原
-            </v-btn>
-
-            <v-btn elevation="3" large class="mr-3 mb-4 mb-sm-0"
-                @click="reset"
-            >
-                <v-icon class="mr-1">mdi-reload</v-icon>清空表單
+                <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
             <v-btn color="indigo" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
@@ -115,10 +109,16 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn color="green" dark large class="mb-4 mb-sm-0"
-                @click="search"
+            <v-btn elevation="3" large class="mr-3 mb-4 mb-sm-0"
+                @click="reset"
             >
-                <v-icon>mdi-magnify</v-icon>查詢
+                <v-icon class="mr-1">mdi-reload</v-icon>重置
+            </v-btn>
+
+            <v-btn color="pink" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
+                to="/smis/car-accident-event/del-recovery"
+            >
+                <v-icon class="mr-1">mdi-alert-circle</v-icon>作廢復原
             </v-btn>
         </v-col>
                 
@@ -244,7 +244,7 @@ export default {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 重置表單
+        // 重置
         reset() {
             this.ipt = { ...this.defaultIpt }
         },

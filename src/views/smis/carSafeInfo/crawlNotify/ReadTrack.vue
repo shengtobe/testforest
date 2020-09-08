@@ -49,6 +49,12 @@
                 </v-data-table>
             </v-card>
         </v-col>
+
+        <v-col cols="12" class="text-center mb-8">
+            <v-btn dark
+                to="/smis/car-safeinfo/crawl-notify"
+            >回搜尋頁</v-btn>
+        </v-col>
     </v-row>
 </v-container>
 </template>

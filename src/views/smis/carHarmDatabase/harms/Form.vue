@@ -416,7 +416,10 @@ export default {
             controlChoose: [],  // 已選的控制措施
         },
         opts: {  // 下拉選單
-            depart: departOptions,  // 權責部門
+            depart: [  // 權責部門
+                 { text: '不限', value: '' },
+                ...departOptions,
+            ],
             mode: [  // 營運模式
                 { text: '正常', value: 'm1' },
                 { text: '降級', value: 'm2' },
@@ -445,7 +448,7 @@ export default {
             ],
         },
         controlSearch: {  // 控制措施搜尋
-            depart: 'all',  // 部門
+            depart: '',  // 部門
             subject: '',  // 簡述
         },
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
