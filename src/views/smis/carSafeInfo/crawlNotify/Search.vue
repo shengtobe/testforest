@@ -236,7 +236,7 @@ export default {
 
                 setTimeout(() => {
                     let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
+                    this.tableItems[idx].isStop = true  // 把解除按鈕 disabled 掉
                     this.chMsgbar({ success: true, msg: '解除成功'})
                     this.chLoadingShow()
                 }, 1000)
