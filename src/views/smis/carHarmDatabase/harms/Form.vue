@@ -331,13 +331,19 @@
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
+                v-if="!isEdit"
                 to="/smis/car-harmdb/harms"
             >回搜尋頁</v-btn>
+
+            <v-btn dark class="mr-3"
+                v-else
+                :to="`/smis/car-harmdb/harms/${this.routeId}/show`"
+            >回上層</v-btn>
             
             <v-btn
                 color="success"
                 @click="save"
-            >送出</v-btn>
+            >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
     </v-row>
 
@@ -594,8 +600,9 @@ export default {
 
             // 測試用資料
             setTimeout(() => {
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
-                this.chMsgbar({ success: true, msg: '資料新增成功'})
+                let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                if (!this.isEdit) this.$router.push({ path: '/smis/car-harmdb/harms' })
+                this.chMsgbar({ success: true, msg: txt })
                 this.chLoadingShow()
             }, 1000)
         },

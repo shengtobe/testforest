@@ -12,6 +12,11 @@ export const CarSafeInfoRouter = [
         component: () => import('@/views/smis/carSafeInfo/info/Form.vue')
     },
     {
+        linkText: '編輯', 
+        path: '/smis/car-safeinfo/info/:id/edit',
+        component: () => import('@/views/smis/carSafeInfo/info/Form.vue')
+    },
+    {
         linkText: '詳細資訊', 
         path: '/smis/car-safeinfo/info/:id/show',
         component: () => import('@/views/smis/carSafeInfo/info/Show.vue')

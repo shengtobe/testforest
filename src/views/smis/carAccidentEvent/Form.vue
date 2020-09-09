@@ -176,12 +176,18 @@
 
         <v-col cols="12" class="text-center">
             <v-btn dark class="mr-4"
+                v-if="!isEdit"
                 to="/smis/car-accident-event"
             >回搜尋頁</v-btn>
 
+            <v-btn dark class="mr-4"
+                v-else
+                :to="`/smis/car-accident-event/${this.routeId}/show`"
+            >回上層</v-btn>
+
             <v-btn dark color="success"
                 @click="save"
-            >確定送出</v-btn>
+            >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
 
         <!-- 上傳檔案 (編輯時) -->
@@ -361,11 +367,10 @@ export default {
             setTimeout(() => {
                 // 都要順便傳危害通報新登錄 (this.notify.id)、危害通報id (this.notify.id) 欄位給後端
                 // 讓後端判斷為新登錄，就更改危害通報的立案狀態，並且順便申請審核
-
-                this.$router.push({ path: '/smis/car-accident-event' })
-                this.chMsgbar({ success: true, msg: '資料新增成功'})
+                let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
+                this.chMsgbar({ success: true, msg: txt })
                 this.chLoadingShow()
-                console.log(this.ipt)
             }, 1000)
         },
         // 加入要上傳的檔案 (新增時)
@@ -394,7 +399,7 @@ export default {
 
                 setTimeout(() => {
                     // 後端請求後，移除檔案列表
-                    // this.ipt.files.splice(idx, 1)
+                    this.ipt.files.splice(idx, 1)
                     this.chMsgbar({ success: true, msg: '檔案刪除成功'})
                     this.chLoadingShow()
                 }, 1000)

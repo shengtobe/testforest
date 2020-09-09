@@ -265,13 +265,12 @@ export default {
                 if (this.isEdit) {
                     // 編輯時
                     if (confirm('修改內容後，有用到此措施的行車危害全部要重新審核，你確定要存檔嗎?')) {
-                        this.chMsgbar({ success: true, msg: '更新成功'})
+                        this.chMsgbar({ success: true, msg: '資料更新成功'})
                     }
                 } else {
                     // 新增時
                     this.$router.push({ path: '/smis/car-harmdb/control-measures' })
                     this.chMsgbar({ success: true, msg: '資料新增成功'})
-                    
                 }
                 this.chLoadingShow()
             }, 1000)

@@ -189,18 +189,24 @@
         </template>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="mr-4"
+                v-if="!isEdit"
                 to="/smis/car-safeinfo/info"
             >回搜尋頁</v-btn>
 
+            <v-btn dark class="mr-4"
+                v-else
+                :to="`/smis/car-safeinfo/info/${this.routeId}/show`"
+            >回上層</v-btn>
+
             <v-btn dark color="success"
                 @click="save"
-            >送出</v-btn>
+            >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
 
         <!-- 上傳檔案 (編輯時) -->
         <template v-if="isEdit">
-            <v-col cols="12" class="mt-8 mb-2">
+            <v-col cols="12" class="mb-2">
                 <v-divider></v-divider>
             </v-col>
 
@@ -285,14 +291,20 @@ export default {
                 // 範例效果
                 setTimeout(() => {
                     let obj = {
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
-                        reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
-                        indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
-                        note: '',  // 備註
-                        depart: 'd2',// 權責部門
-                        mode: 'm2',  // 營運模式
-                        wbs: 'APC2',  // 關聯子系統
-                        serious: 'S4',  // 風險嚴重性
+                        id: '111',
+                        depart: '綜合企劃科',
+                        name: '王小明',
+                        title: '3月份團康活動',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 說明
+                        recipients: ['2', '4', '5'],  // 收件人
+                        cc: ['6'],  // 副本
+                        joiners: ['7'],  // 加會人
+                        files: [
+                            { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
+                            { fileName: '123.docx', link: '/demofile/123.docx' },
+                            { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                        ],
+                        status: 1,
                     }
                     
                     this.setInitDate(obj)
@@ -302,14 +314,12 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            this.ipt.desc = obj.desc // 危害說明
-            this.ipt.reason = obj.reason  // 危害直接成因
-            this.ipt.indirectReason = obj.indirectReason  // 可能的危害間接原因
-            this.ipt.note = obj.note  // 備註
-            this.ipt.depart = obj.depart  // 權責部門
-            this.ipt.mode = obj.mode  // 營運模式
-            this.ipt.wbs = obj.wbs  // 關聯子系統
-            this.ipt.serious = obj.serious  // 風險嚴重性
+            this.ipt.title = obj.title // 通報主題
+            this.ipt.desc = obj.desc // 發布內容
+            this.ipt.recipients = [ ...obj.recipients ] // 收件人
+            this.ipt.cc = [ ...obj.cc ] // 副本
+            this.ipt.joiners = [ ...obj.joiners ] // 加會人
+            this.ipt.files = [ ...obj.files ] // 附件檔案
         },
         // 切換部門成員
         changeDepart() {
@@ -351,13 +361,37 @@ export default {
         delAll(t) {
             this.ipt[t] = [ ...[] ]
         },
-        // 加入要上傳的檔案
+        // 加入要上傳的檔案 (新增時)
         joinFile(file) {
             this.ipt.files.push(file)
         },
-        // 移除要上傳的檔案
+        // 移除要上傳的檔案 (新增時)
         rmFile(idx) {
             this.ipt.files.splice(idx, 1)
+        },
+        // 上傳檔案 (編輯時)
+        uploadFile(file) {
+            this.chLoadingShow()
+
+            setTimeout(() => {
+                // 後端請求後，回傳檔案資料 (id、filename、link)
+                // this.ipt.files.push(fileData)
+                this.chMsgbar({ success: true, msg: '檔案新增成功'})
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 刪除檔案 (編輯時)
+        deleteFile(id, idx) {
+            if (confirm('你確定要刪除嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    // 後端請求後，移除檔案列表
+                    this.ipt.files.splice(idx, 1)
+                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 送出
         save() {
@@ -365,8 +399,9 @@ export default {
 
             // 測試用資料
             setTimeout(() => {
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
-                this.chMsgbar({ success: true, msg: '資料新增成功'})
+                let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                if (!this.isEdit) this.$router.push({ path: '/smis/car-safeinfo/info' })
+                this.chMsgbar({ success: true, msg: txt })
                 this.chLoadingShow()
             }, 1000)
         },
