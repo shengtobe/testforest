@@ -136,7 +136,7 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small dark color="brown" class="mr-2"
+                        <v-btn fab small dark color="brown" class="mr-3"
                             :to="`/smis/car-safeinfo/info/${item.id}/read-track`"
                         >
                             <v-icon>mdi-radar</v-icon>

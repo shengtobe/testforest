@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">慢行通報追蹤 (編號：{{ routeId }})</h2>
+    <h2 class="mb-4">慢行通報讀取追蹤 (編號：{{ routeId }})</h2>
 
     <v-row class="px-2">
         <v-col cols="12" sm="4" md="3">
@@ -9,7 +9,7 @@
             </h3>
             <v-text-field
                 v-model.trim="keyword"
-                placeholder="請輸入關鍵字"
+                placeholder="請輸入任意關鍵字"
                 solo
                 hide-details
             ></v-text-field>
