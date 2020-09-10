@@ -32,7 +32,7 @@
     </v-col>
 
     <v-col cols="12" class="mb-4">
-        <v-btn elevation="3" large class="mr-3"
+        <v-btn elevation="2" large class="mr-3"
             :loading="loading"
             @click="reset"
         >

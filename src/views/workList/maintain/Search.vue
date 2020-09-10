@@ -181,13 +181,13 @@
                     <v-icon>mdi-magnify</v-icon>Demo
                 </v-btn>
 
-                <v-btn color="indigo" elevation="3" dark large class="mr-3 mb-4 mb-sm-0"
+                <v-btn color="indigo" dark large class="mr-3 mb-4 mb-sm-0"
                     to="/worklist/maintain/newList"
                 >
                     <v-icon>mdi-plus</v-icon>新增
                 </v-btn>
 
-                <v-btn elevation="3" large class="mr-3 mb-4 mb-sm-0"
+                <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0"
                     @click="reset"
                 >
                     <v-icon>mdi-reload</v-icon>重置

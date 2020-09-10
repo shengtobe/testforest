@@ -105,7 +105,7 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="3" large class="mb-3"
+            <v-btn elevation="2" large class="mb-3"
                 @click="reset"
             >
                 <v-icon class="mr-1">mdi-reload</v-icon>重置
