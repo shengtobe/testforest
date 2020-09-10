@@ -301,8 +301,8 @@ export default {
             { text: '會議日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '會議主題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '文件下載', value: 'download', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         dialog: false,  // dialog 是否顯示
@@ -347,7 +347,7 @@ export default {
                         min: '30', 
                         title: '行車安全研討會',
                         download: { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        updateTime: '2020-05-01',
+                        updateTime: '2020-05-01 09:30:00',
                         note: '',
                     },
                     {
@@ -357,7 +357,7 @@ export default {
                         min: '20', 
                         title: '年度保養檢討會',
                         download: { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        updateTime: '2020-04-16',
+                        updateTime: '2020-04-16 15:20:00',
                         note: '',
                     },
                     {
@@ -367,7 +367,7 @@ export default {
                         min: '40', 
                         title: '職業安全研討會',
                         download: { fileName: '123.docx', link: '/demofile/123.docx' },
-                        updateTime: '2020-03-21',
+                        updateTime: '2020-03-21 11:40:00',
                         note: '',
                     },
                 ]

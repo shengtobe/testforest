@@ -104,7 +104,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
             </h3>
-            <v-card>
+            <v-card flat>
                 <v-data-table
                     :headers="headers"
                     :items="tableItems"
@@ -548,6 +548,17 @@ export default {
         showEvidences(arr) {
             this.evidences = [ ...arr ]
             this.dialogShow = true
+        },
+        // 重提危害
+        rerun() {
+            if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.$router.push({ path: `/smis/car-harmdb/harms/${this.routeId}/show` })
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 顯示版本清單 dialog
         showVersion() {
