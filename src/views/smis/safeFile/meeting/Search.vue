@@ -125,8 +125,7 @@
                     <template v-slot:item.download="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
                             :href="item.download.link"
-                            target="_blank"
-                            rel="noopener norefferrer"
+                            :download="item.fileName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>

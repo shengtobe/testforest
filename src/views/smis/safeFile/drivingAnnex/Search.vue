@@ -25,8 +25,7 @@
                     <template v-slot:item.link="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
                             :href="item.link"
-                            target="_blank"
-                            rel="noopener norefferrer"
+                            :download="item.fileName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>

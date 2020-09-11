@@ -46,8 +46,7 @@
                         small
                         color="teal"
                         :href="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
+                        :download="item.fileName"
                         class="mr-3"
                     >查看</v-btn>
 

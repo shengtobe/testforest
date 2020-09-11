@@ -114,8 +114,7 @@
                         v-for="item in files"
                         :key="item.fileName"
                         :href="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
+                        :download="item.fileName"
                     >
                         {{ item.fileName }}
                     </v-chip>
@@ -171,8 +170,7 @@
                     <template v-slot:item.file="{ item }">
                         <v-btn small dark fab color="indigo"
                             :href="item.file.link"
-                            target="_blank"
-                            rel="noopener norefferrer"
+                            :download="item.file.name"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -316,8 +314,7 @@
                     <v-list-item
                         :key="item.name"
                         :href="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
+                        :download="item.name"
                     >
                         <v-list-item-content>
                             <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -481,7 +478,7 @@ export default {
                     subject: '大型樹木移除注意事項',
                     desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                     depart: '服務科',
-                    file: { link: '/demofile/123.docx' },
+                    file: { name: '123.docx', link: '/demofile/123.docx' },
                     note: '',
                     evidences: [
                         {

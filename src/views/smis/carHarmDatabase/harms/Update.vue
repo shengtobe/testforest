@@ -242,8 +242,7 @@
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
                             :href="item.file.link"
-                            target="_blank"
-                            rel="noopener norefferrer"
+                            :download="item.file.name"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -301,8 +300,7 @@
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
                             :href="item.file.link"
-                            target="_blank"
-                            rel="noopener norefferrer"
+                            :download="item.file.name"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -432,8 +430,7 @@
                     <v-list-item
                         :key="item.name"
                         :href="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
+                        :download="item.name"
                     >
                         <v-list-item-content>
                             <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -598,7 +595,7 @@ export default {
                             subject: '火災處理要點',
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
-                            file: { link: '/demofile/123.pdf' },
+                            file: { name: '123.pdf', link: '/demofile/123.pdf' },
                             note: '',
                             evidences: [
                                 {
@@ -616,7 +613,7 @@ export default {
                             subject: '中暑急救要點',
                             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                             depart: '綜合企劃科',
-                            file: { link: '/demofile/123.docx' },
+                            file: { name: '123.docx', link: '/demofile/123.docx' },
                             note: '',
                             evidences: [
                                 {

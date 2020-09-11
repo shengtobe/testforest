@@ -157,8 +157,7 @@
                     v-for="item in notify.files"
                     :key="item.fileName"
                     :href="item.link"
-                    target="_blank"
-                    rel="noopener norefferrer"
+                    :download="item.fileName"
                 >
                     {{ item.fileName }}
                 </v-chip>

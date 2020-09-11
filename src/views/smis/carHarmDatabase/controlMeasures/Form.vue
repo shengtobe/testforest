@@ -77,8 +77,7 @@
                     <template v-slot:item.file="{ item }">
                         <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
                             :href="item.file.link"
-                            target="_blank"
-                            rel="noopener norefferrer"
+                            :download="item.file.name"
                         >
                             {{ item.file.name }}
                         </v-chip>

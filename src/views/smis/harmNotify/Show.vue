@@ -52,8 +52,7 @@
                         v-for="item in files"
                         :key="item.fileName"
                         :href="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
+                        :download="item.fileName"
                     >
                         {{ item.fileName }}
                     </v-chip>
