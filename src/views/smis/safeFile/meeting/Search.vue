@@ -125,7 +125,7 @@
                     <template v-slot:item.download="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
                             :href="item.download.link"
-                            :download="item.fileName"
+                            :download="item.download.fileName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -387,9 +387,14 @@ export default {
 
             setTimeout(() => {
                 let txt = this.itemIndex === -1 ? '新增成功' : '更新成功'
+
+                // 編輯時，待後端回傳檔案資訊，再一併寫回 this.tableItems[this.itemIndex] 中
+                if (this.itemIndex > -1) {
+                    
+                }
+                
                 this.chMsgbar({ success: true, msg: txt })
                 this.isLoading = this.dialog = false
-                this.ipt = { ...this.defaultIpt }  // 初始化表單
             }, 1000)
         },
         // 新增
