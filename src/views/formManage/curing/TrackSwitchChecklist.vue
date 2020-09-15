@@ -1,0 +1,394 @@
+<template>
+  <v-container style="max-width: 1200px">
+    <h2 class="mb-4 px-2">轉轍器檢查保養紀錄表</h2>
+    <!-- 第一排選項 -->
+    <v-row class="px-2">
+      <v-col cols="12" sm="3" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
+        </h3>
+        <v-menu
+          v-model="a"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
+          </template>
+          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
+        </h3>
+        <v-menu
+          v-model="q"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
+          </template>
+          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
+        </h3>
+        <v-select
+          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          solo
+        />
+      </v-col>
+      <div class="col-sm-4 col-md-8 col-12">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+        </v-btn>
+        <v-btn
+          color="indigo"
+          elevation="3"
+          dark
+          large
+          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
+          @click="Add = true"
+        >
+          <v-icon>mdi-plus</v-icon>新增檢點表
+        </v-btn>
+      </div>
+    </v-row>
+    <!-- 表格資料 -->
+    <v-col cols="12">
+      <v-card>
+        <v-data-table
+          :headers="headers"
+          :items="tableItems"
+          :options.sync="pageOpt"
+          disable-sort
+          disable-filtering
+          hide-default-footer
+        >
+          <template v-slot:no-data>
+            <span class="red--text subtitle-1">沒有資料</span>
+          </template>
+
+          <template v-slot:loading>
+            <span class="red--text subtitle-1">資料讀取中...</span>
+          </template>
+
+          <!-- headers 的 content 欄位 (檢視內容) -->
+          <template v-slot:item.shop>
+            <v-btn
+              title="詳細資料"
+              class="mr-2"
+              small
+              dark
+              fab
+              color="info darken-1"
+              @click="Add = true"
+            >
+              <v-icon dark>mdi-magnify</v-icon>
+            </v-btn>
+          </template>
+          <!-- 頁碼 -->
+          <template v-slot:footer="footer">
+            <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-col>
+    <!-- 新增轉轍器檢查保養紀錄表  modal -->
+    <v-dialog v-model="Add" max-width="900px">
+      <v-card>
+        <v-card-title class="blue white--text px-4 py-1">
+          新增轉轍器檢查保養紀錄表
+          <v-spacer></v-spacer>
+          <v-btn dark fab small text @click="close" class="mr-n2">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <div class="px-6 py-4">
+          <v-row>
+            <v-col cols="12">
+              <p>1.依檢查結果選擇正常、異常、無此項目。</p>
+            </v-col>
+            <!-- 檢查項目 -->
+            <v-col cols="12">
+              <v-row no-gutter class="indigo--text">
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查日期</h3>
+                  <v-menu
+                    v-model="ass"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
+                    </template>
+                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">管理單位</h3>
+                  <v-text-field solo value readonly />
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查人員</h3>
+                  <v-text-field solo />
+                </v-col>
+              </v-row>
+              <!-- <v-img src="../../../public/demofile/demo.png" /> -->
+              <v-data-table
+                :headers="fwcd"
+                :items="ddf"
+                disable-sort
+                disable-filtering
+                hide-default-footer
+              >
+                <template v-slot:no-data>
+                  <span class="red--text subtitle-1">沒有資料</span>
+                </template>
+
+                <template v-slot:loading>
+                  <span class="red--text subtitle-1">資料讀取中...</span>
+                </template>
+
+                <!-- headers 的 content 欄位 (檢視內容) -->
+                <template v-slot:item.b2>
+                  <v-radio-group dense row class="pa-0 ma-0">
+                    <v-radio color="success" label="正常" value="1" />
+                    <v-radio color="red" label="不正常" value="2" />
+                    <v-radio color="black" label="無此項目" value="0" />
+                  </v-radio-group>
+                </template>
+                <template v-slot:item.b3>
+                  <v-radio-group dense row class="pa-0 ma-0">
+                    <v-radio color="success" label="正常" value="1" />
+                    <v-radio color="red" label="不正常" value="2" />
+                    <v-radio color="black" label="無此項目" value="0" />
+                  </v-radio-group>
+                </template>
+                <template v-slot:item.b4>
+                  <v-radio-group dense row class="pa-0 ma-0">
+                    <v-radio color="success" label="正常" value="1" />
+                    <v-radio color="red" label="不正常" value="2" />
+                    <v-radio color="black" label="無此項目" value="0" />
+                  </v-radio-group>
+                </template>
+                <template v-slot:item.b5>
+                  <v-radio-group dense row class="pa-0 ma-0">
+                    <v-radio color="success" label="正常" value="1" />
+                    <v-radio color="red" label="不正常" value="2" />
+                    <v-radio color="black" label="無此項目" value="0" />
+                  </v-radio-group>
+                </template>
+                <template v-slot:item.b6>
+                  <v-radio-group dense row class="pa-0 ma-0">
+                    <v-radio color="success" label="正常" value="1" />
+                    <v-radio color="red" label="不正常" value="2" />
+                    <v-radio color="black" label="無此項目" value="0" />
+                  </v-radio-group>
+                </template>
+              </v-data-table>
+            </v-col>
+            <!-- END 檢查項目 -->
+          </v-row>
+        </div>
+
+        <v-card-actions class="px-5 pb-5">
+          <v-spacer></v-spacer>
+          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
+</template>
+
+<script>
+import Pagination from "@/components/Pagination.vue";
+
+export default {
+  data() {
+    return {
+      panel: [0, 1, 2, 3],
+      disabled: false,
+      readonly: false,
+      a: "",
+      ass: "",
+      z: "",
+      zs: "",
+      q: "",
+      df: "",
+      s: "",
+      qz: "",
+      wx: "",
+      pp: "",
+      oo: "",
+      ii: "",
+      uu: "",
+      yy: "",
+      Add: false,
+      dialog3: false,
+      pageOpt: { page: 1 }, // 目前頁數
+      headers: [
+        // 表格顯示的欄位
+        {
+          text: "項次",
+          value: "a0",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "檢查日期",
+          value: "aa",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "審查狀態",
+          value: "cc",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "填寫人",
+          value: "dd",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "功能",
+          value: "shop",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+      ],
+      fwcd: [
+        // 表格顯示的欄位
+        {
+          text: "檢查項目",
+          value: "b1",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "岔道編號：1",
+          value: "b2",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "岔道編號：3",
+          value: "b3",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "岔道編號：5",
+          value: "b4",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "岔道編號：9",
+          value: "b5",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "岔道編號：11",
+          value: "b6",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+      ],
+      ddf: [
+        {
+          b1: "1. 轉轍器基座清潔潤滑",
+        },
+        {
+          b1: "2. 轉轍器連桿滑動部位清潔潤滑",
+        },
+        {
+          b1: "3. 滑板表面清潔潤滑",
+        },
+        {
+          b1: "4. 檢查岔道針是否密合",
+        },
+      ],
+      tableItems: [
+        {
+          a0: "1",
+          aa: "2020-08-01",
+          cc: "已審查",
+          dd: "王大明",
+        },
+        {
+          a0: "2",
+          aa: "2020-08-10",
+          cc: "審查中",
+          dd: "王大明",
+        },
+      ],
+      ipt: {
+        department: "",
+        name: JSON.parse(localStorage.getItem("user")).name,
+        date: new Date().toISOString().substr(0, 10),
+        items: [
+          { status: "1", note: "" },
+          { status: "1", note: "" },
+          { status: "1", note: "" },
+          { status: "1", note: "" },
+        ],
+      },
+      items: [
+        { qq: "1. 轉轍器基座清潔潤滑" },
+        { qq: "2. 轉轍器連桿滑動部位清潔潤滑" },
+        { qq: "3. 滑板表面清潔潤滑" },
+        { qq: "4. 檢查岔道針是否密合" },
+      ],
+      suggest: "", // 改善建議
+    };
+  },
+  components: { Pagination }, // 頁碼
+  methods: {
+    // 更換頁數
+    chPage(n) {
+      this.pageOpt.page = n;
+    },
+    // 搜尋
+    search() {},
+    // 關閉 dialog
+    close() {
+      this.Add = false;
+      this.dialog3 = false;
+      this.dialogShowEdit = false;
+      this.dialogDel = false;
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.addItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      }, 300);
+    },
+  },
+};
+</script>

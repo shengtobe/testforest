@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">表單列表</h2>
+    <h2 class="mb-4">表單搜尋</h2>
 
     <v-row class="px-2">
         <v-col cols="12" sm="4" md="3">
@@ -12,7 +12,7 @@
                 :items="depOpts"
                 solo
                 hide-details
-                @change="setDepartment"
+               
             ></v-select>
         </v-col>
 
@@ -53,10 +53,10 @@
                     <!-- headers 的 fid 欄位 (檢視內容) -->
                     <template v-slot:item.name="{ item }">
                         <router-link
-                            :to="`/form-manage/${item.fid}`"
+                            :to="item.path"
                             class="text-decoration-none text-subtitle-1 grey--text text--darken-3"
                         >
-                            {{ item.name }}
+                            {{ item.linkText }}
                         </router-link>
                     </template>
 
@@ -76,20 +76,25 @@
 </template>
 
 <script>
-import formList from '../../assets/js/formList'
+import { FormServeRouter } from '@/router/moduleRouter/form/serve'
+import { FormMaintainRouter } from '@/router/moduleRouter/form/maintain'
+import { FormCuringRouter } from '@/router/moduleRouter/form/curing'
+import { FormLaborRouter } from '@/router/moduleRouter/form/labor'
+import { FormOtherRouter } from '@/router/moduleRouter/form/other'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
     data: () => ({
+        allRouters: [],  // 所有路由
         department: 'serve',  // 科室
         depOpts: [  // 科室下拉選單
             { text: '服務科', value: 'serve' },
-            { text: '養護科 (車庫)', value: 'garage' },
-            { text: '養護科 (修理工廠)', value: 'factory' },
-            { text: '維護科', value: 'maintain' },
+            { text: '鐵路維護科', value: 'maintain' },
+            { text: '車輛養護科', value: 'curing' },
             { text: '勞安', value: 'labor' },
+            { text: '其他', value: 'other' },
         ],
-        tableItems: [],  // 表格資料
+        // tableItems: [],  // 表格資料
         keyword: '',  // 關鍵字
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
@@ -98,15 +103,39 @@ export default {
         ],
     }),
     components: { Pagination },
-    methods: {
-        // 指定科室
-        setDepartment() {
-            this.tableItems = formList[this.department].map((item, idx) => {
+    computed: {
+        tableItems() {
+            // 過瀘資料
+            let arr = this.allRouters.filter(item => (item.formGroup.includes(this.department)))
+            
+            // 加項次
+            return arr.map((item, idx) => {
                 return {
                     idx: idx+1,
                     ...item
                 }
             })
+        },
+    },
+    methods: {
+        // 指定科室
+        // setDepartment() {
+        //     this.tableItems = formList[this.department].map((item, idx) => {
+        //         return {
+        //             idx: idx+1,
+        //             ...item
+        //         }
+        //     })
+        // },
+        // 初始化資料
+        initData() {
+            this.allRouters = [  // 組合所有路由
+                ...FormServeRouter,
+                ...FormMaintainRouter,
+                ...FormCuringRouter,
+                ...FormLaborRouter,
+                ...FormOtherRouter,
+            ]
         },
         // 更換頁數
         chPage(n) {
@@ -114,7 +143,8 @@ export default {
         }
     },
     created() {
-        this.setDepartment()  // 指定科室
+        // this.setDepartment()  // 指定科室
+        this.initData()
     }
 }
 </script>
