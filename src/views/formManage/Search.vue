@@ -12,7 +12,7 @@
                 :items="depOpts"
                 solo
                 hide-details
-               
+                @change="chDepart"  
             ></v-select>
         </v-col>
 
@@ -51,7 +51,7 @@
                     </template>
 
                     <!-- headers 的 fid 欄位 (檢視內容) -->
-                    <template v-slot:item.name="{ item }">
+                    <template v-slot:item.linkText="{ item }">
                         <router-link
                             :to="item.path"
                             class="text-decoration-none text-subtitle-1 grey--text text--darken-3"
@@ -80,7 +80,6 @@ import { FormServeRouter } from '@/router/moduleRouter/form/serve'
 import { FormMaintainRouter } from '@/router/moduleRouter/form/maintain'
 import { FormCuringRouter } from '@/router/moduleRouter/form/curing'
 import { FormLaborRouter } from '@/router/moduleRouter/form/labor'
-import { FormOtherRouter } from '@/router/moduleRouter/form/other'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -92,18 +91,17 @@ export default {
             { text: '鐵路維護科', value: 'maintain' },
             { text: '車輛養護科', value: 'curing' },
             { text: '勞安', value: 'labor' },
-            { text: '其他', value: 'other' },
         ],
-        // tableItems: [],  // 表格資料
         keyword: '',  // 關鍵字
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '項次', value: 'idx', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 80 },
-            { text: '表單名稱', value: 'name', align: 'left', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '表單名稱', value: 'linkText', align: 'left', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
     }),
     components: { Pagination },
     computed: {
+        // 表格資料
         tableItems() {
             // 過瀘資料
             let arr = this.allRouters.filter(item => (item.formGroup.includes(this.department)))
@@ -118,15 +116,6 @@ export default {
         },
     },
     methods: {
-        // 指定科室
-        // setDepartment() {
-        //     this.tableItems = formList[this.department].map((item, idx) => {
-        //         return {
-        //             idx: idx+1,
-        //             ...item
-        //         }
-        //     })
-        // },
         // 初始化資料
         initData() {
             this.allRouters = [  // 組合所有路由
@@ -134,16 +123,18 @@ export default {
                 ...FormMaintainRouter,
                 ...FormCuringRouter,
                 ...FormLaborRouter,
-                ...FormOtherRouter,
             ]
         },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
-        }
+        },
+        // 更換科室
+        chDepart() {
+            this.pageOpt.page = 1  // 頁碼初始化
+        },
     },
     created() {
-        // this.setDepartment()  // 指定科室
         this.initData()
     }
 }

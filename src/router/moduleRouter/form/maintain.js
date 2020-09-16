@@ -38,7 +38,7 @@ export const FormMaintainRouter = [
         formGroup: ['maintain']
     },
     {
-        linkText: '鐵道橋樑監理資料項目(第一頁籤)',
+        linkText: '鐵道橋樑監理資料',
         path: '/form-manage/maintain/rail-bridge-checklist',
         component: () => import('@/views/formManage/maintain/RailBridgeChecklist.vue'),
         formGroup: ['maintain']
@@ -65,6 +65,12 @@ export const FormMaintainRouter = [
         linkText: '鋼軌鉅軌-鑽孔-磨軌機(季)定期檢查表',
         path: '/form-manage/maintain/saw-drill-grind-checklist',
         component: () => import('@/views/formManage/maintain/SawDrillGrindChecklist.vue'),
+        formGroup: ['maintain']
+    },
+    {
+        linkText: '道岔維護檢查表',
+        path: '/form-manage/maintain/zhuqi-rail-switch-checklist',
+        component: () => import('@/views/formManage/maintain/ZhuqiRailSwitchChecklist.vue'),
         formGroup: ['maintain']
     },
 ]

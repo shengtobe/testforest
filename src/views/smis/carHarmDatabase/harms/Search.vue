@@ -217,6 +217,7 @@ export default {
         // 簡易搜尋
         search() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
             // 新增測試用資料
             setTimeout(() => {
@@ -227,6 +228,7 @@ export default {
         // 快速查詢
         fastFetch() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
             // 新增測試用資料
             setTimeout(() => {

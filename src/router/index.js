@@ -19,12 +19,9 @@ import { FormManageRouter } from './moduleRouter/formManage'
 import { FormCuringRouter } from './moduleRouter/form/curing'
 import { FormLaborRouter } from './moduleRouter/form/labor'
 import { FormMaintainRouter } from './moduleRouter/form/maintain'
-import { FormOtherRouter } from './moduleRouter/form/other'
 import { FormServeRouter } from './moduleRouter/form/serve'
 // import { LicenseRouter } from './moduleRouter/license'
 import { MonitorRouter } from './moduleRouter/monitor'
-
-// import { DemoFormRouter } from './moduleRouter/demoForm'
 
 Vue.use(VueRouter)
 
@@ -66,12 +63,10 @@ const routes = [
       ...FormCuringRouter,  // 車輛養護科
       ...FormLaborRouter,  // 勞安
       ...FormMaintainRouter,  // 鐵路維護科
-      ...FormOtherRouter,  // 其他
       ...FormServeRouter,  // 服務科
 
       // ...LicenseRouter,  // 證照管理
       ...MonitorRouter,  // 監控系統
-      // ...DemoFormRouter,  // demo 表單
     ],
     beforeEnter: (to, from, next) => {
       // 檢查是否登入

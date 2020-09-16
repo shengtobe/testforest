@@ -328,6 +328,7 @@ export default {
         // 查詢資料
         search() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
             fetchOrderList({
                 CreatorID: this.ipt.createrId,  // 立案人id

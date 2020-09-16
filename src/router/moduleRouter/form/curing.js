@@ -259,4 +259,28 @@ export const FormCuringRouter = [
         component: () => import('@/views/formManage/curing/SpecEquip.vue'),
         formGroup: ['curing']
     },
+    {
+        linkText: '客車一級檢修紀錄表',
+        path: '/form-manage/curing/bus-checklist',
+        component: () => import('@/views/formManage/curing/BusChecklist.vue'),
+        formGroup: ['curing']
+    },
+    {
+        linkText: '客貨車工作日誌',
+        path: '/form-manage/curing/vehicle-workLog',
+        component: () => import('@/views/formManage/curing/VehicleWorkLog.vue'),
+        formGroup: ['curing']
+    },
+    {
+        linkText: '柴油機車使用前後工作日誌',
+        path: '/form-manage/curing/diesel-machine-workLog',
+        component: () => import('@/views/formManage/curing/DieselMachineWorkLog.vue'),
+        formGroup: ['curing']
+    },
+    {
+        linkText: '客貨車輛日報表',
+        path: '/form-manage/curing/vehicle-status-daily-report',
+        component: () => import('@/views/formManage/curing/VehicleStatusDailyReport.vue'),
+        formGroup: ['curing']
+    },
 ]

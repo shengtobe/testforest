@@ -678,6 +678,7 @@ export default {
         // 搜尋控制措施
         search() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
             // 測試用資料
             setTimeout(() => {

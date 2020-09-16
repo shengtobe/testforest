@@ -1,0 +1,399 @@
+<template>
+  <v-container style="max-width: 1200px">
+    <h2 class="mb-4 px-2">手攜無線電月份保養</h2>
+    <!-- 第一排選項 -->
+    <v-row class="px-2">
+      <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(起)
+        </h3>
+        <v-menu
+          v-model="dateMenuShow.start"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field v-model.trim="ipt.dateStart" solo v-on="on" readonly></v-text-field>
+          </template>
+          <v-date-picker
+            color="purple"
+            v-model="ipt.dateStart"
+            @input="dateMenuShow.start = false"
+            locale="zh-tw"
+          ></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(迄)
+        </h3>
+        <v-menu
+          v-model="dateMemuShow.end"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          max-width="290px"
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field v-model.trim="ipt.dateEnd" solo v-on="on" readonly></v-text-field>
+          </template>
+          <v-date-picker
+            color="purple"
+            v-model="ipt.dateEnd"
+            @input="dateMemuShow.end = false"
+            locale="zh-tw"
+          ></v-date-picker>
+        </v-menu>
+      </v-col>
+      <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>輸入編號(或機號)
+        </h3>
+        <v-text-field v-model.trim="ipt.eqLoss" solo />
+      </v-col>
+      <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇單位
+        </h3>
+        <v-select
+          v-model="ipt.case"
+          :items="[{ text: '鐵路服務科', value: 'A' }, { text: '鐵路資訊科', value: 'B' }, { text: '鐵路餐飲科', value: 'C' }, { text: '鐵路英文科', value: 'D' }, { text: '鐵路數學科', value: 'E' }]"
+          solo
+        />
+      </v-col>
+      <div class="col-sm-4 col-md-8 col-12">
+        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
+          <v-icon>mdi-magnify</v-icon>查詢
+        </v-btn>
+        <v-btn
+          color="indigo"
+          elevation="3"
+          dark
+          large
+          class="col-4 col-md-3 mr-3"
+          @click="dialogShowAdd = true"
+        >
+          <v-icon>mdi-plus</v-icon>新增保養資料
+        </v-btn>
+      </div>
+      <!-- 手攜無線電保養紀錄 -->
+      <v-col cols="12" sm="12" md="12">
+        <v-card>
+          <v-data-table
+            :headers="headers"
+            :items="tableItems"
+            :options.sync="pageOpt"
+            disable-sort
+            disable-filtering
+            hide-default-footer
+          >
+            <template v-slot:no-data>
+              <span class="red--text subtitle-1">沒有資料</span>
+            </template>
+            <template v-slot:loading>
+              <span class="red--text subtitle-1">資料讀取中...</span>
+            </template>
+            <template v-slot:item.bb>
+              <v-btn color="teal" dark @click="sdad = true">檢視</v-btn>
+            </template>
+            <!-- headers 的 content 欄位 (檢視內容) -->
+            <template v-slot:item.shop>
+              <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
+                <v-icon dark>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+
+            <!-- 頁碼 -->
+            <template v-slot:footer="footer">
+              <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-col>
+      <!-- 檢視保養項目 modal -->
+      <v-dialog v-model="sdad" max-width="600px">
+        <v-card>
+          <!-- 標題 -->
+          <v-card-title class="blue white--text px-4 py-1">
+            檢視保養項目
+            <v-spacer />
+            <v-btn dark fab small text @click="close" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <!-- 內容 -->
+          <div class="px-6 py-4">
+            <v-row>
+              <!-- 外觀 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 出廠日期 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">檢查天線是否斷裂</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 電池接點是否生銅繡 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">電池接點是否生銅繡</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 充電座指示燈亮否、功能是否正常 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">充電座指示燈亮否、功能是否正常</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 接收功能是否正常檢查 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">接收功能是否正常檢查</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 不正常狀況及處理說明 -->
+              <v-col cols="12">
+                <h3 class="mb-1">不正常狀況及處理說明</h3>
+                <v-textarea
+                  hide-details
+                  auto-grow
+                  outlined
+                  rows="3"
+                  v-model.trim="addItem.content"
+                />
+              </v-col>
+            </v-row>
+          </div>
+        </v-card>
+      </v-dialog>
+      <!-- 新增保養資料 modal -->
+      <v-dialog v-model="dialogShowAdd" max-width="600px">
+        <v-card>
+          <!-- 標題 -->
+          <v-card-title class="blue white--text px-4 py-1">
+            新增保養資料
+            <v-spacer />
+            <v-btn dark fab small text @click="close" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <!-- 內容 -->
+          <div class="px-6 py-4">
+            <v-row>
+              <!-- 外觀 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 出廠日期 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">檢查天線是否斷裂</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 電池接點是否生銅繡 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">電池接點是否生銅繡</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 充電座指示燈亮否、功能是否正常 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">充電座指示燈亮否、功能是否正常</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 接收功能是否正常檢查 -->
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">接收功能是否正常檢查</h3>
+                <v-radio-group row v-model="mainLocation">
+                  <v-radio label="正常" color="success" value="11"></v-radio>
+                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                </v-radio-group>
+              </v-col>
+              <!-- 不正常狀況及處理說明 -->
+              <v-col cols="12">
+                <h3 class="mb-1">不正常狀況及處理說明</h3>
+                <v-textarea
+                  hide-details
+                  auto-grow
+                  outlined
+                  rows="3"
+                  v-model.trim="addItem.content"
+                />
+              </v-col>
+            </v-row>
+          </div>
+          <!-- 輸出/取消 -->
+          <v-card-actions class="px-5 pb-5">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import { evtTypes, locationOpts } from "@/assets/js/smisData";
+import Pagination from "@/components/Pagination.vue";
+
+export default {
+  data: () => ({
+    ipt: {
+      dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
+      dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
+      case: "",
+      eqLoss: ""
+    },
+    dateMemuShow: {
+      // 日曆是否顯示
+      start: false,
+      end: false
+    },
+    sdad: false,
+    evtTypeOpts: evtTypes,
+    locationOpts: locationOpts,
+    dateMenuShow: false, // 日曆是否顯示
+    dialogDateMenuShow: {
+      // dialog 日期 menu 是否顯示
+      enter: false,
+      enters: false,
+      out: false
+    },
+    editedItem: {
+      Kilometer: 12044.3,
+      enterDate: "2020-08-10",
+      content: "更換引擎機油", // 維修項目
+      startday: "2020-08-10",
+      user: "王大明"
+    },
+    addItem: {
+      Kilometer: null,
+      enterDate: "",
+      content: "", // 維修項目
+      enterDates: "",
+      user: ""
+    },
+    defaultItem: {
+      Kilometer: 0,
+      enterDate: "2020-08-10",
+      content: "", // 維修項目
+      user: ""
+    },
+    nameRules: [
+      v => !!v || "公里數必須填寫",
+      v => v.length > 0 || "公里數必須大於0"
+    ],
+    dialogForm: {},
+    mainLocation: "", // 所選的地點
+    OLocation: "", // 其他地點
+    dialogShowAdd: false, // model off
+    dialogShowEdit: false, // model off
+    dialogDel: false, // model off
+    dialogm1: "2020-08-01",
+    aa: "",
+    bb: "",
+    cc: "",
+    disabled: true,
+    tableItems: [
+      {
+        aa: "2020-08-01",
+        jj: "王大明",
+        kk: "已審查"
+      }
+    ], // 表格資料
+    pageOpt: { page: 1 }, // 目前頁數
+    headers: [
+      // 表格顯示的欄位
+      {
+        text: "保養日期",
+        value: "aa",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
+        text: "保養項目",
+        value: "bb",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
+        text: "保養人",
+        value: "jj",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
+        text: "審查狀態",
+        value: "kk",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
+        text: "功能",
+        value: "shop",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      }
+    ]
+  }),
+  components: { Pagination }, // 頁碼
+
+  methods: {
+    // 更新資料
+    update() {
+      this.$emit("chLocation", {});
+    },
+    // 更換頁數
+    chPage(n) {
+      this.pageOpt.page = n;
+    },
+    // 搜尋
+    search() {},
+    // 關閉 dialog
+    close() {
+      this.sdad = false;
+      this.dialogShowAdd = false;
+      this.dialogShowEdit = false;
+      this.dialogDel = false;
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.addItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      }, 300);
+    }
+  }
+};
+</script>

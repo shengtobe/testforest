@@ -213,6 +213,7 @@ export default {
         // 搜尋
         search() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
             setTimeout(() => {
                 this.chLoadingShow()
