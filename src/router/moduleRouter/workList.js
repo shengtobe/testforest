@@ -74,11 +74,13 @@ export const WorkListRouter = [
     {
         linkText: '已驗收待結案',  // 待結案內容
         path: '/worklist/maintain/:id/closedShow',
-        component: () => import('@/views/workList/maintain/ClosedShow.vue')
+        component: () => import('@/views/workList/maintain/ClosedComplated.vue'),
+        props: { closeStatus: '已驗收待結案' }
     },
     {
         linkText: '已結案',  // 已結案
         path: '/worklist/maintain/:id/complated',
-        component: () => import('@/views/workList/maintain/Complated.vue')
+        component: () => import('@/views/workList/maintain/ClosedComplated.vue'),
+        props: { closeStatus: '已結案' }
     },
 ]

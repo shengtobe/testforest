@@ -19,3 +19,9 @@
   background: #5C6BC0;
   border-radius: 3px;
 }
+/* 移除表格在手機版時的上方空白 */
+@media only screen and (max-width: 600px) {
+  table > thead {
+    display: none;
+  }
+}

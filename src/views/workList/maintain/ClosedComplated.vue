@@ -98,12 +98,15 @@
         </v-col>
     </v-row>
 
-    <v-row>
-        <!-- <v-col cols="12">
-            <v-card elevation="3">
+    <v-row class="my-8">
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時統計
+            </h3>
+            <v-card flat>
                 <v-data-table
                     :headers="headers"
-                    :items="item.jobHours"
+                    :items="tableItems"
                     disable-sort
                     disable-filtering
                     hide-default-footer
@@ -112,19 +115,17 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
-                    <template v-slot:top>
-                        <v-toolbar dark flat dense color="teal">
-                            <v-icon class="mr-2">mdi-timelapse</v-icon>
-                            <v-toolbar-title>工時統計</v-toolbar-title>
-                        </v-toolbar>
+                    <template v-slot:footer>
+                        <v-divider></v-divider>
+
+                        <p class="py-2 text-center">
+                            總工時： <span class="blue--text mr-5">{{ totalJobHour }}</span>
+                            總金額： <span class="red--text">{{ totalMoney }}</span>
+                        </p>
                     </template>
                 </v-data-table>
             </v-card>
         </v-col>
-
-        <v-col cols="12" class="text-center mb-2">
-            總金額： <span class="red--text">{{ totalMoney }}</span>
-        </v-col> -->
 
         <v-col cols="12" class="text-center">
             <v-btn dark class="ma-2"
@@ -135,36 +136,40 @@
             <v-btn class="ma-2" dark
                 :loading="isLoading"
                 color="brown"
+                v-if="status == '已驗收待結案'"
             >竣工單</v-btn>
 
             <v-btn class="ma-2"
                 :loading="isLoading"
                 color="error"
                 @click="showDialog(true)"
+                v-if="status == '已驗收待結案'"
             >退回</v-btn>
 
             <v-btn class="ma-2" dark
                 :loading="isLoading"
                 color="yellow darken-2"
                 @click="showDialog(false)"
+                v-if="status == '已驗收待結案'"
             >徹銷</v-btn>
 
             <v-btn dark class="ma-2"
                 :loading="isLoading"
                 color="success"
                 @click="save"
+                v-if="status == '已驗收待結案'"
             >結案</v-btn>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
-        <v-col cols="12" class="error--text">
+        <v-col cols="12" class="error--text" v-if="status == '已驗收待結案'">
             <h4>按鈕出現說明</h4>
             竣工單、退回、徹銷、結案：結案人
         </v-col>
     </v-row>
 
     <!-- 退回 dialog -->
-    <v-dialog v-model="dialog" max-width="600px">
+    <v-dialog v-model="dialog" max-width="600px" v-if="status == '已驗收待結案'">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
@@ -203,7 +208,9 @@ import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
 export default {
+    props: ['closeStatus'],  // 測試用的屬性
     data: () => ({
+        status: '',  // 狀態
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
         note: '',  // 備註
@@ -217,12 +224,14 @@ export default {
         dialogApiName: '',  // 使用的 API 函式名稱
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
+        totalJobHour: 0,  // 總工時
+        tableItems: [],  // 工時表格資料
         headers: [  // 工時標題
-            { text: '姓名', value: 'name', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '地點', value: 'location', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '工作項', value: 'job', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '工作量', value: 'count', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '料件費用', value: 'price', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
+            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作項', value: 'job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '料件費用', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         topItems: {  // 上面的欄位
             fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
@@ -261,10 +270,10 @@ export default {
             return arr.join('、')
         },
         // 工時統計的總金額
-        // totalMoney() {
-        //     let total = this.jobHour.items.reduce((a,b)=>a + b.price, 0)
-        //     return new Intl.NumberFormat().format(total)
-        // }
+        totalMoney() {
+            let total = this.tableItems.reduce((a,b)=>a + b.price, 0)
+            return new Intl.NumberFormat().format(total)
+        }
     },
     methods: {
         ...mapActions('system', [
@@ -310,32 +319,31 @@ export default {
                     safeDanger: false,  // 安全危害作業
                     malfunctionDes: '工具機損壞',  // 故障描述
                     note: '',  // 備註
-                    status: '已維修待驗收',  // 狀態
                     fixSituation: '小零件損壞，更換了xxxx',  // 維修情況
                     fixType: '故障檢修',  // 維修類型
+                    totalJobHour: 8,  // 總工時
+                    jobHourData: [  // 工時資料
+                        {
+                            name: '陳高文',
+                            location: '115k-120k',
+                            job: '枕木',
+                            count: 1,
+                            price: 3000,
+                        },
+                        {
+                            name: '張仁宣',
+                            location: '115k-120k',
+                            job: '鋼軌',
+                            count: 1,
+                            price: 6000,
+                        },
+                    ],
                 }
 
                 this.setShowData(obj)  // 初始化資料
                 this.chLoadingShow()
             }, 1000)
         },
-        // jobHours: [  // 工時資料
-        //                 {
-        //                     name: '陳高文',
-        //                     location: '115k-120k',
-        //                     job: '壁磚舖貼',
-        //                     count: '1', 
-        //                     price: 19000,
-        //                 },
-        //                 {
-        //                     name: '張仁宣',
-        //                     location: '115k-120k',
-        //                     job: '人造石板',
-        //                     count: '1', 
-        //                     price: 22000,
-        //                 },
-        //             ],
-        // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.workNumber  // 工單編號
             this.malfunctionDes = obj.malfunctionDes.replace(/\n/g, '<br>')  // 故障描述
@@ -345,7 +353,7 @@ export default {
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.fixTime  // 報修時間
             this.topItems.eqCodes.text = `${obj.eqNumber1}-${obj.eqNumber2}-${obj.eqNumber3}-${obj.eqNumber4}`  // 設備報修碼
-            this.topItems.status.text = obj.status  // 處理階段
+            this.topItems.status.text = this.status = this.closeStatus  // 處理階段
             this.topItems.fixUnit.text = obj.fixUnit  // 請修單位
             this.topItems.creater.text = obj.creater  // 立案人
             this.topItems.dispatcher.text = obj.dispatcher  // 派工人
@@ -365,16 +373,8 @@ export default {
             this.licensedMember = obj.licensedMember.join('、')  // 需證照人員
             this.commonMember = obj.commonMember.join('、')  // 作業人員
             this.vendors = obj.vendors  // 外包廠商
-
-            // 工時表單初始化
-            // this.jobHour.items = this.jobMemberOpts.map(item => ({
-            //     'uid': item.value,
-            //     'name': item.text,
-            //     'location': obj.workLocation,
-            //     'job': '',
-            //     'count': 1, 
-            //     'price': 0,
-            // }))
+            this.totalJobHour = obj.totalJobHour  // 總工時
+            this.tableItems = [ ...obj.jobHourData ]  // 工時資料
         },
         // 顯示 dialog
         showDialog(bool) {
