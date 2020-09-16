@@ -2,37 +2,64 @@
 
 export const WorkListRouter = [
     // -------- 服務科 -------- 
-    // 首頁
     {
-        linkText: '服務科',
+        linkText: '搜尋頁',
         path: '/worklist/serve',
-        component: () => import('@/views/workList/serve/Index.vue')
+        component: () => import('@/views/workList/serve/Search.vue')
     },
     {
-        linkText: '立案階段',
-        path: '/worklist/serve/demo1',
-        component: () => import('@/views/workList/serve/Demo1.vue')
+        linkText: '工單新增',  // 立案表單
+        path: '/worklist/serve/newList',
+        component: () => import('@/views/workList/serve/ListForm.vue')
     },
     {
-        linkText: '派工階段',
-        path: '/worklist/serve/demo2',
-        component: () => import('@/views/workList/serve/Demo2.vue')
+        linkText: '工單檢視',  // 看立案的內容
+        path: '/worklist/serve/:id/listShow',
+        component: () => import('@/views/workList/serve/ListShow.vue')
     },
     {
-        linkText: '驗收階段',
-        path: '/worklist/serve/demo3',
-        component: () => import('@/views/workList/serve/Demo3.vue')
+        linkText: '工單編輯',  // 編輯立案
+        path: '/worklist/serve/:id/editList',
+        component: () => import('@/views/workList/serve/ListForm.vue')
     },
     {
-        linkText: '結案階段',
-        path: '/worklist/serve/demo4',
-        component: () => import('@/views/workList/serve/Demo4.vue')
+        linkText: '派工單',  // 派工新增
+        path: '/worklist/serve/:id/newWork',
+        component: () => import('@/views/workList/serve/WorkForm.vue')
     },
+    {
+        linkText: '已派工待維修',  // 派工內容
+        path: '/worklist/serve/:id/workShow',
+        component: () => import('@/views/workList/serve/WorkShow.vue')
+    },
+    {
+        linkText: '派工單編輯',  // 編輯派工單
+        path: '/worklist/serve/:id/editWork',
+        component: () => import('@/views/workList/serve/WorkForm.vue')
+    },
+    {
+        linkText: '已維修待驗收',  // 待驗收內容
+        path: '/worklist/serve/:id/acceptingShow',
+        component: () => import('@/views/workList/serve/AcceptingShow.vue')
+    },
+    {
+        linkText: '已驗收待結案',  // 待結案內容
+        path: '/worklist/serve/:id/closedShow',
+        component: () => import('@/views/workList/serve/ClosedComplated.vue'),
+        props: { closeStatus: '已驗收待結案' }
+    },
+    {
+        linkText: '已結案',  // 已結案
+        path: '/worklist/serve/:id/complated',
+        component: () => import('@/views/workList/serve/ClosedComplated.vue'),
+        props: { closeStatus: '已結案' }
+    },
+
 
 
     // -------- 維修、養護科 -------- 
     {
-        linkText: '維修、養護科',  // 首頁 (搜尋頁)
+        linkText: '搜尋頁',
         path: '/worklist/maintain',
         component: () => import('@/views/workList/maintain/Search.vue')
     },

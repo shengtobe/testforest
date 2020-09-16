@@ -1,3 +1,3 @@
 <template>
-<p>demo2</p>
+<p>工單檢視</p>
 </template>
