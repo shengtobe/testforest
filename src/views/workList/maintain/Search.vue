@@ -127,7 +127,7 @@
         <v-row class="px-2" align="end">
             <v-col cols="12" md="7">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備報修碼
+                    <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
                 </h3>
 
                 <v-row>
@@ -256,10 +256,10 @@ export default {
             dispatcherId: '',  // 派工人
             workNumber: '',  // 工單編號
             workState: '',  // 處理階段
-            eqNumber1: '',  // 設備報修碼1
-            eqNumber2: '',  // 設備報修碼2
-            eqNumber3: '',  // 設備報修碼3
-            eqNumber4: '',  // 設備報修碼4
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber4: '',  // 設備標示編號4
             shortage: 'F',  // 是否缺料 (預設不缺料)
             fixType: '1',  // 維修類型
         },
@@ -279,7 +279,7 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '設備報修碼', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -339,10 +339,10 @@ export default {
                 Status: this.ipt.workState,  // 處理階段
                 Shortage: this.ipt.shortage,  // 是否缺料
                 Type: this.ipt.fixType,  // 維修類型
-                MaintainCode_System: this.ipt.eqNumber1,  // 設備報修碼1
-                MaintainCode_Loc: this.ipt.eqNumber2,  // 設備報修碼2
-                MaintainCode_Eqp: this.ipt.eqNumber3,  // 設備報修碼3
-                MaintainCode_Seq: this.ipt.eqNumber4,  // 設備報修碼4
+                MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號1
+                MaintainCode_Loc: this.ipt.eqNumber2,  // 設備標示編號2
+                MaintainCode_Eqp: this.ipt.eqNumber3,  // 設備標示編號3
+                MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號4
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 this.tableItems = res.data.order_list

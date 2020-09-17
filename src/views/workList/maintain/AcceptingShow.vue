@@ -123,9 +123,9 @@
     <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-table</v-icon>工時統計
         <span class="red--text">*</span>
-        <v-btn fab dark x-small color="indigo"
+        <v-btn fab dark small color="indigo"
             @click="setJobHour(false)"
-            class="ml-4 mb-1"
+            class="ml-2 mb-1"
         >
             <v-icon dark>mdi-plus</v-icon>
         </v-btn>
@@ -469,7 +469,7 @@ export default {
         },
         topItems: {  // 上面的欄位
             fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
-            eqCodes: { icon: 'mdi-codepen', title: '設備報修碼', text: '' },
+            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
             fixUnit: { icon: 'mdi-apps', title: '請修單位', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
@@ -571,7 +571,7 @@ export default {
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.fixTime  // 報修時間
-            this.topItems.eqCodes.text = `${obj.eqNumber1}-${obj.eqNumber2}-${obj.eqNumber3}-${obj.eqNumber4}`  // 設備報修碼
+            this.topItems.eqCodes.text = `${obj.eqNumber1}-${obj.eqNumber2}-${obj.eqNumber3}-${obj.eqNumber4}`  // 設備標示編號
             this.topItems.status.text = obj.status  // 處理階段
             this.topItems.fixUnit.text = obj.fixUnit  // 請修單位
             this.topItems.creater.text = obj.creater  // 立案人

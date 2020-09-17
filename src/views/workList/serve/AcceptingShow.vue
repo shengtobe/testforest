@@ -1,3 +1,3 @@
 <template>
-<p>已驗收待結案</p>
+<p>已維修待驗收</p>
 </template>

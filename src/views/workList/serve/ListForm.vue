@@ -1,309 +1,319 @@
 <template>
-<v-row class="justify-center mt-2 mb-5">
-    <v-col cols="12" sm="10">
-        <v-card color="red lighten-4" class="pa-2">
-            <h2 class="text-center">通報單新增</h2>
+<v-container style="max-width: 1200px">
+    <h2 class="mb-4">
+        {{ (this.isEdit)? `工單編輯 (編號：${ routeId })` : '服務科工單新增' }}
+    </h2>
 
-            <v-sheet color="white" class="mt-2 pa-4">
-                <v-form
-                    ref="form"
-                    v-model="valid"
-                    lazy-validation
+    <v-form
+        ref="form"
+        v-model="valid"
+        lazy-validation
+    >
+        <v-row class="px-2">
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>年度
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.year"
+                    placeholder="請輸入年度，例：109"
+                    solo
+                    :rules="[v => (!!v && /[^\s]/.test(v)) || '請輸入年度']"
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>預算金額
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.money"
+                    placeholder="請輸入預算金額，例：10萬"
+                    solo
+                    :rules="[v => (!!v && /[^\s]/.test(v)) || '請輸入預算金額']"
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>履約到期日
+                </h3>
+                <v-menu
+                    v-model="dateMenuShow.expiry"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
                 >
-                    <v-row>
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="年度"
-                                v-model.trim="ipt.year"
-                                :rules="[v => (!!v && /[^\s]/.test(v)) || '請輸入年度']"
-                            ></v-text-field>
-                        </v-col>
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model.trim="ipt.expiryDate"
+                            solo
+                            v-on="on"
+                            readonly
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        color="purple"
+                        v-model="ipt.expiryDate"
+                        @input="dateMenuShow.expiry = false"
+                        locale="zh-tw"
+                    ></v-date-picker>
+                </v-menu>
+            </v-col>
+        </v-row>
 
-                        <v-col cols="12" sm="6" md="4">
-                            <v-menu
-                                v-model="dateMenuShow.expiry"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                max-width="290px"
-                                min-width="290px"
+        <v-row class="px-2">
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>通知施作日期 (起)
+                </h3>
+                <v-menu
+                    v-model="dateMenuShow.workStart"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model.trim="ipt.workDateStart"
+                            solo
+                            v-on="on"
+                            readonly
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        color="purple"
+                        v-model="ipt.workDateStart"
+                        @input="dateMenuShow.workStart = false"
+                        locale="zh-tw"
+                    ></v-date-picker>
+                </v-menu>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>通知施作日期 (訖)
+                </h3>
+                <v-menu
+                    v-model="dateMenuShow.workEnd"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model.trim="ipt.workDateEnd"
+                            solo
+                            v-on="on"
+                            readonly
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        color="purple"
+                        v-model="ipt.workDateEnd"
+                        @input="dateMenuShow.workEnd = false"
+                        locale="zh-tw"
+                    ></v-date-picker>
+                </v-menu>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-note</v-icon>通知方式
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.noticeMethod"
+                    placeholder="請輸入通知方式"
+                    solo
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-account</v-icon>通知人
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.noticeMember"
+                    placeholder="請輸入通知人"
+                    solo
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="8">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>通報維修地點及事項
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.noticeLocation"
+                    placeholder="請輸入通報維修地點及事項"
+                    solo
+                ></v-text-field>
+            </v-col>
+
+            <!-- 請修項目 -->
+            <v-col cols="12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>請修項目
+                    
+                    <v-btn fab dark small color="indigo"
+                        @click="dialog = true"
+                        class="ml-2 mb-1"
+                    >
+                        <v-icon dark>mdi-plus</v-icon>
+                    </v-btn>
+                </h3>
+
+                <v-card>
+                    <v-data-table
+                        :headers="headers"
+                        :items="ipt.items"
+                        disable-sort
+                        disable-filtering
+                        hide-default-footer
+                    >
+                        <template v-slot:no-data>
+                            <span class="red--text subtitle-1">沒有資料</span>
+                        </template>
+                    
+                        <!-- 插入 total 欄位做每筆的總計 -->
+                        <template v-slot:item.total="{ item }">
+                            <span>{{ item.count * item.price }}</span>
+                        </template>
+
+                        <!-- 插入 action 欄位做刪除 -->
+                        <template v-slot:item.action="{ item }">
+                            <v-btn small dark fab color="red darken-1"
+                                @click="deleteItem(item)"
                             >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                        label="履約到期日"
-                                        v-model="ipt.expiryDate"
-                                        v-on="on"
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                    color="purple"
-                                    v-model="ipt.expiryDate"
-                                    @input="dateMenuShow.expiry = false"
-                                    locale="zh-tw"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-col>
+                                <v-icon dark>mdi-delete</v-icon>
+                            </v-btn>
+                        </template>
 
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="預算金額"
-                                v-model.trim="ipt.money"
-                                :rules="[v => (!!v && /[^\s]/.test(v)) || '請輸入預算金額']"
-                            ></v-text-field>
-                        </v-col>
+                        <template v-slot:footer>
+                            <v-divider></v-divider>
 
-                        <v-col cols="12" sm="6" md="4">
-                            <v-menu
-                                v-model="dateMenuShow.workStart"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                max-width="290px"
-                                min-width="290px"
-                            >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                        label="通知施作日期 (起)"
-                                        v-model="ipt.workDateStart"
-                                        v-on="on"
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                    color="purple"
-                                    v-model="ipt.workDateStart"
-                                    @input="dateMenuShow.workStart = false"
-                                    locale="zh-tw"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-col>
+                            <p class="py-2 text-center">
+                                總金額： <span class="red--text">{{ totalMoney }}</span>
+                            </p>
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
 
-                        <v-col cols="12" sm="6" md="4">
-                            <v-menu
-                                v-model="dateMenuShow.workEnd"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                max-width="290px"
-                                min-width="290px"
-                            >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                        label="通知施作日期 (訖)"
-                                        v-model="ipt.workDateEnd"
-                                        v-on="on"
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                    color="purple"
-                                    v-model="ipt.workDateEnd"
-                                    @input="dateMenuShow.workEnd = false"
-                                    locale="zh-tw"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-col>
+            <v-col cols="12" class="text-center mb-8">
+                <v-btn dark class="ma-2"
+                    to="/worklist/serve"
+                >回搜尋頁</v-btn>
 
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="通知方式"
-                                v-model.trim="ipt.noticeMethod"
-                            ></v-text-field>
-                        </v-col>
+                <v-btn dark color="teal" class="ma-2"
+                    @click="excel"
+                >列印</v-btn>
 
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="通知人"
-                                v-model.trim="ipt.noticeMember"
-                            ></v-text-field>
-                        </v-col>
+                <v-btn color="success" class="ma-2"
+                    @click="save"
+                >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
+            </v-col>
+        </v-row>
+    </v-form>
 
-                        <v-col cols="12" sm="6" md="8">
-                            <v-text-field
-                                label="通報維修地點及事項"
-                                v-model.trim="ipt.noticeLocation"
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
+    <!-- 請修項目 dialog -->
+    <v-dialog v-model="dialog" max-width="600px">
+        <v-card>
+            <v-card-title>
+                新增請修項目
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
+                    <v-icon dark>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
 
-                    <!-- 請修項目 -->
-                    <v-row class="mt-3">
-                        <v-col cols="12">
-                            <v-card>
-                                <v-data-table
-                                    :headers="headers"
-                                    :items="ipt.items"
-                                    disable-sort
-                                    disable-filtering
-                                    hide-default-footer
-                                >
-                                    <template v-slot:no-data>
-                                        <span class="red--text subtitle-1">沒有資料</span>
-                                    </template>
+            <v-card-text>
+                <v-container>
+                    <v-form
+                        ref="addForm"
+                        v-model="addValid"
+                        lazy-validation
+                    >
+                        <v-row>
+                            <v-col cols="12" sm="6" md="3">
+                                <v-text-field
+                                    label="項次"
+                                    v-model.trim="dialogForm.numbers"
+                                ></v-text-field>
+                            </v-col>
 
-                                    <!-- 表格最上面插入 toolbar 及 dialog -->
-                                    <template v-slot:top>
-                                        <v-toolbar flat color="green accent-2">
-                                            <v-icon class="mr-2">mdi-view-list</v-icon>
-                                            <v-toolbar-title>請修項目</v-toolbar-title>
+                            <v-col cols="12" sm="6" md="5">
+                                <v-text-field
+                                    label="項目"
+                                    v-model.trim="dialogForm.name"
+                                ></v-text-field>
+                            </v-col>
 
-                                            <v-spacer></v-spacer>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    label="規格"
+                                    v-model.trim="dialogForm.spec"
+                                ></v-text-field>
+                            </v-col>
 
-                                            <!-- 匯出 excel -->
-                                            <v-btn fab dark small color="green"
-                                                class="mr-3"
-                                                @click="excel"
-                                            >
-                                                <v-icon>mdi-file-excel</v-icon>
-                                            </v-btn>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    label="單位"
+                                    v-model.trim="dialogForm.unit"
+                                ></v-text-field>
+                            </v-col>
 
-                                            <!-- dialog -->
-                                            <v-dialog v-model="dialog" max-width="600px">
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn fab dark small color="teal" v-on="on">
-                                                        <v-icon dark>mdi-plus</v-icon>
-                                                    </v-btn>
-                                                </template>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    label="預估數量"
+                                    v-model.trim.number="dialogForm.count"
+                                ></v-text-field>
+                            </v-col>
 
-                                                <v-card>
-                                                    <v-card-title>
-                                                        新增請修項目
-                                                        <v-spacer></v-spacer>
-                                                        <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
-                                                            <v-icon dark>mdi-close</v-icon>
-                                                        </v-btn>
-                                                    </v-card-title>
-
-                                                    <v-card-text>
-                                                        <v-container>
-                                                            <v-form
-                                                                ref="addForm"
-                                                                v-model="addValid"
-                                                                lazy-validation
-                                                            >
-                                                                <v-row>
-                                                                    <v-col cols="12" sm="6" md="3">
-                                                                        <v-text-field
-                                                                            label="項次"
-                                                                            v-model.trim="dialogForm.numbers"
-                                                                        ></v-text-field>
-                                                                    </v-col>
-
-                                                                    <v-col cols="12" sm="6" md="5">
-                                                                        <v-text-field
-                                                                            label="項目"
-                                                                            v-model.trim="dialogForm.name"
-                                                                        ></v-text-field>
-                                                                    </v-col>
-
-                                                                    <v-col cols="12" sm="6" md="4">
-                                                                        <v-text-field
-                                                                            label="規格"
-                                                                            v-model.trim="dialogForm.spec"
-                                                                        ></v-text-field>
-                                                                    </v-col>
-
-                                                                    <v-col cols="12" sm="6" md="4">
-                                                                        <v-text-field
-                                                                            label="單位"
-                                                                            v-model.trim="dialogForm.unit"
-                                                                        ></v-text-field>
-                                                                    </v-col>
-
-                                                                    <v-col cols="12" sm="6" md="4">
-                                                                        <v-text-field
-                                                                            label="預估數量"
-                                                                            v-model.trim.number="dialogForm.count"
-                                                                        ></v-text-field>
-                                                                    </v-col>
-
-                                                                    <v-col cols="12" sm="6" md="4">
-                                                                        <v-text-field
-                                                                            label="單價"
-                                                                            v-model.trim.number="dialogForm.price"
-                                                                        ></v-text-field>
-                                                                    </v-col>
-                                                                </v-row>
-                                                            </v-form>
-                                                        </v-container>
-                                                    </v-card-text>
-                                                    
-                                                    <v-card-actions class="px-5 pb-5">
-                                                        <v-spacer></v-spacer>
-                                                        <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-                                                        <v-btn color="success"  elevation="4" @click="add">新增</v-btn>
-                                                    </v-card-actions>
-                                                </v-card>
-                                            </v-dialog>
-                                        </v-toolbar>
-                                    </template>
-                                
-                                    <!-- 插入 total 欄位做每筆的總計 -->
-                                    <template v-slot:item.total="{ item }">
-                                        <span>{{ item.count * item.price }}</span>
-                                    </template>
-
-                                    <!-- 插入 action 欄位做刪除 -->
-                                    <template v-slot:item.action="{ item }">
-                                        <v-btn small dark fab color="red darken-1"
-                                            @click="deleteItem(item)"
-                                        >
-                                            <v-icon dark>mdi-delete</v-icon>
-                                        </v-btn>
-                                    </template>
-                                </v-data-table>
-                            </v-card>
-                        </v-col>
-                    </v-row>
-                        
-                    <v-row>
-                        <v-col cols="12" class="text-center mb-2">
-                            總金額： <span class="red--text">{{ totalMoney }}</span>
-                        </v-col>
-
-                        <v-col cols="12">
-                            <v-btn large block
-                                class="mt-n4"
-                                color="success"
-                                @click="save"
-                            >送出</v-btn>
-                        </v-col>
-                    </v-row>
-                </v-form>
-            </v-sheet>
+                            <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                    label="單價"
+                                    v-model.trim.number="dialogForm.price"
+                                ></v-text-field>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+                </v-container>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+                <v-btn color="success"  elevation="4" @click="add">新增</v-btn>
+            </v-card-actions>
         </v-card>
-    </v-col>
-</v-row>
+    </v-dialog>
+</v-container>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { serveNewListExecl } from '@/apis/workList/serve'
 
 export default {
     data: () => ({
-        valid: true,  // 表單是否驗證欄位
-        ipt: {
-            year: new Date().getFullYear() - 1911,  // 年度
+        // valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
+        isEdit: false,  // 是否為編輯
+        routeId: '',  // 工單編號
+        ipt: {},
+        defaultIpt: {  // 表單預設值
+            year: '',  // 年度
             expiryDate: new Date().toISOString().substr(0, 10),  // 履約到期日
-            money: '98萬6,517',  // 預算金額
+            money: '',  // 預算金額
             workDateStart: new Date().toISOString().substr(0, 10),  // 通知施作日期 (起)
             workDateEnd: new Date().toISOString().substr(0, 10),  // 通知施作日期 (訖)
             noticeMethod: '',  // 通知方式
             noticeMember: '',  // 通知人
-            noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
-            items: [  // 請修項目
-                {
-                    numbers: '1、1',
-                    name: '維修大工',
-                    spec: '',
-                    unit: '人*日',
-                    count: 1,
-                    price: 2230
-                },
-                {
-                    numbers: '1、2',
-                    name: '維修小工',
-                    spec: '',
-                    unit: '人*日',
-                    count: 2,
-                    price: 1962
-                },
-            ],
+            noticeLocation: '',  // 通報維修地點及事項
+            items: [],  // 請修項目
         },
         dateMenuShow: {  // 日期選單是否顯示
             expiry: false,  // 履約到期
@@ -311,14 +321,14 @@ export default {
             workEnd: false,  // 通知施作日期 (訖)
         }, 
         headers: [  // 表格顯示的欄位
-            { text: '項次', value: 'numbers', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '項目', value: 'name', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '規格', value: 'spec', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '單位', value: 'unit', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '預估數量', value: 'count', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '單價', value: 'price', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '總價', value: 'total', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
-            { text: '刪除', value: 'action', align: 'center', class: 'subtitle-1 black--text font-weight-bold' },
+            { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '項目', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規格', value: 'spec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單位', value: 'unit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '預估數量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單價', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         dialog: false,  // dialog 是否顯示
         addValid: true,  // dialog 表單是否驗證
@@ -339,6 +349,69 @@ export default {
         }
     },
     methods: {
+        ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        // 初始化
+        initData() {
+            this.ipt = { ...this.defaultIpt }  // 初始化表單
+            this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
+            
+            // -------------- 編輯時 -------------- 
+            if (this.$route.params.id != undefined) {
+                this.chLoadingShow()
+                this.routeId = this.$route.params.id  // 路由參數(id)
+                this.isEdit = true
+
+                // 範例效果
+                setTimeout(() => {
+                    let obj = {
+                        year: new Date().getFullYear() - 1911,  // 年度
+                        expiryDate: new Date().toISOString().substr(0, 10),  // 履約到期日
+                        money: '98萬6,517',  // 預算金額
+                        workDateStart: new Date().toISOString().substr(0, 10),  // 通知施作日期 (起)
+                        workDateEnd: new Date().toISOString().substr(0, 10),  // 通知施作日期 (訖)
+                        noticeMethod: '',  // 通知方式
+                        noticeMember: '',  // 通知人
+                        noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
+                        items: [  // 請修項目
+                            {
+                                numbers: '1、1',
+                                name: '維修大工',
+                                spec: '',
+                                unit: '人*日',
+                                count: 1,
+                                price: 2230
+                            },
+                            {
+                                numbers: '1、2',
+                                name: '維修小工',
+                                spec: '',
+                                unit: '人*日',
+                                count: 2,
+                                price: 1962
+                            },
+                        ],
+                    }
+                    
+                    this.setInitDate(obj)
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 設定資料(編輯時)
+        setInitDate(obj) {
+            this.ipt.year = obj.year
+            this.ipt.expiryDate = obj.expiryDate
+            this.ipt.money = obj.money
+            this.ipt.workDateStart = obj.workDateStart
+            this.ipt.workDateEnd = obj.workDateEnd
+            this.ipt.noticeMethod = obj.noticeMethod
+            this.ipt.noticeMember = obj.noticeMember
+            this.ipt.noticeLocation = obj.noticeLocation
+            this.ipt.items = [ ...obj.items ]
+        },
         // 關閉 dialog
         close () {
             this.dialog = false
@@ -374,13 +447,22 @@ export default {
         },
         // 送出表單
         save() {
-            if (this.$refs.form.validate()) {  // 表單驗證欄位
+            // if (this.$refs.form.validate()) {  // 表單驗證欄位
                 // 送出表單
-            }
+                this.chLoadingShow()
+
+                // 測試用資料
+                setTimeout(() => {
+                    let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                    if (!this.isEdit) this.$router.push({ path: '/worklist/serve' })
+                    this.chMsgbar({ success: true, msg: txt })
+                    this.chLoadingShow()
+                }, 1000)
+            // }
         }
     },
     created () {
-        this.dialogForm = Object.assign({}, this.dialogDefault)
+        this.initData()
     },
 }
 </script>

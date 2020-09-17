@@ -327,13 +327,15 @@ export default {
         },
         // 同意發布
         save() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                this.$router.push({ path: '/smis/car-safeinfo/info' })
-                this.chMsgbar({ success: true, msg: '同意發布成功'})
+            if (confirm('你確定要發布嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.$router.push({ path: '/smis/car-safeinfo/info' })
+                    this.chMsgbar({ success: true, msg: '同意發布成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 員工編號轉換姓名
         transferMemberName(id) {

@@ -105,7 +105,7 @@
                     <v-col cols="12" sm="4" md="3">
                         <v-checkbox
                             v-model="chooses"
-                            label="設備報修碼"
+                            label="設備標示編號"
                             color="info"
                             value="t8"
                             hide-details
@@ -131,7 +131,7 @@
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >殘餘風險</v-btn>
+            >高風險</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"

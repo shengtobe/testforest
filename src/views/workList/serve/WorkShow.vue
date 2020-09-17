@@ -1,3 +1,3 @@
 <template>
-<p>派工內容</p>
+<p>已派工待維修</p>
 </template>

@@ -5,9 +5,9 @@
         v-model="valid"
         lazy-validation
     >
-        <h1 class="mb-4">
-            {{ (this.isEdit)? `工單編號 － ${ workNumber }` : '工單新增' }}
-        </h1>
+        <h2 class="mb-4">
+            {{ (this.isEdit)? `工單編輯 (編號：${ workNumber })` : '維修、養護科工單新增' }}
+        </h2>
 
         <!-- 基本資訊 -->
         <v-row class="px-2">
@@ -153,11 +153,11 @@
             </v-col>
         </v-row>
         
-        <!-- 設備報修碼 -->
+        <!-- 設備標示編號 -->
         <v-row class="px-2 mb-6">
             <v-col cols="12">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備報修碼
+                    <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
                     <span class="red--text">*</span>
                 </h3>
                 {{ ipt.eqNumber1 }}-{{ ipt.eqNumber2 }}-{{ ipt.eqNumber3 }}-{{ ipt.eqNumber4 }}
@@ -253,10 +253,10 @@ export default {
         createrId: 'K10744389',  // 立案人員工編號
         fixUnit: '竹崎車站',  // 請修單位
         ipt: {  // 輸入的內容)
-            eqNumber1: '',  // 設備報修碼1
-            eqNumber2: '',  // 設備報修碼2
-            eqNumber3: '',  // 設備報修碼3
-            eqNumber4: '',  // 設備報修碼4
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber4: '',  // 設備標示編號4
         },  
         defaultIpt: {  // 預設內容
             date: new Date().toISOString().substr(0, 10),  // 立案日期
@@ -266,22 +266,22 @@ export default {
             hour: (new Date().getHours() < 10)? '0'+ new Date().getHours().toString() : new Date().getHours().toString(),  // 派工的小時
             workDate: new Date().toISOString().substr(0, 10),  // 派工日期
             errorDispatchID: '',  // 必填欄位背景色-派工人
-            errorEqNumber1: '',  // 必填欄位背景色-設備報修碼1
-            errorEqNumber2: '',  // 必填欄位背景色-設備報修碼2
-            errorEqNumber3: '',  // 必填欄位背景色-設備報修碼3
-            errorEqNumber4: '',  // 必填欄位背景色-設備報修碼4
+            errorEqNumber1: '',  // 必填欄位背景色-設備標示編號1
+            errorEqNumber2: '',  // 必填欄位背景色-設備標示編號2
+            errorEqNumber3: '',  // 必填欄位背景色-設備標示編號3
+            errorEqNumber4: '',  // 必填欄位背景色-設備標示編號4
             errorMalfunctionDes: '',  // 必填欄位背景色-故障描述
         },
         dateMenuShow: false,  // 日期選單是否顯示
         workDateMenuShow: false,  // 維護日期選單是否顯示
         hourOpts: hourOptions,  // 下拉選單項目-小時
         eqCodes: {
-            opt1: [],  // 設備報修碼下拉選單-第1組
-            opt2: [],  // 設備報修碼下拉選單-第2組
-            opt3: [],  // 設備報修碼下拉選單-第3組
-            opt4: [],  // 設備報修碼下拉選單-第4組
+            opt1: [],  // 設備標示編號下拉選單-第1組
+            opt2: [],  // 設備標示編號下拉選單-第2組
+            opt3: [],  // 設備標示編號下拉選單-第3組
+            opt4: [],  // 設備標示編號下拉選單-第4組
         },
-        // 設備報修碼下拉選單是否禁用
+        // 設備標示編號下拉選單是否禁用
         disableLv2: true,
         disableLv3: true,
         disableLv4: true,
@@ -335,8 +335,8 @@ export default {
             this.initFetchData()  // 判斷新增或編輯
 
             try {
-                let codeRes = await fetchEqCodeLv1({ ClientReqTime: getNowFullTime() })  // 取得設備報修碼
-                this.setEqCodeOption(codeRes.data.device_query, 'opt1')  // 初始化設備報修碼第一組檢修碼下拉選單
+                let codeRes = await fetchEqCodeLv1({ ClientReqTime: getNowFullTime() })  // 取得設備標示編號
+                this.setEqCodeOption(codeRes.data.device_query, 'opt1')  // 初始化設備標示編號第一組檢修碼下拉選單
             } catch (err) {
                 alert('設備報修資料取得失敗')
             }
@@ -376,7 +376,7 @@ export default {
                         nowAction: false,
                     }
                     this.ipt = Object.assign({}, obj)
-                    // 編輯時，設備報修碼會需要每段每段連續請求
+                    // 編輯時，設備標示編號會需要每段每段連續請求
                 }, 1000)
             } else {
                 // 新增的情況
@@ -387,7 +387,7 @@ export default {
         async fetchWorkOrderData(id) {
 
         },
-        // 初始化設備報修碼
+        // 初始化設備標示編號
         // codeArr: 後端傳的報修碼陣列, opt: 要設定在哪一組下拉選單(op1~4)
         setEqCodeOption(codeArr, opt) {
             this.eqCodes[opt] = codeArr.map(item => {
@@ -397,7 +397,7 @@ export default {
                 }
             })
         },
-        // 向後端請求設備報修碼
+        // 向後端請求設備標示編號
         // val: 上層所選的值, lv: 要向後端取得的層數 (2~4)
         async fetchEqCodes(val, lv) {
             this.chLoadingShow()
@@ -444,10 +444,10 @@ export default {
                         Type: this.ipt.fixType,  // 維修類型
                         DispatchDDay: dispatcherDate,  // 派工日期
                         DispatchDTime: this.ipt.hour,  // 派工時間 (小時)
-                        MaintainCode_System: this.ipt.eqNumber1,  // 設備報修碼1
-                        MaintainCode_Loc: this.ipt.eqNumber2,  // 設備報修碼2
-                        MaintainCode_Eqp: this.ipt.eqNumber3,  // 設備報修碼3
-                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備報修碼4
+                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號1
+                        MaintainCode_Loc: this.ipt.eqNumber2,  // 設備標示編號2
+                        MaintainCode_Eqp: this.ipt.eqNumber3,  // 設備標示編號3
+                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號4
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime()  // client 端請求時間
                     }).then(res => {
@@ -474,28 +474,28 @@ export default {
 
                 if (this.ipt.eqNumber1 == '') {
                     this.ipt.errorEqNumber1 = 'red lighten-5'
-                    errArr.push('設備報修碼1')
+                    errArr.push('設備標示編號1')
                 } else {
                     this.ipt.errorEqNumber1 = ''
                 }
 
                 if (this.ipt.eqNumber2 == '') {
                     this.ipt.errorEqNumber2 = 'red lighten-5'
-                    errArr.push('設備報修碼2')
+                    errArr.push('設備標示編號2')
                 } else {
                     this.ipt.errorEqNumber2 = ''
                 }
 
                 if (this.ipt.eqNumber3 == '') {
                     this.ipt.errorEqNumber3 = 'red lighten-5'
-                    errArr.push('設備報修碼3')
+                    errArr.push('設備標示編號3')
                 } else {
                     this.ipt.errorEqNumber3 = ''
                 }
 
                 if (this.ipt.eqNumber4 == '') {
                     this.ipt.errorEqNumber4 = 'red lighten-5'
-                    errArr.push('設備報修碼4')
+                    errArr.push('設備標示編號4')
                 } else {
                     this.ipt.errorEqNumber4 = ''
                 }

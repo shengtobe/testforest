@@ -135,7 +135,7 @@ export default {
         newDispatcher: '',  // 轉單後的新派工人
         topItems: {  // 上面的欄位
             fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
-            eqCodes: { icon: 'mdi-codepen', title: '設備報修碼', text: '' },
+            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
             fixUnit: { icon: 'mdi-apps', title: '請修單位', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
@@ -181,7 +181,7 @@ export default {
                 setTimeout(() => {
                     let obj = {
                         WorkOrderID: '201903110001',  // 工單編號
-                        MaintainCode: 'TRK-R06-EA0-002',  // 設備報修碼
+                        MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
                         Creator: '陳小華',  // 立案人
                         DispatchMan: '黃小美',  // 派工人
                         Status: '待派工',  // 處理階段
@@ -218,7 +218,7 @@ export default {
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備報修碼
+            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = obj.Status  // 處理階段
             this.topItems.fixUnit.text = obj.CreatorDepart  // 請修單位
             this.topItems.creater.text = obj.Creator  // 立案人

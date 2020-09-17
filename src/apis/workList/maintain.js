@@ -1,6 +1,6 @@
 import axios from '@/apis/axiosSetting'
 
-// 取得設備報修碼Lv1
+// 取得設備標示編號Lv1
 export function fetchEqCodeLv1(data) { return axios(
     {
         url: '/global/dev/querylv1',
@@ -9,7 +9,7 @@ export function fetchEqCodeLv1(data) { return axios(
     }
 )}
 
-// 取得設備報修碼Lv2
+// 取得設備標示編號Lv2
 export function fetchEqCodeLv2(data) { return axios(
     {
         url: '/global/dev/querylv2',
@@ -18,7 +18,7 @@ export function fetchEqCodeLv2(data) { return axios(
     }
 )}
 
-// 取得設備報修碼Lv3
+// 取得設備標示編號Lv3
 export function fetchEqCodeLv3(data) { return axios(
     {
         url: '/global/dev/querylv3',
@@ -27,7 +27,7 @@ export function fetchEqCodeLv3(data) { return axios(
     }
 )}
 
-// 取得設備報修碼Lv4
+// 取得設備標示編號Lv4
 export function fetchEqCodeLv4(data) { return axios(
     {
         url: '/global/dev/querylv4',

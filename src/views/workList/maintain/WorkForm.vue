@@ -657,10 +657,10 @@ export default {
             creater: '',  // 立案人
             workNumber: '',  // 工單編號
             fixTime: '',  // 報修時間
-            eqNumber1: '',  // 設備報修碼1
-            eqNumber2: '',  // 設備報修碼2
-            eqNumber3: '',  // 設備報修碼3
-            eqNumber4: '',  // 設備報修碼4
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber4: '',  // 設備標示編號4
             workLocation: '',  // 工作地點
             memberCount: '',  // 實際人數
             acceptanceTime: new Date().toISOString().substr(0, 10),  // 預計驗收日期

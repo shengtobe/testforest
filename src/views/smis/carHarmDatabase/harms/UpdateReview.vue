@@ -45,6 +45,14 @@
         />
 
         <h3 class="mb-1 mt-12">
+            <v-icon class="mr-1 mb-1">mdi-elevation-rise</v-icon>風險等級
+        </h3>
+        <VersionDiff
+            :before="before.level"
+            :after="after.level"
+        />
+
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>營運模式
         </h3>
         <VersionDiff
@@ -106,7 +114,7 @@
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施<br>
                 (變更前)
             </h3>
-            <v-card>
+            <v-card flat>
                 <v-data-table
                     :headers="headers"
                     :items="before.controls"
@@ -146,7 +154,7 @@
 
         <v-col cols="12" class="mt-8">
             <h3 class="mb-1">(變更後)</h3>
-            <v-card>
+            <v-card flat>
                 <v-data-table
                     :headers="headers"
                     :items="after.controls"
@@ -338,6 +346,7 @@ export default {
             wbs: '',  // 關聯子系統
             serious: '',  // 風險嚴重性
             frequency: '',  // 風險頻率
+            level: '',  // 風險等級
             desc: '',  // 危害說明
             reason: '',  // 危害直接成因
             indirectReason: '',  // 可能的危害間接原因
@@ -353,6 +362,7 @@ export default {
             wbs: '',
             serious: '',
             frequency: '',
+            level: '',
             desc: '',
             reason: '',
             indirectReason: '',
@@ -405,8 +415,9 @@ export default {
                     depart: '鐵路服務科',// 權責部門
                     mode: '正常',  // 營運模式
                     wbs: 'APC2',  // 關聯子系統
-                    serious: '稍微',  // 風險嚴重性
-                    frequency: '很少',  // 風險頻率
+                    serious: '稍微 (S4)',  // 風險嚴重性
+                    frequency: '很少 (P4)',  // 風險頻率
+                    level: '可接受，持續控管 (R4)',  // 風險等級
                     affectTraveler: true,  // 影響旅客
                     affectStaff: true,  // 影響員工
                     affectPublic: false,  // 影響大眾
@@ -469,8 +480,9 @@ export default {
                     depart: '鐵路服務科',// 權責部門
                     mode: '正常',  // 營運模式
                     wbs: 'APC2',  // 關聯子系統
-                    serious: '稍微',  // 風險嚴重性
-                    frequency: '幾乎不',  // 風險頻率
+                    serious: '稍微 (S4)',  // 風險嚴重性
+                    frequency: '幾乎不 (P5)',  // 風險頻率
+                    level: '可接受，持續控管 (R4)',  // 風險等級
                     affectTraveler: true,  // 影響旅客
                     affectStaff: true,  // 影響員工
                     affectPublic: false,  // 影響大眾
@@ -540,6 +552,10 @@ export default {
             // 風險頻率
             this.before.frequency = before.frequency.replace(/\n/g, '<br>')
             this.after.frequency = after.frequency.replace(/\n/g, '<br>')
+
+            // 風險等級
+            this.before.level = before.level.replace(/\n/g, '<br>')
+            this.after.level = after.level.replace(/\n/g, '<br>')
 
             // 危害說明
             this.before.desc = before.desc.replace(/\n/g, '<br>')

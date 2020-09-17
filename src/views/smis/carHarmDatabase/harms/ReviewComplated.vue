@@ -104,7 +104,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
             </h3>
-            <v-card>
+            <v-card flat>
                 <v-data-table
                     :headers="headers"
                     :items="tableItems"
@@ -336,6 +336,7 @@ export default {
             wbs: { icon: 'mdi-source-branch', title: '關聯子系統', text: '' },
             serious: { icon: 'mdi-format-line-spacing', title: '風險嚴重性', text: '' },
             frequency: { icon: 'mdi-signal-variant', title: '風險頻率', text: '' },
+            level: { icon: 'mdi-elevation-rise', title: '風險等級', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '危害狀態', text: '' },
         },
         desc: '',  // 危害說明
@@ -395,8 +396,9 @@ export default {
                     depart: '鐵路服務科',// 權責部門
                     mode: '正常',  // 營運模式
                     wbs: 'APC2',  // 關聯子系統
-                    serious: '稍微',  // 風險嚴重性
-                    frequency: '很少',  // 風險頻率
+                    serious: '稍微 (S4)',  // 風險嚴重性
+                    frequency: '很少 (P4)',  // 風險頻率
+                    level: '可接受，持續控管 (R4)',  // 風險等級
                     affectTraveler: true,  // 影響旅客
                     affectStaff: true,  // 影響員工
                     affectPublic: false,  // 影響大眾
@@ -450,6 +452,7 @@ export default {
             this.topItems.wbs.text = obj.wbs  // 關聯子系統
             this.topItems.serious.text = obj.serious  // 風險嚴重性
             this.topItems.frequency.text = obj.frequency  // 風險頻率
+            this.topItems.level.text = obj.level  // 風險等級
             this.topItems.status.text = (this.closeStatus == 3)? '已完備資料' : '審核中'  // 危害狀態
 
             this.desc = obj.desc.replace(/\n/g, '<br>')  // 危害說明
