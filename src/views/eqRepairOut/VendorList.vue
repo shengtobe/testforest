@@ -164,6 +164,10 @@ export default {
         dialogShow (val) {
             val || this.close()
         },
+        // 若有用關鍵字過濾，指定頁碼回到第1頁
+        search: function(val, oldval) {
+            if (val != oldval) this.chPage(1)
+        },
     },
     computed: {
         dialogTitle () {

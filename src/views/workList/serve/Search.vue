@@ -98,8 +98,8 @@ import Pagination from '@/components/Pagination.vue'
 export default {
     data: () => ({
         year: '',  // 年度
-        status: '待派工',  // 處理階段
-        statusOpt: ['待派工', '已派工待維修', '已維修待驗收', '已驗收待結案', '已結案'],  // 處理階段下拉選單
+        status: '不限',  // 處理階段
+        statusOpt: ['不限', '待派工', '已派工待維修', '已維修待驗收', '已驗收待結案', '已結案'],  // 處理階段下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位

@@ -367,11 +367,11 @@ export default {
                 // 範例效果
                 setTimeout(() => {
                     let obj = {
-                        year: new Date().getFullYear() - 1911,  // 年度
-                        expiryDate: new Date().toISOString().substr(0, 10),  // 履約到期日
+                        year: '109',  // 年度
+                        expiryDate: '2020-12-20',  // 履約到期日
                         money: '98萬6,517',  // 預算金額
-                        workDateStart: new Date().toISOString().substr(0, 10),  // 通知施作日期 (起)
-                        workDateEnd: new Date().toISOString().substr(0, 10),  // 通知施作日期 (訖)
+                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
+                        workDateEnd: '2020-01-30',  // 通知施作日期 (訖)
                         noticeMethod: '',  // 通知方式
                         noticeMember: '',  // 通知人
                         noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項

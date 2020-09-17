@@ -12,7 +12,7 @@
                 :items="depOpts"
                 solo
                 hide-details
-                @change="chDepart"  
+                @change="chPage(1)"  
             ></v-select>
         </v-col>
 
@@ -100,6 +100,12 @@ export default {
         ],
     }),
     components: { Pagination },
+    watch: {
+        // 若有用關鍵字過濾，指定頁碼回到第1頁
+        keyword: function(val, oldval) {
+            if (val != oldval) this.chPage(1)
+        },
+    },
     computed: {
         // 表格資料
         tableItems() {
@@ -128,10 +134,6 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
-        },
-        // 更換科室
-        chDepart() {
-            this.pageOpt.page = 1  // 頁碼初始化
         },
     },
     created() {

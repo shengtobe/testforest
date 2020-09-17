@@ -297,13 +297,15 @@ export default {
         },
         // 同意不立案
         save() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '同意不立案成功'})
-                this.$router.push({ path: '/smis/harmnotify/audit' })
+            if (confirm('你確定要不立案嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '同意不立案成功'})
+                    this.$router.push({ path: '/smis/harmnotify/audit' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 變更立案類型
         edit() {

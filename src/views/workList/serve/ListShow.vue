@@ -13,27 +13,27 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障描述
+                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>通報維修地點及事項
                     </span>
                 </v-col>
 
                 <v-col class="white pa-3"
-                    v-html="malfunctionDes"
+                    v-html="noticeLocation"
                 ></v-col>
             </v-row>
         </v-col>
 
         <!-- 操作按鈕 -->
-        <v-col cols="12" class="text-center mt-5">
+        <v-col cols="12" class="text-center my-8">
             <v-btn dark class="ma-2"
                 :loading="isLoading"
                 to="/worklist/serve"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="ma-2"
+            <v-btn class="ma-2"
                 :loading="isLoading"
-                color="indigo"
-                :to="`/worklist/serve/${workNumber}/editList`"
+                color="primary"
+                :to="`/worklist/serve/${routeId}/editList`"
             >編輯</v-btn>
 
             <v-btn class="ma-2"
@@ -51,7 +51,7 @@
             <v-btn dark class="ma-2"
                 :loading="isLoading"
                 color="success"
-                :to="`/worklist/maintain/${workNumber}/newWork`"
+                :to="`/worklist/serve/${workNumber}/newWork`"
             >派工</v-btn>
         </v-col>
     </v-row>
@@ -74,40 +74,24 @@ export default {
     data: () => ({
         isLoading: false,  // 是否讀取中
         routeId: '',  // 工單編號
-        dialog: false,  // 轉單 dialog
-        newUnit: '',  // 轉單時所選科室
-        newDispatcher: '',  // 轉單後的新派工人
         topItems: {  // 上面的欄位
-            fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
-            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-            fixUnit: { icon: 'mdi-apps', title: '請修單位', text: '' },
+            year: { icon: 'mdi-calendar-text', title: '年度', text: '' },
+            money: { icon: 'mdi-currency-usd', title: '預算金額', text: '' },
+            expiryDate: { icon: 'mdi-calendar-text', title: '履約到期日', text: '' },
+            workDateStart: { icon: 'mdi-calendar-text', title: '通知施作日(起)', text: '' },
+            workDateEnd: { icon: 'mdi-calendar-text', title: '通知施作日(訖)', text: '' },
+            noticeMethod: { icon: 'mdi-note', title: '通知方式', text: '' },
+            noticeMember: { icon: 'mdi-account', title: '通知人', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
-            dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-            fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            workDate: { icon: 'mdi-calendar-text', title: '維修時間', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
         },
-        malfunctionDes: '',  // 故障描述
+        noticeLocation: '',  // 通報維修地點及事項
     }),
     components: { TopBasicTable },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
-        },
-        // 更換科室時，自動選該科室人員清單的第一人
-        newUnit: function (newVal, oldVal) {
-            if (newVal != oldVal) {
-                this.newDispatcher = this.memberOptLv2[0]
-            }
-        },
-    },
-    computed: {
-        // 科室人員名單--科室
-        memberOptLv1: () => Object.keys(memberList),
-        // 科室人員名單--姓名
-        memberOptLv2() {
-            return (memberList[this.newUnit])
         },
     },
     methods: {
@@ -118,43 +102,58 @@ export default {
         // 向後端取資料
         fetchData() {
             this.chLoadingShow()
-            let routeId = this.$route.params.id  // 路由參數
+            this.routeId = this.$route.params.id  // 路由參數
 
             setTimeout(() => {
                 let obj = {
-                    WorkOrderID: '201903110001',  // 工單編號
-                    MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
-                    Creator: '陳小華',  // 立案人
-                    DispatchMan: '黃小美',  // 派工人
-                    Status: '待派工',  // 處理階段
-                    CreatorDepart: '車輛組',  // 請修單位
-                    Malfunction: '工具機損壞',  // 故障描述
-                    CreateDTime: '2019-03-11 12:03:24',  // 報修時間
-                    Type: '1',  // 維修類型
-                    DispatchDTime: '14:00:00',  // 維修時間
+                    year: '109',  // 年度
+                    expiryDate: '2020-12-20',  // 履約到期日
+                    money: '98萬6,517',  // 預算金額
+                    workDateStart: '2020-01-05',  // 通知施作日 (起)
+                    workDateEnd: '2020-01-30',  // 通知施作日 (訖)
+                    noticeMethod: '',  // 通知方式
+                    noticeMember: '',  // 通知人
+                    noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
+                    items: [  // 請修項目
+                        {
+                            numbers: '1、1',
+                            name: '維修大工',
+                            spec: '',
+                            unit: '人*日',
+                            count: 1,
+                            price: 2230
+                        },
+                        {
+                            numbers: '1、2',
+                            name: '維修小工',
+                            spec: '',
+                            unit: '人*日',
+                            count: 2,
+                            price: 1962
+                        },
+                    ],
+                    creater: '王小明',  // 立案人
+                    status: '待派工',  // 處理階段
                 }
 
                 this.setShowData(obj)  // 初始化資料
-                this.newUnit = Object.keys(memberList)[0]  // 轉單下拉選單科室預設值
                 this.chLoadingShow()
             }, 1000)
         },
         // 初始化資料
         setShowData(obj) {
-            this.workNumber = obj.WorkOrderID  // 工單編號
-            this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
+            this.noticeLocation = obj.noticeLocation.replace(/\n/g, '<br>')  // 通報維修地點及事項
 
             // 設定上面的欄位資料
-            this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
-            this.topItems.status.text = obj.Status  // 處理階段
-            this.topItems.fixUnit.text = obj.CreatorDepart  // 請修單位
-            this.topItems.creater.text = obj.Creator  // 立案人
-            this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
-            this.topItems.workDate.text = obj.DispatchDTime  // 維修時間
-
-            // 權限檢查 (等後續再用 userid 去檢查)
+            this.topItems.year.text = obj.year  // 年度
+            this.topItems.money.text = obj.money  // 預算金額
+            this.topItems.expiryDate.text = obj.expiryDate  // 履約到期日
+            this.topItems.workDateStart.text = obj.workDateStart  // 通知施作日 (起)
+            this.topItems.workDateEnd.text = obj.workDateEnd  // 通知施作日 (訖)
+            this.topItems.noticeMethod.text = obj.noticeMethod  // 通知方式
+            this.topItems.noticeMember.text = obj.noticeMember  // 通知人
+            this.topItems.creater.text = obj.creater  // 立案人
+            this.topItems.status.text = obj.status  // 處理階段
         },
         // 刪除
         deleteItem() {
@@ -165,7 +164,7 @@ export default {
                 setTimeout(() => {
                     // 刪除完後，轉頁到搜尋頁
                     this.chMsgbar({ success: true, msg: '刪除成功' })
-                    this.$router.push({ path: '/worklist/maintain' })
+                    this.$router.push({ path: '/worklist/serve' })
                 }, 1000)
             }
         },
@@ -178,7 +177,7 @@ export default {
                 setTimeout(() => {
                     // 結案完後，轉頁到搜尋頁
                     this.chMsgbar({ success: true, msg: '結案成功' })
-                    this.$router.push({ path: '/worklist/maintain' })
+                    this.$router.push({ path: '/worklist/serve' })
                 }, 1000)
             }
         },

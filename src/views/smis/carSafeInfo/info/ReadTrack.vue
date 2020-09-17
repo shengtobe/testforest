@@ -122,7 +122,11 @@ export default {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
-        }
+        },
+        // 若有用關鍵字過濾，指定頁碼回到第1頁
+        keyword: function(val, oldval) {
+            if (val != oldval) this.chPage(1)
+        },
     },
     methods: {
         ...mapActions('system', [

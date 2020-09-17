@@ -24,15 +24,15 @@
         </v-col>
 
         <!-- 操作按鈕 -->
-        <v-col cols="12" class="text-center mt-5">
+        <v-col cols="12" class="text-center my-8">
             <v-btn dark class="ma-2"
                 :loading="isLoading"
                 to="/worklist/maintain"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="ma-2"
+            <v-btn class="ma-2"
                 :loading="isLoading"
-                color="indigo"
+                color="primary"
                 :to="`/worklist/maintain/${workNumber}/editList`"
             >編輯</v-btn>
 
