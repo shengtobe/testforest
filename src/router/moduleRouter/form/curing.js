@@ -50,7 +50,7 @@ export const FormCuringRouter = [
         formGroup: []
     },
     {
-        linkText: '機車二級檢修紀錄表',
+        linkText: '機車二級檢修紀錄表',//
         path: '/form-manage/curing/locomotive-two-level-maintenance',
         component: () => import('@/views/formManage/curing/LocomotiveTwoMaintenance.vue'),
         formGroup: ['curing']
