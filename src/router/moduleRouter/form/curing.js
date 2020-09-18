@@ -248,7 +248,7 @@ export const FormCuringRouter = [
         formGroup: ['curing']
     },
     {
-        linkText: '引擎規範',
+        linkText: '引擎規範',// 104
         path: '/form-manage/curing/engine-spec',
         component: () => import('@/views/formManage/curing/EngineSpec.vue'),
         formGroup: ['curing']
@@ -260,7 +260,7 @@ export const FormCuringRouter = [
         formGroup: ['curing']
     },
     {
-        linkText: '客車一級檢修紀錄表',
+        linkText: '客車一級檢修紀錄表',// 112
         path: '/form-manage/curing/bus-checklist',
         component: () => import('@/views/formManage/curing/BusChecklist.vue'),
         formGroup: ['curing']

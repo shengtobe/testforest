@@ -92,13 +92,13 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '工作安全觀察(半月)紀錄表',
+        linkText: '工作安全觀察(半月)紀錄表',// 90
         path: '/form-manage/serve/ee-work-safety-obs-record',
         component: () => import('@/views/formManage/serve/EEWorkSafetyObsRecord.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '各級主管走動管理督檢紀錄暨追蹤表(半月)',
+        linkText: '各級主管走動管理督檢紀錄暨追蹤表(半月)',//91
         path: '/form-manage/serve/supervisory-tracking-list-month',
         component: () => import('@/views/formManage/serve/SupervisoryTrackingListMonth.vue'),
         formGroup: ['serve', 'maintain', 'curing']
@@ -122,9 +122,15 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '基地台無線電機(含錄音設備)保養檢查紀錄表',
+        linkText: '手攜無線電月份保養紀錄表',// ??
         path: '/form-manage/serve/radio-maintenance',
         component: () => import('@/views/formManage/serve/RadioMaintenance.vue'),
         formGroup: ['serve', 'maintain', 'curing']
+    },
+    {
+        linkText: '保安裝置保修工作紀錄', //14
+        path: '/form-manage/serve/Security-Device-Maintenance-Record',
+        component: () => import('@/views/formManage/serve/SecurityDeviceMaintenanceRecord.vue'),
+        formGroup: ['serve']
     },
 ]
