@@ -72,7 +72,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增檢查表
         </v-btn>
       </v-col>
     </v-row>

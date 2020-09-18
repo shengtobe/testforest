@@ -2,91 +2,91 @@
 
 export const FormServeRouter = [
     {
-        linkText: '保安裝置檢查紀錄表-北門車站',
+        linkText: '保安裝置檢查紀錄表-北門車站', // 11
         path: '/form-manage/serve/security-checklist1',
         component: () => import('@/views/formManage/serve/SecurityChecklist1.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '保安裝置檢查紀錄表-竹崎車站',
+        linkText: '保安裝置檢查紀錄表-竹崎車站',// 11
         path: '/form-manage/serve/security-checklist2',
         component: () => import('@/views/formManage/serve/SecurityChecklist2.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '保安裝置檢查紀錄表-奮起湖車站',
+        linkText: '保安裝置檢查紀錄表-奮起湖車站',// 11
         path: '/form-manage/serve/security-checklist3',
         component: () => import('@/views/formManage/serve/SecurityChecklist3.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '保安裝置檢查紀錄表-阿里山車站',
+        linkText: '保安裝置檢查紀錄表-阿里山車站',// 11
         path: '/form-manage/serve/security-checklist4',
         component: () => import('@/views/formManage/serve/SecurityChecklist4.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '保安裝置檢查紀錄表-交力坪、神木、對高岳車站',
+        linkText: '保安裝置檢查紀錄表-交力坪、神木、對高岳車站',// 11
         path: '/form-manage/serve/security-checklist5',
         component: () => import('@/views/formManage/serve/SecurityChecklist5.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '保安裝置檢查紀錄表-沼平、祝山車站',
+        linkText: '保安裝置檢查紀錄表-沼平、祝山車站',// 11
         path: '/form-manage/serve/security-checklist6',
         component: () => import('@/views/formManage/serve/SecurityChecklist6.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '保安裝置檢查紀錄表-十字岔道',
+        linkText: '保安裝置檢查紀錄表-十字岔道',// 11
         path: '/form-manage/serve/security-checklist7',
         component: () => import('@/views/formManage/serve/SecurityChecklist7.vue'),
         formGroup: ['serve']
     },
     {
-        linkText: '發電機(月)定期檢查表',
+        linkText: '發電機定期檢查表(月)',// 42
         path: '/form-manage/serve/generator-checklist',
         component: () => import('@/views/formManage/serve/GeneratorChecklist.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '鋁梯(六個月)定期檢查表',
+        linkText: '鋁梯定期檢查表(半年)',// 49
         path: '/form-manage/serve/aluminum-ladder-checklist',
         component: () => import('@/views/formManage/serve/AluminumLadderChecklist.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '一般車輛作業前自動檢點表',
+        linkText: '一般車輛作業前自動檢點表',// 78
         path: '/form-manage/serve/general-vehicle-checklist',
         component: () => import('@/views/formManage/serve/GeneralVehicleChecklist.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '一般車輛(季)定期檢查表',
+        linkText: '一般車輛(季)定期檢查表',// 79
         path: '/form-manage/serve/general-vehicle-checklist-season',
         component: () => import('@/views/formManage/serve/GeneralVehicleChecklistSeason.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '6S(月)定期檢查表',
+        linkText: '6S(月)定期檢查表',// 80
         path: '/form-manage/serve/6s-checklist-month',
         component: () => import('@/views/formManage/serve/6SChecklistMonth.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '危險品、易燃物安全(季)定期檢查表',
+        linkText: '危險品、易燃物安全(季)定期檢查表',// 87
         path: '/form-manage/serve/dangerous-flammable-checklist-season',
         component: () => import('@/views/formManage/serve/DangerousFlammableChecklistSeason.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '一般電器安全(季)定期檢查表',
+        linkText: '一般電器安全(季)定期檢查表',// 88
         path: '/form-manage/serve/general-elec-safety-checklist-season',
         component: () => import('@/views/formManage/serve/GeneralElecSafetyChecklistSeason.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '一般倉儲安全(季)定期檢查表',
+        linkText: '一般倉儲安全(季)定期檢查表',// 89
         path: '/form-manage/serve/dangerous-flammable-checklist-season',
         component: () => import('@/views/formManage/serve/GeneralStorageSafetyChecklistSeason.vue'),
         formGroup: ['serve', 'maintain', 'curing']
@@ -116,7 +116,7 @@ export const FormServeRouter = [
         formGroup: ['serve']
     },
     {
-        linkText: '車裝台無線電機檢查表機動台車(三個月)定期檢查表2',
+        linkText: '基地台無線電機/車裝台檢查紀錄表',// 30
         path: '/form-manage/serve/bs-radio-checklist',
         component: () => import('@/views/formManage/serve/BSRadioChecklist.vue'),
         formGroup: ['serve', 'maintain', 'curing']
