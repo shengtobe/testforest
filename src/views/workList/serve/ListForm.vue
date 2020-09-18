@@ -222,72 +222,97 @@
     <!-- 請修項目 dialog -->
     <v-dialog v-model="dialog" max-width="600px">
         <v-card>
-            <v-card-title>
+            <v-card-title
+                class="yellow lighten-3 py-2 px-3"
+                primary-title
+            >
                 新增請修項目
                 <v-spacer></v-spacer>
-                <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
+                <v-btn text fab small @click="dialog = !dialog">
                     <v-icon dark>mdi-close</v-icon>
                 </v-btn>
             </v-card-title>
 
-            <v-card-text>
-                <v-container>
-                    <v-form
-                        ref="addForm"
-                        v-model="addValid"
-                        lazy-validation
-                    >
-                        <v-row>
-                            <v-col cols="12" sm="6" md="3">
-                                <v-text-field
-                                    label="項次"
-                                    v-model.trim="dialogForm.numbers"
-                                ></v-text-field>
-                            </v-col>
+            <div class="mx-4 mt-1">
+                <v-form
+                    ref="addForm"
+                    v-model="addValid"
+                    lazy-validation
+                >
+                    <v-row>
+                        <v-col cols="12" sm="6" md="4">
+                            <h3 class="mb-1">
+                                <v-icon class="mr-1 mb-1">mdi-apps</v-icon>項次
+                            </h3>
+                            <v-text-field
+                                v-model.trim="dialogForm.numbers"
+                                placeholder="請輸入項次"
+                                solo
+                            ></v-text-field>
+                        </v-col>
 
-                            <v-col cols="12" sm="6" md="5">
-                                <v-text-field
-                                    label="項目"
-                                    v-model.trim="dialogForm.name"
-                                ></v-text-field>
-                            </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                            <h3 class="mb-1">
+                                <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>項目
+                            </h3>
+                            <v-text-field
+                                v-model.trim="dialogForm.name"
+                                placeholder="請輸入項目"
+                                solo
+                            ></v-text-field>
+                        </v-col>
+                        
+                        <v-col cols="12" sm="6" md="4">
+                            <h3 class="mb-1">
+                                <v-icon class="mr-1 mb-1">mdi-database</v-icon>規格
+                            </h3>
+                            <v-text-field
+                                v-model.trim="dialogForm.spec"
+                                placeholder="請輸入規格"
+                                solo
+                            ></v-text-field>
+                        </v-col>
 
-                            <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                    label="規格"
-                                    v-model.trim="dialogForm.spec"
-                                ></v-text-field>
-                            </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                            <h3 class="mb-1">
+                                <v-icon class="mr-1 mb-1">mdi-cube</v-icon>單位
+                            </h3>
+                            <v-text-field
+                                v-model.trim="dialogForm.unit"
+                                placeholder="請輸入單位"
+                                solo
+                            ></v-text-field>
+                        </v-col>
 
-                            <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                    label="單位"
-                                    v-model.trim="dialogForm.unit"
-                                ></v-text-field>
-                            </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                            <h3 class="mb-1">
+                                <v-icon class="mr-1 mb-1">mdi-chart-bubble</v-icon>預估數量
+                            </h3>
+                            <v-text-field
+                                v-model.trim.number="dialogForm.count"
+                                placeholder="請輸入預估數量"
+                                solo
+                            ></v-text-field>
+                        </v-col>
 
-                            <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                    label="預估數量"
-                                    v-model.trim.number="dialogForm.count"
-                                ></v-text-field>
-                            </v-col>
-
-                            <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                    label="單價"
-                                    v-model.trim.number="dialogForm.price"
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-                </v-container>
-            </v-card-text>
+                        <v-col cols="12" sm="6" md="4">
+                            <h3 class="mb-1">
+                                <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>單價
+                            </h3>
+                            <v-text-field
+                                v-model.trim.number="dialogForm.price"
+                                placeholder="請輸入單價"
+                                solo
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-form>
+            </div>
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
                 <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-                <v-btn color="success"  elevation="4" @click="add">新增</v-btn>
+                <v-btn color="success"  elevation="4" @click="add">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -300,7 +325,7 @@ import { serveNewListExecl } from '@/apis/workList/serve'
 
 export default {
     data: () => ({
-        // valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
+        valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
         isEdit: false,  // 是否為編輯
         routeId: '',  // 工單編號
         ipt: {},
@@ -416,7 +441,7 @@ export default {
         close () {
             this.dialog = false
             setTimeout(() => {
-                this.dialogForm = Object.assign({}, this.dialogDefault)
+                this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
                 this.$refs.addForm.resetValidation()  // 取消驗證的紅字樣式
             }, 300)
         },
