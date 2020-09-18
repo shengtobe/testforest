@@ -624,16 +624,18 @@ export default {
                 this.$router.push({ path: '/worklist/maintain' })
             }, 1000)
         },
-        // 確定驗收
+        // 送出 (確定驗收)
         save() {
-            this.isLoading = true
+            if (confirm('你確定要完成驗收嗎?')) {
+                this.isLoading = true
 
-            // 範例效果
-            setTimeout(() => {
-                // 驗收完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '驗收成功' })
-                this.$router.push({ path: '/worklist/maintain' })
-            }, 1000)
+                // 範例效果
+                setTimeout(() => {
+                    // 驗收完後，轉頁到搜尋頁
+                    this.chMsgbar({ success: true, msg: '驗收成功' })
+                    this.$router.push({ path: '/worklist/maintain' })
+                }, 1000)
+            }
         },
         // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
         setJobHour(isEdit, item) {

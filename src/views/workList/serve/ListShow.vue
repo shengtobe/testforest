@@ -26,32 +26,27 @@
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="ma-2"
-                :loading="isLoading"
                 to="/worklist/serve"
             >回搜尋頁</v-btn>
 
             <v-btn class="ma-2"
-                :loading="isLoading"
                 color="primary"
                 :to="`/worklist/serve/${routeId}/editList`"
             >編輯</v-btn>
 
             <v-btn class="ma-2"
-                :loading="isLoading"
                 color="error"
                 @click="deleteItem"
             >刪除</v-btn>
 
             <v-btn dark class="ma-2"
-                :loading="isLoading"
                 color="amber darken-1"
                 @click="closeWork"
             >結案</v-btn>
 
             <v-btn dark class="ma-2"
-                :loading="isLoading"
                 color="success"
-                :to="`/worklist/serve/${workNumber}/newWork`"
+                :to="`/worklist/serve/${routeId}/newWork`"
             >派工</v-btn>
         </v-col>
     </v-row>
@@ -60,19 +55,12 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { fetchWorkOrderOne } from '@/apis/workList/maintain'
-import { getNowFullTime } from '@/assets/js/commonFun'
+// import { fetchWorkOrderOne } from '@/apis/workList/maintain'
+// import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-
-// 科室人員名單
-let memberList = {
-    '養護科': ['陳小華', '王大明'],
-    '維護科': ['劉章元', '楊力昇']
-}
 
 export default {
     data: () => ({
-        isLoading: false,  // 是否讀取中
         routeId: '',  // 工單編號
         topItems: {  // 上面的欄位
             year: { icon: 'mdi-calendar-text', title: '年度', text: '' },
@@ -158,26 +146,27 @@ export default {
         // 刪除
         deleteItem() {
             if (confirm('你確定要刪除嗎?')) {
-                this.isLoading = true
-                
+                this.chLoadingShow()
+
                 // 範例效果
                 setTimeout(() => {
                     // 刪除完後，轉頁到搜尋頁
                     this.chMsgbar({ success: true, msg: '刪除成功' })
                     this.$router.push({ path: '/worklist/serve' })
+                    this.chLoadingShow()
                 }, 1000)
             }
         },
         // 結案
         closeWork() {
             if (confirm('你確定要結案嗎?')) {
-                this.isLoading = true
-                
+                this.chLoadingShow()
                 // 範例效果
                 setTimeout(() => {
                     // 結案完後，轉頁到搜尋頁
                     this.chMsgbar({ success: true, msg: '結案成功' })
                     this.$router.push({ path: '/worklist/serve' })
+                    this.chLoadingShow()
                 }, 1000)
             }
         },

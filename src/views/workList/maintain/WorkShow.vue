@@ -276,9 +276,9 @@
                 to="/worklist/maintain"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="ma-2"
+            <v-btn class="ma-2"
                 :loading="isLoading"
-                color="indigo"
+                color="primary"
                 :to="`/worklist/maintain/${routeId}/editWork`"
             >編輯</v-btn>
 
@@ -366,14 +366,14 @@ export default {
         minOpts: minOptions,  // 下拉選單項目-分鐘
         ipt: {
             arrivalFixDate: new Date().toISOString().substr(0, 10),  // 到修-日期
-            arrivalFixHour: 0,  // 到修-時
-            arrivalFixMin: 0,  // 到修-分
+            arrivalFixHour: '00',  // 到修-時
+            arrivalFixMin: '00',  // 到修-分
             startFixDate: new Date().toISOString().substr(0, 10),  // 動工-日期
-            startFixHour: 0,  // 動工-時
-            startFixMin: 0,  // 動工-分
+            startFixHour: '00',  // 動工-時
+            startFixMin: '00',  // 動工-分
             endFixDate: new Date().toISOString().substr(0, 10),  // 完工-日期
-            endFixHour: 0,  // 完工-時
-            endFixMin: 0,  // 完工-分
+            endFixHour: '00',  // 完工-時
+            endFixMin: '00',  // 完工-分
             fixSituation: '',  // 維修情況
         },
         errorSituation: '',  // 必填欄位背景色-維修情況
@@ -419,7 +419,7 @@ export default {
         // 向後端取資料
         fetchData() {
             this.chLoadingShow()
-            let routeId = this.$route.params.id  // 路由參數
+            this.routeId = this.$route.params.id  // 路由參數
 
             // 範例效果
             setTimeout(() => {
@@ -498,7 +498,7 @@ export default {
                 this.$router.push({ path: '/worklist/maintain' })
             }, 1000)
         },
-        // 送出(維修情況)
+        // 送出
         save() {
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
