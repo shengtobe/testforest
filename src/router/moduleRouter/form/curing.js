@@ -2,49 +2,49 @@
 
 export const FormCuringRouter = [
     {
-        linkText: '動力車車歷卡',
+        linkText: '動力車車歷卡',// 
         path: '/form-manage/curing/power-car-maintenance',
         component: () => import('@/views/formManage/curing/PowerCarMaintenance.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: 'SL-31進廠維修紀錄',
+        linkText: 'SL-31進廠維修紀錄',// 1
         path: '/form-manage/curing/sl-31',
         component: () => import('@/views/formManage/curing/SL-31Maintenance-Record.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '故障原因紀錄表',
+        linkText: '故障原因紀錄表',// 2
         path: '/form-manage/curing/malfunction-reason',
         component: () => import('@/views/formManage/curing/MalfunctionReason.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '柴油引擎保養',
+        linkText: '柴油引擎保養',// 5
         path: '/form-manage/curing/diesel-engine-maintenance',
         component: () => import('@/views/formManage/curing/DieselEngineMaintenance.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '發電機保養',
+        linkText: '柴油液力機車發電機檢修',// 8
         path: '/form-manage/curing/locomotive-generator-overhaul',
         component: () => import('@/views/formManage/curing/LocomotiveGeneratorOverhaul.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '機車韌缸漏氣量檢測紀錄表',
+        linkText: '機車韌缸漏氣量檢測紀錄表',// 9
         path: '/form-manage/curing/locomotive-leakgas',
         component: () => import('@/views/formManage/curing/LocomotiveLeakGas.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '機車一級檢修紀錄表',
+        linkText: '機車一級檢修紀錄表',// 
         path: '/form-manage/curing/locomotive-one-level-maintenance',
         component: () => import('@/views/formManage/curing/LocomotiveOneMaintenance.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '機車一級檢修紀錄表Add',
+        linkText: '機車一級檢修紀錄表Add',// 
         path: '/form-manage/curing/locomotive-one-level-maintenance-add',
         component: () => import('@/views/formManage/curing/LocomotiveOneMaintenanceAdd.vue'),
         formGroup: []
@@ -278,7 +278,7 @@ export const FormCuringRouter = [
         formGroup: ['curing']
     },
     {
-        linkText: '客貨車輛日報表',
+        linkText: '客貨車輛日報表', 
         path: '/form-manage/curing/vehicle-status-daily-report',
         component: () => import('@/views/formManage/curing/VehicleStatusDailyReport.vue'),
         formGroup: ['curing']
