@@ -283,4 +283,18 @@ export const FormCuringRouter = [
         component: () => import('@/views/formManage/curing/VehicleStatusDailyReport.vue'),
         formGroup: ['curing']
     },
+     {
+        linkText: '嘉義車庫動力車狀態日報表',
+        path: '/form-manage/curing/chiayi-power-car-report',
+        component: () =>
+            import ('@/views/formManage/curing/ChiayiPowerCarReport.vue'),
+        formGroup: ['curing']
+    },
+    {
+        linkText: '嘉義車庫動力車狀態日報表Add',
+        path: '/form-manage/curing/chiayi-power-car-report-add',
+        component: () =>
+            import ('@/views/formManage/curing/ChiayiPowerCarReportAdd.vue'),
+        formGroup: []
+    },
 ]
