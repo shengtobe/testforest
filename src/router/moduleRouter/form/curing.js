@@ -254,7 +254,7 @@ export const FormCuringRouter = [
         formGroup: ['curing']
     },
     {
-        linkText: '規範及設備裝置',
+        linkText: '規範及設備裝置',// 105
         path: '/form-manage/curing/spec-equip',
         component: () => import('@/views/formManage/curing/SpecEquip.vue'),
         formGroup: ['curing']
