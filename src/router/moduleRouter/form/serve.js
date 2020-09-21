@@ -129,7 +129,7 @@ export const FormServeRouter = [
     },
     {
         linkText: '保安裝置保修工作紀錄', //14
-        path: '/form-manage/serve/Security-Device-Maintenance-Record',
+        path: '/form-manage/serve/security-device-maintenance-record',
         component: () => import('@/views/formManage/serve/SecurityDeviceMaintenanceRecord.vue'),
         formGroup: ['serve']
     },
