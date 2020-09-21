@@ -336,4 +336,5 @@ export const FormCuringRouter = [{
             import ('@/views/formManage/curing/ChiayiPowerCarReport.vue'),
         formGroup: ['curing']
     }
+
 ]
