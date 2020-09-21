@@ -116,13 +116,7 @@ export const FormServeRouter = [
         formGroup: ['serve']
     },
     {
-        linkText: '基地台無線電機/車裝台檢查紀錄表',// 30
-        path: '/form-manage/serve/bs-radio-checklist',
-        component: () => import('@/views/formManage/serve/BSRadioChecklist.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
-    },
-    {
-        linkText: '手攜無線電月份保養紀錄表',// 27
+        linkText: '手攜無線電月份保養紀錄表',// 30
         path: '/form-manage/serve/radio-maintenance',
         component: () => import('@/views/formManage/serve/RadioMaintenance.vue'),
         formGroup: ['serve', 'maintain', 'curing']
@@ -132,5 +126,11 @@ export const FormServeRouter = [
         path: '/form-manage/serve/security-device-maintenance-record',
         component: () => import('@/views/formManage/serve/SecurityDeviceMaintenanceRecord.vue'),
         formGroup: ['serve']
+    },
+    {
+        linkText: '基地台無線電機/車裝台檢查紀錄表',// 58
+        path: '/form-manage/serve/bs-radio-checklist',
+        component: () => import('@/views/formManage/serve/BSRadioChecklist.vue'),
+        formGroup: ['serve', 'maintain', 'curing']
     },
 ]

@@ -144,15 +144,15 @@
                   </v-col>
                   <v-col cols="12" sm="4" style="display: flex;">
                     <h3 class="mt-3 mr-1">起</h3>
-                    <v-text-field type="number" solo style="width: 0px;" />
+                    <v-text-field type="number"  solo style="width: 0px;" placeholder="時"/>
                     <h3 class="mt-3">：</h3>
-                    <v-text-field type="number" solo style="width: 0px;" />
+                    <v-text-field type="number" solo style="width: 0px;" placeholder="分"/>
                   </v-col>
                   <v-col cols="12" sm="4" style="display: flex;">
                     <h3 class="mt-3 mr-1">迄</h3>
-                    <v-text-field type="number" solo style="width: 0px;" />
+                    <v-text-field type="number" solo style="width: 0px;" placeholder="時"/>
                     <h3 class="mt-3">：</h3>
-                    <v-text-field type="number" solo style="width: 0px;" />
+                    <v-text-field type="number" solo style="width: 0px;" placeholder="分"/>
                   </v-col>
                 </v-row>
                 <v-row no-gutter>
