@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">空氣壓縮機定期檢查表(月)</h2>
+    <h2 class="mb-4 px-2">嘉義車庫動力車狀態日報表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -51,28 +51,16 @@
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
-
-      <v-col cols="12" sm="3" md="3">
-        <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
-        </v-form>
-      </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
-        </v-btn>
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          to="/form-manage/curing/chiayi-power-car-report-add"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增日報表
         </v-btn>
       </v-col>
     </v-row>
@@ -120,113 +108,6 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <!-- 新增空氣壓縮機(月)定期檢查表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
-          新增空氣壓縮機(月)定期檢查表
-          <v-spacer></v-spacer>
-          <v-btn dark fab small text @click="close" class="mr-n2">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <div class="px-6 py-4">
-          <v-row>
-            <v-col cols="12">
-              <p>1.依職業安全衛生法第23條規定辦理。</p>
-              <p>2.缺點由管理單位自行改善，不克者委請設備商修護。</p>
-              <p>3.本表於12月年底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。</p>
-            </v-col>
-            <!-- 檢查項目 -->
-            <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="ass"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value readonly />
-                </v-col>
-              </v-row>
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">檢查項目</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">檢查方法</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">檢查結果</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">備註</h3>
-                </v-col>
-              </v-row>
-              <v-alert
-                dense
-                border="top"
-                colored-border
-                color="teal"
-                elevation="4"
-                v-for="(item, idx) in items"
-                :key="idx"
-                class="mb-6"
-              >
-                <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '目視點檢', value: 'A' }, { text: '動作測試', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="正常" value="1"></v-radio>
-                      <v-radio color="red" label="異常" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="2" />
-                  </v-col>
-                </v-row>
-              </v-alert>
-            </v-col>
-            <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
-            </v-col>
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
-            </v-col>
-            <!-- END 檢查項目 -->
-          </v-row>
-        </div>
-
-        <v-card-actions class="px-5 pb-5">
-          <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -251,6 +132,7 @@ export default {
       uu: "",
       yy: "",
       Add: false,
+      Adds: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       headers: [
@@ -322,15 +204,14 @@ export default {
         ],
       },
       items: [
-        { question: "1. 控制開關及電源線" },
-        { question: "2. 馬達絕緣及接地線" },
-        { question: "3. 傳動皮帶、皮帶輪" },
-        { question: "4. 馬達傳動部份護罩" },
-        { question: "5. 貯氣筒體有無裂痕、腐蝕、漏氣" },
-        { question: "6. 連接管接頭是否良好" },
-        { question: "7. 安全閥及送氣開關" },
-        { question: "8. 壓力表及壓力設定" },
-        { question: "9. 試運轉是否順暢，有無異狀" },
+        { question: "1. 鋼瓶是否有固定" },
+        { question: "2. 鋼瓶內容物名稱是否有明顯標示" },
+        { question: "3. 鋼瓶容器是否無損傷、變形、腐蝕" },
+        { question: "4. 鋼瓶柱塞，是否無洩漏" },
+        { question: "5. 調壓器是否正常，是否無洩漏" },
+        { question: "6. 軟氣管，是否無損壞" },
+        { question: "7. 手把及火嘴性能是否正常" },
+        { question: "8. 各處接頭是否牢固" },
       ],
       suggest: "", // 改善建議
     };
@@ -354,6 +235,9 @@ export default {
         this.addItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       }, 300);
+    },
+    closes() {
+      this.Adds = false;
     },
   },
 };
