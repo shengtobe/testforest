@@ -104,7 +104,7 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '車站營運異常狀況通報單',
+        linkText: '車站營運異常狀況通報單',//
         path: '/form-manage/serve/abnormal-notifice',
         component: () => import('@/views/formManage/serve/AbnormalNotifice.vue'),
         formGroup: ['serve', 'maintain', 'curing']
