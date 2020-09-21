@@ -1,69 +1,73 @@
 <template>
   <v-container style="max-width: 1200px">
     <h2 class="mb-4 px-2">嘉義車庫動力車狀態日報表</h2>
+
     <!-- 第一排選項 -->
     <v-row class="px-2">
+      <!-- 檢查日期(起) -->
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
         </h3>
         <v-menu
-          v-model="a"
+          v-model="CheckdayOn"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
+            <v-text-field v-model.trim="QueryCheckdayOn" solo v-on="on" readonly />
           </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
+          <v-date-picker
+            color="purple"
+            v-model="QueryCheckdayOn"
+            @input="CheckdayOn = false"
+            locale="zh-tw"
+          />
         </v-menu>
       </v-col>
+      <!-- 檢查日期(迄) -->
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
         </h3>
         <v-menu
-          v-model="q"
+          v-model="CheckdayOff"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
+            <v-text-field v-model.trim="QueryCheckdayOff" solo v-on="on" readonly />
           </template>
-          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
+          <v-date-picker
+            color="purple"
+            v-model="QueryCheckdayOff"
+            @input="CheckdayOff = false"
+            locale="zh-tw"
+          />
         </v-menu>
       </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
-          solo
-        />
-      </v-col>
+      <!-- 查詢、新增 -->
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-      </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          to="/form-manage/curing/chiayi-power-car-report-add"
+          @click="AddDataModal = true"
         >
           <v-icon>mdi-plus</v-icon>新增日報表
         </v-btn>
       </v-col>
     </v-row>
+
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -78,13 +82,11 @@
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
           </template>
-
           <template v-slot:loading>
             <span class="red--text subtitle-1">資料讀取中...</span>
           </template>
-
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.Shop="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -92,15 +94,11 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="AddDataModal = true"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
-            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
-              <v-icon dark>mdi-delete</v-icon>
-            </v-btn>-->
           </template>
-
           <!-- 頁碼 -->
           <template v-slot:footer="footer">
             <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
@@ -108,6 +106,211 @@
         </v-data-table>
       </v-card>
     </v-col>
+
+    <!-- 新增自動檢點表 modal -->
+    <v-dialog v-model="AddDataModal" max-width="1060px">
+      <v-card>
+        <!-- 標題 -->
+        <v-card-title class="blue white--text px-4 py-1">
+          新增動力車狀態日報表
+          <v-spacer />
+          <v-btn dark fab small text @click="closeAddModal" class="mr-n2">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <!-- 內容 -->
+        <div class="px-6 py-4">
+          <v-row>
+            <v-col cols="12">
+              <!-- 固定資料 -->
+              <v-row no-gutter class="indigo--text">
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">保養日期</h3>
+                  <v-menu
+                    v-model="MaintenanceDay"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field v-model.trim="AddData.MaintenanceDay" solo v-on="on" readonly />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.MaintenanceDay"
+                      @input="MaintenanceDay = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+              </v-row>
+              <!-- 摺疊資料 -->
+              <v-expansion-panels>
+                <!-- 動力車狀態 -->
+                <v-expansion-panel>
+                  <v-expansion-panel-header color="teal" class="white--text">動力車狀態</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-alert
+                      dense
+                      border="top"
+                      colored-border
+                      color="teal"
+                      elevation="4"
+                      v-for="(data, id) in CarTypeData"
+                      :key="id"
+                      class="mb-6 mt-4"
+                    >
+                      <v-row no-gutter>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">車別</h3>
+                          <span style="font-size: 18px;">{{ data.Question }}</span>
+                        </v-col>
+                        <!-- 現有總數，加總其他資料須js即時計算(尚未完成) -->
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">現有總數</h3>
+                          <span style="font-size: 18px;">{{ data.Total }}</span>
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">使用</h3>
+                          <v-text-field
+                            type="number"
+                            dense
+                            v-model="data.Use"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">待用</h3>
+                          <v-text-field
+                            type="number"
+                            dense
+                            v-model="data.Wait"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">試車</h3>
+                          <v-text-field
+                            type="number"
+                            dense
+                            v-model="data.Try"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">停用</h3>
+                          <v-text-field
+                            type="number"
+                            dense
+                            v-model="data.Ban"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">在庫待修</h3>
+                          <v-text-field
+                            type="number"
+                            dense
+                            v-model="data.Repair"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <h3 class="mb-1">進廠檢修</h3>
+                          <v-text-field
+                            type="number"
+                            dense
+                            v-model="data.Check"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                        <v-col cols="12" sm="4">
+                          <h3 class="mb-1">其他</h3>
+                          <v-text-field
+                            type="text"
+                            dense
+                            v-model="data.Remarks"
+                            single-line
+                            outlined
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-alert>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+
+                <!-- 本日運行車況 -->
+                <v-expansion-panel>
+                  <v-expansion-panel-header color="teal" class="white--text">本日運行車況</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-col cols="13" sm="12">
+                      <v-toolbar color="teal lighten-2" dark>
+                        <v-spacer />
+                        <v-toolbar-title>柴油機車</v-toolbar-title>
+                        <v-spacer />
+                      </v-toolbar>
+                    </v-col>
+                    <!-- ---------------------柴油機車--------------------- -->
+                    <v-alert
+                      dense
+                      border="top"
+                      colored-border
+                      color="teal"
+                      elevation="4"
+                      v-for="(diesel, id) in TodayCar.Diesel"
+                      :key="id"
+                      class="mb-6 mt-4"
+                    >
+                      <v-row no-gutter>
+                        <v-col cols="12" sm="3">
+                          <h3 class="mb-1">號碼</h3>
+                          <span style="font-size: 18px;">{{ diesel.car }}</span>
+                        </v-col>
+                        <v-col cols="12" sm="3">
+                          <h3 class="mb-1">使用車次</h3>
+                          <span style="font-size: 18px;">{{ diesel.use }}</span>
+                        </v-col>
+                        <v-col cols="12" sm="3">
+                          <h3 class="mb-1">狀態</h3>
+                          <v-radio-group dense row v-model="diesel.type" class="pa-0 ma-0">
+                            <v-radio color="success" label="待用" value="0" />
+                            <v-radio color="success" label="待修" value="1" />
+                            <v-radio color="success" label="進場" value="2" />
+                            <v-radio color="red" label="停用" value="3" />
+                          </v-radio-group>
+                        </v-col>
+                        <v-col cols="12" sm="3">
+                          <h3 class="mb-1">說明</h3>
+                          <v-textarea v-model="diesel.remarks" auto-grow outlined rows="2" />
+                        </v-col>
+                      </v-row>
+                    </v-alert>
+
+                    <!-- ---------------------蒸汽機車--------------------- -->
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-col>
+          </v-row>
+        </div>
+
+        <!-- 確認、取消 -->
+        <v-card-actions class="px-5 pb-5">
+          <v-spacer />
+          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- END 自動檢點表 modal -->
   </v-container>
 </template>
 
@@ -117,103 +320,148 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
-      Add: false,
-      Adds: false,
-      dialog3: false,
+      // 自定義變數
+      CheckdayOn: "",
+      QueryCheckdayOn: "",
+      CheckdayOff: "",
+      QueryCheckdayOff: "",
+      AddDataModal: false,
+      MaintenanceDay: "",
+      AddData: {
+        // 新增表單資料
+        MaintenanceDay: "", // 保養日
+      },
+      // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
-      headers: [
-        // 表格顯示的欄位
+      headers: [ // Query標題
+        
         {
           text: "項次",
-          value: "a0",
+          value: "Item",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
           text: "檢查日期",
-          value: "aa",
+          value: "Checkday",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
           text: "審查狀態",
-          value: "cc",
+          value: "Review",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
           text: "填寫人",
-          value: "dd",
+          value: "Name",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
           text: "功能",
-          value: "shop",
+          value: "Shop",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
       ],
-      tableItems: [
+      tableItems: [ // Query資料(目前假資料)
         {
-          a0: "1",
-          aa: "2020-08-01",
-          cc: "已審查",
-          dd: "王大明",
+          Item: "1",
+          Checkday: "2020-08-01",
+          Review: "已審查",
+          Name: "王大明",
         },
         {
-          a0: "2",
-          aa: "2020-08-10",
-          cc: "審查中",
-          dd: "王大明",
+          Item: "2",
+          Checkday: "2020-08-10",
+          Review: "審查中",
+          Name: "王大明",
         },
       ],
-      ipt: {
-        department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
-        date: new Date().toISOString().substr(0, 10),
-        items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
+      CarTypeData: [ // 新增動力車狀態-(寫死)
+        
+        {
+          Question: "DL25噸",
+          Total: 0,
+          Wait: 0,
+          Try: 0,
+          Ban: 0,
+          Repair: 0,
+          Check: 0,
+          Remarks: "",
+        },
+        {
+          Question: "DL28噸",
+          Total: 0,
+          Use: 0,
+          Wait: 0,
+          Try: 0,
+          Ban: 0,
+          Repair: 0,
+          Check: 0,
+          Remarks: "",
+        },
+        {
+          Question: "DL29噸",
+          Total: 0,
+          Use: 0,
+          Wait: 0,
+          Try: 0,
+          Ban: 0,
+          Repair: 0,
+          Check: 0,
+          Remarks: "",
+        },
+        {
+          Question: "蒸汽機車",
+          Total: 0,
+          Use: 0,
+          Wait: 0,
+          Try: 0,
+          Ban: 0,
+          Repair: 0,
+          Check: 0,
+          Remarks: "",
+        },
+        {
+          Question: "DPC7、8",
+          Total: 0,
+          Use: 0,
+          Wait: 0,
+          Try: 0,
+          Ban: 0,
+          Repair: 0,
+          Check: 0,
+          Remarks: "",
+        },
+      ],
+      TodayCar: { // 本日運行狀態
+        Diesel: [ // 柴油機車
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
+          { car: "0", use: "0", type: "", remarks: "" },
         ],
+        Steam: [ // 蒸汽機車
+
+        ]
       },
-      items: [
-        { question: "1. 鋼瓶是否有固定" },
-        { question: "2. 鋼瓶內容物名稱是否有明顯標示" },
-        { question: "3. 鋼瓶容器是否無損傷、變形、腐蝕" },
-        { question: "4. 鋼瓶柱塞，是否無洩漏" },
-        { question: "5. 調壓器是否正常，是否無洩漏" },
-        { question: "6. 軟氣管，是否無損壞" },
-        { question: "7. 手把及火嘴性能是否正常" },
-        { question: "8. 各處接頭是否牢固" },
-      ],
-      suggest: "", // 改善建議
     };
   },
   components: { Pagination }, // 頁碼
@@ -230,15 +478,16 @@ export default {
       this.dialog3 = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.addItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
     },
-    closes() {
-      this.Adds = false;
+    closeAddModal() {
+      this.AddDataModal = false;
     },
   },
 };
 </script>
+
+<style>
+.v-expansion-panel-header {
+  font-size: 18px;
+}
+</style>
