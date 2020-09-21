@@ -110,7 +110,7 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '保安裝置保修工作申請書',
+        linkText: '保安裝置保修工作申請書',//
         path: '/form-manage/serve/device-maintain-application',
         component: () => import('@/views/formManage/serve/DeviceMaintainApplication.vue'),
         formGroup: ['serve']
