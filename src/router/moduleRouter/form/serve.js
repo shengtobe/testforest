@@ -122,7 +122,7 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '手攜無線電月份保養紀錄表',// ??
+        linkText: '手攜無線電月份保養紀錄表',// 27
         path: '/form-manage/serve/radio-maintenance',
         component: () => import('@/views/formManage/serve/RadioMaintenance.vue'),
         formGroup: ['serve', 'maintain', 'curing']

@@ -68,7 +68,7 @@ export const FormMaintainRouter = [
         formGroup: ['maintain']
     },
     {
-        linkText: '竹崎監工區抽換道岔作業自主檢查表',
+        linkText: '竹崎監工區抽換道岔作業自主檢查表',// 110
         path: '/form-manage/maintain/zhuqi-rail-switch-checklist',
         component: () => import('@/views/formManage/maintain/ZhuqiRailSwitchChecklist.vue'),
         formGroup: ['maintain']
