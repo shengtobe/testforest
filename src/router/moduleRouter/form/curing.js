@@ -323,14 +323,14 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '車庫客貨車輛狀態日報表',
+        linkText: '車庫客貨車輛狀態日報表',// 15
         path: '/form-manage/curing/vehicle-status-daily-report',
         component: () =>
             import ('@/views/formManage/curing/VehicleStatusDailyReport.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '嘉義車庫動力車狀態日報表',
+        linkText: '嘉義車庫動力車狀態日報表',// 16
         path: '/form-manage/curing/chiayi-power-car-report',
         component: () =>
             import ('@/views/formManage/curing/ChiayiPowerCarReport.vue'),

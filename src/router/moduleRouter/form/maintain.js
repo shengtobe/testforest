@@ -32,13 +32,13 @@ export const FormMaintainRouter = [
         formGroup: ['maintain']
     },
     {
-        linkText: '竹崎監工區大型物料存放位置表',
+        linkText: '竹崎監工區大型物料存放位置表',// 61
         path: '/form-manage/maintain/takezaki-large-materials',
         component: () => import('@/views/formManage/maintain/TakezakiLargeMaterials.vue'),
         formGroup: ['maintain']
     },
     {
-        linkText: '鐵道橋樑監理資料',
+        linkText: '鐵道橋樑監理資料',// 新增1
         path: '/form-manage/maintain/rail-bridge-checklist',
         component: () => import('@/views/formManage/maintain/RailBridgeChecklist.vue'),
         formGroup: ['maintain']

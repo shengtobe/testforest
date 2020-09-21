@@ -104,13 +104,13 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '車站營運異常狀況通報單',//
+        linkText: '車站營運異常狀況通報單',// 114
         path: '/form-manage/serve/abnormal-notifice',
         component: () => import('@/views/formManage/serve/AbnormalNotifice.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '保安裝置保修工作申請書',//
+        linkText: '保安裝置保修工作申請書',// 12
         path: '/form-manage/serve/device-maintain-application',
         component: () => import('@/views/formManage/serve/DeviceMaintainApplication.vue'),
         formGroup: ['serve']
