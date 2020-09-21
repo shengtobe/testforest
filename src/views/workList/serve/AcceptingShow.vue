@@ -141,7 +141,7 @@
     <v-dialog v-model="dialog" max-width="600px">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
-                <v-toolbar-title>退回原因</v-toolbar-title>
+                <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
                     <v-icon>mdi-close</v-icon>
@@ -184,6 +184,9 @@
             <v-card-text>
                 <v-row>
                     <v-col cols="12" sm="6" md="4">
+                        <h3 class="mb-1">
+                            <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>新驗收日
+                        </h3>
                         <v-menu
                             v-model="delay.menuShow"
                             :close-on-content-click="false"
@@ -193,9 +196,10 @@
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
-                                    label="新驗收日"
-                                    v-model="delay.newDate"
+                                    v-model.trim="delay.newDate"
+                                    solo
                                     v-on="on"
+                                    readonly
                                     hide-details
                                 ></v-text-field>
                             </template>
@@ -208,21 +212,25 @@
                         </v-menu>
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="4" offset-md="2">
+                    <v-col cols="12" sm="6" md="4" offset-md="2" align-self="center">
                         <v-checkbox
                             v-model="delay.shortage"
                             label="缺料"
                             color="red darken-3"
+                            class="mt-0 mt-sm-6"
                             hide-details
                         ></v-checkbox>
                     </v-col>
                     
                     <v-col cols="12">
+                        <h3 class="mb-1">
+                            <v-icon class="mr-1 mb-1">mdi-note</v-icon>延後原因
+                        </h3>
                         <v-textarea
-                            label="延後原因"
+                            placeholder="請輸入延後原因"
                             hide-details
                             auto-grow
-                            outlined
+                            solo
                             rows="6"
                             v-model.trim="delay.reason"
                         ></v-textarea>
@@ -270,6 +278,7 @@ export default {
         malfunctionDes: '',  // 故障描述
         note: '',  // 備註
         vendors: [],  // 外包廠商
+        fixSituation: '',  // 維修情況
         totalHour: '',  // 總工時
         dialog: false,  // dialog 是否顯示
         dialogTitle: '',  // dialog 標題
