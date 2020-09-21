@@ -1,5 +1,21 @@
 // -------- 時間的下拉選單 option --------
 
+// 月
+export const monthOptions = [
+    { text: '1 月', value: '01' },
+    { text: '2 月', value: '02' },
+    { text: '3 月', value: '03' },
+    { text: '4 月', value: '04' },
+    { text: '5 月', value: '05' },
+    { text: '6 月', value: '06' },
+    { text: '7 月', value: '07' },
+    { text: '8 月', value: '08' },
+    { text: '9 月', value: '09' },
+    { text: '10 月', value: '10' },
+    { text: '11 月', value: '11' },
+    { text: '12 月', value: '12' },
+]
+
 // 小時
 export const hourOptions = [
     { text: '00 時', value: '00' },

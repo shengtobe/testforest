@@ -95,7 +95,7 @@
             <v-btn elevation="2" large
                 @click="reset"
             >
-                <v-icon class="mr-1">mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>重置
             </v-btn>
         </v-col>
         

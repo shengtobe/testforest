@@ -112,13 +112,13 @@
             <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0"
                 @click="reset"
             >
-                <v-icon class="mr-1">mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>重置
             </v-btn>
 
             <v-btn color="pink" elevation="2" dark large class="mr-3 mb-4 mb-sm-0"
                 to="/smis/car-accident-event/del-recovery"
             >
-                <v-icon class="mr-1">mdi-alert-circle</v-icon>作廢復原
+                <v-icon>mdi-alert-circle</v-icon>作廢復原
             </v-btn>
         </v-col>
                 

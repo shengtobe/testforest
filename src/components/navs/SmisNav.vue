@@ -84,20 +84,8 @@
             <v-list-item-title class="white--text">行車安全績效</v-list-item-title>
         </template>
 
-        <v-list-item to="/smis/car-safe-performance/charts" class="white--text">
-            <v-list-item-title>統計圖表</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/smis/car-safe-performance/machine-abnormal" class="white--text">
-            <v-list-item-title>軔機檢查異常表</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/smis/car-safe-performance/health-abnormal" class="white--text">
-            <v-list-item-title>酒測、健康檢查異常表</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/smis/car-safe-performance/speed-abnormal" class="white--text">
-            <v-list-item-title>車速異常表</v-list-item-title>
+        <v-list-item to="/smis/car-safe-performance/form-charts" class="white--text">
+            <v-list-item-title>表單填報、統計圖</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/smis/car-safe-performance/crawl-notify" class="white--text">

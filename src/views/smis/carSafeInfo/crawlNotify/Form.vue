@@ -37,11 +37,15 @@
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>常態速限(km/h)
+                <v-btn small dark class="mb-1 ml-2 purple"
+                    @click="dialogShow = true"
+                >速限表</v-btn>
             </h3>
-            <v-text-field
-                v-model.trim="ipt.normal"
+            <v-select
+                v-model="ipt.normal"
+                :items="[18, 20, 22, 25, 28, 30, 40, 45]"
                 solo
-            ></v-text-field>
+            ></v-select>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
@@ -198,6 +202,28 @@
             >送出</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 常態速限表 -->
+    <v-dialog v-model="dialogShow" max-width="450px">
+        <v-card>
+            <v-toolbar flat dense dark color="purple lighten-2">
+                <v-icon class="mr-2">mdi-gauge</v-icon>
+                <v-toolbar-title>常態速限表</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-data-table
+                :headers="headers"
+                :items="tableItems"
+                disable-sort
+                disable-filtering
+                hide-default-footer
+            ></v-data-table>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -212,7 +238,7 @@ export default {
             line: '本線',  // 通報路線
             pointStart: '',  // 速限起點
             pointEnd: '',  // 速限終點
-            normal: '',  // 常態速限
+            normal: 18,  // 常態速限
             slow: '',  // 慢行速限
             dateStart: new Date().toISOString().substr(0, 10),  // 限制日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
@@ -235,6 +261,21 @@ export default {
             { name: '吳泓吉 (K58963)', value: '6'},
             { name: '鄭家豪 (K24758)', value: '7'},
             { name: '王永慶 (K25896)', value: '8'},
+        ],
+        dialogShow: false,  // 速限表是否顯示
+        headers: [  // 速限表顯示的欄位
+            { text: '起訖站', value: 'station', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '直線最高速度', value: 'straight', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '曲線最高速度', value: 'curve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        tableItems: [  // 速限表表格資料
+            { station: '嘉義 ~ 北門', straight: 30, curve: 28},
+            { station: '北門 ~ 竹崎', straight: 45, curve: 40},
+            { station: '竹崎 ~ 二萬平', straight: 25, curve: 22},
+            { station: '二萬平 ~ 阿里山', straight: 25, curve: 18},
+            { station: '阿里山 ~ 祝山', straight: 20, curve: 18},
+            { station: '阿里山 ~ 眠月', straight: 20, curve: 18},
+            { station: '阿里山 ~ 水山神木', straight: 20, curve: 18},
         ],
     }),
     methods: {
