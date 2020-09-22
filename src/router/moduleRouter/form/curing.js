@@ -323,17 +323,24 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '車庫客貨車輛狀態日報表',// 15
+        linkText: '車庫客貨車輛狀態日報表', // 15
         path: '/form-manage/curing/vehicle-status-daily-report',
         component: () =>
             import ('@/views/formManage/curing/VehicleStatusDailyReport.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '嘉義車庫動力車狀態日報表',// 16
+        linkText: '嘉義車庫動力車狀態日報表', // 16
         path: '/form-manage/curing/chiayi-power-car-report',
         component: () =>
             import ('@/views/formManage/curing/ChiayiPowerCarReport.vue'),
+        formGroup: ['curing']
+    },
+    {
+        linkText: '鐵路維護科工作日誌', // 103
+        path: '/form-manage/curing/railway-worklog',
+        component: () =>
+            import ('@/views/formManage/curing/RailwayWorkLog.vue'),
         formGroup: ['curing']
     }
 ]
