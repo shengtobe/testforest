@@ -13,4 +13,10 @@ export const FormLaborRouter = [
         component: () => import('@/views/formManage/labor/OccupationalSafetyOverwork.vue'),
         formGroup: ['labor']
     },
+    {
+        linkText: '心理健康量表', // 勞安衛3.
+        path: '/form-manage/labor/mental-health',
+        component: () => import('@/views/formManage/labor/MentalHealth.vue'),
+        formGroup: ['labor']
+    },
 ]
