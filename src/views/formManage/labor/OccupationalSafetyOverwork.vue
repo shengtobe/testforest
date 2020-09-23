@@ -185,7 +185,7 @@
                   <v-col cols="12" sm="4">{{ item.question }}</v-col>
                   <v-col cols="12" sm="7">
                     <span class="d-sm-none error--text">回答：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0" >
+                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="(1)總是" value="1"></v-radio>
                       <v-radio color="orange" label="(2)常常" value="2"></v-radio>
                       <v-radio color="orange" label="(3)有時候" value="3"></v-radio>
@@ -198,7 +198,7 @@
             </v-col>
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
-              <v-text-field v-model="ss">
+              <v-text-field v-model="PersonalFatigueTotal">
                 <span slot="prepend">個人疲勞分數:</span>
               </v-text-field>
               <v-text-field solo readonly>
@@ -228,7 +228,7 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
-      ss: "",
+      // ss: 0,
       a: "",
       ass: "",
       z: "",
@@ -303,13 +303,13 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
         ],
       },
       items: [
@@ -333,6 +333,15 @@ export default {
     };
   },
   components: { Pagination }, // 頁碼
+  computed: {
+    PersonalFatigueTotal () {
+      var total = 0
+      for (let index = 0; index < this.ipt.items.length; index++) {
+        total += Number(this.ipt.items[index].status);
+      }
+      return total
+    },
+  },
   methods: {
     // 更換頁數
     chPage(n) {
@@ -352,8 +361,12 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-    Add() {
-      alert("123");
+    Addss () {
+      this.ss = 0
+      for (let index = 0; index < this.ipt.items.length; index++) {
+        console.log(this.ipt.items[index].status)
+        this.ss += Number(this.ipt.items[index].status);
+      }
     },
   },
 };

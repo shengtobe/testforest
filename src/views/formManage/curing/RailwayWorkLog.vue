@@ -146,14 +146,13 @@
                   </v-menu>
                 </v-col>
               </v-row>
-               <!-- 摺疊資料 -->
+              <!-- 摺疊資料 -->
               <v-expansion-panels>
-                <!-- 動力車狀態 -->
+                <!-- 監工區 -->
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">
-                    動力車狀態
-                  </v-expansion-panel-header>
+                  <v-expansion-panel-header color="teal" class="white--text">監工區</v-expansion-panel-header>
                   <v-expansion-panel-content>
+                  <v-btn color="success" elevation="4" class="mt-1" @click="addSupervisor">增加欄位</v-btn>
                     <v-alert
                       dense
                       border="top"
@@ -163,84 +162,56 @@
                       class="mb-6 mt-4"
                     >
                       <v-row no-gutter>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">車別</h3>
-                          <span style="font-size: 18px;">{{ data.Question }}</span>
-                        </v-col>
-                        <!-- 現有總數，加總其他資料須js即時計算(尚未完成) -->
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">現有總數</h3>
-                          <span style="font-size: 18px;">{{ data.Total }}</span>
-                        </v-col>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">使用</h3>
-                          <v-text-field
-                            type="number"
-                            dense
-                            v-model="data.Use"
-                            single-line
-                            outlined
-                          />
-                        </v-col>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">待用</h3>
-                          <v-text-field
-                            type="number"
-                            dense
-                            v-model="data.Wait"
-                            single-line
-                            outlined
-                          />
-                        </v-col>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">試車</h3>
-                          <v-text-field
-                            type="number"
-                            dense
-                            v-model="data.Try"
-                            single-line
-                            outlined
-                          />
-                        </v-col>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">停用</h3>
-                          <v-text-field
-                            type="number"
-                            dense
-                            v-model="data.Ban"
-                            single-line
-                            outlined
-                          />
-                        </v-col>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">在庫待修</h3>
-                          <v-text-field
-                            type="number"
-                            dense
-                            v-model="data.Repair"
-                            single-line
-                            outlined
-                          />
-                        </v-col>
-                        <v-col cols="12" sm="2">
-                          <h3 class="mb-1">進廠檢修</h3>
-                          <v-text-field
-                            type="number"
-                            dense
-                            v-model="data.Check"
-                            single-line
-                            outlined
-                          />
+                        <v-col cols="12" sm="4">
+                          <h3 class="mb-1">監工區人員</h3>
+                          <v-textarea v-model="data" auto-grow outlined rows="2" />
                         </v-col>
                         <v-col cols="12" sm="4">
-                          <h3 class="mb-1">其他</h3>
-                          <v-text-field
-                            type="text"
-                            dense
-                            v-model="data.Remarks"
-                            single-line
-                            outlined
-                          />
+                          <h3 class="mb-1">督導或工作地點</h3>
+                          <v-textarea auto-grow outlined rows="2" />
+                        </v-col>
+                        <v-col cols="12" sm="4">
+                          <h3 class="mb-1">督導或工作內容</h3>
+                          <v-textarea auto-grow outlined rows="2" />
+                        </v-col>
+                        <v-col cols="6" sm="1">
+                          <h3>公差/公出</h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="6" sm="1">
+                          <h3>公假/受訓</h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="6" sm="1">
+                          <h3>出勤/支援</h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="6" sm="1">
+                          <!-- BR 導致手機板跑版 -->
+                          <h3>
+                            值班
+                            <br />
+                            <br />
+                          </h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="6" sm="1">
+                          <h3>休假/補休</h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="6" sm="1">
+                          <h3>病假/事假</h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="6" sm="2">
+                          <h3>
+                            例假日/
+                            <br />例假調整
+                          </h3>
+                          <v-text-field class="iwidth" type="number" dense single-line outlined />
+                        </v-col>
+                        <v-col cols="12" sm="4">
+                          <h3>合計人數：{{ "0人" }}</h3>
                         </v-col>
                       </v-row>
                     </v-alert>
@@ -340,6 +311,10 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    // 新增監工區塊欄位
+    addSupervisor () {
+
+    },
     // 搜尋
     search() {},
     // 關閉 dialogx
@@ -349,3 +324,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.iwidth {
+  width: 65px;
+}
+</style>
