@@ -5,7 +5,7 @@
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(起)
         </h3>
         <v-menu
           v-model="a"
@@ -22,7 +22,7 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(迄)
         </h3>
         <v-menu
           v-model="q"
@@ -37,44 +37,20 @@
           <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
         </v-menu>
       </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
-          solo
-        />
-      </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
-      </v-col>
-
-      <v-col cols="12" sm="3" md="3">
-        <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
-        </v-form>
-      </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
+      <div class="col-sm-4 col-md-8 col-12">
+        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
+          <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增表單
         </v-btn>
-      </v-col>
+      </div>
     </v-row>
     <!-- 表格資料 -->
     <v-col cols="12">
@@ -133,10 +109,7 @@
 
         <div class="px-6 py-4">
           <v-row>
-            <v-col cols="12">
-              <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。</p>
-              <p>2.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-            </v-col>
+            
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
@@ -186,29 +159,141 @@
                   <v-col cols="12" sm="7">
                     <span class="d-sm-none error--text">回答：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="(1)總是" value="1"></v-radio>
-                      <v-radio color="orange" label="(2)常常" value="2"></v-radio>
-                      <v-radio color="orange" label="(3)有時候" value="3"></v-radio>
-                      <v-radio color="orange" label="(4)不常" value="4"></v-radio>
-                      <v-radio color="red" label="(5)從未或幾乎從未" value="5"></v-radio>
+                      <v-radio color="success" label="總是" value="100"></v-radio>
+                      <v-radio color="orange" label="常常" value="75"></v-radio>
+                      <v-radio color="orange" label="有時候" value="50"></v-radio>
+                      <v-radio color="orange" label="不常" value="25"></v-radio>
+                      <v-radio color="red" label="從未或幾乎從未" value="0"></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                </v-row>
+              </v-alert>
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                  <v-spacer />
+                  <v-toolbar-title>二、工作疲勞</v-toolbar-title>
+                  <v-spacer />
+                </v-toolbar>
+              </v-col>
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="(item, idx) in items2"
+                :key="idx"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="7">
+                    <span class="d-sm-none error--text">回答：</span>
+                    <v-radio-group dense row v-model="ipt.items2[idx].status" class="pa-0 ma-0">
+                      <v-radio color="success" label="總是" value="0"></v-radio>
+                      <v-radio color="orange" label="常常" value="25"></v-radio>
+                      <v-radio color="orange" label="有時候" value="50"></v-radio>
+                      <v-radio color="orange" label="不常" value="75"></v-radio>
+                      <v-radio color="red" label="從未或幾乎從未" value="100"></v-radio>
                     </v-radio-group>
                   </v-col>
                 </v-row>
               </v-alert>
             </v-col>
             <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <v-text-field v-model="PersonalFatigueTotal">
+            <v-col cols="12" sm="6">
+              <v-text-field v-model="PersonalFatigueTotal" readonly>
                 <span slot="prepend">個人疲勞分數:</span>
               </v-text-field>
-              <v-text-field solo readonly>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field v-model="count2" readonly>
                 <span slot="prepend">工作疲勞分數:</span>
               </v-text-field>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">同意人簽名</h3>
+              <b >※您是否同意檢附量表分數，以作為後續健康風險評估之用途?</b>
+            </v-col>
+            <v-col cols="12">
+              <h3 class="mb-1 indigo--text">同意人</h3>
               <v-textarea auto-grow outlined rows="1" v-model.trim="ipt.suggest"></v-textarea>
             </v-col>
+            <v-col cols="12">
+              <p >本職場超時工作(過勞)預防計畫編撰參考資料源自勞動部勞工研究所之過勞工作指引及台北市衛生局職場心理健康</p>
+            </v-col>
+            <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                  <v-spacer />
+                  <v-toolbar-title>分數解釋</v-toolbar-title>
+                  <v-spacer />
+                </v-toolbar>
+              </v-col>
+            <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+                <v-expansion-panel>
+                  <v-expansion-panel-header color="teal" class="white--text">個人疲勞</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    >
+                      <v-col cols="12" sm="3">
+                        <h3 class="mb-1">分數</h3>
+                      </v-col>
+                      <v-col cols="12" sm="2">
+                        <h3 class="mb-1">分級</h3>
+                      </v-col>
+                      <v-col cols="12" sm="7">
+                        <h3 class="mb-1">解釋</h3>
+                      </v-col>
+                    </v-row>
+                    <v-alert
+                      dense
+                      border="top"
+                      colored-border
+                      color="teal"
+                      elevation="4"
+                      v-for="(item, idx) in itemSc1"
+                      :key="idx"
+                      class="mb-6 mt-4">
+                      <v-row no-gutter>
+                        <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                        <v-col cols="12" sm="2">{{ item.checkContent }}</v-col>
+                        <v-col cols="12" sm="7">{{ item.checkMethod }}</v-col>
+                      </v-row>
+                    </v-alert>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header color="teal" class="white--text">工作疲勞</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    >
+                      <v-col cols="12" sm="3">
+                        <h3 class="mb-1">分數</h3>
+                      </v-col>
+                      <v-col cols="12" sm="2">
+                        <h3 class="mb-1">分級</h3>
+                      </v-col>
+                      <v-col cols="12" sm="7">
+                        <h3 class="mb-1">解釋</h3>
+                      </v-col>
+                    </v-row>
+                    <v-alert
+                      dense
+                      border="top"
+                      colored-border
+                      color="teal"
+                      elevation="4"
+                      v-for="(item, idx) in itemSc2"
+                      :key="idx"
+                      class="mb-6 mt-4">
+                      <v-row no-gutter>
+                        <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                        <v-col cols="12" sm="2">{{ item.checkContent }}</v-col>
+                        <v-col cols="12" sm="7">{{ item.checkMethod }}</v-col>
+                      </v-row>
+                    </v-alert>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+            </v-expansion-panels>
             <!-- END 檢查項目 -->
           </v-row>
         </div>
@@ -303,13 +388,31 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+        ],
+        items2: [
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+        ],
+        itemSc1:[
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+        ],
+        itemSc2:[
+          { status: 1, note: "" },
+          { status: 1, note: "" },
+          { status: 1, note: "" },
         ],
       },
       items: [
@@ -329,17 +432,55 @@ export default {
         { question: "6. 上班時你會覺得每一刻都很難熬嗎?" },
         { question: "7. 不工作的時候，你有足夠的精力陪朋友或家人嗎?(反向題)" },
       ],
+      itemSc1: [
+        { question: "1.50分以下", checkContent: "輕微",checkMethod: "您的過負荷程度輕微，您並不常感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。" },
+        { question: "2.50－70分", checkContent: "中度",checkMethod: "你的個人過負荷程度中等。您有時候感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。建議您找出生活的壓力源，進一步的調適自己，增加放鬆與休息的時間。" },
+        { question: "3.70分以上", checkContent: "嚴重",checkMethod: "您的個人過負荷程度嚴重。您時常感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。建議您適度的改變生活方式，增加運動與休閒時間之外，您還需要進一步尋找專業人員諮詢。" },
+      ],
+      itemSc2: [
+       { question: "1.45分以下", checkContent: "輕微",checkMethod: "您的工作相關過負荷程度輕微，您的工作並不會讓您感覺很沒力、心力交瘁、很挫折。" },
+       { question: "2.45－60分", checkContent: "中度",checkMethod: "您的工作相關過負荷程度中等，您有時對工作感覺沒力，沒有興趣，有點挫折。" },
+       { question: "3.60分以上", checkContent: "嚴重",checkMethod: "您的工作相關過負荷程度嚴重，您已經快被工作累垮了，您感覺心力交瘁，感覺挫折，而且上班時都很難熬，此外您可能缺少休閒時間，沒有時間陪伴家人朋友。建議您適度的改變生活方式，增加運動與休閒時間之外，您還需要進一步尋找專業人員諮詢。" },
+      ],
       suggest: "", // 改善建議
     };
   },
   components: { Pagination }, // 頁碼
   computed: {
-    PersonalFatigueTotal () {
-      var total = 0
+    PersonalFatigueTotal() {
+      var total = 0;
       for (let index = 0; index < this.ipt.items.length; index++) {
         total += Number(this.ipt.items[index].status);
       }
-      return total
+
+      var roundDecimal = function (val, precision) {
+        return (
+          Math.round(
+            Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10
+          ) / Math.pow(10, precision || 0)
+        );
+      };
+
+      total = total / 6;
+      return roundDecimal(total, 1)
+    },
+
+    count2() {
+      var total = 0;
+      for (let index = 0; index < this.ipt.items2.length; index++) {
+        total += Number(this.ipt.items2[index].status);
+      }
+
+      var roundDecimal = function (val, precision) {
+        return (
+          Math.round(
+            Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10
+          ) / Math.pow(10, precision || 0)
+        );
+      };
+
+      total = total / 7;
+      return roundDecimal(total, 1)
     },
   },
   methods: {
@@ -361,13 +502,18 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-    Addss () {
-      this.ss = 0
+    Addss() {
+      this.ss = 0;
       for (let index = 0; index < this.ipt.items.length; index++) {
-        console.log(this.ipt.items[index].status)
+        console.log(this.ipt.items[index].status);
         this.ss += Number(this.ipt.items[index].status);
       }
     },
   },
 };
 </script>
+<style>
+.v-input__prepend-outer {
+  width: 79%;
+}
+</style>
