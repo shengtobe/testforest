@@ -26,6 +26,12 @@ export const FormMaintainRouter = [
         formGroup: ['maintain']
     },
     {
+        linkText: '挖掘機(年)定期檢查表',// 新增2.
+        path: '/form-manage/maintain/excavator-checklist-year',
+        component: () => import('@/views/formManage/maintain/ExcavatorChecklistYear.vue'),
+        formGroup: ['maintain']
+    },
+    {
         linkText: '重力機械使用前檢查表',// 56
         path: '/form-manage/maintain/gravity-machinery-checklist',
         component: () => import('@/views/formManage/maintain/GravityMachineryChecklist.vue'),

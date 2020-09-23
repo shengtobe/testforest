@@ -188,19 +188,14 @@
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ item.qq }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="正常" value="1" />
                       <v-radio color="red" label="不正常" value="2" />
-                      <v-radio color="black" label="無此項目" value="0" />
+                      <v-radio color="black" label="無此項目" value="3" />
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -315,27 +310,27 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" }
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" }
         ],
       },
       items: [
-        { qq: "1. 焊接柄絕緣護層是否有破損或絕緣不良" },
-        { qq: "2. 電極端子及導線有無破損或絕緣不良" },
-        { qq: "3. 電源線及電焊機之接點螺絲是否正常" },
-        { qq: "4. 電源有否裝漏電斷路器，動作是否正常" },
-        { qq: "5. 電源開關及電流調整輪柄是否操作正常" },
-        { qq: "6. 自動電擊防止裝置，動作是否正常" },
-        { qq: "7. 電焊機絕緣電阻是否達標準值" },
-        { qq: "8. 電焊機有無異常的聲音或振動" },
-        { qq: "9. 面罩、手套、腳包、防護衣等護具是否正常" },
+        { question: "1. 焊接柄絕緣護層是否有破損或絕緣不良", checkMethod: "目視點檢" },
+        { question: "2. 電極端子及導線有無破損或絕緣不良", checkMethod: "目視點檢" },
+        { question: "3. 電源線及電焊機之接點螺絲是否正常", checkMethod: "目視點檢" },
+        { question: "4. 電源有否裝漏電斷路器，動作是否正常", checkMethod: "動作測試" },
+        { question: "5. 電源開關及電流調整輪柄是否操作正常", checkMethod: "動作測試" },
+        { question: "6. 自動電擊防止裝置，動作是否正常", checkMethod: "動作測試" },
+        { question: "7. 電焊機絕緣電阻是否達標準值", checkMethod: "動作測試" },
+        { question: "8. 電焊機有無異常的聲音或振動", checkMethod: "動作測試" },
+        { question: "9. 面罩、手套、腳包、防護衣等護具是否正常", checkMethod: "目視點檢" },
       ],
       suggest: "", // 改善建議
     };

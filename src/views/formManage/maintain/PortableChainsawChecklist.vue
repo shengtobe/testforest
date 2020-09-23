@@ -189,18 +189,13 @@
               >
                 <v-row no-gutter>
                   <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -312,22 +307,22 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
       items: [
-        { question: "1. 鏈條是否牢固、有無外傷不堪使用" },
-        { question: "2. 引擎是否固定良好、有無漏油現象" },
-        { question: "3. 護罩及提把是否良好" },
-        { question: "4. 安全開關及油門是否順暢" },
-        { question: "5. 各部位螺栓有無鬆脫" },
-        { question: "6. 試運轉是否順暢正常" },
+        { question: "1. 鏈條是否牢固、有無外傷不堪使用", checkMethod: "動作測試" },
+        { question: "2. 引擎是否固定良好、有無漏油現象", checkMethod: "目視點檢" },
+        { question: "3. 護罩及提把是否良好", checkMethod: "目視點檢" },
+        { question: "4. 安全開關及油門是否順暢", checkMethod: "動作測試" },
+        { question: "5. 各部位螺栓有無鬆脫", checkMethod: "動作測試" },
+        { question: "6. 試運轉是否順暢正常", checkMethod: "動作測試" },
       ],
       suggest: "", // 改善建議
     };

@@ -189,18 +189,13 @@
               >
                 <v-row no-gutter>
                   <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -312,57 +307,58 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" }
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
       items: [
-        { question: "1. 發電機室內周" },
-        { question: "2. 各開關的切換動作情形是否良好" },
-        { question: "3. 各種指示燈是否正常" },
-        { question: "4. 潤滑油質、油量、油管是否正常" },
-        { question: "5. 料油泵油管艕" },
-        { question: "6. 冷卻水質水管是否良好" },
-        { question: "7. 排氣管狀況是否正常" },
-        { question: "8. 充電電壓是否正常" },
-        { question: "9. 蓄電池設備是否正常" },
-        { question: "10. 冷卻水出入口間之開關是否正常" },
-        { question: "11. 燃料油管控制閥之開關是否正常" },
-        { question: "12. 空氣槽及空氣壓縮機是否正常" },
-        { question: "13. 起動動作確認" },
-        { question: "14. 各計器及指示燈之指示" },
-        { question: "15. 發電機之引擎運轉狀態" },
-        { question: "16. 電源切替" },
-        { question: "17. 連續升載運轉狀態" },
-        { question: "18. 連續升載投入性能" },
-        { question: "19. 排氣管" },
-        { question: "20. 冷卻水循環" },
-        { question: "21. 空氣槽及空氣壓縮機" },
-        { question: "22. 運轉後燃料油量油溫水溫" },
-        { question: "23. 引擎之皮帶及過濾器" },
-        { question: "24. 保安裝置、保護網電器" }
+        { question: "1. 發電機室內周圍環境是否良好", checkMethod: "目視點檢" },
+        { question: "2. 各開關的切換動作情形是否良好", checkMethod: "動作測試" },
+        { question: "3. 各種指示燈是否正常", checkMethod: "動作測試" },
+        { question: "4. 潤滑油質.油量.油管是否正常", checkMethod: "動作測試" },
+        { question: "5. 料油泵油管艕", checkMethod: "動作測試" },
+        { question: "6. 冷卻水質水管是否良好", checkMethod: "目視點檢" },
+        { question: "7. 排氣管狀況是否正常", checkMethod: "目視點檢" },
+        { question: "8. 充電電壓是否正常", checkMethod: "動作測試" },
+        { question: "9. 蓄電池設備是否正常", checkMethod: "目視點檢" },
+        { question: "10. 冷卻水出入口間之開關是否正常", checkMethod: "動作測試" },
+        { question: "11. 燃料油管控制閥之開關是否正常", checkMethod: "動作測試" },
+        { question: "12. 空氣槽及空氣壓縮機是否正常", checkMethod: "動作測試" },
+        { question: "13. 起動動作確認", checkMethod: "動作測試" },
+        { question: "14. 各計器及指示燈之指示", checkMethod: "目視點檢" },
+        { question: "15. 發電機之引擎運轉狀態", checkMethod: "動作測試" },
+        { question: "16. 電源切替", checkMethod: "動作測試" },
+        { question: "17. 連續升載運轉狀態", checkMethod: "動作測試" },
+        { question: "18. 連續升載投入性能", checkMethod: "動作測試" },
+        { question: "19. 排氣管", checkMethod: "目視點檢" },
+        { question: "20. 冷卻水循環", checkMethod: "目視點檢" },
+        { question: "21. 空氣槽及空氣壓縮機", checkMethod: "目視點檢" },
+        { question: "22. 運轉後燃料油量油溫水溫", checkMethod: "動作測試" },
+        { question: "23. 引擎之皮帶及過濾器", checkMethod: "動作測試" },
+        { question: "24. 保安裝置、保護網電器", checkMethod: "動作測試" },
       ],
       suggest: "", // 改善建議
     };
