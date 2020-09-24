@@ -350,5 +350,4 @@ export const FormCuringRouter = [{
     //         import ('@/views/formManage/curing/RailwayWorkLogAdd.vue'),
     //     formGroup: []
     // }
-    
 ]
