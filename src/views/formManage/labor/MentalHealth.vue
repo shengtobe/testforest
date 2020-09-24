@@ -5,7 +5,7 @@
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(起)
         </h3>
         <v-menu
           v-model="a"
@@ -22,7 +22,7 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(迄)
         </h3>
         <v-menu
           v-model="q"
@@ -109,10 +109,10 @@
 
         <div class="px-6 py-4">
           <v-row>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。</p>
               <p>2.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-            </v-col>
+            </v-col> -->
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
@@ -140,13 +140,6 @@
                   <v-text-field solo value />
                 </v-col>
               </v-row>
-              <v-col cols="13" sm="12">
-                <v-toolbar color="teal lighten-2" dark>
-                  <v-spacer />
-                  <v-toolbar-title>一、個人疲勞</v-toolbar-title>
-                  <v-spacer />
-                </v-toolbar>
-              </v-col>
               <v-alert
                 dense
                 border="top"
@@ -155,30 +148,26 @@
                 elevation="4"
                 v-for="(item, idx) in items"
                 :key="idx"
-                class="mb-6"
+                class="mb-6" 
               >
-                <v-row no-gutter>
+                <v-row no-gutter >
                   <v-col cols="12" sm="4">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="7">
+                  <v-col cols="12" sm="7" style="white-space:pre-wrap"  >
                     <span class="d-sm-none error--text">回答：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0" >
-                      <v-radio color="success" label="(1)總是" value="1"></v-radio>
-                      <v-radio color="orange" label="(2)常常" value="2"></v-radio>
-                      <v-radio color="orange" label="(3)有時候" value="3"></v-radio>
-                      <v-radio color="orange" label="(4)不常" value="4"></v-radio>
-                      <v-radio color="red" label="(5)從未或幾乎從未" value="5"></v-radio>
+                      <v-radio color="success" label="沒有或極少(每週一天以下)" value="0"></v-radio>
+                      <v-radio color="orange" label="有時(1~2天/週)" value="1"></v-radio>
+                      <v-radio color="orange" label="時常 (3~4天/週)" value="2"></v-radio>
+                      <v-radio color="orange" label="常常/總是(5~7天/週)" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                 </v-row>
               </v-alert>
             </v-col>
             <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <v-text-field v-model="ss">
-                <span slot="prepend">個人疲勞分數:</span>
-              </v-text-field>
-              <v-text-field solo readonly>
-                <span slot="prepend">工作疲勞分數:</span>
+            <v-col cols="12" sm="4">
+              <v-text-field v-model="PersonalFatigueTotal">
+                <span slot="prepend">分數:</span>
               </v-text-field>
             </v-col>
             <v-col cols="12">
@@ -279,36 +268,60 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
         ],
       },
       items: [
-        { question: "1. 你常覺得疲勞嗎?" },
-        { question: "2. 你常覺得身體上體力透支嗎?" },
-        { question: "3. 你常覺得情緒上心力交瘁嗎?" },
-        { question: "4. 你常會覺得，「我快要撐不下去了」嗎?" },
-        { question: "5. 你常覺得精疲力竭嗎?" },
-        { question: "6. 你常常覺得虛弱，好像快要生病了嗎?" },
-      ],
-      items2: [
-        { question: "1. 你的工作會令人情緒上心力交瘁嗎？" },
-        { question: "2. 你的工作會讓你覺得快要累垮了嗎?" },
-        { question: "3. 你的工作會讓你覺得挫折嗎?" },
-        { question: "4. 工作一整天之後，你覺得精疲力竭嗎?" },
-        { question: "5. 上班之前只要想到又要工作一整天，你就覺得沒力嗎?" },
-        { question: "6. 上班時你會覺得每一刻都很難熬嗎?" },
-        { question: "7. 不工作的時候，你有足夠的精力陪朋友或家人嗎?(反向題)" },
+        { question: "1. 我常常覺得想哭" },
+        { question: "2. 我覺得心情不好" },
+        { question: "3. 我覺得比以前容易發脾氣" },
+        { question: "4. 我睡不好" },
+        { question: "5. 我覺得不想吃東西" },
+        { question: "6. 我覺得胸口悶悶的" },
+        { question: "7. 我覺得不輕鬆、不舒服" },
+        { question: "8. 我覺得身體疲勞虛弱無力" },
+        { question: "9. 我覺得很煩" },
+        { question: "10. 我覺得記憶力不好" },
+        { question: "11. 我覺得做事時無法專心" },
+        { question: "12. 我覺得想事情或做事時比平常要緩慢" },
+        { question: "13. 我覺得比以前沒信心" },
+        { question: "14. 我覺得比較會往壞處想" },
+        { question: "15. 我覺得想不開，甚至想死" },
+        { question: "16. 我覺得對什麼事都失去興趣" },
+        { question: "17. 我覺得身體不舒服" },
+        { question: "18. 我覺得自己很沒用" },
       ],
       suggest: "", // 改善建議
     };
   },
   components: { Pagination }, // 頁碼
+  computed: {
+    PersonalFatigueTotal() {
+      var total = 0;
+      for (let index = 0; index < this.ipt.items.length; index++) {
+        total += Number(this.ipt.items[index].status);
+      }
+      if(total < 0) total = 0;
+      return total
+    },
+  },
   methods: {
     // 更換頁數
     chPage(n) {
@@ -334,3 +347,8 @@ export default {
   },
 };
 </script>
+<style>
+.v-input--radio-group__input {
+  display: block;
+}
+</style>

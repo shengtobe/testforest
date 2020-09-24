@@ -99,14 +99,14 @@ export const FormCuringRouter = [{
         formGroup: []
     },
     {
-        linkText: '乙炔熔接裝置作業前自動檢點表', // 25
+        linkText: '乙炔熔接裝置每日作業前檢點表(作業前)', // 22
         path: '/form-manage/curing/acetylene-weld-checklist',
         component: () =>
             import ('@/views/formManage/curing/AcetyleneWeldChecklist.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '乙炔熔接裝置(年)定期檢查表', // 26
+        linkText: '乙炔熔接裝置定期檢查表(年)', // 24
         path: '/form-manage/curing/acetylene-weld-checklist-year',
         component: () =>
             import ('@/views/formManage/curing/AcetyleneWeldChecklistYear.vue'),
@@ -120,14 +120,14 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '空氣壓縮機(月)定期檢查表', // 35
+        linkText: '空氣壓縮機定期檢查表(月)', // 35
         path: '/form-manage/curing/air-compressor-checklist-month',
         component: () =>
             import ('@/views/formManage/curing/AirCompressorChecklistMonth.vue'),
         formGroup: ['curing', 'maintain']
     },
     {
-        linkText: '空氣壓縮機(年)定期檢查表', // 36
+        linkText: '空氣壓縮機定期檢查表(年)', // 36
         path: '/form-manage/curing/air-compressor-checklist-year',
         component: () =>
             import ('@/views/formManage/curing/AirCompressorChecklistYear.vue'),
@@ -169,7 +169,7 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '電焊機每日作業前自動檢點表', // 47
+        linkText: '電焊機每日作業前檢點表(作業前)', // 47
         path: '/form-manage/curing/electric-welding-machine-checklist',
         component: () =>
             import ('@/views/formManage/curing/ElectricWeldingMachineChecklist.vue'),
@@ -211,77 +211,77 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '堆高機作業前自動檢點表', // 74
+        linkText: '堆高機每日作業前檢點表(作業前)', // 74
         path: '/form-manage/curing/stacker-checklist',
         component: () =>
             import ('@/views/formManage/curing/StackerChecklist.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '堆高機(月)定期檢查表', // 75
+        linkText: '堆高機定期檢查表(月)', // 75
         path: '/form-manage/curing/stacker-checklist-month',
         component: () =>
             import ('@/views/formManage/curing/StackerChecklistMonth.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '堆高機(年)定期檢查表', //76
+        linkText: '堆高機定期檢查表(年)', //76
         path: '/form-manage/curing/stacker-checklist-year',
         component: () =>
             import ('@/views/formManage/curing/StackerChecklistYear.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '吊掛用具作業前自動檢點表', // 81
+        linkText: '吊掛用具每日作業檢點表(作業前)', // 81
         path: '/form-manage/curing/hanging-eqpt-checklist',
         component: () =>
             import ('@/views/formManage/curing/HangingEqptChecklist.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '吊掛用具(月)定期檢查表', // 82
+        linkText: '吊掛用具定期檢查表(三個月)', // 82
         path: '/form-manage/curing/hanging-eqpt-checklist-season',
         component: () =>
             import ('@/views/formManage/curing/HangingEqptChecklistSeason.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '鍋爐作業前自動檢點表', // 92
+        linkText: '鍋爐每日作業前檢點表(作業前)', // 92
         path: '/form-manage/curing/boiler-checklist',
         component: () =>
             import ('@/views/formManage/curing/BoilerChecklist.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '鍋爐(月)定期檢查表', // 93
+        linkText: '鍋爐定期檢查表(月)', // 93
         path: '/form-manage/curing/boiler-checklist-month',
         component: () =>
             import ('@/views/formManage/curing/BoilerChecklistMonth.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '鍋爐(年)定期檢查表', // 94
+        linkText: '鍋爐定期檢查表(年)', // 94
         path: '/form-manage/curing/boiler-checklist-year',
         component: () =>
             import ('@/views/formManage/curing/BoilerChecklistYear.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '固定式起重機作業前自動檢點表', // 70
+        linkText: '固定式貣重機每日作業前檢點表(作業前)', // 70
         path: '/form-manage/curing/bridge-crane-checklist',
         component: () =>
             import ('@/views/formManage/curing/BridgeCraneChecklist.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '固定式起重機(月)定期檢查表', // 71
+        linkText: '固定式貣重機定期檢查表(月)', // 71
         path: '/form-manage/curing/bridge-crane-checklist-month',
         component: () =>
             import ('@/views/formManage/curing/BridgeCraneChecklistMonth.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '固定式起重機(年)定期檢查表', // 72
+        linkText: '固定式貣重機定期檢查表(年)', // 72
         path: '/form-manage/curing/bridge-crane-checklist-year',
         component: () =>
             import ('@/views/formManage/curing/BridgeCraneChecklistYear.vue'),
@@ -343,11 +343,12 @@ export const FormCuringRouter = [{
             import ('@/views/formManage/curing/RailwayWorkLog.vue'),
         formGroup: ['curing']
     },
-    {
-        linkText: '鐵路維護科工作日誌Add', // 103
-        path: '/form-manage/curing/railway-worklog-add',
-        component: () =>
-            import ('@/views/formManage/curing/RailwayWorkLogAdd.vue'),
-        formGroup: []
-    }
+    // {
+    //     linkText: '鐵路維護科工作日誌Add', // 103
+    //     path: '/form-manage/curing/railway-worklog-add',
+    //     component: () =>
+    //         import ('@/views/formManage/curing/RailwayWorkLogAdd.vue'),
+    //     formGroup: []
+    // }
+    
 ]

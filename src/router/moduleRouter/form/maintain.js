@@ -1,7 +1,7 @@
 // -------- 表單-鐵路維護科 -------
 
 export const FormMaintainRouter = [{
-        linkText: '切割機(季)定期檢查表', // 25
+        linkText: '切割機定期檢查表(三個月)', // 25
         path: '/form-manage/maintain/cutting-machine-checklist',
         component: () =>
             import ('@/views/formManage/maintain/CuttingMachineChecklist.vue'),
@@ -15,7 +15,7 @@ export const FormMaintainRouter = [{
         formGroup: ['maintain', 'curing']
     },
     {
-        linkText: '挖掘機每日作業前自動檢點表', // 54
+        linkText: '挖掘機每日作業前檢點表(作業前)', // 54
         path: '/form-manage/maintain/excavator-checklist',
         component: () =>
             import ('@/views/formManage/maintain/ExcavatorChecklist.vue'),
@@ -28,12 +28,12 @@ export const FormMaintainRouter = [{
             import ('@/views/formManage/maintain/ExcavatorChecklistMonth.vue'),
         formGroup: ['maintain']
     },
-    // {
-    //     linkText: '挖掘機(年)定期檢查表',// 新增2.
-    //     path: '/form-manage/maintain/excavator-checklist-year',
-    //     component: () => import('@/views/formManage/maintain/ExcavatorChecklistYear.vue'),
-    //     formGroup: ['maintain']
-    // },
+    {
+        linkText: '挖掘機(年)定期檢查表',// 新增2.
+        path: '/form-manage/maintain/excavator-checklist-year',
+        component: () => import('@/views/formManage/maintain/ExcavatorChecklistYear.vue'),
+        formGroup: ['maintain']
+    },
     {
         linkText: '重力機械使用前檢查表', // 56
         path: '/form-manage/maintain/gravity-machinery-checklist',
@@ -56,28 +56,28 @@ export const FormMaintainRouter = [{
         formGroup: ['maintain']
     },
     {
-        linkText: '機動台車開車前自動檢點表', // 83
+        linkText: '機動台車每日開車前自動檢點表(作業前)', // 83
         path: '/form-manage/maintain/motor-vehicle-checklist',
         component: () =>
             import ('@/views/formManage/maintain/MotorVehicleChecklist.vue'),
         formGroup: ['maintain']
     },
     {
-        linkText: '機動台車(季)定期檢查表', // 84
+        linkText: '機動台車定期檢查表(月)', // 84
         path: '/form-manage/maintain/motor-vehicle-checklist-month',
         component: () =>
             import ('@/views/formManage/maintain/MotorVehicleChecklistMonth.vue'),
         formGroup: ['maintain']
     },
     {
-        linkText: '割草機(季)定期檢查表', // 85
+        linkText: '割草機定期檢查表(三個月)', // 85
         path: '/form-manage/maintain/lawn-mower-checklist-season',
         component: () =>
             import ('@/views/formManage/maintain/LawnMowerChecklistSeason.vue'),
         formGroup: ['maintain']
     },
     {
-        linkText: '鋼軌鉅軌-鑽孔-磨軌機(季)定期檢查表', // 59
+        linkText: '鋼軌鋸軌、鑽孔、磨軌機定期檢查表(三個月)', // 59
         path: '/form-manage/maintain/saw-drill-grind-checklist',
         component: () =>
             import ('@/views/formManage/maintain/SawDrillGrindChecklist.vue'),

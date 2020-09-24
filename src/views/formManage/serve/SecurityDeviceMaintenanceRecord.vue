@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">保安裝置保修工作紀錄</h2>
+    <h2 class="mb-4 px-2">保安裝置保修工作紀錄簿</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">

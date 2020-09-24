@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">乙炔熔接裝置(年)定期檢查表</h2>
+    <h2 class="mb-4 px-2">乙炔熔接裝置定期檢查表(年)</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">

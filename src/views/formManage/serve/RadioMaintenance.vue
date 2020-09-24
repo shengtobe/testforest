@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">手攜無線電月份保養</h2>
+    <h2 class="mb-4 px-2">手攜無線電機檢查紀錄表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="4" md="3">
