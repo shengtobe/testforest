@@ -117,7 +117,7 @@
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
+                  <h3 class="mb-1">填表日期</h3>
                   <v-menu
                     v-model="ass"
                     :close-on-content-click="false"
@@ -132,11 +132,7 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
+                  <h3 class="mb-1">填表人</h3>
                   <v-text-field solo value />
                 </v-col>
               </v-row>
