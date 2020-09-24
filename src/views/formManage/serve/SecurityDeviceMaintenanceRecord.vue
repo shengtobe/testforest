@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">保安裝置保修工作紀錄</h2>
+    <h2 class="mb-4 px-2">保安裝置保修工作紀錄簿</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -37,22 +37,11 @@
           <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
         </v-menu>
       </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
-          solo
-        />
-      </v-col>
+
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-      </v-col>
-
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn
           color="indigo"
           elevation="3"
@@ -74,7 +63,8 @@
           :options.sync="pageOpt"
           disable-sort
           disable-filtering
-          hide-default-footer>
+          hide-default-footer
+        >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
           </template>
@@ -96,9 +86,6 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
-            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
-              <v-icon dark>mdi-delete</v-icon>
-            </v-btn>-->
           </template>
 
           <!-- 頁碼 -->
@@ -139,83 +126,74 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">編號</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="6">
                   <h3 class="mb-1">工作地點</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">工作內容</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                
-              </v-row>
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">工作時間</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">開始</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">修正事項與建議</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">確認結果</h3>
+                  <v-text-field solo value />
                 </v-col>
               </v-row>
-              <v-alert
-                dense
-                border="top"
-                colored-border
-                color="teal"
-                elevation="4"
-                v-for="(item, idx) in items"
-                :key="idx"
-                class="mb-6">
+              <v-row no-gutter class="indigo--text">
+                <v-col cols="12">
+                  <h3 class="mb-1 indigo--text">工作內容</h3>
+                  <v-textarea solo rows="4" />
+                </v-col>
+              </v-row>
+              <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">
-                  <v-menu
-                    v-model="ass23"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px">
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-            <!-- 開始 簽章 -->
-                <v-col cols="12" sm="3">
-                    <span class="d-sm-none error--text">簽章:</span>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mt-4">工作時間</h3>
+                  </v-col>
+                  <v-col cols="12" sm="4" style="display: flex;">
+                    <h3 class="mt-3 mr-1">起</h3>
+                    <v-text-field type="number"  solo style="width: 0px;" placeholder="時"/>
+                    <h3 class="mt-3">：</h3>
+                    <v-text-field type="number" solo style="width: 0px;" placeholder="分"/>
+                  </v-col>
+                  <v-col cols="12" sm="4" style="display: flex;">
+                    <h3 class="mt-3 mr-1">迄</h3>
+                    <v-text-field type="number" solo style="width: 0px;" placeholder="時"/>
+                    <h3 class="mt-3">：</h3>
+                    <v-text-field type="number" solo style="width: 0px;" placeholder="分"/>
+                  </v-col>
+                </v-row>
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mt-4">
+                      工作狀態
+                      <v-radio-group dense row class="pa-0 ma-0">
+                        <v-radio color="success" label="開始" value="1" />
+                        <v-radio color="orange" label="暫停或終了" value="2" />
+                      </v-radio-group>
+                    </h3>
+                  </v-col>
+                  <v-col cols="12" sm="4">
                     <h3 class="mb-1">站長簽章</h3>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
+                  </v-col>
+                  <v-col cols="12" sm="4">
                     <h3 class="mb-1">施工聯絡人</h3>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
-                  <v-col cols="12" sm="3">
-                    <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="合格" value="1"></v-radio>
-                      <v-radio color="orange" label="有瑕疵" value="2"></v-radio>
-                      <v-radio color="red" label="不合格" value="3"></v-radio>
-                    </v-radio-group>
+                </v-row>
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mt-4">停用機件</h3>
                   </v-col>
-                  
-                  <v-col cols="12" sm="3">
-                    <span class="d-sm-none error--text">結果確認:</span>
-                    <v-textarea auto-grow outlined rows="3"/>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">名稱</h3>
+                    <v-textarea auto-grow outlined rows="1" />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">處置狀況</h3>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                 </v-row>
               </v-alert>
             </v-col>
             <!-- 改善建議、改善追蹤 -->
-            
+            <v-col cols="12">
+              <h3 class="mb-1 indigo--text">備註</h3>
+              <v-textarea solo rows="4" />
+            </v-col>
             <!-- END 檢查項目 -->
           </v-row>
         </div>
@@ -314,9 +292,7 @@ export default {
           { status: "0", note: "" },
         ],
       },
-      items: [
-        { question: "1. 檢查道岔材料(組裝前)" },
-      ],
+      items: [{ question: "1. 檢查道岔材料(組裝前)" }],
       suggest: "", // 改善建議
     };
   },

@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">基地台無線電機/車裝台檢查紀錄表</h2>
+    <h2 class="mb-4 px-2">車裝台/基地台無線電機檢查紀錄表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">

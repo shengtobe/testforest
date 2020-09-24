@@ -7,7 +7,7 @@
 // 7. 十字岔道
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">交力坪、神木、對高岳車站 保站裝置路線清潔檢查紀錄表</h2>
+    <h2 class="mb-4 px-2">保安裝置檢查紀錄表-交力坪、神木、對高岳車站</h2>
     
     <!-- 第一排選項 -->
     <v-row class="px-2">
@@ -117,7 +117,7 @@
     <v-dialog v-model="Add" max-width="1060px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增 交力坪、神木、對高岳車站 保站裝置路線清潔檢查紀錄表
+          新增保安裝置檢查紀錄表-交力坪、神木、對高岳車站
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
