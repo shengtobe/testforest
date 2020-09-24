@@ -74,7 +74,7 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '危隩品、易燃品儲存安全定期檢查表(三個月)',// 87
+        linkText: '危險品、易燃品儲存安全定期檢查表(三個月)',// 87
         path: '/form-manage/serve/dangerous-flammable-checklist-season',
         component: () => import('@/views/formManage/serve/DangerousFlammableChecklistSeason.vue'),
         formGroup: ['serve', 'maintain', 'curing']

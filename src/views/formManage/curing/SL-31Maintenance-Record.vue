@@ -103,7 +103,7 @@
     <v-dialog v-model="Add" max-width="600px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增SL-31維修資料
+          新增SL-31進廠維修紀錄
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>

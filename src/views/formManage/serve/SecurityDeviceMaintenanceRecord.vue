@@ -99,7 +99,7 @@
     <v-dialog v-model="Add" max-width="800px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增保安裝置保修工作紀錄
+          新增保安裝置保修工作紀錄簿
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
