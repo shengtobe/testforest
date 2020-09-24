@@ -162,7 +162,7 @@
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
-            新增員工工作安全觀察紀錄表(月)
+            新增員工工作安全觀察表(每月2 次)
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
