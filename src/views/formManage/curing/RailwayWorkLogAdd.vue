@@ -15,7 +15,7 @@
               min-width="290px"
             >
               <template v-slot:activator="{ on }">
-                <v-text-field v-model.trim="AddData.MaintenanceDay" solo v-on="on" readonly />
+                <v-text-field v-model.trim="AddData.MaintenanceDay" outlined v-on="on" dense single-line />
               </template>
               <v-date-picker
                 color="purple"
@@ -310,7 +310,7 @@
               </v-col>
               <v-col cols="12">
                 <h4>(4)接地桿操作者安全配戴</h4>
-                <v-row no-gutter justify="space-around">
+                <v-row no3-gutter justify="space-around">
                   <v-checkbox class="col-12 col-md-4" label="絕緣手套" />
                   <v-checkbox class="col-12 col-md-4" label="羊皮手套" />
                   <v-checkbox class="col-12 col-md-4" label="安全皮鞋" />
@@ -319,11 +319,80 @@
             </v-alert>
           </v-col>
         </v-row>
+        <!-- 項目宣導 -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12">
+            <h3>勤前教育項目宣導</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-col cols="12">
+                <h4>
+                  1.未經現場負責人同意，禁止擅自進入路線內，
+                  非作業需要禁止在軌道內行走或停留。
+                </h4>
+                <h4>
+                  2.沿路線行進時，應面向列車行駛方向行走，並注意背面來車；
+                  若聽列車鳴笛即刻避讓路線路肩。
+                </h4>
+                <h4>
+                  3.遇有本線或鄰線列車駛近鳴笛或避車哨音時，應即刻停止工作，並呼喚同仁待避於工作路線路肩，
+                  工作時若需穿越軌道，應確實停、看、聽，確認左、右無來車時迅速通過，不得冒進，以防遭車撞擊。
+                </h4>
+                <h4>
+                  4.上班前及其上工期間嚴禁喝酒及飲用含酒精性飲料，違者當日應請假，不准上班，
+                  並擇期離開工作崗位，防止影響他人工作情緒。
+                </h4>
+                <h4>5.身體不舒適或其他因素，致無法勝任當日工作者請提報，俾另派工作。</h4>
+                <h4>
+                  6.雙線區間避讓列車應在工作線之路肩或適當地點外側，
+                  嚴禁避讓於兩線間或鄰線軌道上，單線區間，應避讓於路線兩側路肩。
+                </h4>
+                <h4>7.除夜間工作辦理路線封鎖外，白天在軌道上工作之前仍應至值班站長室辦理填寫保安維修單。</h4>
+              </v-col>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- 危害及預防項目 -->
+        <v-col cols="6">
+          <h3>可能發生危害及預防項目</h3>
+          <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+            <v-col cols="12">
+              <h4>(1)不安全環境及不安全動作預防</h4>
+              <v-textarea auto-grow outlined rows="4" />
+
+              <h4>(2)機具設備危害及預防</h4>
+              <v-textarea auto-grow outlined rows="2" />
+
+              <h4>(3)其他</h4>
+              <v-textarea auto-grow outlined rows="1" />
+            </v-col>
+          </v-alert>
+        </v-col>
+        <!-- 自主檢查 -->
+        <v-col cols="12" sm="6">
+          <h3>自主檢查:即工作完成檢查</h3>
+          <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <h4>工作項目</h4>
+              <v-textarea auto-grow outlined rows="4" />
+          </v-alert>
+        </v-col>
+        <!-- 工作人員 -->
+        <v-col cols="12" sm="6">
+          <h3>工作人員</h3>
+          <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+            <v-textarea class="mt-4" auto-grow outlined rows="4" />
+          </v-alert>
+        </v-col>
+        <!-- 備註 -->
+        <v-col cols="12" sm="6">
+          <h3>備註</h3>
+          <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+            <v-textarea class="mt-4" auto-grow outlined rows="4" />
+          </v-alert>
+        </v-col>
         <!-- 送出 -->
-        <!-- <div class="mb-3">
-          <v-btn class="mr-2" elevation="4" @click="closeWorkLogModal">取消</v-btn>
-          <v-btn color="success" elevation="4">送出</v-btn>
-        </div>-->
+        <v-col class="mt-2" cols="12">
+          <v-btn large block class="mt-n8 mb-4" color="success">送出表單</v-btn>
+        </v-col>
       </v-row>
     </v-container>
   </v-sheet>

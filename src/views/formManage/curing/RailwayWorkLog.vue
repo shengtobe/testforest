@@ -87,7 +87,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+           <template v-slot:item.Shop>
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -95,9 +95,9 @@
               dark
               fab
               color="info darken-1"
-              @click="AddWorkLogModal = true"
+              to="/form-manage/curing/railway-worklog-add"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
             </v-btn>
           </template>
 
