@@ -61,7 +61,7 @@
           elevation="3"
           dark
           large
-          @click="AddWorkLogModal = true"
+          to="/form-manage/curing/railway-worklog-add"
         >
           <v-icon>mdi-plus</v-icon>新增工作日誌
         </v-btn>
@@ -108,128 +108,6 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <!-- 新增工作日誌 modal -->
-    <v-dialog v-model="AddWorkLogModal" max-width="1060px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
-          新增工作日誌
-          <v-spacer />
-          <v-btn dark fab small text @click="closeWorkLogModal" class="mr-n2">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <div class="px-6 py-4">
-          <v-row>
-            <!-- 檢查項目 -->
-            <v-col cols="12">
-              <!-- 固定資料 -->
-              <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">保養日期</h3>
-                  <v-menu
-                    v-model="MaintenanceDay"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="AddData.MaintenanceDay" solo v-on="on" readonly />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.MaintenanceDay"
-                      @input="MaintenanceDay = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                </v-col>
-              </v-row>
-              <!-- 摺疊資料 -->
-              <v-expansion-panels>
-                <!-- 監工區 -->
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">監工區</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                  <v-btn color="success" elevation="4" class="mt-1" @click="addSupervisor">增加欄位</v-btn>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      class="mb-6 mt-4"
-                    >
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="4">
-                          <h3 class="mb-1">監工區人員</h3>
-                          <v-textarea v-model="data" auto-grow outlined rows="2" />
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <h3 class="mb-1">督導或工作地點</h3>
-                          <v-textarea auto-grow outlined rows="2" />
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <h3 class="mb-1">督導或工作內容</h3>
-                          <v-textarea auto-grow outlined rows="2" />
-                        </v-col>
-                        <v-col cols="6" sm="1">
-                          <h3>公差/公出</h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="6" sm="1">
-                          <h3>公假/受訓</h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="6" sm="1">
-                          <h3>出勤/支援</h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="6" sm="1">
-                          <!-- BR 導致手機板跑版 -->
-                          <h3>
-                            值班
-                            <br />
-                            <br />
-                          </h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="6" sm="1">
-                          <h3>休假/補休</h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="6" sm="1">
-                          <h3>病假/事假</h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="6" sm="2">
-                          <h3>
-                            例假日/
-                            <br />例假調整
-                          </h3>
-                          <v-text-field class="iwidth" type="number" dense single-line outlined />
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <h3>合計人數：{{ "0人" }}</h3>
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-            <!-- END 檢查項目 -->
-          </v-row>
-        </div>
-
-        <v-card-actions class="px-5 pb-5">
-          <v-spacer />
-          <v-btn class="mr-2" elevation="4" @click="closeWorkLogModal">取消</v-btn>
-          <v-btn color="success" elevation="4">送出</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -246,6 +124,7 @@ export default {
       QueryCheckdayOff: "",
       AddWorkLogModal: false,
       MaintenanceDay: "",
+      Weather: ["晴天", "陰天", "雨天"],
       AddData: {
         // 新增表單資料
         MaintenanceDay: "", // 保養日
@@ -312,9 +191,7 @@ export default {
       this.pageOpt.page = n;
     },
     // 新增監工區塊欄位
-    addSupervisor () {
-
-    },
+    addSupervisor() {},
     // 搜尋
     search() {},
     // 關閉 dialogx
@@ -328,5 +205,13 @@ export default {
 <style>
 .iwidth {
   width: 65px;
+}
+.xwd {
+  max-width: 13%;
+}
+@media only screen and (max-width: 600px) {
+  .xwd {
+    max-width: 100%;
+  }
 }
 </style>

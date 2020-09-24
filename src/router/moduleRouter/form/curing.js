@@ -342,5 +342,12 @@ export const FormCuringRouter = [{
         component: () =>
             import ('@/views/formManage/curing/RailwayWorkLog.vue'),
         formGroup: ['curing']
+    },
+    {
+        linkText: '鐵路維護科工作日誌Add', // 103
+        path: '/form-manage/curing/railway-worklog-add',
+        component: () =>
+            import ('@/views/formManage/curing/RailwayWorkLogAdd.vue'),
+        formGroup: []
     }
 ]
