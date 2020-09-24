@@ -1,3 +1,4 @@
+//此份無router
 <template>
   <v-container style="max-width: 1200px">
     <h2 class="mb-4 px-2">車裝台、基地台無線電機檢查紀錄表</h2>
@@ -110,11 +111,11 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <!-- 新增無線電機檢查紀錄表(三個月) modal -->
+    <!-- 新增車裝台、基地台無線電機檢查紀錄表 modal -->
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          無線電機檢查紀錄表(三個月)
+          新增車裝台、基地台無線電機檢查紀錄表
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>

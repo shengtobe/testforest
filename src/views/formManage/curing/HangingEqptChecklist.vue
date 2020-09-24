@@ -121,7 +121,7 @@
     <v-dialog v-model="Add" max-width="700px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增吊掛用具每日作業前自動檢點表
+          新增吊掛用具每日作業檢點表(作業前)
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
