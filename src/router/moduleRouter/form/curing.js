@@ -120,6 +120,13 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
+        linkText: '空氣壓縮機每日作業前檢點表(作業前)', // 34
+        path: '/form-manage/curing/air-compressor-checklist-before',
+        component: () =>
+            import ('@/views/formManage/curing/AirCompressorChecklistBefore.vue'),
+        formGroup: ['curing', 'maintain']
+    },
+    {
         linkText: '空氣壓縮機定期檢查表(月)', // 35
         path: '/form-manage/curing/air-compressor-checklist-month',
         component: () =>
