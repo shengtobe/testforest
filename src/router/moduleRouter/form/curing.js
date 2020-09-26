@@ -356,6 +356,15 @@ export const FormCuringRouter = [{
         component: () =>
             import ('@/views/formManage/curing/RailwayWorkLogAdd.vue'),
         formGroup: []
+    },
+    {
+        linkText: '柴油機車行車保養日報表', // 40
+        path: '/form-manage/curing/diesel-maintenance-dailyreport',
+        component: () =>
+            import ('@/views/formManage/curing/DieselMaintenanceDailyReport.vue'),
+        formGroup: []
     }
+
+
 
 ]
