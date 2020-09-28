@@ -19,4 +19,10 @@ export const FormLaborRouter = [
         component: () => import('@/views/formManage/labor/MentalHealth.vue'),
         formGroup: ['labor']
     },
+    {
+        linkText: '心理健康量表', // 勞安衛6.
+        path: '/form-manage/labor/hazid-risk-assessment',
+        component: () => import('@/views/formManage/labor/HAZIDRiskAssessment.vue'),
+        formGroup: ['labor']
+    },
 ]

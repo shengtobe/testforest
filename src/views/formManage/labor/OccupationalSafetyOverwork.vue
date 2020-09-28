@@ -103,11 +103,11 @@
 
         <div class="px-6 py-4">
           <v-row>
-            <!-- 檢查項目 -->
+            <!-- 填表項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
+                  <h3 class="mb-1">填表日期</h3>
                   <v-menu
                     v-model="ass"
                     :close-on-content-click="false"
@@ -122,11 +122,7 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
+                  <h3 class="mb-1">填表人員</h3>
                   <v-text-field solo value />
                 </v-col>
               </v-row>
@@ -195,14 +191,22 @@
             </v-col>
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12" sm="6">
-              <v-text-field v-model="PersonalFatigueTotal" readonly>
-                <span slot="prepend">個人疲勞分數:</span>
-              </v-text-field>
+              <v-toolbar color="teal" dark >
+                <v-toolbar-title style="width:70%; text-align:center">個人疲勞分數</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-text-field flat v-model="PersonalFatigueTotal" readonly style="width:30%; margin-top:30px;">
+                  <span slot="append">分</span>
+                </v-text-field>
+              </v-toolbar>
             </v-col>
             <v-col cols="12" sm="6">
-              <v-text-field v-model="count2" readonly>
-                <span slot="prepend">工作疲勞分數:</span>
-              </v-text-field>
+              <v-toolbar color="teal" dark >
+                <v-toolbar-title style="width:70%; text-align:center">工作疲勞分數</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-text-field flat v-model="count2" readonly style="width:30%; margin-top:30px;">
+                  <span slot="append">分</span>
+                </v-text-field>
+              </v-toolbar>
             </v-col>
             <v-col cols="12">
               <b>※您是否同意檢附量表分數，以作為後續健康風險評估之用途?</b>
