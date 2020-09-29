@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">SL-31進廠維修紀錄</h2>
+    <h2 class="mb-4 px-2">SL__/DL__進廠維修紀錄</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="4" md="3">
@@ -103,7 +103,7 @@
     <v-dialog v-model="Add" max-width="600px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增SL-31進廠維修紀錄
+          新增SL__/DL__進廠維修紀錄
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>

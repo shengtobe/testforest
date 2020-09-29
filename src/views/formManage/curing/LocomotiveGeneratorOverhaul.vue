@@ -138,7 +138,7 @@
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
-            新增保養資料
+            新增柴油液力機車發電機檢修
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>

@@ -1,21 +1,21 @@
 // -------- 表單-車輛養護科 -------
 
 export const FormCuringRouter = [{
-        linkText: '動力車車歷卡', // 3
+        linkText: '車歷卡', // 3
         path: '/form-manage/curing/power-car-maintenance',
         component: () =>
             import ('@/views/formManage/curing/PowerCarMaintenance.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: 'SL-31進廠維修紀錄', // 1
+        linkText: 'SL__/DL__進廠維修紀錄', // 1
         path: '/form-manage/curing/sl-31',
         component: () =>
             import ('@/views/formManage/curing/SL-31Maintenance-Record.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '故障原因紀錄表', // 2
+        linkText: 'SL__/DL__故障原因紀錄表', // 2
         path: '/form-manage/curing/malfunction-reason',
         component: () =>
             import ('@/views/formManage/curing/MalfunctionReason.vue'),
@@ -113,7 +113,7 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '阿里山林業鐵路車輪輪緣高度、厚度檢查紀錄表', // 31
+        linkText: '車輪輪緣高度、厚度檢查紀錄表', // 31
         path: '/form-manage/curing/wheel-thickness-checklist',
         component: () =>
             import ('@/views/formManage/curing/WheelThicknessChecklist.vue'),
@@ -141,7 +141,7 @@ export const FormCuringRouter = [{
         formGroup: ['curing', 'maintain']
     },
     {
-        linkText: '客貨車使用前後檢修記錄表', // 38
+        linkText: '客、貨車使用前後檢修記錄表', // 38
         path: '/form-manage/curing/van-maintenance-daily-report',
         component: () =>
             import ('@/views/formManage/curing/VanMaintenanceDailyReport.vue'),
@@ -309,7 +309,7 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '客車一級檢修紀錄表', // 112
+        linkText: '客車一級檢修記錄表', // 112
         path: '/form-manage/curing/bus-checklist',
         component: () =>
             import ('@/views/formManage/curing/BusChecklist.vue'),
@@ -330,14 +330,14 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '車庫客貨車輛狀態日報表', // 15
+        linkText: '_____車庫客貨車輛狀態日報表', // 15
         path: '/form-manage/curing/vehicle-status-daily-report',
         component: () =>
             import ('@/views/formManage/curing/VehicleStatusDailyReport.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '嘉義車庫動力車狀態日報表', // 16
+        linkText: '_____車庫動力車狀態日報表', // 16
         path: '/form-manage/curing/chiayi-power-car-report',
         component: () =>
             import ('@/views/formManage/curing/ChiayiPowerCarReport.vue'),
@@ -358,7 +358,7 @@ export const FormCuringRouter = [{
         formGroup: []
     },
     {
-        linkText: '柴油機車行車保養日報表', // 40
+        linkText: '_____柴油液力機車行車紀錄表', // 40
         path: '/form-manage/curing/diesel-maintenance-dailyreport',
         component: () =>
             import ('@/views/formManage/curing/DieselMaintenanceDailyReport.vue'),

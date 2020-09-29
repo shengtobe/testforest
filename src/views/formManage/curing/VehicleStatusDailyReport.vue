@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">車庫客貨車輛狀態日報表</h2>
+    <h2 class="mb-4 px-2">_____車庫客貨車輛狀態日報表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -110,7 +110,7 @@
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增 車庫客貨車輛狀態日報表
+          新增_____車庫客貨車輛狀態日報表
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>

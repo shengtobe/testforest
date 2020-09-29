@@ -20,7 +20,7 @@ export const FormLaborRouter = [
         formGroup: ['labor']
     },
     {
-        linkText: '心理健康量表', // 勞安衛6.
+        linkText: '職場不法侵害預防之危害辨識及風險評估表', // 勞安衛6.
         path: '/form-manage/labor/hazid-risk-assessment',
         component: () => import('@/views/formManage/labor/HAZIDRiskAssessment.vue'),
         formGroup: ['labor']

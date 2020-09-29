@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">嘉義車庫動力車狀態日報表</h2>
+    <h2 class="mb-4 px-2">_____車庫動力車狀態日報表</h2>
 
     <!-- 第一排選項 -->
     <v-row class="px-2">
@@ -112,7 +112,7 @@
       <v-card>
         <!-- 標題 -->
         <v-card-title class="blue white--text px-4 py-1">
-          新增嘉義車庫動力車狀態日報表
+          新增_____車庫動力車狀態日報表
           <v-spacer />
           <v-btn dark fab small text @click="closeAddModal" class="mr-n2">
             <v-icon>mdi-close</v-icon>
