@@ -1,11 +1,11 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">客貨車使用前後保養日報表</h2>
+    <h2 class="mb-4 px-2">客貨車使用前後檢修記錄表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(起)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
         </h3>
         <v-menu
           v-model="a"
@@ -22,7 +22,7 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(迄)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
         </h3>
         <v-menu
           v-model="q"
@@ -39,19 +39,30 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>材料編號
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
-        <v-text-field solo value="" />
+        <v-select
+          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          solo
+        />
       </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>材料名稱
-        </h3>
-        <v-text-field solo value="" />
-      </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+        </v-btn>
+      </v-col>
+
+      <v-col cols="12" sm="3" md="3">
+        <v-form ref="uploadform">
+          <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
+          </h3>
+          <v-text-field solo placeholder="點此選擇檔案" />
+        </v-form>
+      </v-col>
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
+        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
+          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
         <v-btn
           color="indigo"
@@ -61,11 +72,11 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增物料
+          <v-icon>mdi-plus</v-icon>新增檢查表
         </v-btn>
-      </div>
+      </v-col>
     </v-row>
-    表格資料
+    <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
         <v-data-table
@@ -97,6 +108,9 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
+            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
+              <v-icon dark>mdi-delete</v-icon>
+            </v-btn>-->
           </template>
 
           <!-- 頁碼 -->
@@ -106,112 +120,126 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <!-- 新增客貨車使用前後保養日報表 modal -->
+    <!-- 新增客貨車使用前後檢修記錄表 modal -->
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          客貨車使用前後保養日報表
-          <v-spacer></v-spacer>
+          新增客貨車使用前後檢修記錄表
+          <v-spacer />
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
 
         <div class="px-6 py-4">
+          <!-- 1 -->
           <v-row>
-            <v-col cols="12">
-              <p>1.客、貨車開出前及到達後，應分別就下列各重要項目之狀態及作用施行檢查並予記錄。</p>
-              <p>2.特殊軔塊厚度及車輪磨耗接近限度，追蹤事項應予填註。</p>
-              <p>3.本保養表應將檢車過程發現問題事項詳以填註。</p>
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">使用前、後</h3>
+              <v-radio-group dense row v-model="AddData.UseType">
+                <v-radio color="success" label="使用前" value="1" />
+                <v-radio color="info" label="使用後" value="2" />
+              </v-radio-group>
             </v-col>
-            <!-- 檢查項目 -->
-            <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>填寫日期
-                  </h3>
-                  <v-menu
-                    v-model="add"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="z" solo v-on="on" />
-                    </template>
-                    <v-date-picker color="purple" v-model="z" @input="add = false" locale="zh-tw" />
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>駕駛員
-                  </h3>
-                  <v-text-field solo value="王大明" />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>機車編號
-                  </h3>
-                  <v-text-field solo value="" />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
-                  </h3>
-                  <v-text-field solo value="" />
-                </v-col>
-              </v-row>
-
-              <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
-                <v-expansion-panel>
-                  <v-expansion-panel-header>存放數量</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <v-row
-                      no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="3">
-                        <h3 class="mb-1">新枕木</h3>
-                        <v-text-field solo v-model="items1.qq" />
-                      </v-col>
-                      <v-col cols="12" sm="3">
-                        <h3 class="mb-1">舊枕木</h3>
-                        <v-text-field solo v-model="items1.ww" />
-                      </v-col>
-                       <v-col cols="12" sm="3">
-                        <h3 class="mb-1">新鋼軌</h3>
-                        <v-text-field solo v-model="items1.ee" />
-                      </v-col>
-                       <v-col cols="12" sm="3">
-                        <h3 class="mb-1">舊鋼軌</h3>
-                        <v-text-field solo v-model="items1.rr" />
-                      </v-col>
-                    </v-row>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-              
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">保養單位</h3>
+              <v-text-field v-model="AddData.Department" solo />
             </v-col>
-            <!-- END 檢查項目 -->
-            <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">追蹤事項</h3>
-              <v-textarea auto-grow outlined rows="4" />
-            </v-col>
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">問題事項</h3>
-              <v-textarea auto-grow outlined rows="4" />
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">保養日期</h3>
+              <v-menu
+                v-model="MaintenanceDay"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field v-model.trim="AddData.MaintenanceDay" solo v-on="on" readonly></v-text-field>
+                </template>
+                <v-date-picker color="purple" v-model="AddData.MaintenanceDay" @input="MaintenanceDay = false" locale="zh-tw"></v-date-picker>
+              </v-menu>
             </v-col>
           </v-row>
+          <!-- 2 -->
+          <v-row>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">司機員</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">車次</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">車種</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">車號</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">司機員</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">車次</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">車種</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+            <v-col cols="12" sm="3">
+              <h3 class="mb-1">車號</h3>
+              <v-text-field v-model="AddData.Department" solo />
+            </v-col>
+          </v-row>
+     
+            <v-col cols="12" sm="3">
+              <h3>連結及緩衝裝置</h3>
+              <h3>(1)連結器(2)彈簧(3)導架(4)軛(5)裝置鬆動</h3>
+            </v-col>
+          
+          軔機裝置
+          (1)前後軔速桿及梢檢查(2)軔管(3)軔機配件A:軔缸B:三動閥C:保持閥D:緊急閥E:角旋塞
+          
+          軔塊、車輪及軸箱
+          (1)問題車輪位置(2)軔塊狀況(3)軸承箱與導板(4)固結螺栓
+          
+          彈簧裝置
+          (1)支持線圈彈簧(貨)(2)支持板彈簧(客)
+          
+          轉向架配件
+          (1)彎樑(2)側承間隙(3)枕樑與彎樑間(4)軔樑(5)軔吊桿(6)軔吊梢(7)枕樑(8)枕吊角梢(9)枕吊桿(10)開尾梢
+          
+          摩擦面注油
+          (1)連結器(2)軔機連桿梢與孔(3)軔吊桿孔與梢(4)枕吊桿與角梢(5)旁承座
+          
+          供水裝置
+          (1)儲水筒及供水管路(2)水龍頭(3)沖洗閥(4)旋塞
+          
+          車內裝備
+          (1)各式門及把鎖(2)通路門鉸鏈(3)廁所(4)窗框(5)窗扣(6)茶杯架(7)通風出口調整器(8)門窗膠條(9)床面膠板
+          
+          電器裝置
+          (1)控制箱(2)電源接頭(3)插座(4)播音喇叭(5)前後照明燈(6)室內日光燈(7)空調機(8)雨刷機(9)電瓶(10)電源開關
+          
+          其他部分
+          (1)傾斜檢查(2)排障器(3)喇叭開關(4)通路渡板(5)通路扶手
+          
+          <!-- 3 -->
+
         </div>
 
-        <!-- <v-card-actions class="px-5 pb-5">
-          <v-spacer></v-spacer>
+        <v-card-actions class="px-5 pb-5">
+          <v-spacer />
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-        </v-card-actions> -->
+          <v-btn color="success" elevation="4">送出</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
@@ -223,25 +251,11 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
-      panel: [0, 1, 2],
-      disabled: false,
-      readonly: false,
-      a: "",
-      ass: "",
-      aff: "",
-      add: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
+      AddData: {
+        MaintenanceDay: "",
+        Department: "",
+        UseType: "",
+      },
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
@@ -255,43 +269,22 @@ export default {
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
-          text: "上次填寫日期",
-          value: "a1",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "材料編號",
-          value: "a2",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "材料名稱",
-          value: "a3",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "存放地點",
-          value: "a4",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "a5",
+          text: "檢查日期",
+          value: "aa",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
           text: "審查狀態",
-          value: "a6",
+          value: "cc",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "填寫人",
+          value: "dd",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -307,66 +300,17 @@ export default {
       tableItems: [
         {
           a0: "1",
-          a1: "2020-08-10",
-          a2: "001",
-          a3: "新枕木",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
+          aa: "2020-08-01",
+          cc: "已審查",
+          dd: "王大明",
         },
         {
           a0: "2",
-          a1: "2020-08-11",
-          a2: "002",
-          a3: "舊枕木",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
+          aa: "2020-08-10",
+          cc: "審查中",
+          dd: "王大明",
         },
-        {
-          a0: "3",
-          a1: "2020-08-12",
-          a2: "003",
-          a3: "舊鋼軌",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
-        },
-        {
-          a0: "4",
-          a1: "2020-08-13",
-          a2: "004",
-          a3: "新鋼軌",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
-        },
-      ],
-      ipt: {
-        department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
-        date: new Date().toISOString().substr(0, 10),
-        items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-        ],
-      },
-      items1: [{ qq: "", ww: "", ee: "", rr: "" }],
-      suggest: "", // 改善建議
+      ]
     };
   },
   components: { Pagination }, // 頁碼
@@ -380,14 +324,6 @@ export default {
     // 關閉 dialog
     close() {
       this.Add = false;
-      this.dialog3 = false;
-      this.dialogShowEdit = false;
-      this.dialogDel = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.addItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
     },
   },
 };
