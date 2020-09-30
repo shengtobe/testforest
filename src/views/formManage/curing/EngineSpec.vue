@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">引擎規範</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -60,7 +60,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
@@ -112,7 +112,7 @@
     <v-dialog v-model="Add" max-width="800px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增引擎規範
+          新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -381,14 +381,14 @@
                   <v-col cols="12" sm="3">直徑 x 衝程 x 數</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                      <v-textarea auto-grow outlined rows="1" placeholder="888.8 x 888.8">
-                        <span style="white-space:nowrap;" slot="prepend">最大</span>
-                        <span style="white-space:nowrap;" slot="append">M/sec</span>
-                      </v-textarea>
-                      <v-textarea auto-grow outlined rows="1" placeholder="888.8 x 888.8">
-                        <span style="white-space:nowrap;" slot="prepend">標準</span>
-                        <span style="white-space:nowrap;" slot="append">M/sec</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1" placeholder="888.8 x 888.8">
+                      <span style="white-space:nowrap;" slot="prepend">最大</span>
+                      <span style="white-space:nowrap;" slot="append">M/sec</span>
+                    </v-textarea>
+                    <v-textarea auto-grow outlined rows="1" placeholder="888.8 x 888.8">
+                      <span style="white-space:nowrap;" slot="prepend">標準</span>
+                      <span style="white-space:nowrap;" slot="append">M/sec</span>
+                    </v-textarea>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -444,21 +444,21 @@
                   </v-col>
                 </v-row>
               </v-alert>
-              
+
               <!-- -----------------馬力----------------- -->
               <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
                 <v-row no-gutter>
                   <v-col cols="12" sm="3">馬力</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">最大</span>
-                        <span style="white-space:nowrap;" slot="append">HP</span>
-                      </v-textarea>
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">標準</span>
-                        <span style="white-space:nowrap;" slot="append">HP</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">最大</span>
+                      <span style="white-space:nowrap;" slot="append">HP</span>
+                    </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">標準</span>
+                      <span style="white-space:nowrap;" slot="append">HP</span>
+                    </v-textarea>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -472,14 +472,14 @@
                   <v-col cols="12" sm="3">轉速</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">最大</span>
-                        <span style="white-space:nowrap;" slot="append">RPM</span>
-                      </v-textarea>
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">標準</span>
-                        <span style="white-space:nowrap;" slot="append">RPM</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">最大</span>
+                      <span style="white-space:nowrap;" slot="append">RPM</span>
+                    </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">標準</span>
+                      <span style="white-space:nowrap;" slot="append">RPM</span>
+                    </v-textarea>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -493,13 +493,13 @@
                   <v-col cols="12" sm="3">燃料</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                      <v-textarea auto-grow outlined rows="1" >
-                        <span style="white-space:nowrap;" slot="prepend" placeholder="高級柴油">種類</span>
-                      </v-textarea>
-                      <v-textarea auto-grow outlined rows="1" >
-                        <span style="white-space:nowrap;" slot="prepend">消費量於標準HP</span>
-                        <span style="white-space:nowrap;" slot="append">以下</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend" placeholder="高級柴油">種類</span>
+                    </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">消費量於標準HP</span>
+                      <span style="white-space:nowrap;" slot="append">以下</span>
+                    </v-textarea>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -514,17 +514,17 @@
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
                     <!-- ------燃油泵------ -->
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">燃油泵</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">燃油泵</span>
+                    </v-textarea>
                     <!-- ------噴油嘴保持器------ -->
-                      <v-textarea auto-grow outlined rows="1" >
-                        <span style="white-space:nowrap;" slot="prepend">噴油嘴保持器</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">噴油嘴保持器</span>
+                    </v-textarea>
                     <!-- ------噴油嘴------ -->
-                    <v-textarea auto-grow outlined rows="1" >
-                        <span style="white-space:nowrap;" slot="prepend">噴油嘴</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">噴油嘴</span>
+                    </v-textarea>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -539,19 +539,19 @@
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
                     <!-- ------進氣------ -->
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">進氣-開</span>
-                      </v-textarea>
-                      <v-textarea auto-grow outlined rows="1" >
-                        <span style="white-space:nowrap;" slot="prepend">進氣-閉</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">進氣-開</span>
+                    </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">進氣-閉</span>
+                    </v-textarea>
                     <!-- ------排氣------ -->
-                      <v-textarea auto-grow outlined rows="1">
-                        <span style="white-space:nowrap;" slot="prepend">排氣-開</span>
-                      </v-textarea>
-                      <v-textarea auto-grow outlined rows="1" >
-                        <span style="white-space:nowrap;" slot="prepend">排氣-閉</span>
-                      </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">排氣-開</span>
+                    </v-textarea>
+                    <v-textarea auto-grow outlined rows="1">
+                      <span style="white-space:nowrap;" slot="prepend">排氣-閉</span>
+                    </v-textarea>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -565,7 +565,7 @@
                   <v-col cols="12" sm="3">潤滑方式</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -579,7 +579,7 @@
                   <v-col cols="12" sm="3">冷卻方式</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -593,7 +593,7 @@
                   <v-col cols="12" sm="3">啟動馬達</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -607,7 +607,7 @@
                   <v-col cols="12" sm="3">充電發電機</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -621,7 +621,7 @@
                   <v-col cols="12" sm="3">冷卻水泵</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -635,7 +635,7 @@
                   <v-col cols="12" sm="3">涼油器</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -649,7 +649,7 @@
                   <v-col cols="12" sm="3">節溫器</v-col>
                   <v-col cols="12" sm="5">
                     <span class="d-sm-none error--text">摘要：</span>
-                    <v-textarea auto-grow outlined rows="1"/>
+                    <v-textarea auto-grow outlined rows="1" />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <span class="d-sm-none error--text">備註：</span>
@@ -678,6 +678,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title: "引擎規範",
+      newText: "",
       a: "",
       ass: "",
       ss2: "",

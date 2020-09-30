@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">鑽床(三個月)定期檢查表</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -72,7 +72,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
@@ -121,7 +121,7 @@
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增鑽床(三個月)定期檢查表
+          新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -163,7 +163,7 @@
                   <v-text-field solo />
                 </v-col>
               </v-row>
-               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查項目</h3>
                 </v-col>
@@ -229,6 +229,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title: "鑽床(三個月)定期檢查表",
+      newText: "檢查表",
       panel: [0, 1, 2, 3],
       disabled: false,
       readonly: false,
@@ -321,15 +323,30 @@ export default {
         ],
       },
       items: [
-        { question: "1. 迴轉部位皮帶等是否有護蓋防護措施", checkMethod: "目視點檢" },
-        { question: "2. 迴轉部位是否有突出之固定螺絲", checkMethod: "目視點檢" },
-        { question: "3. 皮帶鬆緊情形是否適當，有否損傷", checkMethod: "動作測試" },
-        { question: "4. 鑽頭夾具功能是否正常", checkMethod: "動作測試" },
-        { question: "5. 鑽物座搖臂是否能鎖緊主軸", checkMethod: "動作測試" },
-        { question: "6. 起動、制動裝置機能是否確實", checkMethod: "動作測試" },
-        { question: "7. 馬達絕緣及接地線是否正常", checkMethod: "動作測試" },
-        { question: "8. 照明燈具之燈座、電線是否損傷", checkMethod: "目視點檢" },
-        { question: "9. 是否有「使用時禁戴手套」警語", checkMethod: "目視點檢" },
+        {
+          question: "1. 迴轉部位皮帶等是否有護蓋防護措施",
+          checkMethod: "目視點檢",
+        },
+        {
+          question: "2. 迴轉部位是否有突出之固定螺絲",
+          checkMethod: "目視點檢",
+        },
+        {
+          question: "3. 皮帶鬆緊情形是否適當，有否損傷",
+          checkMethod: "動作測試",
+        },
+        { question: "4. 鑽頭夾具功能是否正常", checkMethod: "動作測試" },
+        { question: "5. 鑽物座搖臂是否能鎖緊主軸", checkMethod: "動作測試" },
+        { question: "6. 起動、制動裝置機能是否確實", checkMethod: "動作測試" },
+        { question: "7. 馬達絕緣及接地線是否正常", checkMethod: "動作測試" },
+        {
+          question: "8. 照明燈具之燈座、電線是否損傷",
+          checkMethod: "目視點檢",
+        },
+        {
+          question: "9. 是否有「使用時禁戴手套」警語",
+          checkMethod: "目視點檢",
+        },
       ],
       suggest: "", // 改善建議
     };

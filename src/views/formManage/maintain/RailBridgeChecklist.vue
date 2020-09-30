@@ -14,6 +14,8 @@
 export default {
   data() {
     return {
+      title: "",
+      newText: "",
       headers: [
         //   { text: 'Calories', value: 'calories' },
         { text: "項次", value: "a1", width: 60},

@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">車歷卡</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="4" md="3">
@@ -123,7 +123,7 @@
           class="col-4 col-md-4 mr-3"
           @click="dialogShowAdd = true"
         >
-          <v-icon>mdi-plus</v-icon>新增
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
       <!-- 動力車保養紀錄 -->
@@ -184,7 +184,7 @@
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
-            新增車歷卡
+            新增{{ title }}
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -276,6 +276,8 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
+    title: "車歷卡",
+    newText: "車歷卡",
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)

@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">新增工作日誌</p>
+      <p class="font-weight-black title text-center">新增{{ newText }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
         <v-row no-gutter class="indigo--text">
@@ -404,6 +404,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title: "",
+      newText: "工作日誌",
       // 自定義變數
       CheckdayOn: "",
       QueryCheckdayOn: "",

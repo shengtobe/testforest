@@ -1,7 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">_____車庫動力車狀態日報表</h2>
-
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <!-- 檢查日期(起) -->
@@ -63,7 +62,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="AddDataModal = true"
         >
-          <v-icon>mdi-plus</v-icon>新增日報表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
@@ -112,7 +111,7 @@
       <v-card>
         <!-- 標題 -->
         <v-card-title class="blue white--text px-4 py-1">
-          新增_____車庫動力車狀態日報表
+          新增{{ title }}
           <v-spacer />
           <v-btn dark fab small text @click="closeAddModal" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -382,6 +381,8 @@ export default {
   data() {
     return {
       // 自定義變數
+      title:"_____車庫動力車狀態日報表",
+      newText:"日報表",
       CheckdayOn: "",
       QueryCheckdayOn: "",
       CheckdayOff: "",

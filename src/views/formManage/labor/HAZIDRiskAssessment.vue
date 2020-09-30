@@ -51,7 +51,7 @@
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn color="indigo" elevation="3" dark large @click="Add = true">
-          <v-icon>mdi-plus</v-icon>新增
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
       </v-col>
@@ -150,14 +150,26 @@
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="2">
                   <h3 class="mb-1">潛在風險</h3>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="1">
                   <h3 class="mb-1">是/否</h3>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="2">
                   <h3 class="mb-1">潛在不法侵害風險類型（肢體/語言/心理/性騷擾）</h3>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <h3 class="mb-1">可能性(發生機率)</h3>
+                </v-col>
+                <v-col cols="12" sm="1">
+                  <h3 class="mb-1">嚴重性(傷害程度)</h3>
+                </v-col>
+                <v-col cols="12" sm="1">
+                  <h3 class="mb-1">風險等級</h3>
+                </v-col>
+                <v-col cols="12" sm="1">
+                  <h3 class="mb-1">現有控制措施(工程控制/管理控制/個人防護)</h3>
                 </v-col>
               </v-row>
               <v-alert
@@ -206,7 +218,6 @@
     </v-dialog>
   </v-container>
 </template>
-
 <script>
 import Pagination from "@/components/Pagination.vue";
 
@@ -214,6 +225,7 @@ export default {
   data() {
     return {
       title:"職場不法侵害預防之危害辨識及風險評估表",
+      newText: "評估表",
       a: "",
       ass: "",
       z: "",

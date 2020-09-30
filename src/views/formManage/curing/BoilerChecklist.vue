@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">鍋爐每日作業前檢點表(作業前)</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -72,7 +72,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
@@ -124,7 +124,7 @@
     <v-dialog v-model="Add" max-width="600px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增鍋爐每日作業前檢點表(作業前)
+          新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -212,6 +212,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title:"鍋爐每日作業前檢點表(作業前)",
+      newText:"檢點表",
       a: "",
       ass: "",
       z: "",

@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">柴油液力機車一級檢修記錄表</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <v-row class="px-2">
       <!-- 第一排選項 -->
       <v-col cols="12" sm="4" md="3">
@@ -69,7 +69,7 @@
           class="col-4 col-md-3 mr-3"
           to="/form-manage/curing/locomotive-one-level-maintenance-add"
         >
-          <v-icon>mdi-plus</v-icon>新增一級檢修
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
       <!-- 動力車保養紀錄 -->
@@ -121,6 +121,8 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
+    title: "柴油液力機車一級檢修記錄表",
+    newText: "記錄表",
     aas: "",
     bbs: "",
     ccs: "",

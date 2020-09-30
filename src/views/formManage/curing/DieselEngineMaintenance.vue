@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">柴油引擎保養</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <!-- 保養日期起迄 -->
@@ -60,14 +60,14 @@
           class="col-4 col-md-2 mr-3"
           @click="dialogShowAdd = true"
         >
-          <v-icon>mdi-plus</v-icon>新增
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
       <!-- 新增保養資料 modal -->
       <v-dialog v-model="dialogShowAdd" max-width="600px">
         <v-card>
           <v-card-title class="blue white--text px-4 py-1">
-            新增保養資料
+            新增{{ title }}
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -140,7 +140,7 @@
       <v-dialog v-model="dialogShowEdit" max-width="600px">
         <v-card>
           <v-card-title class="blue white--text px-4 py-1">
-            修改保養資料
+            修改{{ newText }}
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -285,6 +285,8 @@ import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
 export default {
   data: () => ({
+    title:"柴油引擎保養",
+    newText:"保養資料",
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10) // 通報日期(迄)

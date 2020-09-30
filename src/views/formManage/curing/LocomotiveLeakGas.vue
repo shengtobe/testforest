@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">機車韌缸漏氣量檢測紀錄表</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <v-row class="px-2">
       <!-- 第一排選項 -->
       <v-col cols="12" sm="4" md="3">
@@ -69,7 +69,7 @@
           class="col-4 col-md-3 mr-3"
           @click="dialogShowAdd = true"
         >
-          <v-icon>mdi-plus</v-icon>新增
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
       <v-dialog v-model="dialogDel" persistent max-width="290">
@@ -136,7 +136,7 @@
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
-            新增機車韌缸漏氣量檢測紀錄表
+            新增{{ title }}
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -219,6 +219,8 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
+    title: "機車韌缸漏氣量檢測紀錄表",
+    newText: "紀錄表",
     aas: "",
     bbs: "",
     ccs: "",
