@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">客貨車使用前後檢修記錄表</h2>
+    <h2 class="mb-4 px-2">客、貨車使用前後檢修記錄表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -108,9 +108,6 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
-            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
-              <v-icon dark>mdi-delete</v-icon>
-            </v-btn>-->
           </template>
 
           <!-- 頁碼 -->
@@ -124,7 +121,7 @@
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增客貨車使用前後檢修記錄表
+          新增客、貨車使用前後檢修記錄表
           <v-spacer />
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -134,18 +131,18 @@
         <div class="px-6 py-4">
           <!-- 1 -->
           <v-row>
-            <v-col cols="12" sm="4">
+            <v-col cols="12" sm="3">
               <h3 class="mb-1">使用前、後</h3>
               <v-radio-group dense row v-model="AddData.UseType">
                 <v-radio color="success" label="使用前" value="1" />
                 <v-radio color="info" label="使用後" value="2" />
               </v-radio-group>
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col cols="12" sm="3">
               <h3 class="mb-1">保養單位</h3>
               <v-text-field v-model="AddData.Department" solo />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col cols="12" sm="3">
               <h3 class="mb-1">保養日期</h3>
               <v-menu
                 v-model="MaintenanceDay"
@@ -157,7 +154,12 @@
                 <template v-slot:activator="{ on }">
                   <v-text-field v-model.trim="AddData.MaintenanceDay" solo v-on="on" readonly></v-text-field>
                 </template>
-                <v-date-picker color="purple" v-model="AddData.MaintenanceDay" @input="MaintenanceDay = false" locale="zh-tw"></v-date-picker>
+                <v-date-picker
+                  color="purple"
+                  v-model="AddData.MaintenanceDay"
+                  @input="MaintenanceDay = false"
+                  locale="zh-tw"
+                ></v-date-picker>
               </v-menu>
             </v-col>
           </v-row>
@@ -165,76 +167,118 @@
           <v-row>
             <v-col cols="12" sm="3">
               <h3 class="mb-1">司機員</h3>
-              <v-text-field v-model="AddData.Department" solo />
+              <v-text-field v-model="AddData.Driver" solo />
             </v-col>
             <v-col cols="12" sm="3">
               <h3 class="mb-1">車次</h3>
-              <v-text-field v-model="AddData.Department" solo />
+              <v-text-field v-model="AddData.TrainNumber" solo />
             </v-col>
             <v-col cols="12" sm="3">
               <h3 class="mb-1">車種</h3>
-              <v-text-field v-model="AddData.Department" solo />
+              <v-text-field v-model="AddData.Vehicles" solo />
             </v-col>
             <v-col cols="12" sm="3">
               <h3 class="mb-1">車號</h3>
-              <v-text-field v-model="AddData.Department" solo />
+            <v-textarea v-model="AddData.CarNumber" solo rows="1" />
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="12" sm="3">
-              <h3 class="mb-1">司機員</h3>
-              <v-text-field v-model="AddData.Department" solo />
-            </v-col>
-            <v-col cols="12" sm="3">
-              <h3 class="mb-1">車次</h3>
-              <v-text-field v-model="AddData.Department" solo />
-            </v-col>
-            <v-col cols="12" sm="3">
-              <h3 class="mb-1">車種</h3>
-              <v-text-field v-model="AddData.Department" solo />
-            </v-col>
-            <v-col cols="12" sm="3">
-              <h3 class="mb-1">車號</h3>
-              <v-text-field v-model="AddData.Department" solo />
-            </v-col>
-          </v-row>
-     
-            <v-col cols="12" sm="3">
-              <h3>連結及緩衝裝置</h3>
-              <h3>(1)連結器(2)彈簧(3)導架(4)軛(5)裝置鬆動</h3>
-            </v-col>
-          
-          軔機裝置
-          (1)前後軔速桿及梢檢查(2)軔管(3)軔機配件A:軔缸B:三動閥C:保持閥D:緊急閥E:角旋塞
-          
-          軔塊、車輪及軸箱
-          (1)問題車輪位置(2)軔塊狀況(3)軸承箱與導板(4)固結螺栓
-          
-          彈簧裝置
-          (1)支持線圈彈簧(貨)(2)支持板彈簧(客)
-          
-          轉向架配件
-          (1)彎樑(2)側承間隙(3)枕樑與彎樑間(4)軔樑(5)軔吊桿(6)軔吊梢(7)枕樑(8)枕吊角梢(9)枕吊桿(10)開尾梢
-          
-          摩擦面注油
-          (1)連結器(2)軔機連桿梢與孔(3)軔吊桿孔與梢(4)枕吊桿與角梢(5)旁承座
-          
-          供水裝置
-          (1)儲水筒及供水管路(2)水龍頭(3)沖洗閥(4)旋塞
-          
-          車內裝備
-          (1)各式門及把鎖(2)通路門鉸鏈(3)廁所(4)窗框(5)窗扣(6)茶杯架(7)通風出口調整器(8)門窗膠條(9)床面膠板
-          
-          電器裝置
-          (1)控制箱(2)電源接頭(3)插座(4)播音喇叭(5)前後照明燈(6)室內日光燈(7)空調機(8)雨刷機(9)電瓶(10)電源開關
-          
-          其他部分
-          (1)傾斜檢查(2)排障器(3)喇叭開關(4)通路渡板(5)通路扶手
-          
           <!-- 3 -->
-
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">連結及緩衝裝置</h3>
+            <h3>(1)連結器(2)彈簧(3)導架(4)軛(5)裝置鬆動</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType1">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">軔機裝置</h3>
+            <h3>(1)前後軔速桿及梢檢查(2)軔管(3)軔機配件A:軔缸B:三動閥C:保持閥D:緊急閥E:角旋塞</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType2">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">軔塊、車輪及軸箱</h3>
+            <h3>(1)問題車輪位置(2)軔塊狀況(3)軸承箱與導板(4)固結螺栓</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType3">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">彈簧裝置</h3>
+            <h3>(1)支持線圈彈簧(貨)(2)支持板彈簧(客)</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType4">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">轉向架配件</h3>
+            <h3>(1)彎樑(2)側承間隙(3)枕樑與彎樑間(4)軔樑(5)軔吊桿(6)軔吊梢(7)枕樑(8)枕吊角梢(9)枕吊桿(10)開尾梢</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType5">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">摩擦面注油</h3>
+            <h3>(1)連結器(2)軔機連桿梢與孔(3)軔吊桿孔與梢(4)枕吊桿與角梢(5)旁承座</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType6">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">供水裝置</h3>
+            <h3>(1)儲水筒及供水管路(2)水龍頭(3)沖洗閥(4)旋塞</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType7">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">車內裝備</h3>
+            <h3>(1)各式門及把鎖(2)通路門鉸鏈(3)廁所(4)窗框(5)窗扣(6)茶杯架(7)通風出口調整器(8)門窗膠條(9)床面膠板</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType8">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">電器裝置</h3>
+            <h3>(1)控制箱(2)電源接頭(3)插座(4)播音喇叭(5)前後照明燈(6)室內日光燈(7)空調機(8)雨刷機(9)電瓶(10)電源開關</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType9">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">其他部分</h3>
+            <h3>(1)傾斜檢查(2)排障器(3)喇叭開關(4)通路渡板(5)通路扶手</h3>
+            <v-radio-group dense row v-model="AddData.CarType.CheckType10">
+              <v-radio color="success" label="經修復或抽換" value="1" />
+              <v-radio color="info" label="當日未能修復" value="2" />
+              <v-radio color="red" label="須進廠拆解修理" value="3" />
+            </v-radio-group>
+          </v-col>
+          <!-- 4 -->
+          <v-col cols="12">
+            <h3 class="mb-1 indigo--text">備註</h3>
+            <v-textarea v-model="AddData.Remarks" auto-grow outlined rows="4" />
+          </v-col>
         </div>
-
         <v-card-actions class="px-5 pb-5">
           <v-spacer />
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
@@ -255,9 +299,25 @@ export default {
         MaintenanceDay: "",
         Department: "",
         UseType: "",
+        Driver: "",
+        TrainNumber: "",
+        Vehicles: "",
+        CarNumber: "",
+        CarType: {
+          CheckType1: "",
+          CheckType2: "",
+          CheckType3: "",
+          CheckType4: "",
+          CheckType5: "",
+          CheckType6: "",
+          CheckType7: "",
+          CheckType8: "",
+          CheckType9: "",
+          CheckType10: ""
+        },
+        Remarks: ""
       },
       Add: false,
-      dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       headers: [
         // 表格顯示的欄位
@@ -310,7 +370,7 @@ export default {
           cc: "審查中",
           dd: "王大明",
         },
-      ]
+      ],
     };
   },
   components: { Pagination }, // 頁碼
