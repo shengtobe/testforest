@@ -87,21 +87,16 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.depart="{ item }">
-                        {{ transferDepartTxt(item.depart) }}
+                    <template v-slot:item.motoId="{ item }">
+                        {{ item.type + item.num }}
                     </template>
 
-                    <template v-slot:item.type="{ item }">
-                        {{ transferTypeTxt(item.type) }}
-                    </template>
-
-                    <template v-slot:item.file="{ item }">
-                        <v-chip small label color="primary"
-                            :href="item.file.link"
-                            :download="item.file.fileName"
+                    <template v-slot:item.content="{ item }">
+                        <v-btn fab small dark color="teal"
+                            @click="view(item)"
                         >
-                            {{ item.file.fileName }}
-                        </v-chip>
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
                     </template>
 
                     <template v-slot:item.action="{ item }">
@@ -130,6 +125,86 @@
             </v-card>
         </v-col>
     </v-row>
+
+    <!-- 詳細資料 -->
+    <v-dialog v-model="contentShow" max-width="500px">
+        <v-card>
+            <v-card-title class="yellow darken-1 px-4 py-1">
+                詳細資料
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="contentShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+
+            <div class="px-4 py-3">
+                <v-row no-gutters>
+                    <v-col cols="12" sm="6">
+                        <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
+                        本日行駛公里： {{ content.todayKm }}
+                    </v-col>
+
+                    <v-col cols="12" sm="6">
+                        <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
+                        累計公里數： {{ content.totalKm }}
+                    </v-col>
+                
+                    <v-col cols="12">
+                        <v-divider class="mt-2 mb-3"></v-divider>
+                    </v-col>
+
+                    <v-col cols="12" sm="6">
+                        <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
+                        發電機日工時： {{ content.todayHour }}
+                    </v-col>
+
+                    <v-col cols="12" sm="6">
+                        <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
+                        發電機累計工時： {{ content.totalHour }}
+                    </v-col>
+
+                    <v-col cols="12">
+                        <v-divider class="mt-2 mb-3"></v-divider>
+                    </v-col>
+
+                    <v-col cols="12" class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>
+                        耗用油量類別
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                        柴油： {{ content.useOilDiesel }}
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                        引擎機油： {{ content.useOilEngine }}
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                        TC機油： {{ content.useOilTC }}
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                        風泵： {{ content.useOilPump }}
+                    </v-col>
+
+                    <v-col cols="12" sm="4">
+                        其他 {{ content.useOilOther }}
+                    </v-col>
+                    
+                    <v-col cols="12">
+                        <v-divider class="mt-2 mb-3"></v-divider>
+                    </v-col>
+
+                    <v-col cols="12">
+                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>
+                        保養記事
+                        <p>{{ content.note }}</p>
+                    </v-col>
+                </v-row>
+            </div>
+        </v-card>
+    </v-dialog>
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="600px">
@@ -191,18 +266,6 @@
                             ></v-text-field>
                         </v-col>
 
-                        <v-col cols="12">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>文件上傳
-                            </h3>
-                            <v-file-input
-                                label="請點此選擇要上傳的檔案"
-                                solo
-                                v-model="ipt.file"
-                                @change="select"
-                            ></v-file-input>
-                        </v-col>
-
                         <v-col cols="12" v-if="itemIndex > -1" class="mt-n10">
                             <span class="error--text">目前檔案： {{ ipt.file.fileName }}</span>
                         </v-col>
@@ -236,15 +299,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
+            { text: '型號', value: 'motoId', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '司機員', value: 'drivers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '行駛區間', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '本日行駛公里', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '累計公里數', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發電機', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '耗用油量', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '列車次', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '保養記事', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '行駛區間', value: 'locations', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '列車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '詳細資訊', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         monthOpts: monthOptions,  // 月份下拉選單(dialog用)
@@ -257,18 +317,25 @@ export default {
         itemIndex: -1,  // 作用中的物件索引值 (小於0為新增的情況)
         ipt: {},  // dialog 欄位
         defaultIpt: {  // dialog 欄位預設值
-            depart: 'd1',  // 維護單位
-            type: 1,  // 文件類型
-            version: '',  // 版次
-            file: null,  // 檔案
-            note: '',  // 備註
+            type: '',
+            num: '',
+            date: new Date().toISOString().substr(0, 10),  // 日期
+            drivers: '',  // 司機員
+            locations: '',  // 行駛區間
+            number: '',  // 列車次
+            todayKm: '',  // 本日行駛公里
+            totalKm: '',  // 累計公里數
+            todayHour: '',  // 發電機日工時
+            totalHour: '',  // 發電機累計工時
+            useOilDiesel: 0,  // 耗用油量 (柴油)
+            useOilEngine: 0,// 耗用油量 (引擎機油)
+            useOilTC: 0,  // 耗用油量 (TC機油)
+            useOilPump: 0,  // 耗用油量 (風泵)
+            useOilOther: 0,  // 耗用油量 (其他)
+            note: '',  // 保養記事
         },
-        // departOpts: departOptions,  // dialog 維護單位下拉選單
-        // typeOpts: [  // dialog 文件類型下拉選單
-        //     { text: '品質文件', value: 1 },
-        //     { text: '維修管理文件', value: 2 },
-        //     { text: '其他文件', value: 3 },
-        // ],
+        contentShow: false,  // 詳細內容 dialog 是否顯示
+        content: {},  // 詳細內容欄位
     }),
     components: { Pagination },  // 頁碼
     computed: {
@@ -291,29 +358,40 @@ export default {
                 this.tableItems = [
                     {
                         id: '111',
-                        depart: 'd2',
-                        type: 3,
-                        file: { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        updateTime: '2020-05-01 09:30:00',
-                        version: '1',
-                        note: '',
+                        type: 'DL',  // 機車類型
+                        num: '47',  // 機車號碼
+                        date: '2019-05-01',  // 日期
+                        drivers: '林國煌 郭泓志',  // 司機員
+                        locations: '北嘉+嘉北',  // 行駛區間
+                        number: '1-2',  // 列車次
+                        todayKm: 113.8,  // 本日行駛公里
+                        totalKm: 53175.8,  // 累計公里數
+                        todayHour: 7,  // 發電機日工時
+                        totalHour: 5218,  // 發電機累計工時
+                        useOilDiesel: 300,  // 耗用油量 (柴油)
+                        useOilEngine: 0,// 耗用油量 (引擎機油)
+                        useOilTC: 0,  // 耗用油量 (TC機油)
+                        useOilPump: 0,  // 耗用油量 (風泵)
+                        useOilOther: 0,  // 耗用油量 (其他)
+                        note: '保養說明文字保養說明文字保養說明文字',  // 保養記事
                     },
                     {
                         id: '222',
-                        depart: 'd4',
-                        type: 2,
-                        file: { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        updateTime: '2020-04-16 15:20:00',
-                        version: '1',
-                        note: '',
-                    },
-                    {
-                        id: '333',
-                        depart: 'd4',
-                        type: 2,
-                        file: { fileName: '123.docx', link: '/demofile/123.docx' },
-                        updateTime: '2020-03-21 11:40:00',
-                        version: '1',
+                        type: 'DL',
+                        num: '47',
+                        date: '2019-05-02',
+                        drivers: '郭泓志 林國煌 江明輝',
+                        locations: '北嘉+嘉北',
+                        number: '211-2',
+                        todayKm: 113.8,
+                        totalKm: 53289.6,
+                        todayHour: 9,
+                        totalHour: 5227,
+                        useOilDiesel: 300,
+                        useOilEngine: 0,
+                        useOilTC: 0,
+                        useOilPump: 0,
+                        useOilOther: 0,
                         note: '',
                     },
                 ]
@@ -370,18 +448,11 @@ export default {
                 }, 1000)
             }
         },
-        // 選擇檔案(dialog內)
-        select(file) {
-            this.ipt.file = file
+        // 顯示詳細資訊
+        view(item) {
+            this.contentShow = true
+            this.content = { ...item }
         },
-        // 轉換單位名稱
-        transferDepartTxt(value) {
-            return departOptions.find(item => item.value == value).text
-        },
-        // 轉換文件類型名稱
-        // transferTypeTxt(value) {
-        //     return this.typeOpts.find(item => item.value == value).text
-        // },
     },
     created() {
         this.ipt = { ...this.defaultIpt }

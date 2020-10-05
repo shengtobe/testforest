@@ -99,7 +99,7 @@
             <v-list-item-title class="white--text">職安管理</v-list-item-title>
         </template>
 
-        <v-list-item to="/smis/jobsafety/disaster-survey/add" class="white--text">
+        <v-list-item to="/smis/jobsafety/disaster-survey-add" class="white--text">
             <v-list-item-title>職業災害事故調查表</v-list-item-title>
         </v-list-item>
 

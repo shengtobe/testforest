@@ -37,21 +37,32 @@
                     <h5>檔案列表</h5>
                 </v-card-title>
 
-                <div class="d-flex flex-wrap px-3 pt-2 pb-4">
-                    <v-chip
+                <v-row class="py-2 px-4">
+                    <v-col cols="12" sm="4" md="3"
                         v-for="(item, idx) in fileList"
                         :key="item.name"
-                        class="mr-3 mt-2"
-                        label
-                        color="teal"
-                        dark
                     >
-                        {{ item.name }} 
-                        <v-icon right
-                            @click="del(idx)"
-                        >mdi-close-circle</v-icon>
-                    </v-chip>
-                </div>
+                        <v-card>
+                            <v-img
+                                contain
+                                width="264"
+                                height="158"
+                                :src="item.src"
+                                class="grey lighten-2"
+                            ></v-img>
+
+                            <v-card-actions
+                                class="my-1 mx-2 d-flex justify-space-between"
+                            >
+                                {{ item.name }}
+                                
+                                <v-icon large color="error"
+                                    @click="del(idx)"
+                                >mdi-close-circle</v-icon>
+                            </v-card-actions>
+                        </v-card>
+                    </v-col>
+                </v-row>
             </v-card>
         </v-col>
     </v-row>
@@ -60,9 +71,10 @@
 
 <script>
 export default {
-    props: ['uploadDisnable', 'fileList', 'title'],  // props：是否disabled、檔案列表、標題
+    props: ['uploadDisnable', 'fileList', 'title'],  // props：是否disabled(用於危害通報)、檔案列表、標題
     data: () => ({
         choseFiles: null,  // 所選的檔案
+        urltxt: '',
     }),
     methods: {
         // 選擇檔案
@@ -78,8 +90,26 @@ export default {
                         return item.name == ele.name && item.size == ele.size
                     })
 
-                    // 若已加入列表中沒找到檔案則加入
-                    if (file == undefined) this.$emit('joinFile', ele)
+                    if (file == undefined) {
+                        if (['image/png', 'image/jpeg', 'image/gif'].includes(ele.type)) {
+                            // ------ 若是圖片------ 
+                            let reader = new FileReader()
+
+                            // 設定 reader 物件的 result 屬性，為圖片 base64 資料
+                            reader.readAsDataURL(ele)
+
+                            // 設定讀取完圖片時的動作
+                            reader.onload = () => {
+                                ele.src = reader.result
+                                this.$emit('joinFile', ele)  // 若已加入列表中沒找到檔案則加入
+                            }
+                        } else {
+                            // ------ 其他類型檔案 ------ 
+                            ele.src = '/images/file.jpg'
+                            this.$emit('joinFile', ele)  // 若已加入列表中沒找到檔案則加入
+                        }
+                        
+                    }
                 })
                 this.choseFiles = null
             }
@@ -88,6 +118,6 @@ export default {
         del(idx) {
             this.$emit('rmFile', idx)
         },
-    }
+    },
 }
 </script>
