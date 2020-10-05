@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">吊掛用具每日作業前自動檢點表</h2>
+    <h2 class="mb-4 px-2">吊掛用具每日作業檢點表(作業前)</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -121,7 +121,7 @@
     <v-dialog v-model="Add" max-width="700px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增吊掛用具每日作業前自動檢點表
+          新增吊掛用具每日作業檢點表(作業前)
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>

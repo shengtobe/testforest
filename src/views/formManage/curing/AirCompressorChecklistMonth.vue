@@ -124,7 +124,7 @@
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增空氣壓縮機(月)定期檢查表
+          新增空氣壓縮機定期檢查表(月)
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -187,18 +187,13 @@
               >
                 <v-row no-gutter>
                   <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '目視點檢', value: 'A' }, { text: '動作測試', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="正常" value="1"></v-radio>
                       <v-radio color="red" label="異常" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -310,27 +305,27 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
       items: [
-        { question: "1. 控制開關及電源線" },
-        { question: "2. 馬達絕緣及接地線" },
-        { question: "3. 傳動皮帶、皮帶輪" },
-        { question: "4. 馬達傳動部份護罩" },
-        { question: "5. 貯氣筒體有無裂痕、腐蝕、漏氣" },
-        { question: "6. 連接管接頭是否良好" },
-        { question: "7. 安全閥及送氣開關" },
-        { question: "8. 壓力表及壓力設定" },
-        { question: "9. 試運轉是否順暢，有無異狀" },
+       { question: "1. 控制開關及電源線", checkMethod: "動作測試" },
+        { question: "2. 馬達絕緣及接地線", checkMethod: "動作測試" },
+        { question: "3. 傳動皮帶、皮帶輪", checkMethod: "動作測試" },
+        { question: "4. 馬達傳動部份護罩", checkMethod: "目視點檢" },
+        { question: "5. 貯氣筒體有無裂痕、腐蝕、漏氣", checkMethod: "目視點檢" },
+        { question: "6. 連接管接頭是否良好", checkMethod: "動作測試" },
+        { question: "7. 安全閥及送氣開關", checkMethod: "動作測試" },
+        { question: "8. 壓力表及壓力設定", checkMethod: "動作測試" },
+        { question: "9. 試運轉是否順暢，有無異狀", checkMethod: "動作測試" },
       ],
       suggest: "", // 改善建議
     };

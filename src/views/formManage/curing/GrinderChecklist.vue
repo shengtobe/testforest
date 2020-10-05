@@ -189,18 +189,13 @@
               >
                 <v-row no-gutter>
                   <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -312,31 +307,31 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
       items: [
-        { question: "1. 防護蓋有否裝設" },
-        { question: "2. 護目鏡是否配置" },
-        { question: "3. 機台固定裝置是否穩固" },
-        { question: "4. 馬達絕緣電阻是否合乎規定" },
-        { question: "5. 電源線有無損傷" },
-        { question: "6. 外殼接地線是否良好" },
-        { question: "7. 砂輪規格是否正確，有無裂痕" },
-        { question: "8. 砂輪與托架有否合乎3mm以內" },
-        { question: "9. 砂輪固定情況是否良好" },
-        { question: "10. 試運轉轉動是否平衡，有無異狀" },
-        { question: "11. 是否有「使用時禁戴手套」警語" },
+        { question: "1. 防護蓋有否裝設", checkMethod: "目視點檢" },
+        { question: "2. 護目鏡是否配置", checkMethod: "目視點檢" },
+        { question: "3. 機台固定裝置是否穩固", checkMethod: "目視點檢" },
+        { question: "4. 馬達絕緣電阻是否合乎規定", checkMethod: "動作測試" },
+        { question: "5. 電源線有無損傷", checkMethod: "目視點檢" },
+        { question: "6. 外殼接地線是否良好", checkMethod: "目視點檢" },
+        { question: "7. 砂輪規格是否正確，有無裂痕", checkMethod: "目視點檢" },
+        { question: "8. 砂輪與托架有否合乎3mm以內", checkMethod: "動作測試" },
+        { question: "9. 砂輪固定情況是否良好", checkMethod: "目視點檢" },
+        { question: "10. 試運轉轉動是否平衡，有無異狀", checkMethod: "動作測試" },
+        { question: "11. 是否有「使用時禁戴手套」警語", checkMethod: "目視點檢" },
       ],
       suggest: "", // 改善建議
     };

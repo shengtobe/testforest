@@ -1,11 +1,11 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">一般車輛每日作業前檢點表(作業前)</h2>
+    <h2 class="mb-4 px-2">心理健康量表</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(起)
         </h3>
         <v-menu
           v-model="a"
@@ -22,7 +22,7 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(迄)
         </h3>
         <v-menu
           v-model="q"
@@ -37,44 +37,20 @@
           <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
         </v-menu>
       </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
-          solo
-        />
-      </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
-      </v-col>
-
-      <v-col cols="12" sm="3" md="3">
-        <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
-        </v-form>
-      </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
+      <div class="col-sm-4 col-md-8 col-12">
+        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
+          <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增量表
         </v-btn>
-      </v-col>
+      </div>
     </v-row>
     <!-- 表格資料 -->
     <v-col cols="12">
@@ -121,10 +97,10 @@
       </v-card>
     </v-col>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="600px">
+    <v-dialog v-model="Add" max-width="680px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增一般車輛每日作業前檢點表(作業前)
+          新增心理健康量表
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -133,12 +109,10 @@
 
         <div class="px-6 py-4">
           <v-row>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。</p>
-              <p>2.檢查結果依狀態選擇正常、異常或無此項目。</p>
-              <p>3.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-              <p>4.本表月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。</p>
-            </v-col>
+              <p>2.缺點由使用單位自行改善，不克者委請設備商修護。</p>
+            </v-col> -->
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
@@ -159,28 +133,11 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value />
                 </v-col>
-                <v-col cols="12" sm="4"/>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">車號</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                
-              </v-row>
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查項目</h3>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查結果</h3>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">改善措施</h3>
+                  <v-text-field solo value />
                 </v-col>
               </v-row>
               <v-alert
@@ -191,33 +148,35 @@
                 elevation="4"
                 v-for="(item, idx) in items"
                 :key="idx"
-                class="mb-6"
+                class="mb-6" 
               >
-                <v-row no-gutter>
+                <v-row no-gutter >
                   <v-col cols="12" sm="4">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="4">
-                    <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="正常" value="1"></v-radio>
-                      <v-radio color="red" label="異常" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                  <v-col cols="12" sm="7" style="white-space:pre-wrap"  >
+                    <span class="d-sm-none error--text">回答：</span>
+                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0" >
+                      <v-radio color="success" label="沒有或極少(每週一天以下)" value="0"></v-radio>
+                      <v-radio color="orange" label="有時(1~2天/週)" value="1"></v-radio>
+                      <v-radio color="orange" label="時常 (3~4天/週)" value="2"></v-radio>
+                      <v-radio color="orange" label="常常/總是(5~7天/週)" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
-                  <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">改善措施：</span>
-                          <v-textarea auto-grow
-                           outlined rows="3"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
-                        </v-col>
                 </v-row>
               </v-alert>
             </v-col>
-            
+            <!-- 改善建議、改善追蹤 -->
+            <v-col cols="12" sm="4">
+              <v-text-field v-model="PersonalFatigueTotal">
+                <span slot="prepend">分數:</span>
+              </v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <h3 class="mb-1 indigo--text">同意人簽名</h3>
+              <v-textarea auto-grow outlined rows="1" v-model.trim="ipt.suggest"></v-textarea>
+            </v-col>
             <!-- END 檢查項目 -->
           </v-row>
         </div>
-
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
@@ -234,6 +193,7 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      ss: "",
       a: "",
       ass: "",
       z: "",
@@ -308,36 +268,60 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
+          { status: "-1", note: "" },
         ],
       },
       items: [
-        { question: "1. 傳動裝置" },
-        { question: "2. 剎車制動裝置" },
-        { question: "3. 引擎及附屬裝置" },
-        { question: "4. 齒輪油量" },
-        { question: "5. 方向桿裝置" },
-        { question: "6. 傳動鏈條" },
-        { question: "7. 照明燈泡檢查" },
-        { question: "8. 車身及附件目視檢查" },
-        { question: "9. 各部機件異常聲音及不正常動作" },
-        { question: "10. 其他" },
+        { question: "1. 我常常覺得想哭" },
+        { question: "2. 我覺得心情不好" },
+        { question: "3. 我覺得比以前容易發脾氣" },
+        { question: "4. 我睡不好" },
+        { question: "5. 我覺得不想吃東西" },
+        { question: "6. 我覺得胸口悶悶的" },
+        { question: "7. 我覺得不輕鬆、不舒服" },
+        { question: "8. 我覺得身體疲勞虛弱無力" },
+        { question: "9. 我覺得很煩" },
+        { question: "10. 我覺得記憶力不好" },
+        { question: "11. 我覺得做事時無法專心" },
+        { question: "12. 我覺得想事情或做事時比平常要緩慢" },
+        { question: "13. 我覺得比以前沒信心" },
+        { question: "14. 我覺得比較會往壞處想" },
+        { question: "15. 我覺得想不開，甚至想死" },
+        { question: "16. 我覺得對什麼事都失去興趣" },
+        { question: "17. 我覺得身體不舒服" },
+        { question: "18. 我覺得自己很沒用" },
       ],
       suggest: "", // 改善建議
     };
   },
   components: { Pagination }, // 頁碼
+  computed: {
+    PersonalFatigueTotal() {
+      var total = 0;
+      for (let index = 0; index < this.ipt.items.length; index++) {
+        total += Number(this.ipt.items[index].status);
+      }
+      if(total < 0) total = 0;
+      return total
+    },
+  },
   methods: {
     // 更換頁數
     chPage(n) {
@@ -357,6 +341,14 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
+    Add() {
+      alert("123");
+    },
   },
 };
 </script>
+<style>
+.v-input--radio-group__input {
+  display: block;
+}
+</style>

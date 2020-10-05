@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">一般車輛每日作業前檢點表(作業前)</h2>
+    <h2 class="mb-4 px-2">挖掘機定期檢查表(年)</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -72,7 +72,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增檢查表
         </v-btn>
       </v-col>
     </v-row>
@@ -108,9 +108,6 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
-            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
-              <v-icon dark>mdi-delete</v-icon>
-            </v-btn>-->
           </template>
 
           <!-- 頁碼 -->
@@ -121,10 +118,10 @@
       </v-card>
     </v-col>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="600px">
+    <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增一般車輛每日作業前檢點表(作業前)
+          新增挖掘機定期檢查表(年)
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -134,10 +131,10 @@
         <div class="px-6 py-4">
           <v-row>
             <v-col cols="12">
-              <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。</p>
-              <p>2.檢查結果依狀態選擇正常、異常或無此項目。</p>
-              <p>3.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-              <p>4.本表月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。</p>
+              <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第16條規定辦理。</p>
+              <p>2.檢查結果應詳實紀錄。檢查結果請依情況選擇正常、異常、無此項目。</p>
+              <p>3.缺點由使用單位自行改善，不克者委請設備商修護</p>
+              <p>4.本定期檢查表於月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查</p>
             </v-col>
             <!-- 檢查項目 -->
             <v-col cols="12">
@@ -161,26 +158,23 @@
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value  />
                 </v-col>
-                <v-col cols="12" sm="4"/>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo />
                 </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">車號</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查項目</h3>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">檢查方法</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查結果</h3>
                 </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">改善措施</h3>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">備註</h3>
                 </v-col>
               </v-row>
               <v-alert
@@ -194,8 +188,9 @@
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="4">
+                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="正常" value="1"></v-radio>
@@ -203,17 +198,22 @@
                       <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
-                  <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">改善措施：</span>
-                          <v-textarea auto-grow
-                           outlined rows="3"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
-                        </v-col>
+                  <v-col cols="12" sm="3">
+                      <span class="d-sm-none error--text">備註：</span>
+                      <v-textarea auto-grow outlined rows="2" />
+                  </v-col>
                 </v-row>
               </v-alert>
             </v-col>
-            
+            <!-- 改善建議、改善追蹤 -->
+            <v-col cols="12">
+              <h3 class="mb-1 indigo--text">改善建議</h3>
+              <v-textarea auto-grow outlined rows="4" />
+            </v-col>
+            <v-col cols="12">
+              <h3 class="mb-1 indigo--text">改善措施</h3>
+              <v-textarea auto-grow outlined rows="4" />
+            </v-col>
             <!-- END 檢查項目 -->
           </v-row>
         </div>
@@ -323,16 +323,19 @@ export default {
         ],
       },
       items: [
-        { question: "1. 傳動裝置" },
-        { question: "2. 剎車制動裝置" },
-        { question: "3. 引擎及附屬裝置" },
-        { question: "4. 齒輪油量" },
-        { question: "5. 方向桿裝置" },
-        { question: "6. 傳動鏈條" },
-        { question: "7. 照明燈泡檢查" },
-        { question: "8. 車身及附件目視檢查" },
-        { question: "9. 各部機件異常聲音及不正常動作" },
-        { question: "10. 其他" },
+        { question: "1.制動器是否正常", checkMethod: "動作測試" },
+        { question: "2.離合器是否正常", checkMethod: "動作測試" },
+        { question: "3.操作裝置是否正常", checkMethod: "動作測試" },
+        { question: "4.作業裝置是否適當", checkMethod: "目視點檢" },
+        { question: "5.鋼索、鏈有無損傷斷裂", checkMethod: "目視點檢" },
+        { question: "6.吊斗有無損傷斷裂", checkMethod: "目視點檢" },
+        { question: "7.電瓶及電器設備是否正常", checkMethod: "動作測試" },
+        { question: "8.方向操作系統動作是否正常", checkMethod: "動作測試" },
+        { question: "9.剎車能力動作情況檢查是否正常", checkMethod: "動作測試" },
+        { question: "10.儀表、燈及喇叭操作情況檢查是否正常", checkMethod: "動作測試" },
+        { question: "11.各部機件是否有漏油現象", checkMethod: "目視點檢" },
+        { question: "12.各部機件是否有異常聲音及不正常動作", checkMethod: "動作測試" },
+
       ],
       suggest: "", // 改善建議
     };

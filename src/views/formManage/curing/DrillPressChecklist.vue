@@ -188,19 +188,14 @@
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ item.qq }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -311,30 +306,30 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
       items: [
-        { qq: "1. 迴轉部位皮帶等是否有護蓋防護措施" },
-        { qq: "2. 迴轉部位是否有突出之固定螺絲" },
-        { qq: "3. 皮帶鬆緊情形是否適當，有否損傷" },
-        { qq: "4. 鑽頭夾具功能是否正常" },
-        { qq: "5. 鑽物座搖臂是否能鎖緊主軸" },
-        { qq: "6. 起動、制動裝置機能是否確實" },
-        { qq: "7. 馬達絕緣及接地線是否正常" },
-        { qq: "8. 照明燈具之燈座、電線是否損傷" },
-        { qq: "9. 是否有「使用時禁戴手套」警語" }
+        { question: "1. 迴轉部位皮帶等是否有護蓋防護措施", checkMethod: "目視點檢" },
+        { question: "2. 迴轉部位是否有突出之固定螺絲", checkMethod: "目視點檢" },
+        { question: "3. 皮帶鬆緊情形是否適當，有否損傷", checkMethod: "動作測試" },
+        { question: "4. 鑽頭夾具功能是否正常", checkMethod: "動作測試" },
+        { question: "5. 鑽物座搖臂是否能鎖緊主軸", checkMethod: "動作測試" },
+        { question: "6. 起動、制動裝置機能是否確實", checkMethod: "動作測試" },
+        { question: "7. 馬達絕緣及接地線是否正常", checkMethod: "動作測試" },
+        { question: "8. 照明燈具之燈座、電線是否損傷", checkMethod: "目視點檢" },
+        { question: "9. 是否有「使用時禁戴手套」警語", checkMethod: "目視點檢" },
       ],
       suggest: "", // 改善建議
     };

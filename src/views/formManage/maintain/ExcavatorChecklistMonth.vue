@@ -188,19 +188,14 @@
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ item.qq }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -312,41 +307,41 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" }
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" }
         ],
       },
       items: [
-        { qq: "1. 制動器及操作裝置是否正常" },
-        { qq: "2. 離合器操作裝置是否正常" },
-        { qq: "3. 鋼索、鏈有無損傷斷裂" },
-        { qq: "4. 吊斗有無損傷斷裂" },
-        { qq: "5. 引擎水箱冷卻水水量是否正常" },
-        { qq: "6. 引擎機油及柴油油量是否正常" },
-        { qq: "7. 履帶鬆緊度及表面是否正常" },
-        { qq: "8. 電瓶及電器設備是否正常" },
-        { qq: "9. 機械各動作部分潤滑是否正常" },
-        { qq: "10. 空氣濾清器清潔度是否正常" },
-        { qq: "11. 操作液壓油油量是否正常" },
-        { qq: "12. 方向操作系統動作是否正常" },
-        { qq: "13. 剎車能力動作情況檢查是否正常" },
-        { qq: "10. 儀表、燈及喇叭操作情況檢查是否正常" },
-        { qq: "14. 各部機件是否有漏油現象" },
-        { qq: "15. 各部機件是否有異常聲音及不正常動作" },
+        { question: "1. 制動器及操作裝置是否正常", checkMethod: "動作測試" },
+        { question: "2. 離合器操作裝置是否正常", checkMethod: "動作測試" },
+        { question: "3. 鋼索、鏈有無損傷斷裂", checkMethod: "目視點檢" },
+        { question: "4. 吊斗有無損傷斷裂", checkMethod: "目視點檢" },
+        { question: "5. 引擎水箱冷卻水水量是否正常", checkMethod: "目視點檢" },
+        { question: "6. 引擎機油及柴油油量是否正常", checkMethod: "目視點檢" },
+        { question: "7. 履帶鬆緊度及表面是否正常", checkMethod: "動作測試及目視點檢" },
+        { question: "8. 電瓶及電器設備是否正常", checkMethod: "動作測試" },
+        { question: "9. 機械各動作部分潤滑是否正常", checkMethod: "目視點檢" },
+        { question: "10. 空氣濾清器清潔度是否正常", checkMethod: "目視點檢" },
+        { question: "11. 操作液壓油油量是否正常", checkMethod: "目視點檢" },
+        { question: "12. 方向操作系統動作是否正常", checkMethod: "動作測試" },
+        { question: "13. 剎車能力動作情況檢查是否正常", checkMethod: "動作測試" },
+        { question: "14. 儀表、燈及喇叭操作情況檢查是否正常", checkMethod: "動作測試" },
+        { question: "15. 各部機件是否有漏油現象", checkMethod: "目視點檢" },
+        { question: "16. 各部機件是否有異常聲音及不正常動作", checkMethod: "動作測試" },
       ],
       suggest: "", // 改善建議
     };

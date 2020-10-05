@@ -188,19 +188,14 @@
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ item.qq }}</v-col>
-                  <v-col cols="12" sm="3">
-                    <v-select
-                      :items="[{ text: '動作測試', value: 'A' }, { text: '目視點檢', value: 'B' }]"
-                      solo
-                    />
-                  </v-col>
+                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="正常" value="1" />
                       <v-radio color="red" label="不正常" value="2" />
-                      <v-radio color="black" label="無此項目" value="0" />
+                      <v-radio color="black" label="無此項目" value="3" />
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
@@ -315,23 +310,23 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" }
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" }
         ],
       },
       items: [
-        { qq: "1. 梯柱有無裂痕、嚴重外傷" },
-        { qq: "2. 腳踏橫槓有無缺少或斷裂" },
-        { qq: "3. 腳踏橫槓是否牢固" },
-        { qq: "4. 固定螺栓有無鬆動脫落" },
-        { qq: "5. 尼龍接繩有無斷股、鬆脫" },
-        { qq: "6. 梯身有無沾有油脂等易滑物" },
-        { qq: "7. 伸長時固定鉤動作是否確實" }
+        { question: "1. 梯柱有無裂痕、嚴重外傷", checkMethod: "目視點檢" },
+        { question: "2. 腳踏橫槓有無缺少或斷裂", checkMethod: "目視點檢" },
+        { question: "3. 腳踏橫槓是否牢固", checkMethod: "目視點檢" },
+        { question: "4. 固定螺栓有無鬆動脫落", checkMethod: "動作測試" },
+        { question: "5. 尼龍接繩有無斷股、鬆脫", checkMethod: "目視點檢" },
+        { question: "6. 梯身有無沾有油脂等易滑物", checkMethod: "目視點檢" },
+        { question: "7. 伸長時固定鉤動作是否確實", checkMethod: "動作測試" },
       ],
       suggest: "", // 改善建議
     };

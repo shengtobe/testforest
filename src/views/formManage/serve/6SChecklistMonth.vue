@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">6S定期檢查表(月)</h2>
+    <h2 class="mb-4 px-2">6S 定期檢查表(月)</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -124,7 +124,7 @@
     <v-dialog v-model="Add" max-width="1100px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增6S定期檢查表(月)
+          新增6S 定期檢查表(月)
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>

@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">員工工作安全觀察紀錄表(月)</h2>
+    <h2 class="mb-4 px-2">員工工作安全觀察表(每月2 次)</h2>
     <v-row class="px-2">
       <!-- 第一排選項 -->
       <v-col cols="12" sm="2" md="2">
@@ -162,7 +162,7 @@
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
-            新增員工工作安全觀察紀錄表(月)
+            新增員工工作安全觀察表(每月2 次)
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
