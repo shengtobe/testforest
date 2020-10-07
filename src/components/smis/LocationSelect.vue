@@ -12,7 +12,7 @@
                 <v-radio-group row v-model="mainLocation" class="pa-0"
                     @change="update"
                 >
-                    <v-radio label="主線" color="success" value="l1" class="mb-2"></v-radio>
+                    <v-radio label="本線" color="success" value="l1" class="mb-2"></v-radio>
                     <v-radio label="祝山線" color="success" value="l2" class="mb-2"></v-radio>
                     <v-radio label="眠月線" color="success" value="l3" class="mb-2"></v-radio>
                     <v-radio label="水山線" color="success" value="l4" class="mb-2"></v-radio>

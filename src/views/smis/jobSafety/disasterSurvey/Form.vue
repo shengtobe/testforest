@@ -278,25 +278,119 @@
                 <v-icon class="mr-1 mb-1">mdi-google-assistant</v-icon>致傷媒介物
             </h3>
             <v-select
+                v-model="ipt.vehicleLv1"
+                :items="opts.vehicleLv1"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3" class="mt-n8 mt-sm-8">
+            <v-select
                 v-model="ipt.vehicle"
                 :items="opts.vehicle"
                 solo
             ></v-select>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" sm="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-note</v-icon>通報內容
-                <span class="red--text">*</span>
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>直接原因
             </h3>
             <v-textarea
                 auto-grow
                 solo
                 rows="6"
-                placeholder="請輸入通報內容"
-                v-model.trim="ipt.content"
+                placeholder="請輸入直接原因"
+                v-model.trim="ipt.directReason"
             ></v-textarea>
         </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>間接原因
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入間接原因"
+                v-model.trim="ipt.indirectReason"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>基本原因
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入基本原因"
+                v-model.trim="ipt.basicReason"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>傷者當時工作
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入傷者當時工作"
+                v-model.trim="ipt.workItem"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故概況
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入事故概況"
+                v-model.trim="ipt.overview"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>緊急處理情形
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入緊急處理情形"
+                v-model.trim="ipt.emergentWork"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故單位防範及改善對策
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入事故單位防範及改善對策"
+                v-model.trim="ipt.improveStrategy"
+            ></v-textarea>
+        </v-col>
+
+        <!-- 上傳檔案 -->
+        <UploadFileAdd
+            title="檔案上傳"
+            :uploadDisnable="false"
+            :fileList="ipt.files"
+            @joinFile="joinFile"
+            @rmFile="rmFile"
+        />
 
         <v-col cols="12" class="text-center mb-8">
             <v-btn
@@ -318,12 +412,13 @@
 </template>
 
 <script>
-// import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 // import { getNowFullTime } from '@/assets/js/commonFun'
 // import { createWorkOrder } from '@/apis/workList/maintain'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import { dapartOptsBrief } from '@/assets/js/departOption'
 import { injurySiteOpts, disasterTypeOpts, vehicleOpts } from '@/assets/js/smisData'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
 
 export default {
     data: () => ({
@@ -353,8 +448,16 @@ export default {
             accidentResult: 1,  // 事故結果
             injurySite: 1,  // 傷害部位
             disasterType: 1,  // 災害類型
-            vehicle: 111,  // 致傷媒介物
-            file: '',  // 附件檔案
+            vehicleLv1:'',  // 致傷媒介物-第一層
+            vehicle: '',  // 致傷媒介物-第二層
+            directReason: '',  // 直接原因
+            indirectReason: '',  // 間接原因
+            basicReason: '',  // 基本原因
+            workItem: '',  // 傷者當時工作
+            overview: '',  // 事故概況
+            emergentWork: '',  // 緊急處理情形
+            improveStrategy: '',  // 事故單位防範及改善對策
+            files: [],  // 附件檔案
         },
         dateMenuShow: {  // 日曆是否顯示
             startWorkDate: false,  // 到職日期
@@ -382,19 +485,40 @@ export default {
             ],
             injurySite: injurySiteOpts,  // 傷害部位
             disasterType: disasterTypeOpts,  // 災害類型,
-            vehicle: vehicleOpts,  // 致傷媒介物
+            vehicleLv1: [],  // 致傷媒介物-第一層
+            vehicle: [],  // 致傷媒介物-第二層
         },
     }),
+    components: { UploadFileAdd },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
         },
+        // 致傷媒介物-第二層下拉選單
+        'ipt.vehicleLv1': function(val) {
+            this.opts.vehicle = vehicleOpts[val]
+            this.ipt.vehicle = this.opts.vehicle[1]  // 因為第1個選項不可用，所以設為第2個
+        },
+        
+    },
+    computed: {
+        
+        
+        
     },
     methods: {
+        ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
         // 初始化資料
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+
+             // 產生致傷媒介物-第一層選單 & 設定預設值
+            this.opts.vehicleLv1 = Object.keys(vehicleOpts)
+            this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]
 
             // 範例效果
             // setTimeout(() => {
@@ -403,7 +527,25 @@ export default {
         },
         // 送出
         save() {
+            this.chLoadingShow()
 
+            // 新增測試用資料
+            setTimeout(() => {
+                // let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                // if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
+                // this.chMsgbar({ success: true, msg: txt })
+                this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+                this.chMsgbar({ success: true, msg: '送出成功' })
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 加入要上傳的檔案
+        joinFile(file) {
+            this.ipt.files.push(file)
+        },
+        // 移除要上傳的檔案
+        rmFile(idx) {
+            this.ipt.files.splice(idx, 1)
         },
     },
     created() {

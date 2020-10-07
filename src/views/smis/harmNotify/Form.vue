@@ -168,10 +168,12 @@ export default {
     methods: {
         // 初始化資料
         initData() {
+            this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+
             // 範例效果
-            setTimeout(() => {
-                this.ipt = { ...this.defaultIpt }  // 初始化新增表單
-            }, 1000)
+            // setTimeout(() => {
+                
+            // }, 1000)
         },
         // 設定發現地點
         setLocation(payload) {
