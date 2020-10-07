@@ -448,7 +448,7 @@ export default {
             accidentResult: 1,  // 事故結果
             injurySite: 1,  // 傷害部位
             disasterType: 1,  // 災害類型
-            vehicleLv1:'',  // 致傷媒介物-第一層
+            vehicleLv1: '',  // 致傷媒介物-第一層
             vehicle: '',  // 致傷媒介物-第二層
             directReason: '',  // 直接原因
             indirectReason: '',  // 間接原因
@@ -497,8 +497,10 @@ export default {
         },
         // 致傷媒介物-第二層下拉選單
         'ipt.vehicleLv1': function(val) {
-            this.opts.vehicle = vehicleOpts[val]
-            this.ipt.vehicle = this.opts.vehicle[1]  // 因為第1個選項不可用，所以設為第2個
+            if (val != '') {
+                this.opts.vehicle = vehicleOpts[val]
+                this.ipt.vehicle = this.opts.vehicle[1]  // 因為第1個選項不可用，所以設為第2個
+            }
         },
         
     },
@@ -516,7 +518,7 @@ export default {
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化新增表單
 
-             // 產生致傷媒介物-第一層選單 & 設定預設值
+            // 產生致傷媒介物-第一層選單 & 設定預設值
             this.opts.vehicleLv1 = Object.keys(vehicleOpts)
             this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]
 
@@ -527,17 +529,20 @@ export default {
         },
         // 送出
         save() {
-            this.chLoadingShow()
-
-            // 新增測試用資料
-            setTimeout(() => {
-                // let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
-                // if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
-                // this.chMsgbar({ success: true, msg: txt })
-                this.ipt = { ...this.defaultIpt }  // 初始化新增表單
-                this.chMsgbar({ success: true, msg: '送出成功' })
+            if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                // 新增測試用資料
+                setTimeout(() => {
+                    // let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                    // if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
+                    // this.chMsgbar({ success: true, msg: txt })
+                    this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+                    this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]  // 初始化致傷媒介物下拉選單
+                    this.chMsgbar({ success: true, msg: '送出成功' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 加入要上傳的檔案
         joinFile(file) {
