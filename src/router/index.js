@@ -10,6 +10,7 @@ import { CarSafePerformanceRouter } from './moduleRouter/smis/carSafePerformance
 import { CarSafeInfoRouter } from './moduleRouter/smis/carSafeInfo'
 import { SafeFileRouter } from './moduleRouter/smis/safeFile'
 import { JobSafetyRouter } from './moduleRouter/smis/jobSafety'
+import { MmisRouter } from './moduleRouter/mmis'
 // import { EqInfoRouter } from './moduleRouter/eqInfo'
 // import { EqRepairRouter } from './moduleRouter/eqRepair'
 // import { EqRepairOutRouter } from './moduleRouter/eqRepairOut'
@@ -56,6 +57,7 @@ const routes = [
       // ...EqRepairRouter,  // 設備維修管理
       // ...EqRepairOutRouter,  // 設備維修外包
       // ...RepairAnalysisRouter,  // 維修統計分析
+      ...MmisRouter,  // 設備養護系統
       ...WorkListRouter,  // 工單
       ...FormManageRouter,  // 表單管理
 

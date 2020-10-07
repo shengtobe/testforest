@@ -19,6 +19,9 @@
     <SmisNav />
     <v-divider></v-divider>
 
+    <MmisNav />
+    <v-divider></v-divider>
+
     <!-- <EqInfoNav />
     <v-divider></v-divider>
 
@@ -99,6 +102,7 @@ import MessageBar from '@/components/MessageBar.vue'
 import ProfileNav from '@/components/navs/ProfileNav.vue'
 import AccessNav from '@/components/navs/AccessNav.vue'
 import SmisNav from '@/components/navs/SmisNav.vue'
+import MmisNav from '@/components/navs/MmisNav.vue'
 // import EqInfoNav from '@/components/navs/EqInfoNav.vue'
 // import EqRepairNav from '@/components/navs/EqRepairNav.vue'
 // import EqRepairOutNav from '@/components/navs/EqRepairOutNav.vue'
@@ -123,6 +127,7 @@ export default {
     // EqRepairNav,  // (sidebar) 設備維修管理
     // EqRepairOutNav,  // (sidebar) 設備維修外包
     // RepairAnalysisNav,  // (sidebar) 維修統計分析
+    MmisNav,  // (sidebar) 設備養護
     WorkListNav,  // (sidebar) 工單
   },
   methods: {
