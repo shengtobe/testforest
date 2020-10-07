@@ -401,13 +401,13 @@
                 <v-col cols="12" sm="3" style="margin-top:-35px">
                   <h3 class="mb-1">檢修日期</h3>
                   <v-menu
-                    v-model="cross1_date1"
+                    v-model="cross3_date1"
                     :close-on-content-click="false"
                     transition="scale-transition"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        v-model.trim="AddData.cross1_date1"
+                        v-model.trim="AddData.cross3_date1"
                         outlined
                         placeholder="點此選擇日期"
                         v-on="on"
@@ -417,21 +417,21 @@
                     </template>
                     <v-date-picker
                       color="purple"
-                      v-model="AddData.cross1_date1"
-                      @input="cross1_date1 = false"
+                      v-model="AddData.cross3_date1"
+                      @input="cross3_date1 = false"
                       locale="zh-tw"
                     />
                   </v-menu>
                   <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
                   <v-menu
                     style="margin-top:-12px"
-                    v-model="cross1_date2"
+                    v-model="cross3_date2"
                     :close-on-content-click="false"
                     transition="scale-transition"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        v-model.trim="AddData.cross1_date2"
+                        v-model.trim="AddData.cross3_date2"
                         outlined
                         placeholder="點此選擇日期"
                         v-on="on"
@@ -441,8 +441,8 @@
                     </template>
                     <v-date-picker
                       color="purple"
-                      v-model="AddData.cross1_date2"
-                      @input="cross1_date2 = false"
+                      v-model="AddData.cross3_date2"
+                      @input="cross3_date2 = false"
                       locale="zh-tw"
                     />
                   </v-menu>
@@ -512,13 +512,13 @@
                 <v-col cols="12" sm="3" style="margin-top:-35px">
                   <h3 class="mb-1">檢修日期</h3>
                   <v-menu
-                    v-model="cross1_date1"
+                    v-model="cross4_date1"
                     :close-on-content-click="false"
                     transition="scale-transition"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        v-model.trim="AddData.cross1_date1"
+                        v-model.trim="AddData.cross4_date1"
                         outlined
                         placeholder="點此選擇日期"
                         v-on="on"
@@ -528,21 +528,21 @@
                     </template>
                     <v-date-picker
                       color="purple"
-                      v-model="AddData.cross1_date1"
-                      @input="cross1_date1 = false"
+                      v-model="AddData.cross4_date1"
+                      @input="cross4_date1 = false"
                       locale="zh-tw"
                     />
                   </v-menu>
                   <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
                   <v-menu
                     style="margin-top:-12px"
-                    v-model="cross1_date2"
+                    v-model="cross4_date2"
                     :close-on-content-click="false"
                     transition="scale-transition"
                   >
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        v-model.trim="AddData.cross1_date2"
+                        v-model.trim="AddData.cross4_date2"
                         outlined
                         placeholder="點此選擇日期"
                         v-on="on"
@@ -552,8 +552,8 @@
                     </template>
                     <v-date-picker
                       color="purple"
-                      v-model="AddData.cross1_date2"
-                      @input="cross1_date2 = false"
+                      v-model="AddData.cross4_date2"
+                      @input="cross4_date2 = false"
                       locale="zh-tw"
                     />
                   </v-menu>
