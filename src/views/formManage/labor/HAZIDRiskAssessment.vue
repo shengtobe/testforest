@@ -50,7 +50,14 @@
         <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" elevation="3" dark large @click="Add = true">
+        <v-btn
+          color="indigo"
+          elevation="3"
+          dark
+          large
+          class="col-4 col-md-3 mr-3"
+          to="/form-manage/labor/hazid-risk-assessment-add"
+        >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
@@ -98,124 +105,7 @@
       </v-card>
     </v-col>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
-          新增{{ title }}
-          <v-spacer></v-spacer>
-          <v-btn dark fab small text @click="close" class="mr-n2">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <div class="px-6 py-4">
-          <v-row>
-            <!-- 檢查項目 -->
-            <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">評估日期</h3>
-                  <v-menu
-                    v-model="ass"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">單位/部門</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">受評估之場所</h3>
-                  <v-text-field solo />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">場所內工作型態及人數</h3>
-                  <v-text-field solo type="number"/>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">評估人員</h3>
-                  <v-text-field solo />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">審核者</h3>
-                  <v-text-field solo />
-                </v-col>
-              </v-row>
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">潛在風險</h3>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h3 class="mb-1">是/否</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">潛在不法侵害風險類型（肢體/語言/心理/性騷擾）</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">可能性(發生機率)</h3>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h3 class="mb-1">嚴重性(傷害程度)</h3>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h3 class="mb-1">風險等級</h3>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h3 class="mb-1">現有控制措施(工程控制/管理控制/個人防護)</h3>
-                </v-col>
-              </v-row>
-              <v-alert
-                dense
-                border="top"
-                colored-border
-                color="teal"
-                elevation="4"
-                v-for="(item, idx) in items"
-                :key="idx"
-                class="mb-6"
-              >
-                <v-row no-gutter>
-                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="4">{{ item.checkMethod }}</v-col>
-                  <v-col cols="12" sm="4">
-                    <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="正常" value="1"></v-radio>
-                      <v-radio color="red" label="異常" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="3"></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                </v-row>
-              </v-alert>
-            </v-col>
-            <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
-            </v-col>
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
-            </v-col>
-            <!-- END 檢查項目 -->
-          </v-row>
-        </div>
-
-        <v-card-actions class="px-5 pb-5">
-          <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    
   </v-container>
 </template>
 <script>
