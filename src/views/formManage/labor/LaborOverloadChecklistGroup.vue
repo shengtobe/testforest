@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">過負荷作業防護計畫檢核表（群體部分）</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -48,7 +48,7 @@
           large
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢核表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
     </v-row>
@@ -97,7 +97,7 @@
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增過負荷作業防護計畫檢核表（群體部分）
+          新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -242,6 +242,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title:"過負荷作業防護計畫檢核表（群體部分）",
+      newText:"檢核表",
       a: "",
       ass: "",
       z: "",

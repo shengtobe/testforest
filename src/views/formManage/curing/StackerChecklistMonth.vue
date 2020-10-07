@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">堆高機定期檢查表(月)</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -72,7 +72,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢查表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
@@ -525,6 +525,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title: "堆高機定期檢查表(月)",
+      newText: "檢查表",
       a: "",
       ass: "",
       z: "",

@@ -29,9 +29,10 @@ export const FormMaintainRouter = [{
         formGroup: ['maintain']
     },
     {
-        linkText: '挖掘機(年)定期檢查表',// 新增2.
+        linkText: '挖掘機(年)定期檢查表', // 新增2.
         path: '/form-manage/maintain/excavator-checklist-year',
-        component: () => import('@/views/formManage/maintain/ExcavatorChecklistYear.vue'),
+        component: () =>
+            import ('@/views/formManage/maintain/ExcavatorChecklistYear.vue'),
         formGroup: ['maintain']
     },
     {
@@ -88,6 +89,13 @@ export const FormMaintainRouter = [{
         path: '/form-manage/maintain/zhuqi-rail-switch-checklist',
         component: () =>
             import ('@/views/formManage/maintain/ZhuqiRailSwitchChecklist.vue'),
+        formGroup: ['maintain']
+    },
+    {
+        linkText: '機動道班台車使用申請書', // 67
+        path: '/form-manage/maintain/motor-vehicle-application',
+        component: () =>
+            import ('@/views/formManage/maintain/MotorVehicleApplication.vue'),
         formGroup: ['maintain']
     },
 ]

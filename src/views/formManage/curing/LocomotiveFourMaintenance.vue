@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">柴油液力機車四級檢修記錄表</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <v-row class="px-2">
       <!-- 第一排選項 -->
       <v-col cols="12" sm="4" md="3">
@@ -69,7 +69,7 @@
           class="col-4 col-md-3 mr-3"
           to="/form-manage/curing/locomotive-four-level-maintenance-add"
         >
-          <v-icon>mdi-plus</v-icon>新增四級檢修
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
       <!-- 動力車保養紀錄 -->
@@ -121,6 +121,8 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
+    title: "柴油液力機車四級檢修記錄表",
+    newText: "記錄表",
     aas: "",
     bbs: "",
     ccs: "",
@@ -129,12 +131,12 @@ export default {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
       case: "",
-      eqLoss: ""
+      eqLoss: "",
     },
     dateMemuShow: {
       // 日曆是否顯示
       start: false,
-      end: false
+      end: false,
     },
     evtTypeOpts: evtTypes,
     locationOpts: locationOpts,
@@ -143,7 +145,7 @@ export default {
       // dialog 日期 menu 是否顯示
       enter: false,
       enters: false,
-      out: false
+      out: false,
     },
     editedItem: {
       Kilometer: 12044.3,
@@ -151,7 +153,7 @@ export default {
       enterDate: "2020-08-10",
       content: "更換引擎機油", // 維修項目
       startday: "2020-08-10",
-      user: "王大明"
+      user: "王大明",
     },
     addItem: {
       Kilometer: null,
@@ -159,18 +161,18 @@ export default {
       enterDate: "",
       content: "", // 維修項目
       enterDates: "",
-      user: ""
+      user: "",
     },
     defaultItem: {
       Kilometer: null,
       Kilometers: 0,
       enterDate: "2020-08-10",
       content: "", // 維修項目
-      user: ""
+      user: "",
     },
     nameRules: [
-      v => !!v || "公里數必須填寫",
-      v => v.length > 0 || "公里數必須大於0"
+      (v) => !!v || "公里數必須填寫",
+      (v) => v.length > 0 || "公里數必須大於0",
     ],
     dialogForm: {},
     mainLocation: "", // 所選的地點
@@ -189,22 +191,22 @@ export default {
         a1: "A0001",
         aa: "2020-08-08",
         bb: 22222,
-        cc: "已審查"
+        cc: "已審查",
       },
       {
         a0: 2,
         a1: "A0001",
         aa: "2020-08-20",
         bb: 24000,
-        cc: "已審查"
+        cc: "已審查",
       },
       {
         a0: 3,
         a1: "A0001",
         aa: "2020-08-30",
         bb: 28000,
-        cc: "審查中"
-      }
+        cc: "審查中",
+      },
     ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
@@ -249,9 +251,9 @@ export default {
         value: "shop",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      }
-    ]
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+    ],
   }),
   components: { Pagination }, // 頁碼
 
@@ -276,7 +278,7 @@ export default {
         this.addItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       }, 300);
-    }
-  }
+    },
+  },
 };
 </script>

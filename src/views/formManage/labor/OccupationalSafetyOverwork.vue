@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">職業安全衛生過勞量表</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -41,14 +41,8 @@
         <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          @click="Add = true"
-        >
-          <v-icon>mdi-plus</v-icon>新增表單
+        <v-btn color="indigo" elevation="3" dark large @click="Add = true">
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
     </v-row>
@@ -100,7 +94,11 @@
     <v-dialog v-model="Add" max-width="680px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
+<<<<<<< HEAD
           新增職業安全衛生過勞量表
+=======
+          新增{{ title }}
+>>>>>>> develop
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -109,12 +107,11 @@
 
         <div class="px-6 py-4">
           <v-row>
-            
-            <!-- 檢查項目 -->
+            <!-- 填表項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
+                  <h3 class="mb-1">填表日期</h3>
                   <v-menu
                     v-model="ass"
                     :close-on-content-click="false"
@@ -129,11 +126,7 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
+                  <h3 class="mb-1">填表人員</h3>
                   <v-text-field solo value />
                 </v-col>
               </v-row>
@@ -202,97 +195,112 @@
             </v-col>
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12" sm="6">
-              <v-text-field v-model="PersonalFatigueTotal" readonly>
-                <span slot="prepend">個人疲勞分數:</span>
-              </v-text-field>
+              <v-toolbar color="teal" dark >
+                <v-toolbar-title style="width:70%; text-align:center">個人疲勞分數</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-text-field flat v-model="PersonalFatigueTotal" readonly style="width:30%; margin-top:30px;">
+                  <span slot="append">分</span>
+                </v-text-field>
+              </v-toolbar>
             </v-col>
             <v-col cols="12" sm="6">
-              <v-text-field v-model="count2" readonly>
-                <span slot="prepend">工作疲勞分數:</span>
-              </v-text-field>
+              <v-toolbar color="teal" dark >
+                <v-toolbar-title style="width:70%; text-align:center">工作疲勞分數</v-toolbar-title>
+                <v-divider class="mx-4" inset vertical></v-divider>
+                <v-text-field flat v-model="count2" readonly style="width:30%; margin-top:30px;">
+                  <span slot="append">分</span>
+                </v-text-field>
+              </v-toolbar>
             </v-col>
             <v-col cols="12">
-              <b >※您是否同意檢附量表分數，以作為後續健康風險評估之用途?</b>
+              <b>※您是否同意檢附量表分數，以作為後續健康風險評估之用途?</b>
+            </v-col>
+            <v-col cols="12" sm="7">
+              <span class="d-sm-none error--text">回答：</span>
+              <v-radio-group dense row class="pa-0 ma-0">
+                <v-radio color="success" label="同意" value="1"></v-radio>
+                <v-radio color="red" label="不同意" value="2"></v-radio>
+              </v-radio-group>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">同意人</h3>
               <v-textarea auto-grow outlined rows="1" v-model.trim="ipt.suggest"></v-textarea>
             </v-col>
             <v-col cols="12">
-              <p >本職場超時工作(過勞)預防計畫編撰參考資料源自勞動部勞工研究所之過勞工作指引及台北市衛生局職場心理健康</p>
+              <p>本職場超時工作(過勞)預防計畫編撰參考資料源自勞動部勞工研究所之過勞工作指引及台北市衛生局職場心理健康</p>
             </v-col>
             <v-col cols="13" sm="12">
-                <v-toolbar color="teal lighten-2" dark>
-                  <v-spacer />
-                  <v-toolbar-title>分數解釋</v-toolbar-title>
-                  <v-spacer />
-                </v-toolbar>
-              </v-col>
+              <v-toolbar color="teal lighten-2" dark>
+                <v-spacer />
+                <v-toolbar-title>分數解釋</v-toolbar-title>
+                <v-spacer />
+              </v-toolbar>
+            </v-col>
             <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">個人疲勞</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="3">
-                        <h3 class="mb-1">分數</h3>
-                      </v-col>
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">分級</h3>
-                      </v-col>
-                      <v-col cols="12" sm="7">
-                        <h3 class="mb-1">解釋</h3>
-                      </v-col>
+              <v-expansion-panel>
+                <v-expansion-panel-header color="teal" class="white--text">個人疲勞</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    <v-col cols="12" sm="3">
+                      <h3 class="mb-1">分數</h3>
+                    </v-col>
+                    <v-col cols="12" sm="2">
+                      <h3 class="mb-1">分級</h3>
+                    </v-col>
+                    <v-col cols="12" sm="7">
+                      <h3 class="mb-1">解釋</h3>
+                    </v-col>
+                  </v-row>
+                  <v-alert
+                    dense
+                    border="top"
+                    colored-border
+                    color="teal"
+                    elevation="4"
+                    v-for="(item, idx) in itemSc1"
+                    :key="idx"
+                    class="mb-6 mt-4"
+                  >
+                    <v-row no-gutter>
+                      <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                      <v-col cols="12" sm="2">{{ item.checkContent }}</v-col>
+                      <v-col cols="12" sm="7">{{ item.checkMethod }}</v-col>
                     </v-row>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      v-for="(item, idx) in itemSc1"
-                      :key="idx"
-                      class="mb-6 mt-4">
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                        <v-col cols="12" sm="2">{{ item.checkContent }}</v-col>
-                        <v-col cols="12" sm="7">{{ item.checkMethod }}</v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">工作疲勞</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="3">
-                        <h3 class="mb-1">分數</h3>
-                      </v-col>
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">分級</h3>
-                      </v-col>
-                      <v-col cols="12" sm="7">
-                        <h3 class="mb-1">解釋</h3>
-                      </v-col>
+                  </v-alert>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-expansion-panel>
+                <v-expansion-panel-header color="teal" class="white--text">工作疲勞</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    <v-col cols="12" sm="3">
+                      <h3 class="mb-1">分數</h3>
+                    </v-col>
+                    <v-col cols="12" sm="2">
+                      <h3 class="mb-1">分級</h3>
+                    </v-col>
+                    <v-col cols="12" sm="7">
+                      <h3 class="mb-1">解釋</h3>
+                    </v-col>
+                  </v-row>
+                  <v-alert
+                    dense
+                    border="top"
+                    colored-border
+                    color="teal"
+                    elevation="4"
+                    v-for="(item, idx) in itemSc2"
+                    :key="idx"
+                    class="mb-6 mt-4"
+                  >
+                    <v-row no-gutter>
+                      <v-col cols="12" sm="3">{{ item.question }}</v-col>
+                      <v-col cols="12" sm="2">{{ item.checkContent }}</v-col>
+                      <v-col cols="12" sm="7">{{ item.checkMethod }}</v-col>
                     </v-row>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      v-for="(item, idx) in itemSc2"
-                      :key="idx"
-                      class="mb-6 mt-4">
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                        <v-col cols="12" sm="2">{{ item.checkContent }}</v-col>
-                        <v-col cols="12" sm="7">{{ item.checkMethod }}</v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
+                  </v-alert>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
             </v-expansion-panels>
             <!-- END 檢查項目 -->
           </v-row>
@@ -313,6 +321,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title:"職業安全衛生過勞量表",
+      newText:"量表",
       // ss: 0,
       a: "",
       ass: "",
@@ -404,12 +414,12 @@ export default {
           { status: 1, note: "" },
           { status: 1, note: "" },
         ],
-        itemSc1:[
+        itemSc1: [
           { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
         ],
-        itemSc2:[
+        itemSc2: [
           { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
@@ -433,14 +443,44 @@ export default {
         { question: "7. 不工作的時候，你有足夠的精力陪朋友或家人嗎?(反向題)" },
       ],
       itemSc1: [
-        { question: "1.50分以下", checkContent: "輕微",checkMethod: "您的過負荷程度輕微，您並不常感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。" },
-        { question: "2.50－70分", checkContent: "中度",checkMethod: "你的個人過負荷程度中等。您有時候感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。建議您找出生活的壓力源，進一步的調適自己，增加放鬆與休息的時間。" },
-        { question: "3.70分以上", checkContent: "嚴重",checkMethod: "您的個人過負荷程度嚴重。您時常感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。建議您適度的改變生活方式，增加運動與休閒時間之外，您還需要進一步尋找專業人員諮詢。" },
+        {
+          question: "1.50分以下",
+          checkContent: "輕微",
+          checkMethod:
+            "您的過負荷程度輕微，您並不常感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。",
+        },
+        {
+          question: "2.50－70分",
+          checkContent: "中度",
+          checkMethod:
+            "你的個人過負荷程度中等。您有時候感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。建議您找出生活的壓力源，進一步的調適自己，增加放鬆與休息的時間。",
+        },
+        {
+          question: "3.70分以上",
+          checkContent: "嚴重",
+          checkMethod:
+            "您的個人過負荷程度嚴重。您時常感到疲勞、體力透支、精疲力竭、或者虛弱好像快生病的樣子。建議您適度的改變生活方式，增加運動與休閒時間之外，您還需要進一步尋找專業人員諮詢。",
+        },
       ],
       itemSc2: [
-       { question: "1.45分以下", checkContent: "輕微",checkMethod: "您的工作相關過負荷程度輕微，您的工作並不會讓您感覺很沒力、心力交瘁、很挫折。" },
-       { question: "2.45－60分", checkContent: "中度",checkMethod: "您的工作相關過負荷程度中等，您有時對工作感覺沒力，沒有興趣，有點挫折。" },
-       { question: "3.60分以上", checkContent: "嚴重",checkMethod: "您的工作相關過負荷程度嚴重，您已經快被工作累垮了，您感覺心力交瘁，感覺挫折，而且上班時都很難熬，此外您可能缺少休閒時間，沒有時間陪伴家人朋友。建議您適度的改變生活方式，增加運動與休閒時間之外，您還需要進一步尋找專業人員諮詢。" },
+        {
+          question: "1.45分以下",
+          checkContent: "輕微",
+          checkMethod:
+            "您的工作相關過負荷程度輕微，您的工作並不會讓您感覺很沒力、心力交瘁、很挫折。",
+        },
+        {
+          question: "2.45－60分",
+          checkContent: "中度",
+          checkMethod:
+            "您的工作相關過負荷程度中等，您有時對工作感覺沒力，沒有興趣，有點挫折。",
+        },
+        {
+          question: "3.60分以上",
+          checkContent: "嚴重",
+          checkMethod:
+            "您的工作相關過負荷程度嚴重，您已經快被工作累垮了，您感覺心力交瘁，感覺挫折，而且上班時都很難熬，此外您可能缺少休閒時間，沒有時間陪伴家人朋友。建議您適度的改變生活方式，增加運動與休閒時間之外，您還需要進一步尋找專業人員諮詢。",
+        },
       ],
       suggest: "", // 改善建議
     };
@@ -462,7 +502,7 @@ export default {
       };
 
       total = total / 6;
-      return roundDecimal(total, 1)
+      return roundDecimal(total, 1);
     },
 
     count2() {
@@ -480,7 +520,7 @@ export default {
       };
 
       total = total / 7;
-      return roundDecimal(total, 1)
+      return roundDecimal(total, 1);
     },
   },
   methods: {

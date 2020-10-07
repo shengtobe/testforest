@@ -1,7 +1,7 @@
 <template>
   <v-container style="max-width: 1200px">
     <!-- 標題 -->
-    <h2 class="mb-4 px-2">鐵路維護科工作日誌</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 查詢區塊 -->
     <v-row class="px-2">
       <!-- 日期-起 -->
@@ -63,7 +63,7 @@
           large
           to="/form-manage/curing/railway-worklog-add"
         >
-          <v-icon>mdi-plus</v-icon>新增工作日誌
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
@@ -87,7 +87,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+           <template v-slot:item.Shop>
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -95,9 +95,9 @@
               dark
               fab
               color="info darken-1"
-              @click="AddWorkLogModal = true"
+              to="/form-manage/curing/railway-worklog-add"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
             </v-btn>
           </template>
 
@@ -117,6 +117,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title: "鐵路維護科工作日誌",
+      newText: "日誌",
       // 自定義變數
       CheckdayOn: "",
       QueryCheckdayOn: "",

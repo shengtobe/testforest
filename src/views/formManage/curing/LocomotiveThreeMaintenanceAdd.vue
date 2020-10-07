@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">柴油液力機車三級檢修記錄表</p>
+      <p class="font-weight-black title text-center">新增{{ title }}</p>
       <v-row class="white px-4">
         <!-- 上面的欄位 -->
         <v-col cols="12" sm="4">
@@ -103,6 +103,8 @@
 <script>
 export default {
   data: () => ({
+    title: "柴油液力機車三級檢修記錄表",
+    newText: "記錄表",
     menu: false, // 時間選單是否顯示
     ipt: {
       department: "",

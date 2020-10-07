@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">DL50號機車行駛公里及發電機工時統計表</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
@@ -49,7 +49,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
     </v-row>
@@ -98,7 +98,7 @@
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          DL50號機車行駛公里及發電機工時統計表
+          新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -128,7 +128,7 @@
                   </h3>
                   <v-text-field solo value="北嘉" readonly />
                 </v-col>
-                 <v-col cols="12" sm="3">
+                <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>下次二級
                   </h3>
@@ -166,7 +166,7 @@
                   </h3>
                   <v-text-field solo value="1-2" readonly />
                 </v-col>
-                 <v-col cols="12" sm="3">
+                <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>下次三級
                   </h3>
@@ -184,7 +184,7 @@
                   </v-menu>
                 </v-col>
               </v-row>
-               <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>發電機
@@ -282,6 +282,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      title: "DL50號機車行駛公里及發電機工時統計表",
+      newText: "統計表",
       panel: [0, 1, 2],
       disabled: false,
       readonly: false,

@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">員工工作安全觀察表(每月2 次)</h2>
+    <h2 class="mb-4 px-2">{{ title }}</h2>
     <v-row class="px-2">
       <!-- 第一排選項 -->
       <v-col cols="12" sm="2" md="2">
@@ -102,7 +102,7 @@
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
           @click="Add = true"
         >
-          <v-icon>mdi-plus</v-icon>新增檢點表
+          <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
       <v-dialog v-model="dialogDel" persistent max-width="290">
@@ -162,7 +162,11 @@
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
+<<<<<<< HEAD
             新增員工工作安全觀察表(每月2 次)
+=======
+            新增{{ title }}
+>>>>>>> develop
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -305,6 +309,8 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
+      title: "員工工作安全觀察表(每月2 次)",
+      newText: "觀察表",
     aas: "",
     bbs: "",
     ccs: "",

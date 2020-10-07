@@ -108,6 +108,9 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
+            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
+              <v-icon dark>mdi-delete</v-icon>
+            </v-btn>-->
           </template>
 
           <!-- 頁碼 -->
@@ -117,7 +120,7 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <!-- 新增鑽床(三個月)定期檢查表 modal -->
+    <!-- 新增空氣壓縮機每日作業前檢點表(作業前) modal -->
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
@@ -132,14 +135,21 @@
           <v-row>
             <v-col cols="12">
               <p>1.依職業安全衛生法第23條規定辦理。</p>
-              <p>2.依檢查結果選擇正常、異常、無此項目。</p>
-              <p>3.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-              <p>4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。</p>
+              <p>2.缺點由管理單位自行改善，不克者委請設備商修護。</p>
+              <p>3.本表於12月年底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。</p>
             </v-col>
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="4">
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">管理單位</h3>
+                  <v-text-field solo value readonly />
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">編號</h3>
+                  <v-text-field solo value readonly />
+                </v-col>
+                <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查日期</h3>
                   <v-menu
                     v-model="ass"
@@ -149,18 +159,10 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
+                      <v-text-field v-model.trim="zs" solo v-on="on" readonly />
                     </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
+                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw" />
                   </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value readonly />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -174,7 +176,7 @@
                   <h3 class="mb-1">檢查結果</h3>
                 </v-col>
                 <v-col cols="12" sm="3">
-                  <h3 class="mb-1">備註</h3>
+                  <h3 class="mb-1">改善措施</h3>
                 </v-col>
               </v-row>
               <v-alert
@@ -193,21 +195,16 @@
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="良好" value="1"></v-radio>
-                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio color="success" label="正常" value="1"></v-radio>
+                      <v-radio color="red" label="異常" value="2"></v-radio>
                       <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="3" />
+                    <v-textarea hide-details auto-grow outlined rows="2" />
                   </v-col>
                 </v-row>
               </v-alert>
-            </v-col>
-            <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">依檢查結果應採取改善措施之內容</h3>
-              <v-textarea auto-grow outlined rows="4" />
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -229,11 +226,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
-      title: "鑽床(三個月)定期檢查表",
-      newText: "檢查表",
-      panel: [0, 1, 2, 3],
-      disabled: false,
-      readonly: false,
+      title:"空氣壓縮機每日作業前檢點表(作業前)",
+      newText:"檢點表",
       a: "",
       ass: "",
       z: "",
@@ -320,32 +314,47 @@ export default {
           { status: "0", note: "" },
           { status: "0", note: "" },
           { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
       items: [
         {
-          question: "1. 迴轉部位皮帶等是否有護蓋防護措施",
-          checkMethod: "目視點檢",
+          question: "1. 內面及外面是否有顯著損傷斷裂變形及腐蝕",
+          checkMethod: "目測",
+        },
+        { question: "2. 蓋、凸、緣、閥、旋塞等有無異常", checkMethod: "目測" },
+        {
+          question: "3. 安全閥、壓力表與其他安全裝置性能有無異常",
+          checkMethod: "目測",
         },
         {
-          question: "2. 迴轉部位是否有突出之固定螺絲",
-          checkMethod: "目視點檢",
+          question: "4. 每日開動前是否已將凝結水排除乾淨",
+          checkMethod: "操作",
+        },
+        { question: "5. 安全閥是否故障", checkMethod: "操作" },
+        {
+          question: "6. 空氣壓縮機達到設定壓力是否自動停止運轉",
+          checkMethod: "目測",
+        },
+        { question: "7. 空氣壓縮機是否有異常震動及聲音", checkMethod: "目測" },
+        { question: "8. 空氣壓縮機潤滑油油位是否異常", checkMethod: "目測" },
+        { question: "9. 氣壓是否保持在最高容許壓力之下", checkMethod: "目測" },
+        { question: "10. 負荷是否有劇烈變動", checkMethod: "目測" },
+        {
+          question: "11. 空氣壓縮機及空氣儲存槽是否有異常過熱",
+          checkMethod: "目測",
         },
         {
-          question: "3. 皮帶鬆緊情形是否適當，有否損傷",
-          checkMethod: "動作測試",
+          question: "12. 空氣儲存槽及管路接頭是否有漏氣及鏽蝕現象",
+          checkMethod: "目測",
         },
-        { question: "4. 鑽頭夾具功能是否正常", checkMethod: "動作測試" },
-        { question: "5. 鑽物座搖臂是否能鎖緊主軸", checkMethod: "動作測試" },
-        { question: "6. 起動、制動裝置機能是否確實", checkMethod: "動作測試" },
-        { question: "7. 馬達絕緣及接地線是否正常", checkMethod: "動作測試" },
+        { question: "13. 自動控制裝置是否有無異常", checkMethod: "目測" },
+        { question: "14. 氣壓錶壓力指示是否正常", checkMethod: "目測" },
         {
-          question: "8. 照明燈具之燈座、電線是否損傷",
-          checkMethod: "目視點檢",
-        },
-        {
-          question: "9. 是否有「使用時禁戴手套」警語",
-          checkMethod: "目視點檢",
+          question: "15. 皮帶有無過於鬆動及電器開關動作或電器接線有無異常",
+          checkMethod: "目測",
         },
       ],
       suggest: "", // 改善建議
