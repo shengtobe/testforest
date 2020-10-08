@@ -206,6 +206,10 @@
                 to="/smis/harmnotify/audit"
             >回搜尋頁</v-btn>
 
+            <v-btn dark color="teal" class="mr-4"
+                @click="copy"
+            >複製通報</v-btn>
+
             <v-btn dark color="success"
                 @click="save"
             >確定立案</v-btn>
@@ -546,6 +550,17 @@ export default {
         addCarEvt() {
             this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
             this.$router.push({ path: '/smis/car-accident-event/add' })
+        },
+        // 複製通報
+        copy() {
+            if (confirm('你確定要複製通報嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '已複製了一筆通報'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
     },
     created() {

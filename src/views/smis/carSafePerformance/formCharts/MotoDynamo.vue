@@ -297,7 +297,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>列車次
+                                <v-icon class="mr-1 mb-1">mdi-train</v-icon>列車次
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.number"
@@ -308,7 +308,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>本日行駛公里
+                                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>本日行駛公里
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.todayKm"
@@ -319,7 +319,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>累計公里數
+                                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>累計公里數
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.totalKm"
@@ -330,7 +330,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>發電機日工時
+                                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機日工時
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.todayHour"
@@ -341,7 +341,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>發電機累計工時
+                                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機累計工時
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.totalHour"
@@ -352,7 +352,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>耗用油量 (柴油)
+                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (柴油)
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.useOilDiesel"
@@ -362,7 +362,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>耗用油量 (引擎機油)
+                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (引擎機油)
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.useOilEngine"
@@ -372,7 +372,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>耗用油量 (TC機油)
+                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (TC機油)
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.useOilTC"
@@ -382,7 +382,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>耗用油量 (風泵)
+                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (風泵)
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.useOilPump"
@@ -392,7 +392,7 @@
 
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>耗用油量 (其他)
+                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (其他)
                             </h3>
                             <v-text-field
                                 v-model.trim="ipt.useOilOther"
