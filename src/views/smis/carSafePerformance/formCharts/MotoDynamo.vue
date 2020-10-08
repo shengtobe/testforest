@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">機車行駛公里及發電機工時</h2>
+    <h2 class="mb-4">機車行駛公里及發電機工時表查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
