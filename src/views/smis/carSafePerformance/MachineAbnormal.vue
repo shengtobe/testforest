@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">酒測、健康檢查異常表查詢</h2>
+    <h2 class="mb-4">軔機檢查異常表查詢</h2>
 
     <v-row class="px-2">
         <v-col cols="12" sm="4" md="3">
@@ -61,10 +61,21 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
+                <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
+            </h3>
+            <v-select
+                v-model="searchIpt.type"
+                :items="typeOpts"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
             </h3>
             <v-text-field
-                v-model.trim="searchIpt.number"
+                v-model.trim="searchIpt.carNumber"
                 solo
             ></v-text-field>
         </v-col>
@@ -77,7 +88,7 @@
             </v-btn>
 
             <v-btn color="indigo" dark large class="ma-2"
-                to="/smis/car-safe-performance/form-charts/health-abnormal/add"
+                to="/smis/car-safe-performance/machine-abnormal/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -89,7 +100,7 @@
             </v-btn>
 
             <v-btn dark large class="ma-2"
-                :to="`/smis/car-safe-performance/form-charts`"
+                :to="`/smis/car-safe-performance`"
             >回上層</v-btn>
         </v-col>
 
@@ -135,7 +146,7 @@
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="primary"
                             class="mr-3"
-                            :to="`/smis/car-safe-performance/form-charts/health-abnormal/${item.id}/edit`"
+                            :to="`/smis/car-safe-performance/machine-abnormal/${item.id}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
@@ -203,7 +214,8 @@ export default {
         searchDefault: {
             dateStart: '',  // 日期(起)
             dateEnd: '',  // 日期(迄)
-            number: '',  // 車次
+            type: '',  // 機車或客車
+            carNumber: '',  // 車號
         },
         dateMemuShow: {
             start: false,
@@ -220,8 +232,8 @@ export default {
             { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '異常單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '異常人員', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '機/客車', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '車號', value: 'carNumber', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '異常說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '處理情形', value: 'handSituation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '附件', value: 'files', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -250,11 +262,11 @@ export default {
             setTimeout(() => {
                 this.tableItems = [
                     {
-                        id: 2483,
-                        date: '2020-02-25',
-                        number: '2-4',
-                        depart: '北門車站',
-                        name: '王小明',
+                        id: 1135,
+                        date: '2020-06-09',
+                        number: '1-2',
+                        type: '客車',
+                        carNumber: 1234,
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
                         files: [

@@ -10,22 +10,22 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
-                    <v-list-item to="/smis/car-safe-performance/form-charts/moto-dynamo">
+                    <v-list-item to="/smis/car-safe-performance/moto-dynamo">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         機車行駛公里及發電機工時
                     </v-list-item>
                     <v-divider></v-divider>
-                    <v-list-item to="/smis/car-safe-performance/form-charts/machine-abnormal">
+                    <v-list-item to="/smis/car-safe-performance/machine-abnormal">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         軔機檢查異常表
                     </v-list-item>
                     <v-divider></v-divider>
-                    <v-list-item to="/smis/car-safe-performance/form-charts/health-abnormal">
+                    <v-list-item to="/smis/car-safe-performance/health-abnormal">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         酒測、健康檢查異常表
                     </v-list-item>
                     <v-divider></v-divider>
-                    <v-list-item to="/smis/car-safe-performance/form-charts/speed-abnormal">
+                    <v-list-item to="/smis/car-safe-performance/speed-abnormal">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         車速異常表
                     </v-list-item>
@@ -67,6 +67,10 @@
                         事故事件月趨勢指標
                     </v-list-item>
                     <v-divider></v-divider>
+                    <v-list-item to="/smis/car-safe-performance/crawl-notify">
+                        <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
+                        慢行通報紀錄
+                    </v-list-item>
                 </v-list>
             </v-card>
         </v-col>

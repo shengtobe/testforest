@@ -68,7 +68,7 @@
             </v-btn>
 
             <v-btn dark large class="ma-2"
-                :to="`/smis/car-safe-performance/form-charts`"
+                :to="`/smis/car-safe-performance`"
             >回上層</v-btn>
         </v-col>
         

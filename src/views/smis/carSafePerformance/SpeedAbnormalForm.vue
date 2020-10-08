@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `軔機檢查異常表編輯 (編號：${ routeId })` : '軔機檢查異常表新增' }}
+        {{ (this.isEdit)? `車速異常表編輯 (編號：${ routeId })` : '車速異常表新增' }}
     </h2>
 
     <v-row class="px-2">
@@ -103,7 +103,7 @@
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
-                to="/smis/car-safe-performance/form-charts/machine-abnormal"
+                to="/smis/car-safe-performance/machine-abnormal"
             >回搜尋頁</v-btn>
             
             <v-btn
@@ -237,7 +237,7 @@ export default {
                     this.chMsgbar({ success: true, msg: '資料更新成功'})
                 } else {
                     // 新增時
-                    this.$router.push({ path: '/smis/car-safe-performance/form-charts/machine-abnormal' })
+                    this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal' })
                     this.chMsgbar({ success: true, msg: '資料新增成功'})
                 }
                 this.chLoadingShow()

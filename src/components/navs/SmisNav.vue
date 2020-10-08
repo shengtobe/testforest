@@ -79,19 +79,9 @@
     </v-list-group>
 
     <!-- 安全績效 -->
-    <v-list-group no-action sub-group>
-        <template v-slot:activator>
-            <v-list-item-title class="white--text">行車安全績效</v-list-item-title>
-        </template>
-
-        <v-list-item to="/smis/car-safe-performance/form-charts" class="white--text">
-            <v-list-item-title>表單填報、統計圖</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="/smis/car-safe-performance/crawl-notify" class="white--text">
-            <v-list-item-title>慢行通報紀錄</v-list-item-title>
-        </v-list-item>
-    </v-list-group>
+    <v-list-item to="/smis/car-safe-performance" class="white--text">
+        <v-list-item-title>行車安全績效</v-list-item-title>
+    </v-list-item>
 
     <!-- 職安 -->
     <v-list-group no-action sub-group>

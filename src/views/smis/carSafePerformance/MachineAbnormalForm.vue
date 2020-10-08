@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `酒測、健康檢查異常表編輯 (編號：${ routeId })` : '酒測、健康檢查異常表新增' }}
+        {{ (this.isEdit)? `軔機檢查異常表編輯 (編號：${ routeId })` : '軔機檢查異常表新增' }}
     </h2>
 
     <v-row class="px-2">
@@ -35,7 +35,18 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
+                <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
+            </h3>
+            <v-select
+                v-model="ipt.type"
+                :items="['機車', '客車']"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
             </h3>
             <v-text-field
                 v-model.trim="ipt.carNumber"
@@ -45,24 +56,12 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>異常單位
+                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
             </h3>
-            <v-select
-                v-model="ipt.depart"
-                :items="departOpts"
+            <v-text-field
+                v-model.trim="ipt.carNumber"
                 solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-account</v-icon>異常人員
-            </h3>
-            <v-select
-                v-model="ipt.name"
-                :items="['王小明', '陳小華']"
-                solo
-            ></v-select>
+            ></v-text-field>
         </v-col>
 
         <v-col cols="12" md="6">
@@ -104,7 +103,7 @@
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
-                to="/smis/car-safe-performance/form-charts/health-abnormal"
+                to="/smis/car-safe-performance/machine-abnormal"
             >回搜尋頁</v-btn>
             
             <v-btn
@@ -150,25 +149,14 @@ export default {
         ipt: {},
         defaultIpt: {
             date: new Date().toISOString().substr(0, 10),  // 日期
-            depart: '北門車站',  // 異常單位
-            name: '王小明',  // 異常人員
+            type: '機車',  // 機車或客車
+            carNumber: '',  // 車號
             number: '',  // 車次
             desc: '',  // 異常說明
             handSituation: '',  // 異常處理情形
             files: [],  // 附件
         },
         dateMemuShow: false,  // 日曆是否顯示
-        departOpts: [  // 異常單位下拉選單
-            { text: '北門車站', value: '北門車站' },
-            { text: '竹崎車站', value: '竹崎車站' },
-            { text: '交力坪車站', value: '交力坪車站' },
-            { text: '奮起湖車站', value: '奮起湖車站' },
-            { text: '二萬平車站', value: '二萬平車站' },
-            { text: '神木車站', value: '神木車站' },
-            { text: '阿里山車站', value: '阿里山車站' },
-            { text: '沼平車站', value: '沼平車站' },
-            { text: '祝山車站', value: '祝山車站' },
-        ]
     }),
     components: {
         UploadFileAdd,
@@ -200,11 +188,11 @@ export default {
                 // 範例效果
                 setTimeout(() => {
                     let obj = {
-                        id: 2483,
-                        date: '2020-02-25',
-                        number: '2-4',
-                        depart: '竹崎車站',
-                        name: '王小明',
+                        id: 1135,
+                        date: '2020-06-09',
+                        number: '1-2',
+                        type: '客車',
+                        carNumber: 1234,
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
                         files: [
@@ -222,14 +210,14 @@ export default {
                     this.setInitDate(obj)
                     this.chLoadingShow()
                 }, 1000)
-            }
+            } 
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
             this.ipt.date = obj.date // 日期
             this.ipt.number = obj.number // 車次
-            this.ipt.depart = obj.depart // 異常單位
-            this.ipt.name = obj.name // 異常人員
+            this.ipt.type = obj.type // 機車或客車
+            this.ipt.carNumber = obj.carNumber // 車號
             this.ipt.desc = obj.desc // 異常說明
             this.ipt.handSituation = obj.handSituation // 異常處理情形
             this.ipt.files = [ ...obj.files ]  // 檔案
@@ -249,7 +237,7 @@ export default {
                     this.chMsgbar({ success: true, msg: '資料更新成功'})
                 } else {
                     // 新增時
-                    this.$router.push({ path: '/smis/car-safe-performance/form-charts/health-abnormal' })
+                    this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal' })
                     this.chMsgbar({ success: true, msg: '資料新增成功'})
                 }
                 this.chLoadingShow()
