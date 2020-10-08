@@ -3242,6 +3242,5706 @@
             </v-alert>
           </v-col>
         </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        <!-- XXX -->
+        <v-row no-gutter class="indigo--text">
+          <v-col cols="12" sm="12">
+            <h3>XXX. XkmXX0m</h3>
+            <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6 mt-2">
+              <v-row no-gutter>
+                <v-col cols="12" sm="12">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">電源邏輯電路</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_1" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">接收器</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_2" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警音</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_3" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">警示燈</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_4" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="12" style="margin-top:-50px">
+                  <v-row no-gutter>
+                    <v-col class="aa">
+                      <h3 class="mb-1">道路閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_5" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮桿閃光燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_6" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">信號燈1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_7" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa">
+                      <h3 class="mb-1">遮斷機1,2</h3>
+                      <v-radio-group style="margin-top:-5px" v-model="rowXX_8" row>
+                        <v-radio label="正常" value="radio-1" />
+                        <v-radio label="維修保養後正常" value="radio-2" />
+                        <v-radio label="異常" value="radio-3" />
+                      </v-radio-group>
+                    </v-col>
+                    <v-col class="aa"></v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="12" sm="3" style="margin-top:-35px">
+                  <h3 class="mb-1">檢修日期</h3>
+                  <v-menu
+                    v-model="cross19_2_date1"
+                    :close-on-content-click="false"
+                    transition="scale-transition">
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date1"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date1"
+                      @input="cross19_2_date1 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                  <h3 class="mb-1" style="margin-top:-12px">完成日期</h3>
+                  <v-menu
+                    style="margin-top:-12px"
+                    v-model="cross19_2_date2"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="AddData.cross19_2_date2"
+                        outlined
+                        placeholder="點此選擇日期"
+                        v-on="on"
+                        dense
+                        single-line
+                      />
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="AddData.cross19_2_date2"
+                      @input="cross19_2_date2 = false"
+                      locale="zh-tw"
+                    />
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="7" style="margin-top:-35px">
+                  <h3 class="mb-1">備註</h3>
+                  <v-textarea hide-details auto-grow outlined rows="5" />
+                </v-col>
+                <v-col cols="12" sm="2" style="margin-top:-20px">
+                  <h3 class="mb-1">檢查人</h3>
+                  <v-text-field dense single-line outlined />
+                </v-col>
+              </v-row>
+            </v-alert>
+          </v-col>
+        </v-row>
+        
 
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
