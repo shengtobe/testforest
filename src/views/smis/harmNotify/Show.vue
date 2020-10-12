@@ -129,7 +129,7 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        
+                        @click="addCarHarm"
                     >
                         新登錄至行車危害
                     </v-btn>
@@ -145,7 +145,7 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        
+                        @click="addJobEvt"
                     >
                         新登錄至職災事故紀錄
                     </v-btn>
@@ -550,6 +550,16 @@ export default {
         addCarEvt() {
             this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
             this.$router.push({ path: '/smis/car-accident-event/add' })
+        },
+        // 新登錄至行車危害
+        addCarHarm() {
+            this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
+            this.$router.push({ path: '/smis/car-harmdb/harms/add' })
+        },
+        // 新登錄至職災事故紀錄
+        addJobEvt() {
+            this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
+            this.$router.push({ path: '/smis/jobsafety/disaster-survey-add' })
         },
         // 複製通報
         copy() {

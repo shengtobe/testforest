@@ -478,6 +478,10 @@ export default {
         ],
         evidences: [],  // 證據
         dialogShow: false,  // 證據dialog是否顯示
+        notify: {  // 危害通報資料
+            id: '',  // id
+            isNew: false,  // 是否為新登錄
+        },
     }),
     components: {
         AccidentCheckbox,
@@ -562,6 +566,17 @@ export default {
                     this.setInitDate(obj)
                     this.chLoadingShow()
                 }, 1000)
+            } else {
+                // 新增時
+                // 若由危害通報新登錄轉至此頁，則指派初始值
+                if (sessionStorage.getItem('notifyItem') !== null) {
+                    let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
+                    
+                    this.notify.id = obj.id,  // 通報id
+                    this.notify.isNew = true  // 是否為危害通報的新登錄
+
+                    sessionStorage.removeItem('notifyItem')  // 清除 sessionStorage
+                }
             }
         },
         // 設定資料(編輯時)

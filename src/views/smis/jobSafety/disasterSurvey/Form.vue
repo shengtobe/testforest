@@ -383,24 +383,55 @@
             ></v-textarea>
         </v-col>
 
-        <!-- 上傳檔案 -->
-        <UploadFileAdd
-            title="檔案上傳"
-            :uploadDisnable="false"
-            :fileList="ipt.files"
-            @joinFile="joinFile"
-            @rmFile="rmFile"
-        />
+        <!-- 上傳檔案 (新增時) -->
+        <template v-if="!isEdit">
+            <v-col cols="12" class="mb-8" v-if="notify.id != ''">
+                <v-checkbox
+                    v-model="isExtendAnnex"
+                    label="直接使用通報附件 (不自行上傳檔案)"
+                ></v-checkbox>
+
+                <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
+                    v-for="item in notify.files"
+                    :key="item.fileName"
+                    :href="item.link"
+                    :download="item.fileName"
+                >
+                    {{ item.fileName }}
+                </v-chip>
+            </v-col>
+
+            <UploadFileAdd
+                title="檔案上傳"
+                :uploadDisnable="isExtendAnnex"
+                :fileList="ipt.files"
+                @joinFile="joinFile"
+                @rmFile="rmFile"
+            />
+        </template>
 
         <v-col cols="12" class="text-center mb-8">
             <v-btn
                 color="success"
                 @click="save"
                 large
-            >送出</v-btn>
+            >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
-    </v-row>
 
+        <!-- 上傳檔案 (編輯時) -->
+        <template v-if="isEdit">
+            <v-col cols="12" class="mt-8 mb-2">
+                <v-divider></v-divider>
+            </v-col>
+
+            <UploadFileEdit
+                :fileList="ipt.files"
+                @uploadFile="uploadFile"
+                @deleteFile="deleteFile"
+                class="mb-10"
+            />
+        </template>
+    </v-row>
     <!-- <v-form
         ref="form"
         v-model="valid"
@@ -419,15 +450,15 @@ import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import { dapartOptsBrief } from '@/assets/js/departOption'
 import { injurySiteOpts, disasterTypeOpts, vehicleOpts } from '@/assets/js/smisData'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
+import UploadFileEdit from '@/components/UploadFileEdit.vue'
 
 export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
-        isEdit: false,  // 是否為編輯
-        notifyNumber: '',  // 通報編號
+        isEdit: false,  // 是否編輯中
         ipt: {},
         defaultIpt: {
-            name: '',  // 罹災者姓名
+            name: '王小明',  // 罹災者姓名
             type: 1,  // 勞工類型
             sex: '男',  // 性別
             old: '',  // 年齡
@@ -488,8 +519,17 @@ export default {
             vehicleLv1: [],  // 致傷媒介物-第一層
             vehicle: [],  // 致傷媒介物-第二層
         },
+        isExtendAnnex: false,  // 是否延用通報附件
+        notify: {  // 危害通報資料
+            id: '',  // id
+            files: [],  // 附件
+            isNew: false,  // 是否為新登錄
+        },
     }),
-    components: { UploadFileAdd },
+    components: {
+        UploadFileAdd,
+        UploadFileEdit,
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -504,11 +544,6 @@ export default {
         },
         
     },
-    computed: {
-        
-        
-        
-    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -516,12 +551,25 @@ export default {
         ]),
         // 初始化資料
         initData() {
-            this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+            // 初始化表單
+            this.ipt = { ...this.defaultIpt }
 
             // 產生致傷媒介物-第一層選單 & 設定預設值
             this.opts.vehicleLv1 = Object.keys(vehicleOpts)
             this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]
 
+            // -------------- 新增時 -------------- 
+            // 若由危害通報新登錄轉至此頁，則指派初始值
+            if (sessionStorage.getItem('notifyItem') !== null) {
+                let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
+                
+                this.notify.id = obj.id,  // 通報id
+                this.notify.files = [ ...obj.files ]  // 通報附件
+                this.notify.isNew = true  // 是否為危害通報的新登錄
+                this.isExtendAnnex = true  // 延用通報附件
+
+                sessionStorage.removeItem('notifyItem')  // 清除 sessionStorage
+            }
             // 範例效果
             // setTimeout(() => {
                 
@@ -537,20 +585,43 @@ export default {
                     // let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
                     // if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
                     // this.chMsgbar({ success: true, msg: txt })
-                    this.ipt = { ...this.defaultIpt }  // 初始化新增表單
                     this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]  // 初始化致傷媒介物下拉選單
                     this.chMsgbar({ success: true, msg: '送出成功' })
                     this.chLoadingShow()
                 }, 1000)
             }
         },
-        // 加入要上傳的檔案
+        // 加入要上傳的檔案 (新增時)
         joinFile(file) {
             this.ipt.files.push(file)
         },
-        // 移除要上傳的檔案
+        // 刪除要上傳的檔案 (新增時)
         rmFile(idx) {
             this.ipt.files.splice(idx, 1)
+        },
+        // 上傳檔案 (編輯時)
+        uploadFile(file) {
+            this.chLoadingShow()
+
+            setTimeout(() => {
+                // 後端請求後，回傳檔案資料 (id、filename、link)
+                // this.ipt.files.push(fileData)
+                this.chMsgbar({ success: true, msg: '檔案新增成功'})
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 刪除檔案 (編輯時)
+        deleteFile(id, idx) {
+            if (confirm('你確定要刪除嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    // 後端請求後，移除檔案列表
+                    this.ipt.files.splice(idx, 1)
+                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
     },
     created() {

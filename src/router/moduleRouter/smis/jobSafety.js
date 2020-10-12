@@ -3,7 +3,7 @@
 export const JobSafetyRouter = [
     // ----------------- 職業災害事故 -----------------
     {
-        linkText: '職業災害事故調查表',  // 職災新增
+        linkText: '職業災害事故調查表',
         path: '/smis/jobsafety/disaster-survey-add', 
         component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue')
     },

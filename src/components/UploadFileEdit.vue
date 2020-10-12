@@ -8,7 +8,7 @@
         <v-col cols="12" sm="8">
             <v-file-input
                 hide-details
-                label="請點此選擇要新增檔案"
+                label="請點此選擇要新增的檔案"
                 solo
                 v-model="choseFile"
                 @change="select"

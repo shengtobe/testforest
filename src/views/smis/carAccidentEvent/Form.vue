@@ -253,9 +253,6 @@ export default {
             files: [],  // 附件
             isNew: false,  // 是否為新登錄
         },
-        notifyFiles: [
-            
-        ],  // 通報附件
     }),
     components: {
         LocationSelect,
@@ -312,7 +309,7 @@ export default {
             
             } else {
                 // -------------- 新增時 -------------- 
-                // 若由通報新登錄轉至此頁，則指派初始值
+                // 若由危害通報新登錄轉至此頁，則指派初始值
                 if (sessionStorage.getItem('notifyItem') !== null) {
                     let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
                     
