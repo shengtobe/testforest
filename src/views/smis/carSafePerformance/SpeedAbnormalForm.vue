@@ -35,44 +35,89 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
+                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.number"
+                solo
+                placeholder="例：1-2"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-account</v-icon>駕駛姓名
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.name"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>區段
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.location"
+                solo
+                placeholder="例：主線 5k 10m"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>時間範圍
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.timeRange"
+                solo
+                placeholder="例：1100~1120"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>平均車速
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.averageSpeed"
+                solo
+                placeholder="例：40"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>每小時超出公里數
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.overKm"
+                solo
+                placeholder="例：10"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>超速級別
             </h3>
             <v-select
-                v-model="ipt.type"
-                :items="['機車', '客車']"
+                v-model="ipt.hypervelocity"
+                :items="['1 級', '2 級', '其他']"
                 solo
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.carNumber"
-                solo
-            ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.carNumber"
-                solo
-            ></v-text-field>
-        </v-col>
-
         <v-col cols="12" md="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>異常說明
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>異常概況
             </h3>
             <v-textarea
                 auto-grow
                 solo
                 rows="6"
-                placeholder="請輸入異常說明"
+                placeholder="請輸入異常概況"
                 v-model.trim="ipt.desc"
             ></v-textarea>
         </v-col>
@@ -103,7 +148,7 @@
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
-                to="/smis/car-safe-performance/machine-abnormal"
+                to="/smis/car-safe-performance/speed-abnormal"
             >回搜尋頁</v-btn>
             
             <v-btn
@@ -149,10 +194,14 @@ export default {
         ipt: {},
         defaultIpt: {
             date: new Date().toISOString().substr(0, 10),  // 日期
-            type: '機車',  // 機車或客車
-            carNumber: '',  // 車號
             number: '',  // 車次
-            desc: '',  // 異常說明
+            name: '',  // 駕駛姓名
+            location: '',  // 區段
+            timeRange: '',  // 時間範圍
+            averageSpeed: '',  // 平均車速
+            overKm: '',  // 每小時超出公里數
+            hypervelocity: '1 級',  // 超速級別
+            desc: '',  // 異常概況
             handSituation: '',  // 異常處理情形
             files: [],  // 附件
         },
@@ -188,11 +237,15 @@ export default {
                 // 範例效果
                 setTimeout(() => {
                     let obj = {
-                        id: 1135,
-                        date: '2020-06-09',
-                        number: '1-2',
-                        type: '客車',
-                        carNumber: 1234,
+                        id: 3201,
+                        date: '2020-04-04',
+                        number: '4-5',
+                        name: '王小明',
+                        location: '本線 12k 125m',
+                        timeRange: '0930~0940',
+                        averageSpeed: '50',
+                        overKm: '10',
+                        hypervelocity: '2 級',
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
                         files: [
@@ -216,9 +269,13 @@ export default {
         setInitDate(obj) {
             this.ipt.date = obj.date // 日期
             this.ipt.number = obj.number // 車次
-            this.ipt.type = obj.type // 機車或客車
-            this.ipt.carNumber = obj.carNumber // 車號
-            this.ipt.desc = obj.desc // 異常說明
+            this.ipt.name = obj.name // 駕駛姓名
+            this.ipt.location = obj.location // 區段
+            this.ipt.timeRange = obj.timeRange // 時間範圍
+            this.ipt.averageSpeed = obj.averageSpeed // 平均車速
+            this.ipt.overKm = obj.overKm // 每小時超出公里數
+            this.ipt.hypervelocity = obj.hypervelocity // 超速級別
+            this.ipt.desc = obj.desc // 異常概況
             this.ipt.handSituation = obj.handSituation // 異常處理情形
             this.ipt.files = [ ...obj.files ]  // 檔案
         },
@@ -237,7 +294,7 @@ export default {
                     this.chMsgbar({ success: true, msg: '資料更新成功'})
                 } else {
                     // 新增時
-                    this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal' })
+                    this.$router.push({ path: '/smis/car-safe-performance/speed-abnormal' })
                     this.chMsgbar({ success: true, msg: '資料新增成功'})
                 }
                 this.chLoadingShow()

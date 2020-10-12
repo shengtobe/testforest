@@ -61,21 +61,10 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
-            </h3>
-            <v-select
-                v-model="searchIpt.type"
-                :items="typeOpts"
-                solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
+                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
             </h3>
             <v-text-field
-                v-model.trim="searchIpt.carNumber"
+                v-model.trim="searchIpt.number"
                 solo
             ></v-text-field>
         </v-col>
@@ -88,7 +77,7 @@
             </v-btn>
 
             <v-btn color="indigo" dark large class="ma-2"
-                to="/smis/car-safe-performance/machine-abnormal/add"
+                to="/smis/car-safe-performance/speed-abnormal/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -146,7 +135,7 @@
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="primary"
                             class="mr-3"
-                            :to="`/smis/car-safe-performance/machine-abnormal/${item.id}/edit`"
+                            :to="`/smis/car-safe-performance/speed-abnormal/${item.id}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
@@ -214,8 +203,7 @@ export default {
         searchDefault: {
             dateStart: '',  // 日期(起)
             dateEnd: '',  // 日期(迄)
-            type: '',  // 機車或客車
-            carNumber: '',  // 車號
+            number: '',  // 車次
         },
         dateMemuShow: {
             start: false,
@@ -229,15 +217,19 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '機/客車', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '車號', value: 'carNumber', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '異常說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理情形', value: 'handSituation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '附件', value: 'files', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80' },
+            { text: '駕駛姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '區段', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '時間範圍', value: 'timeRange', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
+            { text: '平均車速', value: 'averageSpeed', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '每小時超出公里數', value: 'overKm', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '超速級別', value: 'hypervelocity', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '異常概況', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '處理情形', value: 'handSituation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '附件', value: 'files', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
         ],
         fileList: [],  // 檔案列表
         dialogShow: false,  // 檔案dialog是否顯示
@@ -262,11 +254,15 @@ export default {
             setTimeout(() => {
                 this.tableItems = [
                     {
-                        id: 1135,
-                        date: '2020-06-09',
-                        number: '1-2',
-                        type: '客車',
-                        carNumber: 1234,
+                        id: 3201,
+                        date: '2020-04-04',
+                        number: '4-5',
+                        name: '王小明',
+                        location: '本線 12k 125m',
+                        timeRange: '0930~0940',
+                        averageSpeed: '50',
+                        overKm: '10',
+                        hypervelocity: '2 級',
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
                         files: [
