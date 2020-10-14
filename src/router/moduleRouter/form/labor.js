@@ -20,6 +20,12 @@ export const FormLaborRouter = [
         formGroup: ['labor']
     },
     {
+        linkText: '肌肉骨骼症狀調查表', // 勞安衛4.
+        path: '/form-manage/labor/muscle-skeleton-symptoms',
+        component: () => import('@/views/formManage/labor/MuscleSkeletonSymptoms.vue'),
+        formGroup: ['labor']
+    },
+    {
         linkText: '職場不法侵害預防之危害辨識及風險評估表', // 勞安衛6.
         path: '/form-manage/labor/hazid-risk-assessment',
         component: () => import('@/views/formManage/labor/HAZIDRiskAssessment.vue'),
@@ -50,7 +56,7 @@ export const FormLaborRouter = [
         formGroup: ['labor']
     },
     {
-        linkText: '災害事故調查表(承攬商)Add', // 勞安衛8.
+        linkText: '災害事故調查表(承攬商)Add', // 勞安衛8. 
         path: '/form-manage/labor/disaster-accident-survey-vendor-add',
         component: () => import('@/views/formManage/labor/DisasterAccidentSurveyVendorAdd.vue'),
         formGroup: ['labor']

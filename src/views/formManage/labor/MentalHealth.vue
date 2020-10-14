@@ -94,11 +94,7 @@
     <v-dialog v-model="Add" max-width="680px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-<<<<<<< HEAD
-          新增心理健康量表
-=======
           新增{{ title }}
->>>>>>> develop
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
