@@ -378,4 +378,11 @@ export const FormCuringRouter = [{
             import ('@/views/formManage/curing/LevelCrossingFunctionChecklistAdd.vue'),
         formGroup: ['curing']
     },
+    {
+        linkText: '氬焊機每日作業前檢點表(作業前)', // 新增3.
+        path: '/form-manage/curing/argon-welding-machine-checklist',
+        component: () =>
+            import ('@/views/formManage/curing/ArgonWeldingMachineChecklist.vue'),
+        formGroup: ['curing']
+    },
 ]
