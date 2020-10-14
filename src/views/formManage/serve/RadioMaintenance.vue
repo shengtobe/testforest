@@ -123,10 +123,13 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
+          
           <!-- 內容 -->
           <div class="px-6 py-4">
             <v-row>
               <!-- 外觀 -->
+              <h3 class="mb-1">編號(或機號)</h3>
+              <v-select dense single-line :items="MachineID" outlined />
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
                 <v-radio-group row v-model="mainLocation">
@@ -196,6 +199,8 @@
           <div class="px-6 py-4">
             <v-row>
               <!-- 外觀 -->
+              <h3 class="mb-1">編號(或機號)</h3>
+              <v-select dense single-line :items="MachineID" outlined />
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
                 <v-radio-group row v-model="mainLocation">
@@ -266,8 +271,9 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
-      title: "手攜無線電機檢查紀錄表",
-      newText: "紀錄表",
+    title: "手攜無線電機檢查紀錄表",
+    newText: "紀錄表",
+    MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -327,6 +333,7 @@ export default {
     tableItems: [
       {
         aa: "2020-08-01",
+        mcid: "TRK-ALL-SLP-300",
         jj: "王大明",
         kk: "已審查"
       }
@@ -337,6 +344,13 @@ export default {
       {
         text: "保養日期",
         value: "aa",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
+        text: "編號(或機號)",
+        value: "mcid",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
@@ -399,3 +413,8 @@ export default {
   }
 };
 </script>
+<style>
+  .mb-1{
+    margin-top: 1%;
+  }
+</style>

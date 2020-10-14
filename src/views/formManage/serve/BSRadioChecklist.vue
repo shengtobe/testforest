@@ -128,15 +128,19 @@
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="12">
+                <v-col cols="12" sm="6">
                   <h3 class="mb-1">設備</h3>
                   <v-radio-group
-                  dense
-                  row
-                  class="pa-0 ma-0">
-                  <v-radio color="blue" label="車裝台" value="1"></v-radio>
-                  <v-radio color="blue" label="基地台無線電機" value="2"></v-radio>
-                </v-radio-group>
+                    dense
+                    row
+                    class="pa-0 ma-0">
+                    <v-radio color="blue" label="車裝台" value="1"></v-radio>
+                    <v-radio color="blue" label="基地台無線電機" value="2"></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <h3 class="mb-1">編號(或機號)</h3>
+                  <v-select dense single-line :items="MachineID" outlined />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查日期</h3>
@@ -356,6 +360,7 @@ export default {
     return {
       title: "車裝台/基地台無線電機檢查紀錄表",
       newText: "紀錄表",
+      MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
       a: "",
       ass: "",
       z: "",
@@ -390,6 +395,13 @@ export default {
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
+          text: "編號(或機號)",
+          value: "mcid",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
           text: "審查狀態",
           value: "cc",
           align: "center",
@@ -415,12 +427,14 @@ export default {
         {
           a0: "1",
           aa: "2020-08-01",
+          mcid: "TRK-ALL-SLP-323",
           cc: "已審查",
           dd: "王大明",
         },
         {
           a0: "2",
           aa: "2020-08-10",
+          mcid: "TRK-ALL-SLP-012",
           cc: "審查中",
           dd: "王大明",
         },
