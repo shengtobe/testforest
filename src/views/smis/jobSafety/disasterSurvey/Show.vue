@@ -239,6 +239,11 @@ export default {
             name: { icon: 'mdi-account', title: '罹災者姓名', text: '' },
             workDepart: { icon: 'mdi-calendar-text', title: '工作部門', text: '' },
             type: { icon: 'mdi-snowflake', title: '勞工類型', text: '' },
+            sex: { icon: 'mdi-human-male-female', title: '性別', text: '' },
+            old: { icon: 'mdi-sort-variant', title: '年齡', text: '' },
+            startWorkDate: { icon: 'mdi-calendar-text', title: '到職日期', text: '' },
+            jobTitle: { icon: 'mdi-format-title', title: '職稱', text: '' },
+            education: { icon: 'mdi-school', title: '教育程度', text: '' },
             findDate: { icon: 'mdi-calendar-text', title: '發生日期', text: '' },
             
             // findLocation: { icon: 'mdi-map-marker', title: '發生地點', text: '' },
@@ -273,6 +278,11 @@ export default {
                     findHour: '09',  // 發生日期(時)
                     findMin: '45',  // 發生日期(分)
                     type: 1,  // 勞工類型
+                    sex: '男',  // 性別
+                    old: 34,  // 年齡
+                    startWorkDate: '2003-01-02',  // 到職日期
+                    jobTitle: '維修員',  // 職稱
+                    education: '大學',  // 教育程度
                     // location: 't17',  // 發生地點
                     // locationK: '',  // 路線k
                     // locationM: '',　// 路線m
@@ -315,6 +325,11 @@ export default {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發生日期
             this.topItems.name.text = obj.name  // 罹災者姓名
             this.topItems.type.text = (obj.type == 1)? '本處員工' : '承攬商勞工'  // 勞工類型
+            this.topItems.sex.text = obj.sex  // 性別
+            this.topItems.old.text = obj.old  // 年齡
+            this.topItems.startWorkDate.text = obj.startWorkDate  // 到職日期
+            this.topItems.jobTitle.text = obj.jobTitle  // 職稱
+            this.topItems.education.text = obj.education  // 教育程度
             // this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發生地點
             // this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
             this.topItems.status.text = '已立案'  // 事故事件狀態

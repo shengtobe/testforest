@@ -124,11 +124,7 @@
     <v-dialog v-model="Add" max-width="600px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-<<<<<<< HEAD
-          新增機動台車輛每日作業前自動檢點表
-=======
           新增{{ title }}
->>>>>>> develop
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
