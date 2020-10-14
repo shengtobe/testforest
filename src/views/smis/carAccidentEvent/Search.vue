@@ -217,15 +217,16 @@ export default {
             review: '', // 檢討過程
             reason: '', // 原因分析
             note: '', // 備註
-            status: '已立案',  // 事故事件狀態
+            status: '',  // 事故事件狀態
         },
         evtTypeOpts: evtTypes,
         locationOpts: locationOpts,
-        statusOpts: [  // 事故事件狀態下拉選單
-            '已立案',
-            '已完備資料',
-            '改善措施已落實',
-            '審核中',
+        statusOpts: [  // 事故事件狀態下拉選單 (審核中有二個，故傳中文值讓後端判斷)
+            { text: '不限', value: '' },
+            { text: '已立案', value: '已立案' },
+            { text: '已完備資料', value: '已完備資料' },
+            { text: '改善措施已落實', value: '改善措施已落實' },
+            { text: '審核中', value: '審核中' },
         ],
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數

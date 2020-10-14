@@ -87,10 +87,10 @@ export default {
         allRouters: [],  // 所有路由
         department: 'serve',  // 科室
         depOpts: [  // 科室下拉選單
-            { text: '服務科', value: 'serve' },
+            { text: '鐵路服務科', value: 'serve' },
             { text: '鐵路維護科', value: 'maintain' },
             { text: '車輛養護科', value: 'curing' },
-            { text: '勞安', value: 'labor' },
+            { text: '勞安衛', value: 'labor' },
         ],
         keyword: '',  // 關鍵字
         pageOpt: { page: 1 },  // 目前頁數

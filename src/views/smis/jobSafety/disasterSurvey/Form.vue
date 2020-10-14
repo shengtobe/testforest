@@ -458,7 +458,7 @@ export default {
         isEdit: false,  // 是否編輯中
         ipt: {},
         defaultIpt: {
-            name: '王小明',  // 罹災者姓名
+            name: '',  // 罹災者姓名
             type: 1,  // 勞工類型
             sex: '男',  // 性別
             old: '',  // 年齡
