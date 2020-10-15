@@ -102,7 +102,7 @@
     <v-dialog v-model="Add" max-width="600px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增{{ tile }}}
+          新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -111,6 +111,21 @@
 
         <div class="px-6 py-4">
           <v-row>
+            <!-- 選擇車號 -->
+            <v-row>
+              <v-col cols="12" sm="2" style="margin-top:2%; margin-left:2%;margin-right:-8%">
+                <h3 class="mb-1" >車號</h3>
+              </v-col>
+              <v-col cols="12" sm="3">
+                <v-select :items="
+                [{ text: 'SL', value: 'sl' }, 
+                { text: 'DL', value: 'dl' }, 
+                ]" solo />
+              </v-col>
+              <v-col cols="12" sm="3">
+                <v-text-field solo></v-text-field>
+              </v-col>
+            </v-row>
             <!-- 保養日期 -->
             <v-col cols="8" sm="4">
               <h3 class="mb-1">保養日期</h3>
@@ -207,6 +222,13 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
       },
       {
+        text: "車號",
+        value: "carid",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
         text: "破損及不良部分",
         value: "dd",
         align: "center",
@@ -246,6 +268,7 @@ export default {
       {
         aa: "2020-08-01",
         ss: "修理工廠",
+        carid: "SL-013",
         dd: "施行二級保養",
         ff: "下次二級:109-09-01",
         gg: "V",
@@ -254,6 +277,7 @@ export default {
       {
         aa: "2020-08-10",
         ss: "阿庫",
+        carid: "DL-201",
         dd: "更換引擎機油",
         ff: "更換引擎機油",
         gg: "V",

@@ -112,6 +112,21 @@
 
         <div class="px-6 py-4">
           <v-row>
+            <!-- 選擇車號 -->
+            <v-row>
+              <v-col cols="12" sm="2" style="margin-top:2%; margin-left:2%;margin-right:-8%">
+                <h3 class="mb-1" >車號</h3>
+              </v-col>
+              <v-col cols="12" sm="3">
+                <v-select :items="
+                [{ text: 'SL', value: 'sl' }, 
+                { text: 'DL', value: 'dl' }, 
+                ]" solo />
+              </v-col>
+              <v-col cols="12" sm="3">
+                <v-text-field solo></v-text-field>
+              </v-col>
+            </v-row>
             <!-- 保養日期 -->
             <v-col cols="8" sm="4">
               <h3 class="mb-1">保養日期</h3>
@@ -188,6 +203,13 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
       },
       {
+        text: "車號",
+        value: "carid",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
         text: "故障原因",
         value: "bb",
         align: "center",
@@ -219,12 +241,14 @@ export default {
     tableItems: [
       {
         aa: "2020-08-01",
+        carid: "SL-013",
         bb: "修理工廠",
         cc: "試車",
         dd: "王大明"
       },
       {
         aa: "2020-08-10",
+        carid: "SL-400",
         bb: "二級保養",
         cc: "更換引擎機油",
         dd: "王大明"
