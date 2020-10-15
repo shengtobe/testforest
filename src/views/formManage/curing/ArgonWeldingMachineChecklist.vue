@@ -151,6 +151,8 @@
                   <v-text-field solo />
                 </v-col>
                 <v-col cols="12" sm="3">
+                </v-col>
+                <v-col cols="12" sm="3">
                   <h3 class="mb-1">現場主管</h3>
                   <v-text-field solo/>
                 </v-col>
@@ -256,7 +258,64 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="item.status1"
+                            v-model="item.select"
+                            class="pa-0 ma-0">
+                            <v-radio color="success" label="正常" value="1"></v-radio>
+                            <v-radio color="red" label="異常" value="2"></v-radio>
+                            <v-radio color="orange" label="無此項目" value="3"></v-radio>
+                          </v-radio-group>
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <span class="d-sm-none error--text">檢查人</span>
+                          <v-textarea auto-grow
+                           outlined rows="1"/>
+                        </v-col>
+                        <v-col cols="12" sm="4">
+                          <span class="d-sm-none error--text">改善措施</span>
+                          <v-textarea auto-grow
+                           outlined rows="2"/>
+                        </v-col>
+                      </v-row>
+                    </v-alert>
+                     
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header color="teal" class="white--text">維護部分</v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                      <v-col cols="12" sm="3">
+                        <h3 class="mb-1">檢查項目</h3>
+                      </v-col>
+                      <v-col cols="12" sm="3">
+                        <h3 class="mb-1">檢查結果</h3>
+                      </v-col>
+                      <v-col cols="12" sm="2">
+                        <h3 class="mb-1">檢查人</h3>
+                      </v-col>
+                      <v-col cols="12" sm="4">
+                        <h3 class="mb-1">感善措施</h3>
+                      </v-col>
+                    </v-row>
+                    <v-alert
+                      dense
+                      border="top"
+                      colored-border
+                      color="teal"
+                      elevation="4"
+                      v-for="(item, idx) in items3"
+                      :key="idx"
+                      class="mb-6 mt-4"
+                    >
+                      <v-row no-gutter>
+                        <v-col cols="12" sm="3">
+                            {{ item.question }}
+                        </v-col>
+                        <v-col cols="12" sm="3">
+                          <v-radio-group
+                            dense
+                            row
+                            v-model="item.select"
                             class="pa-0 ma-0">
                             <v-radio color="success" label="正常" value="1"></v-radio>
                             <v-radio color="red" label="異常" value="2"></v-radio>
@@ -400,7 +459,15 @@ export default {
           {select:"0"},
           {select:"0"},
           {select:"0"},
+        ],
+        items3:[
+          {select:"0"},
+          {select:"0"},
+          {select:"0"},
+          {select:"0"},
+          {select:"0"},
         ]
+
       },
       items1: [
         // 機械部分

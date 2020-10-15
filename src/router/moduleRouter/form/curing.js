@@ -385,4 +385,18 @@ export const FormCuringRouter = [{
             import ('@/views/formManage/curing/ArgonWeldingMachineChecklist.vue'),
         formGroup: ['curing']
     },
+    {
+        linkText: '氬焊機定期檢查表(月)', // 新增4.
+        path: '/form-manage/curing/argon-welding-machine-checklist-month',
+        component: () =>
+            import ('@/views/formManage/curing/ArgonWeldingMachineChecklistMonth.vue'),
+        formGroup: ['curing']
+    },
+    {
+        linkText: '緊急沖淋洗眼設備定期檢查表(月)', // 新增5.
+        path: '/form-manage/curing/drench-shower-eyewash-checklistMonth',
+        component: () =>
+            import ('@/views/formManage/curing/DrenchShowerEyewashChecklistMonth.vue'),
+        formGroup: ['curing']
+    },
 ]

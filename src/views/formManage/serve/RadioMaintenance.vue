@@ -123,13 +123,16 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
+          
           <!-- 內容 -->
           <div class="px-6 py-4">
             <v-row>
               <!-- 外觀 -->
+              <h3 class="mb-1">編號(或機號)</h3>
+              <v-select dense single-line :items="MachineID" outlined />
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation1">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -137,7 +140,7 @@
               <!-- 出廠日期 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">檢查天線是否斷裂</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation2">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -145,7 +148,7 @@
               <!-- 電池接點是否生銅繡 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">電池接點是否生銅繡</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation3">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -153,7 +156,7 @@
               <!-- 充電座指示燈亮否、功能是否正常 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">充電座指示燈亮否、功能是否正常</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation4">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -161,7 +164,7 @@
               <!-- 接收功能是否正常檢查 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">接收功能是否正常檢查</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation5">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -196,9 +199,11 @@
           <div class="px-6 py-4">
             <v-row>
               <!-- 外觀 -->
+              <h3 class="mb-1">編號(或機號)</h3>
+              <v-select dense single-line :items="MachineID" outlined />
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation1">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -206,7 +211,7 @@
               <!-- 出廠日期 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">檢查天線是否斷裂</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation2">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -214,7 +219,7 @@
               <!-- 電池接點是否生銅繡 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">電池接點是否生銅繡</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation3">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -222,7 +227,7 @@
               <!-- 充電座指示燈亮否、功能是否正常 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">充電座指示燈亮否、功能是否正常</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation4">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
@@ -230,10 +235,14 @@
               <!-- 接收功能是否正常檢查 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">接收功能是否正常檢查</h3>
-                <v-radio-group row v-model="mainLocation">
+                <v-radio-group row v-model="mainLocation5">
                   <v-radio label="正常" color="success" value="11"></v-radio>
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
+              </v-col>
+              <v-col cols="8" sm="6">
+                <h3 class="mb-1">保養人員</h3>
+                <v-textarea hide-details auto-grow outlined rows="1"/>
               </v-col>
               <!-- 不正常狀況及處理說明 -->
               <v-col cols="12">
@@ -266,8 +275,9 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
-      title: "手攜無線電機檢查紀錄表",
-      newText: "紀錄表",
+    title: "手攜無線電機檢查紀錄表",
+    newText: "紀錄表",
+    MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -314,7 +324,11 @@ export default {
       v => v.length > 0 || "公里數必須大於0"
     ],
     dialogForm: {},
-    mainLocation: "", // 所選的地點
+    mainLocation1: "", // 所選的地點
+    mainLocation2: "", // 所選的地點
+    mainLocation3: "", // 所選的地點
+    mainLocation4: "", // 所選的地點
+    mainLocation5: "", // 所選的地點
     OLocation: "", // 其他地點
     dialogShowAdd: false, // model off
     dialogShowEdit: false, // model off
@@ -327,6 +341,7 @@ export default {
     tableItems: [
       {
         aa: "2020-08-01",
+        mcid: "TRK-ALL-SLP-300",
         jj: "王大明",
         kk: "已審查"
       }
@@ -337,6 +352,13 @@ export default {
       {
         text: "保養日期",
         value: "aa",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+      },
+      {
+        text: "編號(或機號)",
+        value: "mcid",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
@@ -399,3 +421,8 @@ export default {
   }
 };
 </script>
+<style>
+  .mb-1{
+    margin-top: 1%;
+  }
+</style>
