@@ -274,21 +274,21 @@ export const FormCuringRouter = [{
         formGroup: ['curing']
     },
     {
-        linkText: '固定式貣重機每日作業前檢點表(作業前)', // 70
+        linkText: '固定式起重機每日作業前檢點表(作業前)', // 70
         path: '/form-manage/curing/bridge-crane-checklist',
         component: () =>
             import ('@/views/formManage/curing/BridgeCraneChecklist.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '固定式貣重機定期檢查表(月)', // 71
+        linkText: '固定式起重機定期檢查表(月)', // 71
         path: '/form-manage/curing/bridge-crane-checklist-month',
         component: () =>
             import ('@/views/formManage/curing/BridgeCraneChecklistMonth.vue'),
         formGroup: ['curing']
     },
     {
-        linkText: '固定式貣重機定期檢查表(年)', // 72
+        linkText: '固定式起重機定期檢查表(年)', // 72
         path: '/form-manage/curing/bridge-crane-checklist-year',
         component: () =>
             import ('@/views/formManage/curing/BridgeCraneChecklistYear.vue'),
