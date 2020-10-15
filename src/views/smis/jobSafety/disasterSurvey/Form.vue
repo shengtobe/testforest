@@ -1,6 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">職業災害事故調查表</h2>
+    <h2 class="mb-4">
+        {{ (this.isEdit)? `職災事故事件編輯 (編號：${ routeId })` : '職業災害事故調查表' }}
+    </h2>
 
     <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
@@ -111,7 +113,7 @@
 
         <v-col cols="12" sm="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>住址
+                <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>住址
             </h3>
             <v-text-field
                 v-model.trim="ipt.address"
@@ -411,10 +413,14 @@
         </template>
 
         <v-col cols="12" class="text-center mb-8">
+            <v-btn dark class="mr-4"
+                v-if="isEdit"
+                :to="`/smis/jobsafety/disaster-survey/${this.routeId}/show`"
+            >回上層</v-btn>
+
             <v-btn
                 color="success"
                 @click="save"
-                large
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
 
@@ -454,6 +460,7 @@ import UploadFileEdit from '@/components/UploadFileEdit.vue'
 
 export default {
     data: () => ({
+        routeId: '',
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否編輯中
         ipt: {},
@@ -558,22 +565,106 @@ export default {
             this.opts.vehicleLv1 = Object.keys(vehicleOpts)
             this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]
 
-            // -------------- 新增時 -------------- 
-            // 若由危害通報新登錄轉至此頁，則指派初始值
-            if (sessionStorage.getItem('notifyItem') !== null) {
-                let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
-                
-                this.notify.id = obj.id,  // 通報id
-                this.notify.files = [ ...obj.files ]  // 通報附件
-                this.notify.isNew = true  // 是否為危害通報的新登錄
-                this.isExtendAnnex = true  // 延用通報附件
+            if (this.$route.params.id != undefined) {
+                // -------------- 編輯時 -------------- 
+                this.chLoadingShow()
+                this.routeId = this.$route.params.id  // 路由參數(id)
+                this.isEdit = true
 
-                sessionStorage.removeItem('notifyItem')  // 清除 sessionStorage
+                // 範例效果
+                setTimeout(() => {
+                    let obj = {
+                        workDepart: '阿里山車站',  // 工作部門
+                        name: '王小明',  // 罹災者姓名
+                        type: 1,  // 勞工類型
+                        sex: '男',  // 性別
+                        old: 34,  // 年齡
+                        startWorkDate: '2003-01-02',  // 到職日期
+                        jobTitle: '維修員',  // 職稱
+                        education: '大學',  // 教育程度
+                        address: '嘉義市東區中山路199號',  // 住址
+                        workYear: 6,  // 本項工作經驗年數
+                        trainingDate: '2003-01-10 ~ 2003-06-15',  // 本項工作訓練日期
+                        depart: '阿里山車站',  // 發生單位
+                        findDate: '2020-08-23',  // 發生日期
+                        findHour: '09',  // 發生日期(時)
+                        findMin: '45',  // 發生日期(分)
+                        location: '工具間',  // 發生地點
+                        weather: '晴',  // 氣候
+                        accidentType: 1,  // 事故類別
+                        accidentResult: 2,  // 事故結果
+                        injurySite: 9,  // 傷害部位
+                        disasterType: 8,  // 災害類型
+                        vehicleLv1: '動力機械',  // 致傷媒介物-第一層
+                        vehicle: 154,  // 致傷媒介物-第二層
+                        directReason: '直接原因文字直接原因文字直接原因文字直接原因文字直接原因文字',  // 直接原因
+                        indirectReason: '間接原因文字間接原因文字間接原因文字',  // 間接原因
+                        basicReason: '基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字',  // 基本原因
+                        workItem: '傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字',  // 傷者當時工作
+                        overview: '事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字',  // 事故概況
+                        emergentWork: '緊急處理情形文字緊急處理情形文字緊急處理情形文字緊急處理情形文字',  // 緊急處理情形
+                        improveStrategy: '事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字',  // 事故單位防範及改善對策
+                        files: [
+                            { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
+                            { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
+                            { fileName: '123.pdf', link: '/demofile/123.pdf' },
+                            { fileName: '123.docx', link: '/demofile/123.docx' },
+                            { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                        ],
+                    }
+                    
+                    this.setInitDate(obj)
+                    this.chLoadingShow()
+                }, 1000)
+
+            } else {
+                // -------------- 新增時 -------------- 
+                // 若由危害通報新登錄轉至此頁，則指派初始值
+                if (sessionStorage.getItem('notifyItem') !== null) {
+                    let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
+                    
+                    this.notify.id = obj.id,  // 通報id
+                    this.notify.files = [ ...obj.files ]  // 通報附件
+                    this.notify.isNew = true  // 是否為危害通報的新登錄
+                    this.isExtendAnnex = true  // 延用通報附件
+
+                    sessionStorage.removeItem('notifyItem')  // 清除 sessionStorage
+                }
             }
-            // 範例效果
-            // setTimeout(() => {
-                
-            // }, 1000)
+        },
+        // 設定資料(編輯時)
+        setInitDate(obj) {
+            this.ipt.workDepart = obj.workDepart  // 工作部門
+            this.ipt.name = obj.name  // 罹災者姓名
+            this.ipt.type = obj.type  //勞工類型
+            this.ipt.sex = obj.sex  // 性別
+            this.ipt.old = obj.old  // 年齡
+            this.ipt.startWorkDate = obj.startWorkDate　// 到職日期
+            this.ipt.jobTitle = obj.jobTitle　// 職稱
+            this.ipt.education = obj.education  // 教育程度
+            this.ipt.address = obj.address  // 住址
+            this.ipt.workYear = obj.workYear  // 本項工作經驗年數
+            this.ipt.trainingDate = obj.trainingDate  // 本項工作訓練日期
+            this.ipt.depart = obj.depart  // 發生單位
+            this.ipt.occurDate = obj.findDate  // 發生日期
+            this.ipt.hour = obj.findHour // 發生日期(時)
+            this.ipt.min = obj.findMin  // 發生日期(分)
+            this.ipt.location = obj.location  // 發生地點
+            this.ipt.weather = obj.weather  // 氣候
+            this.ipt.accidentType = obj.accidentType  // 事故類別
+            this.ipt.accidentResult = obj.accidentResult  // 事故結果
+            this.ipt.injurySite = obj.injurySite  // 傷害部位
+            this.ipt.disasterType = obj.disasterType  // 災害類型
+            this.ipt.vehicleLv1 = obj.vehicleLv1  // 致傷媒介物-第一層
+            this.ipt.vehicle = obj.vehicle  // 致傷媒介物-第二層
+            this.ipt.directReason = obj.directReason  // 直接原因
+            this.ipt.indirectReason = obj.indirectReason  // 間接原因
+            this.ipt.basicReason = obj.basicReason  // 基本原因
+            this.ipt.workItem = obj.workItem  // 傷者當時工作
+            this.ipt.overview = obj.overview  // 事故概況
+            this.ipt.emergentWork = obj.emergentWork  // 緊急處理情形
+            this.ipt.improveStrategy = obj.improveStrategy  // 事故單位防範及改善對策
+            this.ipt.files = [ ...obj.files ]  // 附件檔案
         },
         // 送出
         save() {
@@ -582,11 +673,12 @@ export default {
 
                 // 新增測試用資料
                 setTimeout(() => {
-                    // let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
-                    // if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
-                    // this.chMsgbar({ success: true, msg: txt })
-                    this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]  // 初始化致傷媒介物下拉選單
-                    this.chMsgbar({ success: true, msg: '送出成功' })
+                    if (this.isEdit) {
+                        this.chMsgbar({ success: true, msg: '資料更新成功' })
+                    } else {
+                        this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                        this.chMsgbar({ success: true, msg: '資料新增成功' })
+                    }
                     this.chLoadingShow()
                 }, 1000)
             }

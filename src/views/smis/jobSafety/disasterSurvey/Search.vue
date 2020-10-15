@@ -200,6 +200,7 @@ export default {
                 { text: '已完備資料', value: '已完備資料' },
                 { text: '改善措施已落實', value: '改善措施已落實' },
                 { text: '審核中', value: '審核中' },
+                { text: '已作廢', value: '已作廢' },
             ],
         }
     }),

@@ -212,7 +212,7 @@
 
             <v-btn dark  class="ma-2" color="success"
                 @click="save"
-            >申請措施審核</v-btn>
+            >申請審核資料</v-btn>
         </v-col>
     </v-row>
 </v-container>

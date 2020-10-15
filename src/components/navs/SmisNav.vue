@@ -94,7 +94,7 @@
         </v-list-item>
 
          <v-list-item to="/smis/jobsafety/disaster-survey" class="white--text">
-            <v-list-item-title>職災事故管理</v-list-item-title>
+            <v-list-item-title>職災事故事件管理</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/smis/jobsafety/disasterdb" class="white--text">
