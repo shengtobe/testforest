@@ -35,7 +35,7 @@ export const FormLaborRouter = [
         linkText: '職場不法侵害預防之危害辨識及風險評估表Add', // 勞安衛6.
         path: '/form-manage/labor/hazid-risk-assessment-add',
         component: () => import('@/views/formManage/labor/HAZIDRiskAssessmentAdd.vue'),
-        formGroup: ['labor']
+        formGroup: []
     },
     {
         linkText: '災害事故調查表(本處員工)', // 勞安衛7.
@@ -47,7 +47,7 @@ export const FormLaborRouter = [
         linkText: '災害事故調查表(本處員工)Add', // 勞安衛7.
         path: '/form-manage/labor/disaster-accident-survey-add',
         component: () => import('@/views/formManage/labor/DisasterAccidentSurveyAdd.vue'),
-        formGroup: ['labor']
+        formGroup: []
     },
     {
         linkText: '災害事故調查表(承攬商)', // 勞安衛8.
@@ -59,6 +59,6 @@ export const FormLaborRouter = [
         linkText: '災害事故調查表(承攬商)Add', // 勞安衛8. 
         path: '/form-manage/labor/disaster-accident-survey-vendor-add',
         component: () => import('@/views/formManage/labor/DisasterAccidentSurveyVendorAdd.vue'),
-        formGroup: ['labor']
+        formGroup: []
     },
 ]

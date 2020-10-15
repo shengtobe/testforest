@@ -355,7 +355,7 @@ export const FormCuringRouter = [{
         path: '/form-manage/curing/railway-worklog-add',
         component: () =>
             import ('@/views/formManage/curing/RailwayWorkLogAdd.vue'),
-        formGroup: ['curing']
+        formGroup: []
     },
     {
         linkText: '_____柴油液力機車行車紀錄表', // 40
@@ -376,7 +376,7 @@ export const FormCuringRouter = [{
         path: '/form-manage/curing/level-crossing-function-checklist-add',
         component: () =>
             import ('@/views/formManage/curing/LevelCrossingFunctionChecklistAdd.vue'),
-        formGroup: ['curing']
+        formGroup: []
     },
     {
         linkText: '氬焊機每日作業前檢點表(作業前)', // 新增3.
