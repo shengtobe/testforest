@@ -355,7 +355,7 @@
                 >
                     <template v-slot:activator="{ on }">
                         <v-text-field
-                            v-model.trim="ipt.InjuryLeaveStart"
+                            v-model.trim="ipt.injuryLeaveStart"
                             solo
                             v-on="on"
                             readonly
@@ -363,7 +363,7 @@
                     </template>
                     <v-date-picker
                         color="purple"
-                        v-model="ipt.InjuryLeaveStart"
+                        v-model="ipt.injuryLeaveStart"
                         @input="dateMemuShow.start = false"
                         locale="zh-tw"
                     ></v-date-picker>
@@ -383,7 +383,7 @@
                 >
                     <template v-slot:activator="{ on }">
                         <v-text-field
-                            v-model.trim="ipt.InjuryLeaveEnd"
+                            v-model.trim="ipt.injuryLeaveEnd"
                             solo
                             v-on="on"
                             readonly
@@ -391,7 +391,7 @@
                     </template>
                     <v-date-picker
                         color="purple"
-                        v-model="ipt.InjuryLeaveEnd"
+                        v-model="ipt.injuryLeaveEnd"
                         @input="dateMemuShow.end = false"
                         locale="zh-tw"
                     ></v-date-picker>
@@ -531,9 +531,9 @@ export default {
         finishImprove: false,  // 是否完成改善措施
         notifyLinks: [],  // 連結的通報
         ipt: {  // 鎖定後要填寫的資料
-            InjuryLeaveStart: new Date().toISOString().substr(0, 10),  // 公傷假(起)
-            InjuryLeaveEnd: new Date().toISOString().substr(0, 10),  // 公傷假(迄)
-            laborInspection: 'y',  // 通報勞檢
+            injuryLeaveStart: new Date().toISOString().substr(0, 10),  // 公傷假(起)
+            injuryLeaveEnd: new Date().toISOString().substr(0, 10),  // 公傷假(迄)
+            laborInspection: 'n',  // 通報勞檢
             cause: '',  // 發生原因
             note: '',  // 備註
         },

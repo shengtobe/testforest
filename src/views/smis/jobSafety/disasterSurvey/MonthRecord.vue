@@ -91,6 +91,44 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.date="{ item }">
+                        {{ `${item.findDate} ${item.findHour}:${item.findMin}` }}
+                    </template>
+
+                    <template v-slot:item.disasterType="{ item }">
+                        {{ transferDisasterType(item.disasterType) }}
+                    </template>
+
+                    <template v-slot:item.injurySite="{ item }">
+                        {{ transferInjurySite(item.injurySite) }}
+                    </template>
+
+                    <template v-slot:item.injuryLeave="{ item }">
+                        {{ `${item.injuryLeaveStart} ~ ${item.injuryLeaveEnd}` }}
+                    </template>
+
+                    <template v-slot:item.cause="{ item }">
+                        <v-btn color="teal" dark
+                            @click="showContent(item.cause)"
+                        >檢視</v-btn>
+                    </template>
+
+                    <template v-slot:item.improve="{ item }">
+                        <v-btn color="teal" dark
+                            @click="showContent(item.improve)"
+                        >檢視</v-btn>
+                    </template>
+
+                    <template v-slot:item.laborInspection="{ item }">
+                        {{ (item.laborInspection == 'y')? '有' : '無' }}
+                    </template>
+
+                    <template v-slot:item.note="{ item }">
+                        <v-btn color="teal" dark
+                            @click="showContent(item.note)"
+                        >檢視</v-btn>
+                    </template>
+
                     <template v-slot:footer="footer">
                         <Pagination
                             :footer="footer"
@@ -108,11 +146,11 @@
 <script>
 import { mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { injurySiteOpts, disasterTypeOpts } from '@/assets/js/smisData'
 
 export default {
     data: () => ({
-        searchIpt: {},
-        searchDefault: {
+        searchIpt: {
             dateStart: new Date().toISOString().substr(0, 10),  // 發生日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 發生日期(迄)
         },
@@ -124,18 +162,25 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作部門', value: 'workDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '罹災者姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '發生單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
+            { text: '罹災者姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '90' },
+            { text: '職稱', value: 'jobTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '災害類型', value: 'disasterType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '160' },
+            { text: '傷害部位', value: 'injurySite', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '160' },
+            { text: '公傷假', value: 'injuryLeave', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
+            { text: '發生原因', value: 'cause', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '改善措施', value: 'improve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '通報勞檢', value: 'laborInspection', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
         ],
     }),
     components: { Pagination },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         // 搜尋
         search() {
@@ -155,16 +200,29 @@ export default {
                         jobTitle: '維修員',  // 職稱
                         disasterType: 8,  // 災害類型
                         injurySite: 9,  // 傷害部位
-                        InjuryLeaveStart: '2020-08-24',  // 公傷假(起)
-                        InjuryLeaveEnd: '2020-08-30',  // 公傷假(迄)
-                        cause: '',  // 發生原因
-                        note: '',  // 備註
+                        injuryLeaveStart: '2020-08-24',  // 公傷假(起)
+                        injuryLeaveEnd: '2020-08-30',  // 公傷假(迄)
+                        cause: '發生原因文字發生原因文字發生原因文字發生原因文字發生原因文字',  // 發生原因
+                        improve: '改善措施文字改善措施文字改善措施文字改善措施文字改善措施文字',  // 改善措施
+                        laborInspection: 'n',  // 通報勞檢
+                        note: '備註文字備註文字備註文字備註文字備註文字備註文字備註文字備註文字備註文字',  // 備註
                     },
                     {
-                        workDepart: '阿里山車站',
-                        name: '王小明',
-                        date: '2020-08-23',
-                        status: 2,
+                        findDate: '2020-08-12',  // 發生日期
+                        findHour: '13',  // 發生日期(時)
+                        findMin: '24',  // 發生日期(分)
+                        location: '45K+600M',  // 發生地點
+                        depart: '奮起湖監工區',  // 發生單位
+                        name: '陳小美',  // 罹災者姓名
+                        jobTitle: '助理工程員',  // 職稱
+                        disasterType: 2,  // 災害類型
+                        injurySite: 1,  // 傷害部位
+                        injuryLeaveStart: '2020-08-13',  // 公傷假(起)
+                        injuryLeaveEnd: '2020-08-22',  // 公傷假(迄)
+                        cause: '發生原因文字發生原因文字發生原因文字發生原因文字發生原因文字',  // 發生原因
+                        improve: '改善措施文字改善措施文字改善措施文字改善措施文字改善措施文字',  // 改善措施
+                        laborInspection: 'y',  // 通報勞檢
+                        note: '備註文字備註文字備註文字備註文字備註文字備註文字備註文字備註文字備註文字',  // 備註
                     },
                 ]
                 this.chLoadingShow()
@@ -176,9 +234,18 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
-    },
-    created() {
-        this.searchIpt = { ...this.searchDefault }
+        // 轉換災害類型名稱
+        transferDisasterType(val) {
+            return disasterTypeOpts.find(item => item.value == val).text
+        },
+        // 轉換傷害部位名稱
+        transferInjurySite(val) {
+            return injurySiteOpts.find(item => item.value == val).text
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
     },
 }
 </script>
