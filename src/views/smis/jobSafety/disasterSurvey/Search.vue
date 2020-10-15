@@ -113,7 +113,13 @@
             <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon class="mr-1">mdi-reload</v-icon>重置
+            </v-btn>
+
+            <v-btn color="amber lighten-3" elevation="2" large class="ma-2"
+                to="/smis/jobsafety/month-record"
+            >
+                <v-icon class="mr-1">mdi-view-list</v-icon>職災紀錄表
             </v-btn>
         </v-col>
 

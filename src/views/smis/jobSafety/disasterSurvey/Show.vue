@@ -355,7 +355,7 @@
                 >
                     <template v-slot:activator="{ on }">
                         <v-text-field
-                            v-model.trim="ipt.dateStart"
+                            v-model.trim="ipt.InjuryLeaveStart"
                             solo
                             v-on="on"
                             readonly
@@ -363,7 +363,7 @@
                     </template>
                     <v-date-picker
                         color="purple"
-                        v-model="ipt.dateStart"
+                        v-model="ipt.InjuryLeaveStart"
                         @input="dateMemuShow.start = false"
                         locale="zh-tw"
                     ></v-date-picker>
@@ -383,7 +383,7 @@
                 >
                     <template v-slot:activator="{ on }">
                         <v-text-field
-                            v-model.trim="ipt.dateEnd"
+                            v-model.trim="ipt.InjuryLeaveEnd"
                             solo
                             v-on="on"
                             readonly
@@ -391,7 +391,7 @@
                     </template>
                     <v-date-picker
                         color="purple"
-                        v-model="ipt.dateEnd"
+                        v-model="ipt.InjuryLeaveEnd"
                         @input="dateMemuShow.end = false"
                         locale="zh-tw"
                     ></v-date-picker>
@@ -531,8 +531,8 @@ export default {
         finishImprove: false,  // 是否完成改善措施
         notifyLinks: [],  // 連結的通報
         ipt: {  // 鎖定後要填寫的資料
-            dateStart: new Date().toISOString().substr(0, 10),  // 公傷假(起)
-            dateEnd: new Date().toISOString().substr(0, 10),  // 公傷假(迄)
+            InjuryLeaveStart: new Date().toISOString().substr(0, 10),  // 公傷假(起)
+            InjuryLeaveEnd: new Date().toISOString().substr(0, 10),  // 公傷假(迄)
             laborInspection: 'y',  // 通報勞檢
             cause: '',  // 發生原因
             note: '',  // 備註

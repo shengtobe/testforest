@@ -8,6 +8,11 @@ export const JobSafetyRouter = [
         component: () => import('@/views/smis/jobSafety/disasterSurvey/Search.vue')
     },
     {
+        linkText: '每月紀錄表',
+        path: '/smis/jobsafety/month-record', 
+        component: () => import('@/views/smis/jobSafety/disasterSurvey/MonthRecord.vue')
+    },
+    {
         linkText: '職業災害事故調查表',  // 新增
         path: '/smis/jobsafety/disaster-survey-add', 
         component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue')
