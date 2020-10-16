@@ -59,15 +59,23 @@
             </v-menu>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3" align-self="center">
-            <v-btn color="green" dark large class="ma-2"
+        <v-col cols="12" sm="12" md="6" align-self="center">
+            <v-btn color="green" dark large class="my-2 mr-2"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
+
+            <v-btn dark large class="ma-2"
+                to="/smis/jobsafety/disaster-survey"
+            >回搜尋頁</v-btn>
+
+            <v-btn dark large color="teal" class="ma-2"
+                @click="excel"
+            >匯出</v-btn>
         </v-col>
 
-        <v-col cols="12" class="mt-n5">
+        <v-col cols="12" class="mt-1 mt-md-n5">
             <span class="font-weight-bold">累計損失日數： </span>
             <span class="font-weight-bold error--text">{{ totalLossDate }}</span>
         </v-col>
@@ -245,6 +253,10 @@ export default {
         // 顯示檢視內容
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
+        // 匯出
+        excel() {
+
         },
     },
 }

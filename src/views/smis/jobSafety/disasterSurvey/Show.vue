@@ -455,7 +455,7 @@
                                         >
                                             {{ (finishImprove)? '已填寫' : '未填寫' }}
                                         </v-btn>
-                                        改善措施檢討
+                                        改善措施
                                     </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
@@ -647,13 +647,13 @@ export default {
             this.injurySite = injurySiteOpts.find(item => item.value == obj.injurySite).text  // 傷害部位
             this.disasterType = disasterTypeOpts.find(item => item.value == obj.disasterType).text  // 災害類型
             this.vehicle = vehicleOpts[obj.vehicleLv1].find(item => item.value == obj.vehicle).text,  // 致傷媒介物
-            this.directReason = obj.directReason  // 直接原因
-            this.indirectReason = obj.indirectReason  // 間接原因
-            this.basicReason = obj.basicReason  // 基本原因
-            this.workItem = obj.workItem  // 傷者當時工作
-            this.overview = obj.overview  // 事故概況
-            this.emergentWork = obj.emergentWork  // 緊急處理情形
-            this.improveStrategy = obj.improveStrategy  // 事故單位防範及改善對策
+            this.directReason = obj.directReason.replace(/\n/g, '<br>')  // 直接原因
+            this.indirectReason = obj.indirectReason.replace(/\n/g, '<br>')  // 間接原因
+            this.basicReason = obj.basicReason.replace(/\n/g, '<br>')  // 基本原因
+            this.workItem = obj.workItem.replace(/\n/g, '<br>')  // 傷者當時工作
+            this.overview = obj.overview.replace(/\n/g, '<br>')  // 事故概況
+            this.emergentWork = obj.emergentWork.replace(/\n/g, '<br>')  // 緊急處理情形
+            this.improveStrategy = obj.improveStrategy.replace(/\n/g, '<br>')  // 事故單位防範及改善對策
             this.files = [ ...obj.files ]  // 檔案附件
             this.isLocked = obj.isLocked  // 是否已鎖定
 

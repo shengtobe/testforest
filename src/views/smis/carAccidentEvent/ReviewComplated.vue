@@ -509,7 +509,7 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '資料儲存成功'})
+                    this.chMsgbar({ success: true, msg: '同意措施執行成功'})
                     this.$router.push({ path: '/smis/car-accident-event' })
                     this.chLoadingShow()
                 }, 1000)
@@ -537,13 +537,15 @@ export default {
         },
         // 申請結案
         closeCase() {
-             this.chLoadingShow()
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '申請結案成功'})
-                this.$router.push({ path: '/smis/car-accident-event' })
+            if (confirm('你確定要申請結案嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請結案成功'})
+                    this.$router.push({ path: '/smis/car-accident-event' })
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 顯示控制措施說明
         showContent(txt) {

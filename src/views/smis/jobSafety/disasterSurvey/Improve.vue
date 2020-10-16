@@ -67,14 +67,6 @@
             ></v-textarea>
         </v-col>
 
-        <!-- 上傳檔案 -->
-        <UploadFileEdit
-            :fileList="files"
-            @uploadFile="uploadFile"
-            @deleteFile="deleteFile"
-            class="mt-8"
-        />
-
         <v-col cols="12" class="mt-8 text-center">
             <v-btn dark class="mr-3"
                 :to="`/smis/jobsafety/disaster-survey/${routeId}/show`"
@@ -90,7 +82,6 @@
 
 <script>
 import { mapActions } from 'vuex'
-import UploadFileEdit from '@/components/UploadFileEdit.vue'
 
 export default {
     data: () => ({
@@ -99,9 +90,7 @@ export default {
         indirectReason: '',  // 間接原因
         basicReason: '',  // 基本原因
         improve: '',  // 改善措施
-        files: [],  // 附件檔案
     }),
-    components: { UploadFileEdit },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -126,18 +115,13 @@ export default {
                     indirectReason: '間接原因文字間接原因文字間接原因文字',  // 間接原因
                     basicReason: '基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字',  // 基本原因
                     improveStrategy: '文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容',  // 事故單位防範及改善對策
-                    files: [
-                        { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
-                    ],
                 }
 
                 // 設定變數值
                 this.directReason = obj.directReason
                 this.indirectReason = obj.indirectReason
                 this.basicReason = obj.basicReason
-                this.improve = obj.improveStrategy
-                this.files = [ ...obj.files ]
+                this.improve = obj.improveStrategy  // 改善措施的預設值
 
                 this.chLoadingShow()
             }, 1000)
@@ -150,30 +134,6 @@ export default {
                 this.chMsgbar({ success: true, msg: '更新成功'})
                 this.chLoadingShow()
             }, 1000)
-        },
-        // 上傳檔案 (編輯時)
-        uploadFile(file) {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                // 後端請求後，回傳檔案資料 (id、filename、link)
-                // this.ipt.files.push(fileData)
-                this.chMsgbar({ success: true, msg: '檔案新增成功'})
-                this.chLoadingShow()
-            }, 1000)
-        },
-        // 刪除檔案 (編輯時)
-        deleteFile(id, idx) {
-            if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    // 後端請求後，移除檔案列表
-                    this.ipt.files.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
-                    this.chLoadingShow()
-                }, 1000)
-            }
         },
     },
     created() {
