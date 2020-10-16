@@ -154,18 +154,26 @@
                   <v-text-field solo />
                 </v-col>
               </v-row>
+              <!-- 一、設置場所 -->
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer/>
+                <v-toolbar-title>一、設置場所</v-toolbar-title>
+                <v-spacer/>
+                </v-toolbar>
+              </v-col>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查項目</h3>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="2">
                   <h3 class="mb-1">檢查方法</h3>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查結果</h3>
                 </v-col>
                 <v-col cols="12" sm="3">
-                  <h3 class="mb-1">備註</h3>
+                  <h3 class="mb-1">評估危害風險</h3>
                 </v-col>
               </v-row>
               <v-alert
@@ -174,32 +182,269 @@
                 colored-border
                 color="teal"
                 elevation="4"
-                v-for="(item, idx) in items"
+                v-for="(item, idx) in items1"
                 :key="idx"
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="3">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="2">{{ item.checkMethod }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
+                    <v-radio-group dense row v-model="ipt.items1[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
                       <v-radio color="black" label="無此項目" value="3"></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="2" />
+                    <v-textarea hide-details auto-grow outlined rows="2" placeholder="嚴重性及可能性分析"/>
                   </v-col>
                 </v-row>
               </v-alert>
+              <!-- 二、機體 -->
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer/>
+                <v-toolbar-title>二、機體</v-toolbar-title>
+                <v-spacer/>
+                </v-toolbar>
+              </v-col>
+              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查項目</h3>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <h3 class="mb-1">檢查方法</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">檢查結果</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">評估危害風險</h3>
+                </v-col>
+              </v-row>
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="(item, idx) in items2"
+                :key="idx"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="2">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group dense row v-model="ipt.items2[idx].status" class="pa-0 ma-0">
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea hide-details auto-grow outlined rows="2" placeholder="嚴重性及可能性分析"/>
+                  </v-col>
+                </v-row>
+              </v-alert>
+              <!-- 三、水管 -->
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer/>
+                <v-toolbar-title>三、水管</v-toolbar-title>
+                <v-spacer/>
+                </v-toolbar>
+              </v-col>
+              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查項目</h3>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <h3 class="mb-1">檢查方法</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">檢查結果</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">評估危害風險</h3>
+                </v-col>
+              </v-row>
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="(item, idx) in items3"
+                :key="idx"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="2">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group dense row v-model="ipt.items3[idx].status" class="pa-0 ma-0">
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea hide-details auto-grow outlined rows="2" placeholder="嚴重性及可能性分析"/>
+                  </v-col>
+                </v-row>
+              </v-alert>
+              <!-- 四、水源 -->
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer/>
+                <v-toolbar-title>四、水源</v-toolbar-title>
+                <v-spacer/>
+                </v-toolbar>
+              </v-col>
+              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查項目</h3>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <h3 class="mb-1">檢查方法</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">檢查結果</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">評估危害風險</h3>
+                </v-col>
+              </v-row>
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="(item, idx) in items4"
+                :key="idx"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="2">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group dense row v-model="ipt.items4[idx].status" class="pa-0 ma-0">
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea hide-details auto-grow outlined rows="2" placeholder="嚴重性及可能性分析"/>
+                  </v-col>
+                </v-row>
+              </v-alert>
+              <!-- 五、排水管 -->
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer/>
+                <v-toolbar-title>五、排水管</v-toolbar-title>
+                <v-spacer/>
+                </v-toolbar>
+              </v-col>
+              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查項目</h3>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <h3 class="mb-1">檢查方法</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">檢查結果</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">評估危害風險</h3>
+                </v-col>
+              </v-row>
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="(item, idx) in items5"
+                :key="idx"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="2">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group dense row v-model="ipt.items5[idx].status" class="pa-0 ma-0">
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea hide-details auto-grow outlined rows="2" placeholder="嚴重性及可能性分析"/>
+                  </v-col>
+                </v-row>
+              </v-alert>
+              <!-- 六、標示或指示 -->
+              <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer/>
+                <v-toolbar-title>六、標示或指示</v-toolbar-title>
+                <v-spacer/>
+                </v-toolbar>
+              </v-col>
+              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查項目</h3>
+                </v-col>
+                <v-col cols="12" sm="2">
+                  <h3 class="mb-1">檢查方法</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">檢查結果</h3>
+                </v-col>
+                <v-col cols="12" sm="3">
+                  <h3 class="mb-1">評估危害風險</h3>
+                </v-col>
+              </v-row>
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="(item, idx) in items6"
+                :key="idx"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="4">{{ item.question }}</v-col>
+                  <v-col cols="12" sm="2">{{ item.checkMethod }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group dense row v-model="ipt.items6[idx].status" class="pa-0 ma-0">
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea hide-details auto-grow outlined rows="2" placeholder="嚴重性及可能性分析"/>
+                  </v-col>
+                </v-row>
+              </v-alert>
+
             </v-col>
             <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
-            </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
               <v-textarea auto-grow outlined rows="4" />
@@ -299,24 +544,51 @@ export default {
         department: "",
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
-        check1: [
-          { result: "0", note: "" },
+        items1: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
-        check2: [
-          { result: "0", note: "" },
-          { result: "0", note: "" },
+        items2: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+        items3: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+        items4: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+        items5: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+        items6: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
         ],
       },
-      items: [
-       { question: "1. 焊接柄絕緣護層是否有破損或絕緣不良", checkMethod: "目視點檢" },
-        { question: "2. 電極端子及導線有無破損或絕緣不良", checkMethod: "目視點檢" },
-        { question: "3. 電源線及氬焊機之接點螺絲是否正常", checkMethod: "目視點檢" },
-        { question: "4. 電源有否裝漏電斷路器，動作是否正常", checkMethod: "動作測試" },
-        { question: "5. 電源開關及電流調整輪柄是否操作正常", checkMethod: "動作測試" },
-        { question: "6. 自動電擊防止裝置，動作是否正常", checkMethod: "動作測試" },
-        { question: "7. 氬焊機絕緣電阻是否達標準值", checkMethod: "動作測試" },
-        { question: "8. 氬焊機有無異常的聲音或振動", checkMethod: "動作測試" },
-        { question: "9. 面罩、手套、腳包、防護衣等護具是否正常", checkMethod: "目視點檢" },
+      items1: [
+       { question: "1. 周圍通道無障礙物，地面整潔平坦（溝、洞有防護設備）", checkMethod: "檢點" },
+      ],
+      items2: [
+       { question: "1. 無銹蝕、損壞、變形、組件（零件）欠缺、鬆動等情形", checkMethod: "檢點" },
+       { question: "2. 焊接柄絕緣護層是否有破損或絕緣不良", checkMethod: "檢點" },
+      ],
+      items3: [
+       { question: "1. 主閥保持常開，接頭密合、不漏水，閥柄無損壞、變形", checkMethod: "點檢" },
+       { question: "2. 控制閥（長柄或腳踏）機能正常，噴撒頭整潔、無雜物阻塞", checkMethod: "測試" },
+      ],
+      items4: [
+       { question: "1. 確認水壓、水溫均適當", checkMethod: "操作" },
+       { question: "2. 確認水質無污濁情形", checkMethod: "操作" },
+      ],
+      items5: [
+       { question: "1. 保持順暢、無漏水", checkMethod: "測試" },
+      ],
+      items6: [
+       { question: "1. 保持鮮明易見", checkMethod: "點檢" },
       ],
       suggest: "", // 改善建議
     };

@@ -98,4 +98,18 @@ export const FormMaintainRouter = [{
             import ('@/views/formManage/maintain/MotorVehicleApplication.vue'),
         formGroup: ['maintain']
     },
+    {
+        linkText: '橋梁目視安全檢查表', // 111
+        path: '/form-manage/maintain/railway-visual-safety-checklist',
+        component: () =>
+            import ('@/views/formManage/maintain/RailwayVisualSafetyChecklist.vue'),
+        formGroup: []
+    },
+    {
+        linkText: '橋梁目視安全檢查表Add', // 111
+        path: '/form-manage/maintain/railway-visual-safety-checklist-add',
+        component: () =>
+            import ('@/views/formManage/maintain/RailwayVisualSafetyChecklistAdd.vue'),
+        formGroup: []
+    },
 ]

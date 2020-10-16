@@ -133,4 +133,10 @@ export const FormServeRouter = [
         component: () => import('@/views/formManage/serve/BSRadioChecklist.vue'),
         formGroup: ['serve', 'maintain', 'curing']
     },
+    {
+        linkText: '車長報告',// 113
+        path: '/form-manage/serve/train-master-report',
+        component: () => import('@/views/formManage/serve/TrainMasterReport.vue'),
+        formGroup: ['serve']
+    },
 ]
