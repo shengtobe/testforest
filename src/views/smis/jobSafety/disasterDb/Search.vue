@@ -1,5 +1,171 @@
 <template>
 <v-container style="max-width: 1200px">
-    <p>職災危害資料庫查詢</p>
+    <h2 class="mb-4">職災危害資料庫查詢</h2>
+
+    <v-row class="px-2 mb-8">
+        <v-col cols="12" md="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-tag</v-icon>作業名稱
+            </h3>
+            <v-text-field
+                v-model.trim="searchIpt.name"
+                solo
+                placeholder="請輸入作業名稱"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="6" align-self="center">
+            <v-btn color="green" dark large class="my-2 mr-2"
+                @click="search"
+            >
+                <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+            </v-btn>
+
+            <v-btn color="indigo" dark large class="ma-2"
+                to="/smis/jobsafety/disasterdb/add"
+            >
+                <v-icon>mdi-plus</v-icon>新增
+            </v-btn>
+
+            <v-btn elevation="2" large class="ma-2"
+                @click="reset"
+            >
+                <v-icon class="mr-1">mdi-reload</v-icon>重置
+            </v-btn>
+        </v-col>
+
+        <!-- 表格資料 -->
+        <v-col cols="12">
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.serious="{ item }">
+                        {{ transferSeriousText(item.serious) }}
+                    </template>
+
+                    <template v-slot:item.possibility="{ item }">
+                        {{ transferPossibilityText(item.possibility) }}
+                    </template>
+
+                    <template v-slot:item.level="{ item }">
+                        {{ transferLevelText(item.level) }}
+                    </template>
+
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab color="teal"
+                            @click="redirect(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+    </v-row>
 </v-container>
 </template>
+
+<script>
+import { mapActions } from 'vuex'
+import Pagination from '@/components/Pagination.vue'
+import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts } from '@/assets/js/smisData'
+
+export default {
+    data: () => ({
+        searchIpt: {},
+        searchDefault: {
+            name: '',  // 作業名稱
+        },
+        tableItems: [],  // 表格資料
+        pageOpt: { page: 1 },  // 目前頁數
+        headers: [  // 表格顯示的欄位
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '作業名稱', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '風險可能性', value: 'possibility', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        opts: {
+            status: [  // 事故事件狀態 (審核中有二個，故傳中文值讓後端判斷)
+                { text: '不限', value: '' },
+                { text: '已立案', value: '已立案' },
+                { text: '已完備資料', value: '已完備資料' },
+                { text: '改善措施已落實', value: '改善措施已落實' },
+                { text: '審核中', value: '審核中' },
+                { text: '已作廢', value: '已作廢' },
+            ],
+        }
+    }),
+    components: { Pagination },
+    methods: {
+        ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        // 重置
+        reset() {
+            this.searchIpt = { ...this.searchDefault }
+        },
+        // 搜尋
+        search() {
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            // 新增測試用資料
+            setTimeout(() => {
+                this.tableItems = [
+                    {
+                        id: '111',
+                        name: '堆高機作業',  // 作業名稱
+                        serious: 'S3',  // 風險嚴重性
+                        possibility: 'P3',  // 風險可能性
+                        level: 'R2',  // 風險等級
+                    },
+                ]
+                this.chLoadingShow()
+            }, 1000)
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
+        // 轉換風險嚴重性文字
+        transferSeriousText(val) {
+            return jobSeriousOpts.find(item => item.value == val).text
+        },
+        // 轉換風險風險可能性文字
+        transferPossibilityText(val) {
+            return jobPossibilityOpts.find(item => item.value == val).text
+        },
+        // 轉換風險風險等級文字
+        transferLevelText(val) {
+            return jobLevelOpts.find(item => item.value == val).text
+        },
+    },
+    created() {
+        this.searchIpt = { ...this.searchDefault }
+    },
+}
+</script>

@@ -475,6 +475,11 @@
                 v-if="!isLocked"
             >編輯</v-btn>
 
+            <v-btn dark color="teal" class="ma-2"
+                v-if="!isLocked"
+                @click="excel"
+            >列印</v-btn>
+
             <v-btn dark  class="ma-2" color="error"
                 @click="del"
             >作廢</v-btn>
@@ -680,6 +685,10 @@ export default {
                 }
             })
             this.notifyLinks = [ ...arr ]
+        },
+        // 列印
+        excel() {
+
         },
         // 作廢
         del() {

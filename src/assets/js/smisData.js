@@ -356,3 +356,30 @@ export const vehicleOpts = {
         { text: '(999) 不能分類', value: 999 },
     ],
 }
+
+// 職安-風險嚴重性
+export const jobSeriousOpts = [
+    { text: '輕度 (S1)', value: 'S1' },
+    { text: '中度 (S2)', value: 'S2' },
+    { text: '高度 (S3)', value: 'S3' },
+    { text: '重大 (S4)', value: 'S4' },
+    { text: '極端 (S5)', value: 'S5' },
+]
+
+// 職安-風險可能性
+export const jobPossibilityOpts = [
+    { text: '非常不可能 (P1)', value: 'P1' },
+    { text: '不太可能 (P2)', value: 'P2' },
+    { text: '有可能 (P3)', value: 'P3' },
+    { text: '較有可能 (P4)', value: 'P4' },
+    { text: '極可能 (P5)', value: 'P5' },
+]
+
+// 職安-風險等級
+export const jobLevelOpts = [
+    { text: '低度風險 (R1)', value: 'R1' },
+    { text: '中度風險 (R2)', value: 'R2' },
+    { text: '中高度風險 (R3)', value: 'R3' },
+    { text: '高度風險 (R4)', value: 'R4' },
+    { text: '非常高度風險 (R5)', value: 'R5' },
+]

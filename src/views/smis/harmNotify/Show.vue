@@ -161,7 +161,7 @@
 
                 <v-col cols="12" sm="6">
                     <v-btn color="indigo" dark block large
-                        
+                        to="/smis/jobsafety/disasterdb/add"
                     >
                         新登錄至職災危害
                     </v-btn>
