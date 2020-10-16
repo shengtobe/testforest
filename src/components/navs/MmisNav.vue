@@ -15,8 +15,14 @@
             <v-list-item-title class="white--text">設備資料管理</v-list-item-title>
         </template>
 
-        <v-list-item to="/mmis/a" class="white--text">
+        <v-list-item to="/mmis/train-track-lane" class="white--text">
             <v-list-item-title>列車、軌道、車道設備</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/mmis/radio" class="white--text">
+            <v-list-item-title>無線電設備管理</v-list-item-title>
+        </v-list-item>
+        <v-list-item to="/mmis/material" class="white--text">
+            <v-list-item-title>料件管理</v-list-item-title>
         </v-list-item>
     </v-list-group>
 
@@ -26,21 +32,22 @@
             <v-list-item-title class="white--text">設備維修管理</v-list-item-title>
         </template>
 
-        <v-list-item to="/mmis/b/a" class="white--text">
+        <v-list-item to="/mmis/fault-maintenance" class="white--text">
             <v-list-item-title>故障、保養工單</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/mmis/b/b" class="white--text">
+        <v-list-item to="/mmis/periodicity-job" class="white--text">
             <v-list-item-title>週期性工作提醒</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/mmis/b/c" class="white--text">
+        <v-list-item to="/mmis/work-shift" class="white--text">
             <v-list-item-title>工班管理</v-list-item-title>
         </v-list-item>
+
     </v-list-group>
 
     <!-- 維修外包管理 -->
-    <v-list-item to="/mmis/c" class="white--text">
+    <v-list-item to="/mmis/outsourc-data" class="white--text">
         <v-list-item-title>維修外包管理</v-list-item-title>
     </v-list-item>
 
@@ -69,19 +76,19 @@
             <v-list-item-title class="white--text">報表管理</v-list-item-title>
         </template>
 
-         <v-list-item to="/mmis/e/a" class="white--text">
+         <!-- <v-list-item to="/mmis/e/a" class="white--text">
             <v-list-item-title>故障履歷</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
 
-        <v-list-item to="/mmis/e/b" class="white--text">
+        <v-list-item to="/mmis/repair-time-history" class="white--text">
             <v-list-item-title>維修工時履歷</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/mmis/e/c" class="white--text">
+        <v-list-item to="/mmis/material-history" class="white--text">
             <v-list-item-title>料件履歷</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/mmis/e/d" class="white--text">
+        <v-list-item to="/mmis/repair-cost" class="white--text">
             <v-list-item-title>維修費用</v-list-item-title>
         </v-list-item>
     </v-list-group>

@@ -1,5 +1,6 @@
 
 <template>
+<!-- ------------加變數設定v-model只設到18-下次要從18-1開始加變數----------- -->
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
       <p class="font-weight-black title text-center">新增{{ newText }}</p>
