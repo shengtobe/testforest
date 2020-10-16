@@ -233,7 +233,7 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
-      title:"心理健康量表",
+      title:"心理健康量表", 
       newText:"量表",
       ss: "",
       a: "",
