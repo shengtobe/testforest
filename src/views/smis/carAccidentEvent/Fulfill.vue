@@ -335,7 +335,6 @@
 <script>
 import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import { locationOpts, evtTypes } from '@/assets/js/smisData'
 
 export default {
@@ -390,7 +389,6 @@ export default {
     }),
     components: {
         TopBasicTable,
-        UploadFileAdd,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -466,7 +464,7 @@ export default {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
             this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
             this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
-            this.topItems.status.text = (this.closeStatus == 3)? '已完備資料' : '審核中'  // 事故事件狀態
+            this.topItems.status.text = (this.closeStatus == 5)? '改善措施已落實' : '審核中'  // 事故事件狀態
 
             this.eqLoss = obj.eqLoss  // 設備損失
             this.serviceShock = obj.serviceShock  // 營運衝擊

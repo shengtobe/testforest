@@ -562,7 +562,7 @@ export default {
         note: '',  // 備註
         improve: '',  // 改善措施
         controlReview: '',  // 措施檢討摘要
-        evidences: [],  // 證據
+        evidences: [],  // 改善措施證據
         isLoading: false,  // 是否讀取中
         dialog: false,  // 退回 dialog 是否顯示
         backReason: '',  // 退回原因
@@ -661,7 +661,7 @@ export default {
             this.topItems.jobTitle.text = obj.jobTitle  // 職稱
             this.topItems.education.text = obj.education  // 教育程度
             this.topItems.isReview.text = (obj.isReview)? '已複核' : '未核定',  // 是否覆核
-            this.topItems.status.text = (this.closeStatus == 3)? '已完備資料' : '審核中'  // 事故事件狀態
+            this.topItems.status.text = (this.closeStatus == 5)? '已完備資料' : '審核中'  // 事故事件狀態
 
             this.address = obj.address  // 住址
             this.workYear = obj.workYear  // 本項工作經驗年數
