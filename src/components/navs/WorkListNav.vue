@@ -6,7 +6,7 @@
     </template>
 
     <template v-slot:activator>
-        <v-list-item-title class="white--text">工單</v-list-item-title>
+        <v-list-item-title class="white--text">故障、保養工單</v-list-item-title>
     </template>
 
     <v-list-item to="/worklist/maintain" class="white--text">
