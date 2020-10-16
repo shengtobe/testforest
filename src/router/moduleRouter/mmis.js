@@ -43,9 +43,9 @@ export const MmisRouter = [
     // ------ 維修外包管理 ------ 
     {
         linkText: '維修外包管理',
-        path: '/mmis/c',
+        path: '/mmis/outsourc-data',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/OutsourcData.vue')
     },
 
     // ------ 統計分析 ------ 
@@ -69,28 +69,28 @@ export const MmisRouter = [
     },
 
     // ------ 統計分析 ------ 
-    {
-        linkText: '故障履歷',
-        path: '/mmis/e/a',
-        component: () =>
-            import ('@/views/mmis/Test.vue')
-    },
+    // {
+    //     linkText: '故障履歷',
+    //     path: '/mmis/e/a',
+    //     component: () =>
+    //         import ('@/views/mmis/Test.vue')
+    // },
     {
         linkText: '維修工時履歷',
-        path: '/mmis/e/b',
+        path: '/mmis/repair-time-history',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/RepairTimeHistory.vue')
     },
     {
         linkText: '料件履歷',
-        path: '/mmis/e/c',
+        path: '/mmis/material-history',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/MaterialHistory.vue')
     },
     {
         linkText: '維修費用',
-        path: '/mmis/e/d',
+        path: '/mmis/repair-cost',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/RepairCost.vue')
     },
 ]

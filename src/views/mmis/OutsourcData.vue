@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">工班管理</h2>
+    <h2 class="mb-4">外包廠商資料管理</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
@@ -40,7 +40,7 @@
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
 
-            <template v-slot:item.a8>
+            <template v-slot:item.a5>
               <v-btn
                 title="編輯"
                 class="mr-2"
@@ -52,8 +52,8 @@
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="Delete = true">
-                <v-icon dark>mdi-delete</v-icon>
+               <v-btn fab small color="error" @click="Delete = true">
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
 
@@ -64,11 +64,11 @@
         </v-card>
       </v-col>
 
-      <!-- 新增工班 modal -->
+      <!-- 新增外包廠商資料 modal -->
       <v-dialog v-model="Add" max-width="900px">
         <v-card>
           <v-card-title class="blue white--text px-4 py-1">
-            新增工班
+            新增外包廠商資料
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -80,15 +80,27 @@
               <v-col cols="12">
                 <v-row no-gutter class="indigo--text">
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">監工區(廠/庫)</h3>
+                    <h3 class="mb-1">負責單位</h3>
                     <v-text-field solo value readonly />
                   </v-col>
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">班別(組)</h3>
+                    <h3 class="mb-1">廠商名稱</h3>
                     <v-text-field solo />
                   </v-col>
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">姓名</h3>
+                    <h3 class="mb-1">負責人</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">電話</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">統一編號</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">備註</h3>
                     <v-text-field solo />
                   </v-col>
                 </v-row>
@@ -107,7 +119,7 @@
       <v-dialog v-model="Edit" max-width="900px">
         <v-card>
           <v-card-title class="blue white--text px-4 py-1">
-            編輯資料
+            編輯外包廠商資料
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
@@ -119,15 +131,27 @@
               <v-col cols="12">
                 <v-row no-gutter class="indigo--text">
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">監工區(廠/庫)</h3>
+                    <h3 class="mb-1">負責單位</h3>
                     <v-text-field solo value readonly />
                   </v-col>
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">班別(組)</h3>
+                    <h3 class="mb-1">廠商名稱</h3>
                     <v-text-field solo />
                   </v-col>
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">姓名</h3>
+                    <h3 class="mb-1">負責人</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">電話</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">統一編號</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="4">
+                    <h3 class="mb-1">備註</h3>
                     <v-text-field solo />
                   </v-col>
                 </v-row>
@@ -164,44 +188,62 @@ export default {
   data: () => ({
     Add: false,
     Edit: false,
-    Delete: false,
+      Delete: false,
     pageOpt: { page: 1 },
     tableItems: [
       {
         id: "1",
-        a11: "奮起湖監工區",
-        a10: "1",
+        a11: "服務科",
+        a10: "廠商A",
         a9: "Bill",
+        a8: "(07)333-1234",
+        a7: "",
+        a6: "",
       },
       {
         id: "2",
-        a11: "奮起湖監工區",
-        a10: "1",
+        a11: "服務科",
+        a10: "廠商B",
         a9: "Tom",
+        a8: "(07)333-2222",
+        a7: "",
+        a6: "",
       },
       {
         id: "3",
-        a11: "奮起湖監工區",
-        a10: "2",
+        a11: "服務科",
+        a10: "廠商C",
         a9: "Mom",
+        a8: "(07)333-3333",
+        a7: "",
+        a6: "",
       },
       {
         id: "4",
-        a11: "竹崎監工區",
-        a10: "3",
+        a11: "服務科",
+        a10: "廠商D",
         a9: "May",
+        a8: "(07)333-4444",
+        a7: "",
+        a6: "",
       },
       {
         id: "5",
-        a11: "竹崎監工區",
-        a10: "3",
+        a11: "服務科",
+        a10: "廠商E",
         a9: "Amy",
+        a8: "(07)333-5555",
+        a7: "",
+        a6: "",
       },
       {
         id: "6",
-        a11: "阿里山監工區",
-        a10: "1",
+        a11: "服務科",
+        a10: "廠商F",
         a9: "Peter",
+        a8: "(07)333-6666",
+        a7: "",
+        a6: "",
       },
     ],
     selectdata: ["維修科", "養護科"],
@@ -214,29 +256,50 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "監工區(廠/庫)",
+        text: "負責單位",
         value: "a11",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "班別(組)",
+        text: "廠商名稱",
         value: "a10",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "姓名",
+        text: "負責人",
         value: "a9",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "修改、刪除",
+        text: "電話",
         value: "a8",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "統一編號",
+        value: "a7",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "備註",
+        value: "a6",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "修改、刪除",
+        value: "a5",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",

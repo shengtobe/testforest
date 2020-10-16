@@ -43,10 +43,11 @@
         <v-list-item to="/mmis/work-shift" class="white--text">
             <v-list-item-title>工班管理</v-list-item-title>
         </v-list-item>
+
     </v-list-group>
 
     <!-- 維修外包管理 -->
-    <v-list-item to="/mmis/c" class="white--text">
+    <v-list-item to="/mmis/outsourc-data" class="white--text">
         <v-list-item-title>維修外包管理</v-list-item-title>
     </v-list-item>
 
@@ -75,19 +76,19 @@
             <v-list-item-title class="white--text">報表管理</v-list-item-title>
         </template>
 
-         <v-list-item to="/mmis/e/a" class="white--text">
+         <!-- <v-list-item to="/mmis/e/a" class="white--text">
             <v-list-item-title>故障履歷</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
 
-        <v-list-item to="/mmis/e/b" class="white--text">
+        <v-list-item to="/mmis/repair-time-history" class="white--text">
             <v-list-item-title>維修工時履歷</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/mmis/e/c" class="white--text">
+        <v-list-item to="/mmis/material-history" class="white--text">
             <v-list-item-title>料件履歷</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="/mmis/e/d" class="white--text">
+        <v-list-item to="/mmis/repair-cost" class="white--text">
             <v-list-item-title>維修費用</v-list-item-title>
         </v-list-item>
     </v-list-group>
