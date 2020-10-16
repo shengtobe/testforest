@@ -394,7 +394,7 @@ export const FormCuringRouter = [{
     },
     {
         linkText: '緊急沖淋洗眼設備定期檢查表(月)', // 新增5.
-        path: '/form-manage/curing/drench-shower-eyewash-checklistMonth',
+        path: '/form-manage/curing/drench-shower-eyewash-checklist-month',
         component: () =>
             import ('@/views/formManage/curing/DrenchShowerEyewashChecklistMonth.vue'),
         formGroup: ['curing']

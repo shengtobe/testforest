@@ -289,55 +289,18 @@
                   <img :src="manImg" />
                   <v-spacer />
                 </v-col>
-                <v-alert
-                  dense
-                  border="top"
-                  colored-border
-                  color="teal"
-                  elevation="4"
-                  v-for="(item, idx) in sickPos"
-                  :key="idx"
-                  class="mb-6"
-                >
+                <v-alert dense border="top" colored-border color="teal" elevation="4"
+                  v-for="(item, idx) in sickPos" :key="idx" class="mb-6">
                   <v-row no-gutter>
                     <v-col cols="12" sm="4">{{ item.question }}</v-col>
                     <v-col cols="12" sm="8">
-                      <v-radio-group
-                        dense
-                        row
-                        class="pa-0 ma-0"
-                        v-model="ipt.sickPos[idx].pos"
-                      >
-                        <v-radio
-                          color="success"
-                          label="[不痛]，關節可以自由活動"
-                          value="1"
-                        />
-                        <v-radio
-                          color="orange"
-                          label="[微痛]，關節活動到極限會酸痛，可以忽略"
-                          value="2"
-                        />
-                        <v-radio
-                          color="orange"
-                          label="[中等疼痛]，關節活動超過一半會酸痛，但是可以完成全部活動範圍，可能影響工作"
-                          value="3"
-                        />
-                        <v-radio
-                          color="red"
-                          label="[劇痛]，關節活動只有正常人的一半，會影響工作"
-                          value="4"
-                        />
-                        <v-radio
-                          color="red"
-                          label="[非常劇痛]，關節活動只有正常人的1/4，影響自主活動能力"
-                          value="5"
-                        />
-                        <v-radio
-                          color="red"
-                          label="[極度劇痛]，身體完全無法自主活動"
-                          value="6"
-                        />
+                      <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.sickPos[idx].pos">
+                        <v-radio color="success" label="[不痛]，關節可以自由活動" value="1"/>
+                        <v-radio color="orange" label="[微痛]，關節活動到極限會酸痛，可以忽略" value="2" />
+                        <v-radio color="orange" label="[中等疼痛]，關節活動超過一半會酸痛，但是可以完成全部活動範圍，可能影響工作" value="3" />
+                        <v-radio color="red" label="[劇痛]，關節活動只有正常人的一半，會影響工作" value="4"/>
+                        <v-radio color="red" label="[非常劇痛]，關節活動只有正常人的1/4，影響自主活動能力" value="5"/>
+                        <v-radio color="red" label="[極度劇痛]，身體完全無法自主活動" value="6"/>
                       </v-radio-group>
                     </v-col>
                   </v-row>

@@ -25,13 +25,9 @@
               />
             </v-menu>
           </v-col>
-          <v-col cols="12" sm="3">
-            <h3 class="mb-1">天氣</h3>
-            <v-select dense single-line :items="Weather" outlined />
-          </v-col>
-          <v-col cols="12" sm="3">
-            <h3 class="mb-1">現場工作負責人職稱</h3>
-            <v-text-field dense single-line outlined />
+          <v-col cols="12" sm="2">
+            <h3 class="mb-1">橋梁編號</h3>
+            <v-text-field dense single-line outlined value="1"></v-text-field>
           </v-col>
           <v-col cols="12" sm="3">
             <h3 class="mb-1">姓名</h3>
@@ -404,8 +400,8 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
-      title: "鐵路維護科工作日誌",
-      newText: "工作日誌",
+      title: "橋梁目視安全檢查表",
+      newText: "檢查表",
       // 自定義變數
       CheckdayOn: "",
       QueryCheckdayOn: "",
