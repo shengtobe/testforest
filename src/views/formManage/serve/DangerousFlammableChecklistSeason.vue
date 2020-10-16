@@ -1,10 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-<<<<<<< HEAD
-    <h2 class="mb-4 px-2">危險品、易燃品儲存安全定期檢查表(三個月)</h2>
-=======
     <h2 class="mb-4 px-2">{{ title }}</h2>
->>>>>>> develop
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">

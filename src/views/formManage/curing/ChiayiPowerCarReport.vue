@@ -111,11 +111,7 @@
       <v-card>
         <!-- 標題 -->
         <v-card-title class="blue white--text px-4 py-1">
-<<<<<<< HEAD
-          新增嘉義車庫動力車狀態日報表
-=======
           新增{{ title }}
->>>>>>> develop
           <v-spacer />
           <v-btn dark fab small text @click="closeAddModal" class="mr-n2">
             <v-icon>mdi-close</v-icon>
