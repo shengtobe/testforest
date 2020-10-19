@@ -51,6 +51,10 @@
 
                     <template v-slot:loading>
                         <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>codes
+
+                    <template v-slot:item.codes="{ item }">
+                        {{ item.code1 }}-{{ item.code2 }}-{{ item.code3 }}
                     </template>
 
                     <template v-slot:item.serious="{ item }">
@@ -67,7 +71,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
-                            @click="redirect(item)"
+                            :to="`/smis/jobsafety/disasterdb/${item.id}/show`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -101,7 +105,7 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'codes', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '作業名稱', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '風險可能性', value: 'possibility', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -138,6 +142,9 @@ export default {
                 this.tableItems = [
                     {
                         id: '111',
+                        code1: '12047',  // 編號-第1段
+                        code2: '22',  // 編號-第2段
+                        code3: '16',  // 編號-第3段
                         name: '堆高機作業',  // 作業名稱
                         serious: 'S3',  // 風險嚴重性
                         possibility: 'P3',  // 風險可能性
