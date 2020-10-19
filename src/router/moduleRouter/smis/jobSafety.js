@@ -69,9 +69,14 @@ export const JobSafetyRouter = [
         component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
     },
     {
-        linkText: '職災危害資料詳細內容',
+        linkText: '職災危害資料詳庫細內容',
         path: '/smis/jobsafety/disasterdb/:id/show', 
         component: () => import('@/views/smis/jobSafety/disasterDb/Show.vue')
+    },
+    {
+        linkText: '編輯職災危害資料庫',
+        path: '/smis/jobsafety/disasterdb/:id/edit', 
+        component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
     },
 
     // ----------------- 職安績效管理 -----------------
