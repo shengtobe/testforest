@@ -478,7 +478,7 @@ export default {
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
-          text: "詳細 ",
+          text: "詳細",
           value: "ViewTicket",
           align: "center",
           divider: true,
