@@ -458,3 +458,15 @@ export const safeDocs = [
         updateTime: '2020-01-06 09:10:00',
     },
 ]
+
+// 職安績效-科室職災事故統計
+export const departAccidentChartData = {
+    // x 軸標題 (過去12個月)
+    labels: ['維護科', '服務科', '養護科', '秘書室'],
+    
+    // 件數
+    counter: [12, 11, 4, 1],
+
+    // 公傷假
+    loss: [339.5, 265.5, 74, 6]
+}

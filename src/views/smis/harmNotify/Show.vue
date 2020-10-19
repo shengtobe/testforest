@@ -61,7 +61,7 @@
         </v-col>
     </v-row>
     
-    <v-row class="my-8">
+    <v-row class="mt-8 mb-4">
         <v-col cols="12">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>回覆處理
@@ -100,11 +100,14 @@
         </v-col>
     </v-row>
 
-    <v-divider></v-divider>
+    <v-divider
+        v-if="!replay.replied"
+        class="mb-3"
+    ></v-divider>
 
     <!-- 立案處理 -->
-    <div class="my-12">
-        <h3 class="mb-1">
+    <v-row class="px-2 mb-12">
+        <!-- <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-database-plus</v-icon>立案處理
         </h3>
         
@@ -199,25 +202,47 @@
                     ></v-text-field>
                 </v-col>
             </v-row>
-        </v-sheet>
+        </v-sheet> -->
 
-        <v-col cols="12" class="text-center">
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>以行安立案
+            </h3>
+            <v-select
+                v-model="carSafeType"
+                :items="carSafeTypeOpt"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>以職安立案
+            </h3>
+            <v-select
+                v-model="jobSafeType"
+                :items="jobSafeTypeOpt"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" class="text-center mt-8">
             <v-btn dark class="mr-4"
                 to="/smis/harmnotify/audit"
             >回搜尋頁</v-btn>
 
-            <v-btn dark color="teal" class="mr-4"
-                @click="copy"
-            >複製通報</v-btn>
+            <v-btn dark color="purple" class="mr-4"
+                @click="nocreate"
+            >不立案</v-btn>
 
             <v-btn dark color="success"
                 @click="save"
             >確定立案</v-btn>
         </v-col>
-    </div>
+    </v-row>
 
     <!-- dialog - 行車事故事件 -->
-    <NotifyEvtDialog
+    <!-- <NotifyEvtDialog
         :id="routeId"
         :dialogShow="dialogShow.carEvt"
         :headers="headers.carEvt"
@@ -225,20 +250,20 @@
         dialog="carEvt"
         @closeShow="dialogShow.carEvt = false"
         @connect="connect"
-    />
+    /> -->
 
     <!-- dialog - 行車危害 -->
-    <NotifyHarmDialog
+    <!-- <NotifyHarmDialog
         :id="routeId"
         :dialogShow="dialogShow.carHarm"
         :headers="headers.carHarm"
         dialog="carHarm"
         @closeShow="dialogShow.carHarm = false"
         @connect="connect"
-    />
+    /> -->
 
     <!-- dialog - 職災事故 -->
-    <NotifyEvtDialog
+    <!-- <NotifyEvtDialog
         :id="routeId"
         :dialogShow="dialogShow.jobEvt"
         :headers="headers.jobEvt"
@@ -246,17 +271,17 @@
         dialog="jobEvt"
         @closeShow="dialogShow.jobEvt = false"
         @connect="connect"
-    />
+    /> -->
 
     <!-- dialog - 職災危害 -->
-    <NotifyHarmDialog
+    <!-- <NotifyHarmDialog
         :id="routeId"
         :dialogShow="dialogShow.jobHarm"
         :headers="headers.jobHarm"
         dialog="jobHarm"
         @closeShow="dialogShow.jobHarm = false"
         @connect="connect"
-    />
+    /> -->
 </v-container>
 </template>
 
@@ -361,6 +386,22 @@ export default {
         },
         noActionShow: false,  // 不予處理原因欄位是否顯示
         noActionReason: '',  // 不予處理原因
+        carSafeType: '',  // 行安
+        jobSafeType: '',  // 職安
+        carSafeTypeOpt: [  // 行安下拉選單
+            { text: '不選擇', value: '' }, 
+            { text: '新增行安事故', value: 'A' }, 
+            { text: '既有行安事故', value: 'B' }, 
+            { text: '新增行安危害', value: 'C' }, 
+            { text: '既有行安危害', value: 'D' }, 
+        ],
+        jobSafeTypeOpt: [  // 職安下拉選單
+            { text: '不選擇', value: '' }, 
+            { text: '新增職災事故', value: 'A' }, 
+            { text: '既有職災事故', value: 'B' }, 
+            { text: '新增職安危害', value: 'C' }, 
+            { text: '既有職安危害', value: 'D' }, 
+        ],
     }),
     components: {
         TopBasicTable,
@@ -561,13 +602,13 @@ export default {
             this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
             this.$router.push({ path: '/smis/jobsafety/disaster-survey-add' })
         },
-        // 複製通報
-        copy() {
-            if (confirm('你確定要複製通報嗎?')) {
+        // 不立案
+        nocreate() {
+            if (confirm('你確定要不立案嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '已複製了一筆通報'})
+                    this.chMsgbar({ success: true, msg: '不立案成功'})
                     this.chLoadingShow()
                 }, 1000)
             }

@@ -85,6 +85,16 @@ export const JobSafetyRouter = [
         path: '/smis/jobsafety/performance',
         component: () => import('@/views/smis/jobSafety/performance/Index.vue')
     },
+    {
+        linkText: '職災傷害類型統計',
+        path: '/smis/jobsafety/performance/harm-type-chart',
+        component: () => import('@/views/smis/jobSafety/performance/HarmTypeChart.vue')
+    },
+    {
+        linkText: '科室職災事故統計',
+        path: '/smis/jobsafety/performance/depart-accident-chart',
+        component: () => import('@/views/smis/jobSafety/performance/DepartAccidentChart.vue')
+    },
 
     // ----------------- 健檢管理 -----------------
     {
