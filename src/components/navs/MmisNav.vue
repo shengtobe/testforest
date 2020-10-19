@@ -32,10 +32,6 @@
             <v-list-item-title class="white--text">設備維修管理</v-list-item-title>
         </template>
 
-        <v-list-item to="/mmis/fault-maintenance" class="white--text">
-            <v-list-item-title>故障、保養工單</v-list-item-title>
-        </v-list-item>
-
         <v-list-item to="/mmis/periodicity-job" class="white--text">
             <v-list-item-title>週期性工作提醒</v-list-item-title>
         </v-list-item>

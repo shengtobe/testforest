@@ -22,12 +22,6 @@ export const MmisRouter = [
     },
     // ------ 設備維修管理 ------ 
     {
-        linkText: '故障、保養工單',
-        path: '/mmis/fault-maintenance',
-        component: () =>
-            import ('@/views/mmis/FaultMaintenance.vue')
-    },
-    {
         linkText: '週期性工作提醒',
         path: '/mmis/periodicity-job',
         component: () =>
