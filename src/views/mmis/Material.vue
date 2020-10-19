@@ -72,7 +72,7 @@
         </v-card>
       </v-col>
       <!-- 詳細資料 -->
-      <v-dialog v-model="contentShow" max-width="500px">
+      <v-dialog v-model="contentShow" max-width="900px">
         <v-card>
           <v-card-title class="yellow darken-1 px-4 py-1">
             詳細資料
@@ -463,7 +463,21 @@ export default {
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
-          text: "詳細資料",
+          text: " 安全庫存數量",
+          value: "Stock",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "本月結存數量",
+          value: "Balance",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "詳細",
           value: "ViewTicket",
           align: "center",
           divider: true,
