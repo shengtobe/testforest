@@ -8,7 +8,7 @@
       <!-- 控制措施 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-bank</v-icon>部門
+          <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
         </h3>
         <v-select solo hide-details />
       </v-col>
@@ -49,6 +49,7 @@
             </template>
 
             <!-- 本月結存數量小於安全庫存量時，系統會特以紅色底色標註提醒使用者 -->
+            
             <template v-slot:item.ViewTicket="{ item }">
               <v-btn fab small dark color="teal" @click="view(item)">
                 <v-icon>mdi-file-document</v-icon>
@@ -388,9 +389,9 @@ export default {
           LastBalance: "",
           Paid: "",
           Receiving: "",
-          Balance: "",
-          Stock: "",
-          UnitPrice: "",
+          Balance: 999,
+          Stock: 900,
+          UnitPrice: "20",
           Remarks: "列入魚尾鈑螺絲組",
         },
         {
