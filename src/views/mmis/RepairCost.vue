@@ -114,7 +114,7 @@
     </v-row>
 
     <!-- 檢視工單 -->
-    <v-dialog v-model="contentShow" max-width="500px">
+    <v-dialog v-model="contentShow" max-width="900px">
       <v-card>
         <v-card-title class="yellow darken-1 px-4 py-1">
           檢視工單
