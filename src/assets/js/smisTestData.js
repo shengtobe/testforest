@@ -470,3 +470,12 @@ export const departAccidentChartData = {
     // 公傷假
     loss: [339.5, 265.5, 74, 6]
 }
+
+// 職安績效-職災傷害類型統計
+export const harmTypeChartData = {
+    // x 軸標題
+    labels: ['被夾', '物體飛落', '交通事故', '跌倒'],
+    
+    // 資料
+    data: [12, 30, 18, 40],
+}

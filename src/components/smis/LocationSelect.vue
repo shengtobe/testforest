@@ -58,6 +58,7 @@
             <v-radio label="北門" color="success" value="t2" class="mb-2"></v-radio>
             <v-radio label="鹿滿" color="success" value="t3" class="mb-2"></v-radio>
             <v-radio label="竹崎" color="success" value="t4" class="mb-2"></v-radio>
+            <v-radio label="木屐寮" color="success" value="t4-2" class="mb-2"></v-radio>
             <v-radio label="樟腦寮" color="success" value="t5" class="mb-2"></v-radio>
             <v-radio label="獨立山" color="success" value="t6" class="mb-2"></v-radio>
             <v-radio label="梨園寮" color="success" value="t7" class="mb-2"></v-radio>
