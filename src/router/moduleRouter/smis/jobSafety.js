@@ -74,7 +74,7 @@ export const JobSafetyRouter = [
         component: () => import('@/views/smis/jobSafety/disasterDb/Show.vue')
     },
     {
-        linkText: '編輯職災危害資料庫',
+        linkText: '職災危害資料庫編輯',
         path: '/smis/jobsafety/disasterdb/:id/edit', 
         component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
     },
@@ -101,6 +101,26 @@ export const JobSafetyRouter = [
         linkText: '健檢管理查詢',
         path: '/smis/jobsafety/physical',  // 首頁
         component: () => import('@/views/smis/jobSafety/physical/Search.vue')
+    },
+    {
+        linkText: '個人健檢資料列表',
+        path: '/smis/jobsafety/physical/:id/list',
+        component: () => import('@/views/smis/jobSafety/physical/List.vue')
+    },
+    {
+        linkText: '個人健檢資料新增',
+        path: '/smis/jobsafety/physical/:id/add', 
+        component: () => import('@/views/smis/jobSafety/physical/Form.vue')
+    },
+    {
+        linkText: '個人健檢資料詳細內容',
+        path: '/smis/jobsafety/physical/:sid/show', 
+        component: () => import('@/views/smis/jobSafety/physical/Show.vue')
+    },
+    {
+        linkText: '個人健檢資料編輯',
+        path: '/smis/jobsafety/physical/:id/edit/:sid', 
+        component: () => import('@/views/smis/jobSafety/physical/Form.vue')
     },
 
     // ----------------- 證照管理 -----------------
