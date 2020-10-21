@@ -55,14 +55,18 @@
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          to="/form-manage/maintain/railway-visual-safety-checklist-add"
-        >
+      </v-col>
+
+      <v-col cols="12" sm="3" md="3"/>
+      
+      <v-col cols="12" sm="3" >
+        <h3 id="mb-1"><v-icon class="mr-1">mdi-plus</v-icon>新增</h3>
+        <v-select id="s01" solo style="width:180px;" placeholder="橋梁編號" return-object dense single-line 
+        :items="sbjNum" outlined @change="s01Change"/>
+      </v-col>
+      <v-col cols="12" sm="3" >
+        <v-btn style="margin-top:10%" class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8" color="indigo" elevation="3" dark large 
+        @click="btnNew">
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
@@ -120,13 +124,14 @@ export default {
       title: "橋梁目視安全檢查表",
       newText: "檢查表",
       // 自定義變數
+      n01: "0",
       CheckdayOn: "",
       QueryCheckdayOn: "",
       CheckdayOff: "",
       QueryCheckdayOff: "",
       AddWorkLogModal: false,
       MaintenanceDay: "",
-      Weather: ["晴天", "陰天", "雨天"],
+      sbjNum: [],
       AddData: {
         // 新增表單資料
         MaintenanceDay: "", // 保養日
@@ -187,10 +192,30 @@ export default {
     };
   },
   components: { Pagination }, // 頁碼
+  created:function(){
+    var i = 1;
+    for(i; i <= 26; i++ ){
+      this.sbjNum.push("編號" + i);
+    }
+  },
   methods: {
     // 更換頁數
     chPage(n) {
+      
       this.pageOpt.page = n;
+    },
+    s01Change(selectObj){
+      console.log("select is changed >> " + selectObj);
+      this.n01 = selectObj.substr(2);
+    },
+    btnNew(){
+      console.log("Add new form btn is pressed");
+      if(this.n01 != "0"){
+        this.$router.push('/form-manage/maintain/bridge-visual-safety-checklist-add')
+      }
+      else{
+        window.alert("請選擇橋梁編號");
+      }
     },
     // 新增監工區塊欄位
     addSupervisor() {},
