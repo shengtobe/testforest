@@ -11,36 +11,6 @@
         <!-- 下面的欄位 -->
         <BottomTableNoIcon :items="bottomItems" />
 
-        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        本項工作經驗年數
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ workYear }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故單位防範及改善對策
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="improveStrategy"
-                ></v-col>
-            </v-row>
-        </v-col> -->
-
         <v-col cols="12" class="text-center mb-8">
             <v-btn dark class="mr-3"
                 :to="`/smis/jobsafety/physical/${pid}/list`"
@@ -85,34 +55,6 @@ export default {
             level: { icon: 'mdi-elevation-rise', title: '健檢評級', text: '' },
         },
         bottomItems: [],  // 下面的欄位
-        // heigh: '',  // 身高(cm)
-        // weight: '',  // 體重(kg)
-        // systolicBlood: '',  // 血壓收縮壓(mmHg)
-        // diastolicBlood: '',  // 血壓舒張壓(mmHg)
-        // pulse: '',  // 脈搏(次/分鐘)
-        // waistline: '',  // 腰圍(cm)
-        // vision: '',  // 視力
-        // hearing: '',  // 聽力
-        // urineProtein: 1,  // 尿蛋白
-        // urineBlood: 1,  // 尿潛血
-        // whiteBlood: '',  // 白血球數(個/ul)
-        // hemoglobin: '',  // 血色素(g/dL)
-        // chestXray: '',  // 胸部 X 光
-        // gpt: '',  // GPT(U/L)
-        // BLiver: '',  // B 肝抗原
-        // uricAcid: '',  // 尿酸(mg/dL)
-        // creatinine: '',  // 肌酸酐(mg/dL)
-        // cholesterol: '',  // 膽固醇(mg/dL)
-        // hdl: '',  // HDL(mg/dL)
-        // ldl: '',  // LDL(mg/dL)
-        // triglyceride: '',  // 三酸甘油酯(mg/dL)
-        // bloodSugar: '',  // 飯前血糖(mg/dL)
-        // egc: '',  // 運動心電圖
-        // note: '',  // 應處理及注意事項
-        // doctorName: '',  // 醫師姓名
-        // hospitalName: '',  // 醫療機構名稱
-        // hospitalAddr: '',  // 醫療機構地址
-        // hospitalPhone: '',  // 醫療機構電話
     }),
     components: {
         TopBasicTable,

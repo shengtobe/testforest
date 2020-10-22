@@ -5,7 +5,7 @@
     <v-row class="px-2 mb-8">
         <v-col cols="12">
             <v-btn dark large class="my-2 mr-2"
-                :to="`/smis/jobsafety/physical`"
+                to="/smis/jobsafety/physical"
             >回搜尋頁</v-btn>
 
             <v-btn color="indigo" dark large class="ma-2"
