@@ -97,14 +97,14 @@ export default {
                 this.name = '王小明'
                 this.tableItems = [
                     {
-                        id: '111',
+                        id: '789',
                         depart: 'd2', 
                         name: '王小明',
                         date: '2020-05-01',
                         level: '1級',
                     },
                     {
-                        id: '222',
+                        id: '658',
                         depart: 'd2', 
                         name: '王小明',
                         date: '2019-04-20',

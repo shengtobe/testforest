@@ -481,6 +481,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { jobUrineOpts } from '@/assets/js/smisData'
 
 export default {
     data: () => ({
@@ -535,22 +536,8 @@ export default {
             physicalDate: false,  // 檢查日期
         },
         opts: {  // 下拉選單
-            urineProtein: [  // 尿蛋白
-                { text: '-', value: 1 },
-                { text: '+/-', value: 2 },
-                { text: '+', value: 3 },
-                { text: '++', value: 4 },
-                { text: '+++', value: 5 },
-                { text: '++++', value: 6 },
-            ],
-            urineBlood: [  // 尿潛血
-                { text: '-', value: 1 },
-                { text: '+/-', value: 2 },
-                { text: '+', value: 3 },
-                { text: '++', value: 4 },
-                { text: '+++', value: 5 },
-                { text: '++++', value: 6 },
-            ],
+            urineProtein: jobUrineOpts,
+            urineBlood: jobUrineOpts,
         },
     }),
     watch: {
@@ -630,7 +617,7 @@ export default {
                     sessionStorage.removeItem('pdataItem')  // 清除 sessionStorage
                 } else {
                     // 若無 sessionStorage 則導回搜尋頁
-                    // this.$router.push({ path: '/smis/jobsafety/physical' })
+                    this.$router.push({ path: '/smis/jobsafety/physical' })
                 }
             }
         },

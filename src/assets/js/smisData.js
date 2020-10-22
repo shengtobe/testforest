@@ -383,3 +383,13 @@ export const jobLevelOpts = [
     { text: '高度風險 (R4)', value: 'R4' },
     { text: '非常高度風險 (R5)', value: 'R5' },
 ]
+
+// 職安-尿蛋白、尿潛血
+export const jobUrineOpts = [
+    { text: '-', value: 1 },
+    { text: '+/-', value: 2 },
+    { text: '+', value: 3 },
+    { text: '++', value: 4 },
+    { text: '+++', value: 5 },
+    { text: '++++', value: 6 },
+]
