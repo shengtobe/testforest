@@ -1,3 +1,0 @@
-<template>
-<p>工作日誌</p>
-</template>

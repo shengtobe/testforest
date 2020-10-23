@@ -2667,7 +2667,6 @@
 </template>
 
 <script>
-import RepairAnalysisNavVue from '../../../components/navs/RepairAnalysisNav.vue';
 export default {
   data: () => ({
     title: "職場不法侵害預防之危害辨識及風險評估表",

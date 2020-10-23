@@ -153,6 +153,56 @@
                 ></v-text-field>
             </v-col>
 
+            <!-- 設備標示編號 -->
+            <v-row class="px-2 mb-6">
+                <v-col cols="12">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
+                        <span class="red--text">*</span>
+                    </h3>
+                    {{ ipt.eqNumber1 }}-{{ ipt.eqNumber2 }}-{{ ipt.eqNumber3 }}-{{ ipt.eqNumber4 }}
+                </v-col>
+
+                <v-col cols="12" sm="6" md="3">
+                    <v-select solo
+                        v-model="ipt.eqNumber1"
+                        :items="eqCodes.opt1"
+                        :background-color="ipt.errorEqNumber1"
+                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                    ></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="3">
+                    <v-select solo
+                        v-model="ipt.eqNumber2"
+                        :items="eqCodes.opt2"
+                        :background-color="ipt.errorEqNumber2"
+                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        :disabled="disableLv2"
+                    ></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="3">
+                    <v-select solo
+                        v-model="ipt.eqNumber3"
+                        :items="eqCodes.opt3"
+                        :background-color="ipt.errorEqNumber3"
+                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        :disabled="disableLv3"
+                    ></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="3">
+                    <v-select solo
+                        v-model="ipt.eqNumber4"
+                        :items="eqCodes.opt4"
+                        :background-color="ipt.errorEqNumber4"
+                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        :disabled="disableLv4"
+                    ></v-select>
+                </v-col>
+            </v-row>
+
             <!-- 請修項目 -->
             <v-col cols="12">
                 <h3 class="mb-1">
@@ -322,6 +372,8 @@
 <script>
 import { mapActions } from 'vuex'
 import { serveNewListExecl } from '@/apis/workList/serve'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '@/apis/workList/maintain'
 
 export default {
     data: () => ({
@@ -338,6 +390,10 @@ export default {
             noticeMethod: '',  // 通知方式
             noticeMember: '',  // 通知人
             noticeLocation: '',  // 通報維修地點及事項
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber4: '',  // 設備標示編號4
             items: [],  // 請修項目
         },
         dateMenuShow: {  // 日期選單是否顯示
@@ -366,12 +422,48 @@ export default {
             count: 1,
             price: 0
         },
+        eqCodes: {
+            opt1: [],  // 設備標示編號下拉選單-第1組
+            opt2: [],  // 設備標示編號下拉選單-第2組
+            opt3: [],  // 設備標示編號下拉選單-第3組
+            opt4: [],  // 設備標示編號下拉選單-第4組
+        },
+        // 設備標示編號下拉選單是否禁用
+        disableLv2: true,
+        disableLv3: true,
+        disableLv4: true,
     }),
     computed: {
         // 全部的總金額
         totalMoney() {
             return this.ipt.items.reduce((a,b)=>a + b.count * b.price, 0)
-        }
+        },
+    },
+    watch: {
+        // 換一個選項，向後端抓下一層的報修碼
+        'ipt.eqNumber1': function(newVal) {
+            if (newVal != '') {
+                this.ipt.eqNumber2 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                this.disableLv2 = false
+                this.disableLv3 = this.disableLv4 = true
+                this.fetchEqCodes(newVal, 2)
+            }
+        },
+        'ipt.eqNumber2': function(newVal) {
+            if (newVal != '') {
+                this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                this.disableLv3 = false
+                this.disableLv4 = true
+                this.fetchEqCodes(newVal, 3)
+            }
+        },
+        'ipt.eqNumber3': function(newVal) {
+            if (newVal != '') {
+                this.ipt.eqNumber4 = ''
+                this.disableLv4 = false
+                this.fetchEqCodes(newVal, 4)
+            }
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -379,7 +471,7 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 初始化
-        initData() {
+        async initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
             this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
             
@@ -423,6 +515,14 @@ export default {
                     this.setInitDate(obj)
                     this.chLoadingShow()
                 }, 1000)
+            }
+
+            // 向後端請求第一層設備標示編號
+            try {
+                let codeRes = await fetchEqCodeLv1({ ClientReqTime: getNowFullTime() })  // 取得設備標示編號
+                this.setEqCodeOption(codeRes.data.device_query, 'opt1')  // 初始化設備標示編號第一組檢修碼下拉選單
+            } catch (err) {
+                alert('設備報修資料取得失敗')
             }
         },
         // 設定資料(編輯時)
@@ -484,7 +584,39 @@ export default {
                     this.chLoadingShow()
                 }, 1000)
             // }
-        }
+        },
+        // 初始化設備標示編號
+        // codeArr: 後端傳的報修碼陣列, opt: 要設定在哪一組下拉選單(op1~4)
+        setEqCodeOption(codeArr, opt) {
+            this.eqCodes[opt] = codeArr.map(item => {
+                return {
+                    text: item.CodeDescript,
+                    value: item.DeviceCode
+                }
+            })
+        },
+        // 向後端請求設備標示編號
+        // val: 上層所選的值, lv: 要向後端取得的層數 (2~4)
+        async fetchEqCodes(val, lv) {
+            this.chLoadingShow()
+            let codeRes = {}
+            switch(lv) {
+                case 2:
+                    codeRes = await fetchEqCodeLv2({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    break
+                case 3:
+                    codeRes = await fetchEqCodeLv3({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    break
+                case 4:
+                    codeRes = await fetchEqCodeLv4({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    break
+                default:
+                    break
+            }
+
+            this.setEqCodeOption(codeRes.data.device_query, 'opt'+ lv)
+            this.chLoadingShow()
+        },
     },
     created () {
         this.initData()

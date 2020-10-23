@@ -10,7 +10,7 @@
     </template>
 
     <v-list-item to="/monitor/slope-monitor" class="white--text">
-        <v-list-item-title>顛坡監控</v-list-item-title>
+        <v-list-item-title>邊坡監控</v-list-item-title>
     </v-list-item>
 
     <v-list-item to="/monitor/rainfall-monitor" class="white--text">

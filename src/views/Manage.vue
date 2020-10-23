@@ -22,18 +22,6 @@
     <MmisNav />
     <v-divider></v-divider>
 
-    <!-- <EqInfoNav />
-    <v-divider></v-divider>
-
-    <EqRepairNav />
-    <v-divider></v-divider>
-
-    <EqRepairOutNav />
-    <v-divider></v-divider>
-
-    <RepairAnalysisNav />
-    <v-divider></v-divider> -->
-
     <WorkListNav />
     <v-divider></v-divider>
 
@@ -50,27 +38,6 @@
 
     <!-- 監控系統 -->
     <MonitorNav />
-    <v-divider></v-divider>
-    <!-- <v-list-item to="/monitor" class="white--text">
-      <v-list-item-icon>
-        <v-icon>mdi-eye</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>監控系統</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <v-divider></v-divider> -->
-
-    <!-- 證照管理，先放這 -->
-    <!-- <v-list-item to="/license" class="white--text">
-      <v-list-item-icon>
-        <v-icon>mdi-file-multiple</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-          <v-list-item-title>證照管理</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <v-divider></v-divider> -->
   </v-navigation-drawer>
 
 
@@ -105,10 +72,6 @@ import ProfileNav from '@/components/navs/ProfileNav.vue'
 import AccessNav from '@/components/navs/AccessNav.vue'
 import SmisNav from '@/components/navs/SmisNav.vue'
 import MmisNav from '@/components/navs/MmisNav.vue'
-// import EqInfoNav from '@/components/navs/EqInfoNav.vue'
-// import EqRepairNav from '@/components/navs/EqRepairNav.vue'
-// import EqRepairOutNav from '@/components/navs/EqRepairOutNav.vue'
-// import RepairAnalysisNav from '@/components/navs/RepairAnalysisNav.vue'
 import WorkListNav from '@/components/navs/WorkListNav.vue'
 import MonitorNav from '@/components/navs/MonitorNav.vue'
 
@@ -126,10 +89,6 @@ export default {
     ProfileNav,  // (sidebar) 個人資訊管理
     AccessNav,  // (sidebar) 權限管理
     SmisNav,  // (sidebar) SMIS
-    // EqInfoNav,  // (sidebar) 設備資料管理
-    // EqRepairNav,  // (sidebar) 設備維修管理
-    // EqRepairOutNav,  // (sidebar) 設備維修外包
-    // RepairAnalysisNav,  // (sidebar) 維修統計分析
     MmisNav,  // (sidebar) 設備養護
     WorkListNav,  // (sidebar) 工單
     MonitorNav,  // 監控系統
