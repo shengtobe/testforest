@@ -20,12 +20,15 @@
         <v-text-field solo placeholder="請輸入關鍵字" />
       </v-col>
 
-      <v-col cols="12" md="3" align-self="center">
+      <v-col cols="12" md="6" align-self="center">
         <v-btn color="green" dark large>
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn color="indigo" dark large class="ml-2" @click="Add = true">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
+        </v-btn>
+        <v-btn color="pink lighten-2" dark large class="ml-2" @click="Del = true">
+          <v-icon class="mr-1">mdi-pencil-off</v-icon>移存申請單
         </v-btn>
       </v-col>
 
@@ -44,16 +47,17 @@
               <span class="red--text subtitle-1">沒有資料</span>
             </template>
 
-            <template v-slot:loading>
-              <span class="red--text subtitle-1">資料讀取中...</span>
-            </template>
-
             <!-- 本月結存數量小於安全庫存量時，系統會特以紅色底色標註提醒使用者 -->
-            
+            <!--  style="background: #ff9999;" -->
             <template v-slot:item.ViewTicket="{ item }">
               <v-btn fab small dark color="teal" @click="view(item)">
                 <v-icon>mdi-file-document</v-icon>
               </v-btn>
+            </template>
+
+            <template v-slot:item.Balance="{ item }">
+              <div v-if="item.Balance < item.Stock" style="background: #ff9999;">{{ item.Balance }}</div>
+              <span v-else>{{ item.Balance }}</span>
             </template>
 
             <template v-slot:item.a8>
@@ -89,7 +93,7 @@
                 <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>
                 監工區(廠/庫)： {{ content.Position }}
               </v-col>
-              
+
               <v-col cols="12">
                 <v-divider class="mt-2 mb-3" />
               </v-col>
@@ -254,7 +258,7 @@
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+            <v-btn color="success" elevation="4" @click="save">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -335,7 +339,7 @@
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
+            <v-btn color="success" elevation="4">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -350,6 +354,74 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <!-- 移存申請單 modal -->
+      <v-dialog v-model="Del" max-width="500px">
+        <v-card>
+          <v-card-title class="blue white--text px-4 py-1">
+            移存申請單
+            <v-spacer />
+            <v-btn dark fab small text @click="close" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+
+          <div class="px-6 py-4">
+            <v-row>
+              <!-- 檢查項目 -->
+              <v-col cols="12">
+                <v-row no-gutter class="indigo--text">
+                  <v-col cols="12" sm="6">
+                    <h3 class="mb-1">移出單位</h3>
+                    <v-select solo hide-details />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <h3 class="mb-1">呈核人</h3>
+                    <v-select solo hide-details />
+                  </v-col>
+                  <v-col cols="12">
+                    <h3 class="mb-1">
+                      <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>料件名稱
+                    </h3>
+                    <v-row>
+                      <v-col cols="12" sm="3">
+                        <v-text-field hide-details solo />
+                      </v-col>
+
+                      <v-col cols="12" sm="3">
+                        <v-text-field hide-details solo />
+                      </v-col>
+
+                      <v-col cols="12" sm="3">
+                        <v-text-field hide-details solo />
+                      </v-col>
+
+                      <v-col cols="12" sm="3">
+                        <v-text-field hide-details solo />
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  
+                  <v-col cols="12" sm="6">
+                    <h3 class="mb-1">申請單位</h3>
+                    <v-text-field solo />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <h3 class="mb-1">申請人</h3>
+                    <v-text-field solo />
+                  </v-col>
+                </v-row>
+              </v-col>
+              <!-- END 檢查項目 -->
+            </v-row>
+          </div>
+
+          <v-card-actions class="px-5 pb-5">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+            <v-btn color="success" elevation="4" @click="save">送出</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
   </v-container>
 </template>
@@ -360,6 +432,7 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      ddd: 0,
       pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數
       tableItems: [
         {
@@ -497,6 +570,7 @@ export default {
       Add: false,
       Edit: false,
       Delete: false,
+      Del: false,
       snack: false,
       snackColor: "",
       snackText: "",
@@ -505,6 +579,7 @@ export default {
   components: {
     Pagination,
   },
+  computed: {},
   methods: {
     // 更換頁數
     chPage(n) {
@@ -530,6 +605,7 @@ export default {
       this.Add = false;
       this.Edit = false;
       this.Delete = false;
+      this.Del = false;
     },
     // 顯示詳細資訊
     view(item) {
@@ -540,3 +616,9 @@ export default {
   created() {},
 };
 </script>
+
+<style>
+.ddf table tbody tr td {
+  background: #ff9999;
+}
+</style>
