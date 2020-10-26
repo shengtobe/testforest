@@ -85,7 +85,7 @@
             </v-row>
         </v-col>
 
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
@@ -97,6 +97,41 @@
 
                 <v-col class="white pa-3">{{ totalHour }} 小時</v-col>
             </v-row>
+        </v-col> -->
+
+        <!-- 請修項目 -->
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>請修項目
+            </h3>
+
+            <v-card flat>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+                
+                    <!-- 插入 total 欄位做每筆的總計 -->
+                    <template v-slot:item.total="{ item }">
+                        <span>{{ item.count * item.price }}</span>
+                    </template>
+
+                    <template v-slot:footer>
+                        <v-divider></v-divider>
+
+                        <p class="py-2 text-center">
+                            總工時： <span class="blue--text mr-5">{{ totalHour }}</span>
+                            總金額： <span class="red--text">{{ totalMoney }}</span>
+                        </p>
+                    </template>
+                </v-data-table>
+            </v-card>
         </v-col>
         
         <!-- 操作按鈕 -->
@@ -186,6 +221,7 @@ export default {
             noticeMethod: { icon: 'mdi-note', title: '通知方式', text: '' },
             noticeMember: { icon: 'mdi-account', title: '通知人', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
+            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
             arrivalFixDate: { icon: 'mdi-calendar-text', title: '到修日期', text: '' },
             startFixDate: { icon: 'mdi-calendar-text', title: '動工日期', text: '' },
@@ -195,6 +231,16 @@ export default {
         malfunctionDes: '',  // 故障描述
         note: '',  // 備註
         vendors: [],  // 外包廠商
+        tableItems: [],  // 表格資料
+        headers: [  // 表格顯示的欄位
+            { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '項目', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規格', value: 'spec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單位', value: 'unit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '預估數量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單價', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
         fixSituation: '',  // 維修情況
         totalHour: '',  // 總工時
         dialog: false,  // dialog 是否顯示
@@ -212,7 +258,11 @@ export default {
                 return `${ item.name } (${ item.count }人)`
             })
             return arr.join('、')
-        }
+        },
+        // 全部的總金額
+        totalMoney() {
+            return this.tableItems.reduce((a,b)=>a + b.count * b.price, 0)
+        },
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -240,6 +290,7 @@ export default {
                     noticeMethod: '',  // 通知方式
                     noticeMember: '',  // 通知人
                     noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
+                    MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
                     items: [  // 請修項目
                         {
                             numbers: '1、1',
@@ -298,7 +349,10 @@ export default {
             this.topItems.endFixDate.text = obj.endFixDate  // 完工日期
             this.topItems.creater.text = obj.creater  // 立案人
             // this.topItems.status.text = obj.status  // 處理階段
+            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = this.status = this.closeStatus  // 處理階段
+
+            this.tableItems = [ ...obj.items ]  // 表格資料
         },
         // 顯示 dialog
         showDialog(bool) {

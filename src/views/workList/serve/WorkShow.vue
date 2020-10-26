@@ -69,6 +69,40 @@
             </v-row>
         </v-col>
 
+        <!-- 請修項目 -->
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>請修項目
+            </h3>
+
+            <v-card flat>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+                
+                    <!-- 插入 total 欄位做每筆的總計 -->
+                    <template v-slot:item.total="{ item }">
+                        <span>{{ item.count * item.price }}</span>
+                    </template>
+
+                    <template v-slot:footer>
+                        <v-divider></v-divider>
+
+                        <p class="py-2 text-center">
+                            總金額： <span class="red--text">{{ totalMoney }}</span>
+                        </p>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
         <v-form
             ref="form"
             v-model="valid"
@@ -248,7 +282,6 @@
                         rows="6"
                         placeholder="請輸入維修情況"
                         v-model.trim="ipt.fixSituation"
-                        :background-color="errorSituation"
                         :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                     ></v-textarea>
                 </v-col>
@@ -325,6 +358,7 @@ export default {
     data: () => ({
         isLoading: false,  // 是否讀取中
         routeId: '',  // 工單編號
+        valid: false,  // 表單是否驗證
         topItems: {  // 上面的欄位
             year: { icon: 'mdi-calendar-text', title: '年度', text: '' },
             money: { icon: 'mdi-currency-usd', title: '預算金額', text: '' },
@@ -334,12 +368,23 @@ export default {
             noticeMethod: { icon: 'mdi-note', title: '通知方式', text: '' },
             noticeMember: { icon: 'mdi-account', title: '通知人', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
+            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
         },
         noticeLocation: '',  // 通報維修地點及事項
         malfunctionDes: '',  // 故障描述
         note: '',  // 備註
         vendors: [],  // 外包廠商
+        tableItems: [],  // 表格資料
+        headers: [  // 表格顯示的欄位
+            { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '項目', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規格', value: 'spec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單位', value: 'unit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '預估數量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單價', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
         dateMenuShow: {  // 日曆是否顯示
             arrivalFix: false, // 到修日期
             startFix: false,  // 動工日期
@@ -370,7 +415,11 @@ export default {
                 return `${ item.name } (${ item.count }人)`
             })
             return arr.join('、')
-        }
+        },
+        // 全部的總金額
+        totalMoney() {
+            return this.tableItems.reduce((a,b)=>a + b.count * b.price, 0)
+        },
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -398,6 +447,7 @@ export default {
                     noticeMethod: '',  // 通知方式
                     noticeMember: '',  // 通知人
                     noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
+                    MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
                     items: [  // 請修項目
                         {
                             numbers: '1、1',
@@ -445,7 +495,10 @@ export default {
             this.topItems.noticeMethod.text = obj.noticeMethod  // 通知方式
             this.topItems.noticeMember.text = obj.noticeMember  // 通知人
             this.topItems.creater.text = obj.creater  // 立案人
+            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = obj.status  // 處理階段
+
+            this.tableItems = [ ...obj.items ]  // 表格資料
         },
         // 退回
         withdraw() {
