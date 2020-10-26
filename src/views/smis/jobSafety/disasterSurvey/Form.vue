@@ -34,7 +34,7 @@
             </h3>
             <v-select
                 v-model="ipt.sex"
-                :items="['男', '女']"
+                :items="['男', '女', '其他']"
                 solo
             ></v-select>
         </v-col>

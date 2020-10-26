@@ -286,7 +286,7 @@ export default {
       AddWorkLogModal: false,
       MaintenanceDay: "",
       apm: ["部門1", "部門2", "部門3", "部門4"],
-      gender: ["男", "女"],
+      gender: ["男", "女", "其他"],
       week: ["日", "一", "二", "三", "四", "五", "六"],
       accidentType: ["工作傷害事故", "上下班交通事故", "工作交通事故", "其他"],
       accidentResult: ["虛驚事故", "失能傷害", "輕傷", "其他"],

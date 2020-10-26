@@ -268,6 +268,148 @@
         </v-row>
     </v-form>
 
+    <!-- 工時統計 -->
+    <h3 class="mb-1">
+        <v-icon class="mr-1 mb-1">mdi-table</v-icon>工時統計
+        <span class="red--text">*</span>
+        <v-btn fab dark small color="indigo"
+            @click="setJobHour(false)"
+            class="ml-2 mb-1"
+        >
+            <v-icon dark>mdi-plus</v-icon>
+        </v-btn>
+    </h3>
+
+    <v-card>
+        <v-data-table
+            :headers="jobHour.headers"
+            :items="jobHour.items"
+            disable-sort
+            disable-filtering
+            hide-default-footer
+        >
+            <template v-slot:no-data>
+                <span class="red--text subtitle-1">沒有資料</span>
+            </template>
+
+            <!-- 表格最上面插入 toolbar 及 dialog -->
+            <template v-slot:top>
+                <v-dialog v-model="jobHour.dialogShow" max-width="600px">
+                    <v-card>
+                        <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+                            {{ jobHour.titleName }}
+                            <v-spacer></v-spacer>
+                            <v-btn dark fab small text @click="jobHour.dialogShow = false" class="mr-n2">
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </v-card-title>
+
+                        <v-card-text class="px-6 py-4">
+                            <v-form
+                                ref="setjobform"
+                                v-model="jobFormValid"
+                                lazy-validation
+                            >
+                                <v-row>
+                                    <v-col cols="12" sm="4" v-if="!jobHour.isEdit">
+                                        <h3 class="mb-1">
+                                            <v-icon class="mr-1 mb-1">mdi-account</v-icon>姓名
+                                        </h3>
+                                        <v-select
+                                            v-model="jobForm.uid"
+                                            :items="jobMemberOpts"
+                                            solo
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="4">
+                                        <h3 class="mb-1">
+                                            <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>地點
+                                            <span class="red--text">*</span>
+                                        </h3>
+                                        <v-text-field
+                                            v-model.trim="jobForm.location"
+                                            solo
+                                            :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="4">
+                                        <h3 class="mb-1">
+                                            <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
+                                        </h3>
+                                        <v-select
+                                            v-model="jobForm.job"
+                                            :items="['鋼軌', '枕木']"
+                                            solo
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="4">
+                                        <h3 class="mb-1">
+                                            <v-icon class="mr-1 mb-1">mdi-calculator</v-icon>工作量
+                                            <span class="red--text">*</span>
+                                        </h3>
+                                        <v-text-field
+                                            v-model.trim.number="jobForm.count"
+                                            solo
+                                            :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="4">
+                                        <h3 class="mb-1">
+                                            <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>料件費用
+                                            <span class="red--text">*</span>
+                                        </h3>
+                                        <v-text-field
+                                            v-model.trim.number="jobForm.price"
+                                            solo
+                                            :rules="[v => /^\d+$/.test(v) || '請輸入整數']"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
+                        </v-card-text>
+                        
+                        <v-card-actions class="px-5 pb-5">
+                            <v-spacer></v-spacer>
+                            <v-btn class="mr-2" elevation="4" @click="jobHour.dialogShow = false">取消</v-btn>
+                            <v-btn color="success" elevation="4" @click="saveJob">送出</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </template>
+
+            <!-- 插入 id 欄位 -->
+            <template v-slot:item.uid="{ item }">
+                {{ getJobMemberName(item.uid) }}
+            </template>
+
+            <!-- 插入 price 欄位 -->
+            <template v-slot:item.price="{ item }">
+                {{ new Intl.NumberFormat().format(item.price) }}
+            </template>
+
+            <!-- 插入 action 欄位編輯 -->
+            <template v-slot:item.action="{ item }">
+                <v-btn small dark fab color="info darken-1"
+                    @click="setJobHour(true, item)"
+                >
+                    <v-icon dark>mdi-pen</v-icon>
+                </v-btn>
+            </template>
+
+            <template v-slot:footer>
+                <v-divider></v-divider>
+
+                <p class="py-2 text-center">
+                    總金額： <span class="red--text">{{ totalMoney }}</span>
+                </p>
+            </template>
+        </v-data-table>
+    </v-card>
+
     <v-row>
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center">
@@ -394,6 +536,36 @@ export default {
             workLocation: { icon: 'mdi-map-marker', title: '工作地點', text: '' },
             memberCount: { icon: 'mdi-account-multiple', title: '實際人數', text: '' },
         },
+        jobFormValid: true,  // 工時統計是否驗證欄位
+        jobHour: {  // 工時
+            dialogShow: false,
+            isEdit: false,  // 是否為工時編輯時
+            titleName: '',  // dialog 標題人名
+            headers: [
+                { text: '姓名', value: 'uid', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作項', value: 'job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '料件費用', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            ],
+            items: [],
+            editIdx: 0,  // 編輯中資料的索引值
+        },
+        jobMemberOpts: [  // 工時統計時人名下拉選單
+            { text: '陳高文', value: 'k11839'},
+            { text: '張仁宣', value: 'k55830'},
+        ],
+        jobForm: {}, // 工時表單
+        defaultJobForm: {  // 工時預設表單
+            'uid': '',
+            'name': '',
+            'location': '',
+            'job': '',
+            'count': 1, 
+            'price': 0,
+        },
+        jobFormIsEdit: false,  // 工時表單是否為編輯模式
     }),
     components: { TopBasicTable },
     watch: {
@@ -409,6 +581,11 @@ export default {
                 return `${ item.name } (${ item.count }人)`
             })
             return arr.join('、')
+        },
+        // 工時統計的總金額
+        totalMoney() {
+            let total = this.jobHour.items.reduce((a,b)=>a + b.price, 0)
+            return new Intl.NumberFormat().format(total)
         }
     },
     methods: {
@@ -486,6 +663,16 @@ export default {
             this.licensedMember = obj.licensedMember.join('、')  // 需證照人員
             this.commonMember = obj.commonMember.join('、')  // 作業人員
             this.vendors = obj.vendors  // 外包廠商
+
+            // 工時表單初始化
+            this.jobHour.items = this.jobMemberOpts.map(item => ({
+                'uid': item.value,
+                'name': item.text,
+                'location': obj.workLocation,
+                'job': '',
+                'count': 1, 
+                'price': 0,
+            }))
         },
         // 退回
         withdraw() {
@@ -519,6 +706,38 @@ export default {
                 if (this.ipt.fixSituation == '') this.errorSituation = 'red lighten-4'
                 alert('送出失敗，請確認「維修情況」欄位是否填寫')
             }
+        },
+        // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
+        setJobHour(isEdit, item) {
+            if (!isEdit) {
+                // 新增時
+                this.jobHour.isEdit = false
+                this.jobForm = { ...this.defaultJobForm }
+                this.jobForm.location = this.topItems.workLocation.text  // 工作地點
+                this.jobHour.titleName = '新增資料'
+            } else {
+                // 編輯時
+                this.jobHour.isEdit = true
+                this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
+                this.jobForm = { ...item }  // 現有值帶入表單
+                this.jobHour.titleName = `編輯資料 - ${item.name}`
+            }
+            this.jobHour.dialogShow = true
+        },
+        // 儲存工作表單
+        saveJob() {
+             if (this.jobHour.isEdit == false) {
+                // 新增時 (照林鐵人員要求，新增後不關閉視窗)
+                this.jobHour.items.push(this.jobForm)
+            } else {
+                // 編輯時
+                Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
+                this.jobHour.dialogShow = false
+            }
+        },
+        // 依 uid 查詢工時成員的名稱
+        getJobMemberName(uid) {
+            return this.jobMemberOpts.find(item => item.value == uid).text
         },
     },
     created() {

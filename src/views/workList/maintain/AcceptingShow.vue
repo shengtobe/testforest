@@ -96,6 +96,33 @@
                 ></v-col>
             </v-row>
         </v-col>
+        
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時統計
+            </h3>
+            <v-card flat>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:footer>
+                        <v-divider></v-divider>
+
+                        <p class="py-2 text-center">
+                            總金額： <span class="red--text">{{ totalMoney }}</span>
+                        </p>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
     </v-row>
 
     <v-form
@@ -110,7 +137,7 @@
                     <span class="red--text">*</span>
                 </h3>
                 <v-text-field
-                    v-model.trim="jobHour.totalHour"
+                    v-model.trim="totalHour"
                     solo
                     placeholder="請輸入總工時，例如：5"
                     :rules="[v => /^\d+$/.test(v) || '請輸入整數']"
@@ -120,7 +147,7 @@
     </v-form>
 
     <!-- 工時統計 -->
-    <h3 class="mb-1">
+    <!-- <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-table</v-icon>工時統計
         <span class="red--text">*</span>
         <v-btn fab dark small color="indigo"
@@ -143,7 +170,6 @@
                 <span class="red--text subtitle-1">沒有資料</span>
             </template>
 
-            <!-- 表格最上面插入 toolbar 及 dialog -->
             <template v-slot:top>
                 <v-dialog v-model="jobHour.dialogShow" max-width="600px">
                     <v-card>
@@ -232,17 +258,14 @@
                 </v-dialog>
             </template>
 
-            <!-- 插入 id 欄位 -->
             <template v-slot:item.uid="{ item }">
                 {{ getJobMemberName(item.uid) }}
             </template>
 
-            <!-- 插入 price 欄位 -->
             <template v-slot:item.price="{ item }">
                 {{ new Intl.NumberFormat().format(item.price) }}
             </template>
 
-            <!-- 插入 action 欄位編輯 -->
             <template v-slot:item.action="{ item }">
                 <v-btn small dark fab color="info darken-1"
                     @click="setJobHour(true, item)"
@@ -259,7 +282,7 @@
                 </p>
             </template>
         </v-data-table>
-    </v-card>
+    </v-card> -->
 
     <v-row class="mt-8">
         <v-col cols="12" class="text-center">
@@ -295,7 +318,7 @@
                 :loading="isLoading"
                 color="success"
                 @click="save"
-            >送出</v-btn>
+            >同意驗收</v-btn>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
@@ -438,36 +461,45 @@ export default {
         dialogApiName: '',  // 使用的 API 函式名稱
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
-        jobHour: {  // 工時
-            dialogShow: false,
-            isEdit: false,  // 是否為編輯模式
-            titleName: '',  // dialog 標題人名
-            headers: [
-                { text: '姓名', value: 'uid', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        tableItems: [],  // 工時表格資料
+        headers: [  // 工時標題
+            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '工作項', value: 'job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '工作量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '料件費用', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            ],
-            items: [],
-            editIdx: 0,  // 編輯中資料的索引值
-            totalHour: '',  // 總工時
-        },
-        jobMemberOpts: [  // 工時統計時人名下拉選單
-            { text: '陳高文', value: 'k11839'},
-            { text: '張仁宣', value: 'k55830'},
         ],
-        jobForm: {}, // 工時表單
-        defaultJobForm: {  // 工時預設表單
-            'uid': '',
-            'name': '',
-            'location': '',
-            'job': '',
-            'count': 1, 
-            'price': 0,
-        },
-        jobFormIsEdit: false,  // 工時表單是否為編輯模式
+        totalHour: '',  // 總工時
+        // jobHour: {  // 工時
+        //     dialogShow: false,
+        //     isEdit: false,  // 是否為編輯模式
+        //     titleName: '',  // dialog 標題人名
+        //     headers: [
+        //         { text: '姓名', value: 'uid', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '工作項', value: 'job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '工作量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '料件費用', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //     ],
+        //     items: [],
+        //     editIdx: 0,  // 編輯中資料的索引值
+        //     totalHour: '',  // 總工時
+        // },
+        // jobMemberOpts: [  // 工時統計時人名下拉選單
+        //     { text: '陳高文', value: 'k11839'},
+        //     { text: '張仁宣', value: 'k55830'},
+        // ],
+        // jobForm: {}, // 工時表單
+        // defaultJobForm: {  // 工時預設表單
+        //     'uid': '',
+        //     'name': '',
+        //     'location': '',
+        //     'job': '',
+        //     'count': 1, 
+        //     'price': 0,
+        // },
+        // jobFormIsEdit: false,  // 工時表單是否為編輯模式
         delay: {  // 延後驗收
             dialogShow: false,
             menuShow: false,  // 日期選單是否顯示
@@ -513,7 +545,7 @@ export default {
         },
         // 工時統計的總金額
         totalMoney() {
-            let total = this.jobHour.items.reduce((a,b)=>a + b.price, 0)
+            let total = this.tableItems.reduce((a,b)=>a + b.price, 0)
             return new Intl.NumberFormat().format(total)
         }
     },
@@ -564,6 +596,22 @@ export default {
                     status: '已維修待驗收',  // 狀態
                     fixSituation: '小零件損壞，更換了xxxx',  // 維修情況
                     fixType: '故障檢修',  // 維修類型
+                    jobHourData: [  // 工時資料
+                        {
+                            name: '陳高文',
+                            location: '115k-120k',
+                            job: '枕木',
+                            count: 1,
+                            price: 3000,
+                        },
+                        {
+                            name: '張仁宣',
+                            location: '115k-120k',
+                            job: '鋼軌',
+                            count: 1,
+                            price: 6000,
+                        },
+                    ],
                 }
 
                 this.setShowData(obj)  // 初始化資料
@@ -600,16 +648,17 @@ export default {
             this.licensedMember = obj.licensedMember.join('、')  // 需證照人員
             this.commonMember = obj.commonMember.join('、')  // 作業人員
             this.vendors = obj.vendors  // 外包廠商
+            this.tableItems = [ ...obj.jobHourData ]  // 工時資料
 
-            // 工時表單初始化
-            this.jobHour.items = this.jobMemberOpts.map(item => ({
-                'uid': item.value,
-                'name': item.text,
-                'location': obj.workLocation,
-                'job': '',
-                'count': 1, 
-                'price': 0,
-            }))
+            // // 工時表單初始化
+            // this.jobHour.items = this.jobMemberOpts.map(item => ({
+            //     'uid': item.value,
+            //     'name': item.text,
+            //     'location': obj.workLocation,
+            //     'job': '',
+            //     'count': 1, 
+            //     'price': 0,
+            // }))
         },
         // 顯示 dialog
         showDialog(bool) {
@@ -632,9 +681,9 @@ export default {
                 this.$router.push({ path: '/worklist/maintain' })
             }, 1000)
         },
-        // 送出 (確定驗收)
+        // 送出 (同意驗收)
         save() {
-            if (confirm('你確定要完成驗收嗎?')) {
+            if (confirm('你確定要驗收嗎?')) {
                 this.isLoading = true
 
                 // 範例效果
@@ -645,38 +694,38 @@ export default {
                 }, 1000)
             }
         },
-        // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
-        setJobHour(isEdit, item) {
-            if (isEdit == false) {
-                // 新增時
-                this.jobHour.isEdit = false
-                this.jobForm = { ...this.defaultJobForm }
-                this.jobForm.location = this.topItems.workLocation.text  // 工作地點
-                this.jobHour.titleName = '新增資料'
-            } else {
-                // 編輯時
-                this.jobHour.isEdit = true
-                this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
-                this.jobForm = { ...item }  // 現有值帶入表單
-                this.jobHour.titleName = `編輯資料 - ${item.name}`
-            }
-            this.jobHour.dialogShow = true
-        },
-        // 儲存工作表單
-        saveJob() {
-             if (this.jobHour.isEdit == false) {
-                // 新增時 (照林鐵人員要求，新增後不關閉視窗)
-                this.jobHour.items.push(this.jobForm)
-            } else {
-                // 編輯時
-                Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
-                this.jobHour.dialogShow = false
-            }
-        },
-        // 依 uid 查詢工時成員的名稱
-        getJobMemberName(uid) {
-            return this.jobMemberOpts.find(item => item.value == uid).text
-        },
+        // // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
+        // setJobHour(isEdit, item) {
+        //     if (isEdit == false) {
+        //         // 新增時
+        //         this.jobHour.isEdit = false
+        //         this.jobForm = { ...this.defaultJobForm }
+        //         this.jobForm.location = this.topItems.workLocation.text  // 工作地點
+        //         this.jobHour.titleName = '新增資料'
+        //     } else {
+        //         // 編輯時
+        //         this.jobHour.isEdit = true
+        //         this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
+        //         this.jobForm = { ...item }  // 現有值帶入表單
+        //         this.jobHour.titleName = `編輯資料 - ${item.name}`
+        //     }
+        //     this.jobHour.dialogShow = true
+        // },
+        // // 儲存工作表單
+        // saveJob() {
+        //      if (this.jobHour.isEdit == false) {
+        //         // 新增時 (照林鐵人員要求，新增後不關閉視窗)
+        //         this.jobHour.items.push(this.jobForm)
+        //     } else {
+        //         // 編輯時
+        //         Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
+        //         this.jobHour.dialogShow = false
+        //     }
+        // },
+        // // 依 uid 查詢工時成員的名稱
+        // getJobMemberName(uid) {
+        //     return this.jobMemberOpts.find(item => item.value == uid).text
+        // },
         // 延後驗收送出
         delaySave() {
             this.isLoading = true
