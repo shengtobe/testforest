@@ -222,6 +222,8 @@ export default {
             noticeMember: { icon: 'mdi-account', title: '通知人', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
             eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
+            type: { icon: 'mdi-snowflake', title: '工單性質', text: '' },
+            typeNumber: { icon: 'mdi-barcode', title: '工單性質編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
             arrivalFixDate: { icon: 'mdi-calendar-text', title: '到修日期', text: '' },
             startFixDate: { icon: 'mdi-calendar-text', title: '動工日期', text: '' },
@@ -290,6 +292,8 @@ export default {
                     noticeMethod: '',  // 通知方式
                     noticeMember: '',  // 通知人
                     noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
+                    type: '契約', // 工單性質
+                    typeNumber: '',  // 工單性質編號
                     MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
                     items: [  // 請修項目
                         {
@@ -350,6 +354,8 @@ export default {
             this.topItems.creater.text = obj.creater  // 立案人
             // this.topItems.status.text = obj.status  // 處理階段
             this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
+            this.topItems.type.text = obj.type  // 工單性質
+            this.topItems.typeNumber.text = obj.typeNumber  // 工單性質編號
             this.topItems.status.text = this.status = this.closeStatus  // 處理階段
 
             this.tableItems = [ ...obj.items ]  // 表格資料

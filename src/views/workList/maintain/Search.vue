@@ -122,6 +122,25 @@
                     solo
                 ></v-select>
             </v-col>
+
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>總費用
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.moneyStart"
+                    placeholder="請輸入最小金額"
+                    solo
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3" align-self="end" class="mt-n8">
+                <v-text-field
+                    v-model.trim="ipt.moneyEnd"
+                    placeholder="請輸入最大金額"
+                    solo
+                ></v-text-field>
+            </v-col>
         </v-row>
 
         <v-row class="px-2" align="end">
@@ -262,6 +281,8 @@ export default {
             eqNumber4: '',  // 設備標示編號4
             shortage: 'F',  // 是否缺料 (預設不缺料)
             fixType: '1',  // 維修類型
+            moneyStart: '',  // 總費用(最小金額)
+            moneyEnd: '',  // 總費用(最大金額)
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,

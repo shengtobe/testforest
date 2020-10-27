@@ -24,8 +24,27 @@
                 solo
             ></v-select>
         </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>總費用
+                </h3>
+                <v-text-field
+                    v-model.trim="moneyStart"
+                    placeholder="請輸入最小金額"
+                    solo
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="6" md="3" align-self="end" class="mt-n8">
+                <v-text-field
+                    v-model.trim="moneyEnd"
+                    placeholder="請輸入最大金額"
+                    solo
+                ></v-text-field>
+            </v-col>
         
-        <v-col cols="12" sm="6" md="4" align-self="center">
+        <v-col cols="12">
             <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
                 @click="search"
             >
@@ -40,7 +59,7 @@
         </v-col>
 
         <!-- 表格資料 -->
-        <v-col cols="12" class="mb-8">
+        <v-col cols="12" class="mt-2 mb-8">
             <v-card>
                 <v-data-table
                     :headers="headers"
@@ -99,6 +118,8 @@ export default {
     data: () => ({
         year: new Date().getFullYear()-1911,  // 年度
         status: '不限',  // 處理階段
+        moneyStart: '',  // 總費用(最小金額)
+        moneyEnd: '',  // 總費用(最大金額)
         statusOpt: ['不限', '待派工', '已派工待維修', '已維修待驗收', '已驗收待結案', '已結案'],  // 處理階段下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數

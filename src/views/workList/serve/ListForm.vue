@@ -153,8 +153,29 @@
                 ></v-text-field>
             </v-col>
 
-            <!-- 設備標示編號 -->
             <v-row class="px-2 mb-6">
+                <v-col cols="12" sm="6" md="3">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>工單性質
+                    </h3>
+                    <v-select
+                        v-model="ipt.type"
+                        :items="['契約', '小額採購']"
+                        solo
+                    ></v-select>
+                </v-col>
+
+                <v-col cols="12" sm="6" md="3">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>工單性質編號
+                    </h3>
+                    <v-text-field
+                        v-model.trim="ipt.typeNumber"
+                        placeholder="請輸入工單性質編號"
+                        solo
+                    ></v-text-field>
+                </v-col>
+                
                 <v-col cols="12">
                     <h3 class="mb-1">
                         <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
@@ -390,6 +411,8 @@ export default {
             noticeMethod: '',  // 通知方式
             noticeMember: '',  // 通知人
             noticeLocation: '',  // 通報維修地點及事項
+            type: '契約', // 工單性質
+            typeNumber: '',  // 工單性質編號
             eqNumber1: '',  // 設備標示編號1
             eqNumber2: '',  // 設備標示編號2
             eqNumber3: '',  // 設備標示編號3
@@ -492,6 +515,8 @@ export default {
                         noticeMethod: '',  // 通知方式
                         noticeMember: '',  // 通知人
                         noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
+                        type: '契約', // 工單性質
+                        typeNumber: '',  // 工單性質編號
                         items: [  // 請修項目
                             {
                                 numbers: '1、1',
