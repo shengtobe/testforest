@@ -27,10 +27,20 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file</v-icon>文件名稱
+                <v-icon class="mr-1 mb-1">mdi-tag</v-icon>文件名稱
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.fileName"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
+            </h3>
+            <v-text-field
+                v-model.trim="searchIpt.note"
                 solo
             ></v-text-field>
         </v-col>
@@ -218,6 +228,7 @@ export default {
             depart: '',  // 維護單位
             type: '',  // 文件類型
             fileName: '',  // 文件名稱
+            note: '',  // 備註
         },
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數

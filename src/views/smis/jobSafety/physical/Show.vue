@@ -121,6 +121,8 @@ export default {
                     hospitalName: '保健醫院',  // 醫療機構名稱
                     hospitalAddr: '高雄市中正一路199號',  // 醫療機構地址
                     hospitalPhone: '07-1274853',  // 醫療機構電話
+                    competence: 'y',  // 適任性
+                    recheck: '',  // 複檢狀況
                 }
 
                 this.setShowData(obj)
@@ -167,6 +169,8 @@ export default {
                 { oneline: true, title: '飯前血糖(mg/dL)', text: obj.bloodSugar },
                 { oneline: true, title: '運動心電圖', text: obj.egc },
                 { oneline: false, title: '應處理及注意事項', text: obj.note.replace(/\n/g, '<br>') },
+                { oneline: true, title: '適任性', text: (obj.competence == 'y')? '合格' : '不合格' },
+                { oneline: false, title: '複檢狀況', text: obj.recheck.replace(/\n/g, '<br>') },
                 { oneline: true, title: '醫師姓名', text: obj.doctorName },
                 { oneline: true, title: '醫療機構名稱', text: obj.hospitalName },
                 { oneline: true, title: '醫療機構地址', text: obj.hospitalAddr },

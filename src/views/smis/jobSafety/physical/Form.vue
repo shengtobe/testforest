@@ -404,6 +404,37 @@
         </v-col>
 
         <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>適任性
+            </h3>
+            <v-radio-group v-model="ipt.competence" class="mt-0">
+                <v-row no-gutters class="white">
+                    <v-col cols="12" md="2" class="my-1 pl-2">
+                        <v-radio label="合格" color="success" value="y"></v-radio>
+                    </v-col>
+
+                    <v-col cols="12" md="2" class="my-1 pl-2">
+                        <v-radio label="不合格" color="error" value="n"></v-radio>
+                    </v-col>
+                </v-row>
+            </v-radio-group>
+            
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>複檢狀況
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入複檢狀況"
+                v-model.trim="ipt.recheck"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
             <v-divider class="mx-2 mt-1 mb-4"></v-divider>
         </v-col>
 
@@ -529,6 +560,8 @@ export default {
             hospitalName: '',  // 醫療機構名稱
             hospitalAddr: '',  // 醫療機構地址
             hospitalPhone: '',  // 醫療機構電話
+            competence: 'y',  // 適任性
+            recheck: '',  // 複檢狀況
         },
         dateMenuShow: {  // 日曆是否顯示
             birthday: false,  // 生日
@@ -601,6 +634,8 @@ export default {
                         hospitalName: '保健醫院',  // 醫療機構名稱
                         hospitalAddr: '高雄市中正一路199號',  // 醫療機構地址
                         hospitalPhone: '07-1274853',  // 醫療機構電話
+                        competence: 'y',  // 適任性
+                        recheck: '',  // 複檢狀況
                     }
 
                     this.setInitDate(obj)
@@ -658,6 +693,8 @@ export default {
             this.ipt.hospitalName = obj.hospitalName // 醫療機構名稱
             this.ipt.hospitalAddr = obj.hospitalAddr // 醫療機構地址
             this.ipt.hospitalPhone = obj.hospitalPhone // 醫療機構電話
+            this.ipt.competence = obj.competence // 適任性
+            this.ipt.recheck = obj.recheck // 複檢狀況
         },
         // 送出
         save() {

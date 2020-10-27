@@ -16,6 +16,62 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發生日期(起)
+            </h3>
+            <v-menu
+                v-model="dateMemuShow.start"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                max-width="290px"
+                min-width="290px"
+            >
+                <template v-slot:activator="{ on }">
+                    <v-text-field
+                        v-model.trim="ipt.dateStart"
+                        solo
+                        v-on="on"
+                        readonly
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                    color="purple"
+                    v-model="ipt.dateStart"
+                    @input="dateMemuShow.start = false"
+                    locale="zh-tw"
+                ></v-date-picker>
+            </v-menu>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發生日期(迄)
+            </h3>
+            <v-menu
+                v-model="dateMemuShow.end"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                max-width="290px"
+                min-width="290px"
+            >
+                <template v-slot:activator="{ on }">
+                    <v-text-field
+                        v-model.trim="ipt.dateEnd"
+                        solo
+                        v-on="on"
+                        readonly
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                    color="purple"
+                    v-model="ipt.dateEnd"
+                    @input="dateMemuShow.end = false"
+                    locale="zh-tw"
+                ></v-date-picker>
+            </v-menu>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
             </h3>
             <v-select
@@ -96,7 +152,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" md="9" class="text-md-right" align-self="center">
+        <v-col cols="12">
             <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
                 @click="search"
             >
@@ -165,7 +221,7 @@
         </v-col>
 
         <!-- 趨勢圖 -->
-        <v-col cols="12">
+        <v-col cols="12" class="mt-8">
             <v-card class="mx-auto">
                 <v-card-title class="yellow lighten-3 py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>
@@ -210,6 +266,8 @@ export default {
         ipt: {},
         defaultIpt: {
             location: '', // 發生地點
+            dateStart:  '',  // 發生日期(起)
+            dateEnd: '',  // 發生日期(迄)
             evtType: '', // 事故類型
             eqLoss: '',// 設備損失
             serviceShock: '', // 營運衝擊
@@ -218,6 +276,10 @@ export default {
             reason: '', // 原因分析
             note: '', // 備註
             status: '',  // 事故事件狀態
+        },
+        dateMemuShow: {  // 日曆是否顯示
+            start: false,
+            end: false,
         },
         evtTypeOpts: evtTypes,
         locationOpts: locationOpts,

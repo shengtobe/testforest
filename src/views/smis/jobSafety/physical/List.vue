@@ -38,6 +38,10 @@
                         {{ transferDepartTxt(item.depart) }}
                     </template>
 
+                    <template v-slot:item.competence="{ item }">
+                        {{ (item.competence == 'y')? '合格' : '不合格' }}
+                    </template>
+
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             :to="`/smis/jobsafety/physical/${item.id}/show`"
@@ -76,6 +80,7 @@ export default {
             { text: '部門', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '健檢評級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '適任性', value: 'competence', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         dialog: false,  // dialog 是否顯示
@@ -102,13 +107,15 @@ export default {
                         name: '王小明',
                         date: '2020-05-01',
                         level: '1級',
+                        competence: 'y',
                     },
                     {
                         id: '658',
                         depart: 'd2', 
                         name: '王小明',
                         date: '2019-04-20',
-                        level: '1級',
+                        level: '2級',
+                        competence: 'y',
                     },
                 ]
 
