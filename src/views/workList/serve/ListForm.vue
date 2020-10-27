@@ -405,7 +405,7 @@ export default {
         defaultIpt: {  // 表單預設值
             year: '',  // 年度
             expiryDate: new Date().toISOString().substr(0, 10),  // 履約到期日
-            money: '',  // 預算金額
+            money: '10萬',  // 預算金額
             workDateStart: new Date().toISOString().substr(0, 10),  // 通知施作日期 (起)
             workDateEnd: new Date().toISOString().substr(0, 10),  // 通知施作日期 (訖)
             noticeMethod: '',  // 通知方式
