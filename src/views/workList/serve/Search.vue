@@ -16,6 +16,36 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>工單性質
+            </h3>
+            <v-select
+                v-model="type"
+                :items="typeOpts"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>總費用
+            </h3>
+            <v-text-field
+                v-model.trim="moneyStart"
+                placeholder="請輸入最小金額"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3" align-self="end" class="mt-n8">
+            <v-text-field
+                v-model.trim="moneyEnd"
+                placeholder="請輸入最大金額"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>處理階段
             </h3>
             <v-select
@@ -24,25 +54,6 @@
                 solo
             ></v-select>
         </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-                <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>總費用
-                </h3>
-                <v-text-field
-                    v-model.trim="moneyStart"
-                    placeholder="請輸入最小金額"
-                    solo
-                ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" sm="6" md="3" align-self="end" class="mt-n8">
-                <v-text-field
-                    v-model.trim="moneyEnd"
-                    placeholder="請輸入最大金額"
-                    solo
-                ></v-text-field>
-            </v-col>
         
         <v-col cols="12">
             <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
@@ -56,6 +67,11 @@
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
+        </v-col>
+
+        <v-col cols="12" class="mt-5">
+            <span class="font-weight-bold">累計總費用： </span>
+            <span class="font-weight-bold error--text">{{ totalPrice }}</span>
         </v-col>
 
         <!-- 表格資料 -->
@@ -77,8 +93,8 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.workDate="{ item }">
-                        {{ `${item.workDateStart} ~ ${item.workDateEnd}` }}
+                    <template v-slot:item.type="{ item }">
+                        {{ `${item.type} (${item.typeNumber})` }}
                     </template>
 
                     <template v-slot:item.status="{ item }">
@@ -120,15 +136,21 @@ export default {
         status: '不限',  // 處理階段
         moneyStart: '',  // 總費用(最小金額)
         moneyEnd: '',  // 總費用(最大金額)
+        type: '', // 工單性質
+        totalPrice: 0,  // 累計總費用
+        typeOpts: [
+            { text: '不限', value: '' },
+            { text: '契約', value: '契約' },
+            { text: '小額採購', value: '小額採購' },
+        ],
         statusOpt: ['不限', '待派工', '已派工待維修', '已維修待驗收', '已驗收待結案', '已結案'],  // 處理階段下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '年度', value: 'year', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '履約到期日', value: 'expiryDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '預算金額', value: 'money', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通知施作日期', value: 'workDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工單性質', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '處理階段', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -151,8 +173,8 @@ export default {
                         year: '109',
                         expiryDate: '2020-12-25',
                         money: '98萬6,517',
-                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
-                        workDateEnd: '2020-01-20',  // // 通知施作日期 (迄)
+                        type: '契約',
+                        typeNumber: 'A123456', 
                         status: 1,
                     },
                     {
@@ -160,8 +182,8 @@ export default {
                         year: '109',
                         expiryDate: '2020-12-25',
                         money: '98萬6,517',
-                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
-                        workDateEnd: '2020-01-20',  // // 通知施作日期 (迄)
+                        type: '契約',
+                        typeNumber: 'B44586',
                         status: 2,
                     },
                     {
@@ -169,8 +191,8 @@ export default {
                         year: '109',
                         expiryDate: '2020-12-25',
                         money: '98萬6,517',
-                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
-                        workDateEnd: '2020-01-20',  // // 通知施作日期 (迄)
+                        type: '小額採購',
+                        typeNumber: 'A0147',
                         status: 3,
                     },
                     {
@@ -178,8 +200,8 @@ export default {
                         year: '109',
                         expiryDate: '2020-12-25',
                         money: '98萬6,517',
-                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
-                        workDateEnd: '2020-01-20',  // // 通知施作日期 (迄)
+                        type: '契約',
+                        typeNumber: 'C9856',
                         status: 4,
                     },
                     {
@@ -187,12 +209,12 @@ export default {
                         year: '109',
                         expiryDate: '2020-12-25',
                         money: '98萬6,517',
-                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
-                        workDateEnd: '2020-01-20',  // // 通知施作日期 (迄)
+                        type: '小額採購',
+                        typeNumber: 'A458632',
                         status: 5,
                     },
                 ]
-
+                this.totalPrice = 3540622
                 this.chLoadingShow()
             }, 1000)
         },
