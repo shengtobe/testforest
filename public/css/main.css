@@ -5,6 +5,24 @@
   font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
   background-color: #dbe8f5;  /* 背景色 */
 }
+#main-bar {
+  position: fixed;
+  z-index: 11;
+}
+#main-nav {
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: -100vw;
+  transition: left .4s;
+  overflow-y: scroll;
+}
+#main-nav.shownav {
+  left: 0;
+}
 /* ------ scrollbar ------ */
 /* width */
 ::-webkit-scrollbar {

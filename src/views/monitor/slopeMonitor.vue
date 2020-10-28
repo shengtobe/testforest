@@ -74,7 +74,7 @@
         </v-col>
         <v-col cols="12" sm="9" style="margin-top:-3%">
             <v-spacer />
-            <img style="width:78%" :src="imgUrl1" alt="err" />
+            <img style="width:96%" :src="imgUrl2" alt="err" />
             <v-spacer />
         </v-col>
     </v-row>
@@ -85,6 +85,7 @@
 export default {
   data: () => ({
     imgUrl1: require("../../assets/images/slope1.jpg"),
+    imgUrl2: require("../../assets/images/slope2.jpg"),
     
   }),
   components: {
