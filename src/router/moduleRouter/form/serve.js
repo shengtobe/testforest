@@ -56,18 +56,6 @@ export const FormServeRouter = [
         formGroup: ['serve', 'maintain', 'curing']
     },
     {
-        linkText: '一般車輛每日作業前檢點表(作業前)',// 78
-        path: '/form-manage/serve/general-vehicle-checklist',
-        component: () => import('@/views/formManage/serve/GeneralVehicleChecklist.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
-    },
-    {
-        linkText: '一般車輛定期檢查表(三個月)',// 79
-        path: '/form-manage/serve/general-vehicle-checklist-season',
-        component: () => import('@/views/formManage/serve/GeneralVehicleChecklistSeason.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
-    },
-    {
         linkText: '6S 定期檢查表(月)',// 80
         path: '/form-manage/serve/6s-checklist-month',
         component: () => import('@/views/formManage/serve/6SChecklistMonth.vue'),

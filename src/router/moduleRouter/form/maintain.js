@@ -1,6 +1,7 @@
 // -------- 表單-鐵路維護科 -------
 
-export const FormMaintainRouter = [{
+export const FormMaintainRouter = [
+    {
         linkText: '切割機定期檢查表(三個月)', // 25
         path: '/form-manage/maintain/cutting-machine-checklist',
         component: () =>
@@ -97,6 +98,19 @@ export const FormMaintainRouter = [{
         component: () =>
             import ('@/views/formManage/maintain/MotorVehicleApplication.vue'),
         formGroup: ['maintain']
+    },
+    
+    {
+        linkText: '一般車輛每日作業前檢點表(作業前)',// 78
+        path: '/form-manage/maintain/general-vehicle-checklist',
+        component: () => import('@/views/formManage/maintain/GeneralVehicleChecklist.vue'),
+        formGroup: ['maintain', 'curing']
+    },
+    {
+        linkText: '一般車輛定期檢查表(三個月)',// 79
+        path: '/form-manage/maintain/general-vehicle-checklist-season',
+        component: () => import('@/views/formManage/maintain/GeneralVehicleChecklistSeason.vue'),
+        formGroup: ['maintain', 'curing']
     },
     {
         linkText: '橋梁目視安全檢查表', // 111
