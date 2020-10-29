@@ -30,10 +30,10 @@
     </v-btn>
   </v-app-bar>
 
-  <!-- fullscreen nav -->
-  <div id="main-nav" :class="{ shownav: showNav }">
-      <!-- desktop -->
-      <template>
+    <!-- fullscreen nav -->
+    <transition>
+        <div id="main-nav" v-if="showNav">
+        <!-- <div id="main-nav" :class="{ shownav: showNav }"> -->
             <v-container>
                 <v-row class="mt-12">
                     <v-col cols="12" md="2">
@@ -46,9 +46,9 @@
                             <v-divider></v-divider>
 
                             <v-list class="pa-0">
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">個人資訊</v-list-item>
+                                <v-list-item @click="showNav = false" to="/">個人資訊</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">表單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/form-manage">表單</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 故障、保養工單 -->
@@ -56,9 +56,9 @@
                                     <strong class="white--text">故障、保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">維修養護科類工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修養護科類工單</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">服務科類工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/serve">服務科類工單</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 監控系統 -->
@@ -66,9 +66,9 @@
                                     <strong class="white--text">監控系統</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">邊坡監控</v-list-item>
+                                <v-list-item @click="showNav = false" to="/monitor/slope-monitor">邊坡監控</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">雨量監測</v-list-item>
+                                <v-list-item @click="showNav = false" to="/monitor/rainfall-monitor">雨量監測</v-list-item>
                                 <v-divider></v-divider>
                             </v-list>
                         </v-card>
@@ -84,9 +84,9 @@
                                     <strong class="white--text">危害通報管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">危害通報</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">危害通報審核</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/harmnotify/audit">危害通報審核</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 行車事故事件 -->
@@ -94,7 +94,7 @@
                                     <strong class="white--text">行車事故事件</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">行車事故事件</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/car-accident-event">行車事故事件</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 行車危害資料庫 -->
@@ -102,9 +102,9 @@
                                     <strong class="white--text">行車危害資料庫</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">行車危害</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/car-harmdb/harms">行車危害</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">控制措施</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/car-harmdb/control-measures">控制措施</v-list-item>
                                 <v-divider></v-divider>
                             </v-list>
                         </v-card>
@@ -118,9 +118,9 @@
                                     <strong class="white--text">行車安全資訊</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">安全資訊</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/car-safeinfo/info">安全資訊</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">慢行通報</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 安全文件 -->
@@ -128,11 +128,11 @@
                                     <strong class="white--text">安全文件</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">安全會議文件</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/safefile/meeting">安全會議文件</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">行車事故事件附件</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/safefile/driving-annex">行車事故事件附件</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">規章文件</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/safefile/regulations">規章文件</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 行車安全績效 -->
@@ -140,7 +140,7 @@
                                     <strong class="white--text">行車安全績效</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">行車安全績效</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/car-safe-performance">行車安全績效</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>
@@ -153,17 +153,17 @@
                                     <strong class="white--text">職安管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">職業災害事故調查表</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">職災事故事件管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey">職災事故事件管理</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">職災危害資料庫</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disasterdb">職災危害資料庫</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">職安績效</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/performance">職安績效</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">健檢管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/physical">健檢管理</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">證照管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/license">證照管理</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>
@@ -178,11 +178,11 @@
                                     <strong class="white--text">設備資料管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">列車、軌道、車道設備</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/train-track-lane">列車、軌道、車道設備</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">無線電設備管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/radio">無線電設備管理</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">料件管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/material">料件管理</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 設備維修管理 -->
@@ -190,9 +190,9 @@
                                     <strong class="white--text">設備維修管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">週期性工作提醒</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/periodicity-job">週期性工作提醒</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">工班管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/work-shift">工班管理</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 維修外包管理 -->
@@ -200,7 +200,7 @@
                                     <strong class="white--text">維修外包管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">維修外包管理</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/outsourc-data">維修外包管理</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>
@@ -213,11 +213,11 @@
                                     <strong class="white--text">統計分析</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">MTTR 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/d/a">MTTR 分析</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">MTBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/d/b">MTBF 分析</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">MKBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/d/c">MKBF 分析</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 報表管理 -->
@@ -225,24 +225,19 @@
                                     <strong class="white--text">報表管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/moto-dynamo">維修工時履歷</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/repair-time-history">維修工時履歷</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">料件履歷</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/material-history">料件履歷</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item to="/smis/car-safe-performance/machine-abnormal">維修費用</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
                                 <v-divider></v-divider>
                             </v-list>
                         </v-card>
                     </v-col>
                 </v-row>
             </v-container>
-      </template>
-
-      <!-- desktop -->
-      <template>
-
-      </template>
-  </div>
+        </div>
+    </transition>
 
   <!-- right main content -->
   <v-main>
@@ -263,7 +258,7 @@ import MessageBar from '@/components/MessageBar.vue'
 export default {
   data: () => ({
     mainColor: 'light-blue darken-1',
-    showNav: true,
+    showNav: false,  // 導覽列是否顯示
     titleColor: 'brown lighten-1',
   }),
   components: {

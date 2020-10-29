@@ -16,12 +16,22 @@
   z-index: 10;
   position: fixed;
   top: 0;
-  left: -100vw;
-  transition: left .4s;
+  /* left: -100vw; */
+  /* transition: left .4s; */
   overflow-y: scroll;
 }
-#main-nav.shownav {
+.v-enter, .v-leave-to {
+  left: -100vw;
+}
+.v-enter-to, .v-leave {
   left: 0;
+}
+.v-enter-active {
+  transition: left .4s;
+  
+}
+.v-leave-active {
+  transition: left .6s;
 }
 /* ------ scrollbar ------ */
 /* width */
