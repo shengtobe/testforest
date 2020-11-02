@@ -15,7 +15,7 @@
 
       <v-col cols="12" sm="8" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>設備報修碼
+          <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>設備標示編號
         </h3>
         <v-text-field solo placeholder="請輸入關鍵字" />
       </v-col>
@@ -127,7 +127,7 @@
               <v-col cols="12">
                 <v-row no-gutter class="indigo--text">
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備報修碼</h3>
+                    <h3 class="mb-1">設備標示編號</h3>
                     <v-text-field solo value readonly />
                   </v-col>
                   <v-col cols="12" sm="4">
@@ -203,7 +203,7 @@
               <v-col cols="12">
                 <v-row no-gutter class="indigo--text">
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備報修碼</h3>
+                    <h3 class="mb-1">設備標示編號</h3>
                     <v-text-field solo value readonly />
                   </v-col>
                   <v-col cols="12" sm="4">
@@ -307,7 +307,7 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "設備報修碼",
+        text: "設備標示編號",
         value: "wbs",
 
         divider: true,
