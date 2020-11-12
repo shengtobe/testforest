@@ -423,7 +423,7 @@ export const carHarmDBControls = [
 export const safeDocs = [
     {
         id: 20,
-        depart: '鐵路服務科',
+        depart: '鐵路維護科',
         file: {
             name: '456.xlsx',
             link: '/demofile/456.xlsx'

@@ -183,7 +183,7 @@ export default {
                 this.tableItems = [
                     {
                         id: 21,
-                        subject: '鐵軌異物處理規定',
+                        subject: '定期巡檢枕木',
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '服務科',
                         file: { name: '123.pdf', link: '/demofile/123.pdf' },
@@ -201,7 +201,49 @@ export default {
                     },
                     {
                         id: 36,
-                        subject: '大型樹木移除注意事項',
+                        subject: '定期巡檢扣件',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '服務科',
+                        file: { name: '123.docx', link: '/demofile/123.docx' },
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
+                    },
+                    {
+                        id: 45,
+                        subject: '維修後慢行觀察',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '服務科',
+                        file: { name: '123.docx', link: '/demofile/123.docx' },
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
+                    },
+                    {
+                        id: 49,
+                        subject: '定期校驗軌道檢測儀',
+                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                        depart: '服務科',
+                        file: { name: '123.docx', link: '/demofile/123.docx' },
+                        note: '',
+                        evidences: [
+                            {
+                                name: '123.pdf',
+                                link: '/demofile/123.pdf'
+                            },
+                        ],
+                    },
+                    {
+                        id: 53,
+                        subject: '強化鋼軌與軌枕間之扣夾力',
                         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                         depart: '服務科',
                         file: { name: '123.docx', link: '/demofile/123.docx' },

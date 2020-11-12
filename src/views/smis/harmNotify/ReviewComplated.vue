@@ -203,8 +203,8 @@ export default {
         replayTime: '',  // 回覆日期
         replyRadios: [
             { text: '感謝通報，已通知相關單位處理', value: 1 },
-            { text: '感謝通報，已採「危害」立案管理之', value: 2 },
-            { text: '感謝通報，已採「事故/事件」立案', value: 3 },
+            { text: '感謝通報，已採「既有行安危害」立案', value: 2 },
+            { text: '感謝通報，已採「既有行安事故」立案', value: 3 },
             { text: '自訂回覆訊息', value: 4 },
         ],
         caseStatus: '',  // 立案狀態
@@ -232,11 +232,11 @@ export default {
 
             // 新增測試用資料
             setTimeout(() => {
-                let caseTxt = (this.closeStatus == '審核中')? '不立案' : '以行車事故事件立案'
-                let repTxt = (this.closeStatus == '審核中')? '感謝通報，已通知相關單位處理' : '感謝通報，已採「事故/事件」立案'
+                let caseTxt = (this.closeStatus == '審核中')? '不立案' : (this.routeId == 'SH995413')? '既有行安危害立案' : '既有行安事故立案'
+                let repTxt = (this.closeStatus == '審核中')? '感謝通報，已通知相關單位處理' : (this.routeId == 'SH995413')? '感謝通報，已採「既有行安危害」立案' : '感謝通報，已採「既有行安事故」立案'
                 
                 let obj = {
-                    id: 'a201586369',  // 通報id
+                    // id: 'a201586369',  // 通報id
                     creater: '王小明',  // 通報人
                     createrId: 'OB851234',  // 員工編號
                     depart: '鐵路服務科',  // 部門
@@ -244,14 +244,14 @@ export default {
                     findHour: '14',  // 發現日期(時)
                     findMin: '00',  // 發現日期(分)
                     createDate: '2020-03-15 15:20:00',  // 填表日期
-                    location: 't17',  // 發現地點
-                    locationK: '',  // 路線k
-                    locationM: '',　// 路線m
+                    location: 'l1',  // 發現地點
+                    locationK: 20,  // 路線k
+                    locationM: 445,　// 路線m
                     locationOther: '',　// 其他地點
                     status: this.closeStatus,  // 通報狀態
                     caseStatus: caseTxt,  // 立案狀態
-                    subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報主旨
-                    content: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
+                    subject: (this.routeId == 'SH995413')? '路基持續有噴泥現象' : '1070225事故資訊',  // 通報主旨
+                    content: (this.routeId == 'SH995413')? 'XXX年XX月XX日隨乘機車路經木屐寮~樟腦寮路段，於約20K處發現多處噴泥現象，恐影響...' : '木屐寮~樟腦寮路段大雨後常有噴泥狀況，溝渠阻塞、排水不良應是主因...',  // 通報內容
                     files: [
                         { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
                         { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
@@ -274,7 +274,7 @@ export default {
             this.topItems.depart.text = obj.depart  // 部門
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
             this.topItems.createDate.text = obj.createDate  // 填表日期
-            this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
+            this.topItems.findLocation.text = `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M`  // 發現地點
             this.topItems.status.text = obj.status  // 通報狀態
 
             this.subject = obj.subject  // 通報主旨

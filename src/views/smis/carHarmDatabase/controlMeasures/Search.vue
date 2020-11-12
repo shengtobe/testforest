@@ -25,17 +25,35 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="3" align-self="center">
-            <v-btn color="green" dark large class="mr-4"
+        <v-col cols="12" md="6" align-self="center">
+            <v-btn color="green" dark large class="mr-3"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large
+            <v-btn color="indigo" dark large class="mr-3"
                 to="/smis/car-harmdb/control-measures/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
+            </v-btn>
+
+            <v-btn color="indigo" dark large class="mr-3"
+                to="/smis/car-harmdb/control-measures/add2"
+            >
+                <v-icon>mdi-plus</v-icon>新增2
+            </v-btn>
+
+            <v-btn color="indigo" dark large class="mr-4"
+                to="/smis/car-harmdb/control-measures/add3"
+            >
+                <v-icon>mdi-plus</v-icon>新增3
+            </v-btn>
+
+            <v-btn color="indigo" dark large
+                to="/smis/car-harmdb/control-measures/add4"
+            >
+                <v-icon>mdi-plus</v-icon>新增4
             </v-btn>
         </v-col>
 

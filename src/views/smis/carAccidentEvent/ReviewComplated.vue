@@ -122,6 +122,34 @@
             </v-row>
         </v-col>
 
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-ungroup</v-icon>通報連結
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">
+                    <v-chip small label color="teal" class="mr-2 mb-2 mb-sm-0"
+                        v-for="item in notifyLinks"
+                        :key="item.id"
+                        :to="item.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                        dark
+                    >
+                        <v-avatar left>
+                            <v-icon>mdi-link-variant</v-icon>
+                        </v-avatar>
+                        {{ item.id }}
+                    </v-chip>
+                </v-col>
+            </v-row>
+        </v-col>
+
         <!-- 死傷人數 -->
         <v-col cols="12" class="mt-10">
             <h3>
@@ -358,6 +386,7 @@ export default {
             accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: '' },
         },
+        notifyLinks: [],  // 連結的通報
         deathCount: '',  // 死傷人數
         deathData: [],  // 死傷資料
         headers: [  // 死傷表格顯示的欄位
@@ -412,26 +441,36 @@ export default {
             // 新增測試用資料
             setTimeout(() => {
                 let obj = {
-                    findDate: '2020-03-15',  // 發現日期
-                    findHour: '14',  // 發現日期(時)
-                    findMin: '00',  // 發現日期(分)
-                    location: 't17',  // 發現地點
-                    locationK: '',  // 路線k
-                    locationM: '',　// 路線m
+                    findDate: '2017-01-25',  // 發現日期
+                    findHour: '15',  // 發現日期(時)
+                    findMin: '56',  // 發現日期(分)
+                    location: 'l1',  // 發現地點
+                    locationK: 20,  // 路線k
+                    locationM: 445,　// 路線m
                     locationOther: '',　// 其他地點
-                    accidentType: 'A12',  // 事故類型
-                    eqLoss: '無',// 設備損失
-                    serviceShock: '列車停駛30分鐘', // 營運衝擊
-                    handle: '派三名人員至現場移除', // 處置過程
-                    review: '無', // 檢討過程
-                    reason: '樹木不明原因倒落', // 原因分析
-                    note: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
+                    accidentType: 'M2',  // 事故類型
+                    eqLoss: 'APC3 車廂轉向架受損',  // 設備損失
+                    serviceShock: '影響列車計2列次',  // 營運衝擊
+                    handle: "1430 312次由奮起湖車站開出。\n1556 312次行駛至嘉義線 20K+445M 出軌，列車於嘉義線 19K+700M停止 司機員及列車員立即通報嘉義車庫及竹崎車站請求救援。\n1633 接駁列車511 次自北門站開出至事故現場接駁 6 次旅客。\n1658 312次將第 1 車廂重新編組載運 29 位旅客離開事故現場。\n1703 搶修列車521 次自北門車站開出辦理搶修作業。\n1734 接駁列車511 次抵達事故現場。\n1803 312次將第 1 車廂重新編組載運 29 位旅客抵達嘉義車站。\n1816 接駁列車511 次自事故現場開出。\n1915 接駁列車511 次抵達嘉義車站。\n1919 復軌完成。\n2000 路線測試完成恢復正常。\n2139 搶修列車521 次返回北門車站。",  // 處置過程
+                    review: '新增行車事故事件本事故事發後，鐵道局於107年3月5日啟動專案調查，並於同月8、9日辦理本事故專案調查簡報討論、文件檢視及現場勘查 。同年5月3日召開本事故專案調查工作會議。最終於同年8月15日召開交通部鐵路行車事故調查小組第24次會議，確認本事故專案調查結果。',  // 檢討過程
+                    reason: "<直接原因>\n事故路段因氣候易潮濕，加上路基排水狀況不佳 造成該路段有多處噴泥現象， 當鋼軌受列車重壓下沉致軌枕沉 陷、鋼軌產生前後高低不整之現象，在 列車於動態行駛下易致鋼軌單邊下沉產生平面性扭曲，使車輪浮動爬上出軌。\n<間接原因>\n部分路段道碴存有厚度不足加上列車反覆作用下，致使路基土壤細粒料因壓力而循道碴間隙上升， 使路基出現鬆動現象。\n<其他因素>\n有關天候、車輛、人員及運轉等部分，經檢討尚無涉事故原因。",  // 原因分析
+                    note: '本事故由鐵道局( 鐵路營運監理小組) 及 5位具軌道、力學、車輛及營運等專業之外聘專案委員組成團隊進行專案調查，並由本部鐵路行車事故調查小組 定期委員開會確認調查結果。', // 備註說明
                     files: [
                         { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
                         { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
                         { fileName: '123.pdf', link: '/demofile/123.pdf' },
                         { fileName: '123.docx', link: '/demofile/123.docx' },
                         { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                    ],
+                    notifyLinks: [  // 連結的通報
+                        {
+                            id: 'SH458987',
+                            status: '審核中',
+                        },
+                        {
+                            id: 'SH378011',
+                            status: '已結案',
+                        },
                     ],
                     deathCount: 1,  // 死傷人數
                     deathData: [  // 死傷資料
@@ -459,7 +498,7 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
-            this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
+            this.topItems.findLocation.text = `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M`  // 發現地點
             this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
             this.topItems.status.text = (this.closeStatus == 3)? '已完備資料' : '審核中'  // 事故事件狀態
 
@@ -474,8 +513,68 @@ export default {
             this.deathData = [ ...obj.deathData ]  // 死傷資料
             this.controlItems = [  // 控制措施
                 {
+                    id: 21,
+                    subject: '定期巡檢枕木',
+                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                    depart: '服務科',
+                    file: { name: '123.pdf', link: '/demofile/123.pdf' },
+                    note: '',
+                    evidences: [
+                        {
+                            name: '456.xlsx',
+                            link: '/demofile/456.xlsx'
+                        },
+                        {
+                            name: '123.pdf',
+                            link: '/demofile/123.pdf'
+                        },
+                    ],
+                },
+                {
                     id: 36,
-                    subject: '大型樹木移除注意事項',
+                    subject: '定期巡檢扣件',
+                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                    depart: '服務科',
+                    file: { name: '123.docx', link: '/demofile/123.docx' },
+                    note: '',
+                    evidences: [
+                        {
+                            name: '123.pdf',
+                            link: '/demofile/123.pdf'
+                        },
+                    ],
+                },
+                {
+                    id: 45,
+                    subject: '維修後慢行觀察',
+                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                    depart: '服務科',
+                    file: { name: '123.docx', link: '/demofile/123.docx' },
+                    note: '',
+                    evidences: [
+                        {
+                            name: '123.pdf',
+                            link: '/demofile/123.pdf'
+                        },
+                    ],
+                },
+                {
+                    id: 49,
+                    subject: '定期校驗軌道檢測儀',
+                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                    depart: '服務科',
+                    file: { name: '123.docx', link: '/demofile/123.docx' },
+                    note: '',
+                    evidences: [
+                        {
+                            name: '123.pdf',
+                            link: '/demofile/123.pdf'
+                        },
+                    ],
+                },
+                {
+                    id: 53,
+                    subject: '強化鋼軌與軌枕間之扣夾力',
                     desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
                     depart: '服務科',
                     file: { name: '123.docx', link: '/demofile/123.docx' },
@@ -489,6 +588,30 @@ export default {
                 },
             ]
             this.summary = obj.summary.replace(/\n/g, '<br>')  // 改善措施摘要
+
+            // 危害通報連結 (依通報狀態連至不同頁面)
+            let arr = obj.notifyLinks.map(item => {
+                let link = ''
+                switch(item.status) {
+                    case '未審核':
+                        link = `/smis/harmnotify/${item.id}/show`
+                        break
+                    case '審核中':
+                        link = `/smis/harmnotify/${item.id}/review`
+                        break
+                    case '已結案':
+                        link = `/smis/harmnotify/${item.id}/complated`
+                        break
+                    default:
+                        break
+                }
+
+                return {
+                    id: item.id,
+                    link: link,
+                }
+            })
+            this.notifyLinks = [ ...arr ]
 
             // 設定狀態(測試資料)
             this.status = this.closeStatus

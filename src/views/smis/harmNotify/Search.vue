@@ -195,8 +195,15 @@ export default {
                     {
                         id: 'SH995413',
                         date: new Date().toISOString().substr(0, 10),
+                        name: '王小明',
+                        title: '路基持續有噴泥現象',
+                        status: '已立案',
+                    },
+                    {
+                        id: 'SH995420',
+                        date: new Date().toISOString().substr(0, 10),
                         name: '陳小華',
-                        title: '嘉義車庫失火',
+                        title: '1070225事故資訊',
                         status: '已立案',
                     },
                     {
