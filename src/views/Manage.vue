@@ -249,6 +249,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+import aesjs from 'aes-js'
 import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
@@ -256,24 +258,66 @@ import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
 
 export default {
-  data: () => ({
-    mainColor: 'light-blue darken-1',
-    showNav: false,  // 導覽列是否顯示
-    titleColor: 'brown lighten-1',
-  }),
-  components: {
-    SystemDialog,  // 系統重要訊息 Dialog
-    SystemLoading,  // 系統 Loading 圖
-    SystemViewDialog,  // 系統檢視內容 Dialog
-    OrganizeDialog,  // 組職表 Dialog
-    MessageBar,  // 題示訊息
-  },
-  methods: {
-    // 登出
-    logout() {
-      localStorage.clear()  // 清除所有 localstorage
-      this.$router.push('/login')
-    }
-  }
+    data: () => ({
+        mainColor: 'light-blue darken-1',
+        showNav: false,  // 導覽列是否顯示
+        titleColor: 'brown lighten-1',
+    }),
+    computed: {
+        ...mapState ('user', {
+            key: state => state.key,  // 加密金鑰
+        })
+    },
+    components: {
+        SystemDialog,  // 系統重要訊息 Dialog
+        SystemLoading,  // 系統 Loading 圖
+        SystemViewDialog,  // 系統檢視內容 Dialog
+        OrganizeDialog,  // 組職表 Dialog
+        MessageBar,  // 題示訊息
+    },
+    methods: {
+        ...mapActions('user', [
+            'saveUserProfile',  // 儲存使用者基本資料
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
+        // 登出
+        logout() {
+            localStorage.clear()  // 清除所有 localstorage
+            this.$router.push('/login')
+        },
+        // 解密
+        decode(str, key) {
+            // 16 進位轉回位元組
+            let encryptedBytes = aesjs.utils.hex.toBytes(str)
+
+            // 建立另一個 Counter 實體
+            let aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5))
+            let decryptedBytes = aesCtr.decrypt(encryptedBytes)
+
+            // 將位元組轉回原始字串
+            return aesjs.utils.utf8.fromBytes(decryptedBytes)
+        },
+        // 檢查 localStorage
+        checkLocalStorage() {
+            // 檢查是否有 jwt、使用者資訊、權限資訊
+            if (
+                localStorage.getItem('jwt') == null ||
+                localStorage.getItem('userData') == null ||
+                localStorage.getItem('groupData') == null
+            ) {
+                this.logout()
+                return
+            }
+
+            // 儲存使用者資訊
+            this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
+            
+            // 儲存權限資訊
+            this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+        },
+    },
+    created() {
+        this.checkLocalStorage()
+    },
 }
 </script>

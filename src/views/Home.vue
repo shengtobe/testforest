@@ -94,12 +94,18 @@
                 </v-data-table>
             </v-card>
         </v-col>
+
+        <v-col cols="12">
+            {{ userData }}
+            <hr>
+            {{ groupData }}
+        </v-col>
     </v-row>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 import { departOptions } from '@/assets/js/departOption'
 
@@ -128,6 +134,12 @@ export default {
         }
             
     }),
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,  // 使用者權限(群組)資料
+        })
+    },
     components: { Pagination },  // 頁碼
     methods: {
         ...mapActions('system', [

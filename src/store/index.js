@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import system from './modules/system'
 import organization from './modules/organization'
-// import workList from './modules/env'
+import user from './modules/user'
 
 Vue.use(Vuex)
 
@@ -16,6 +16,6 @@ export default new Vuex.Store({
   modules: {
     system,  // 系統類
     organization,  // 組織表
-    // env,  // 環境變數
+    user,  // 使用者資料
   }
 })

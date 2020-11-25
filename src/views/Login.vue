@@ -74,6 +74,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { login } from '@/apis/login'
+import aesjs from 'aes-js'
+
 export default {
   data: () => ({
     mainColor: 'light-blue darken-1',
@@ -87,7 +92,13 @@ export default {
       pwd: '000000'
     },
   }),
+  computed: {
+    ...mapState ('user', {
+      key: state => state.key,  // 加密金鑰
+    })
+  },
   methods: {
+    // 送出
     submit() {
       // if (this.$refs.form.validate()) {  // 驗證欄位
       //   this.isLoading = true
@@ -109,12 +120,48 @@ export default {
       //   }, 1000)
       // }
 
-      localStorage.isLogined = true
-      localStorage.user = JSON.stringify({
-        name: '王小明'
+      // localStorage.isLogined = true
+      // localStorage.user = JSON.stringify({
+      //   name: '王小明'
+      // })
+
+      this.isLoading = true
+      this.errMsg = '認證中...'
+
+      login({
+        UserId: '01009',  // 帳號(員工 id)
+        UserPasswd: '1234',  // 密碼
+        ClientReqTime: getNowFullTime()  // client 端請求時間
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          localStorage.isLogined = true
+          localStorage.jwt = res.data.Token
+          localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
+          localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
+          this.$router.push('/')
+        } else {
+          this.errMsg = res.data.Msg
+          this.isLoading = false
+          this.hasError = true
+        }
+      }).catch(err => {
+        this.errMsg = '伺服器發生錯誤!'
+        this.isLoading = false
+        this.hasError = true
       })
-      this.$router.push('/')
-    }
+    },
+    // 加密
+    encode(str, key) {
+      // 將文字轉換為位元組
+      let textBytes = aesjs.utils.utf8.toBytes(str)
+
+      // Counter 可省略，若省略則從 1 開始
+      let aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5))
+      let encryptedBytes = aesCtr.encrypt(textBytes)
+
+      // 將位元組轉成 16 進位，方便輸出
+      return aesjs.utils.hex.fromBytes(encryptedBytes)
+    },
   }
 }
 </script>
