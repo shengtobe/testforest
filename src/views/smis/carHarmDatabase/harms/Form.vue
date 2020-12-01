@@ -118,10 +118,10 @@
             ></v-select>
         </v-col>
 
-        <!-- 影響、營運衝擊 -->
+        <!-- 影響、運轉影響情形 -->
         <v-col cols="12">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
+                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、運轉影響情形
             </h3>
             <v-sheet color="white" elevation="2" class="px-2 pb-4">
                 <v-row no-gutters>

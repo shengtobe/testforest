@@ -7,6 +7,36 @@
         此通報已經解除，無法再次編輯
     </p>
 
+    <v-row class="px-2 mb-12" no-gutters>
+        <v-col cols="12" sm="6" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">{{  }}</v-col>
+            </v-row>
+        </v-col>
+
+        <v-col cols="12" sm="6" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">{{  }}</v-col>
+            </v-row>
+        </v-col>
+    </v-row>
+
     <v-row class="px-2">
         <!-- 延長日期 -->
         <v-col cols="12" sm="4" md="3">
@@ -161,6 +191,12 @@ export default {
             { name: '鄭家豪 (K24758)', value: '7'},
             { name: '王永慶 (K25896)', value: '8'},
         ],
+        topItems: {  // 上面的欄位
+            findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
+            findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
+            accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: '' },
+        },
     }),
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -183,10 +219,20 @@ export default {
                 setTimeout(() => {
                     if (this.routeId == 222) this.isStop = true  // 設定已解除的範例
 
+                    // 設定上方資料
+                    let obj = {
+
+                    }
+                    this.setShowData(obj)
+
                     this.recipients = ['2', '3', '5', '7']
                     this.chLoadingShow()
                 }, 1000)
             }
+        },
+        // 設定上方資料
+        setShowData(obj) {
+            
         },
         // 切換部門成員
         changeDepart() {

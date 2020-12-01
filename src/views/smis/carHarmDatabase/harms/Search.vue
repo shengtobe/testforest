@@ -163,6 +163,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
+                            :loading="isLoading"
                             @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -208,6 +209,7 @@ export default {
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
     methods: {
@@ -270,31 +272,41 @@ export default {
         },
         // 重新導向 (依結案狀態)
         redirect(item) {
+            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
+            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
+
+            this.isLoading = true
+            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/show` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/show` })
                     break
                 case 2:  // 審核完備資料
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/review` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/review` })
                     break
                 case 3:  // 已完備資料
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
                     break
                 case 4:  // 審核風險已可接受
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-review` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-review` })
                     break
                 case 5:  // 風險已可接受
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-complated` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-complated` })
                     break
                 case 6:  // 審核更新
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/update-review` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/update-review` })
                     break
                 case 7:  // 審核作廢
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${item.id}/invalid` })
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/invalid` })
                     break
                 default:
                     break
             }
+            setTimeout(() => {
+                this.isLoading = false
+                window.open(routeData.href, '_blank')
+            }, 1000)
         },
     },
 }

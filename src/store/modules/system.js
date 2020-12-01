@@ -75,6 +75,10 @@ const actions = {
     chViewDialog ({ commit }, payload) {
         commit('SET_SYSTEM_VIEW_DIALOG', payload)
     },
+    // 關閉視窗 (用於關另開的分頁)
+    closeWindow() {
+        window.close()
+    },
 }
 
 export default {

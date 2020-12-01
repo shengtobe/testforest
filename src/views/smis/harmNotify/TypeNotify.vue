@@ -65,7 +65,7 @@ export default {
                             data: data.harm,
                         },
                         {
-                            label: '其他通報',
+                            label: '不立案',
                             backgroundColor: '#00E676',  // 節點的顏色
                             borderColor: '#00E676',  // 線的顏色
                             fill: false,  // 不要有下方填滿

@@ -106,7 +106,7 @@
             </h3>
             <v-select
                 v-model="ipt.education"
-                :items="['小學', '國中', '高中', '專科', '大學', '碩士', '博士']"
+                :items="opts.educ"
                 solo
             ></v-select>
         </v-col>
@@ -299,15 +299,17 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>直接原因
             </h3>
             <v-textarea
+                hide-details
                 auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入直接原因"
                 v-model.trim="ipt.directReason"
             ></v-textarea>
+            <p class="red--text mt-2">* 直接原因：由於某種能量或危害接觸，而使人體受到傷害，例如：跌倒受傷、高處墜落致顱內出血等</p>
         </v-col>
 
-        <v-col cols="12" sm="6">
+        <!-- <v-col cols="12" sm="6">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>間接原因
             </h3>
@@ -318,6 +320,19 @@
                 placeholder="請輸入間接原因"
                 v-model.trim="ipt.indirectReason"
             ></v-textarea>
+        </v-col> -->
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>間接原因
+            </h3>
+            <v-select
+                hide-details
+                v-model="ipt.indirectReason"
+                :items="['不安全行為', '不可抗力', '不安全環境', '其他']"
+                solo
+            ></v-select>
+            <p class="red--text mt-2">* 間接原因：由於不安全行為或不安全環境引起</p>
         </v-col>
 
         <v-col cols="12" sm="6">
@@ -325,12 +340,14 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>基本原因
             </h3>
             <v-textarea
+                hide-details
                 auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入基本原因"
                 v-model.trim="ipt.basicReason"
             ></v-textarea>
+            <p class="red--text mt-2">* 基本原因：作業標準流程、設備維護管理、防護措施或安全衛生管理不良等的結果所造成，例如：未依標準作業流程施作、未每日作業前依規定實施檢點等</p>
         </v-col>
 
         <v-col cols="12" sm="6">
@@ -351,12 +368,14 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故概況
             </h3>
             <v-textarea
+                hide-details
                 auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入事故概況"
                 v-model.trim="ipt.overview"
             ></v-textarea>
+            <p class="red--text mt-2">* 請以人、事、時、地、物方式說明，必要時應附詳圖或照片</p>
         </v-col>
 
         <v-col cols="12" sm="6">
@@ -377,12 +396,14 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故單位防範及改善對策
             </h3>
             <v-textarea
+                hide-details
                 auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入事故單位防範及改善對策"
                 v-model.trim="ipt.improveStrategy"
             ></v-textarea>
+            <p class="red--text mt-2">* 防範及改善對策已列入追蹤管理，請事故單位填寫預定改善完成期限，並於期限內檢附改善佐證資料或照片後，本調查表方能結案</p>
         </v-col>
 
         <!-- 上傳檔案 (新增時) -->
@@ -472,7 +493,7 @@ export default {
             workDepart: '嘉義車站',  // 工作部門
             startWorkDate: new Date().toISOString().substr(0, 10),  // 到職日期
             jobTitle: '',  // 職稱
-            education: '大學',  // 教育程度
+            education: '大學畢業',  // 教育程度
             address: '',  // 住址
             workYear: '',  // 本項工作經驗年數
             trainingDate: '',  // 本項工作訓練日期
@@ -489,7 +510,7 @@ export default {
             vehicleLv1: '',  // 致傷媒介物-第一層
             vehicle: '',  // 致傷媒介物-第二層
             directReason: '',  // 直接原因
-            indirectReason: '',  // 間接原因
+            indirectReason: '不安全行為',  // 間接原因
             basicReason: '',  // 基本原因
             workItem: '',  // 傷者當時工作
             overview: '',  // 事故概況
@@ -509,6 +530,22 @@ export default {
             depart: dapartOptsBrief,  // 發生單位
             hour: hourOptions,  // 時
             min: minOptions,  // 分
+            educ: [  // 教育程度
+                { text: '小學畢業', value: '小學畢業' },
+                { text: '小學肄業', value: '小學肄業' },
+                { text: '國中畢業', value: '國中畢業' },
+                { text: '國中肄業', value: '國中肄業' },
+                { text: '高中畢業', value: '高中畢業' },
+                { text: '高中肄業', value: '高中肄業' },
+                { text: '專科畢業', value: '專科畢業' },
+                { text: '專科肄業', value: '專科肄業' },
+                { text: '大學畢業', value: '大學畢業' },
+                { text: '大學肄業', value: '大學肄業' },
+                { text: '碩士畢業', value: '碩士畢業' },
+                { text: '碩士肄業', value: '碩士肄業' },
+                { text: '博士畢業', value: '博士畢業' },
+                { text: '博士肄業', value: '博士肄業' },
+            ],
             accidentType: [  // 事故類別
                 { text: '工作傷害事故', value: 1 },
                 { text: '工作交通事故', value: 2 },
@@ -598,7 +635,7 @@ export default {
                         vehicleLv1: '動力機械',  // 致傷媒介物-第一層
                         vehicle: 154,  // 致傷媒介物-第二層
                         directReason: '直接原因文字直接原因文字直接原因文字直接原因文字直接原因文字',  // 直接原因
-                        indirectReason: '間接原因文字間接原因文字間接原因文字',  // 間接原因
+                        indirectReason: '不安全行為',  // 間接原因
                         basicReason: '基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字',  // 基本原因
                         workItem: '傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字',  // 傷者當時工作
                         overview: '事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字',  // 事故概況

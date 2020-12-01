@@ -44,6 +44,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
+                            target="_blank"
                             :to="`/smis/jobsafety/physical/${item.id}/show`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>

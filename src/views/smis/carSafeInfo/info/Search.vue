@@ -108,7 +108,7 @@
             <v-btn elevation="2" large class="mb-3"
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
         </v-col>
         
@@ -143,6 +143,7 @@
                         </v-btn>
 
                         <v-btn small dark fab color="teal"
+                            :loading="isLoading"
                             @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -205,13 +206,14 @@ export default {
             { text: '加會中', value: 3 },
             { text: '已發布', value: 4 },
         ],
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.ipt = { ...this.defaultIpt }
         },
@@ -284,22 +286,32 @@ export default {
         },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
+            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
+            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
+
+            this.isLoading = true
+            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    this.$router.push({ path: `/smis/car-safeinfo/info/${item.id}/show` })
+                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/show` })
                     break
                 case 2:  // 審核中
-                    this.$router.push({ path: `/smis/car-safeinfo/info/${item.id}/review` })
+                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/review` })
                     break
                 case 3:  // 加會中
-                    this.$router.push({ path: `/smis/car-safeinfo/info/${item.id}/join` })
+                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/join` })
                     break
                 case 4: // 已發布
-                    this.$router.push({ path: `/smis/car-safeinfo/info/${item.id}/complated` })
+                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/complated` })
                     break
                 default:
                     break
             }
+            setTimeout(() => {
+                this.isLoading = false
+                window.open(routeData.href, '_blank')
+            }, 1000)
         },
     },
     created() {

@@ -209,7 +209,7 @@
                 <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0"
                     @click="reset"
                 >
-                    <v-icon>mdi-reload</v-icon>重置
+                    <v-icon>mdi-reload</v-icon>清除搜尋內容
                 </v-btn>
             </v-col>
         </v-row>
@@ -237,6 +237,7 @@
                         <!-- headers 的 content 欄位 (檢視內容) -->
                         <template v-slot:item.content="{ item }">
                             <v-btn small dark fab color="teal"
+                                :loading="isLoading"
                                 @click="viewPage(item)"
                             >
                                 <v-icon dark>mdi-file-document</v-icon>
@@ -304,6 +305,7 @@ export default {
             { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
     methods: {
@@ -376,28 +378,37 @@ export default {
         },
         // 檢視內容
         viewPage(item) {
-            // 依處理階段決定要去的頁面
+            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
+            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
+
+            this.isLoading = true
+            let routeData = ''
             switch(item.Status) {
                 case '待派工':
-                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/listShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/listShow` })
                     break
                 case '已派工待維修':
-                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/workShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/workShow` })
                     break
                 case '已維修待驗收':
-                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/acceptingShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/acceptingShow` })
                     break
                 case '已驗收待結案':
-                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/closedShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/closedShow` })
                     break
                 case '已結案':
-                    this.$router.push({ path: `/worklist/maintain/${item.WorkOrderID}/complated` })
+                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/complated` })
                     break
                 default:
                     break
             }
+            setTimeout(() => {
+                this.isLoading = false
+                window.open(routeData.href, '_blank')
+            }, 1000)
         },
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.ipt = { ...this.defaultIpt }
         },

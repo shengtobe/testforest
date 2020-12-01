@@ -75,7 +75,7 @@
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn elevation="2" large @click="reset">
-          <v-icon>mdi-reload</v-icon>重置
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
         </v-btn>
       </v-col>
 
@@ -313,7 +313,7 @@ export default {
   methods: {
     // 搜尋
     search() {},
-    // 重置
+    // 清除搜尋內容
     reset() {
       this.searchIpt.EndDay = "";
       this.searchIpt.StartDay = "";

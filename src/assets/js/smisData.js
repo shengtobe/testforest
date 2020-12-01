@@ -116,7 +116,7 @@ export const jobHarmType = [
 
 // 事故發生地點
 export const locationOpts = [
-    { text: '主線', value: 'l1' },
+    { text: '本線', value: 'l1' },
     { text: '祝山線', value: 'l2' },
     { text: '眠月線', value: 'l3' },
     { text: '水山線', value: 'l4' },

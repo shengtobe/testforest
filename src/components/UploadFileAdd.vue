@@ -38,25 +38,26 @@
                 </v-card-title>
 
                 <v-row class="py-2 px-4">
-                    <v-col cols="12" sm="4" md="3"
+                    <v-col cols="12" sm="6" md="3"
                         v-for="(item, idx) in fileList"
                         :key="item.name"
                     >
                         <v-card>
                             <v-img
                                 contain
-                                width="264"
+                                min-width="100%"
                                 height="158"
                                 :src="item.src"
                                 class="grey lighten-2"
                             ></v-img>
 
                             <v-card-actions
-                                class="my-1 mx-2 d-flex justify-space-between"
+                                class="my-1 mx-2 d-flex justify-space-between align-start"
                             >
-                                {{ item.name }}
-                                
+                                <div style="width: calc(100% - 36px);">{{ item.name }}</div>
+
                                 <v-icon large color="error"
+                                    class="mr-n2"
                                     @click="del(idx)"
                                 >mdi-close-circle</v-icon>
                             </v-card-actions>

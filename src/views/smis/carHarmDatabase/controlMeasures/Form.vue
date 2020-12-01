@@ -111,7 +111,11 @@
         </template>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4" v-if="isEdit"
+                @click="closeWindow"
+            >關閉視窗</v-btn>
+
+            <v-btn dark class="mr-4" v-else
                 to="/smis/car-harmdb/control-measures"
             >回搜尋頁</v-btn>
             
@@ -196,6 +200,7 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         initData() {

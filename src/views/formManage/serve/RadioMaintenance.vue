@@ -199,8 +199,14 @@
           <div class="px-6 py-4">
             <v-row>
               <!-- 外觀 -->
-              <h3 class="mb-1">編號(或機號)</h3>
-              <v-select dense single-line :items="MachineID" outlined />
+              <v-col cols="12">
+                <h3 class="mb-1">保養人員：王大明</h3>
+              </v-col>
+              <v-col cols="12">
+                <h3 class="mb-1">編號(或機號)</h3>
+                <v-select dense single-line :items="MachineID" outlined />
+              </v-col>
+              
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
                 <v-radio-group row v-model="mainLocation1">
@@ -240,10 +246,7 @@
                   <v-radio label="不正常" color="success" value="l2"></v-radio>
                 </v-radio-group>
               </v-col>
-              <v-col cols="8" sm="6">
-                <h3 class="mb-1">保養人員</h3>
-                <v-textarea hide-details auto-grow outlined rows="1"/>
-              </v-col>
+              
               <!-- 不正常狀況及處理說明 -->
               <v-col cols="12">
                 <h3 class="mb-1">不正常狀況及處理說明</h3>

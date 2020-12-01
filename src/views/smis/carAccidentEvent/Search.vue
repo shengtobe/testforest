@@ -83,7 +83,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備損失
+                <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
             </h3>
             <v-text-field
                 v-model.trim="ipt.eqLoss"
@@ -93,7 +93,7 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>營運衝擊
+                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>運轉影響情形
             </h3>
             <v-text-field
                 v-model.trim="ipt.serviceShock"
@@ -168,10 +168,11 @@
             <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0"
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
             <v-btn color="pink" elevation="2" dark large class="mr-3 mb-4 mb-sm-0"
+                target="_blank"
                 to="/smis/car-accident-event/del-recovery"
             >
                 <v-icon>mdi-alert-circle</v-icon>作廢復原
@@ -199,6 +200,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
+                            :loading="isLoading"
                             @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -269,8 +271,8 @@ export default {
             dateStart:  '',  // 發生日期(起)
             dateEnd: '',  // 發生日期(迄)
             evtType: '', // 事故類型
-            eqLoss: '',// 設備損失
-            serviceShock: '', // 營運衝擊
+            eqLoss: '',// 設備受損情形
+            serviceShock: '', // 運轉影響情形
             handle: '', // 處置過程
             review: '', // 檢討過程
             reason: '', // 原因分析
@@ -301,13 +303,14 @@ export default {
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.ipt = { ...this.defaultIpt }
         },
@@ -350,25 +353,35 @@ export default {
         },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
+            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
+            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
+
+            this.isLoading = true
+            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/show` })
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
                     break
                 case 2:  // 審核中 (審核完備資料)
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/review` })
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/review` })
                     break
                 case 3:  // 已完備資料
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/complated` })
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/complated` })
                     break
                 case 4: // 審核中 (審核措施落實)
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
                     break
                 case 5: // 改善措施已落實
-                    this.$router.push({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
                     break
                 default:
                     break
             }
+            setTimeout(() => {
+                this.isLoading = false
+                window.open(routeData.href, '_blank')
+            }, 1000)
         },
     },
     created() {

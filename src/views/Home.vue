@@ -94,12 +94,6 @@
                 </v-data-table>
             </v-card>
         </v-col>
-
-        <v-col cols="12">
-            {{ userData }}
-            <hr>
-            {{ groupData }}
-        </v-col>
     </v-row>
 </v-container>
 </template>

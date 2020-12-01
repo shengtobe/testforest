@@ -228,16 +228,18 @@
 
         <v-col cols="12" class="text-center mt-8">
             <v-btn dark class="mr-4"
-                to="/smis/harmnotify/audit"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark color="purple" class="mr-4"
-                @click="nocreate"
-            >不立案</v-btn>
+            <template v-if="!done">
+                <v-btn dark color="purple" class="mr-4"
+                    @click="nocreate"
+                >不立案</v-btn>
 
-            <v-btn dark color="success"
-                @click="save"
-            >確定立案</v-btn>
+                <v-btn dark color="success"
+                    @click="save"
+                >確定立案</v-btn>
+            </template>
         </v-col>
     </v-row>
 
@@ -296,6 +298,7 @@ import { locationOpts } from '@/assets/js/smisData'
 export default {
     data: () => ({
         routeId: '',
+        done: false,  // 是否完成頁面操作
         replay: {
             replied: false,  // 是否已回覆
             msg: '',  // 回覆的訊息
@@ -348,8 +351,8 @@ export default {
                 { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '死傷人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '設備損失', value: 'eqLoss', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '營運衝擊', value: 'serviceShock', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '設備受損情形', value: 'eqLoss', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '運轉影響情形', value: 'serviceShock', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             ],
             carHarm: [
@@ -418,6 +421,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {
@@ -568,7 +572,7 @@ export default {
 
             setTimeout(() => {
                 this.chMsgbar({ success: true, msg: '立案成功'})
-                this.$router.push({ path: '/smis/harmnotify/audit' })
+                this.done = true  // 隱藏頁面操作按鈕
                 this.chLoadingShow()
             }, 1000)
         },
@@ -609,6 +613,7 @@ export default {
 
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '不立案成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }

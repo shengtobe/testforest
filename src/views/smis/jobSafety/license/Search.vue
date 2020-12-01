@@ -55,6 +55,7 @@
 
                     <template v-slot:item.link="{ item }">
                         <v-btn small dark fab color="purple"
+                            target="_blank"
                             :to="`/smis/jobsafety/license/${item.id}/list`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>

@@ -77,7 +77,7 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
+                        <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、運轉影響情形
                     </span>
                 </v-col>
 
@@ -144,21 +144,23 @@
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/car-harmdb/harms"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark class="ma-2"
-                color="indigo"
-                :to="`/smis/car-harmdb/harms/${routeId}/edit`"
-            >編輯</v-btn>
+            <template v-if="!done">
+                <v-btn dark class="ma-2"
+                    color="indigo"
+                    :to="`/smis/car-harmdb/harms/${routeId}/edit`"
+                >編輯</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="del"
-            >作廢</v-btn>
+                <v-btn dark  class="ma-2" color="error"
+                    @click="del"
+                >作廢</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-            >申請措施審核</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                >申請措施審核</v-btn>
+            </template>
         </v-col>
     </v-row>
 
@@ -203,6 +205,7 @@ import TopBasicTable from '@/components/TopBasicTable.vue'
 export default {
     data: () => ({
         routeId: '',
+        done: false,  // 是否完成頁面操作
         topItems: {  // 上面的欄位
             depart: { icon: 'mdi-bank', title: '權責單位', text: '' },
             mode: { icon: 'mdi-snowflake', title: '營運模式', text: '' },
@@ -217,7 +220,7 @@ export default {
         indirectReason: '',  // 可能的危害間接原因
         note: '',  // 備註
         controls: [],  // 控制措施
-        affectTxt: '',  // 影響、營運衝擊字串
+        affectTxt: '',  // 影響、運轉影響情形字串
         accidentsTxt: '',  // 衍生事故字串
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
@@ -244,6 +247,7 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {
@@ -325,7 +329,7 @@ export default {
             this.note = obj.note.replace(/\n/g, '<br>')  // 備註
             this.controls = [ ...obj.controls ]  // 控制措施
             
-            // 影響、營運衝擊字串
+            // 影響、運轉影響情形字串
             let arr = []
             if (obj.affectTraveler) arr.push('影響旅客')
             if (obj.affectStaff) arr.push('影響員工')
@@ -339,27 +343,29 @@ export default {
 
             this.tableItems = [ ...obj.controls ]
         },
-        // 刪除
+        // 作廢
         del() {
-            if (confirm('你確定要刪除嗎?')) {
+            if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: '/smis/car-harmdb/harms' })
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                    this.chMsgbar({ success: true, msg: '作廢成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }
         },
         // 申請審核
         save() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
-                this.chMsgbar({ success: true, msg: '申請審核成功'})
+            if (confirm('你確定要申請審核嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請審核成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 顯示檢視內容
         showContent(txt) {

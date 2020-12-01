@@ -103,6 +103,7 @@
 
                    <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
+                            :loading="isLoading"
                             @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -154,6 +155,7 @@ export default {
             { text: '處理階段', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
     methods: {
@@ -242,26 +244,35 @@ export default {
         },
         // 檢視內容
         redirect(item) {
-            // 依處理階段決定要去的頁面
+            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
+            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
+
+            this.isLoading = true
+            let routeData = ''
             switch(item.status) {
                 case 1:
-                    this.$router.push({ path: `/worklist/serve/${item.id}/listShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/listShow` })
                     break
                 case 2:
-                    this.$router.push({ path: `/worklist/serve/${item.id}/workShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/workShow` })
                     break
                 case 3:
-                    this.$router.push({ path: `/worklist/serve/${item.id}/acceptingShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/acceptingShow` })
                     break
                 case 4:
-                    this.$router.push({ path: `/worklist/serve/${item.id}/closedShow` })
+                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/closedShow` })
                     break
                 case 5:
-                    this.$router.push({ path: `/worklist/serve/${item.id}/complated` })
+                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/complated` })
                     break
                 default:
                     break
             }
+            setTimeout(() => {
+                this.isLoading = false
+                window.open(routeData.href, '_blank')
+            }, 1000)
         },
         // 更換頁數
         chPage(n) {

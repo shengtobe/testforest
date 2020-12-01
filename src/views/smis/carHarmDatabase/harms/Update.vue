@@ -116,10 +116,10 @@
             ></v-select>
         </v-col>
 
-        <!-- 影響、營運衝擊 -->
+        <!-- 影響、運轉影響情形 -->
         <v-col cols="12">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
+                <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、運轉影響情形
             </h3>
             <v-sheet color="white" elevation="2" class="px-2 pb-4">
                 <v-row no-gutters>
@@ -404,13 +404,15 @@
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
-                to="/smis/car-harmdb/harms"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
             
-            <v-btn
-                color="success"
-                @click="save"
-            >申請更新</v-btn>
+            <template v-if="!done">
+                <v-btn
+                    color="success"
+                    @click="save"
+                >申請更新</v-btn>
+            </template>
         </v-col>
     </v-row>
 
@@ -465,6 +467,7 @@ import Pagination from '@/components/Pagination.vue'
 export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
+        done: false,  // 是否完成頁面操作
         ipt: {
             accidents: [],  // 衍生事故(給組件的預設值)
         },
@@ -563,6 +566,7 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         initData() {
@@ -667,13 +671,15 @@ export default {
         },
         // 申請更新
         save() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '申請更新成功'})
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
+            if (confirm('你確定要申請更新嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請更新成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 搜尋控制措施
         search() {

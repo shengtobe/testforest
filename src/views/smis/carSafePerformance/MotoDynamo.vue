@@ -64,7 +64,7 @@
             <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
             <v-btn dark large class="ma-2"
@@ -539,7 +539,7 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.searchIpt.year = this.searchIpt.num = ''
             this.searchIpt.month = ''

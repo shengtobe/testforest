@@ -85,7 +85,7 @@
             <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
             <v-btn dark large class="ma-2"
@@ -134,6 +134,7 @@
 
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="primary"
+                            target="_blank"
                             class="mr-3"
                             :to="`/smis/car-safe-performance/health-abnormal/${item.id}/edit`"
                         >
@@ -237,7 +238,7 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
         ]),
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.searchDefault }
         },

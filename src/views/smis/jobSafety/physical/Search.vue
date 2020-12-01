@@ -69,6 +69,17 @@
             ></v-select>
         </v-col>
 
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>年度
+            </h3>
+            <v-text-field
+                v-model.trim="searchIpt.year"
+                solo
+                placeholder="請輸入西元年，例：2020"
+            ></v-text-field>
+        </v-col>
+
         <v-col cols="12">
             <v-btn color="success" large class="my-2 mr-2"
                 @click="search"
@@ -85,7 +96,7 @@
             <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
         </v-col>
 
@@ -140,6 +151,7 @@
 
                     <template v-slot:item.link="{ item }">
                         <v-btn small dark fab color="purple"
+                            target="_blank"
                             :to="`/smis/jobsafety/physical/${item.id}/list`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -308,6 +320,7 @@ export default {
             job: '',  // 職務
             isOnJob: '',  // 是否在職
             remind: '',  // 健檢提醒
+            year: '',  // 年度
         },
         opts: {  // 下拉選單
             depart: [  // 部門
@@ -417,7 +430,7 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.defaultSearchIpt }
         },

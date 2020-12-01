@@ -113,7 +113,7 @@
             <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
-                <v-icon class="mr-1">mdi-reload</v-icon>重置
+                <v-icon class="mr-1">mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
             <v-btn color="amber lighten-3" elevation="2" large class="ma-2"
@@ -148,6 +148,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
+                            :loading="isLoading"
                             @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -208,14 +209,15 @@ export default {
                 { text: '審核中', value: '審核中' },
                 { text: '已作廢', value: '已作廢' },
             ],
-        }
+        },
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.searchDefault }
         },
@@ -294,25 +296,35 @@ export default {
         },
         // 重新導向 (依結案狀態)
         redirect(item) {
+            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
+            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
+
+            this.isLoading = true
+            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${item.id}/show` })
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.id}/show` })
                     break
                 case 2:  // 審核中 (審核完備資料)
-                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${item.id}/review` })
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.id}/review` })
                     break
                 case 3:  // 已完備資料
-                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${item.id}/complated` })
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.id}/complated` })
                     break
                 case 4: // 審核中 (審核措施落實)
-                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${item.id}/fulfill-review` })
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.id}/fulfill-review` })
                     break
                 case 5: // 改善措施已落實
-                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${item.id}/fulfill-complated` })
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.id}/fulfill-complated` })
                     break
                 default:
                     break
             }
+            setTimeout(() => {
+                this.isLoading = false
+                window.open(routeData.href, '_blank')
+            }, 1000)
         },
     },
     created() {

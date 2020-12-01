@@ -411,7 +411,7 @@ export default {
         //進、出站號誌燈
         { question: "祝山方向-是否正常作用" },
         { question: "阿里山方向-是否正常作用" },
-        { question: "阿里山方向-是否正常作用" },
+        { question: "眠月方向-是否正常作用" },
       ],
       suggest: "", // 改善建議
     };

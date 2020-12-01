@@ -30,7 +30,7 @@
             <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
-                <v-icon class="mr-1">mdi-reload</v-icon>重置
+                <v-icon class="mr-1">mdi-reload</v-icon>清除搜尋內容
             </v-btn>
         </v-col>
 
@@ -71,6 +71,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
+                            target="_blank"
                             :to="`/smis/jobsafety/disasterdb/${item.id}/show`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -128,7 +129,7 @@ export default {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.searchDefault }
         },

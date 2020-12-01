@@ -37,24 +37,6 @@
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
-
-            <v-btn color="indigo" dark large class="mr-3"
-                to="/smis/car-harmdb/control-measures/add2"
-            >
-                <v-icon>mdi-plus</v-icon>新增2
-            </v-btn>
-
-            <v-btn color="indigo" dark large class="mr-4"
-                to="/smis/car-harmdb/control-measures/add3"
-            >
-                <v-icon>mdi-plus</v-icon>新增3
-            </v-btn>
-
-            <v-btn color="indigo" dark large
-                to="/smis/car-harmdb/control-measures/add4"
-            >
-                <v-icon>mdi-plus</v-icon>新增4
-            </v-btn>
         </v-col>
 
         <!-- 表格資料 -->
@@ -101,6 +83,7 @@
 
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="primary"
+                            target="_blank"
                             class="mr-3"
                             :to="`/smis/car-harmdb/control-measures/${item.id}/edit`"
                         >

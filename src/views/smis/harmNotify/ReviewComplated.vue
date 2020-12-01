@@ -121,23 +121,25 @@
 
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-2"
-                to="/smis/harmnotify/audit"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark  class="ma-2" color="primary"
-                @click="edit"
-                v-if="closeStatus == '已立案'"
-            >變更立案類型</v-btn>
+            <template v-if="!done">
+                <v-btn dark  class="ma-2" color="primary"
+                    @click="edit"
+                    v-if="closeStatus == '已立案'"
+                >變更立案類型</v-btn>
 
-             <v-btn dark  class="ma-2" color="error"
-                @click="dialog = true"
-                v-if="closeStatus == '審核中'"
-            >退回</v-btn>
+                <v-btn dark  class="ma-2" color="error"
+                    @click="dialog = true"
+                    v-if="closeStatus == '審核中'"
+                >退回</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-                v-if="closeStatus == '審核中'"
-            >同意不立案</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                    v-if="closeStatus == '審核中'"
+                >同意不立案</v-btn>
+            </template>
         </v-col>
     </v-row>
 
@@ -188,6 +190,7 @@ export default {
     props: ['closeStatus'],  // 測試用屬性
     data: () => ({
         routeId: '',
+        done: false,  // 是否完成頁面操作
         topItems: {  // 上面的欄位
             creater: { icon: 'mdi-account', title: '通報人', text: '' },
             depart: { icon: 'mdi-apps', title: '所屬部門', text: '' },
@@ -224,6 +227,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {
@@ -291,8 +295,8 @@ export default {
 
             setTimeout(() => {
                 this.chMsgbar({ success: true, msg: '退回成功'})
-                this.$router.push({ path: '/smis/harmnotify/audit' })
-                this.isLoading = false
+                this.done = true  // 隱藏頁面操作按鈕
+                this.dialog = false
             }, 1000)
         },
         // 同意不立案
@@ -302,7 +306,7 @@ export default {
 
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '同意不立案成功'})
-                    this.$router.push({ path: '/smis/harmnotify/audit' })
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }

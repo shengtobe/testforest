@@ -86,7 +86,7 @@
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/harmnotify/audit">危害通報審核</v-list-item>
+                                <v-list-item @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 行車事故事件 -->
@@ -317,7 +317,8 @@ export default {
         },
     },
     created() {
-        this.checkLocalStorage()
+        // ------------ 已寫好的登入功能，先備註掉 -------------
+        // this.checkLocalStorage()
     },
 }
 </script>

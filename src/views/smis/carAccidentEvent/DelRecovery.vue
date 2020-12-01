@@ -36,8 +36,8 @@
 
         <v-col cols="12">
             <v-btn dark class="mr-3"
-                to="/smis/car-accident-event"
-            >回上層</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
         </v-col>
     </v-row>
 </v-container>
@@ -66,6 +66,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {

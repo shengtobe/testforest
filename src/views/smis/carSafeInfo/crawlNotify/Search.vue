@@ -117,6 +117,7 @@
                         </v-btn>
 
                         <v-btn fab small color="primary" class="mr-2"
+                            target="_blank"
                             :to="`/smis/car-safeinfo/crawl-notify/${item.id}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>

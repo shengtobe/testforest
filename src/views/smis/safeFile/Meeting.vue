@@ -95,7 +95,7 @@
             <v-btn elevation="2" large
                 @click="reset"
             >
-                <v-icon>mdi-reload</v-icon>重置
+                <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
         </v-col>
         
@@ -374,7 +374,7 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
-        // 重置
+        // 清除搜尋內容
         reset() {
             this.searchIpt.dateStart = this.searchIpt.dateEnd = this.searchIpt.title= this.searchIpt.fileName = ''
         },

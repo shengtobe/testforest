@@ -93,7 +93,7 @@
         />
 
         <h3 class="mb-1 mt-12">
-            <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、營運衝擊
+            <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>影響、運轉影響情形
         </h3>
         <VersionDiff
             :before="before.affectTxt"
@@ -253,16 +253,18 @@
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/car-harmdb/harms"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="dialog = true"
-            >退回</v-btn>
+            <template v-if="!done">
+                <v-btn dark  class="ma-2" color="error"
+                    @click="dialog = true"
+                >退回</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-            >同意更新</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                >同意更新</v-btn>
+            </template>
         </v-col>
     </v-row>
 
@@ -340,6 +342,7 @@ import VersionDiff from '@/components/smis/VersionDiff.vue'
 export default {
     data: () => ({
         routeId: '',
+        done: false,  // 是否完成頁面操作
         before: {  // 變更前
             depart: '',// 權責部門
             mode: '',  // 營運模式
@@ -352,7 +355,7 @@ export default {
             indirectReason: '',  // 可能的危害間接原因
             note: '',  // 備註
             controls: [],  // 控制措施
-            affectTxt: '',  // 影響、營運衝擊字串
+            affectTxt: '',  // 影響、運轉影響情形字串
             accidentsTxt: '',  // 衍生事故字串
             uploads: [],  // 上傳之證據
         },
@@ -399,6 +402,7 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {
@@ -573,7 +577,7 @@ export default {
             this.before.note = before.note.replace(/\n/g, '<br>')
             this.after.note = after.note.replace(/\n/g, '<br>')
             
-            // 影響、營運衝擊字串
+            // 影響、運轉影響情形字串
             let arr_before = []
             if (before.affectTraveler) arr_before.push('影響旅客')
             if (before.affectStaff) arr_before.push('影響員工')
@@ -609,7 +613,7 @@ export default {
 
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '更新成功'})
-                    this.$router.push({ path: '/smis/car-harmdb/harms' })
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }
@@ -629,8 +633,8 @@ export default {
 
             setTimeout(() => {
                 this.chMsgbar({ success: true, msg: '退回成功'})
-                this.$router.push({ path: '/smis/car-harmdb/harms' })
-                this.isLoading = false
+                this.done = true  // 隱藏頁面操作按鈕
+                this.dialog = false
             }, 1000)
         },
     },
