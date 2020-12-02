@@ -104,21 +104,23 @@
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/car-safeinfo/info"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark class="ma-2"
-                color="indigo"
-                :to="`/smis/car-safeinfo/info/${routeId}/edit`"
-            >編輯</v-btn>
+            <template v-if="!done">
+                <v-btn dark class="ma-2"
+                    color="indigo"
+                    :to="`/smis/car-safeinfo/info/${routeId}/edit`"
+                >編輯</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="del"
-            >作廢</v-btn>
+                <v-btn dark  class="ma-2" color="error"
+                    @click="del"
+                >作廢</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-            >申請審核</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                >申請審核</v-btn>
+            </template>
         </v-col>
     </v-row>
 </v-container>
@@ -131,6 +133,7 @@ import TopBasicTable from '@/components/TopBasicTable.vue'
 export default {
     data: () => ({
         routeId: '',
+        done: false,  // 是否完成頁面操作
         topItems: {  // 上面的欄位
             depart: { icon: 'mdi-bank', title: '通報單位', text: '' },
             name: { icon: 'mdi-account', title: '通報人', text: '' },
@@ -164,6 +167,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {
@@ -216,21 +220,23 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: '/smis/car-safeinfo/info' })
                     this.chMsgbar({ success: true, msg: '作廢成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }
         },
         // 申請審核
         save() {
-            this.chLoadingShow()
-
-            setTimeout(() => {
-                this.$router.push({ path: '/smis/car-safeinfo/info' })
-                this.chMsgbar({ success: true, msg: '申請審核成功'})
+            if (confirm('你確定要申請審核嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請審核成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 員工編號轉換姓名
         transferMemberName(id) {

@@ -136,12 +136,6 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small dark color="brown" class="mr-3"
-                            :to="`/smis/car-safeinfo/info/${item.id}/read-track`"
-                        >
-                            <v-icon>mdi-radar</v-icon>
-                        </v-btn>
-
                         <v-btn small dark fab color="teal"
                             :loading="isLoading"
                             @click="redirect(item)"
@@ -193,7 +187,7 @@ export default {
             { text: '通報人', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '發布狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '發布日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '讀取追蹤、檢視', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         departOpts: [  // 通報單位下拉選單
             { text: '不限', value: '' },

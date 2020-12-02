@@ -232,7 +232,7 @@ export default {
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
-            evtType: '', // 事故類型
+            evtType: 'M1', // 事故類型
             eqLoss: '',// 設備受損情形
             serviceShock: '', // 運轉影響情形
             handle: '', // 處置過程

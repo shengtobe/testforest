@@ -141,29 +141,127 @@
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/car-safeinfo/info"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="dialog = true"
-                v-if="status == 2"
-            >退回</v-btn>
+            <template v-if="!done">
+                <v-btn dark  class="ma-2" color="error"
+                    @click="dialog = true"
+                    v-if="status == 2"
+                >退回</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-                v-if="status == 2"
-            >同意發布</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                    v-if="status == 2"
+                >同意發布</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                v-if="status == 3"
-            >送出意見</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    v-if="status == 3"
+                    @click="sendSuggestion"
+                >送出意見</v-btn>
+            </template>
 
-            <v-btn dark  class="ma-2" color="info"
-                 v-if="status == 4"
+            <v-btn dark class="ma-2" color="info"
+                v-if="status == 4"
                 @click="print"
             >列印</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 讀取追蹤 -->
+    <template v-if="status == 4">
+        <v-divider class="mx-2 mt-5 mb-4"></v-divider>
+
+        <h2 class="mb-4 px-2 text-center">
+            <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>讀取追蹤
+        </h2>
+
+        <v-row class="px-2">
+            <!-- 加會人 -->
+            <v-col cols="12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>加會人
+                </h3>
+
+                <v-card>
+                    <v-data-table
+                        :headers="joinHeaders"
+                        :items="joinTableItems"
+                        disable-sort
+                        hide-default-footer
+                    >
+                        <template v-slot:no-data>
+                            <span class="red--text subtitle-1">沒有資料</span>
+                        </template>
+
+                        <template v-slot:item.isRead="{ item }">
+                            <div v-if="item.isRead == '已讀'">{{ item.isRead }}</div>
+                            <div v-else class="error--text">{{ item.isRead }}</div>
+                        </template>
+
+                        <template v-slot:item.hasMsg="{ item }">
+                            <div v-if="item.hasMsg">已留意見</div>
+                            <div v-else class="error--text">尚未留意見</div>
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
+
+            <!-- 收件人 -->
+            <v-col cols="12" sm="4" md="3" class="mt-12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
+                </h3>
+                <v-text-field
+                    v-model.trim="keyword"
+                    placeholder="請輸入任意關鍵字"
+                    solo
+                    hide-details
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12">
+                <v-card>
+                    <v-data-table
+                        :search="keyword"
+                        :headers="headers"
+                        :items="tableItems"
+                        :options.sync="pageOpt"
+                        disable-sort
+                        hide-default-footer
+                    >
+                        <template v-slot:no-data>
+                            <span class="red--text subtitle-1">沒有資料</span>
+                        </template>
+
+                        <template v-slot:no-results>
+                            <span class="red--text subtitle-1">沒有符合「{{ keyword }}」的資料</span>
+                        </template>
+
+                        <template v-slot:item.isRead="{ item }">
+                            <div v-if="item.isRead == '已讀'">{{ item.isRead }}</div>
+                            <div v-else class="error--text">{{ item.isRead }}</div>
+                        </template>
+
+                        <!-- 頁碼 -->
+                        <template v-slot:footer="footer">
+                            <Pagination
+                                :footer="footer"
+                                :pageOpt="pageOpt"
+                                @chPage="chPage"
+                            />
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
+
+            <v-col cols="12" class="text-center mb-8">
+                <v-btn dark
+                    to="/smis/car-safeinfo/info"
+                >回搜尋頁</v-btn>
+            </v-col>
+        </v-row>
+    </template>
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
@@ -210,6 +308,7 @@ export default {
     props: ['closeStatus'],  // 測試用屬性
     data: () => ({
         routeId: '',
+        done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         topItems: {  // 上面的欄位
             depart: { icon: 'mdi-bank', title: '通報單位', text: '' },
@@ -237,6 +336,25 @@ export default {
             { name: '鄭家豪 (K24758)', value: '7'},
             { name: '王永慶 (K25896)', value: '8'},
         ],
+        keyword: '',  // 關鍵字
+        joinTableItems: [],  // 加會人表格資料
+        joinHeaders: [  // 加會人表格顯示的欄位
+            { text: '項次', value: 'num', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 80 },
+            { text: '單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '是否讀取', value: 'isRead', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '讀取時間', value: 'time', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '是否已留意見', value: 'hasMsg', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        tableItems: [],  // 收件人表格資料
+        pageOpt: { page: 1 },  // 收件人目前頁數
+        headers: [  // 收件人表格顯示的欄位
+            { text: '項次', value: 'num', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 80 },
+            { text: '單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '是否讀取', value: 'isRead', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '讀取時間', value: 'time', align: 'center', filterable: false, divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
     }),
     components: { TopBasicTable },
     watch: {
@@ -249,6 +367,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取得資料
         fetchData() {
@@ -280,6 +399,74 @@ export default {
                 }
 
                 this.setShowData(obj)
+
+                // -------- 讀取追蹤 -----------
+                // 加會人
+                let Jdata = [
+                    {
+                        depart: '鐵路維護科',
+                        name: '王小明',
+                        isRead: true,
+                        time: '2020-01-05 14:22:00',
+                        hasMsg: true,
+                    },
+                ]
+
+                this.joinTableItems = Jdata.map((item, idx) => {
+                    return {
+                        num: idx + 1,
+                        depart: item.depart,
+                        name: item.name,
+                        isRead: (item.isRead)? '已讀' : '未讀',
+                        time: item.time,
+                        hasMsg: item.hasMsg,
+                    }
+                })
+
+                // 收件人
+                let Rdata = [
+                    {
+                        depart: '鐵路維護科',
+                        name: '陳弘宇',
+                        isRead: true,
+                        time: '2020-01-05 14:22:00'
+                    },
+                    {
+                        depart: '鐵路維護科',
+                        name: '王世得',
+                        isRead: true,
+                        time: '2020-01-05 15:17:00'
+                    },
+                    {
+                        depart: '鐵路維護科',
+                        name: '林捷元',
+                        isRead: false,
+                        time: ''
+                    },
+                    {
+                        depart: '鐵路維護科',
+                        name: '趙遠龍',
+                        isRead: true,
+                        time: '2020-01-05 13:42:00'
+                    },
+                    {
+                        depart: '鐵路維護科',
+                        name: '楊耀信',
+                        isRead: false,
+                        time: ''
+                    },
+                ]
+
+                this.tableItems = Rdata.map((item, idx) => {
+                    return {
+                        num: idx + 1,
+                        depart: item.depart,
+                        name: item.name,
+                        isRead: (item.isRead)? '已讀' : '未讀',
+                        time: item.time,
+                    }
+                })
+
                 this.chLoadingShow()
             }, 1000)
         },
@@ -309,8 +496,8 @@ export default {
 
             setTimeout(() => {
                 this.chMsgbar({ success: true, msg: '退回成功'})
-                this.$router.push({ path: '/smis/car-safeinfo/info' })
-                this.isLoading = false
+                this.done = true  // 隱藏頁面操作按鈕
+                this.dialog = false
             }, 1000)
         },
         // 作廢
@@ -319,8 +506,8 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: '/smis/car-safeinfo/info' })
                     this.chMsgbar({ success: true, msg: '作廢成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }
@@ -331,8 +518,20 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: '/smis/car-safeinfo/info' })
                     this.chMsgbar({ success: true, msg: '同意發布成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
+                    this.chLoadingShow()
+                }, 1000)
+            }
+        },
+        // 送出意見
+        sendSuggestion() {
+            if (confirm('你確定要送出意見嗎?')) {
+                this.chLoadingShow()
+
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '同意送出意見成功'})
+                    this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
                 }, 1000)
             }

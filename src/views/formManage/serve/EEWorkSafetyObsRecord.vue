@@ -100,7 +100,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="dialogShowAdd = true"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -307,6 +307,7 @@ export default {
   data: () => ({
       title: "員工工作安全觀察表(每月2 次)",
       newText: "觀察表",
+      isLoading: false,
     aas: "",
     bbs: "",
     ccs: "",
@@ -355,8 +356,7 @@ export default {
       user: ""
     },
     nameRules: [
-      v => !!v || "公里數必須填寫",
-      v => v.length > 0 || "公里數必須大於0"
+      v => !!v || "不可空白",
     ],
     dialogForm: {},
     mainLocation: "", // 所選的地點
@@ -433,10 +433,6 @@ export default {
   components: { Pagination }, // 頁碼
 
   methods: {
-    // 更新資料
-    update() {
-      this.$emit("chLocation", {});
-    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -453,7 +449,11 @@ export default {
         this.addItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       }, 300);
-    }
+    },
+    // 確定新增
+    save() {
+
+    },
   }
 };
 </script>

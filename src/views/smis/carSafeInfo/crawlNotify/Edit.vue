@@ -7,32 +7,20 @@
         此通報已經解除，無法再次編輯
     </p>
 
+    <!-- 上方基本資料 -->
     <v-row class="px-2 mb-12" no-gutters>
-        <v-col cols="12" sm="6" style="border-bottom: 1px solid #CFD8DC">
+        <v-col cols="12" sm="6" style="border-bottom: 1px solid #CFD8DC"
+            v-for="item in topData"
+            :key="item.title"
+        >
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
                 >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
-                    </span>
+                    <span class="font-weight-black">{{ item.title }}</span>
                 </v-col>
 
-                <v-col class="white pa-3">{{  }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" sm="6" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{  }}</v-col>
+                <v-col class="white pa-3">{{ item.value }}</v-col>
             </v-row>
         </v-col>
     </v-row>
@@ -154,8 +142,8 @@
 
         <v-col cols="12" class="my-8">
             <v-btn dark class="mr-3"
-                to="/smis/car-safeinfo/crawl-notify"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
             <v-btn dark color="success"
                 v-if="!isStop"
@@ -173,6 +161,7 @@ import { dapartOptsForMember } from '@/assets/js/departOption'
 export default {
     data: () => ({
         routeId: '',
+        topData: [],  // 上方基本資料
         date: new Date().toISOString().substr(0, 10),  // 延長日期
         dateMemuShow: false,  // 日曆是否顯示
         recipients: ['2', '3', '5', '7'],  // 收件人 (傳至後端用)
@@ -208,6 +197,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         initData() {
@@ -221,7 +211,16 @@ export default {
 
                     // 設定上方資料
                     let obj = {
-
+                        id: '111',
+                        line: '本線',
+                        pointStart: '5.7',
+                        pointEnd: '8',
+                        normal: '70',
+                        slow: '50',
+                        dateStart: '2019-05-10',
+                        dateEnd: '2019-05-22',
+                        creater: '王小明',
+                        isStop: false,  // 是否解除
                     }
                     this.setShowData(obj)
 
@@ -232,7 +231,14 @@ export default {
         },
         // 設定上方資料
         setShowData(obj) {
-            
+            this.topData = [
+                { title: '路線', value: obj.line },
+                { title: '速限起點、終點', value: `${obj.pointStart} ~ ${obj.pointEnd} km` },
+                { title: '常態速限', value: `${ obj.normal } km/h` },
+                { title: '慢行速限', value: `${ obj.slow } km/h` },
+                { title: '限制日期', value: `${obj.dateStart} ~ ${obj.dateEnd}` },
+                { title: '通報人', value: obj.creater },
+            ]
         },
         // 切換部門成員
         changeDepart() {
@@ -276,23 +282,27 @@ export default {
         },
         // 延長日期
         save() {
-            this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '延長日期成功'})
+            if (confirm('你確定要延長日期嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                // 測試用資料
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '延長日期成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
         // 更新收件人
         update() {
-            this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '更新收件人成功'})
+            if (confirm('你確定要更新收件人嗎?')) {
                 this.chLoadingShow()
-            }, 1000)
+
+                // 測試用資料
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '更新收件人成功'})
+                    this.chLoadingShow()
+                }, 1000)
+            }
         },
     },
     created() {

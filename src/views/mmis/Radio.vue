@@ -99,7 +99,7 @@
                     <v-select :items="Type" label="類型" solo />
                   </v-col>
                   <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位</h3>
+                    <h3 class="mb-1">單位名稱</h3>
                     <v-select :items="Dept" label="單位" solo />
                   </v-col>
                   <v-col cols="12" sm="4">
