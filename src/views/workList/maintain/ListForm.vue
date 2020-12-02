@@ -160,46 +160,101 @@
                     <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
                     <span class="red--text">*</span>
                 </h3>
-                {{ ipt.eqNumber1 }}-{{ ipt.eqNumber2 }}-{{ ipt.eqNumber3 }}-{{ ipt.eqNumber4 }}
+
+                <p class="pl-8 mb-0">
+                    {{ ipt.eqNumber1 }}-{{ `${ipt.eqNumber2}${ipt.eqNumber22}` }}-{{ ipt.eqNumber3 }}-{{ ipt.eqNumber4 }}
+                </p>
+                
             </v-col>
 
-            <v-col cols="12" sm="6" md="3">
-                <v-select solo
-                    v-model="ipt.eqNumber1"
-                    :items="eqCodes.opt1"
-                    :background-color="ipt.errorEqNumber1"
-                    :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                ></v-select>
+            <v-col cols="12" class="mt-n4">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">系統</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber1"
+                            :items="eqCodes.opt1"
+                            :background-color="ipt.errorEqNumber1"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        ></v-select>
+                    </v-col>
+                </v-row>
             </v-col>
 
-            <v-col cols="12" sm="6" md="3">
-                <v-select solo
-                    v-model="ipt.eqNumber2"
-                    :items="eqCodes.opt2"
-                    :background-color="ipt.errorEqNumber2"
-                    :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                    :disabled="disableLv2"
-                ></v-select>
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">位置</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber2"
+                            :items="eqCodes.opt2"
+                            :background-color="ipt.errorEqNumber2"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="disableLv2"
+                        ></v-select>
+                    </v-col>
+
+                    <v-col cols="12" md="3" v-if="subIptShow.opt22">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber22"
+                            :items="eqCodes.opt22"
+                            :background-color="ipt.errorEqNumber22"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="disableLv2"
+                        ></v-select>
+                    </v-col>
+                </v-row>
             </v-col>
 
-            <v-col cols="12" sm="6" md="3">
-                <v-select solo
-                    v-model="ipt.eqNumber3"
-                    :items="eqCodes.opt3"
-                    :background-color="ipt.errorEqNumber3"
-                    :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                    :disabled="disableLv3"
-                ></v-select>
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">設備</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber3"
+                            :items="eqCodes.opt3"
+                            :background-color="ipt.errorEqNumber3"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="disableLv3"
+                        ></v-select>
+                    </v-col>
+
+                    <v-col cols="12" md="3" v-if="subIptShow.opt32">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber32"
+                            :items="eqCodes.opt32"
+                            :background-color="ipt.errorEqNumber32"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="disableLv3"
+                        ></v-select>
+                    </v-col>
+                </v-row>
             </v-col>
 
-            <v-col cols="12" sm="6" md="3">
-                <v-select solo
-                    v-model="ipt.eqNumber4"
-                    :items="eqCodes.opt4"
-                    :background-color="ipt.errorEqNumber4"
-                    :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                    :disabled="disableLv4"
-                ></v-select>
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">序號</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber4"
+                            :items="eqCodes.opt4"
+                            :background-color="ipt.errorEqNumber4"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        ></v-select>
+                    </v-col>
+                </v-row>
             </v-col>
         </v-row>
 
@@ -255,7 +310,9 @@ export default {
         ipt: {  // 輸入的內容)
             eqNumber1: '',  // 設備標示編號1
             eqNumber2: '',  // 設備標示編號2
+            eqNumber22: '',  // 設備標示編號2-2
             eqNumber3: '',  // 設備標示編號3
+            eqNumber32: '',  // 設備標示編號3-2
             eqNumber4: '',  // 設備標示編號4
         },  
         defaultIpt: {  // 預設內容
@@ -268,7 +325,9 @@ export default {
             errorDispatchID: '',  // 必填欄位背景色-派工人
             errorEqNumber1: '',  // 必填欄位背景色-設備標示編號1
             errorEqNumber2: '',  // 必填欄位背景色-設備標示編號2
+            errorEqNumber22: '',  // 必填欄位背景色-設備標示編號2-2
             errorEqNumber3: '',  // 必填欄位背景色-設備標示編號3
+            errorEqNumber32: '',  // 必填欄位背景色-設備標示編號3-2
             errorEqNumber4: '',  // 必填欄位背景色-設備標示編號4
             errorMalfunctionDes: '',  // 必填欄位背景色-故障描述
         },
@@ -278,13 +337,23 @@ export default {
         eqCodes: {
             opt1: [],  // 設備標示編號下拉選單-第1組
             opt2: [],  // 設備標示編號下拉選單-第2組
+            opt22: [],  // 設備標示編號下拉選單-第2組-2
             opt3: [],  // 設備標示編號下拉選單-第3組
+            opt32: [],  // 設備標示編號下拉選單-第3組-2
             opt4: [],  // 設備標示編號下拉選單-第4組
         },
         // 設備標示編號下拉選單是否禁用
         disableLv2: true,
         disableLv3: true,
         disableLv4: true,
+        resOptData: {  // 設備標示編號請求回來的資料
+            opt2: [],  // 第2組
+            opt3: [],  // 第3組
+        },
+        subIptShow: {  // 設備標示編號的子選項欄位是否顯示
+            opt22: false,  // 第2組-2
+            opt32: false,  // 第3組-2
+        },
     }),
     computed: {
         ...mapState ('organization', {
@@ -293,28 +362,76 @@ export default {
         })
     },
     watch: {
-        // 換一個選項，向後端抓下一層的報修碼
+        // ------- 切換選項時，向後端抓下一層的報修碼 --------
+        // 系統
         'ipt.eqNumber1': function(newVal) {
             if (newVal != '') {
-                this.ipt.eqNumber2 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                this.subIptShow.opt22 = this.subIptShow.opt32 = false
                 this.disableLv2 = false
                 this.disableLv3 = this.disableLv4 = true
                 this.fetchEqCodes(newVal, 2)
             }
         },
+        // 位置
         'ipt.eqNumber2': function(newVal) {
             if (newVal != '') {
-                this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                let obj = this.resOptData.opt2.find(item => item.DeviceCode == newVal)
+                
+                this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                this.subIptShow.opt32 = false
                 this.disableLv3 = false
                 this.disableLv4 = true
-                this.fetchEqCodes(newVal, 3)
+                this.fetchEqCodes(newVal, 3, obj.DeviceCodeParent)
+
+                // 若第二層有子項目
+                if (obj.device_query_child.length > 0) {
+                    this.setEqCodeOption(obj.device_query_child, 'opt22')
+                    this.subIptShow.opt22 = true
+                } else {
+                    this.ipt.eqNumber22 = ''
+                    this.subIptShow.opt22 = false
+                }
             }
         },
+        // 位置子項目
+        'ipt.eqNumber22': function(newVal) {
+            if (newVal != '') {
+                let obj = this.resOptData.opt2.find(item => item.DeviceCode == this.ipt.eqNumber2)
+                
+                this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                this.disableLv3 = false
+                this.disableLv4 = true
+                this.fetchEqCodes(this.ipt.eqNumber2, 3, obj.DeviceCodeParent, newVal)
+            }
+        },
+        // 設備
         'ipt.eqNumber3': function(newVal) {
             if (newVal != '') {
-                this.ipt.eqNumber4 = ''
+                let obj = this.resOptData.opt3.find(item => item.DeviceCode == newVal)
+                
+                this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
                 this.disableLv4 = false
-                this.fetchEqCodes(newVal, 4)
+                this.fetchEqCodes(newVal, 4, obj.DeviceCodeParent)
+
+                // 若第二層有子項目
+                if (obj.device_query_child.length > 0) {
+                    this.setEqCodeOption(obj.device_query_child, 'opt32')
+                    this.subIptShow.opt32 = true
+                } else {
+                    this.ipt.eqNumber32 = ''
+                    this.subIptShow.opt32 = false
+                }
+            }
+        },
+        // 設備子項目
+        'ipt.eqNumber32': function(newVal) {
+            if (newVal != '') {
+                let obj = this.resOptData.opt3.find(item => item.DeviceCode == this.ipt.eqNumber3)
+
+                this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                this.disableLv4 = false
+                this.fetchEqCodes(this.ipt.eqNumber3, 4, obj.DeviceCodeParent, newVal)
             }
         },
     },
@@ -399,23 +516,36 @@ export default {
         },
         // 向後端請求設備標示編號
         // val: 上層所選的值, lv: 要向後端取得的層數 (2~4)
-        async fetchEqCodes(val, lv) {
+        async fetchEqCodes(val, lv, parentVal='', subVal='') {
             this.chLoadingShow()
             let codeRes = {}
             switch(lv) {
                 case 2:
                     codeRes = await fetchEqCodeLv2({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    this.resOptData.opt2 = codeRes.data.device_query
                     break
                 case 3:
-                    codeRes = await fetchEqCodeLv3({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    codeRes = await fetchEqCodeLv3({
+                        ClientDeviceCode: val,  // 位置
+                        ClientDeviceCodeParent: parentVal,  // 位置父code
+                        ClientDeviceCodeChild: subVal,  // 位置子項目
+                        ClientReqTime: getNowFullTime() 
+                    })
+                    this.resOptData.opt3 = codeRes.data.device_query
                     break
                 case 4:
-                    codeRes = await fetchEqCodeLv4({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    codeRes = await fetchEqCodeLv4({
+                        ClientDeviceCode: val,  // 設備
+                        ClientDeviceCodeChildParent: val,  // 設備
+                        ClientDeviceCodeChild: subVal,  // 設備子項目
+                        ClientDeviceCodeParent: parentVal,  // 設備父code
+                        ClientReqTime: getNowFullTime()
+                    })
                     break
                 default:
                     break
             }
-
+            
             this.setEqCodeOption(codeRes.data.device_query, 'opt'+ lv)
             this.chLoadingShow()
         },
@@ -486,11 +616,25 @@ export default {
                     this.ipt.errorEqNumber2 = ''
                 }
 
+                if (this.ipt.eqNumber22 == '') {
+                    this.ipt.errorEqNumber22 = 'red lighten-5'
+                    errArr.push('設備標示編號22')
+                } else {
+                    this.ipt.errorEqNumber22 = ''
+                }
+
                 if (this.ipt.eqNumber3 == '') {
                     this.ipt.errorEqNumber3 = 'red lighten-5'
                     errArr.push('設備標示編號3')
                 } else {
                     this.ipt.errorEqNumber3 = ''
+                }
+
+                if (this.ipt.eqNumber32 == '') {
+                    this.ipt.errorEqNumber32 = 'red lighten-5'
+                    errArr.push('設備標示編號3')
+                } else {
+                    this.ipt.errorEqNumber32 = ''
                 }
 
                 if (this.ipt.eqNumber4 == '') {
