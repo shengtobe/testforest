@@ -63,3 +63,56 @@ export default {
     mutations,
     actions
 }
+
+/*
+API response 範例：
+
+user_depart_list_group_1: [
+    {
+        DepartChild: "F"
+        DepartCode: "SYSTEM"
+        DepartName: "系統部門"
+        DepartParentCode: "1"
+        DepartParentName: "阿里山林業鐵路及文化資產管理處"
+        UserId: null
+        UserName: null
+    }
+]
+
+user_depart_list_group_2: [
+    {
+        DepartChild: "F"
+        DepartCode: "ARCO006"
+        DepartName: "北門車站"
+        DepartParentCode: "9"
+        DepartParentName: "鐵路服務科"
+        UserId: null
+        UserName: null
+    }
+]
+
+user_depart_list_group_3: [
+    {
+        DepartChild: "F"
+        DepartCode: "ARCO028"
+        DepartName: "第1道班(北門)"
+        DepartParentCode: "21"
+        DepartParentName: "竹崎監工區"
+        UserId: null
+        UserName: null
+    }
+]
+
+user_list_group_4: [
+    {
+        DepartChild: null
+        DepartCode: "ARCO021"
+        DepartName: "嘉義車庫"
+        DepartParentCode: null
+        DepartParentName: null
+        UserId: "16413"
+        UserName: "林國煌"
+    }
+]
+
+*/

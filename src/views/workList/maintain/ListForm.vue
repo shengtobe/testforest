@@ -591,7 +591,6 @@ export default {
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime()  // client 端請求時間
                     }).then(res => {
-                        this.chChose({ uid: '', name: '' })  // 初始化組職表
                         this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID})
                     }).catch(err => {
                         this.chDialog({ show: true, msg: '新增失敗，請重新操作'})

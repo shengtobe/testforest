@@ -64,7 +64,7 @@
                     tile
                     color="brown"
                     class="mr-4 mb-3"
-                >{{ item.DepartName }}</v-btn>
+                >{{ item.UserName }}</v-btn>
             </v-col>
         </v-row>
     </v-card>
@@ -141,52 +141,50 @@ export default {
         // 下拉選單第1層
         'select.lv1': function(val) {
             let choseItem = this.all.depart1.find(item => item.DepartCode == val)  // 找出該筆資料
+
             // 清空下二層下拉選單及姓名資料
             this.select.lv2 = this.select.lv3 = ''
             this.disable.lv2 = this.disable.lv3 = true
             this.users.length = 0
             
             // 若有子類別則指派下層拉下選單，反之列出姓名
-            if (choseItem.DepartChild == 'T') {
-                // 過濾出子層
-                let subDepart = this.all.depart2.filter(item => item.DepartParentCode == val)
+            let subDepart = this.all.depart2.filter(item => item.DepartParentName == choseItem.DepartName)
 
+            if(subDepart.length > 0) {
                 this.opts.lv2 = subDepart.map(item => {
                     return {
                         text: item.DepartName,
                         value: item.DepartCode,
                     }
                 })
-
                 this.disable.lv2 = false
             } else {
-                this.users = this.all.users.filter(item => item.DepartCode == val)
+                this.users = this.all.users.filter(item => item.DepartCode == choseItem.DepartCode)
             }
         },
         // 下拉選單第2層
         'select.lv2': function(val) {
             if (val != '') {
                 let choseItem = this.all.depart2.find(item => item.DepartCode == val)  // 找出該筆資料
+                
                 // 清空下二層下拉選單及姓名資料
                 this.select.lv3 = ''
                 this.disable.lv3 = true
                 this.users.length = 0
                 
                 // 若有子類別則指派下層拉下選單，反之列出姓名
-                if (choseItem.DepartChild == 'T') {
-                    // 過濾出子層
-                    let subDepart = this.all.depart3.filter(item => item.DepartParentCode == val)
+                let subDepart = this.all.depart3.filter(item => item.DepartParentName == choseItem.DepartName)
 
+                if(subDepart.length > 0) {
                     this.opts.lv3 = subDepart.map(item => {
                         return {
                             text: item.DepartName,
                             value: item.DepartCode,
                         }
                     })
-
                     this.disable.lv3 = false
                 } else {
-                    this.users = this.all.users.filter(item => item.DepartCode == val)
+                    this.users = this.all.users.filter(item => item.DepartCode == choseItem.DepartCode)
                 }
             }
         },
@@ -227,7 +225,7 @@ export default {
         // 選擇員工
         choseUser(item) {
             this.choseData.uid = item.UserId
-            this.choseData.name = item.DepartName
+            this.choseData.name = item.UserName
             this.dialogShow = true
         },
         // 送出
