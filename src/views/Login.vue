@@ -120,37 +120,38 @@ export default {
       //   }, 1000)
       // }
 
-      localStorage.isLogined = true
-      localStorage.user = JSON.stringify({
-        name: '王小明'
-      })
-      this.$router.push('/')
+      // --------------- 舊登入demo ---------
+      // localStorage.isLogined = true
+      // localStorage.user = JSON.stringify({
+      //   name: '王小明'
+      // })
+      // this.$router.push('/')
 
       // ------------ 已寫好的登入功能，先備註掉 -------------
-      // this.isLoading = true
-      // this.errMsg = '認證中...'
+      this.isLoading = true
+      this.errMsg = '認證中...'
 
-      // login({
-      //   UserId: '01009',  // 帳號(員工 id)
-      //   UserPasswd: '1234',  // 密碼
-      //   ClientReqTime: getNowFullTime()  // client 端請求時間
-      // }).then(res => {
-      //   if (res.data.ErrorCode == 0) {
-      //     localStorage.isLogined = true
-      //     localStorage.jwt = res.data.Token
-      //     localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
-      //     localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
-      //     this.$router.push('/')
-      //   } else {
-      //     this.errMsg = res.data.Msg
-      //     this.isLoading = false
-      //     this.hasError = true
-      //   }
-      // }).catch(err => {
-      //   this.errMsg = '伺服器發生錯誤!'
-      //   this.isLoading = false
-      //   this.hasError = true
-      // })
+      login({
+        UserId: '01009',  // 帳號(員工 id)
+        UserPasswd: '1234',  // 密碼
+        ClientReqTime: getNowFullTime()  // client 端請求時間
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          localStorage.isLogined = true
+          localStorage.jwt = res.data.Token
+          localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
+          localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
+          this.$router.push('/')
+        } else {
+          this.errMsg = res.data.Msg
+          this.isLoading = false
+          this.hasError = true
+        }
+      }).catch(err => {
+        this.errMsg = '伺服器發生錯誤!'
+        this.isLoading = false
+        this.hasError = true
+      })
     },
     // 加密
     encode(str, key) {

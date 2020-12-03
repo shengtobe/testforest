@@ -1,5 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
+    <!-- 組織表 -->
+    <OrganizeDialog />  
+
     <v-form
         ref="form"
         v-model="valid"
@@ -162,7 +165,7 @@
                 </h3>
 
                 <p class="pl-8 mb-0">
-                    {{ ipt.eqNumber1 }}-{{ `${ipt.eqNumber2}${ipt.eqNumber22}` }}-{{ ipt.eqNumber3 }}-{{ ipt.eqNumber4 }}
+                    {{ ipt.eqNumber1 }}-{{ `${ipt.eqNumber2}${ipt.eqNumber22}` }}-{{ `${ipt.eqNumber3}${ipt.eqNumber32}` }}-{{ ipt.eqNumber4 }}
                 </p>
                 
             </v-col>
@@ -206,7 +209,6 @@
                             :items="eqCodes.opt22"
                             :background-color="ipt.errorEqNumber22"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                            :disabled="disableLv2"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -224,7 +226,6 @@
                             :items="eqCodes.opt3"
                             :background-color="ipt.errorEqNumber3"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                            :disabled="disableLv3"
                         ></v-select>
                     </v-col>
 
@@ -295,6 +296,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions } from '@/assets/js/dateTimeOption'
 import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '@/apis/workList/maintain'
@@ -304,9 +306,9 @@ export default {
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         workNumber: '',  // 工單編號
-        creater: '陳小華',  // 立案人名稱
-        createrId: 'K10744389',  // 立案人員工編號
-        fixUnit: '竹崎車站',  // 請修單位
+        creater: '',  // 立案人名稱
+        // createrId: 'K10744389',  // 立案人員工編號
+        fixUnit: '',  // 請修單位
         ipt: {  // 輸入的內容)
             eqNumber1: '',  // 設備標示編號1
             eqNumber2: '',  // 設備標示編號2
@@ -355,11 +357,15 @@ export default {
             opt32: false,  // 第3組-2
         },
     }),
+    components: { OrganizeDialog },
     computed: {
         ...mapState ('organization', {
             dispatchID: state => state.chose.uid,
             dispatchName: state => state.chose.name,
-        })
+        }),
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
         // ------- 切換選項時，向後端抓下一層的報修碼 --------
@@ -429,7 +435,7 @@ export default {
             if (newVal != '') {
                 let obj = this.resOptData.opt3.find(item => item.DeviceCode == this.ipt.eqNumber3)
 
-                this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                this.ipt.eqNumber4 = ''
                 this.disableLv4 = false
                 this.fetchEqCodes(this.ipt.eqNumber3, 4, obj.DeviceCodeParent, newVal)
             }
@@ -479,7 +485,9 @@ export default {
                     let obj = {
                         eqNumber1: 'RST',
                         eqNumber2: '平甲6102',
+                        eqNumber22: '',
                         eqNumber3: 'D',
+                        eqNumber32: '',
                         eqNumber4: '11',
                         dispatcherId: 'K106874529',
                         date: '2020-03-11',  // 日期
@@ -498,6 +506,8 @@ export default {
             } else {
                 // 新增的情況
                 this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化新增表單
+                this.creater = this.userData.UserName  // 立案人名稱
+                this.fixUnit = this.userData.DeptList[0].DeptDesc  // 請修單位(之後api結構會改掉)
             }
         },
         // 取得工單資料
@@ -551,7 +561,7 @@ export default {
         },
         // 送出表單
         save() {
-            if (this.$refs.form.validate()) {  // 表單驗證欄位
+            // if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.chLoadingShow()
 
                 if (this.isEdit) {
@@ -568,16 +578,16 @@ export default {
                     let dispatcherDate = (this.ipt.nowAction)? new Date().toISOString().substr(0, 10) : this.ipt.workDate
                     
                     createWorkOrder({
-                        CreatorID: this.createrId,  // 立案人id
+                        CreatorID: this.userData.UserId,  // 立案人id
                         CreateDTime: this.ipt.date,  // 立案日期
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
                         DispatchDDay: dispatcherDate,  // 派工日期
                         DispatchDTime: this.ipt.hour,  // 派工時間 (小時)
-                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號1
-                        MaintainCode_Loc: this.ipt.eqNumber2,  // 設備標示編號2
-                        MaintainCode_Eqp: this.ipt.eqNumber3,  // 設備標示編號3
-                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號4
+                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime()  // client 端請求時間
                     }).then(res => {
@@ -591,68 +601,68 @@ export default {
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                     })
                 }
-            } else {
+            // } else {
                 // 欄位驗證
-                let errArr = []
+                // let errArr = []
 
-                if (this.dispatchID == '') {
-                    this.ipt.errorDispatchID = 'red lighten-5'
-                    errArr.push('派工人')
-                } else {
-                    this.ipt.errorDispatchID = ''
-                }
+                // if (this.dispatchID == '') {
+                //     this.ipt.errorDispatchID = 'red lighten-5'
+                //     errArr.push('派工人')
+                // } else {
+                //     this.ipt.errorDispatchID = ''
+                // }
 
-                if (this.ipt.eqNumber1 == '') {
-                    this.ipt.errorEqNumber1 = 'red lighten-5'
-                    errArr.push('設備標示編號1')
-                } else {
-                    this.ipt.errorEqNumber1 = ''
-                }
+                // if (this.ipt.eqNumber1 == '') {
+                //     this.ipt.errorEqNumber1 = 'red lighten-5'
+                //     errArr.push('設備標示編號1')
+                // } else {
+                //     this.ipt.errorEqNumber1 = ''
+                // }
 
-                if (this.ipt.eqNumber2 == '') {
-                    this.ipt.errorEqNumber2 = 'red lighten-5'
-                    errArr.push('設備標示編號2')
-                } else {
-                    this.ipt.errorEqNumber2 = ''
-                }
+                // if (this.ipt.eqNumber2 == '') {
+                //     this.ipt.errorEqNumber2 = 'red lighten-5'
+                //     errArr.push('設備標示編號2')
+                // } else {
+                //     this.ipt.errorEqNumber2 = ''
+                // }
 
-                if (this.ipt.eqNumber22 == '') {
-                    this.ipt.errorEqNumber22 = 'red lighten-5'
-                    errArr.push('設備標示編號22')
-                } else {
-                    this.ipt.errorEqNumber22 = ''
-                }
+                // if (this.ipt.eqNumber22 == '') {
+                //     this.ipt.errorEqNumber22 = 'red lighten-5'
+                //     errArr.push('設備標示編號22')
+                // } else {
+                //     this.ipt.errorEqNumber22 = ''
+                // }
 
-                if (this.ipt.eqNumber3 == '') {
-                    this.ipt.errorEqNumber3 = 'red lighten-5'
-                    errArr.push('設備標示編號3')
-                } else {
-                    this.ipt.errorEqNumber3 = ''
-                }
+                // if (this.ipt.eqNumber3 == '') {
+                //     this.ipt.errorEqNumber3 = 'red lighten-5'
+                //     errArr.push('設備標示編號3')
+                // } else {
+                //     this.ipt.errorEqNumber3 = ''
+                // }
 
-                if (this.ipt.eqNumber32 == '') {
-                    this.ipt.errorEqNumber32 = 'red lighten-5'
-                    errArr.push('設備標示編號3')
-                } else {
-                    this.ipt.errorEqNumber32 = ''
-                }
+                // if (this.ipt.eqNumber32 == '') {
+                //     this.ipt.errorEqNumber32 = 'red lighten-5'
+                //     errArr.push('設備標示編號3')
+                // } else {
+                //     this.ipt.errorEqNumber32 = ''
+                // }
 
-                if (this.ipt.eqNumber4 == '') {
-                    this.ipt.errorEqNumber4 = 'red lighten-5'
-                    errArr.push('設備標示編號4')
-                } else {
-                    this.ipt.errorEqNumber4 = ''
-                }
+                // if (this.ipt.eqNumber4 == '') {
+                //     this.ipt.errorEqNumber4 = 'red lighten-5'
+                //     errArr.push('設備標示編號4')
+                // } else {
+                //     this.ipt.errorEqNumber4 = ''
+                // }
 
-                if (this.ipt.malfunctionDes == '') {
-                    this.ipt.errorMalfunctionDes = 'red lighten-5'
-                    errArr.push('故障描述')
-                } else {
-                    this.ipt.errorMalfunctionDes = ''
-                }
+                // if (this.ipt.malfunctionDes == '') {
+                //     this.ipt.errorMalfunctionDes = 'red lighten-5'
+                //     errArr.push('故障描述')
+                // } else {
+                //     this.ipt.errorMalfunctionDes = ''
+                // }
 
-                alert('送出失敗，請確認「' + errArr.join('、') + '」欄位是否填寫，格式是否正確')
-            }
+                // alert('送出失敗，請確認「' + errArr.join('、') + '」欄位是否填寫，格式是否正確')
+            // }
         },
     },
     created() {

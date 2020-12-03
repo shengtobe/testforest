@@ -239,10 +239,8 @@
         </div>
     </transition>
 
-  <!-- right main content -->
+  <!-- main content -->
   <v-main>
-    <!-- 組織表先暫時關閉，方便開放demo畫面 -->
-    <!-- <OrganizeDialog /> -->
     <router-view></router-view>
   </v-main>
 </v-app>
@@ -254,7 +252,6 @@ import aesjs from 'aes-js'
 import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
-import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
 
 export default {
@@ -272,7 +269,6 @@ export default {
         SystemDialog,  // 系統重要訊息 Dialog
         SystemLoading,  // 系統 Loading 圖
         SystemViewDialog,  // 系統檢視內容 Dialog
-        OrganizeDialog,  // 組職表 Dialog
         MessageBar,  // 題示訊息
     },
     methods: {
@@ -309,16 +305,20 @@ export default {
                 return
             }
 
-            // 儲存使用者資訊
-            this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
-            
-            // 儲存權限資訊
-            this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+            try {
+                // 儲存使用者資訊
+                this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
+                
+                // 儲存權限資訊
+                this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+            } catch (e) {
+                this.logout()
+            }
         },
     },
     created() {
         // ------------ 已寫好的登入功能，先備註掉 -------------
-        // this.checkLocalStorage()
+        this.checkLocalStorage()
     },
 }
 </script>
