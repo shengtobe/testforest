@@ -49,7 +49,7 @@ export function fetchOrderList(data) { return axios(
 // 工單建立
 export function createWorkOrder(data) { return axios(
     {
-        url: '/mmis/order/create1',
+        url: '/mmis/order/create',
         method: 'post',
         data,
     }
@@ -59,6 +59,15 @@ export function createWorkOrder(data) { return axios(
 export function fetchWorkOrderOne(data) { return axios(
     {
         url: '/mmis/order/querydetail',
+        method: 'post',
+        data,
+    }
+)}
+
+// 取得更新工單 (狀態：待派工)
+export function updateListOrder(data) { return axios(
+    {
+        url: '/mmis/order/update',
         method: 'post',
         data,
     }

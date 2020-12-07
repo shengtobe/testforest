@@ -187,90 +187,130 @@
             <h3 class="mb-1 indigo--text">連結及緩衝裝置</h3>
             <h3>(1)連結器(2)彈簧(3)導架(4)軛(5)裝置鬆動</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType1">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">軔機裝置</h3>
             <h3>(1)前後軔速桿及梢檢查(2)軔管(3)軔機配件A:軔缸B:三動閥C:保持閥D:緊急閥E:角旋塞</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType2">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">軔塊、車輪及軸箱</h3>
             <h3>(1)問題車輪位置(2)軔塊狀況(3)軸承箱與導板(4)固結螺栓</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType3">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">彈簧裝置</h3>
             <h3>(1)支持線圈彈簧(貨)(2)支持板彈簧(客)</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType4">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">轉向架配件</h3>
             <h3>(1)彎樑(2)側承間隙(3)枕樑與彎樑間(4)軔樑(5)軔吊桿(6)軔吊梢(7)枕樑(8)枕吊角梢(9)枕吊桿(10)開尾梢</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType5">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">摩擦面注油</h3>
             <h3>(1)連結器(2)軔機連桿梢與孔(3)軔吊桿孔與梢(4)枕吊桿與角梢(5)旁承座</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType6">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">供水裝置</h3>
             <h3>(1)儲水筒及供水管路(2)水龍頭(3)沖洗閥(4)旋塞</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType7">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">車內裝備</h3>
             <h3>(1)各式門及把鎖(2)通路門鉸鏈(3)廁所(4)窗框(5)窗扣(6)茶杯架(7)通風出口調整器(8)門窗膠條(9)床面膠板</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType8">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">電器裝置</h3>
             <h3>(1)控制箱(2)電源接頭(3)插座(4)播音喇叭(5)前後照明燈(6)室內日光燈(7)空調機(8)雨刷機(9)電瓶(10)電源開關</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType9">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1 indigo--text">其他部分</h3>
             <h3>(1)傾斜檢查(2)排障器(3)喇叭開關(4)通路渡板(5)通路扶手</h3>
             <v-radio-group dense row v-model="AddData.CarType.CheckType10">
-              <v-radio color="success" label="經修復或抽換" value="1" />
-              <v-radio color="info" label="當日未能修復" value="2" />
-              <v-radio color="red" label="須進廠拆解修理" value="3" />
+              <v-radio
+                v-for="list in redioList"
+                :key="list.label"
+                :color="list.color"
+                :label="list.label"
+                :value="list.value"
+              />
             </v-radio-group>
           </v-col>
           <!-- 4 -->
@@ -317,6 +357,12 @@ export default {
         },
         Remarks: ""
       },
+      redioList: [
+        { label: '正常', value: 1, color: 'success'},
+        { label: '經修復或抽換', value: 2, color: 'orange darken-4'},
+        { label: '當日未能修復', value: 3, color: 'info'},
+        { label: '須進廠拆解修理', value: 4, color: 'red'},
+      ],
       Add: false,
       pageOpt: { page: 1 }, // 目前頁數
       headers: [

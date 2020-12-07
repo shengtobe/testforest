@@ -166,6 +166,13 @@
 
                 <p class="pl-8 mb-0">
                     {{ ipt.eqNumber1 }}-{{ `${ipt.eqNumber2}${ipt.eqNumber22}` }}-{{ `${ipt.eqNumber3}${ipt.eqNumber32}` }}-{{ ipt.eqNumber4 }}
+
+                    <v-btn
+                        v-if="isEdit"
+                        class="ml-3 mb-1"
+                        color="primary"
+                        @click="editEqCode"
+                    >編輯</v-btn>
                 </p>
                 
             </v-col>
@@ -182,6 +189,7 @@
                             :items="eqCodes.opt1"
                             :background-color="ipt.errorEqNumber1"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="!canModifyEqCode"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -278,9 +286,13 @@
             </v-col>
 
             <v-col cols="12" class="text-center">
-                <v-btn
-                    dark
-                    class="mr-4"
+                <v-btn dark class="mr-4"
+                    @click="closeWindow"
+                    v-if="isEdit"
+                >關閉視窗</v-btn>
+
+                <v-btn dark class="mr-4"
+                    v-else
                     to="/worklist/maintain"
                 >回搜尋頁</v-btn>
 
@@ -299,7 +311,7 @@ import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions } from '@/assets/js/dateTimeOption'
-import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '@/apis/workList/maintain'
+import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
 
 export default {
     data: () => ({
@@ -307,7 +319,7 @@ export default {
         isEdit: false,  // 是否為編輯
         workNumber: '',  // 工單編號
         creater: '',  // 立案人名稱
-        // createrId: 'K10744389',  // 立案人員工編號
+        createrId: 'K10744389',  // 立案人員工編號
         fixUnit: '',  // 請修單位
         ipt: {  // 輸入的內容)
             eqNumber1: '',  // 設備標示編號1
@@ -356,6 +368,7 @@ export default {
             opt22: false,  // 第2組-2
             opt32: false,  // 第3組-2
         },
+        canModifyEqCode: false,  // 是否能選擇設備標示編號下拉選單
     }),
     components: { OrganizeDialog },
     computed: {
@@ -371,73 +384,83 @@ export default {
         // ------- 切換選項時，向後端抓下一層的報修碼 --------
         // 系統
         'ipt.eqNumber1': function(newVal) {
-            if (newVal != '') {
-                this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
-                this.subIptShow.opt22 = this.subIptShow.opt32 = false
-                this.disableLv2 = false
-                this.disableLv3 = this.disableLv4 = true
-                this.fetchEqCodes(newVal, 2)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                    this.subIptShow.opt22 = this.subIptShow.opt32 = false
+                    this.disableLv2 = false
+                    this.disableLv3 = this.disableLv4 = true
+                    this.fetchEqCodes(newVal, 2)
+                }
             }
         },
         // 位置
         'ipt.eqNumber2': function(newVal) {
-            if (newVal != '') {
-                let obj = this.resOptData.opt2.find(item => item.DeviceCode == newVal)
-                
-                this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
-                this.subIptShow.opt32 = false
-                this.disableLv3 = false
-                this.disableLv4 = true
-                this.fetchEqCodes(newVal, 3, obj.DeviceCodeParent)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt2.find(item => item.DeviceCode == newVal)
+                    
+                    this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                    this.subIptShow.opt32 = false
+                    this.disableLv3 = false
+                    this.disableLv4 = true
+                    this.fetchEqCodes(newVal, 3, obj.DeviceCodeParent)
 
-                // 若第二層有子項目
-                if (obj.device_query_child.length > 0) {
-                    this.setEqCodeOption(obj.device_query_child, 'opt22')
-                    this.subIptShow.opt22 = true
-                } else {
-                    this.ipt.eqNumber22 = ''
-                    this.subIptShow.opt22 = false
+                    // 若第二層有子項目
+                    if (obj.device_query_child.length > 0) {
+                        this.setEqCodeOption(obj.device_query_child, 'opt22')
+                        this.subIptShow.opt22 = true
+                    } else {
+                        this.ipt.eqNumber22 = ''
+                        this.subIptShow.opt22 = false
+                    }
                 }
             }
         },
         // 位置子項目
         'ipt.eqNumber22': function(newVal) {
-            if (newVal != '') {
-                let obj = this.resOptData.opt2.find(item => item.DeviceCode == this.ipt.eqNumber2)
-                
-                this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
-                this.disableLv3 = false
-                this.disableLv4 = true
-                this.fetchEqCodes(this.ipt.eqNumber2, 3, obj.DeviceCodeParent, newVal)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt2.find(item => item.DeviceCode == this.ipt.eqNumber2)
+                    
+                    this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                    this.disableLv3 = false
+                    this.disableLv4 = true
+                    this.fetchEqCodes(this.ipt.eqNumber2, 3, obj.DeviceCodeParent, newVal)
+                }
             }
         },
         // 設備
         'ipt.eqNumber3': function(newVal) {
-            if (newVal != '') {
-                let obj = this.resOptData.opt3.find(item => item.DeviceCode == newVal)
-                
-                this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
-                this.disableLv4 = false
-                this.fetchEqCodes(newVal, 4, obj.DeviceCodeParent)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt3.find(item => item.DeviceCode == newVal)
+                    
+                    this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                    this.disableLv4 = false
+                    this.fetchEqCodes(newVal, 4, obj.DeviceCodeParent)
 
-                // 若第二層有子項目
-                if (obj.device_query_child.length > 0) {
-                    this.setEqCodeOption(obj.device_query_child, 'opt32')
-                    this.subIptShow.opt32 = true
-                } else {
-                    this.ipt.eqNumber32 = ''
-                    this.subIptShow.opt32 = false
+                    // 若第二層有子項目
+                    if (obj.device_query_child.length > 0) {
+                        this.setEqCodeOption(obj.device_query_child, 'opt32')
+                        this.subIptShow.opt32 = true
+                    } else {
+                        this.ipt.eqNumber32 = ''
+                        this.subIptShow.opt32 = false
+                    }
                 }
             }
         },
         // 設備子項目
         'ipt.eqNumber32': function(newVal) {
-            if (newVal != '') {
-                let obj = this.resOptData.opt3.find(item => item.DeviceCode == this.ipt.eqNumber3)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt3.find(item => item.DeviceCode == this.ipt.eqNumber3)
 
-                this.ipt.eqNumber4 = ''
-                this.disableLv4 = false
-                this.fetchEqCodes(this.ipt.eqNumber3, 4, obj.DeviceCodeParent, newVal)
+                    this.ipt.eqNumber4 = ''
+                    this.disableLv4 = false
+                    this.fetchEqCodes(this.ipt.eqNumber3, 4, obj.DeviceCodeParent, newVal)
+                }
             }
         },
     },
@@ -447,6 +470,7 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'getNowFullTime',  // 取得目前時間
+            'closeWindow',  // 關閉視窗
         ]),
         ...mapActions('organization', [
             'toggleShow',  // toggle dialog show
@@ -468,51 +492,53 @@ export default {
         },
         // 判斷新增或編輯
         initFetchData() {
+            this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
+
             if (this.$route.params.id != undefined) {
                 // -------- 編輯時 -------
                 this.isEdit = true
+                this.chLoadingShow()
 
                 // 向後端請求資料
-                // 範例效果
-                setTimeout(() => {
+                fetchWorkOrderOne({
+                    WorkOrderID: this.$route.params.id,  // 工單編號
+                    ClientReqTime: getNowFullTime()  // client 端請求時間
+                }).then(res => {
+                    let obj = res.data
                     // 檢查是否有權限編輯
 
-                    this.workNumber = '202004290001'
-                    this.creater = '陳小華'  // 立案人
-                    this.createrId = 'K10744389'  // 立案人
-                    this.fixUnit = '竹崎車站'  // 請修單位
+                    // 設定資料
+                    this.workNumber = obj.WorkOrderID  // 工單編號
+                    this.creater = obj.Creator  // 立案人姓名
+                    this.createrId = obj.CreatorID  // 立案人id
+                    this.fixUnit = obj.CreatorDepart  // 請修單位
+                    this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號()
+                    this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號()
+                    this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號()
+                    this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號()
+                    this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號()
+                    this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號()
+                    this.ipt.date = obj.CreateDTime  // 立案日期
+                    this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
+                    this.ipt.fixType = obj.Type  // 維修類型
+                    this.ipt.workDate = obj.DispatchDDay  // 維護日期
+                    this.ipt.hour = obj.DispatchDHour  // 立即派工的小時
+                    this.ipt.nowAction = (obj.CreateDTime == obj.DispatchDDay)? true: false  // 是否立即派工
 
-                    let obj = {
-                        eqNumber1: 'RST',
-                        eqNumber2: '平甲6102',
-                        eqNumber22: '',
-                        eqNumber3: 'D',
-                        eqNumber32: '',
-                        eqNumber4: '11',
-                        dispatcherId: 'K106874529',
-                        date: '2020-03-11',  // 日期
-                        status: '1',
-                        malfunctionDes: '工具機損壞',  // 故障描述
-                        fixTime: '201903110001',  // 報修時間
-                        fixType: '1',  // 維修類型
-                        hour: 9,  // 立即派工的小時
-                        workDate: '2020-06-22',  // 維護日期
-                        // 是否立即派工 (編輯時會有日期，要手動加此屬性並指派 false)
-                        nowAction: false,
-                    }
-                    this.ipt = Object.assign({}, obj)
-                    // 編輯時，設備標示編號會需要每段每段連續請求
-                }, 1000)
+                    // 將派工人資料寫入 vuex(組織表)
+                    this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
+                }).catch(err => {
+                    console.log(err)
+                    alert('資料讀取失敗')
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
             } else {
                 // 新增的情況
-                this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化新增表單
+                this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
                 this.creater = this.userData.UserName  // 立案人名稱
                 this.fixUnit = this.userData.DeptList[0].DeptDesc  // 請修單位(之後api結構會改掉)
             }
-        },
-        // 取得工單資料
-        async fetchWorkOrderData(id) {
-
         },
         // 初始化設備標示編號
         // codeArr: 後端傳的報修碼陣列, opt: 要設定在哪一組下拉選單(op1~4)
@@ -525,7 +551,7 @@ export default {
             })
         },
         // 向後端請求設備標示編號
-        // val: 上層所選的值, lv: 要向後端取得的層數 (2~4)
+        // 參數說明：val => 上層所選的值, lv => 要向後端取得的層數 (2~4)
         async fetchEqCodes(val, lv, parentVal='', subVal='') {
             this.chLoadingShow()
             let codeRes = {}
@@ -564,19 +590,32 @@ export default {
             // if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.chLoadingShow()
 
+                // 派工日期
+                let dispatcherDate = (this.ipt.nowAction)? new Date().toISOString().substr(0, 10) : this.ipt.workDate
+
                 if (this.isEdit) {
                     // -------- 編輯時 -------
-                    // 範例效果
-                    setTimeout(() => {
+                    updateListOrder({
+                        WorkerOrderID: this.workNumber,  // 工單編號
+                        DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
+                        Type: this.ipt.fixType,  // 維修類型
+                        DispatchDDay: dispatcherDate,  // 派工日期
+                        DispatchDTime: this.ipt.hour,  // 派工時間 (小時)
+                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                        Malfunction: this.ipt.malfunctionDes,  // 故障描述
+                        ClientReqTime: getNowFullTime()  // client 端請求時間
+                    }).then(res => {
+                        this.chDialog({ show: true, msg: '編輯成功' })
+                    }).catch(err => {
+                        this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
+                    }).finally(() => {
                         this.chLoadingShow()
-                        this.chMsgbar({ success: true, msg: '編輯成功'})
-                    }, 1000)
-
+                    })
                 } else {
                     // -------- 新增時 -------
-                    // 派工日期
-                    let dispatcherDate = (this.ipt.nowAction)? new Date().toISOString().substr(0, 10) : this.ipt.workDate
-                    
                     createWorkOrder({
                         CreatorID: this.userData.UserId,  // 立案人id
                         CreateDTime: this.ipt.date,  // 立案日期
@@ -591,9 +630,9 @@ export default {
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime()  // client 端請求時間
                     }).then(res => {
-                        this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID})
+                        this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
                     }).catch(err => {
-                        this.chDialog({ show: true, msg: '新增失敗，請重新操作'})
+                        this.chDialog({ show: true, msg: '新增失敗，請重新操作' })
                     }).finally(() => {
                         this.chLoadingShow()
                         this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化新增表單
@@ -662,6 +701,13 @@ export default {
 
                 // alert('送出失敗，請確認「' + errArr.join('、') + '」欄位是否填寫，格式是否正確')
             // }
+        },
+        // 編輯設備標示編號 (編輯模式)
+        editEqCode() {
+            if (confirm('編輯設備標示編號會需要重新選擇，你確定嗎?')) {
+                this.ipt.eqNumber1 = this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                this.canModifyEqCode = true
+            }
         },
     },
     created() {

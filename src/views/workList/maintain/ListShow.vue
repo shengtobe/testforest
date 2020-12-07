@@ -26,39 +26,35 @@
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="ma-2"
-                :loading="isLoading"
-                to="/worklist/maintain"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn class="ma-2"
-                :loading="isLoading"
-                color="primary"
-                :to="`/worklist/maintain/${workNumber}/editList`"
-            >編輯</v-btn>
+            <template v-if="!done">
+                <v-btn class="ma-2"
+                    color="primary"
+                    :to="`/worklist/maintain/${workNumber}/editList`"
+                >編輯</v-btn>
 
-            <v-btn class="ma-2"
-                :loading="isLoading"
-                color="error"
-                @click="deleteItem"
-            >刪除</v-btn>
+                <v-btn class="ma-2"
+                    color="error"
+                    @click="deleteItem"
+                >刪除</v-btn>
 
-            <v-btn dark class="ma-2"
-                :loading="isLoading"
-                color="amber darken-1"
-                @click="closeWork"
-            >結案</v-btn>
+                <v-btn dark class="ma-2"
+                    color="amber darken-1"
+                    @click="closeWork"
+                >結案</v-btn>
 
-            <v-btn dark class="ma-2"
-                :loading="isLoading"
-                color="cyan"
-                @click="dialog = true"
-            >轉單</v-btn>
+                <v-btn dark class="ma-2"
+                    color="cyan"
+                    @click="dialog = true"
+                >轉單</v-btn>
 
-            <v-btn dark class="ma-2"
-                :loading="isLoading"
-                color="success"
-                :to="`/worklist/maintain/${workNumber}/newWork`"
-            >派工</v-btn>
+                <v-btn dark class="ma-2"
+                    color="success"
+                    :to="`/worklist/maintain/${workNumber}/newWork`"
+                >派工</v-btn>
+            </template>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
@@ -128,8 +124,9 @@ let memberList = {
 
 export default {
     data: () => ({
-        isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
+        done: false,  // 是否完成頁面操作
+        isLoading: false,  // 是否讀取中
         dialog: false,  // 轉單 dialog
         newUnit: '',  // 轉單時所選科室
         newDispatcher: '',  // 轉單後的新派工人
@@ -170,6 +167,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 向後端取資料
         fetchData() {
@@ -218,7 +216,7 @@ export default {
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
+            this.topItems.eqCodes.text = `${obj.MaintainCode_System}-${obj.MaintainCode_Loc}${obj.MaintainCode_Loc2}-${obj.MaintainCode_Eqp}${obj.MaintainCode_Eqp2}-${obj.MaintainCode_Seq}`  // 設備標示編號
             this.topItems.status.text = obj.Status  // 處理階段
             this.topItems.fixUnit.text = obj.CreatorDepart  // 請修單位
             this.topItems.creater.text = obj.Creator  // 立案人
@@ -231,38 +229,41 @@ export default {
         // 刪除
         deleteItem() {
             if (confirm('你確定要刪除嗎?')) {
-                this.isLoading = true
+                this.chLoadingShow()
                 
                 // 範例效果
                 setTimeout(() => {
                     // 刪除完後，轉頁到搜尋頁
                     this.chMsgbar({ success: true, msg: '刪除成功' })
-                    this.$router.push({ path: '/worklist/maintain' })
+                    this.done = true  // 隱藏頁面操作按鈕
+                    this.chLoadingShow()
                 }, 1000)
             }
         },
         // 結案
         closeWork() {
             if (confirm('你確定要結案嗎?')) {
-                this.isLoading = true
+               this.chLoadingShow()
                 
                 // 範例效果
                 setTimeout(() => {
                     // 結案完後，轉頁到搜尋頁
                     this.chMsgbar({ success: true, msg: '結案成功' })
-                    this.$router.push({ path: '/worklist/maintain' })
+                    this.done = true  // 隱藏頁面操作按鈕
+                    this.chLoadingShow()
                 }, 1000)
             }
         },
         // 轉單 (更改派工人)
         chgDispatcher() {
-            this.isLoading = true
+           this.isLoading = true
                 
             // 範例效果
             setTimeout(() => {
                 // 轉單完後，轉頁到搜尋頁
                 this.chMsgbar({ success: true, msg: '轉單成功' })
-                this.$router.push({ path: '/worklist/maintain' })
+                this.done = true  // 隱藏頁面操作按鈕
+                this.dialog = false
             }, 1000)
         },
     },
