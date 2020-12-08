@@ -263,7 +263,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { fetchOrderList } from '@/apis/workList/maintain'
+import { fetchOrderList, fetchWorkOrderOne } from '@/apis/workList/maintain'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -381,32 +381,44 @@ export default {
             // 依業主要求變更檢式頁面的方式，所以改為另開分頁
             // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
             // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
             this.isLoading = true
-            let routeData = ''
-            switch(item.Status) {
-                case '待派工':
-                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/listShow` })
-                    break
-                case '已派工待維修':
-                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/workShow` })
-                    break
-                case '已維修待驗收':
-                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/acceptingShow` })
-                    break
-                case '已驗收待結案':
-                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/closedShow` })
-                    break
-                case '已結案':
-                    routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/complated` })
-                    break
-                default:
-                    break
-            }
-            setTimeout(() => {
+
+            fetchWorkOrderOne({
+                WorkOrderID: item.WorkOrderID,  // 工單編號
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                // 若已刪除則轉頁404
+                if (res.data.DelStatus == 'T') {
+                    this.$router.push({ path: '/404' })
+                } else {
+                    let routeData = ''
+                    switch(res.data.Status) {
+                        case '待派工':
+                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/listShow` })
+                            break
+                        case '已派工待維修':
+                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/workShow` })
+                            break
+                        case '已維修待驗收':
+                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/acceptingShow` })
+                            break
+                        case '已驗收待結案':
+                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/closedShow` })
+                            break
+                        case '已結案':
+                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/complated` })
+                            break
+                        default:
+                            break
+                    }
+                    window.open(routeData.href, '_blank')
+                }
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，資料讀取失敗')
+            }).finally(() => {
                 this.isLoading = false
-                window.open(routeData.href, '_blank')
-            }, 1000)
+            })
         },
         // 清除搜尋內容
         reset() {

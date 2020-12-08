@@ -55,6 +55,14 @@ export function createWorkOrder(data) { return axios(
     }
 )}
 
+export function deleteOrder(data) { return axios(
+    {
+        url: '/mmis/order/delete',
+        method: 'delete',
+        data,
+    }
+)}
+
 // 取得一筆立案單資料
 export function fetchWorkOrderOne(data) { return axios(
     {

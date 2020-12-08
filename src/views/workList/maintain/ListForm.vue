@@ -596,7 +596,7 @@ export default {
                 if (this.isEdit) {
                     // -------- 編輯時 -------
                     updateListOrder({
-                        WorkerOrderID: this.workNumber,  // 工單編號
+                        WorkOrderID: this.workNumber,  // 工單編號
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
                         DispatchDDay: dispatcherDate,  // 派工日期

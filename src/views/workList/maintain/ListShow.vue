@@ -112,7 +112,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { fetchWorkOrderOne } from '@/apis/workList/maintain'
+import { fetchWorkOrderOne, deleteOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
@@ -200,10 +200,15 @@ export default {
                     WorkOrderID: id,  // 工單編號
                     ClientReqTime: getNowFullTime()  // client 端請求時間
                 }).then(res => {
-                    this.setShowData(res.data)  // 初始化資料
+                    // 若已刪除則轉頁404
+                    if (res.data.DelStatus == 'T') {
+                        this.$router.push({ path: '/404' })
+                    } else {
+                        this.setShowData(res.data)  // 初始化資料
+                    }
                 }).catch(err => {
                     console.log(err)
-                    alert('資料取得失敗')
+                    alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
                     this.chLoadingShow()
                 })
@@ -231,13 +236,18 @@ export default {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
                 
-                // 範例效果
-                setTimeout(() => {
-                    // 刪除完後，轉頁到搜尋頁
+                deleteOrder({
+                    WorkOrderID: this.workNumber,  // 工單編號
+                    ClientReqTime: getNowFullTime()  // client 端請求時間
+                }).then(res => {
                     this.chMsgbar({ success: true, msg: '刪除成功' })
                     this.done = true  // 隱藏頁面操作按鈕
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，刪除失敗')
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 結案
