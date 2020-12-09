@@ -98,7 +98,7 @@
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.shop>
             <v-btn
-              title="詳細資料"
+              
               class="mr-2"
               small
               dark

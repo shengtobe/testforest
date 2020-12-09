@@ -37,12 +37,12 @@ export const FormLaborRouter = [
         component: () => import('@/views/formManage/labor/HAZIDRiskAssessmentAdd.vue'),
         formGroup: []
     },
-    {
-        linkText: '災害事故調查表(本處員工)', // 勞安衛7.
-        path: '/form-manage/labor/disaster-accident-survey',
-        component: () => import('@/views/formManage/labor/DisasterAccidentSurvey.vue'),
-        formGroup: ['labor']
-    },
+    // {
+    //     linkText: '災害事故調查表(本處員工)', // 勞安衛7.
+    //     path: '/form-manage/labor/disaster-accident-survey',
+    //     component: () => import('@/views/formManage/labor/DisasterAccidentSurvey.vue'),
+    //     formGroup: ['labor']
+    // },
     {
         linkText: '災害事故調查表(本處員工)Add', // 勞安衛7.
         path: '/form-manage/labor/disaster-accident-survey-add',

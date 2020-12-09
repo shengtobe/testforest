@@ -74,7 +74,7 @@
                     solo
                     readonly
                     @click="toggleShow"
-                    :background-color="ipt.errorDispatchID"
+                    :background-color="errorIpt.dispatchID"
                     :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇派工人']"
                 ></v-text-field>
             </v-col>
@@ -187,7 +187,7 @@
                         <v-select solo hide-details
                             v-model="ipt.eqNumber1"
                             :items="eqCodes.opt1"
-                            :background-color="ipt.errorEqNumber1"
+                            :background-color="errorIpt.eqNumber1"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                             :disabled="!canModifyEqCode"
                         ></v-select>
@@ -205,7 +205,7 @@
                         <v-select solo hide-details
                             v-model="ipt.eqNumber2"
                             :items="eqCodes.opt2"
-                            :background-color="ipt.errorEqNumber2"
+                            :background-color="errorIpt.eqNumber2"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                             :disabled="disableLv2"
                         ></v-select>
@@ -215,7 +215,6 @@
                         <v-select solo hide-details
                             v-model="ipt.eqNumber22"
                             :items="eqCodes.opt22"
-                            :background-color="ipt.errorEqNumber22"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                         ></v-select>
                     </v-col>
@@ -232,7 +231,7 @@
                         <v-select solo hide-details
                             v-model="ipt.eqNumber3"
                             :items="eqCodes.opt3"
-                            :background-color="ipt.errorEqNumber3"
+                            :background-color="errorIpt.eqNumber3"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                         ></v-select>
                     </v-col>
@@ -241,7 +240,6 @@
                         <v-select solo hide-details
                             v-model="ipt.eqNumber32"
                             :items="eqCodes.opt32"
-                            :background-color="ipt.errorEqNumber32"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                             :disabled="disableLv3"
                         ></v-select>
@@ -259,7 +257,7 @@
                         <v-select solo hide-details
                             v-model="ipt.eqNumber4"
                             :items="eqCodes.opt4"
-                            :background-color="ipt.errorEqNumber4"
+                            :background-color="errorIpt.eqNumber4"
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                         ></v-select>
                     </v-col>
@@ -280,7 +278,7 @@
                     rows="6"
                     placeholder="請輸入故障描述"
                     v-model.trim="ipt.malfunctionDes"
-                    :background-color="ipt.errorMalfunctionDes"
+                    :background-color="errorIpt.malfunctionDes"
                     :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                 ></v-textarea>
             </v-col>
@@ -309,7 +307,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, verifyIptError } from '@/assets/js/commonFun'
 import { hourOptions } from '@/assets/js/dateTimeOption'
 import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
 
@@ -335,15 +333,15 @@ export default {
             fixType: '1',  // 維修類型
             nowAction: true,  // 是否立即派工
             hour: (new Date().getHours() < 10)? '0'+ new Date().getHours().toString() : new Date().getHours().toString(),  // 派工的小時
-            workDate: new Date().toISOString().substr(0, 10),  // 派工日期
-            errorDispatchID: '',  // 必填欄位背景色-派工人
-            errorEqNumber1: '',  // 必填欄位背景色-設備標示編號1
-            errorEqNumber2: '',  // 必填欄位背景色-設備標示編號2
-            errorEqNumber22: '',  // 必填欄位背景色-設備標示編號2-2
-            errorEqNumber3: '',  // 必填欄位背景色-設備標示編號3
-            errorEqNumber32: '',  // 必填欄位背景色-設備標示編號3-2
-            errorEqNumber4: '',  // 必填欄位背景色-設備標示編號4
-            errorMalfunctionDes: '',  // 必填欄位背景色-故障描述
+            workDate: new Date().toISOString().substr(0, 10),  // 派工日
+        },
+        errorIpt: {  // 必填欄位背景色
+            dispatchID: '', // 派工人
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber4: '',  // 設備標示編號4
+            malfunctionDes: '',  // 故障描述
         },
         dateMenuShow: false,  // 日期選單是否顯示
         workDateMenuShow: false,  // 維護日期選單是否顯示
@@ -512,12 +510,12 @@ export default {
                     this.creater = obj.Creator  // 立案人姓名
                     this.createrId = obj.CreatorID  // 立案人id
                     this.fixUnit = obj.CreatorDepart  // 請修單位
-                    this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號()
-                    this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號()
-                    this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號()
-                    this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號()
-                    this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號()
-                    this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號()
+                    this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號(系統)
+                    this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號(位置)
+                    this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號(位置)2
+                    this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號(設備)
+                    this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號(設備)2
+                    this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號(序號)
                     this.ipt.date = obj.CreateDTime  // 立案日期
                     this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
                     this.ipt.fixType = obj.Type  // 維修類型
@@ -587,7 +585,7 @@ export default {
         },
         // 送出表單
         save() {
-            // if (this.$refs.form.validate()) {  // 表單驗證欄位
+            if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.chLoadingShow()
 
                 // 派工日期
@@ -609,6 +607,7 @@ export default {
                         ClientReqTime: getNowFullTime()  // client 端請求時間
                     }).then(res => {
                         this.chDialog({ show: true, msg: '編輯成功' })
+                        this.clearErrIpt()
                     }).catch(err => {
                         this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
                     }).finally(() => {
@@ -631,6 +630,8 @@ export default {
                         ClientReqTime: getNowFullTime()  // client 端請求時間
                     }).then(res => {
                         this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
+                        this.clearErrIpt()
+                        this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
                     }).catch(err => {
                         this.chDialog({ show: true, msg: '新增失敗，請重新操作' })
                     }).finally(() => {
@@ -639,76 +640,34 @@ export default {
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                     })
                 }
-            // } else {
+            } else {
                 // 欄位驗證
-                // let errArr = []
-
-                // if (this.dispatchID == '') {
-                //     this.ipt.errorDispatchID = 'red lighten-5'
-                //     errArr.push('派工人')
-                // } else {
-                //     this.ipt.errorDispatchID = ''
-                // }
-
-                // if (this.ipt.eqNumber1 == '') {
-                //     this.ipt.errorEqNumber1 = 'red lighten-5'
-                //     errArr.push('設備標示編號1')
-                // } else {
-                //     this.ipt.errorEqNumber1 = ''
-                // }
-
-                // if (this.ipt.eqNumber2 == '') {
-                //     this.ipt.errorEqNumber2 = 'red lighten-5'
-                //     errArr.push('設備標示編號2')
-                // } else {
-                //     this.ipt.errorEqNumber2 = ''
-                // }
-
-                // if (this.ipt.eqNumber22 == '') {
-                //     this.ipt.errorEqNumber22 = 'red lighten-5'
-                //     errArr.push('設備標示編號22')
-                // } else {
-                //     this.ipt.errorEqNumber22 = ''
-                // }
-
-                // if (this.ipt.eqNumber3 == '') {
-                //     this.ipt.errorEqNumber3 = 'red lighten-5'
-                //     errArr.push('設備標示編號3')
-                // } else {
-                //     this.ipt.errorEqNumber3 = ''
-                // }
-
-                // if (this.ipt.eqNumber32 == '') {
-                //     this.ipt.errorEqNumber32 = 'red lighten-5'
-                //     errArr.push('設備標示編號3')
-                // } else {
-                //     this.ipt.errorEqNumber32 = ''
-                // }
-
-                // if (this.ipt.eqNumber4 == '') {
-                //     this.ipt.errorEqNumber4 = 'red lighten-5'
-                //     errArr.push('設備標示編號4')
-                // } else {
-                //     this.ipt.errorEqNumber4 = ''
-                // }
-
-                // if (this.ipt.malfunctionDes == '') {
-                //     this.ipt.errorMalfunctionDes = 'red lighten-5'
-                //     errArr.push('故障描述')
-                // } else {
-                //     this.ipt.errorMalfunctionDes = ''
-                // }
-
-                // alert('送出失敗，請確認「' + errArr.join('、') + '」欄位是否填寫，格式是否正確')
-            // }
+                verifyIptError([
+                    { label: '派工人', target: this.dispatchID, errTarget: 'dispatchID' },
+                    { label: '設備標示編號(系統)', target: this.ipt.eqNumber1, errTarget: 'eqNumber1' },
+                    { label: '設備標示編號(位置)', target: this.ipt.eqNumber2, errTarget: 'eqNumber2' },
+                    { label: '設備標示編號(設備)', target: this.ipt.eqNumber3, errTarget: 'eqNumber3' },
+                    { label: '設備標示編號(序號)', target: this.ipt.eqNumber4, errTarget: 'eqNumber4' },
+                    { label: '故障描述', target: this.ipt.malfunctionDes, errTarget: 'malfunctionDes' },
+                ], this)
+            }
         },
-        // 編輯設備標示編號 (編輯模式)
+        // 編輯
         editEqCode() {
             if (confirm('編輯設備標示編號會需要重新選擇，你確定嗎?')) {
                 this.ipt.eqNumber1 = this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
                 this.canModifyEqCode = true
             }
         },
+        // 清空必填欄位背景色
+        clearErrIpt() {
+            this.errorIpt.dispatchID = ''
+            this.errorIpt.eqNumber1 = ''
+            this.errorIpt.eqNumber2 = ''
+            this.errorIpt.eqNumber3 = ''
+            this.errorIpt.eqNumber4 = ''
+            this.errorIpt.malfunctionDes = ''
+        }
     },
     created() {
         this.initData()

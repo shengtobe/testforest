@@ -18,25 +18,20 @@ export function getNowFullTime() {
     return `${o.year}-${o.month}-${o.day} ${o.hour}:${o.min}:${o.sec}.${o.ms}`
 }
 
-// 工單階段要呈現的文字 (後端還沒寫好前，暫時先這樣)
-// stateStr(status) {
-//     switch(status) {
-//         case '1':  // 待派工
-//             return '待派工'
-//             break
-//         case '2':  // 已派工待維修
-//             return '已派工待維修'
-//             break
-//         case '3':  // 已維修待驗收
-//             return '已維修待驗收'
-//             break
-//         case '4':  // 已驗收待結案
-//             return '已驗收待結案'
-//             break
-//         case '5':  // 已結案
-//             return '已結案'
-//             break
-//         default:
-//             break
-//     }
-// }
+// 表單欄位驗證
+// 參數說明： arr 陣列
+// 陣列元素為物件，範例：{ label: 欄位名稱, target: 欄位 v-model 綁定的變數, errTarget: data 中 errorIpt 物件綁定的錯誤欄位顏色屬性變數 }
+export function verifyIptError(arr, vm) {
+    let errArr = []
+
+    arr.forEach(function(item) {
+        if (item.target == '') {
+            vm.errorIpt[item.errTarget] = 'red lighten-5'
+            errArr.push(item.label)
+        } else {
+            vm.errorIpt[item.errTarget] = ''
+        }
+    })
+    
+    alert('送出失敗，請確認「' + errArr.join('、') + '」欄位是否填寫，格式是否正確')
+}
