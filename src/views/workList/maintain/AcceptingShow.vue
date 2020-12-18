@@ -146,6 +146,283 @@
         </v-row>
     </v-form>
 
+    <!-- 平交道項目 -->
+    <v-checkbox
+        class="mx-2"
+        v-model="crossShow"
+        label="選擇平交道項目"
+        color="success"
+        hide-details
+    ></v-checkbox>
+
+    <v-sheet class="white px-4 mt-1 mb-3 mx-2"
+        v-if="crossShow"
+    >
+        <v-row>
+            <v-col cols="12">
+                <h3>車種</h3>
+                <v-row no-gutters>
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.type.bus"
+                            label="客車編組"
+                            color="primary"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.type.hinoki"
+                            label="檜木車編組"
+                            color="primary"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.type.engineer"
+                            label="工程車編組"
+                            color="primary"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.type.trolley"
+                            label="台車"
+                            color="primary"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.type.locomotive"
+                            label="機關車"
+                            color="primary"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>方向</h3>
+                <v-row no-gutters>
+                    <v-col cols="12" sm="7" md="4">
+                        <v-radio-group v-model="crossItem.direction.updown" row
+                            class="mt-1"
+                        >
+                            <v-radio label="上行" value="top" color="red"></v-radio>
+                            <v-radio label="下行" value="down" color="red"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+
+                    <v-col cols="12" sm="5" md="3">
+                        <v-text-field
+                            dense
+                            label="車次"
+                            v-model.trim="crossItem.direction.trip"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>設施</h3>
+                <v-row no-gutters class="d-flex align-center">
+                    <v-col cols="12" md="5">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.eqAllerr"
+                            label="平交道警報裝置全部失效"
+                            color="primary"
+                            hide-details
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                        <span class="red--text">(如非此項，請詳填下列設施異常情形)</span>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>遮斷機</h3>
+                <v-row no-gutters>
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.interrupter.allNotUp"
+                            label="兩側皆無上升"
+                            color="primary"
+                            hide-details
+                            :disabled="crossItem.eqAllerr"
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.interrupter.allNotDown"
+                            label="兩側皆無下降"
+                            color="primary"
+                            hide-details
+                            :disabled="crossItem.eqAllerr"
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.interrupter.southNotUp"
+                            label="南側無上升"
+                            color="primary"
+                            hide-details
+                            :disabled="crossItem.eqAllerr"
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.interrupter.southNotDown"
+                            label="南側無下降"
+                            color="primary"
+                            hide-details
+                            :disabled="crossItem.eqAllerr"
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.interrupter.northNotUp"
+                            label="北側無上升"
+                            color="primary"
+                            hide-details
+                            :disabled="crossItem.eqAllerr"
+                        ></v-checkbox>
+                    </v-col>
+
+                    <v-col cols="12" sm="6" md="3">
+                        <v-checkbox
+                            class="mt-0"
+                            v-model="crossItem.interrupter.northNotDown"
+                            label="北側無下降"
+                            color="primary"
+                            hide-details
+                            :disabled="crossItem.eqAllerr"
+                        ></v-checkbox>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>閃光燈</h3>
+                <v-row no-gutters>
+                    <v-col cols="12" md="6">
+                        <v-radio-group v-model="crossItem.flash.side" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="兩則" value="all" color="primary"></v-radio>
+                            <v-radio label="南" value="south" color="primary"></v-radio>
+                            <v-radio label="北" value="north" color="primary"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                        <v-radio-group v-model="crossItem.flash.state" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="不亮" value="noactive" color="red"></v-radio>
+                            <v-radio label="不滅" value="noend" color="red"></v-radio>
+                            <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>駕駛燈</h3>
+                <v-row no-gutters>
+                    <v-col cols="12" md="6">
+                        <v-radio-group v-model="crossItem.drive.color" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="紅" value="red" color="primary"></v-radio>
+                            <v-radio label="綠" value="green" color="primary"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                        <v-radio-group v-model="crossItem.drive.state" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="不亮" value="noactive" color="red"></v-radio>
+                            <v-radio label="不滅" value="noend" color="red"></v-radio>
+                            <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>旋轉燈</h3>
+                <v-row no-gutters>
+                    <v-col cols="12" md="6">
+                        <v-radio-group v-model="crossItem.spin.side" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="兩則" value="all" color="primary"></v-radio>
+                            <v-radio label="南" value="south" color="primary"></v-radio>
+                            <v-radio label="北" value="north" color="primary"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+
+                    <v-col cols="12" md="6">
+                        <v-radio-group v-model="crossItem.spin.state" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="不亮" value="noactive" color="red"></v-radio>
+                            <v-radio label="不滅" value="noend" color="red"></v-radio>
+                            <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <h3>警音</h3>
+                <v-row no-gutters>
+                    <v-col cols="12">
+                        <v-radio-group v-model="crossItem.warningTone" row
+                            class="mt-1"
+                            :disabled="crossItem.eqAllerr"
+                        >
+                            <v-radio label="無聲音" value="no" color="primary"></v-radio>
+                            <v-radio label="太小聲" value="small" color="primary"></v-radio>
+                        </v-radio-group>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+    </v-sheet>
+
     <!-- 工時統計 -->
     <!-- <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-table</v-icon>工時統計
@@ -528,13 +805,73 @@ export default {
             startFixDate: { icon: 'mdi-calendar-text', title: '動工日期', text: '' },
             endFixDate: { icon: 'mdi-calendar-text', title: '完工日期', text: '' },
         },
+        crossShow: false,  // demo 用的平交道項目是否顯示
+        crossItem: {  // 平交道項目
+            type: {  // 車種
+                bus: false, // 客車
+                hinoki: false, // 檜木車
+                engineer: false, // 工程車
+                trolley: false, // 台車
+                locomotive: false, // 機關車
+            },
+            direction: {  // 方向
+                updown: 'top',  // 上(top)、下(down)行
+                trip: '',  // 車次
+            },
+            eqAllerr: false,  // 設施，平交道警報裝置全部失效
+            interrupter: {  // 遮斷機
+                allNotUp: false,  // 兩側皆無上升
+                allNotDown: false,  // 兩側皆無下降
+                southNotUp: false,  // 南側無上升
+                southNotDown: false,  // 南側無下降
+                northNotUp: false,  // 北側無上升
+                northNotDown: false,  // 北側無下降
+            },
+            flash: {  // 閃光燈
+                side: '',  // 位置，兩則(all)、南(south)、北(north)
+                state: '',  // 狀態，不亮(noactive)、不滅(noend)、亮度異常(err)
+            },
+            drive: {  // 駕駛燈
+                color: '',  // 燈號顏色，紅(red)、綠(green)
+                state: '',  // 狀態，不亮(noactive)、不滅(noend)、亮度異常(err)
+            },
+            spin: {  // 旋轉燈
+                side: '',  // 位置，兩則(all)、南(south)、北(north)
+                state: '',  // 狀態，不亮(noactive)、不滅(noend)、亮度異常(err)
+            },
+            warningTone: '',  // 警音，無聲音(no)、太小聲(small)
+        },
     }),
     components: { TopBasicTable },
     watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        }
+        // 平交道警報裝置全部失效(有勾選)的話，設施回復預設值
+        'crossItem.eqAllerr': function(val) {
+            if (val) {
+                this.crossItem = Object.assign(this.crossItem, {
+                    interrupter: {  // 遮斷機
+                        allNotUp: false,
+                        allNotDown: false,
+                        southNotUp: false,
+                        southNotDown: false,
+                        northNotUp: false,
+                        northNotDown: false,
+                    },
+                    flash: {  // 閃光燈
+                        side: '',
+                        state: '',
+                    },
+                    drive: {  // 駕駛燈
+                        color: '',
+                        state: '',
+                    },
+                    spin: {  // 旋轉燈
+                        side: '',
+                        state: '',
+                    },
+                    warningTone: '',  // 警音
+                })
+            }
+        },
     },
     computed: {
         // 合併外包廠商字串

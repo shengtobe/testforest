@@ -73,7 +73,7 @@
                     :value="dispatchName"
                     solo
                     readonly
-                    @click="toggleShow"
+                    @click="toggleShow('kk')"
                     :background-color="errorIpt.dispatchID"
                     :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇派工人']"
                 ></v-text-field>
@@ -370,7 +370,7 @@ export default {
     }),
     components: { OrganizeDialog },
     computed: {
-        ...mapState ('organization', {
+        ...mapState ('organization', {  // 組織表資料
             dispatchID: state => state.chose.uid,
             dispatchName: state => state.chose.name,
         }),
@@ -604,7 +604,8 @@ export default {
                         MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
                         MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
-                        ClientReqTime: getNowFullTime()  // client 端請求時間
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
                         this.chDialog({ show: true, msg: '編輯成功' })
                         this.clearErrIpt()
@@ -627,7 +628,8 @@ export default {
                         MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
                         MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
-                        ClientReqTime: getNowFullTime()  // client 端請求時間
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
                         this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
                         this.clearErrIpt()

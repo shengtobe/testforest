@@ -6,6 +6,7 @@ export const SET_SYSTEM_VIEW_DIALOG = 'SET_SYSTEM_VIEW_DIALOG'  // 設定系統�
 
 // organization
 export const SET_ORGANIZE_SHOW = 'SET_ORGANIZE_SHOW'  // 設定組織表dialog 是否顯示
+export const SET_ORGANIZE_IPTNAME = 'SET_ORGANIZE_IPTNAME'  // 設定目前欄位名稱
 export const SET_ORGANIZE_CHOSE = 'SET_ORGANIZE_CHOSE'  // 設定選擇的員工資料
 export const SET_ORGANIZE_ALL = 'SET_ORGANIZE_ALL'  // 設定向後端取得的所有資料
 

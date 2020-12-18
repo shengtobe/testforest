@@ -135,6 +135,7 @@ export default {
         ...mapState ('organization', {
             show: state => state.show,
             all: state => state.all,
+            nowIptName: state => state.nowIptName,
         })
     },
     watch: {
@@ -232,6 +233,10 @@ export default {
         submit() {
             this.chChose(this.choseData)
             this.toggleShow()
+
+            if (this.nowIptName != '') {  // 若目前欄位名不為空 (針對頁面有多個欄位使用此組件時用)
+                this.$emit('setNowIpt')
+            }
         },
     },
     created() {

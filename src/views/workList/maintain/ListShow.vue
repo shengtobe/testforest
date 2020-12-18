@@ -118,12 +118,6 @@ import { fetchWorkOrderOne, deleteOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
-// 科室人員名單
-// let memberList = {
-//     '養護科': ['陳小華', '王大明'],
-//     '維護科': ['劉章元', '楊力昇']
-// }
-
 export default {
     props: ['itemData'],
     data: () => ({
@@ -148,10 +142,6 @@ export default {
     }),
     components: { TopBasicTable },
     watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
         // 更換科室時，自動選該科室人員清單的第一人
         newUnit: function (newVal, oldVal) {
             if (newVal != oldVal) {
@@ -159,14 +149,6 @@ export default {
             }
         },
     },
-    // computed: {
-    //     // 科室人員名單--科室
-    //     memberOptLv1: () => Object.keys(memberList),
-    //     // 科室人員名單--姓名
-    //     memberOptLv2() {
-    //         return (memberList[this.newUnit])
-    //     },
-    // },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
@@ -175,7 +157,6 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log(obj)
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.malfunction = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
 

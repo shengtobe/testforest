@@ -1,3 +1,5 @@
+// ------------ 維修、養護科工單 api -----------------
+
 import axios from '@/apis/axiosSetting'
 
 // 取得設備標示編號Lv1
@@ -36,7 +38,6 @@ export function fetchEqCodeLv4(data) { return axios(
     }
 )}
 
-// ----------------- 維修養護科 ----------------------
 // 工單搜尋
 export function fetchOrderList(data) { return axios(
     {
@@ -55,6 +56,7 @@ export function createWorkOrder(data) { return axios(
     }
 )}
 
+// 刪除工單
 export function deleteOrder(data) { return axios(
     {
         url: '/mmis/order/delete',
@@ -63,7 +65,7 @@ export function deleteOrder(data) { return axios(
     }
 )}
 
-// 取得一筆立案單資料
+// 取得單一筆工單詳細資料
 export function fetchWorkOrderOne(data) { return axios(
     {
         url: '/mmis/order/querydetail',
@@ -72,10 +74,19 @@ export function fetchWorkOrderOne(data) { return axios(
     }
 )}
 
-// 取得更新工單 (狀態：待派工)
+// 更新工單
 export function updateListOrder(data) { return axios(
     {
         url: '/mmis/order/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 派工
+export function dispatchOrder(data) { return axios(
+    {
+        url: '/mmis/order/dispatch',
         method: 'post',
         data,
     }
