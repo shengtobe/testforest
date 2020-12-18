@@ -40,7 +40,7 @@ export function fetchEqCodeLv4(data) { return axios(
 // 工單搜尋
 export function fetchOrderList(data) { return axios(
     {
-        url: '/mmis/order/querylist',
+        url: '/mmis/order/queryarray',
         method: 'post',
         data,
     }

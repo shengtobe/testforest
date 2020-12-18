@@ -18,7 +18,7 @@
                 </v-col>
 
                 <v-col class="white pa-3"
-                    v-html="malfunction"
+                    v-html="malfunctionDes"
                 ></v-col>
             </v-row>
         </v-col>
@@ -45,10 +45,10 @@
                     @click="closeWork"
                 >結案</v-btn>
 
-                <!-- <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2"
                     color="cyan"
                     @click="dialog = true"
-                >轉單</v-btn> -->
+                >轉單</v-btn>
 
                 <v-btn dark class="ma-2"
                     color="success"
@@ -61,8 +61,7 @@
         <v-col cols="12" class="error--text">
             <h4>按鈕出現說明</h4>
             1. 編輯、刪除：立案人、派工人<br>
-            <!-- 2. 編輯、結案、轉單、派工：派工人 -->
-            2. 編輯、結案、派工：派工人
+            2. 編輯、結案、轉單、派工：派工人
         </v-col>
     </v-row>
 
@@ -113,7 +112,6 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchWorkOrderOne, deleteOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
@@ -125,7 +123,6 @@ let memberList = {
 }
 
 export default {
-    props: ['itemData'],
     data: () => ({
         workNumber: '',  // 工單編號
         done: false,  // 是否完成頁面操作
@@ -137,14 +134,13 @@ export default {
             fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
             eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-            createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
+            fixUnit: { icon: 'mdi-apps', title: '立案單位', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
-            fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
             dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
             fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
             workDate: { icon: 'mdi-calendar-text', title: '維修時間', text: '' },
         },
-        malfunction: '',  // 故障描述
+        malfunctionDes: '',  // 故障描述
     }),
     components: { TopBasicTable },
     watch: {
@@ -173,22 +169,65 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        // 向後端取資料
+        fetchData() {
+            this.chLoadingShow()
+            let id = this.$route.params.id  // 路由參數
+
+            if (id == '201903110001') {
+                // demo 的資料
+                setTimeout(() => {
+                    let obj = {
+                        WorkOrderID: '201903110001',  // 工單編號
+                        MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
+                        Creator: '陳小華',  // 立案人
+                        DispatchMan: '黃小美',  // 派工人
+                        Status: '待派工',  // 處理階段
+                        CreatorDepart: '車輛組',  // 立案單位
+                        Malfunction: '工具機損壞',  // 故障描述
+                        CreateDTime: '2019-03-11 12:03:24',  // 報修時間
+                        Type: '1',  // 維修類型
+                        DispatchDTime: '14:00:00',  // 維修時間
+                    }
+
+                    this.setShowData(obj)  // 初始化資料
+                    this.newUnit = Object.keys(memberList)[0]  // 轉單下拉選單科室預設值
+                    this.chLoadingShow()
+                }, 1000)
+            } else {
+                // 實際功能
+                fetchWorkOrderOne({
+                    WorkOrderID: id,  // 工單編號
+                    ClientReqTime: getNowFullTime()  // client 端請求時間
+                }).then(res => {
+                    // 若已刪除則轉頁404
+                    if (res.data.DelStatus == 'T') {
+                        this.$router.push({ path: '/404' })
+                    } else {
+                        this.setShowData(res.data)  // 初始化資料
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，資料讀取失敗')
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
+        },
         // 初始化資料
         setShowData(obj) {
-            console.log(obj)
             this.workNumber = obj.WorkOrderID  // 工單編號
-            this.malfunction = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
+            this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
             this.topItems.eqCodes.text = `${obj.MaintainCode_System}-${obj.MaintainCode_Loc}${obj.MaintainCode_Loc2}-${obj.MaintainCode_Eqp}${obj.MaintainCode_Eqp2}-${obj.MaintainCode_Seq}`  // 設備標示編號
-            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
-            this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
+            this.topItems.status.text = obj.Status  // 處理階段
+            this.topItems.fixUnit.text = obj.CreatorDepart  // 立案單位
             this.topItems.creater.text = obj.Creator  // 立案人
-            this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
             this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
             this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
-            this.topItems.workDate.text = `${obj.DispatchDDay} ${obj.DispatchDHour}時`  // 維修時間
+            this.topItems.workDate.text = obj.DispatchDDay  // 維修時間
 
             // 權限檢查 (等後續再用 userid 去檢查)
         },
@@ -239,7 +278,7 @@ export default {
         },
     },
     created() {
-        this.setShowData(this.itemData)
+        this.fetchData()
     }
 }
 </script>

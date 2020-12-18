@@ -511,8 +511,9 @@ export default {
             fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
             eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-            fixUnit: { icon: 'mdi-apps', title: '請修單位', text: '' },
+            createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
+            fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
             dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
             agent: { icon: 'mdi-account', title: '代理人', text: '' },
             fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
@@ -568,7 +569,7 @@ export default {
                     eqNumber2: 'A35',
                     eqNumber3: 'EA0',
                     eqNumber4: '013',
-                    fixUnit: '車輛組',  // 請修單位
+                    fixUnit: '車輛組',  // 立案單位
                     creater: '陳小華',  // 立案人
                     dispatcher: '黃小美',  // 派工人
                     agent: '王小明',  // 代理人
@@ -629,8 +630,9 @@ export default {
             this.topItems.fixTime.text = obj.fixTime  // 報修時間
             this.topItems.eqCodes.text = `${obj.eqNumber1}-${obj.eqNumber2}-${obj.eqNumber3}-${obj.eqNumber4}`  // 設備標示編號
             this.topItems.status.text = obj.status  // 處理階段
-            this.topItems.fixUnit.text = obj.fixUnit  // 請修單位
+            this.topItems.fixUnit.text = obj.fixUnit  // 立案單位
             this.topItems.creater.text = obj.creater  // 立案人
+            this.topItems.fixUnit.text = obj.fixUnit  // 維修單位
             this.topItems.dispatcher.text = obj.dispatcher  // 派工人
             this.topItems.agent.text = obj.agent  // 代理人
             this.topItems.fixType.text = obj.fixType  // 維修類型

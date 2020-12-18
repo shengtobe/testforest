@@ -27,7 +27,7 @@
 
             <v-col cols="12" sm="6" md="3">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-apps</v-icon>請修單位
+                    <v-icon class="mr-1 mb-1">mdi-apps</v-icon>立案單位
                 </h3>
                 <v-text-field
                     v-model.trim="fixUnit"
@@ -318,7 +318,7 @@ export default {
         workNumber: '',  // 工單編號
         creater: '',  // 立案人名稱
         createrId: 'K10744389',  // 立案人員工編號
-        fixUnit: '',  // 請修單位
+        fixUnit: '',  // 立案單位
         ipt: {  // 輸入的內容)
             eqNumber1: '',  // 設備標示編號1
             eqNumber2: '',  // 設備標示編號2
@@ -509,7 +509,7 @@ export default {
                     this.workNumber = obj.WorkOrderID  // 工單編號
                     this.creater = obj.Creator  // 立案人姓名
                     this.createrId = obj.CreatorID  // 立案人id
-                    this.fixUnit = obj.CreatorDepart  // 請修單位
+                    this.fixUnit = obj.CreatorDepart  // 立案單位
                     this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號(系統)
                     this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號(位置)
                     this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號(位置)2
@@ -535,7 +535,7 @@ export default {
                 // 新增的情況
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
                 this.creater = this.userData.UserName  // 立案人名稱
-                this.fixUnit = this.userData.DeptList[0].DeptDesc  // 請修單位(之後api結構會改掉)
+                this.fixUnit = this.userData.DeptList[0].DeptDesc  // 立案單位(之後api結構會改掉)
             }
         },
         // 初始化設備標示編號

@@ -59,6 +59,11 @@ export const WorkListRouter = [
 
     // -------- 維修、養護科 -------- 
     {
+        linkText: '工單檢視',  // show (測試用)
+        path: '/worklist/maintain/:id/show',
+        component: () => import('@/views/workList/maintain/PageRouter.vue')
+    },
+    {
         linkText: '搜尋頁',
         path: '/worklist/maintain',
         component: () => import('@/views/workList/maintain/Search.vue')
@@ -68,11 +73,11 @@ export const WorkListRouter = [
         path: '/worklist/maintain/newList',
         component: () => import('@/views/workList/maintain/ListForm.vue')
     },
-    {
-        linkText: '工單檢視',  // 看立案的內容
-        path: '/worklist/maintain/:id/listShow',
-        component: () => import('@/views/workList/maintain/ListShow.vue')
-    },
+    // {
+    //     linkText: '工單檢視',  // 看立案的內容
+    //     path: '/worklist/maintain/:id/listShow',
+    //     component: () => import('@/views/workList/maintain/ListShow.vue')
+    // },
     {
         linkText: '工單編輯',  // 編輯立案
         path: '/worklist/maintain/:id/editList',

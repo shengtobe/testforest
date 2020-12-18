@@ -194,12 +194,6 @@
                     <v-icon>mdi-magnify</v-icon>查詢
                 </v-btn>
 
-                <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
-                    @click="demo"
-                >
-                    <v-icon>mdi-magnify</v-icon>Demo
-                </v-btn>
-
                 <v-btn color="indigo" dark large class="mr-3 mb-4 mb-sm-0"
                     to="/worklist/maintain/newList"
                 >
@@ -234,6 +228,10 @@
                             <span class="red--text subtitle-1">資料讀取中...</span>
                         </template>
 
+                        <template v-slot:item.Status="{ item }">
+                            <span>{{ statusOpt.find(ele => ele.value == item.Status).text }}</span>
+                        </template>
+
                         <!-- headers 的 content 欄位 (檢視內容) -->
                         <template v-slot:item.content="{ item }">
                             <v-btn small dark fab color="teal"
@@ -261,8 +259,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchOrderList, fetchWorkOrderOne } from '@/apis/workList/maintain'
 import Pagination from '@/components/Pagination.vue'
 
@@ -289,14 +288,7 @@ export default {
             start: false,
             end: false,
         },
-        statusOpt: [  // 處理階段下拉選單
-            { text: '不限', value: '' },
-            { text: '待派工', value: '1' },
-            { text: '已派工待維修', value: '2' },
-            { text: '已維修待驗收', value: '3' },
-            { text: '已驗收待結案', value: '4' },
-            { text: '已結案', value: '5' },
-        ],
+        statusOpt: maintainStatusOpts,  // 處理階段下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
@@ -308,67 +300,62 @@ export default {
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // demo資料
-        demo() {
-            this.chLoadingShow()
-
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        WorkOrderID: '201903110001',
-                        MaintainCode: 'TRK-R06-EA0-002',
-                        Status: '待派工',
-                    },
-                    {
-                        WorkOrderID: '201903070003',
-                        MaintainCode: 'TQG-A35-EA0-013',
-                        Status: '已派工待維修',
-                    },
-                    {
-                        WorkOrderID: '201902150005',
-                        MaintainCode: 'TRU-E07-H03-002',
-                        Status: '已維修待驗收',
-                    },
-                    {
-                        WorkOrderID: '201903270011',
-                        MaintainCode: 'TRK-U06-N11-007',
-                        Status: '已驗收待結案',
-                    },
-                    {
-                        WorkOrderID: '201901220002',
-                        MaintainCode: 'JKU-Q12-G02-009',
-                        Status: '已結案',
-                    },
-                ]
-                this.chLoadingShow()
-            }, 1000)
-        },
         // 查詢資料
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchOrderList({
-                CreatorID: this.ipt.createrId,  // 立案人id
-                DispatchID: this.ipt.dispatcherId,  // 派工人id
-                CreateDTime_Start: this.ipt.createDateStart,  // 工單建立日期(起)
-                CreateDTime_End: this.ipt.createDateEnd,  // 工單建立日期(迄)
-                WorkOrderID: this.ipt.workNumber,  // 工單編號
-                Status: this.ipt.workState,  // 處理階段
-                Shortage: this.ipt.shortage,  // 是否缺料
-                Type: this.ipt.fixType,  // 維修類型
-                MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號1
-                MaintainCode_Loc: this.ipt.eqNumber2,  // 設備標示編號2
-                MaintainCode_Eqp: this.ipt.eqNumber3,  // 設備標示編號3
-                MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號4
-                ClientReqTime: getNowFullTime()  // client 端請求時間
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [  // 屬性名
+                    'CreatorID',  // 立案人id
+                    'DispatchID',  // 派工人id
+                    'CreateDTime_Start',  // 工單建立日期(起)
+                    'CreateDTime_End',  // 工單建立日期(迄)
+                    'WorkOrderID',  // 工單編號
+                    'Status',  // 處理階段
+                    'Shortage',  // 是否缺料
+                    'Type',  // 維修類型
+                    'MaintainCode_System',  // 設備標示編號1
+                    'MaintainCode_Loc',  // 設備標示編號2
+                    'MaintainCode_Eqp',  // 設備標示編號3
+                    'MaintainCode_Seq',  // 設備標示編號4
+                ],
+                KeyValue: [  // 屬性值
+                    this.ipt.createrId,
+                    this.ipt.dispatcherId,
+                    this.ipt.createDateStart,
+                    this.ipt.createDateEnd,
+                    this.ipt.workNumber,
+                    this.ipt.workState,
+                    this.ipt.shortage,
+                    this.ipt.fixType,
+                    this.ipt.eqNumber1,
+                    this.ipt.eqNumber2,
+                    this.ipt.eqNumber3,
+                    this.ipt.eqNumber4,
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'MaintainCode_System',
+                    'MaintainCode_Loc',
+                    'MaintainCode_Eqp',
+                    'MaintainCode_Seq',
+                    'Status'
+                ],
             }).then(res => {
-                this.tableItems = res.data.order_list
+                this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -379,46 +366,8 @@ export default {
         // 檢視內容
         viewPage(item) {
             // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-            this.isLoading = true
-
-            fetchWorkOrderOne({
-                WorkOrderID: item.WorkOrderID,  // 工單編號
-                ClientReqTime: getNowFullTime()  // client 端請求時間
-            }).then(res => {
-                // 若已刪除則轉頁404
-                if (res.data.DelStatus == 'T') {
-                    this.$router.push({ path: '/404' })
-                } else {
-                    let routeData = ''
-                    switch(res.data.Status) {
-                        case '待派工':
-                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/listShow` })
-                            break
-                        case '已派工待維修':
-                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/workShow` })
-                            break
-                        case '已維修待驗收':
-                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/acceptingShow` })
-                            break
-                        case '已驗收待結案':
-                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/closedShow` })
-                            break
-                        case '已結案':
-                            routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/complated` })
-                            break
-                        default:
-                            break
-                    }
-                    window.open(routeData.href, '_blank')
-                }
-            }).catch(err => {
-                console.log(err)
-                alert('伺服器發生問題，資料讀取失敗')
-            }).finally(() => {
-                this.isLoading = false
-            })
+            let routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/show` })
+            window.open(routeData.href, '_blank')
         },
         // 清除搜尋內容
         reset() {
