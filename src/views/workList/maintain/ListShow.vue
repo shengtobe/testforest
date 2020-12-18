@@ -67,7 +67,7 @@
     </v-row>
 
     <!-- 轉單 dialog -->
-    <v-dialog v-model="dialog" max-width="450px">
+    <!-- <v-dialog v-model="dialog" max-width="450px">
         <v-card>
             <v-toolbar dark flat dense color="cyan" class="mb-2">
                 <v-toolbar-title>轉單</v-toolbar-title>
@@ -107,7 +107,7 @@
                 <v-btn color="success"  elevation="4" :loading="isLoading" @click="chgDispatcher">送出</v-btn>
             </v-card-actions>
         </v-card>
-    </v-dialog>
+    </v-dialog> -->
 </v-container>
 </template>
 
@@ -119,19 +119,19 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
 // 科室人員名單
-let memberList = {
-    '養護科': ['陳小華', '王大明'],
-    '維護科': ['劉章元', '楊力昇']
-}
+// let memberList = {
+//     '養護科': ['陳小華', '王大明'],
+//     '維護科': ['劉章元', '楊力昇']
+// }
 
 export default {
     props: ['itemData'],
     data: () => ({
         workNumber: '',  // 工單編號
         done: false,  // 是否完成頁面操作
-        isLoading: false,  // 是否讀取中
-        dialog: false,  // 轉單 dialog
-        newUnit: '',  // 轉單時所選科室
+        // isLoading: false,  // 是否讀取中
+        // dialog: false,  // 轉單 dialog
+        // newUnit: '',  // 轉單時所選科室
         newDispatcher: '',  // 轉單後的新派工人
         topItems: {  // 上面的欄位
             fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
@@ -159,14 +159,14 @@ export default {
             }
         },
     },
-    computed: {
-        // 科室人員名單--科室
-        memberOptLv1: () => Object.keys(memberList),
-        // 科室人員名單--姓名
-        memberOptLv2() {
-            return (memberList[this.newUnit])
-        },
-    },
+    // computed: {
+    //     // 科室人員名單--科室
+    //     memberOptLv1: () => Object.keys(memberList),
+    //     // 科室人員名單--姓名
+    //     memberOptLv2() {
+    //         return (memberList[this.newUnit])
+    //     },
+    // },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
@@ -226,17 +226,17 @@ export default {
             }
         },
         // 轉單 (更改派工人)
-        chgDispatcher() {
-           this.isLoading = true
+        // chgDispatcher() {
+        //    this.isLoading = true
                 
-            // 範例效果
-            setTimeout(() => {
-                // 轉單完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '轉單成功' })
-                this.done = true  // 隱藏頁面操作按鈕
-                this.dialog = false
-            }, 1000)
-        },
+        //     // 範例效果
+        //     setTimeout(() => {
+        //         // 轉單完後，轉頁到搜尋頁
+        //         this.chMsgbar({ success: true, msg: '轉單成功' })
+        //         this.done = true  // 隱藏頁面操作按鈕
+        //         this.dialog = false
+        //     }, 1000)
+        // },
     },
     created() {
         this.setShowData(this.itemData)
