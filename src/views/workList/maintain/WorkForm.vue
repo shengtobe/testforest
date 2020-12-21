@@ -193,7 +193,7 @@
                 >
                     {{ item }}
                     <v-icon right
-                        @click="rmlicense(idx)"
+                        @click="rmlicenseMember(idx, true)"
                     >mdi-close-circle</v-icon>
                 </v-chip>
                 
@@ -208,7 +208,7 @@
                 >
                     {{ item }}
                     <v-icon right
-                        @click="rmCommon(idx)"
+                        @click="rmlicenseMember(idx, false)"
                     >mdi-close-circle</v-icon>
                 </v-chip>
             </v-col>
@@ -314,11 +314,12 @@
                         :loading="isLoading"
                         dark
                         color="error"
-                        class="mr-4"
+                        class="ma-2"
                         @click="dialog = true"
                     >退回</v-btn>
 
                     <v-btn
+                         class="ma-2"
                         :loading="isLoading"
                         color="success"
                         @click="save"
@@ -508,6 +509,7 @@ export default {
             if (bool && !this.ipt.licensedArr.includes(name)) {
                 // 有證照且未被加入
                 this.ipt.licensedArr.push(name)
+                this.ipt.licensedMembers.push({ PeopleId: name })  // 後端上傳用(證照功能未完成，先用name做demo資料)
             } else if (!bool && !this.ipt.commonMemArr.includes(name)) {
                 // 無證照且未被加入
                 this.ipt.commonMemArr.push(this.ipt.commonNowIpt.name)
@@ -530,7 +532,7 @@ export default {
                         WorkSafety: (this.ipt.safeDanger)? 'T' : 'F',  // 安全危害作業
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         Memo: this.ipt.note,  // 備註
-                        PeopleLicense: this.ipt.licensedMembers.map(item => ({ PeopleId: item })),  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
+                        PeopleLicense: this.ipt.licensedMembers,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
                         PeopleNoLicense: this.ipt.commonMembers,  // 林鐵人員統計(無證照)
                         OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -555,19 +557,24 @@ export default {
             setTimeout(() => {
                 // 退回完後，轉頁到搜尋頁
                 this.chMsgbar({ success: true, msg: '退回成功' })
-                this.$router.push({ path: '/worklist/maintain' })
+                this.done = true  // 隱藏頁面操作按鈕
+                this.dialog = false
             }, 1000)
         },
-        // 刪除林鐵需證照人員
-        rmlicense(idx) {
-            this.ipt.licensedArr.splice(idx, 1)
+        // 刪除林鐵需證照人員、作業人員
+        // 參數說明：第二參數為布林值，代表是否為需證照人員
+        rmlicenseMember(idx, bool) {
+            if (bool) {
+                // 需證照人員
+                this.ipt.licensedArr.splice(idx, 1)
+                this.ipt.licensedMembers.splice(idx, 1)  // 後端上傳用
+            } else {
+                // 作業人員
+                this.ipt.commonMemArr.splice(idx, 1)  // 顯示用
+                this.ipt.commonMembers.splice(idx, 1)  // 後端上傳用
+            }
+            
         },
-        // 刪除林鐵作業人員
-        rmCommon(idx) {
-            this.ipt.commonMemArr.splice(idx, 1)  // 顯示用
-            this.ipt.commonMembers.splice(idx, 1)  // 後端上傳用
-        },
-        // 增加外包廠商
         addVendor() {
             if (!this.ipt.vendors.includes(this.vendorForm)) {
                 this.ipt.vendors.push(this.vendorForm)
