@@ -4,7 +4,7 @@
     <ListShow :itemData="itemData" v-if="status == '1'" />
 
     <!-- 已派工待維修 -->
-
+    <WorkShow :itemData="itemData" v-if="status == '2'" />
 
     <!-- 已維修待驗收 -->
 
@@ -21,13 +21,17 @@ import { mapActions } from 'vuex'
 import { fetchWorkOrderOne } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import ListShow from '@/views/workList/maintain/ListShow.vue'
+import WorkShow from '@/views/workList/maintain/WorkShow.vue'
 
 export default {
     data: () => ({
         itemData: {},  // 工單資料
         status: '',  // 狀態
     }),
-    components: { ListShow },
+    components: {
+        ListShow,
+        WorkShow,
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -42,10 +46,12 @@ export default {
         fetchData() {
             this.chLoadingShow()
             let id = this.$route.params.id  // 路由參數
+            let obj = JSON.parse(sessionStorage.getItem('reloadStatus'))
 
             fetchWorkOrderOne({
                 WorkOrderID: id,  // 工單編號
-                ClientReqTime: getNowFullTime()  // client 端請求時間
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                Status: obj.status  // 處理階段
             }).then(res => {
                 // 若已刪除則轉頁404
                 if (res.data.DelStatus == 'T') {

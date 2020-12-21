@@ -482,11 +482,13 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
 export default {
+    props: ['itemData'],
     data: () => ({
         routeId: '',  // 路由id
         valid: true,  // 表單是否驗證欄位
@@ -594,64 +596,20 @@ export default {
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 向後端取資料
-        fetchData() {
-            this.chLoadingShow()
-            this.routeId = this.$route.params.id  // 路由參數
-
-            // 範例效果
-            setTimeout(() => {
-                // 向後端請求資料
-                let obj = {
-                    workNumber: '202004290001',  // 工單編號
-                    eqNumber1: 'TQG',
-                    eqNumber2: 'A35',
-                    eqNumber3: 'EA0',
-                    eqNumber4: '013',
-                    fixUnit: '車輛組',  // 立案單位
-                    creater: '陳小華',  // 立案人
-                    dispatcher: '黃小美',  // 派工人
-                    agent: '王小明',  // 代理人
-                    fixTime: '201903110001',  // 報修時間
-                    workDate: '2020-03-15',  // 維修日期
-                    hour: '14:00:00',  // 維修時間(小時)
-                    workLocation: '115k-120k',  // 工作地點
-                    memberCount: 12,  // 實際人數
-                    acceptanceTime: '2020-03-22',  // 預計驗收日期
-                    licensedMember: ['陳高文'],  // 需證照人員
-                    commonMember: ['張仁宣'],  // 無證照人員
-                    vendors: [  // 外包廠商
-                        { name: 'XX 電子', count: 2 },
-                        { name: '○○ 鋼鐵', count: 1 },
-                        { name: 'XXX 工廠', count: 5 },
-                    ],
-                    enterControl: false,  // 進場管制申請
-                    specialDanger: false,  // 特殊危害作業
-                    safeDanger: false,  // 安全危害作業
-                    malfunctionDes: '工具機損壞',  // 故障描述
-                    fixType: '1',  // 維修類型
-                    note: '',  // 備註
-                    status: '已派工待維修',  // 狀態
-                }
-
-                this.setShowData(obj)  // 初始化資料
-                this.chLoadingShow()
-            }, 1000)
-        },
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.workNumber  // 工單編號
-            this.malfunctionDes = obj.malfunctionDes.replace(/\n/g, '<br>')  // 故障描述
-            this.note = obj.note.replace(/\n/g, '<br>')  // 備註
+            this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
+            this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
 
             // 設定上面的欄位資料
-            this.topItems.fixTime.text = obj.fixTime  // 報修時間
-            this.topItems.eqCodes.text = `${obj.eqNumber1}-${obj.eqNumber2}-${obj.eqNumber3}-${obj.eqNumber4}`  // 設備標示編號
-            this.topItems.status.text = obj.status  // 處理階段
-            this.topItems.fixUnit.text = obj.fixUnit  // 立案單位
-            this.topItems.creater.text = obj.creater  // 立案人
-            this.topItems.fixUnit.text = obj.fixUnit  // 維修單位
-            this.topItems.dispatcher.text = obj.dispatcher  // 派工人
+            this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
+            this.topItems.eqCodes.text = `${obj.MaintainCode_System}-${obj.MaintainCode_Loc}${obj.MaintainCode_Loc2}-${obj.MaintainCode_Eqp}${obj.MaintainCode_Eqp2}-${obj.MaintainCode_Seq}`  // 設備標示編號
+            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
+            this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
+            this.topItems.creater.text = obj.Creator  // 立案人
+            this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
+            this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
             this.topItems.agent.text = obj.agent  // 代理人
             this.topItems.fixType.text = (obj.fixType == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')  // 維修類型
             this.topItems.workDate.text = `${obj.workDate} ${obj.hour}`  // 維修日期
@@ -743,7 +701,7 @@ export default {
         },
     },
     created() {
-        this.fetchData()
+        this.setShowData(this.itemData)
     }
 }
 </script>
