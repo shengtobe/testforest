@@ -46,12 +46,10 @@ export default {
         fetchData() {
             this.chLoadingShow()
             let id = this.$route.params.id  // 路由參數
-            let obj = JSON.parse(sessionStorage.getItem('reloadStatus'))
 
             fetchWorkOrderOne({
                 WorkOrderID: id,  // 工單編號
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
-                Status: obj.status  // 處理階段
             }).then(res => {
                 // 若已刪除則轉頁404
                 if (res.data.DelStatus == 'T') {
