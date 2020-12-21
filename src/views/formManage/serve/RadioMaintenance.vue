@@ -280,6 +280,8 @@ export default {
   data: () => ({
     title: "手攜無線電機檢查紀錄表",
     newText: "紀錄表",
+    isLoading: false,
+    disabled: false,
     MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)

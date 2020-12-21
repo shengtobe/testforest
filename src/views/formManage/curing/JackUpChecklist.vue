@@ -229,6 +229,8 @@ export default {
     return {
       title: "頂升機定期檢查表(三個月)",
       newText: "檢查表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -300,7 +302,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "1", note: "" },

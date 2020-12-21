@@ -375,6 +375,8 @@ export default {
     return {
       title: "保安裝置檢查紀錄表-沼平、祝山車站",
       newText: "紀錄表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

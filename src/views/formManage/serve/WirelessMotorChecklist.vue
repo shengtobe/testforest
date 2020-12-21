@@ -374,6 +374,7 @@ export default {
       title: "車裝台、基地台無線電機檢查紀錄表",
       newText: "紀錄表",
       panel: [0, 1, 2],
+      isLoading: false,
       disabled: false,
       readonly: false,
       a: "",

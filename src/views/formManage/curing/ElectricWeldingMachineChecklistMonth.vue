@@ -236,6 +236,7 @@ export default {
       title:"電焊機定期檢查表(月)",
     newText:"檢查表",
       panel: [0, 1, 2, 3],
+      isLoading: false,
       disabled: false,
       readonly: false,
       a: "",
@@ -309,7 +310,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },

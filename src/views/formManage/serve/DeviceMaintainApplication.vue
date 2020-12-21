@@ -410,6 +410,8 @@ export default {
     return {
       title: "保安裝置保修工作申請書",
       newText: "申請書",
+      isLoading: false,
+      disabled: false,
       QueryDayStart: "",
       QueryDayEnd: "",
       QueryData: {

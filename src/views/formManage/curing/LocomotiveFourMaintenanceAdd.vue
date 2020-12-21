@@ -105,10 +105,11 @@ export default {
   data: () => ({
     title: "柴油液力機車四級檢修記錄表",
     newText: "記錄表",
+    isLoading: false,
+    disabled: false,
     menu: false, // 時間選單是否顯示
     ipt: {
       department: "",
-      name: JSON.parse(localStorage.getItem("user")).name,
       date: new Date().toISOString().substr(0, 10),
       items: [
         { status: "1", note: "" },

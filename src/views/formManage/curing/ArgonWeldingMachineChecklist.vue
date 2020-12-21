@@ -363,6 +363,8 @@ export default {
     return {
       title: "氬焊機每日作業前檢點表(作業前)",
       newText: "檢點表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -434,7 +436,6 @@ export default {
       ],
       ipt: {
         // department: "",
-        // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
         items: [
           { status1: "0", status2: "0", status3: "0", status: "0", note: "" },

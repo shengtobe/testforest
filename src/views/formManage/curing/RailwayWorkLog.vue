@@ -119,6 +119,8 @@ export default {
     return {
       title: "鐵路維護科工作日誌",
       newText: "日誌",
+      isLoading: false,
+      disabled: false,
       // 自定義變數
       CheckdayOn: "",
       QueryCheckdayOn: "",

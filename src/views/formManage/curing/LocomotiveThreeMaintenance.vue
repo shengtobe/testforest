@@ -123,6 +123,8 @@ export default {
   data: () => ({
     title: "柴油液力機車三級檢修記錄表",
     newText: "記錄表",
+    isLoading: false,
+    disabled: false,
     aas: "",
     bbs: "",
     ccs: "",

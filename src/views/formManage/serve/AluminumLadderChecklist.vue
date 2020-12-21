@@ -235,8 +235,9 @@ export default {
     return {
       title: "鋁梯定期檢查表(半年)",
       newText: "檢查表",
-      panel: [0, 1, 2, 3],
+      isLoading: false,
       disabled: false,
+      panel: [0, 1, 2, 3],
       readonly: false,
       a: "",
       ass: "",

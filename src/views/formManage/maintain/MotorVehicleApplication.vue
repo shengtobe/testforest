@@ -368,6 +368,8 @@ export default {
     return {
       title: "機動道班台車使用申請書",
       newText: "申請書",
+      isLoading: false,
+      disabled: false,
       QueryDayStart: "",
       QueryDayEnd: "",
       QueryData: {

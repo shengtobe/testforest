@@ -287,6 +287,8 @@ export default {
   data: () => ({
     title:"柴油引擎保養",
     newText:"保養資料",
+    isLoading: false,
+    disabled: false,
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10) // 通報日期(迄)

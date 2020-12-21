@@ -514,6 +514,8 @@ export default {
     return {
       title: "_____柴油液力機車行車紀錄表",
       newText: "紀錄表",
+      isLoading: false,
+      disabled: false,
       QueryStartDay: "",
       QueryEndDay: "",
       QueryData: {

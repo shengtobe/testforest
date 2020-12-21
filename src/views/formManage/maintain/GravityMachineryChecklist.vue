@@ -233,6 +233,8 @@ export default {
     return {
       title: "重力機械使用前檢查表",
       newText: "檢查表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

@@ -360,6 +360,8 @@ export default {
     return {
       title: "車裝台/基地台無線電機檢查紀錄表",
       newText: "紀錄表",
+      isLoading: false,
+      disabled: false,
       MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
       a: "",
       ass: "",

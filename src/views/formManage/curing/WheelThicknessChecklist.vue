@@ -313,8 +313,9 @@ export default {
     return {
       title: "車輪輪緣高度、厚度檢查紀錄表",
       newText: "紀錄表",
-      panel: [0, 1, 2],
+      isLoading: false,
       disabled: false,
+      panel: [0, 1, 2],
       readonly: false,
       a: "",
       ass: "",
@@ -396,7 +397,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "1", note: "" },

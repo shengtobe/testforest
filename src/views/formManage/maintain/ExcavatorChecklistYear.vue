@@ -236,6 +236,8 @@ export default {
     return {
       title: "挖掘機定期檢查表(年)",
       newText: "檢查表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

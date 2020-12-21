@@ -284,6 +284,8 @@ export default {
     return {
       title: "DL50號機車行駛公里及發電機工時統計表",
       newText: "統計表",
+      isLoading: false,
+      disabled: false,
       panel: [0, 1, 2],
       disabled: false,
       readonly: false,
@@ -360,7 +362,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "1", note: "" },

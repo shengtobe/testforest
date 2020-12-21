@@ -235,6 +235,8 @@ export default {
     return {
       title: "一般倉儲安全定期檢查表(三個月)",
       newText: "檢查表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

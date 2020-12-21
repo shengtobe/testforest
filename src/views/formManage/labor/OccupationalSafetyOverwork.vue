@@ -319,6 +319,8 @@ export default {
     return {
       title:"職業安全衛生過勞量表",
       newText:"量表",
+      isLoading: false,
+      disabled: false,
       // ss: 0,
       a: "",
       ass: "",

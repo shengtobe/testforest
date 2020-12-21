@@ -235,6 +235,8 @@ export default {
     return {
       title:"心理健康量表",
       newText:"量表",
+      isLoading: false,
+      disabled: false,
       ss: "",
       a: "",
       ass: "",

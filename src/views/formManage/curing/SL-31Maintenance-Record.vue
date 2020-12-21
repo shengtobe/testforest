@@ -190,6 +190,8 @@ export default {
   data: () => ({
     title: "SL__/DL__進廠維修紀錄",
     newText: "維修紀錄",
+    isLoading: false,
+    disabled: false,
     a: "",
     z: "",
     q: "",

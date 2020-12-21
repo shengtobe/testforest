@@ -236,6 +236,8 @@ export default {
     return {
       title: "一般車輛每日作業前檢點表(作業前)",
       newText: "檢點表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

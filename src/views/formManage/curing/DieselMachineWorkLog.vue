@@ -180,6 +180,8 @@ export default {
   data: () => ({
     title:"柴油機車使用前後工作日誌",
     newText:"日誌",
+    isLoading: false,
+    disabled: false,
     a: "",
     z: "",
     q: "",

@@ -221,6 +221,8 @@ export default {
   data: () => ({
     title: "機車韌缸漏氣量檢測紀錄表",
     newText: "紀錄表",
+    isLoading: false,
+    disabled: false,
     aas: "",
     bbs: "",
     ccs: "",

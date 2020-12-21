@@ -223,6 +223,8 @@ export default {
     return {
       title: "竹崎監工區大型物料存放位置表",
       newText: "表單",
+      isLoading: false,
+      disabled: false,
       panel: [0, 1, 2],
       disabled: false,
       readonly: false,

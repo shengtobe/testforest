@@ -305,9 +305,10 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
-      title: "員工工作安全觀察表(每月2 次)",
-      newText: "觀察表",
-      isLoading: false,
+    title: "員工工作安全觀察表(每月2 次)",
+    newText: "觀察表",
+    isLoading: false,
+    disabled: false,
     aas: "",
     bbs: "",
     ccs: "",

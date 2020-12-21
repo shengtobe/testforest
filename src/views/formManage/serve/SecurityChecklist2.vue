@@ -155,7 +155,7 @@
                   <v-text-field solo/>
                 </v-col>
               </v-row>
-              <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+              <v-expansion-panels :disabled="disabled" multiple>
                 <v-expansion-panel>
                   <v-expansion-panel-header color="teal" class="white--text">轉轍器</v-expansion-panel-header>
                   <v-expansion-panel-content>
@@ -394,6 +394,8 @@ export default {
     return {
       title: "保安裝置檢查紀錄表-竹崎車站",
       newText: "紀錄表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -485,6 +487,27 @@ export default {
           { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
         ],
       },
+      defaultIpt: {  // 預設的欄位值
+          flowId: '',
+          checkDay: '',
+          departCode: '',
+          departName: '',
+          id: '',
+          name: '',
+          checkManID: '',
+          checkMan: '',
+          switchLock: '0',
+          rust: '0',
+          bearing: '0',
+          switchClean: '0',
+          memo_1: '0',
+          sig_Chiayi: '0',
+          memo_2: '0',
+          sig_Alishan: '0',
+          memo_3: '0',
+          updateTime: '0'
+        },
+        
       items1: [
         //竹崎車站
         { question: "1號" },
@@ -525,7 +548,75 @@ export default {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      fetchOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: 'RP002',  // DB table
+        KeyItem: [  // 屬性名
+          'FlowId',  // 流水號
+          'CheckDay',  // 保養日期
+          'DepartCode',  // 保養人部門代碼
+          'DepartName',  // 保養人部門名稱
+          'ID',  // 保養人事編號
+          'Name',  // 保養人姓名
+          'CheckManID',  // 審核人事編號
+          'CheckMan',  // 審核人姓名
+          'SwitchLock',  // 檢查狀態(轉轍器是否加鎖)
+          'Rust',  // 檢查狀態(清除滑板生鏽或積油垢)
+          'Bearing',  // 檢查狀態(各部軸承、聯動桿、油孔注油)
+          'SwitchClean',  // 檢查狀態(轉轍器四周環境清潔)
+          'Memo_1',  // 備註
+          'Sig_Chiayi',  // 檢查狀態(嘉義方向進、出站號誌機是否正常)
+          'Memo_2',  // 備註
+          'Sig_Alishan',  // 檢查狀態(阿里山方向進、出站號誌機是否正常)
+          'Memo_3',  // 備註
+          'UpdateTime'  // 此筆記錄最後變更時間
+                ],
+        KeyValue: [  // 屬性值
+          this.ipt.flowId,
+          this.ipt.checkDay,
+          this.ipt.departCode,
+          this.ipt.departName,
+          this.ipt.id,
+          this.ipt.name,
+          this.ipt.checkManID,
+          this.ipt.checkMan,
+          this.ipt.switchLock,
+          this.ipt.rust,
+          this.ipt.bearing,
+          this.ipt.switchClean,
+          this.ipt.memo_1,
+          this.ipt.sig_Chiayi,
+          this.ipt.memo_2,
+          this.ipt.sig_Alishan,
+          this.ipt.memo_3,
+          this.ipt.updateTime
+        ],
+        QyName:[
+          'FlowId',  // 流水號
+          'CheckDay',  // 保養日期
+          'DepartCode',  // 保養人部門代碼
+          'DepartName',  // 保養人部門名稱
+          'ID',  // 保養人事編號
+          'Name',  // 保養人姓名
+          'CheckManID',  // 審核人事編號
+          'CheckMan',  // 審核人姓名
+          'SwitchLock',  // 檢查狀態(轉轍器是否加鎖)
+          'Rust',  // 檢查狀態(清除滑板生鏽或積油垢)
+          'Bearing',  // 檢查狀態(各部軸承、聯動桿、油孔注油)
+          'SwitchClean',  // 檢查狀態(轉轍器四周環境清潔)
+          'Memo_1',  // 備註
+          'Sig_Chiayi',  // 檢查狀態(嘉義方向進、出站號誌機是否正常)
+          'Memo_2',  // 備註
+          'Sig_Alishan',  // 檢查狀態(阿里山方向進、出站號誌機是否正常)
+          'Memo_3',  // 備註
+          'UpdateTime'  // 此筆記錄最後變更時間
+        ],
+      })
+    },
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

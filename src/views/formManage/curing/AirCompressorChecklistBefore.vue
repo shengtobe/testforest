@@ -228,6 +228,8 @@ export default {
     return {
       title:"空氣壓縮機每日作業前檢點表(作業前)",
       newText:"檢點表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -299,7 +301,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },

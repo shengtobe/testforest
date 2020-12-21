@@ -116,6 +116,8 @@ export default {
     return {
       title:"職場不法侵害預防之危害辨識及風險評估表",
       newText: "評估表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

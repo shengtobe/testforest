@@ -154,7 +154,7 @@
                   <v-text-field solo/>
                 </v-col>
               </v-row>
-              <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+              <v-expansion-panels :disabled="disabled" multiple>
                 <v-expansion-panel>
                   <v-expansion-panel-header color="teal" class="white--text">轉轍器</v-expansion-panel-header>
                   <v-expansion-panel-content>
@@ -449,6 +449,8 @@ export default {
     return {
       title: "保安裝置檢查紀錄表-北門車站",
       newText: "紀錄表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -593,6 +595,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

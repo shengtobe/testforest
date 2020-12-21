@@ -505,9 +505,10 @@ export default {
     return {
       title: "車長報告",
       newText: "報告",
+      isLoading: false,
+      disabled: false,
       indexN:0,
       sumN:0,
-      isLoading:false,
       QueryDayStart: "",
       QueryDayEnd: "",
       QueryData: {

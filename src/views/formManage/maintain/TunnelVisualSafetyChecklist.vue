@@ -121,9 +121,11 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      // 自定義變數
       title: "隧道目視安全檢查表",
       newText: "檢查表",
-      // 自定義變數
+      isLoading: false,
+      disabled: false,
       n01: "0",
       CheckdayOn: "",
       QueryCheckdayOn: "",

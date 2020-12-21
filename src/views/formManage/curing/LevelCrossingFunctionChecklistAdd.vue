@@ -4854,6 +4854,8 @@ export default {
   data() {
     return {
       showTF: false,
+      isLoading: false,
+      disabled: false,
       valShow: 0,
       title: "",
       newText: "平交道功能檢查紀錄表",

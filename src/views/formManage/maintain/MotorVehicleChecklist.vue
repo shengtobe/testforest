@@ -236,6 +236,8 @@ export default {
     return {
       title: "機動台車輛每日作業前自動檢點表",
       newText: "檢點表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",

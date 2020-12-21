@@ -244,6 +244,8 @@ export default {
     return {
       title:"過負荷作業防護計畫檢核表（群體部分）",
       newText:"檢核表",
+      isLoading: false,
+    disabled: false,
       a: "",
       ass: "",
       z: "",

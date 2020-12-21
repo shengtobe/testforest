@@ -683,6 +683,8 @@ export default {
     return {
       title:"客車一級檢修記錄表",
       newText:"記錄表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -754,7 +756,6 @@ export default {
       ],
       ipt: {
         // department: "",
-        // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },

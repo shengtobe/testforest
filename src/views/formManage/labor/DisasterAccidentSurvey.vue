@@ -117,9 +117,11 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      // 自定義變數
       title: "災害事故調查表(本處員工)",
       newText: "調查表",
-      // 自定義變數
+      isLoading: false,
+      disabled: false,
       CheckdayOn: "",
       QueryCheckdayOn: "",
       CheckdayOff: "",
