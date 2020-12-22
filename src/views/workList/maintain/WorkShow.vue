@@ -531,7 +531,7 @@ export default {
             dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
             agent: { icon: 'mdi-account', title: '代理人', text: '' },
             fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            workDate: { icon: 'mdi-calendar-text', title: '維修日期', text: '' },
+            workDate: { icon: 'mdi-calendar-text', title: '維修時間', text: '' },
             acceptanceTime: { icon: 'mdi-calendar-text', title: '預計驗收日期', text: '' },
             enterControl: { icon: 'mdi-alert-outline', title: '進場管制申請', text: '' },
             specialDanger: { icon: 'mdi-alert-outline', title: '特殊危害作業', text: '' },
@@ -581,7 +581,7 @@ export default {
         // 合併外包廠商字串
         vendorsList() {
             let arr = this.vendors.map(item => {
-                return `${ item.name } (${ item.count }人)`
+                return `${ item.VendorName } (${ item.PeopleCount }人)`
             })
             return arr.join('、')
         },
@@ -604,25 +604,25 @@ export default {
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
-            this.topItems.eqCodes.text = `${obj.MaintainCode_System}-${obj.MaintainCode_Loc}${obj.MaintainCode_Loc2}-${obj.MaintainCode_Eqp}${obj.MaintainCode_Eqp2}-${obj.MaintainCode_Seq}`  // 設備標示編號
+            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
             this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
             this.topItems.creater.text = obj.Creator  // 立案人
             this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
             this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.agent.text = obj.agent  // 代理人
-            this.topItems.fixType.text = (obj.fixType == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')  // 維修類型
-            this.topItems.workDate.text = `${obj.workDate} ${obj.hour}`  // 維修日期
-            this.topItems.acceptanceTime.text = obj.acceptanceTime  // 預計驗收日期
-            this.topItems.enterControl.text = (obj.enterControl)? '是' : '否'  // 進場管制申請
-            this.topItems.specialDanger.text = (obj.specialDanger)? '是' : '否'  // 特殊危害作業
-            this.topItems.safeDanger.text = (obj.safeDanger)? '是' : '否'  // 安全危害作業
-            this.topItems.workLocation.text = obj.workLocation  // 工作地點
-            this.topItems.memberCount.text = obj.memberCount  // 實際人數
+            this.topItems.agent.text = obj.AgentName  // 代理人
+            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')  // 維修類型
+            this.topItems.workDate.text = `${obj.DispatchDDay} ${obj.DispatchDHour}時`  // 維修時間
+            this.topItems.acceptanceTime.text = obj.ExpectedDT  // 預計驗收日期
+            this.topItems.enterControl.text = (obj.WorkApplication == 'T')? '是' : '否'  // 進場管制申請
+            this.topItems.specialDanger.text = (obj.WorkSp == 'T')? '是' : '否'  // 特殊危害作業
+            this.topItems.safeDanger.text = (obj.WorkSafety == 'T')? '是' : '否'  // 安全危害作業
+            this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
+            this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
 
-            this.licensedMember = obj.licensedMember.join('、')  // 需證照人員
-            this.commonMember = obj.commonMember.join('、')  // 作業人員
-            this.vendors = obj.vendors  // 外包廠商
+            this.licensedMember = obj.PeopleLicense.map(ele => ele.PeopleId).join('、')  // 需證照人員(demo暫時用id)
+            this.commonMember = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
+            this.vendors = obj.OutSourceCount  // 外包廠商
 
             // 工時表單初始化
             this.jobHour.items = this.jobMemberOpts.map(item => ({

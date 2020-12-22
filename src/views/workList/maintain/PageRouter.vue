@@ -7,12 +7,10 @@
     <WorkShow :itemData="itemData" v-if="status == '2'" />
 
     <!-- 已維修待驗收 -->
+    <AcceptingShow :itemData="itemData" v-if="status == '3'" />
 
-
-    <!-- 已驗收待結案 -->
-
-
-    <!-- 已結案 -->
+    <!-- 已驗收待結案、已結案 -->
+    <ClosedComplated :itemData="itemData" v-if="status == '4' || status == '5'" />
 </div>
 </template>
 
@@ -22,6 +20,8 @@ import { fetchWorkOrderOne } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import ListShow from '@/views/workList/maintain/ListShow.vue'
 import WorkShow from '@/views/workList/maintain/WorkShow.vue'
+import AcceptingShow from '@/views/workList/maintain/AcceptingShow.vue'
+import ClosedComplated from '@/views/workList/maintain/ClosedComplated.vue'
 
 export default {
     data: () => ({
@@ -31,6 +31,8 @@ export default {
     components: {
         ListShow,
         WorkShow,
+        AcceptingShow,
+        ClosedComplated,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料

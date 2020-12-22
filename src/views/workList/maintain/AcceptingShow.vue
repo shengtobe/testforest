@@ -721,6 +721,7 @@ import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
 export default {
+    props: ['itemData'],
     data: () => ({
         routeId: '',  // 路由id
         totalHourValid: true,  // 總工時是否驗證欄位
@@ -794,7 +795,7 @@ export default {
             dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
             agent: { icon: 'mdi-account', title: '代理人', text: '' },
             fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            workDate: { icon: 'mdi-calendar-text', title: '維修日期', text: '' },
+            workDate: { icon: 'mdi-calendar-text', title: '維修時間', text: '' },
             acceptanceTime: { icon: 'mdi-calendar-text', title: '預計驗收日期', text: '' },
             enterControl: { icon: 'mdi-alert-outline', title: '進場管制申請', text: '' },
             specialDanger: { icon: 'mdi-alert-outline', title: '特殊危害作業', text: '' },
@@ -911,7 +912,7 @@ export default {
                     dispatcher: '黃小美',  // 派工人
                     agent: '王小明',  // 代理人
                     fixTime: '201903110001',  // 報修時間
-                    workDate: '2020-03-15',  // 維修日期
+                    workDate: '2020-03-15',  // 維修時間
                     hour: '14:00:00',  // 維修時間(小時)
                     workLocation: '115k-120k',  // 工作地點
                     memberCount: 12,  // 實際人數
@@ -959,8 +960,8 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.workNumber  // 工單編號
-            this.malfunctionDes = obj.malfunctionDes.replace(/\n/g, '<br>')  // 故障描述
-            this.note = obj.note.replace(/\n/g, '<br>')  // 備註
+            this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
+            this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
             this.fixSituation = obj.fixSituation.replace(/\n/g, '<br>')  // 維修情況
 
             // 設定上面的欄位資料
@@ -973,7 +974,7 @@ export default {
             this.topItems.dispatcher.text = obj.dispatcher  // 派工人
             this.topItems.agent.text = obj.agent  // 代理人
             this.topItems.fixType.text = obj.fixType  // 維修類型
-            this.topItems.workDate.text = `${obj.workDate} ${obj.hour}`  // 維修日期
+            this.topItems.workDate.text = `${obj.workDate} ${obj.hour}`  // 維修時間
             this.topItems.acceptanceTime.text = obj.acceptanceTime  // 預計驗收日期
             this.topItems.enterControl.text = (obj.enterControl)? '是' : '否'  // 進場管制申請
             this.topItems.specialDanger.text = (obj.specialDanger)? '是' : '否'  // 特殊危害作業

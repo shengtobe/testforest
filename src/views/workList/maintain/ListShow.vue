@@ -162,7 +162,7 @@ export default {
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
-            this.topItems.eqCodes.text = `${obj.MaintainCode_System}-${obj.MaintainCode_Loc}${obj.MaintainCode_Loc2}-${obj.MaintainCode_Eqp}${obj.MaintainCode_Eqp2}-${obj.MaintainCode_Seq}`  // 設備標示編號
+            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
             this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
             this.topItems.creater.text = obj.Creator  // 立案人

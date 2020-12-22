@@ -88,31 +88,31 @@ export const WorkListRouter = [
         path: '/worklist/maintain/:id/newWork',
         component: () => import('@/views/workList/maintain/WorkForm.vue')
     },
-    {
-        linkText: '已派工待維修',  // 派工內容
-        path: '/worklist/maintain/:id/workShow',
-        component: () => import('@/views/workList/maintain/WorkShow.vue')
-    },
+    // {
+    //     linkText: '已派工待維修',  // 派工內容
+    //     path: '/worklist/maintain/:id/workShow',
+    //     component: () => import('@/views/workList/maintain/WorkShow.vue')
+    // },
     {
         linkText: '派工單編輯',  // 編輯派工單
         path: '/worklist/maintain/:id/editWork',
         component: () => import('@/views/workList/maintain/WorkForm.vue')
     },
-    {
-        linkText: '已維修待驗收',  // 待驗收內容
-        path: '/worklist/maintain/:id/acceptingShow',
-        component: () => import('@/views/workList/maintain/AcceptingShow.vue')
-    },
-    {
-        linkText: '已驗收待結案',  // 待結案內容
-        path: '/worklist/maintain/:id/closedShow',
-        component: () => import('@/views/workList/maintain/ClosedComplated.vue'),
-        props: { closeStatus: '已驗收待結案' }
-    },
-    {
-        linkText: '已結案',  // 已結案
-        path: '/worklist/maintain/:id/complated',
-        component: () => import('@/views/workList/maintain/ClosedComplated.vue'),
-        props: { closeStatus: '已結案' }
-    },
+    // {
+    //     linkText: '已維修待驗收',  // 待驗收內容
+    //     path: '/worklist/maintain/:id/acceptingShow',
+    //     component: () => import('@/views/workList/maintain/AcceptingShow.vue')
+    // },
+    // {
+    //     linkText: '已驗收待結案',  // 待結案內容
+    //     path: '/worklist/maintain/:id/closedShow',
+    //     component: () => import('@/views/workList/maintain/ClosedComplated.vue'),
+    //     props: { closeStatus: '已驗收待結案' }
+    // },
+    // {
+    //     linkText: '已結案',  // 已結案
+    //     path: '/worklist/maintain/:id/complated',
+    //     component: () => import('@/views/workList/maintain/ClosedComplated.vue'),
+    //     props: { closeStatus: '已結案' }
+    // },
 ]
