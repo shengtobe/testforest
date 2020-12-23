@@ -318,33 +318,19 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'MMIS_WorkerOrder',  // DB table
-                KeyItem: [  // 屬性名
-                    'CreatorID',  // 立案人id
-                    'DispatchID',  // 派工人id
-                    'CreateDTime_Start',  // 工單建立日期(起)
-                    'CreateDTime_End',  // 工單建立日期(迄)
-                    'WorkOrderID',  // 工單編號
-                    'Status',  // 處理階段
-                    'Shortage',  // 是否缺料
-                    'Type',  // 維修類型
-                    'MaintainCode_System',  // 設備標示編號1
-                    'MaintainCode_Loc',  // 設備標示編號2
-                    'MaintainCode_Eqp',  // 設備標示編號3
-                    'MaintainCode_Seq',  // 設備標示編號4
-                ],
-                KeyValue: [  // 屬性值
-                    this.ipt.createrId,
-                    this.ipt.dispatcherId,
-                    this.ipt.createDateStart,
-                    this.ipt.createDateEnd,
-                    this.ipt.workNumber,
-                    this.ipt.workState,
-                    this.ipt.shortage,
-                    this.ipt.fixType,
-                    this.ipt.eqNumber1,
-                    this.ipt.eqNumber2,
-                    this.ipt.eqNumber3,
-                    this.ipt.eqNumber4,
+                KeyItem: [
+                    { tableColumn: 'CreatorID', columnValue: this.ipt.createrId },  // 立案人id
+                    { tableColumn: 'DispatchID', columnValue: this.ipt.dispatcherId },  // 派工人id
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.createDateStart },  // 工單建立日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.ipt.createDateEnd },  // 工單建立日期(迄)
+                    { tableColumn: 'WorkOrderID', columnValue: this.ipt.workNumber },  // 工單編號
+                    { tableColumn: 'Status', columnValue: this.ipt.workState },  // 處理階段
+                    { tableColumn: 'Shortage', columnValue: this.ipt.shortage },  // 是否缺料
+                    { tableColumn: 'Type', columnValue: this.ipt.fixType },  // 維修類型
+                    { tableColumn: 'MaintainCode_System', columnValue: this.ipt.eqNumber1 },  // 設備標示編號1
+                    { tableColumn: 'MaintainCode_Loc', columnValue: this.ipt.eqNumber2 },  // 設備標示編號2
+                    { tableColumn: 'MaintainCode_Eqp', columnValue: this.ipt.eqNumber3 },  // 設備標示編號3
+                    { tableColumn: 'MaintainCode_Seq', columnValue: this.ipt.eqNumber4 },  // 設備標示編號4
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'WorkOrderID',
