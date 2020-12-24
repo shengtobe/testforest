@@ -49,7 +49,7 @@
                     </span>
                 </v-col>
 
-                <v-col class="white pa-3">{{ licensedMember }}</v-col>
+                <v-col class="white pa-3">{{ licensedMembers }}</v-col>
             </v-row>
         </v-col>
 
@@ -63,7 +63,7 @@
                     </span>
                 </v-col>
 
-                <v-col class="white pa-3">{{ commonMember }}</v-col>
+                <v-col class="white pa-3">{{ commonMembers }}</v-col>
             </v-row>
         </v-col>
 
@@ -316,8 +316,8 @@
                                             <v-icon class="mr-1 mb-1">mdi-account</v-icon>姓名
                                         </h3>
                                         <v-select
-                                            v-model="jobForm.uid"
-                                            :items="jobMemberOpts"
+                                            v-model="jobForm.PeopleId"
+                                            :items="allLicenseMembers"
                                             solo
                                         ></v-select>
                                     </v-col>
@@ -328,7 +328,7 @@
                                             <span class="red--text">*</span>
                                         </h3>
                                         <v-text-field
-                                            v-model.trim="jobForm.location"
+                                            v-model.trim="jobForm.Location"
                                             solo
                                             :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                                         ></v-text-field>
@@ -339,7 +339,7 @@
                                             <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
                                         </h3>
                                         <v-select
-                                            v-model="jobForm.job"
+                                            v-model="jobForm.Job"
                                             :items="['鋼軌', '枕木']"
                                             solo
                                         ></v-select>
@@ -351,7 +351,7 @@
                                             <span class="red--text">*</span>
                                         </h3>
                                         <v-text-field
-                                            v-model.trim.number="jobForm.count"
+                                            v-model.trim.number="jobForm.Count"
                                             solo
                                             :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                                         ></v-text-field>
@@ -363,7 +363,7 @@
                                             <span class="red--text">*</span>
                                         </h3>
                                         <v-text-field
-                                            v-model.trim.number="jobForm.price"
+                                            v-model.trim.number="jobForm.Price"
                                             solo
                                             :rules="[v => /^\d+$/.test(v) || '請輸入整數']"
                                         ></v-text-field>
@@ -381,13 +381,8 @@
                 </v-dialog>
             </template>
 
-            <!-- 插入 id 欄位 -->
-            <template v-slot:item.uid="{ item }">
-                {{ getJobMemberName(item.uid) }}
-            </template>
-
             <!-- 插入 price 欄位 -->
-            <template v-slot:item.price="{ item }">
+            <template v-slot:item.Price="{ item }">
                 {{ new Intl.NumberFormat().format(item.price) }}
             </template>
 
@@ -422,7 +417,7 @@
                 :loading="isLoading"
                 color="primary"
                 :to="`/worklist/maintain/${routeId}/editWork`"
-            >編輯</v-btn>
+            >編輯派工單</v-btn>
 
             <v-btn class="ma-2"
                 :loading="isLoading"
@@ -495,8 +490,9 @@ export default {
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
         note: '',  // 備註
-        licensedMember: '',  // 需證照人員
-        commonMember: '',  // 作業人員
+        licensedMembers: [],  // 需證照人員
+        commonMembers: [],  // 作業人員
+        allLicenseMembers: [],  // 所有林鐵人員
         vendors: [],  // 外包廠商
         malfunctionDes: '',  // 故障描述
         dialog: false,  // dialog 是否顯示
@@ -545,28 +541,24 @@ export default {
             isEdit: false,  // 是否為工時編輯時
             titleName: '',  // dialog 標題人名
             headers: [
-                { text: '姓名', value: 'uid', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作項', value: 'job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '料件費用', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作項', value: 'Job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             ],
             items: [],
             editIdx: 0,  // 編輯中資料的索引值
         },
-        jobMemberOpts: [  // 工時統計時人名下拉選單
-            { text: '陳高文', value: 'k11839'},
-            { text: '張仁宣', value: 'k55830'},
-        ],
         jobForm: {}, // 工時表單
         defaultJobForm: {  // 工時預設表單
-            'uid': '',
-            'name': '',
-            'location': '',
-            'job': '',
-            'count': 1, 
-            'price': 0,
+            'PeopleId': '',
+            'PeopleName': '',
+            'Location': '',
+            'Job': '',
+            'Count': 1, 
+            'Price': 0,
         },
         jobFormIsEdit: false,  // 工時表單是否為編輯模式
     }),
@@ -620,18 +612,24 @@ export default {
             this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
             this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
 
-            this.licensedMember = obj.PeopleLicense.map(ele => ele.PeopleId).join('、')  // 需證照人員(demo暫時用id)
-            this.commonMember = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
+            this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
+            this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
             this.vendors = obj.OutSourceCount  // 外包廠商
 
+            let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
+            this.allLicenseMembers = arr.map(ele => ({  // 因為要當下拉選單，所以重新組合
+                text: ele.PeopleName,
+                value: ele.PeopleId,
+            }))
+            
             // 工時表單初始化
-            this.jobHour.items = this.jobMemberOpts.map(item => ({
-                'uid': item.value,
-                'name': item.text,
-                'location': obj.workLocation,
-                'job': '',
-                'count': 1, 
-                'price': 0,
+            this.jobHour.items = this.allLicenseMembers.map(item => ({
+                'PeopleId': item.value,
+                'PeopleName': item.text,
+                'Location': obj.WorkPlace,
+                'Job': '',
+                'Count': 1, 
+                'Price': 0,
             }))
         },
         // 退回
@@ -673,7 +671,7 @@ export default {
                 // 新增時
                 this.jobHour.isEdit = false
                 this.jobForm = { ...this.defaultJobForm }
-                this.jobForm.location = this.topItems.workLocation.text  // 工作地點
+                this.jobForm.Location = this.topItems.workLocation.text  // 工作地點
                 this.jobHour.titleName = '新增資料'
             } else {
                 // 編輯時
@@ -687,6 +685,8 @@ export default {
         // 儲存工作表單
         saveJob() {
              if (this.jobHour.isEdit == false) {
+                // 反查姓名
+                this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
                 // 新增時 (照林鐵人員要求，新增後不關閉視窗)
                 this.jobHour.items.push(this.jobForm)
             } else {
@@ -697,7 +697,7 @@ export default {
         },
         // 依 uid 查詢工時成員的名稱
         getJobMemberName(uid) {
-            return this.jobMemberOpts.find(item => item.value == uid).text
+            return this.allLicenseMembers.find(item => item.value == uid).text
         },
     },
     created() {
