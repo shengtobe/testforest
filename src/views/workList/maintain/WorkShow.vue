@@ -383,7 +383,7 @@
 
             <!-- 插入 price 欄位 -->
             <template v-slot:item.Price="{ item }">
-                {{ new Intl.NumberFormat().format(item.price) }}
+                {{ new Intl.NumberFormat().format(item.Count * item.Price) }}
             </template>
 
             <!-- 插入 action 欄位編輯 -->
@@ -409,33 +409,34 @@
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center">
             <v-btn dark class="ma-2"
-                :loading="isLoading"
-                to="/worklist/maintain"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn class="ma-2"
-                :loading="isLoading"
-                color="primary"
-                :to="`/worklist/maintain/${routeId}/editWork`"
-            >編輯派工單</v-btn>
+            <template v-if="!done">
+                <v-btn class="ma-2"
+                    :loading="isLoading"
+                    color="primary"
+                    :to="`/worklist/maintain/${workNumber}/editWork`"
+                >重新派工</v-btn>
 
-            <v-btn class="ma-2"
-                :loading="isLoading"
-                color="error"
-                @click="dialog = true"
-            >退回</v-btn>
+                <v-btn class="ma-2"
+                    :loading="isLoading"
+                    color="error"
+                    @click="dialog = true"
+                >退回</v-btn>
 
-            <v-btn dark class="ma-2"
-                :loading="isLoading"
-                color="success"
-                @click="save"
-            >送出</v-btn>
+                <v-btn dark class="ma-2"
+                    :loading="isLoading"
+                    color="success"
+                    @click="save"
+                >送出</v-btn>
+            </template>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
         <v-col cols="12" class="error--text">
             <h4>按鈕出現說明</h4>
-            1. 編輯、退回：派工人、代理人<br>
+            1. 重新派工、退回：派工人、代理人<br>
             2. 維修情況：派工人、代理人、林鐵維修人員
         </v-col>
     </v-row>
@@ -476,17 +477,18 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import { maintainOrder } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
     data: () => ({
-        routeId: '',  // 路由id
-        valid: true,  // 表單是否驗證欄位
+        done: false,  // 是否完成頁面操作
+        valid: false,  // 表單是否驗證欄位 (demo先取消掉)
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
         note: '',  // 備註
@@ -563,13 +565,10 @@ export default {
         jobFormIsEdit: false,  // 工時表單是否為編輯模式
     }),
     components: { TopBasicTable },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        }
-    },
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         // 合併外包廠商字串
         vendorsList() {
             let arr = this.vendors.map(item => {
@@ -579,7 +578,7 @@ export default {
         },
         // 工時統計的總金額
         totalMoney() {
-            let total = this.jobHour.items.reduce((a,b)=>a + b.price, 0)
+            let total = this.jobHour.items.reduce((a,b)=>a + b.Count * b.Price, 0)
             return new Intl.NumberFormat().format(total)
         }
     },
@@ -587,10 +586,11 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.workNumber = obj.workNumber  // 工單編號
+            this.workNumber = obj.WorkOrderID  // 工單編號
             this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
             this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
 
@@ -640,7 +640,8 @@ export default {
             setTimeout(() => {
                 // 退回完後，轉頁到搜尋頁
                 this.chMsgbar({ success: true, msg: '退回成功' })
-                this.$router.push({ path: '/worklist/maintain' })
+                this.done = true  // 隱藏頁面操作按鈕
+                this.isLoading = this.dialog = false
             }, 1000)
         },
         // 送出
@@ -649,16 +650,36 @@ export default {
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
                     this.chLoadingShow()
 
-                    // this.fixSituation
-                    
-                    // 範例效果
-                    setTimeout(() => {
-                        // 送出完後，轉頁到搜尋頁
-                        this.chMsgbar({ success: true, msg: '送出成功' })
-                        this.$router.push({ path: '/worklist/maintain' })
+                    maintainOrder({
+                        WorkOrderID: this.workNumber,  // 工單編號
+                        ToRepairDDay: this.ipt.arrivalFixDate,  // 到修日期(年月日)
+                        ToRepairDHour: this.ipt.arrivalFixHour,  // 到修日期(小時)
+                        ToRepairDTime: this.ipt.arrivalFixMin,  // 到修日期(分)
+                        StartWorkDDay: this.ipt.startFixDate,  // 動工日期(年月日)
+                        StartWorkDHour: this.ipt.startFixHour,  // 動工日期(小時)
+                        StartWorkDTime: this.ipt.startFixMin,  // 動工日期(分)
+                        FinishDDay: this.ipt.endFixDate,  // 完工日期(年月日)
+                        FinishDHour: this.ipt.endFixHour,  // 完工日期(小時)
+                        FinishDTime: this.ipt.endFixMin,  // 完工日期(分)
+                        MaintainStatus: this.ipt.fixSituation,  // 維修情況
+                        WorkTimeData: this.jobHour.items,  // 工時統計資料
+                        TotalSpent: this.totalMoney,  // 工時的總金額
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '送出成功' })
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
+                    }).finally(() => {
                         this.chLoadingShow()
-
-                    }, 1000)
+                        this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
+                    })
                 }
             } else {
                 if (this.ipt.fixSituation == '') this.errorSituation = 'red lighten-4'
@@ -678,7 +699,7 @@ export default {
                 this.jobHour.isEdit = true
                 this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
                 this.jobForm = { ...item }  // 現有值帶入表單
-                this.jobHour.titleName = `編輯資料 - ${item.name}`
+                this.jobHour.titleName = `編輯資料 - ${item.PeopleName}`
             }
             this.jobHour.dialogShow = true
         },
@@ -694,10 +715,6 @@ export default {
                 Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
                 this.jobHour.dialogShow = false
             }
-        },
-        // 依 uid 查詢工時成員的名稱
-        getJobMemberName(uid) {
-            return this.allLicenseMembers.find(item => item.value == uid).text
         },
     },
     created() {

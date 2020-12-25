@@ -607,8 +607,12 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
-                        this.chDialog({ show: true, msg: '編輯成功' })
-                        this.clearErrIpt()
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '編輯成功' })
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
                     }).catch(err => {
                         this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
                     }).finally(() => {
@@ -631,11 +635,16 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
-                        this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
-                        this.clearErrIpt()
-                        this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
+                        if (res.data.ErrorCode == 0) {
+                            this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
+                            this.clearErrIpt()
+                            this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
                     }).catch(err => {
-                        this.chDialog({ show: true, msg: '新增失敗，請重新操作' })
+                        this.chDialog({ show: true, msg: '伺服器發生問題，新增失敗' })
                     }).finally(() => {
                         this.chLoadingShow()
                         this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化新增表單

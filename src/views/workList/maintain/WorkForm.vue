@@ -477,7 +477,7 @@ export default {
         initDate() {
             this.chLoadingShow()
 
-            // 向後端請求資料
+            // 因為要檢查是否有權限編輯，向後端請求資料
             fetchWorkOrderOne({
                 WorkOrderID: this.$route.params.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
@@ -533,36 +533,38 @@ export default {
             }
         },
         save() {
-            if (this.$refs.form.validate()) {  // 表單驗證欄位
-                if (confirm('你確定要送出嗎?')) {
-                    this.chLoadingShow()
-                    
-                    dispatchOrder({
-                        WorkOrderID: this.ipt.workNumber,  // 工單編號
-                        ExpectedDT: this.ipt.acceptanceTime,  // 預計驗收日期
-                        AgentID: this.ipt.agent.id,  // 代理人id
-                        WorkPlace: this.ipt.workLocation,  // 工作地點
-                        RealWorkerCount: this.ipt.memberCount,  // 實際人數
-                        WorkApplication: (this.ipt.enterControl)? 'T' : 'F',  // 進場管制申請
-                        WorkSp: (this.ipt.specialDanger)? 'T' : 'F',  // 特殊危害作業
-                        WorkSafety: (this.ipt.safeDanger)? 'T' : 'F',  // 安全危害作業
-                        Malfunction: this.ipt.malfunctionDes,  // 故障描述
-                        Memo: this.ipt.note,  // 備註
-                        PeopleLicense: this.ipt.licensedMembers,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
-                        PeopleNoLicense: this.ipt.commonMembers,  // 林鐵人員統計(無證照)
-                        OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
-                        ClientReqTime: getNowFullTime(),  // client 端請求時間
-                        OperatorID: this.userData.UserId,  // 操作人id
-                    }).then(res => {
+            if (confirm('你確定要送出嗎?')) {
+                this.chLoadingShow()
+                
+                dispatchOrder({
+                    WorkOrderID: this.ipt.workNumber,  // 工單編號
+                    ExpectedDT: this.ipt.acceptanceTime,  // 預計驗收日期
+                    AgentID: this.ipt.agent.id,  // 代理人id
+                    WorkPlace: this.ipt.workLocation,  // 工作地點
+                    RealWorkerCount: this.ipt.memberCount,  // 實際人數
+                    WorkApplication: (this.ipt.enterControl)? 'T' : 'F',  // 進場管制申請
+                    WorkSp: (this.ipt.specialDanger)? 'T' : 'F',  // 特殊危害作業
+                    WorkSafety: (this.ipt.safeDanger)? 'T' : 'F',  // 安全危害作業
+                    Malfunction: this.ipt.malfunctionDes,  // 故障描述
+                    Memo: this.ipt.note,  // 備註
+                    PeopleLicense: this.ipt.licensedMembers,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
+                    PeopleNoLicense: this.ipt.commonMembers,  // 林鐵人員統計(無證照)
+                    OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '派工成功' })
-                    }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '伺服器發生問題，派工失敗' })
-                    }).finally(() => {
                         this.done = true  // 隱藏頁面操作按鈕
-                        this.chLoadingShow()
-                        this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
-                    })
-                }
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.ErrorCode, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，派工失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
             }
         },
         // 退回

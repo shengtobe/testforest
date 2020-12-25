@@ -91,3 +91,12 @@ export function dispatchOrder(data) { return axios(
         data,
     }
 )}
+
+// 維修
+export function maintainOrder(data) { return axios(
+    {
+        url: '/mmis/order/maintain',
+        method: 'post',
+        data,
+    }
+)}

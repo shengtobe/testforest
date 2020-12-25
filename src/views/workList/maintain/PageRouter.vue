@@ -53,12 +53,17 @@ export default {
                 WorkOrderID: id,  // 工單編號
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
-                // 若已刪除則轉頁404
-                if (res.data.DelStatus == 'T') {
-                    this.$router.push({ path: '/404' })
+                if (res.data.ErrorCode == 0) {
+                    // 若已刪除則轉頁404
+                    if (res.data.DelStatus == 'T') {
+                        this.$router.push({ path: '/404' })
+                    } else {
+                        this.itemData = { ...res.data }
+                        this.status = res.data.Status
+                    }
                 } else {
-                    this.itemData = { ...res.data }
-                    this.status = res.data.Status
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
                 console.log(err)

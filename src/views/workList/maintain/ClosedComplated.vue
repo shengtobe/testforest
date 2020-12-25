@@ -49,7 +49,7 @@
                     </span>
                 </v-col>
 
-                <v-col class="white pa-3">{{ licensedMember }}</v-col>
+                <v-col class="white pa-3">{{ licensedMembers }}</v-col>
             </v-row>
         </v-col>
 
@@ -63,7 +63,7 @@
                     </span>
                 </v-col>
 
-                <v-col class="white pa-3">{{ commonMember }}</v-col>
+                <v-col class="white pa-3">{{ commonMembers }}</v-col>
             </v-row>
         </v-col>
 
@@ -129,9 +129,8 @@
 
         <v-col cols="12" class="text-center">
             <v-btn dark class="ma-2"
-                :loading="isLoading"
-                to="/worklist/maintain"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
             <v-btn class="ma-2" dark
                 :loading="isLoading"
@@ -139,26 +138,28 @@
                 v-if="status == '已驗收待結案'"
             >竣工單</v-btn>
 
-            <v-btn class="ma-2"
-                :loading="isLoading"
-                color="error"
-                @click="showDialog(true)"
-                v-if="status == '已驗收待結案'"
-            >退回</v-btn>
+            <template v-if="!done">
+                <v-btn class="ma-2"
+                    :loading="isLoading"
+                    color="error"
+                    @click="showDialog(true)"
+                    v-if="status == '已驗收待結案'"
+                >退回</v-btn>
 
-            <v-btn class="ma-2" dark
-                :loading="isLoading"
-                color="yellow darken-2"
-                @click="showDialog(false)"
-                v-if="status == '已驗收待結案'"
-            >徹銷</v-btn>
+                <v-btn class="ma-2" dark
+                    :loading="isLoading"
+                    color="yellow darken-2"
+                    @click="showDialog(false)"
+                    v-if="status == '已驗收待結案'"
+                >徹銷</v-btn>
 
-            <v-btn dark class="ma-2"
-                :loading="isLoading"
-                color="success"
-                @click="save"
-                v-if="status == '已驗收待結案'"
-            >結案</v-btn>
+                <v-btn dark class="ma-2"
+                    :loading="isLoading"
+                    color="success"
+                    @click="save"
+                    v-if="status == '已驗收待結案'"
+                >結案</v-btn>
+            </template>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
@@ -204,18 +205,19 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 
 export default {
     props: ['itemData', 'closeStatus'],
     data: () => ({
+        done: false,  // 是否完成頁面操作
         status: '',  // 狀態
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
         note: '',  // 備註
-        licensedMember: '',  // 需證照人員
-        commonMember: '',  // 作業人員
+        licensedMembers: [],  // 需證照人員
+        commonMembers: [],  // 作業人員
         vendors: [],  // 外包廠商
         malfunctionDes: '',  // 故障描述
         fixSituation: '',  // 維修情況
@@ -224,6 +226,7 @@ export default {
         dialogApiName: '',  // 使用的 API 函式名稱
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
+        totalMoney: '',  // 工時統計的總金額
         totalJobHour: 0,  // 總工時
         tableItems: [],  // 工時表格資料
         headers: [  // 工時標題
@@ -256,127 +259,57 @@ export default {
         },
     }),
     components: { TopBasicTable },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        }
-    },
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         // 合併外包廠商字串
         vendorsList() {
             let arr = this.vendors.map(item => {
-                return `${ item.name } (${ item.count }人)`
+                return `${ item.VendorName } (${ item.PeopleCount }人)`
             })
             return arr.join('、')
         },
-        // 工時統計的總金額
-        totalMoney() {
-            let total = this.tableItems.reduce((a,b)=>a + b.price, 0)
-            return new Intl.NumberFormat().format(total)
-        }
     },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
-        // 向後端取資料
-        fetchData() {
-            this.chLoadingShow()
-            let id = this.$route.params.id  // 路由參數
-
-            // 範例效果
-            setTimeout(() => {
-                // 向後端請求資料
-                let obj = {
-                    workNumber: '202004290001',  // 工單編號
-                    eqNumber1: 'TQG',
-                    eqNumber2: 'A35',
-                    eqNumber3: 'EA0',
-                    eqNumber4: '013',
-                    fixUnit: '車輛組',  // 立案單位
-                    creater: '陳小華',  // 立案人
-                    dispatcher: '黃小美',  // 派工人
-                    agent: '王小明',  // 代理人
-                    fixTime: '201903110001',  // 報修時間
-                    workDate: '2020-03-15',  // 維修時間
-                    hour: '14:00:00',  // 維修時間(小時)
-                    workLocation: '115k-120k',  // 工作地點
-                    memberCount: 12,  // 實際人數
-                    acceptanceTime: '2020-03-22',  // 預計驗收日期
-                    arrivalFixDate: '2020-03-15 14:00:00',  // 到修日期
-                    startFixDate: '2020-03-15 15:00:00',  // 動工日期
-                    endFixDate: '2020-03-15 16:00:00',  // 完工日期
-                    licensedMember: ['陳高文'],  // 有證照人員
-                    commonMember: ['張仁宣'],  // 無證照人員
-                    vendors: [  // 外包廠商
-                        { name: 'XX 電子', count: 2 },
-                        { name: '○○ 鋼鐵', count: 1 },
-                        { name: 'XXX 工廠', count: 5 },
-                    ],
-                    enterControl: false,  // 進場管制申請
-                    specialDanger: false,  // 特殊危害作業
-                    safeDanger: false,  // 安全危害作業
-                    malfunctionDes: '工具機損壞',  // 故障描述
-                    note: '',  // 備註
-                    fixSituation: '小零件損壞，更換了xxxx',  // 維修情況
-                    fixType: '故障檢修',  // 維修類型
-                    totalJobHour: 8,  // 總工時
-                    jobHourData: [  // 工時資料
-                        {
-                            name: '陳高文',
-                            location: '115k-120k',
-                            job: '枕木',
-                            count: 1,
-                            price: 3000,
-                        },
-                        {
-                            name: '張仁宣',
-                            location: '115k-120k',
-                            job: '鋼軌',
-                            count: 1,
-                            price: 6000,
-                        },
-                    ],
-                }
-
-                this.setShowData(obj)  // 初始化資料
-                this.chLoadingShow()
-            }, 1000)
-        },
         setShowData(obj) {
-            this.workNumber = obj.workNumber  // 工單編號
+            this.workNumber = obj.WorkOrderID  // 工單編號
             this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
             this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
-            this.fixSituation = obj.fixSituation.replace(/\n/g, '<br>')  // 維修情況
+            // this.fixSituation = obj.MaintainStatus.replace(/\n/g, '<br>')  // 維修情況
 
             // 設定上面的欄位資料
-            this.topItems.fixTime.text = obj.fixTime  // 報修時間
-            this.topItems.eqCodes.text = `${obj.eqNumber1}-${obj.eqNumber2}-${obj.eqNumber3}-${obj.eqNumber4}`  // 設備標示編號
-            this.topItems.status.text = this.status = this.closeStatus  // 處理階段
-            this.topItems.fixUnit.text = obj.fixUnit  // 立案單位
-            this.topItems.creater.text = obj.creater  // 立案人
-            this.topItems.fixUnit.text = obj.fixUnit  // 維修單位
-            this.topItems.dispatcher.text = obj.dispatcher  // 派工人
-            this.topItems.agent.text = obj.agent  // 代理人
-            this.topItems.fixType.text = obj.fixType  // 維修類型
-            this.topItems.workDate.text = `${obj.workDate} ${obj.hour}`  // 維修時間
-            this.topItems.acceptanceTime.text = obj.acceptanceTime  // 預計驗收日期
-            this.topItems.enterControl.text = (obj.enterControl)? '是' : '否'  // 進場管制申請
-            this.topItems.specialDanger.text = (obj.specialDanger)? '是' : '否'  // 特殊危害作業
-            this.topItems.safeDanger.text = (obj.safeDanger)? '是' : '否'  // 安全危害作業
-            this.topItems.workLocation.text = obj.workLocation  // 工作地點
-            this.topItems.memberCount.text = obj.memberCount  // 實際人數
-            this.topItems.arrivalFixDate.text = obj.arrivalFixDate  // 到修日期
-            this.topItems.startFixDate.text = obj.startFixDate  // 動工日期
-            this.topItems.endFixDate.text = obj.endFixDate  // 完工日期
+            this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
+            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
+            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
+            this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
+            this.topItems.creater.text = obj.Creator  // 立案人
+            this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
+            this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
+            this.topItems.agent.text = obj.AgentName  // 代理人
+            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')  // 維修類型
+            this.topItems.workDate.text = `${obj.DispatchDDay} ${obj.DispatchDHour}時`  // 維修時間
+            this.topItems.acceptanceTime.text = obj.ExpectedDT  // 預計驗收日期
+            this.topItems.enterControl.text = (obj.WorkApplication == 'T')? '是' : '否'  // 進場管制申請
+            this.topItems.specialDanger.text = (obj.WorkSp == 'T')? '是' : '否'  // 特殊危害作業
+            this.topItems.safeDanger.text = (obj.WorkSafety == 'T')? '是' : '否'  // 安全危害作業
+            this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
+            this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
 
-            this.licensedMember = obj.licensedMember.join('、')  // 需證照人員
-            this.commonMember = obj.commonMember.join('、')  // 作業人員
-            this.vendors = obj.vendors  // 外包廠商
-            this.totalJobHour = obj.totalJobHour  // 總工時
-            this.tableItems = [ ...obj.jobHourData ]  // 工時資料
+            // this.topItems.arrivalFixDate.text = obj.arrivalFixDate  // 到修日期
+            // this.topItems.startFixDate.text = obj.startFixDate  // 動工日期
+            // this.topItems.endFixDate.text = obj.endFixDate  // 完工日期
+
+            this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
+            this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
+            this.vendors = obj.OutSourceCount  // 外包廠商
+            this.totalMoney = obj.TotalSpent  // 工時統計的總金額
+            // this.tableItems = [ ...obj.jobHourData ]  // 工時資料
         },
         // 顯示 dialog
         showDialog(bool) {

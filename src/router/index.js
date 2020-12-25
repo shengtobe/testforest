@@ -67,6 +67,10 @@ const routes = [
     }
   },
   {
+    path: '/error',
+    component: () => import('../views/Error.vue')
+  },
+  {
     path: '*',
     component: () => import('../views/404.vue')
   }

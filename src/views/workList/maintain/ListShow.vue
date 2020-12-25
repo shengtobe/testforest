@@ -182,8 +182,13 @@ export default {
                     WorkOrderID: this.workNumber,  // 工單編號
                     ClientReqTime: getNowFullTime()  // client 端請求時間
                 }).then(res => {
-                    this.chMsgbar({ success: true, msg: '刪除成功' })
-                    this.done = true  // 隱藏頁面操作按鈕
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
                 }).catch(err => {
                     console.log(err)
                     alert('伺服器發生問題，刪除失敗')
