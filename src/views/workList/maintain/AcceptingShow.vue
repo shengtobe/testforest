@@ -158,14 +158,6 @@
     </v-form>
 
     <!-- 平交道項目 -->
-    <!-- <v-checkbox
-        class="mx-2"
-        v-model="crossShow"
-        label="選擇平交道項目"
-        color="success"
-        hide-details
-    ></v-checkbox> -->
-
     <v-sheet class="white px-4 mt-1 mb-3 mx-2"
         v-if="crossShow"
     >
@@ -617,11 +609,11 @@ export default {
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
         tableItems: [],  // 工時表格資料
         headers: [  // 工時標題
-            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作項', value: 'job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '料件費用', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工作項', value: 'Job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         totalMoney: '',  // 工時統計的總金額
         totalHour: '',  // 總工時
@@ -744,7 +736,7 @@ export default {
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
             this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
-            // this.fixSituation = obj.MaintainStatus.replace(/\n/g, '<br>')  // 維修情況
+            this.fixSituation = obj.MaintainStatus.replace(/\n/g, '<br>')  // 維修情況
 
             // 設定上面的欄位資料
             this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
@@ -763,16 +755,15 @@ export default {
             this.topItems.safeDanger.text = (obj.WorkSafety == 'T')? '是' : '否'  // 安全危害作業
             this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
             this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
-
-            // this.topItems.arrivalFixDate.text = obj.arrivalFixDate  // 到修日期
-            // this.topItems.startFixDate.text = obj.startFixDate  // 動工日期
-            // this.topItems.endFixDate.text = obj.endFixDate  // 完工日期
+            this.topItems.arrivalFixDate.text = obj.ToRepairDDate  // 到修日期
+            this.topItems.startFixDate.text = obj.StartWorkDDate  // 動工日期
+            this.topItems.endFixDate.text = obj.FinishDDate  // 完工日期
 
             this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
             this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
             this.vendors = obj.OutSourceCount  // 外包廠商
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
-            // this.tableItems = [ ...obj.jobHourData ]  // 工時資料
+            this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
         },
         // 顯示 dialog
         showDialog(bool) {
