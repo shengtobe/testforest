@@ -57,7 +57,7 @@
                 </h3>
                 <v-select
                     v-model="ipt.fixType"
-                    :items="[{ text: '故障檢修', value: 1 }, { text: '例行保養', value: 2 }]"
+                    :items="[{ text: '故障檢修', value: '1' }, { text: '例行保養', value: '2' }]"
                     solo
                 ></v-select>
             </v-col>
@@ -85,21 +85,21 @@
                 <v-radio-group v-model="ipt.createType" row class="mb-0">
                     <v-radio
                         label="立即派工" 
-                        :value="1" 
+                        value="1" 
                         color="success"
                         class="mb-3"
                     ></v-radio>
 
                     <v-radio
                         label="定期保養/維修"
-                        :value="2"
+                        value="2"
                         color="blue"
                         class="mb-3"
                     ></v-radio>
 
                     <v-radio
                         label="補單"
-                        :value="3"
+                        value="3"
                         color="red"
                         class="mb-3"
                     ></v-radio>
@@ -327,8 +327,8 @@ export default {
         defaultIpt: {  // 預設內容
             subject: '',  // 主旨
             malfunctionDes: '',  // 故障描述
-            fixType: 1,  // 維修類型
-            createType: 1,  // 立案類型
+            fixType: '1',  // 維修類型
+            createType: '1',  // 立案類型
             date: new Date().toISOString().substr(0, 10),  // 立案日期
             hour: (new Date().getHours() < 10)? '0'+ new Date().getHours().toString() : new Date().getHours().toString(),  // 立案的小時
         },
@@ -491,52 +491,56 @@ export default {
             if (this.$route.params.id != undefined) {
                 // -------- 編輯時 -------
                 this.isEdit = true
-                this.chLoadingShow()
 
                 // 向後端請求資料
-                fetchWorkOrderOne({
-                    WorkOrderID: this.$route.params.id,  // 工單編號
-                    ClientReqTime: getNowFullTime()  // client 端請求時間
-                }).then(res => {
-                    let obj = res.data
-
-                    // 檢查是否有權限編輯
-                    if (obj.CreatorID != this.userData.UserId || obj.DispatchID != this.userData.UserId) {
-                        alert('你沒有編輯的權限!')
-                        
-                    }
-
-                    // 設定資料
-                    this.workNumber = obj.WorkOrderID  // 工單編號
-                    this.creater = obj.Creator  // 立案人姓名
-                    this.createrId = obj.CreatorID  // 立案人id
-                    this.fixUnit = obj.CreatorDepart  // 立案單位
-                    this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號(系統)
-                    this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號(位置)
-                    this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號(位置)2
-                    this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號(設備)
-                    this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號(設備)2
-                    this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號(序號)
-                    this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
-                    this.ipt.createType = obj.CreateType  // 立案類型
-                    this.ipt.date = obj.CreateDDay  // 立案日期
-                    this.ipt.hour = obj.CreateDTime  // 立即派工的小時
-                    this.ipt.subject = obj.WorkSubject  // 主旨
-
-                    // 將派工人資料寫入 vuex(組織表)
-                    this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
-                }).catch(err => {
-                    console.log(err)
-                    alert('資料讀取失敗')
-                }).finally(() => {
-                    this.chLoadingShow()
-                })
+                this.fetchOrderOne()
             } else {
                 // 新增的情況
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
                 this.creater = this.userData.UserName  // 立案人名稱
                 this.fixUnit = this.userData.DeptList[0].DeptDesc  // 立案單位(之後api結構會改掉)
             }
+        },
+        // 向後端請求資料
+        fetchOrderOne() {
+            this.chLoadingShow()
+
+            fetchWorkOrderOne({
+                WorkOrderID: this.$route.params.id,  // 工單編號
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                let obj = res.data
+
+                // 檢查是否有權限編輯 (僅立案人、派工人可編輯)
+                if (obj.CreatorID != this.userData.UserId && obj.CreatorID != this.userData.UserId) {
+                    this.$router.push({ path: '/no-permission' })
+                }
+
+                // 設定資料
+                this.workNumber = obj.WorkOrderID  // 工單編號
+                this.creater = obj.Creator  // 立案人姓名
+                this.createrId = obj.CreatorID  // 立案人id
+                this.fixUnit = obj.CreatorDepart  // 立案單位
+                this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號(系統)
+                this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號(位置)
+                this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號(位置)2
+                this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號(設備)
+                this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號(設備)2
+                this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號(序號)
+                this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
+                this.ipt.createType = obj.CreateType  // 立案類型
+                this.ipt.date = obj.CreateDDay  // 立案日期
+                this.ipt.hour = obj.CreateDTime  // 立即派工的小時
+                this.ipt.subject = obj.WorkSubject  // 主旨
+
+                // 將派工人資料寫入 vuex(組織表)
+                this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
+            }).catch(err => {
+                console.log(err)
+                alert('資料讀取失敗')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
         },
         // 初始化設備標示編號
         // codeArr: 後端傳的報修碼陣列, opt: 要設定在哪一組下拉選單(op1~4)
@@ -592,8 +596,10 @@ export default {
                     // -------- 編輯時 -------
                     updateListOrder({
                         WorkOrderID: this.workNumber,  // 工單編號
+                        WorkSubject: this.ipt.subject,  // 主旨
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
+                        CreateType: this.ipt.createType,  // 立案類型
                         CreateDDay: this.ipt.date,  // 立案日期
                         CreateDTime: this.ipt.hour,  // 立案時間 (小時)
                         MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
@@ -606,6 +612,8 @@ export default {
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '編輯成功' })
+                            // 為避免使用者選立即派工，導致input的不會同步改變，所以重新向後端請求資料
+                            this.fetchOrderOne()
                         } else {
                             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                             this.$router.push({ path: '/error' })

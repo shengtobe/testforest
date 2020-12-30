@@ -123,6 +123,16 @@
                 ></v-select>
             </v-col>
 
+            <v-col cols="12" md="6">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>主旨
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.subject"
+                    solo
+                ></v-text-field>
+            </v-col>
+
             <v-col cols="12" sm="6" md="3">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>總費用
@@ -283,6 +293,7 @@ export default {
             fixType: '1',  // 維修類型
             moneyStart: '',  // 總費用(最小金額)
             moneyEnd: '',  // 總費用(最大金額)
+            subject: '',  // 主旨
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
@@ -293,7 +304,7 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '主旨', value: 'WorkSubject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -327,6 +338,7 @@ export default {
                     { tableColumn: 'Status', columnValue: this.ipt.workState },  // 處理階段
                     { tableColumn: 'Shortage', columnValue: this.ipt.shortage },  // 是否缺料
                     { tableColumn: 'Type', columnValue: this.ipt.fixType },  // 維修類型
+                    { tableColumn: 'WorkSubject', columnValue: this.ipt.subject },  // 主旨
                     { tableColumn: 'MaintainCode_System', columnValue: this.ipt.eqNumber1 },  // 設備標示編號1
                     { tableColumn: 'MaintainCode_Loc', columnValue: this.ipt.eqNumber2 },  // 設備標示編號2
                     { tableColumn: 'MaintainCode_Eqp', columnValue: this.ipt.eqNumber3 },  // 設備標示編號3
@@ -334,10 +346,11 @@ export default {
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'WorkOrderID',
-                    'MaintainCode_System',
-                    'MaintainCode_Loc',
-                    'MaintainCode_Eqp',
-                    'MaintainCode_Seq',
+                    // 'MaintainCode_System',
+                    // 'MaintainCode_Loc',
+                    // 'MaintainCode_Eqp',
+                    // 'MaintainCode_Seq',
+                    'WorkSubject',
                     'Status'
                 ],
             }).then(res => {

@@ -67,6 +67,10 @@ const routes = [
     }
   },
   {
+    path: '/no-permission',
+    component: () => import('../views/NoPermission.vue')
+  },
+  {
     path: '/error',
     component: () => import('../views/Error.vue')
   },
