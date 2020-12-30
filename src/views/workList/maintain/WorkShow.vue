@@ -415,12 +415,6 @@
             <template v-if="!done">
                 <v-btn class="ma-2"
                     :loading="isLoading"
-                    color="primary"
-                    :to="`/worklist/maintain/${workNumber}/editWork`"
-                >重新派工</v-btn>
-
-                <v-btn class="ma-2"
-                    :loading="isLoading"
                     color="error"
                     @click="dialog = true"
                 >退回</v-btn>
@@ -436,7 +430,7 @@
         <!-- 按鈕說明，demo 用 -->
         <v-col cols="12" class="error--text">
             <h4>按鈕出現說明</h4>
-            1. 重新派工、退回：派工人、代理人<br>
+            1. 退回：派工人、代理人<br>
             2. 維修情況：派工人、代理人、林鐵維修人員
         </v-col>
     </v-row>

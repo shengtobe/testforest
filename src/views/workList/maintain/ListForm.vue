@@ -38,34 +38,6 @@
 
             <v-col cols="12" sm="6" md="3">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>立案日期
-                </h3>
-                <v-menu
-                    v-model="dateMenuShow"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                >
-                    <template v-slot:activator="{ on }">
-                        <v-text-field
-                            v-model.trim="ipt.date"
-                            solo
-                            v-on="on"
-                            readonly
-                        ></v-text-field>
-                    </template>
-                    <v-date-picker
-                        color="purple"
-                        v-model="ipt.date"
-                        @input="dateMenuShow = false"
-                        locale="zh-tw"
-                    ></v-date-picker>
-                </v-menu>
-            </v-col>
-
-            <v-col cols="12" sm="6" md="3">
-                <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-account</v-icon>派工人
                     <span class="red--text">*</span>
                 </h3>
@@ -85,43 +57,64 @@
                 </h3>
                 <v-select
                     v-model="ipt.fixType"
-                    :items="[{ text: '故障檢修', value: '1' }, { text: '例行保養', value: '2' }]"
+                    :items="[{ text: '故障檢修', value: 1 }, { text: '例行保養', value: 2 }]"
                     solo
                 ></v-select>
+            </v-col>
+
+            <v-col cols="12" md="6">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>主旨
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.subject"
+                    solo
+                    placeholder="請輸入主旨"
+                ></v-text-field>
             </v-col>
         </v-row>
 
         <v-divider class="mx-2 mt-5 mb-8"></v-divider>
 
-        <!-- 派工時間 -->
-        <v-row class="px-2 mb-6">
+        <!-- 立案時間 -->
+        <v-row class="px-2 mb-8">
             <v-col cols="12" md="4">
                 <h3 class="mb-1">
-                    選擇派工時間
+                    選擇立單時間
                 </h3>
-                <v-radio-group v-model="ipt.nowAction" row>
+                <v-radio-group v-model="ipt.createType" row class="mb-0">
                     <v-radio
                         label="立即派工" 
-                        :value="true" 
+                        :value="1" 
                         color="success"
+                        class="mb-3"
                     ></v-radio>
 
                     <v-radio
                         label="定期保養/維修"
-                        :value="false"
+                        :value="2"
                         color="blue"
+                        class="mb-3"
+                    ></v-radio>
+
+                    <v-radio
+                        label="補單"
+                        :value="3"
+                        color="red"
+                        class="mb-3"
                     ></v-radio>
                 </v-radio-group>
             </v-col>
 
             <v-col cols="12" sm="6" md="3"
-                v-if="!ipt.nowAction"
+                v-if="ipt.createType != '1'"
+                class="mt-n8 mt-sm-0"
             >
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期
                 </h3>
                 <v-menu
-                    v-model="workDateMenuShow"
+                    v-model="dateMenuShow"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     max-width="290px"
@@ -130,21 +123,24 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             solo
-                            v-model="ipt.workDate"
+                            v-model="ipt.date"
                             v-on="on"
                             readonly
+                            hide-details
                         ></v-text-field>
                     </template>
                     <v-date-picker
                         color="purple"
-                        v-model="ipt.workDate"
-                        @input="workDateMenuShow = false"
+                        v-model="ipt.date"
+                        @input="dateMenuShow = false"
                         locale="zh-tw"
                     ></v-date-picker>
                 </v-menu>
             </v-col>
 
-            <v-col cols="12" sm="6" md="3">
+            <v-col cols="12" sm="6" md="3"
+                    v-if="ipt.createType != '1'"
+            >
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-clock</v-icon>時間
                 </h3>
@@ -152,6 +148,7 @@
                     v-model="ipt.hour"
                     :items="hourOpts"
                     solo
+                    hide-details
                 ></v-select>
             </v-col>
         </v-row>
@@ -328,12 +325,12 @@ export default {
             eqNumber4: '',  // 設備標示編號4
         },  
         defaultIpt: {  // 預設內容
-            date: new Date().toISOString().substr(0, 10),  // 立案日期
+            subject: '',  // 主旨
             malfunctionDes: '',  // 故障描述
-            fixType: '1',  // 維修類型
-            nowAction: true,  // 是否立即派工
-            hour: (new Date().getHours() < 10)? '0'+ new Date().getHours().toString() : new Date().getHours().toString(),  // 派工的小時
-            workDate: new Date().toISOString().substr(0, 10),  // 派工日
+            fixType: 1,  // 維修類型
+            createType: 1,  // 立案類型
+            date: new Date().toISOString().substr(0, 10),  // 立案日期
+            hour: (new Date().getHours() < 10)? '0'+ new Date().getHours().toString() : new Date().getHours().toString(),  // 立案的小時
         },
         errorIpt: {  // 必填欄位背景色
             dispatchID: '', // 派工人
@@ -344,7 +341,6 @@ export default {
             malfunctionDes: '',  // 故障描述
         },
         dateMenuShow: false,  // 日期選單是否顯示
-        workDateMenuShow: false,  // 維護日期選單是否顯示
         hourOpts: hourOptions,  // 下拉選單項目-小時
         eqCodes: {
             opt1: [],  // 設備標示編號下拉選單-第1組
@@ -503,7 +499,12 @@ export default {
                     ClientReqTime: getNowFullTime()  // client 端請求時間
                 }).then(res => {
                     let obj = res.data
+
                     // 檢查是否有權限編輯
+                    if (obj.CreatorID != this.userData.UserId || obj.DispatchID != this.userData.UserId) {
+                        alert('你沒有編輯的權限!')
+                        
+                    }
 
                     // 設定資料
                     this.workNumber = obj.WorkOrderID  // 工單編號
@@ -516,12 +517,11 @@ export default {
                     this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號(設備)
                     this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號(設備)2
                     this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號(序號)
-                    this.ipt.date = obj.CreateDTime  // 立案日期
                     this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
-                    this.ipt.fixType = obj.Type  // 維修類型
-                    this.ipt.workDate = obj.DispatchDDay  // 維護日期
-                    this.ipt.hour = obj.DispatchDHour  // 立即派工的小時
-                    this.ipt.nowAction = (obj.CreateDTime == obj.DispatchDDay)? true: false  // 是否立即派工
+                    this.ipt.createType = obj.CreateType  // 立案類型
+                    this.ipt.date = obj.CreateDDay  // 立案日期
+                    this.ipt.hour = obj.CreateDTime  // 立即派工的小時
+                    this.ipt.subject = obj.WorkSubject  // 主旨
 
                     // 將派工人資料寫入 vuex(組織表)
                     this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
@@ -588,17 +588,14 @@ export default {
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.chLoadingShow()
 
-                // 派工日期
-                let dispatcherDate = (this.ipt.nowAction)? new Date().toISOString().substr(0, 10) : this.ipt.workDate
-
                 if (this.isEdit) {
                     // -------- 編輯時 -------
                     updateListOrder({
                         WorkOrderID: this.workNumber,  // 工單編號
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
-                        DispatchDDay: dispatcherDate,  // 派工日期
-                        DispatchDTime: this.ipt.hour,  // 派工時間 (小時)
+                        CreateDDay: this.ipt.date,  // 立案日期
+                        CreateDTime: this.ipt.hour,  // 立案時間 (小時)
                         MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
                         MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
                         MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
@@ -621,12 +618,13 @@ export default {
                 } else {
                     // -------- 新增時 -------
                     createWorkOrder({
+                        WorkSubject: this.ipt.subject,  // 主旨
                         CreatorID: this.userData.UserId,  // 立案人id
-                        CreateDTime: this.ipt.date,  // 立案日期
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
-                        DispatchDDay: dispatcherDate,  // 派工日期
-                        DispatchDTime: this.ipt.hour,  // 派工時間 (小時)
+                        CreateType: this.ipt.createType,  // 立案類型
+                        CreateDDay: this.ipt.date,  // 立案日期
+                        CreateDTime: this.ipt.hour,  // 立案時間 (小時)
                         MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
                         MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
                         MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
