@@ -7,21 +7,7 @@
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障描述
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="malfunctionDes"
-                ></v-col>
-            </v-row>
-        </v-col>
+        <BottomTable :items="bottomItems" />
 
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
@@ -280,7 +266,7 @@
         </v-btn>
     </h3>
 
-    <v-card>
+    <v-card class="mb-8">
         <v-data-table
             :headers="jobHour.headers"
             :items="jobHour.items"
@@ -339,8 +325,8 @@
                                             <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
                                         </h3>
                                         <v-select
-                                            v-model="jobForm.Job"
-                                            :items="['鋼軌', '枕木']"
+                                            v-model="jobForm.JobCode"
+                                            :items="jobNameIpts"
                                             solo
                                         ></v-select>
                                     </v-col>
@@ -356,18 +342,6 @@
                                             :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                                         ></v-text-field>
                                     </v-col>
-
-                                    <v-col cols="12" sm="4">
-                                        <h3 class="mb-1">
-                                            <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>料件費用
-                                            <span class="red--text">*</span>
-                                        </h3>
-                                        <v-text-field
-                                            v-model.trim.number="jobForm.Price"
-                                            solo
-                                            :rules="[v => /^\d+$/.test(v) || '請輸入整數']"
-                                        ></v-text-field>
-                                    </v-col>
                                 </v-row>
                             </v-form>
                         </v-card-text>
@@ -381,11 +355,6 @@
                 </v-dialog>
             </template>
 
-            <!-- 插入 price 欄位 -->
-            <template v-slot:item.Price="{ item }">
-                {{ new Intl.NumberFormat().format(item.Count * item.Price) }}
-            </template>
-
             <!-- 插入 action 欄位編輯 -->
             <template v-slot:item.action="{ item }">
                 <v-btn small dark fab color="info darken-1"
@@ -393,14 +362,6 @@
                 >
                     <v-icon dark>mdi-pen</v-icon>
                 </v-btn>
-            </template>
-
-            <template v-slot:footer>
-                <v-divider></v-divider>
-
-                <p class="py-2 text-center">
-                    總金額： <span class="red--text">{{ totalMoney }}</span>
-                </p>
             </template>
         </v-data-table>
     </v-card>
@@ -476,7 +437,8 @@ import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import { maintainOrder } from '@/apis/workList/maintain'
+import BottomTable from '@/components/BottomTable.vue'
+import { maintainOrder, fetchJobName } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -490,7 +452,6 @@ export default {
         commonMembers: [],  // 作業人員
         allLicenseMembers: [],  // 所有林鐵人員
         vendors: [],  // 外包廠商
-        malfunctionDes: '',  // 故障描述
         dialog: false,  // dialog 是否顯示
         reason: '',  // 退回原因
         dateMenuShow: {  // 日曆是否顯示
@@ -514,23 +475,22 @@ export default {
         },
         errorSituation: '',  // 必填欄位背景色-維修情況
         topItems: {  // 上面的欄位
-            fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
             eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
             createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
+            createDate: { icon: 'mdi-calendar-text', title: '立案時間', text: '' },
             fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
             dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-            agent: { icon: 'mdi-account', title: '代理人', text: '' },
             fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            workDate: { icon: 'mdi-calendar-text', title: '維修時間', text: '' },
             acceptanceTime: { icon: 'mdi-calendar-text', title: '預計驗收日期', text: '' },
             enterControl: { icon: 'mdi-alert-outline', title: '進場管制申請', text: '' },
             specialDanger: { icon: 'mdi-alert-outline', title: '特殊危害作業', text: '' },
             safeDanger: { icon: 'mdi-alert-outline', title: '安全危害作業', text: '' },
             workLocation: { icon: 'mdi-map-marker', title: '工作地點', text: '' },
             memberCount: { icon: 'mdi-account-multiple', title: '實際人數', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
         },
+        bottomItems: [],  // 下面的欄位
         jobFormValid: true,  // 工時統計是否驗證欄位
         jobHour: {  // 工時
             dialogShow: false,
@@ -539,9 +499,8 @@ export default {
             headers: [
                 { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作項', value: 'Job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
                 { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             ],
             items: [],
@@ -549,16 +508,20 @@ export default {
         },
         jobForm: {}, // 工時表單
         defaultJobForm: {  // 工時預設表單
-            'PeopleId': '',
-            'PeopleName': '',
-            'Location': '',
-            'Job': '',
-            'Count': 1, 
-            'Price': 0,
+            PeopleId: '',
+            PeopleName: '',
+            Location: '',
+            JobCode: '',
+            JobName: '',
+            Count: 1, 
         },
+        jobNameIpts: [],  // 工作項下拉選單
         jobFormIsEdit: false,  // 工時表單是否為編輯模式
     }),
-    components: { TopBasicTable },
+    components: {
+        TopBasicTable,
+        BottomTable,
+    },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -570,11 +533,6 @@ export default {
             })
             return arr.join('、')
         },
-        // 工時統計的總金額
-        totalMoney() {
-            let total = this.jobHour.items.reduce((a,b)=>a + b.Count * b.Price, 0)
-            return new Intl.NumberFormat().format(total)
-        }
     },
     methods: {
         ...mapActions('system', [
@@ -589,22 +547,26 @@ export default {
             this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
 
             // 設定上面的欄位資料
-            this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
             this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
             this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
             this.topItems.creater.text = obj.Creator  // 立案人
             this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
             this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.agent.text = obj.AgentName  // 代理人
-            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')  // 維修類型
-            this.topItems.workDate.text = `${obj.DispatchDDay} ${obj.DispatchDHour}時`  // 維修時間
+            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
+            this.topItems.createDate.text = `${obj.CreateDDay} ${obj.CreateDTime}時`  // 立案時間
             this.topItems.acceptanceTime.text = obj.ExpectedDT  // 預計驗收日期
             this.topItems.enterControl.text = (obj.WorkApplication == 'T')? '是' : '否'  // 進場管制申請
             this.topItems.specialDanger.text = (obj.WorkSp == 'T')? '是' : '否'  // 特殊危害作業
             this.topItems.safeDanger.text = (obj.WorkSafety == 'T')? '是' : '否'  // 安全危害作業
             this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
             this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
+
+            // 設定下面的欄位資料
+            this.bottomItems = [
+                { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
+                { oneline: true, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
+            ]
 
             this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
             this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
@@ -618,13 +580,27 @@ export default {
             
             // 工時表單初始化
             this.jobHour.items = this.allLicenseMembers.map(item => ({
-                'PeopleId': item.value,
-                'PeopleName': item.text,
-                'Location': obj.WorkPlace,
-                'Job': '',
-                'Count': 1, 
-                'Price': 0,
+                PeopleId: item.value,
+                PeopleName: item.text,
+                Location: obj.WorkPlace,
+                JobCode: '',
+                JobName: '',
+                Count: 1, 
             }))
+
+            // 查詢工作項
+            fetchJobName({
+                DeviceCode: obj.MaintainCode,  // 工單編號
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                this.jobNameIpts = res.data.device_jobname.map(item => ({
+                    text: item.JobName,
+                    value: item.JobCode,
+                }))
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，工作項查詢失敗' })
+            })
         },
         // 退回
         withdraw() {
@@ -699,7 +675,10 @@ export default {
         },
         // 儲存工作表單
         saveJob() {
-             if (this.jobHour.isEdit == false) {
+            // 反查工作項名稱
+            this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
+            
+            if (this.jobHour.isEdit == false) {
                 // 反查姓名
                 this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
                 // 新增時 (照林鐵人員要求，新增後不關閉視窗)

@@ -615,7 +615,6 @@ export default {
             { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        totalMoney: '',  // 工時統計的總金額
         totalHour: '',  // 總工時
         delay: {  // 延後驗收
             dialogShow: false,
@@ -724,6 +723,10 @@ export default {
             })
             return arr.join('、')
         },
+        // 工時統計的總金額
+        totalMoney() {
+            return this.jobHour.items.reduce((a,b)=>a + b.Count * b.Price, 0)
+        }
     },
     methods: {
         ...mapActions('system', [

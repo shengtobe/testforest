@@ -100,3 +100,12 @@ export function maintainOrder(data) { return axios(
         data,
     }
 )}
+
+// 查詢工作項
+export function fetchJobName(data) { return axios(
+    {
+        url: '/global/dev/jobname',
+        method: 'post',
+        data,
+    }
+)}

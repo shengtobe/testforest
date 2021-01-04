@@ -64,12 +64,12 @@
 
             <v-col cols="12" md="6">
                 <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>主旨
+                    <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>故障主旨
                 </h3>
                 <v-text-field
                     v-model.trim="ipt.subject"
                     solo
-                    placeholder="請輸入主旨"
+                    placeholder="請輸入故障主旨"
                 ></v-text-field>
             </v-col>
         </v-row>
@@ -325,7 +325,7 @@ export default {
             eqNumber4: '',  // 設備標示編號4
         },  
         defaultIpt: {  // 預設內容
-            subject: '',  // 主旨
+            subject: '',  // 故障主旨
             malfunctionDes: '',  // 故障描述
             fixType: '1',  // 維修類型
             createType: '1',  // 立案類型
@@ -531,7 +531,7 @@ export default {
                 this.ipt.createType = obj.CreateType  // 立案類型
                 this.ipt.date = obj.CreateDDay  // 立案日期
                 this.ipt.hour = obj.CreateDTime  // 立即派工的小時
-                this.ipt.subject = obj.WorkSubject  // 主旨
+                this.ipt.subject = obj.WorkSubject  // 故障主旨
 
                 // 將派工人資料寫入 vuex(組織表)
                 this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
@@ -596,7 +596,7 @@ export default {
                     // -------- 編輯時 -------
                     updateListOrder({
                         WorkOrderID: this.workNumber,  // 工單編號
-                        WorkSubject: this.ipt.subject,  // 主旨
+                        WorkSubject: this.ipt.subject,  // 故障主旨
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
                         CreateType: this.ipt.createType,  // 立案類型
@@ -626,7 +626,7 @@ export default {
                 } else {
                     // -------- 新增時 -------
                     createWorkOrder({
-                        WorkSubject: this.ipt.subject,  // 主旨
+                        WorkSubject: this.ipt.subject,  // 故障主旨
                         CreatorID: this.userData.UserId,  // 立案人id
                         DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
                         Type: this.ipt.fixType,  // 維修類型
