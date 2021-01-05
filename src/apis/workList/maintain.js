@@ -83,7 +83,7 @@ export function updateListOrder(data) { return axios(
     }
 )}
 
-// 派工
+// 派工頁送出
 export function dispatchOrder(data) { return axios(
     {
         url: '/mmis/order/dispatch',
@@ -92,7 +92,7 @@ export function dispatchOrder(data) { return axios(
     }
 )}
 
-// 維修
+// 維修頁送出
 export function maintainOrder(data) { return axios(
     {
         url: '/mmis/order/maintain',
@@ -110,7 +110,7 @@ export function fetchJobName(data) { return axios(
     }
 )}
 
-// 送出驗證
+// 驗收頁送出
 export function acceptanceOrder(data) { return axios(
     {
         url: '/mmis/order/acceptance',

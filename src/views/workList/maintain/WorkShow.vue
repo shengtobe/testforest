@@ -8,64 +8,6 @@
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="note"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>需證照人員
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ licensedMembers }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>作業人員
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ commonMembers }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>外包廠商
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ vendorsList }}</v-col>
-            </v-row>
-        </v-col>
     </v-row>
 
     <v-form
@@ -447,11 +389,6 @@ export default {
         valid: false,  // 表單是否驗證欄位 (demo先取消掉)
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
-        note: '',  // 備註
-        licensedMembers: [],  // 需證照人員
-        commonMembers: [],  // 作業人員
-        allLicenseMembers: [],  // 所有林鐵人員
-        vendors: [],  // 外包廠商
         dialog: false,  // dialog 是否顯示
         reason: '',  // 退回原因
         dateMenuShow: {  // 日曆是否顯示
@@ -526,13 +463,6 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
-        // 合併外包廠商字串
-        vendorsList() {
-            let arr = this.vendors.map(item => {
-                return `${ item.VendorName } (${ item.PeopleCount }人)`
-            })
-            return arr.join('、')
-        },
     },
     methods: {
         ...mapActions('system', [
@@ -543,8 +473,6 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
-            this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
-            this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
 
             // 設定上面的欄位資料
             this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
@@ -566,11 +494,11 @@ export default {
             this.bottomItems = [
                 { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
                 { oneline: true, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
+                { oneline: true, icon: 'mdi-note', title: '備註', text: obj.Memo.replace(/\n/g, '<br>') },
+                { oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: obj.PeopleLicense.map(ele => ele.PeopleName).join('、') },
+                { oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、') },
+                { oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: obj.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') },
             ]
-
-            this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
-            this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
-            this.vendors = obj.OutSourceCount  // 外包廠商
 
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
             this.allLicenseMembers = arr.map(ele => ({  // 因為要當下拉選單，所以重新組合

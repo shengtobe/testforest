@@ -7,96 +7,8 @@
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障描述
-                    </span>
-                </v-col>
+        <BottomTable :items="bottomItems" />
 
-                <v-col class="white pa-3"
-                    v-html="malfunctionDes"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="note"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>需證照人員
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ licensedMembers }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>作業人員
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ commonMembers }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>外包廠商
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ vendorsList }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-wrench</v-icon>維修情況
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="fixSituation"
-                ></v-col>
-            </v-row>
-        </v-col>
-        
         <v-col cols="12" class="mt-8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時統計
@@ -631,6 +543,7 @@ import { mapState, mapActions } from 'vuex'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import BottomTable from '@/components/BottomTable.vue'
 import { acceptanceOrder } from '@/apis/workList/maintain'
 
 export default {
@@ -640,12 +553,6 @@ export default {
         totalHourValid: true,  // 總工時是否驗證欄位
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
-        note: '',  // 備註
-        licensedMembers: [],  // 需證照人員
-        commonMembers: [],  // 作業人員
-        vendors: [],  // 外包廠商
-        malfunctionDes: '',  // 故障描述
-        fixSituation: '',  // 維修情況
         dialog: false,  // dialog 是否顯示
         dialogTitle: '',  // dialog 標題
         dialogApiName: '',  // 使用的 API 函式名稱
@@ -671,16 +578,13 @@ export default {
             shortage: false,  // 是否缺料
         },
         topItems: {  // 上面的欄位
-            fixTime: { icon: 'mdi-calendar-text', title: '報修時間', text: '' },
             eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
             createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
             creater: { icon: 'mdi-account', title: '立案人', text: '' },
+            createDate: { icon: 'mdi-calendar-text', title: '立案時間', text: '' },
             fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
             dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-            agent: { icon: 'mdi-account', title: '代理人', text: '' },
             fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            workDate: { icon: 'mdi-calendar-text', title: '維修時間', text: '' },
             acceptanceTime: { icon: 'mdi-calendar-text', title: '預計驗收日期', text: '' },
             enterControl: { icon: 'mdi-alert-outline', title: '進場管制申請', text: '' },
             specialDanger: { icon: 'mdi-alert-outline', title: '特殊危害作業', text: '' },
@@ -690,7 +594,9 @@ export default {
             arrivalFixDate: { icon: 'mdi-calendar-text', title: '到修日期', text: '' },
             startFixDate: { icon: 'mdi-calendar-text', title: '動工日期', text: '' },
             endFixDate: { icon: 'mdi-calendar-text', title: '完工日期', text: '' },
+            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
         },
+        bottomItems: [],  // 下面的欄位
         crossShow: false,  // demo 用的平交道項目是否顯示
         crossItem: {  // 平交道項目
             type: {  // 車種
@@ -728,7 +634,10 @@ export default {
             warningTone: '',  // 警音，無聲音(no)、太小聲(small)
         },
     }),
-    components: { TopBasicTable },
+    components: {
+        TopBasicTable,
+        BottomTable,
+    },
     watch: {
         // 平交道警報裝置全部失效(有勾選)的話，設施回復預設值
         'crossItem.eqAllerr': function(val) {
@@ -763,13 +672,6 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
-        // 合併外包廠商字串
-        vendorsList() {
-            let arr = this.vendors.map(item => {
-                return `${ item.VendorName } (${ item.PeopleCount }人)`
-            })
-            return arr.join('、')
-        },
         // 工時統計的總金額
         totalMoney() {
             return this.tableItems.reduce((a,b)=>a + b.Count * b.Price, 0)
@@ -784,21 +686,16 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
-            this.malfunctionDes = obj.Malfunction.replace(/\n/g, '<br>')  // 故障描述
-            this.note = obj.Memo.replace(/\n/g, '<br>')  // 備註
-            this.fixSituation = obj.MaintainStatus.replace(/\n/g, '<br>')  // 維修情況
 
             // 設定上面的欄位資料
-            this.topItems.fixTime.text = obj.CreateDTime  // 報修時間
             this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
             this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
             this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
             this.topItems.creater.text = obj.Creator  // 立案人
             this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
             this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.agent.text = obj.AgentName  // 代理人
-            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')  // 維修類型
-            this.topItems.workDate.text = `${obj.DispatchDDay} ${obj.DispatchDHour}時`  // 維修時間
+            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
+            this.topItems.createDate.text = `${obj.CreateDDay} ${obj.CreateDTime}時`  // 立案時間
             this.topItems.acceptanceTime.text = obj.ExpectedDT  // 預計驗收日期
             this.topItems.enterControl.text = (obj.WorkApplication == 'T')? '是' : '否'  // 進場管制申請
             this.topItems.specialDanger.text = (obj.WorkSp == 'T')? '是' : '否'  // 特殊危害作業
@@ -809,9 +706,17 @@ export default {
             this.topItems.startFixDate.text = obj.StartWorkDDate  // 動工日期
             this.topItems.endFixDate.text = obj.FinishDDate  // 完工日期
 
-            this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
-            this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
-            this.vendors = obj.OutSourceCount  // 外包廠商
+            // 設定下面的欄位資料
+            this.bottomItems = [
+                { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
+                { oneline: true, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
+                { oneline: true, icon: 'mdi-note', title: '備註', text: obj.Memo.replace(/\n/g, '<br>') },
+                { oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: obj.PeopleLicense.map(ele => ele.PeopleName).join('、') },
+                { oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、') },
+                { oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: obj.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') },
+                { oneline: true, icon: 'mdi-wrench', title: '維修情況', text: obj.MaintainStatus.replace(/\n/g, '<br>') },
+            ]
+            
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
         },
         // 顯示金額Dialog
@@ -870,7 +775,7 @@ export default {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
                     this.chLoadingShow()
-                    this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
+                    // this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                 })
             }
         },
