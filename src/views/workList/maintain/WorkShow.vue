@@ -633,7 +633,6 @@ export default {
                         FinishDTime: this.ipt.endFixMin,  // 完工日期(分)
                         MaintainStatus: this.ipt.fixSituation,  // 維修情況
                         WorkTimeData: this.jobHour.items,  // 工時統計資料
-                        TotalSpent: this.totalMoney,  // 工時的總金額
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {

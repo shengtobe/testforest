@@ -113,11 +113,53 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
+                    <!-- 表格最上面插入 toolbar 及 dialog -->
+                    <template v-slot:top>
+                        <v-dialog v-model="moneyDialog" max-width="450px">
+                            <v-card>
+                                <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+                                    請輸入金額
+                                    <v-spacer></v-spacer>
+                                    <v-btn dark fab small text @click="moneyDialog = false" class="mr-n2">
+                                        <v-icon>mdi-close</v-icon>
+                                    </v-btn>
+                                </v-card-title>
+
+                                <v-card-text class="px-6 py-4">
+                                    <v-row>
+                                        <v-col cols="12" sm="8">
+                                            <v-text-field
+                                                v-model.trim.number="jobPrice"
+                                                solo
+                                                placeholder="請輸入金額"
+                                                :rules="[v => Number.isFinite(v) || '請輸入整數或小數']"
+                                            ></v-text-field>
+                                        </v-col>
+
+                                        <v-col cols="12" sm="4">
+                                            <v-btn color="green" dark large @click="saveMoney">確定</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
+                            </v-card>
+                        </v-dialog>
+                    </template>
+
+                    <template v-slot:item.Price="{ item }">
+                        <span class="red--text font-weight-black">{{ item.Price }}</span>
+                        <v-btn small dark fab color="info darken-1"
+                            @click="showMoneyDialog(item)"
+                            class="ml-4"
+                        >
+                            <v-icon dark>mdi-pen</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:footer>
                         <v-divider></v-divider>
 
                         <p class="py-2 text-center">
-                            總金額： <span class="red--text">{{ totalMoney }}</span>
+                            總金額： <span class="red--text">{{ new Intl.NumberFormat().format(totalMoney) }}</span>
                         </p>
                     </template>
                 </v-data-table>
@@ -471,6 +513,8 @@
         </v-col>
     </v-row>
 
+    <!-- 工作項金額 dialog -->
+
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px">
         <v-card>
@@ -587,7 +631,7 @@ import { mapState, mapActions } from 'vuex'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import { maintainOrder } from '@/apis/workList/maintain'
+import { acceptanceOrder } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -611,10 +655,13 @@ export default {
         headers: [  // 工時標題
             { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作項', value: 'Job', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        jobPrice: '', // 工作項金額
+        moneyDialog: false,  // 金額 dialog 是否顯示
+        editIdx: 0,  // 總工時編輯中資料的索引值
         totalHour: '',  // 總工時
         delay: {  // 延後驗收
             dialogShow: false,
@@ -725,7 +772,7 @@ export default {
         },
         // 工時統計的總金額
         totalMoney() {
-            return this.jobHour.items.reduce((a,b)=>a + b.Count * b.Price, 0)
+            return this.tableItems.reduce((a,b)=>a + b.Count * b.Price, 0)
         }
     },
     methods: {
@@ -765,8 +812,18 @@ export default {
             this.licensedMembers = obj.PeopleLicense.map(ele => ele.PeopleName).join('、')  // 需證照人員(demo暫時用id)
             this.commonMembers = obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、')  // 作業人員
             this.vendors = obj.OutSourceCount  // 外包廠商
-            this.totalMoney = obj.TotalSpent  // 工時統計的總金額
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
+        },
+        // 顯示金額Dialog
+        showMoneyDialog(item) {
+            this.editIdx = this.tableItems.indexOf(item)  // 編輯中的資料索引
+            this.jobPrice = item.Price  // 現有值帶入
+            this.moneyDialog = true
+        },
+        // 確定工作項金額
+        saveMoney() {
+            this.tableItems[this.editIdx].Price = this.jobPrice
+            this.moneyDialog = false
         },
         // 顯示 dialog
         showDialog(bool) {
@@ -792,14 +849,29 @@ export default {
         // 送出 (同意驗收)
         save() {
             if (confirm('你確定要驗收嗎?')) {
-                this.isLoading = true
+                this.chLoadingShow()
 
-                // 範例效果
-                setTimeout(() => {
-                    // 驗收完後，轉頁到搜尋頁
-                    this.chMsgbar({ success: true, msg: '驗收成功' })
-                    // this.$router.push({ path: '/worklist/maintain' })
-                }, 1000)
+                acceptanceOrder({
+                    WorkOrderID: this.workNumber,  // 工單編號
+                    TotalSpent: this.totalMoney,  // 總金額
+                    TotalWorkTime: this.totalHour,  // 總工時
+                    WorkTimeData: this.tableItems,  // 工時統計資料
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '送出成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                    this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
+                })
             }
         },
         delaySave() {

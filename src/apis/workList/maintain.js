@@ -109,3 +109,12 @@ export function fetchJobName(data) { return axios(
         data,
     }
 )}
+
+// 送出驗證
+export function acceptanceOrder(data) { return axios(
+    {
+        url: '/mmis/order/acceptance',
+        method: 'post',
+        data,
+    }
+)}
