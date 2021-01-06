@@ -47,7 +47,6 @@
             <v-btn class="ma-2" dark
                 :loading="isLoading"
                 color="brown"
-                v-if="status == '已驗收待結案'"
             >竣工單</v-btn>
 
             <template v-if="!done">
@@ -55,34 +54,34 @@
                     :loading="isLoading"
                     color="error"
                     @click="showDialog(true)"
-                    v-if="status == '已驗收待結案'"
+                    v-if="status == '4'"
                 >退回</v-btn>
 
                 <v-btn class="ma-2" dark
                     :loading="isLoading"
                     color="yellow darken-2"
                     @click="showDialog(false)"
-                    v-if="status == '已驗收待結案'"
+                    v-if="status == '4'"
                 >徹銷</v-btn>
 
                 <v-btn dark class="ma-2"
                     :loading="isLoading"
                     color="success"
                     @click="save"
-                    v-if="status == '已驗收待結案'"
+                    v-if="status == '4'"
                 >結案</v-btn>
             </template>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
-        <v-col cols="12" class="error--text" v-if="status == '已驗收待結案'">
+        <v-col cols="12" class="error--text" v-if="status == '4'">
             <h4>按鈕出現說明</h4>
             竣工單、退回、徹銷、結案：結案人
         </v-col>
     </v-row>
 
     <!-- 退回 dialog -->
-    <v-dialog v-model="dialog" max-width="600px" v-if="status == '已驗收待結案'">
+    <v-dialog v-model="dialog" max-width="600px" v-if="status == '4'">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
@@ -122,12 +121,13 @@ import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import { closeOrder } from '@/apis/workList/maintain'
 
 export default {
-    props: ['itemData', 'closeStatus'],
+    props: ['itemData'],
     data: () => ({
         done: false,  // 是否完成頁面操作
-        status: '',  // 狀態
+        status: '',  // 處理狀態
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
         dialog: false,  // dialog 是否顯示
@@ -183,10 +183,11 @@ export default {
         ]),
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
+            this.status = obj.Status  // 處理階段(值)
 
             // 設定上面的欄位資料
             this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
-            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
+            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段(顯示的文字)
             this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
             this.topItems.creater.text = obj.Creator  // 立案人
             this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
@@ -241,14 +242,27 @@ export default {
         },
         // 確定結案
         save() {
-            this.isLoading = true
+            if (confirm('你確定要結案嗎?')) {
+                this.chLoadingShow()
 
-            // 範例效果
-            setTimeout(() => {
-                // 成功時，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '結案成功' })
-                this.$router.push({ path: '/worklist/maintain' })
-            }, 1000)
+                closeOrder({
+                    WorkOrderID: this.workNumber,  // 工單編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '結案成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，結案失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
         },
     },
     created() {

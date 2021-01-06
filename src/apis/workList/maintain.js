@@ -118,3 +118,12 @@ export function acceptanceOrder(data) { return axios(
         data,
     }
 )}
+
+// 結案送出
+export function closeOrder(data) { return axios(
+    {
+        url: '/mmis/order/close',
+        method: 'post',
+        data,
+    }
+)}

@@ -49,9 +49,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchWorkOrderOne, deleteOrder } from '@/apis/workList/maintain'
+import { fetchWorkOrderOne, deleteOrder, closeOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -77,6 +77,11 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
         // 更換科室時，自動選該科室人員清單的第一人
@@ -141,13 +146,23 @@ export default {
             if (confirm('你確定要結案嗎?')) {
                this.chLoadingShow()
                 
-                // 範例效果
-                setTimeout(() => {
-                    // 結案完後，轉頁到搜尋頁
-                    this.chMsgbar({ success: true, msg: '結案成功' })
-                    this.done = true  // 隱藏頁面操作按鈕
+                closeOrder({
+                    WorkOrderID: this.workNumber,  // 工單編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '結案成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，結案失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },
