@@ -19,13 +19,24 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>勞工類型
+                <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>身分證
             </h3>
-            <v-select
-                v-model="ipt.type"
-                :items="opts.type"
+            <v-text-field
+                v-model.trim="ipt.idCard"
                 solo
-            ></v-select>
+                placeholder="請輸入身分證"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>護照號碼
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.passport"
+                solo
+                placeholder="請輸入護照號碼"
+            ></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -48,6 +59,39 @@
                 solo
                 placeholder="請輸入年齡"
             ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-school</v-icon>教育程度
+            </h3>
+            <v-select
+                v-model="ipt.education"
+                :items="opts.educ"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" md="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>住址
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.address"
+                solo
+                placeholder="請輸入住址"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>勞工類型
+            </h3>
+            <v-select
+                v-model="ipt.type"
+                :items="opts.type"
+                solo
+            ></v-select>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -97,28 +141,6 @@
                 v-model.trim="ipt.jobTitle"
                 solo
                 placeholder="請輸入職稱"
-            ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-school</v-icon>教育程度
-            </h3>
-            <v-select
-                v-model="ipt.education"
-                :items="opts.educ"
-                solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="6">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>住址
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.address"
-                solo
-                placeholder="請輸入住址"
             ></v-text-field>
         </v-col>
 
@@ -233,6 +255,28 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點(緯度)
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.lat"
+                solo
+                placeholder="請輸入緯度"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點(經度)
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.lng"
+                solo
+                placeholder="請輸入經度"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類別
             </h3>
             <v-select
@@ -293,7 +337,9 @@
                 solo
             ></v-select>
         </v-col>
+    </v-row>
 
+    <v-row class="px-2">
         <v-col cols="12" sm="6">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>直接原因
@@ -487,6 +533,8 @@ export default {
         ipt: {},
         defaultIpt: {
             name: '',  // 罹災者姓名
+            idCard: '',  // 身分證
+            passport: '',  // 護照號碼
             type: 1,  // 勞工類型
             sex: '男',  // 性別
             old: '',  // 年齡
@@ -503,6 +551,8 @@ export default {
             min: '00',  // 發生時間(分)
             weather: '晴',  // 氣候
             location: '',  // 發生地點
+            lat: '',  // 發生地點(緯度)
+            lng: '',  // 發生地點(經度)
             accidentType: 1,  // 事故類別
             accidentResult: 1,  // 事故結果
             injurySite: 1,  // 傷害部位
@@ -613,6 +663,8 @@ export default {
                     let obj = {
                         workDepart: '阿里山車站',  // 工作部門
                         name: '王小明',  // 罹災者姓名
+                        idCard: 'S122456789',  // 身分證
+                        passport: 'D88800548',  // 護照號碼
                         type: 1,  // 勞工類型
                         sex: '男',  // 性別
                         old: 34,  // 年齡
@@ -627,6 +679,8 @@ export default {
                         findHour: '09',  // 發生日期(時)
                         findMin: '45',  // 發生日期(分)
                         location: '工具間',  // 發生地點
+                        lat: '23.444131',  // 發生地點(緯度)
+                        lng: '120.776988',  // 發生地點(經度)
                         weather: '晴',  // 氣候
                         accidentType: 1,  // 事故類別
                         accidentResult: 2,  // 事故結果
@@ -673,6 +727,8 @@ export default {
         setInitDate(obj) {
             this.ipt.workDepart = obj.workDepart  // 工作部門
             this.ipt.name = obj.name  // 罹災者姓名
+            this.ipt.idCard = obj.idCard  // 身分證
+            this.ipt.passport = obj.passport  // 護照號碼
             this.ipt.type = obj.type  //勞工類型
             this.ipt.sex = obj.sex  // 性別
             this.ipt.old = obj.old  // 年齡
@@ -687,6 +743,8 @@ export default {
             this.ipt.hour = obj.findHour // 發生日期(時)
             this.ipt.min = obj.findMin  // 發生日期(分)
             this.ipt.location = obj.location  // 發生地點
+            this.ipt.lat = obj.lat  // 發生地點(緯度)
+            this.ipt.lng = obj.lng  // 發生地點(經度)
             this.ipt.weather = obj.weather  // 氣候
             this.ipt.accidentType = obj.accidentType  // 事故類別
             this.ipt.accidentResult = obj.accidentResult  // 事故結果

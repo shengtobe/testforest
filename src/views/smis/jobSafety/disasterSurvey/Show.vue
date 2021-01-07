@@ -97,6 +97,34 @@
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點(緯度)
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">{{ lat }}</v-col>
+            </v-row>
+        </v-col>
+
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點(經度)
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">{{ lng }}</v-col>
+            </v-row>
+        </v-col>
+
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
                         <v-icon class="mr-1 mb-1">mdi-cloud</v-icon>氣候
                     </span>
                 </v-col>
@@ -502,6 +530,8 @@ export default {
         routeId: '',
         topItems: {  // 上面的欄位
             name: { icon: 'mdi-account', title: '罹災者姓名', text: '' },
+            idCard: { icon: 'mdi-barcode', title: '身分證', text: '' },
+            passport: { icon: 'mdi-barcode', title: '護照號碼', text: '' },
             workDepart: { icon: 'mdi-calendar-text', title: '工作部門', text: '' },
             type: { icon: 'mdi-snowflake', title: '勞工類型', text: '' },
             sex: { icon: 'mdi-human-male-female', title: '性別', text: '' },
@@ -518,6 +548,8 @@ export default {
         depart: '',  // 發生單位
         date: '',  // 發生日期
         location: '',  // 發生地點
+        lat: '',  // 發生地點(緯度)
+        lng: '',  // 發生地點(經度)
         weather: '',  // 氣候
         accidentType: '',  // 事故類別
         accidentResult: '',  // 事故結果
@@ -573,6 +605,8 @@ export default {
                 let obj = {
                     workDepart: '阿里山車站',  // 工作部門
                     name: '王小明',  // 罹災者姓名
+                    idCard: 'S122456789',  // 身分證
+                    passport: 'D88800548',  // 護照號碼
                     type: 1,  // 勞工類型
                     sex: '男',  // 性別
                     old: 34,  // 年齡
@@ -587,6 +621,8 @@ export default {
                     findHour: '09',  // 發生日期(時)
                     findMin: '45',  // 發生日期(分)
                     location: '工具間',  // 發生地點
+                    lat: '23.444131',  // 發生地點(緯度)
+                    lng: '120.776988',  // 發生地點(經度)
                     weather: '晴',  // 氣候
                     accidentType: '工作傷害事故',  // 事故類別
                     accidentResult: '輕傷',  // 事故結果
@@ -631,6 +667,8 @@ export default {
         setShowData(obj) {
             this.topItems.workDepart.text = obj.workDepart  // 工作部門
             this.topItems.name.text = obj.name  // 罹災者姓名
+            this.topItems.idCard.text = obj.idCard  // 身分證
+            this.topItems.passport.text = obj.passport  // 護照號碼
             this.topItems.type.text = (obj.type == 1)? '本處員工' : '承攬商勞工'  // 勞工類型
             this.topItems.sex.text = obj.sex  // 性別
             this.topItems.old.text = obj.old  // 年齡
@@ -646,6 +684,8 @@ export default {
             this.depart = obj.depart  // 發生單位
             this.date = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發生日期
             this.location = obj.location  // 發生地點
+            this.lat = obj.lat  // 發生地點(緯度)
+            this.lng = obj.lng  // 發生地點(經度)
             this.weather = obj.weather  // 氣候
             this.accidentType = obj.accidentType  // 事故類別
             this.accidentResult = obj.accidentResult  // 事故結果
