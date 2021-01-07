@@ -121,7 +121,7 @@ import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { closeOrder } from '@/apis/workList/maintain'
+import { closeOrder, withdrawOrder, cancelOrder } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -223,7 +223,7 @@ export default {
         showDialog(bool) {
             // 若為 true 是退回、false 是徹銷
             this.dialogTitle = (bool)? '退回原因' : '徹銷原因'
-            this.dialogApiName = (bool)? 'api1' : 'api2'
+            this.dialogApiName = bool  // true 為退回，false 為徹銷
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
         },
@@ -231,14 +231,45 @@ export default {
         withdraw() {
             this.isLoading = true
 
-            // 由 this.dialogApiName 來判斷要傳送的 API
-            
-            // 範例效果
-            setTimeout(() => {
-                // 退回完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
-                this.$router.push({ path: '/worklist/maintain' })
-            }, 1000)
+            if (this.dialogApiName) {
+                withdrawOrder({
+                    WorkOrderID: this.workNumber,  // 工單編號
+                    ReturnReason: this.reason,  // 退回原因
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    this.isLoading = this.dialog = false
+                })
+            } else {
+                cancelOrder({
+                    WorkOrderID: this.workNumber,  // 工單編號
+                    CancelReason: this.reason,  // 徹銷原因
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    this.isLoading = this.dialog = false
+                })
+            }
         },
         // 確定結案
         save() {

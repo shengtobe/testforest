@@ -380,7 +380,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { maintainOrder, fetchJobName } from '@/apis/workList/maintain'
+import { maintainOrder, fetchJobName, withdrawOrder } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -534,13 +534,24 @@ export default {
         withdraw() {
             this.isLoading = true
             
-            // 範例效果
-            setTimeout(() => {
-                // 退回完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '退回成功' })
-                this.done = true  // 隱藏頁面操作按鈕
+            withdrawOrder({
+                WorkOrderID: this.workNumber,  // 工單編號
+                ReturnReason: this.reason,  // 退回原因
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '退回成功' })
+                    this.done = true  // 隱藏頁面操作按鈕
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，退回失敗' })
+            }).finally(() => {
                 this.isLoading = this.dialog = false
-            }, 1000)
+            })
         },
         // 送出
         save() {

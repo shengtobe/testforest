@@ -127,3 +127,21 @@ export function closeOrder(data) { return axios(
         data,
     }
 )}
+
+// 退回
+export function withdrawOrder(data) { return axios(
+    {
+        url: '/mmis/order/return',
+        method: 'put',
+        data,
+    }
+)}
+
+// 徹銷
+export function cancelOrder(data) { return axios(
+    {
+        url: '/mmis/order/cancel',
+        method: 'delete',
+        data,
+    }
+)}
