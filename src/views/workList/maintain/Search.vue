@@ -153,45 +153,60 @@
             </v-col>
         </v-row>
 
-        <v-row class="px-2" align="end">
+        <v-row class="px-2">
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-alert-outline</v-icon>是否徹銷
+                </h3>
+                <v-select
+                    v-model="ipt.cancel"
+                    :items="[{ text: '未徹銷', value: 'F' }, { text: '已徹銷', value: 'T' }]"
+                    solo
+                ></v-select>
+            </v-col>
+
             <v-col cols="12" md="7">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
                 </h3>
 
-                <v-row>
-                    <v-col cols="12" sm="3">
+                <v-row no-gutters>
+                    <v-col cols="12" sm="3" class="mb-3 mb-sm-0 pr-sm-3">
                         <v-text-field
                             hide-details
                             v-model="ipt.eqNumber1"
                             solo
+                            placeholder="系統"
                         ></v-text-field> 
                     </v-col>
 
-                    <v-col cols="12" sm="3">
+                    <v-col cols="12" sm="3" class="mb-3 mb-sm-0 pr-sm-3">
                         <v-text-field
                             hide-details
                             v-model="ipt.eqNumber2"
                             ref="eqNumber2"
                             solo
+                            placeholder="位置"
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" sm="3">
+                    <v-col cols="12" sm="3" class="mb-3 mb-sm-0 pr-sm-3">
                         <v-text-field
                             hide-details
                             v-model="ipt.eqNumber3"
                             ref="eqNumber3"
                             solo
+                            placeholder="設備"
                         ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" sm="3">
+                    <v-col cols="12" sm="3" class="mb-3 mb-sm-0 pr-sm-3">
                         <v-text-field
                             hide-details
                             v-model="ipt.eqNumber4"
                             ref="eqNumber4"
                             solo
+                            placeholder="序號"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -290,6 +305,7 @@ export default {
             eqNumber3: '',  // 設備標示編號3
             eqNumber4: '',  // 設備標示編號4
             shortage: 'F',  // 是否缺料 (預設不缺料)
+            cancel: 'F',  // 是否徹銷
             fixType: '1',  // 維修類型
             moneyStart: '',  // 總費用(最小金額)
             moneyEnd: '',  // 總費用(最大金額)
@@ -339,6 +355,7 @@ export default {
                     { tableColumn: 'Shortage', columnValue: this.ipt.shortage },  // 是否缺料
                     { tableColumn: 'Type', columnValue: this.ipt.fixType },  // 維修類型
                     { tableColumn: 'WorkSubject', columnValue: this.ipt.subject },  // 故障主旨
+                    { tableColumn: 'CancelStatus', columnValue: this.ipt.cancel },  // 是否徹銷
                     { tableColumn: 'MaintainCode_System', columnValue: this.ipt.eqNumber1 },  // 設備標示編號1
                     { tableColumn: 'MaintainCode_Loc', columnValue: this.ipt.eqNumber2 },  // 設備標示編號2
                     { tableColumn: 'MaintainCode_Eqp', columnValue: this.ipt.eqNumber3 },  // 設備標示編號3
