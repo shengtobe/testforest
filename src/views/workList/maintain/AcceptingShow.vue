@@ -544,7 +544,7 @@ import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { acceptanceOrder, withdrawOrder, cancelOrder } from '@/apis/workList/maintain'
+import { acceptanceOrder, withdrawOrder, cancelOrder, delayOrder } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -810,15 +810,37 @@ export default {
                 })
             }
         },
+        // 延後驗收
         delaySave() {
             this.isLoading = true
 
+            delayOrder({
+                WorkOrderID: this.workNumber,  // 工單編號
+                DelayDTime: this.delay.newDate,  // 延後驗收時間
+                DelayReason: this.delay.reason,  // 延後驗收原因
+                LostMateriel: (this.delay.shortage)? 'T' : 'F',  // 是否缺料
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '延後驗收成功' })
+                    this.done = true  // 隱藏頁面操作按鈕
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+            }).finally(() => {
+                this.isLoading = this.delay.dialogShow = false
+            })
+
             // 範例效果
-            setTimeout(() => {
-                // 延後驗收完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '延後驗收成功' })
-                // this.$router.push({ path: '/worklist/maintain' })
-            }, 1000)
+            // setTimeout(() => {
+            //     // 延後驗收完後，轉頁到搜尋頁
+            //     this.chMsgbar({ success: true, msg: '延後驗收成功' })
+            //     // this.$router.push({ path: '/worklist/maintain' })
+            // }, 1000)
         }
     },
     created() {

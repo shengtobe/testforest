@@ -145,3 +145,12 @@ export function cancelOrder(data) { return axios(
         data,
     }
 )}
+
+// 退回
+export function delayOrder(data) { return axios(
+    {
+        url: '/mmis/order/delay',
+        method: 'put',
+        data,
+    }
+)}
