@@ -485,6 +485,7 @@ export default {
                 // 檢查是否有權限編輯
 
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
+                this.ipt.malfunctionDes = res.data.Malfunction  // 故障描述
 
                 // 初始化林鐵人員下拉選項預設值
                 this.initMemberSelect()

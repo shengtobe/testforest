@@ -207,12 +207,12 @@ export default {
             // 設定下面的欄位資料
             this.bottomItems = [
                 { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
-                { oneline: true, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
-                { oneline: true, icon: 'mdi-note', title: '備註', text: obj.Memo.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-note', title: '備註', text: obj.Memo.replace(/\n/g, '<br>') },
                 { oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: obj.PeopleLicense.map(ele => ele.PeopleName).join('、') },
                 { oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、') },
                 { oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: obj.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') },
-                { oneline: true, icon: 'mdi-wrench', title: '維修情況', text: obj.MaintainStatus.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-wrench', title: '維修情況', text: obj.MaintainStatus.replace(/\n/g, '<br>') },
             ]
             
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料

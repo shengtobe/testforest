@@ -114,7 +114,7 @@ export default {
             // 設定下面的欄位資料
             this.bottomItems = [
                 { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
-                { oneline: true, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
             ]
         },
         // 刪除

@@ -13,7 +13,7 @@ export const CarAccidentEventRouter = [
     {
         linkText: '事故事件詳細內容',  // 已立案
         path: '/smis/car-accident-event/:id/show', 
-        component: () => import('@/views/smis/carAccidentEvent/Show.vue')
+        component: () => import('@/views/smis/carAccidentEvent/PageRouter.vue')
     },
     {
         linkText: '編輯事故事件',

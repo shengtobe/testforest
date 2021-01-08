@@ -357,31 +357,33 @@ export default {
             // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
             // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
 
-            this.isLoading = true
-            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
+                    sessionStorage.itemStatus = '1'
+                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
                     break
                 case 2:  // 審核中 (審核完備資料)
-                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/review` })
+                    sessionStorage.itemStatus = '2'
+                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/review` })
                     break
                 case 3:  // 已完備資料
-                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/complated` })
+                    sessionStorage.itemStatus = '3'
+                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/complated` })
                     break
                 case 4: // 審核中 (審核措施落實)
-                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
+                    sessionStorage.itemStatus = '4'
+                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
                     break
                 case 5: // 改善措施已落實
-                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
+                    sessionStorage.itemStatus = '5'
+                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
                     break
                 default:
                     break
             }
-            setTimeout(() => {
-                this.isLoading = false
-                window.open(routeData.href, '_blank')
-            }, 1000)
+
+            let routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
+            window.open(routeData.href, '_blank')
         },
     },
     created() {
