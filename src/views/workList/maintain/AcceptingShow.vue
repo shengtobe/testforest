@@ -386,10 +386,10 @@
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <v-btn class="ma-2" dark
+            <!-- <v-btn class="ma-2" dark
                 :loading="isLoading"
                 color="brown"
-            >竣工單</v-btn>
+            >竣工單</v-btn> -->
 
             <template v-if="!done">
                 <v-btn class="ma-2" dark
@@ -834,13 +834,6 @@ export default {
             }).finally(() => {
                 this.isLoading = this.delay.dialogShow = false
             })
-
-            // 範例效果
-            // setTimeout(() => {
-            //     // 延後驗收完後，轉頁到搜尋頁
-            //     this.chMsgbar({ success: true, msg: '延後驗收成功' })
-            //     // this.$router.push({ path: '/worklist/maintain' })
-            // }, 1000)
         }
     },
     created() {

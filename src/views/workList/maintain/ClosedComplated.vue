@@ -44,10 +44,10 @@
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <v-btn class="ma-2" dark
+            <!-- <v-btn class="ma-2" dark
                 :loading="isLoading"
                 color="brown"
-            >竣工單</v-btn>
+            >竣工單</v-btn> -->
 
             <template v-if="!done">
                 <v-btn class="ma-2"

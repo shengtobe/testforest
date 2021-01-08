@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { carAccidentEventStatus, locationOpts, evtTypes } from '@/assets/js/smisData'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -157,6 +157,11 @@ export default {
         TopBasicTable,
         BottomTable,
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -177,7 +182,7 @@ export default {
             this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
             this.topItems.findLocation.text = `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M`  // 發現地點
             this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
-            this.topItems.status.text = carAccidentEventStatus.find(ele => ele.value == obj.status).text  // 事故事件狀態
+            this.topItems.status.text = carAccidentEventStatus.find(ele => ele.value == obj.status).text  // 事故事件狀態(顯示的文字)
 
             // 設定下面的欄位資料
             this.bottomItems = [

@@ -3,14 +3,11 @@
     <!-- 待派工 -->
     <Show :itemData="itemData" v-if="status == '1'" />
 
-    <!-- 已派工待維修 -->
-    <WorkShow :itemData="itemData" v-if="status == '2'" />
+    <!-- 審核中、已完備資料 -->
+    <ReviewComplated :itemData="itemData" v-if="status == '2' || status == '3'" />
 
-    <!-- 已維修待驗收 -->
-    <AcceptingShow :itemData="itemData" v-if="status == '3'" />
-
-    <!-- 已驗收待結案、已結案 -->
-    <ClosedComplated :itemData="itemData" v-if="status == '4' || status == '5'" />
+    <!-- 審核中、改善措施已落實 -->
+    <Fulfill :itemData="itemData" v-if="status == '4' || status == '5'" />
 </div>
 </template>
 
@@ -19,9 +16,8 @@ import { mapActions } from 'vuex'
 // import { fetchWorkOrderOne } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Show from '@/views/smis/carAccidentEvent/Show.vue'
-import WorkShow from '@/views/workList/maintain/WorkShow.vue'
-import AcceptingShow from '@/views/workList/maintain/AcceptingShow.vue'
-import ClosedComplated from '@/views/workList/maintain/ClosedComplated.vue'
+import ReviewComplated from '@/views/smis/carAccidentEvent/ReviewComplated.vue'
+import Fulfill from '@/views/smis/carAccidentEvent/Fulfill.vue'
 
 export default {
     data: () => ({
@@ -30,9 +26,8 @@ export default {
     }),
     components: {
         Show,
-        WorkShow,
-        AcceptingShow,
-        ClosedComplated,
+        ReviewComplated,
+        Fulfill,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -130,7 +125,88 @@ export default {
                                 note: '住院3天',
                             },
                         ],
+                        controlItems: [  // 控制措施
+                            {
+                                id: 21,
+                                subject: '定期巡檢枕木',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.pdf', link: '/demofile/123.pdf' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '456.xlsx',
+                                        link: '/demofile/456.xlsx'
+                                    },
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 36,
+                                subject: '定期巡檢扣件',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 45,
+                                subject: '維修後慢行觀察',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 49,
+                                subject: '定期校驗軌道檢測儀',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 53,
+                                subject: '強化鋼軌與軌枕間之扣夾力',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                        ],
                         summary: '摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字',  // 改善措施摘要
+                        controlReview: ' 檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要',  // 檢討摘要
+                        evidences: [  // 改善措施證據
+                            { fileName: '123.docx', link: '/demofile/123.docx' },
+                            { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                        ],
                     }
                 }
 
