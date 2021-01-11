@@ -25,10 +25,9 @@ export default {
         status: '',  // 狀態
     }),
     components: {
-        ListShow,
-        WorkShow,
-        AcceptingShow,
-        ClosedComplated,
+        Show,
+        ReviewComplated,
+        Fulfill,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
