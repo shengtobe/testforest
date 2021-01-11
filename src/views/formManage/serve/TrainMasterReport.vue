@@ -625,6 +625,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     CloseJobApplication() {
       this.AddJobApplication = false;

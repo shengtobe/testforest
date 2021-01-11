@@ -49,7 +49,8 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          v-model="ipt2.depart"
+          :items="formDepartOptions"
           solo
         />
       </v-col>
@@ -166,7 +167,7 @@
                 </v-radio-group>
                 </v-col>
               </v-row>
-              <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+              <v-expansion-panels :disabled="disabled" multiple>
                 <v-expansion-panel>
                   <v-expansion-panel-header color="teal" class="white--text">轉轍器</v-expansion-panel-header>
                   <v-expansion-panel-content>
@@ -369,6 +370,11 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { maintainStatusOpts } from '@/assets/js/workList'
+import { fetchFormOrderList, fetchFormOrderOne } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
@@ -446,6 +452,12 @@ export default {
           dd: "王大明",
         },
       ],
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       ipt: {
         // department: "",
         // name: JSON.parse(localStorage.getItem("user")).name,
@@ -475,16 +487,58 @@ export default {
         { question: "阿里山方向-是否正常作用" },
       ],
       suggest: "", // 改善建議
+      formDepartOptions: [  // 通報單位下拉選單
+            { text: '不限', value: '' },
+            ...formDepartOptions,
+        ],
     };
   },
   components: { Pagination }, // 頁碼
+  computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
+  created() {
+      this.ipt2 = { ...this.defaultIpt }
+  },
   methods: {
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      this.chLoadingShow()
+
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: 'RP006',  // DB table
+        KeyItem: [ 
+          {"Column":"StartDayVlaue","Value":this._data.z},
+          {"Column":"EndDayVlaue","Value":this._data.df},
+          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+                ],
+        QyName:[
+          'CreatorID',  // 
+          'WorkOrderID',  // 
+          'DispatchID',  // 
+        ],
+      }).then(res => {
+        this.tableItems = JSON.parse(res.data.order_list)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

@@ -485,6 +485,8 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;

@@ -355,6 +355,7 @@ export default {
                     'Status'
                 ],
             }).then(res => {
+                console.log(res.data);
                 this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
                 console.log(err)
