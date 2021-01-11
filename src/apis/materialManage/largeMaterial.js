@@ -18,3 +18,21 @@ export function largeQueryDetail(data) {
         data,
     }
 )}
+// 列車、軌道、車道設備 資料新增/修改
+export function largeQueryEdit(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/largeedit',
+        method: 'post',
+        data,
+    }
+)}
+// 列車、軌道、車道設備 資料刪除
+export function largeQueryDelete(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/largedelete',
+        method: 'post',
+        data,
+    }
+)}
