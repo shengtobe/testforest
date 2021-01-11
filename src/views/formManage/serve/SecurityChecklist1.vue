@@ -379,7 +379,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items_3[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -429,7 +429,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items_4[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -932,7 +932,7 @@ export default {
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
         var step;
-        for (step = 0; step < 11; step++) {
+        for (step = 0; step < 13; step++) {
           this.ipt.items[step].status1 = dat[step].SwitchLock
           this.ipt.items[step].status2 = dat[step].Rust
           this.ipt.items[step].status3 = dat[step].Bearing

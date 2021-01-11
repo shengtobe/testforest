@@ -227,7 +227,7 @@
                         <v-col cols="12" sm="2">
                             <h3 class="mb-1">備註<br/><br/></h3>
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -274,7 +274,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status1"
+                            v-model="ipt.items_2[idx].status1"
                             class="pa-0 ma-0">
                             <v-radio color="success" label="正常" value="1"></v-radio>
                             <v-radio color="red" label="異常" value="2"></v-radio>
@@ -282,7 +282,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items_2[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -385,6 +385,9 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      DB_Table: "RP004",
+      nowTime: "",
+      test23: "test1111",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
@@ -461,11 +464,11 @@ export default {
           { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
           { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
           { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
+        ],
+        items_2: [
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
         ],
       },
       items1: [
@@ -516,6 +519,10 @@ export default {
     },
     // 搜尋
     search() {
+      console.log("Search click!")
+      var today = new Date();
+      console.log("1609")
+
       this.chLoadingShow()
 
       fetchFormOrderList({
@@ -528,12 +535,16 @@ export default {
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
                 ],
         QyName:[
-          'CreatorID',  // 
-          'WorkOrderID',  // 
-          'DispatchID',  // 
+          "RPFlowNo",
+          "ID",
+          "Name",
+          "CheckDay",
+          "CheckStatus"
         ],
       }).then(res => {
-        this.tableItems = JSON.parse(res.data.order_list)
+        let tbBuffer = JSON.parse(res.data.DT)
+        let aa = this.unique(tbBuffer)
+        this.tableItems = aa
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
@@ -543,8 +554,80 @@ export default {
     },
     // 關閉 dialog
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+      createFormOrder({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {
+            "Chk1":
+            [
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"2", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
+                "Bearing":this.ipt.items[1].status3, "SwitchClean":this.ipt.items[1].status4, "Memo_1":this.ipt.items[1].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"3", "SwitchLock":this.ipt.items[2].status1, "Rust":this.ipt.items[2].status2, 
+                "Bearing":this.ipt.items[2].status3, "SwitchClean":this.ipt.items[2].status4, "Memo_1":this.ipt.items[2].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"4", "SwitchLock":this.ipt.items[3].status1, "Rust":this.ipt.items[3].status2, 
+                "Bearing":this.ipt.items[3].status3, "SwitchClean":this.ipt.items[3].status4, "Memo_1":this.ipt.items[3].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"5", "SwitchLock":this.ipt.items[4].status1, "Rust":this.ipt.items[4].status2, 
+                "Bearing":this.ipt.items[4].status3, "SwitchClean":this.ipt.items[4].status4, "Memo_1":this.ipt.items[4].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"6", "SwitchLock":this.ipt.items[5].status1, "Rust":this.ipt.items[5].status2, 
+                "Bearing":this.ipt.items[5].status3, "SwitchClean":this.ipt.items[5].status4, "Memo_1":this.ipt.items[5].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"7", "SwitchLock":this.ipt.items[6].status1, "Rust":this.ipt.items[6].status2, 
+                "Bearing":this.ipt.items[6].status3, "SwitchClean":this.ipt.items[6].status4, "Memo_1":this.ipt.items[6].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"8", "SwitchLock":this.ipt.items[7].status1, "Rust":this.ipt.items[7].status2, 
+                "Bearing":this.ipt.items[7].status3, "SwitchClean":this.ipt.items[7].status4, "Memo_1":this.ipt.items[7].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"9", "SwitchLock":this.ipt.items[8].status1, "Rust":this.ipt.items[8].status2, 
+                "Bearing":this.ipt.items[8].status3, "SwitchClean":this.ipt.items[8].status4, "Memo_1":this.ipt.items[8].note
+              },
+              {
+                "CheckDay":this.nowTime, "SwitchLoc":"0", "SwitchNo":"10", "SwitchLock":this.ipt.items[9].status1, "Rust":this.ipt.items[9].status2, 
+                "Bearing":this.ipt.items[9].status3, "SwitchClean":this.ipt.items[9].status4, "Memo_1":this.ipt.items[9].note
+              },
+              
+            ],
+            "Chk2_AlishanStation":
+            {
+                "Sig_Chiayi":this.ipt.items_2[0].status1, "Memo_2":this.ipt.items_2[0].note, 
+                "Sig_Alishan":this.ipt.items_2[1].status1, "Memo_3":this.ipt.items_2[1].note, 
+                "Light":this.ipt.items_2[2].status1, "Memo_4":this.ipt.items_2[2].note, 
+            }
+          }
+        ]
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     close() {
+      console.log("close!")
       this.Add = false;
       this.dialog3 = false;
       this.dialogShowEdit = false;
@@ -555,6 +638,60 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
+    viewPage(item) {
+      console.log("item: " + item)
+      console.log("RPFlowNo: " + item.RPFlowNo)
+      this.chLoadingShow()
+        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+        fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+                ],
+        QyName:[
+          "CheckDay",
+          "DepartName",
+          "Name",
+          "CheckMan",
+          "SwitchLoc",
+          "SwitchNo",
+          "SwitchLock",
+          "Rust",
+          "Bearing",
+          "SwitchClean",
+          "Memo_1"
+        ],
+      }).then(res => {
+        console.log(res.data.DT)
+        let dat = JSON.parse(res.data.DT)
+        console.log("data name: " + dat[0].Name)
+        console.log("data time: " + dat[0].CheckDay)
+        this.Add = true
+        // this.zs = res.data.DT.CheckDay
+        this.doMan.name = dat[0].Name
+        let time1 = dat[0].CheckDay.substr(0,10)
+        console.log("data time1: " + time1)
+        this.zs = time1
+        console.log("doMan name: " + this.doMan.name)
+        // this.tableItems = JSON.parse(res.data.DT)
+
+        var step;
+        for (step = 0; step < 10; step++) {
+          this.ipt.items[step].status1 = dat[step].SwitchLock
+          this.ipt.items[step].status2 = dat[step].Rust
+          this.ipt.items[step].status3 = dat[step].Bearing
+          this.ipt.items[step].status4 = dat[step].SwitchClean
+          this.ipt.items[step].note = dat[step].Memo_1
+        }
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },//viewPage
   },
 };
 </script>
