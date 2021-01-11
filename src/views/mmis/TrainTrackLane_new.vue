@@ -176,7 +176,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime,escapeHtml } from '@/assets/js/commonFun'
 // import UploadFileAdd from "@/components/UploadFileAdd.vue";
 import { largeQueryList, largeQueryDetail,largeQueryEdit,largeQueryDelete } from '@/apis/materialManage/largeMaterial'
 import editPage from '@/views/mmis/TrainTrackLaneCreate.vue'
@@ -259,6 +259,9 @@ export default {
     dialog_title: "",
     updateData:{
       StatusPic: 'N',
+      ClientReqTime: '',
+      OperatorID: '',
+
     },
     deleteFlowId: -1,
   }),
@@ -343,9 +346,9 @@ export default {
       this.chLoadingShow()
       const that = this
       const dataKeys = Object.keys(that.detailItems)
-      dataKeys.forEach(e => that.updateData[e] = escapeHtml(that.detailItems[e]))
-      that.updateData[ClientReqTime]=getNowFullTime()  // client 端請求時間
-      that.updateData[OperatorID]=that.userData.UserId  // 操作人id
+      dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])==String)?escapeHtml(that.detailItems[e]):that.detailItems[e])
+      that.updateData.ClientReqTime=getNowFullTime()  // client 端請求時間
+      that.updateData.OperatorID=that.userData.UserId  // 操作人id
       largeQueryEdit(that.updateData).then(res => {
         if (res.data.ErrorCode == 0) {
           that.chMsgbar({ success: true, msg: '編輯成功' })
@@ -434,15 +437,6 @@ export default {
         that.chLoadingShow()
       })
     },
-    //防止SQL inject
-    escapeHtml(unsafe) {
-      return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
   },
   filters: {
     picStatus:(data) => data=='Y'?'有':'無'
