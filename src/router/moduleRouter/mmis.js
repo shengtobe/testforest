@@ -6,7 +6,7 @@ export const MmisRouter = [
         linkText: '列車、軌道、車道設備',
         path: '/mmis/train-track-lane',
         component: () =>
-            import ('@/views/mmis/TrainTrackLane.vue')
+            import ('@/views/mmis/TrainTrackLane_new.vue')
     },
     {
         linkText: '無線電設備管理',

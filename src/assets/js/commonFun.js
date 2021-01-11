@@ -35,3 +35,16 @@ export function verifyIptError(arr, vm) {
     
     alert('送出失敗，請確認「' + errArr.join('、') + '」欄位是否填寫，格式是否正確')
 }
+
+// 表單防止SQL inject
+//參數說明：不安全字串
+//回傳值：安全字串
+export function escapeHtml(unsafe) {
+    console.log(unsafe)
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+  }
