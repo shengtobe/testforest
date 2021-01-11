@@ -382,6 +382,7 @@ export default {
         if (res.data.ErrorCode == 0) {
           //that.chMsgbar({ success: true, msg: '資料取得成功' })
           that.detailItems = res.data.query_detail[0]
+          that.detailItems = decodeObject(that.detailItems)
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
