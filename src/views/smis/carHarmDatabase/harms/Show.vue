@@ -331,6 +331,7 @@ export default {
         setShowData(obj) {
             this.id = obj.id  // 編號
 
+            // 設定上面的欄位資料
             this.topItems.depart.text = obj.depart  // 權責部門
             this.topItems.mode.text = obj.mode  // 營運模式
             this.topItems.wbs.text = obj.wbs  // 關聯子系統
@@ -344,6 +345,16 @@ export default {
             this.indirectReason = obj.indirectReason.replace(/\n/g, '<br>')  // 可能的危害間接原因
             this.note = obj.note.replace(/\n/g, '<br>')  // 備註
             this.controls = [ ...obj.controls ]  // 控制措施
+
+            // 設定下面的欄位資料
+            this.bottomItems = [
+                { oneline: true, icon: 'mdi-cellphone-link-off', title: '設備受損情形', text: obj.eqLoss },
+                { oneline: true, icon: 'mdi-alert-decagram', title: '運轉影響情形', text: obj.serviceShock },
+                { oneline: false, icon: 'mdi-file-document', title: '處置過程', text: obj.handle.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-file-document', title: '檢討過程', text: obj.review.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-file-document', title: '原因分析', text: obj.reason.replace(/\n/g, '<br>') },
+                { oneline: false, icon: 'mdi-file-document', title: '備註說明', text: obj.note.replace(/\n/g, '<br>') },
+            ]
             
             // 影響、運轉影響情形字串
             let arr = []
