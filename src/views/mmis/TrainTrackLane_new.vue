@@ -176,7 +176,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
-import { getNowFullTime,escapeHtml } from '@/assets/js/commonFun'
+import { getNowFullTime,escapeHtml,encodeObject,decodeObject } from '@/assets/js/commonFun'
 // import UploadFileAdd from "@/components/UploadFileAdd.vue";
 import { largeQueryList, largeQueryDetail,largeQueryEdit,largeQueryDelete } from '@/apis/materialManage/largeMaterial'
 import editPage from '@/views/mmis/TrainTrackLaneCreate.vue'
@@ -338,6 +338,7 @@ export default {
             that.selectItem.push(e)
           })
           that.selectItem = [...new Set(that.selectItem)]
+          that.tableItem = decodeObject(that.tableItem)
         }
       });
     },
@@ -345,10 +346,12 @@ export default {
     save(){
       this.chLoadingShow()
       const that = this
-      const dataKeys = Object.keys(that.detailItems)
-      dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])==String)?escapeHtml(that.detailItems[e]):that.detailItems[e])
+      // const dataKeys = Object.keys(that.detailItems)
+      // dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])=="string")?escapeHtml(that.detailItems[e]):that.detailItems[e])
+      that.updateData = {...encodeObject(that.detailItems)}
       that.updateData.ClientReqTime=getNowFullTime()  // client 端請求時間
       that.updateData.OperatorID=that.userData.UserId  // 操作人id
+      //console.log(encodeObject(that.detailItems))
       largeQueryEdit(that.updateData).then(res => {
         if (res.data.ErrorCode == 0) {
           that.chMsgbar({ success: true, msg: '編輯成功' })

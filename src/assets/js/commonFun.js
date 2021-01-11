@@ -40,11 +40,75 @@ export function verifyIptError(arr, vm) {
 //參數說明：不安全字串
 //回傳值：安全字串
 export function escapeHtml(unsafe) {
-    console.log(unsafe)
     return unsafe
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;")
-  }
+}
+
+//表單-把防止的代換換回來
+//參數說明：安全字串
+//回傳值：不安全字串
+export function unescapeHtml(safeString) {
+    return safeString
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, "\"")
+      .replace(/&#039;/g, "\'")
+}
+
+//表單-把物件內部的參數只要是字串的都替換掉，防止inject
+//參數說明：需要替換的物件物件
+//回傳值：代換過的物件
+export function encodeObject(unsafeObject){
+    let safeObject = {}
+    const objectKeys = Object.keys(unsafeObject)
+    objectKeys.forEach((element) => {
+        if (typeof(unsafeObject[element])=='string'){
+            safeObject[element] = escapeHtml(unsafeObject[element])
+        }else if (typeof(unsafeObject[element])=='object'){
+            safeObject[element] = encodeObject(unsafeObject[element])
+        }else{
+            safeObject[element] = unsafeObject[element]
+        }
+    })
+    if(Array.isArray(unsafeObject)){
+        return objToArr(safeObject)
+    }else{
+        return safeObject
+    }
+}
+//表單-把物件內部被替換過的字串換回來
+//參數說明：被替換過的物件
+//回傳值：原始物件
+export function decodeObject(safeObject){
+    let unsafeObject = {}
+    const objectKeys = Object.keys(safeObject)
+    objectKeys.forEach((element) => {
+        if (typeof(safeObject[element])=='string'){
+            unsafeObject[element] = unescapeHtml(safeObject[element])
+        }else if (typeof(safeObject[element])=='object'){
+            unsafeObject[element] = decodeObject(safeObject[element])
+        }else{
+            unsafeObject[element] = safeObject[element]
+        }
+    })
+    if(Array.isArray(safeObject)){
+        return objToArr(unsafeObject)
+    }else{
+        return unsafeObject
+    }
+}
+//將傳入值從物件變成依照key值排序過的array
+//參數說明：要轉換的物件
+//回傳值：陣列
+export function objToArr(obj){
+    let resArray = []
+    const objectKeys = Object.keys(obj)
+    objectKeys.sort()
+    objectKeys.forEach((element) => resArray.push(obj[element]))
+    return resArray
+}
