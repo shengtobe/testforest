@@ -360,23 +360,18 @@ export default {
             switch(item.status) {
                 case 1:  // 已立案
                     sessionStorage.itemStatus = '1'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
                     break
                 case 2:  // 審核中 (審核完備資料)
                     sessionStorage.itemStatus = '2'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/review` })
                     break
                 case 3:  // 已完備資料
                     sessionStorage.itemStatus = '3'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/complated` })
                     break
                 case 4: // 審核中 (審核措施落實)
                     sessionStorage.itemStatus = '4'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
                     break
                 case 5: // 改善措施已落實
                     sessionStorage.itemStatus = '5'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
                     break
                 default:
                     break

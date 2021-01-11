@@ -9,6 +9,17 @@ export const carAccidentEventStatus = [
     { text: '改善措施已落實', value: '5' },
 ]
 
+// 行車危害狀態
+export const carHarmDbStatus = [
+    { text: '已立案', value: '1' },
+    { text: '審核中', value: '2' },
+    { text: '已完備資料', value: '3' },
+    { text: '審核中', value: '4' },
+    { text: '風險已可接受', value: '5' },
+    { text: '審核中', value: '6' },
+    { text: '審核中', value: '7' },
+]
+
 // 事故主類
 // export const MainEvt = [
 //     { text: '重大事故', value: 'major' },

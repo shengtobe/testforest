@@ -19,44 +19,44 @@ export const CarHarmdbRouter = [
     {
         linkText: '已立案',
         path: '/smis/car-harmdb/harms/:id/show',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Show.vue')
+        component: () => import('@/views/smis/carHarmDatabase/harms/PageRouter.vue')
     },
-    {
-        linkText: '審核中',  // 審核完備資料
-        path: '/smis/car-harmdb/harms/:id/review',
-        component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
-        props: { closeStatus: 2 }
-    },
-    {
-        linkText: '已完備資料',
-        path: '/smis/car-harmdb/harms/:id/complated',
-        component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
-        props: { closeStatus: 3 }
-    },
-    {
-        linkText: '審核中',  // 審核風險已可接受
-        path: '/smis/car-harmdb/harms/:id/fulfill-review',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
-        props: { closeStatus: 4 }
-    },
-    {
-        linkText: '風險已可接受',
-        path: '/smis/car-harmdb/harms/:id/fulfill-complated',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
-        props: { closeStatus: 5 }
-    },
-    {
-        linkText: '審核中',  // 審核更新
-        path: '/smis/car-harmdb/harms/:id/update-review',
-        component: () => import('@/views/smis/carHarmDatabase/harms/UpdateReview.vue'),
-        props: { closeStatus: 6 }
-    },
-    {
-        linkText: '審核中',  // 審核作廢
-        path: '/smis/car-harmdb/harms/:id/invalid',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
-        props: { closeStatus: 7 }
-    },
+    // {
+    //     linkText: '審核中',  // 審核完備資料
+    //     path: '/smis/car-harmdb/harms/:id/review',
+    //     component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
+    //     props: { closeStatus: 2 }
+    // },
+    // {
+    //     linkText: '已完備資料',
+    //     path: '/smis/car-harmdb/harms/:id/complated',
+    //     component: () => import('@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'),
+    //     props: { closeStatus: 3 }
+    // },
+    // {
+    //     linkText: '審核中',  // 審核風險已可接受
+    //     path: '/smis/car-harmdb/harms/:id/fulfill-review',
+    //     component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
+    //     props: { closeStatus: 4 }
+    // },
+    // {
+    //     linkText: '風險已可接受',
+    //     path: '/smis/car-harmdb/harms/:id/fulfill-complated',
+    //     component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
+    //     props: { closeStatus: 5 }
+    // },
+    // {
+    //     linkText: '審核中',  // 審核更新
+    //     path: '/smis/car-harmdb/harms/:id/update-review',
+    //     component: () => import('@/views/smis/carHarmDatabase/harms/UpdateReview.vue'),
+    //     props: { closeStatus: 6 }
+    // },
+    // {
+    //     linkText: '審核中',  // 審核作廢
+    //     path: '/smis/car-harmdb/harms/:id/invalid',
+    //     component: () => import('@/views/smis/carHarmDatabase/harms/Fulfill.vue'),
+    //     props: { closeStatus: 7 }
+    // },
     {
         linkText: '危害更新',  // 增加新版本
         path: '/smis/car-harmdb/harms/:id/update',
