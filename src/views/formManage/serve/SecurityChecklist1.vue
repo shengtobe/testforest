@@ -979,7 +979,7 @@ export default {
         this.ipt.items_4[0].status1 = dat[0].Sig_Chiayi
         this.ipt.items_4[0].note = dat[0].Memo_4
         this.ipt.items_4[1].status1 = dat[0].Sig_Alishan
-        this.ipt.items_4[1].note = dat[0].Memo_4
+        this.ipt.items_4[1].note = dat[0].Memo_5
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')

@@ -143,18 +143,18 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <!--v-col cols="12" sm="3">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value  />
-                </v-col>
+                </v-col-->
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">保養人</h3>
                   <v-text-field solo />
                 </v-col>
-                <v-col cols="12" sm="3">
+                <!--v-col cols="12" sm="3">
                   <h3 class="mb-1">站長</h3>
                   <v-text-field solo/>
-                </v-col>
+                </v-col-->
               </v-row>
               <v-expansion-panels :disabled="disabled" multiple>
                 <v-expansion-panel>
@@ -272,7 +272,7 @@
                       colored-border
                       color="teal"
                       elevation="4"
-                      v-for="(item, idx) in items3"
+                      v-for="(item, idx) in items2"
                       :key="idx"
                       class="mb-6 mt-4"
                     >
@@ -282,7 +282,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status1"
+                            v-model="ipt.items_2[idx].status1"
                             class="pa-0 ma-0">
                             <v-radio color="success" label="正常" value="1"></v-radio>
                             <v-radio color="red" label="異常" value="2"></v-radio>
@@ -290,7 +290,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items_2[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -405,58 +405,22 @@ export default {
         depart: '',
         checkManName: ''
       },
+      headers2: [  // 表格顯示的欄位
+            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+      ],
       headers: [
         // 表格顯示的欄位
-        {
-          text: "項次",
-          value: "a0",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "保養日期",
-          value: "aa",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "審查狀態",
-          value: "cc",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "dd",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "功能",
-          value: "shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
-      tableItems: [
-        {
-          a0: "1",
-          aa: "2020-08-01",
-          cc: "已審查",
-          dd: "王大明",
-        },
-        {
-          a0: "2",
-          aa: "2020-08-10",
-          cc: "審查中",
-          dd: "王大明",
-        },
-      ],
+      tableItems: [],
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',
@@ -485,6 +449,8 @@ export default {
         items_2: [
           { status1: "0", note: "" },
           { status1: "0", note: "" },
+        ],
+        items_3: [
           { status1: "0", note: "" },
           { status1: "0", note: "" },
         ],
@@ -529,9 +495,60 @@ export default {
         }),
     },
   created() {
-      this.ipt2 = { ...this.defaultIpt }
+       this.ipt2 = { ...this.defaultIpt }
+      //更新時間
+      var today=new Date();
+      let mStr = today.getMonth()+1;
+      let dStr = today.getDate();
+      if(mStr < 10){
+        mStr = '0' + mStr;
+      }
+      if(dStr < 10){
+        dStr = '0' + dStr;
+      }
+      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
   },
   methods: {
+    initInput(){
+      this.doMan.name = this.userData.UserName;
+      this.zs = this.nowTime;
+      var step;
+      for (step = 0; step < 13; step++) {
+        this.ipt.items[step].status1 = "0"
+        this.ipt.items[step].status2 = "0"
+        this.ipt.items[step].status3 = "0"
+        this.ipt.items[step].status4 = "0"
+        this.ipt.items[step].note = ''
+      }
+      for (step = 0; step < 2; step++) {
+        this.ipt.items_2[step].status1 = "0"
+        this.ipt.items_2[step].note = ''
+      }
+      for (step = 0; step < 2; step++) {
+        this.ipt.items_3[step].status1 = "0"
+        this.ipt.items_3[step].note = ''
+      }
+    },
+    unique(list){
+      var arr = [];
+      let b = false;
+      for (var i = 0; i < list.length; i++) {
+        if (i == 0) arr.push(list[i]);
+        b = false;
+        if (arr.length > 0 && i > 0) {
+          for (var j = 0; j < arr.length; j++) {
+            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
+              b = true;
+              //break;
+            }
+          }
+          if (!b) {
+            arr.push(list[i]);
+          }
+        }
+      }
+      return arr;
+    },
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
@@ -644,8 +661,8 @@ export default {
             {
                 "Sig_Chiayi":this.ipt.items_2[0].status1, "Memo_2":this.ipt.items_2[0].note, 
                 "Sig_Alishan":this.ipt.items_2[1].status1, "Memo_3":this.ipt.items_2[1].note, 
-                "Light_Chiayi":this.ipt.items_2[2].status1, "Memo_4":this.ipt.items_2[2].note, 
-                "Light_Alishan":this.ipt.items_2[3].status1, "Memo_5":this.ipt.items_2[3].note, 
+                "Light_Chiayi":this.ipt.items_3[0].status1, "Memo_4":this.ipt.items_3[0].note, 
+                "Light_Alishan":this.ipt.items_3[1].status1, "Memo_5":this.ipt.items_3[1].note, 
             }
           }
         ]
@@ -695,9 +712,18 @@ export default {
           "Rust",
           "Bearing",
           "SwitchClean",
-          "Memo_1"
+          "Memo_1",
+          "Sig_Chiayi",
+          "Memo_2",
+          "Sig_Alishan",
+          "Memo_3",
+          "Light_Chiayi",
+          "Memo_4",
+          "Light_Alishan",
+          "Memo_5",
         ],
       }).then(res => {
+        this.initInput();
         console.log(res.data.DT)
         let dat = JSON.parse(res.data.DT)
         console.log("data name: " + dat[0].Name)
@@ -719,6 +745,19 @@ export default {
           this.ipt.items[step].status4 = dat[step].SwitchClean
           this.ipt.items[step].note = dat[step].Memo_1
         }
+        console.log("DBIndx: " + DBIndx)
+        let www = dat.length
+        console.log("dat.length: " + www)
+        console.log("dat[0].Memo_2: " + dat[0].Memo_2)
+        this.ipt.items_2[0].status1 = dat[0].Sig_Chiayi
+        this.ipt.items_2[0].note = dat[0].Memo_2
+        this.ipt.items_2[1].status1 = dat[0].Sig_Alishan
+        this.ipt.items_2[1].note = dat[0].Memo_3
+        this.ipt.items_3[0].status1 = dat[0].Light_Chiayi
+        this.ipt.items_3[0].note = dat[0].Memo_4
+        this.ipt.items_3[1].status1 = dat[0].Light_Alishan
+        this.ipt.items_3[1].note = dat[0].Memo_5
+
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')

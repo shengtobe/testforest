@@ -270,7 +270,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status1"
+                            v-model="ipt.items_2[idx].status1"
                             class="pa-0 ma-0">
                             <h3 class="mb-1">轉轍器<br/>是否加鎖
                             </h3>
@@ -283,7 +283,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status2"
+                            v-model="ipt.items_2[idx].status2"
                             class="pa-0 ma-0">
                             <h3 class="mb-1">清除滑板生銹或積油垢</h3>
                             <v-radio color="success" label="已完成" value="1"></v-radio>
@@ -295,7 +295,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status3"
+                            v-model="ipt.items_2[idx].status3"
                             class="pa-0 ma-0">
                             <h3 class="mb-1">各部軸承、聯動桿、油孔注油</h3>
                             <v-radio color="success" label="已完成" value="1"></v-radio>
@@ -307,7 +307,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status4"
+                            v-model="ipt.items_2[idx].status4"
                             class="pa-0 ma-0">
                             <h3 class="mb-1">轉轍器四周環境清潔</h3>
                             <v-radio color="success" label="已完成" value="1"></v-radio>
@@ -318,7 +318,7 @@
                         <v-col cols="12" sm="2">
                             <h3 class="mb-1">備註<br/><br/></h3>
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items_2[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -359,7 +359,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status1"
+                            v-model="ipt.items_3[idx].status1"
                             class="pa-0 ma-0">
                             <v-radio color="success" label="正常" value="1"></v-radio>
                             <v-radio color="red" label="異常" value="2"></v-radio>
@@ -367,7 +367,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items_3[idx].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -431,6 +431,12 @@ export default {
         checkManName: ''
       },
       pageOpt: { page: 1 }, // 目前頁數
+      headers2: [  // 表格顯示的欄位
+            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+      ],
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ID", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -595,6 +601,11 @@ export default {
     },
     // 搜尋
     search() {
+      console.log("Search click!")
+      var today = new Date();
+
+      console.log("1609")
+
       this.chLoadingShow()
 
       fetchFormOrderList({
@@ -607,11 +618,12 @@ export default {
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
                 ],
         QyName:[
-          "DepartCode",
+          "RPFlowNo",
           "ID",
           "Name",
           "CheckDay",
-          "CheckStatus"
+          "CheckStatus",
+          "FlowId"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
@@ -638,27 +650,27 @@ export default {
             "Chk1": 
                 [
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
                     "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"3", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
                     "Bearing":this.ipt.items[1].status3, "SwitchClean":this.ipt.items[1].status4, "Memo_1":this.ipt.items[1].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[2].status1, "Rust":this.ipt.items[2].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"5", "SwitchLock":this.ipt.items[2].status1, "Rust":this.ipt.items[2].status2, 
                     "Bearing":this.ipt.items[2].status3, "SwitchClean":this.ipt.items[2].status4, "Memo_1":this.ipt.items[2].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[3].status1, "Rust":this.ipt.items[3].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"7", "SwitchLock":this.ipt.items[3].status1, "Rust":this.ipt.items[3].status2, 
                     "Bearing":this.ipt.items[3].status3, "SwitchClean":this.ipt.items[3].status4, "Memo_1":this.ipt.items[3].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[4].status1, "Rust":this.ipt.items[4].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"9", "SwitchLock":this.ipt.items[4].status1, "Rust":this.ipt.items[4].status2, 
                     "Bearing":this.ipt.items[4].status3, "SwitchClean":this.ipt.items[4].status4, "Memo_1":this.ipt.items[4].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[5].status1, "Rust":this.ipt.items[5].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"11", "SwitchLock":this.ipt.items[5].status1, "Rust":this.ipt.items[5].status2, 
                     "Bearing":this.ipt.items[5].status3, "SwitchClean":this.ipt.items[5].status4, "Memo_1":this.ipt.items[5].note
                   },
                   {
@@ -666,56 +678,61 @@ export default {
                     "Bearing":this.ipt.items[6].status3, "SwitchClean":this.ipt.items[6].status4, "Memo_1":this.ipt.items[6].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[7].status1, "Rust":this.ipt.items[7].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"4", "SwitchLock":this.ipt.items[7].status1, "Rust":this.ipt.items[7].status2, 
                     "Bearing":this.ipt.items[7].status3, "SwitchClean":this.ipt.items[7].status4, "Memo_1":this.ipt.items[7].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items[8].status1, "Rust":this.ipt.items[8].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"6", "SwitchLock":this.ipt.items[8].status1, "Rust":this.ipt.items[8].status2, 
                     "Bearing":this.ipt.items[8].status3, "SwitchClean":this.ipt.items[8].status4, "Memo_1":this.ipt.items[8].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[0].status1, "Rust":this.ipt.items_2[0].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"8", "SwitchLock":this.ipt.items_2[0].status1, "Rust":this.ipt.items_2[0].status2, 
                     "Bearing":this.ipt.items_2[0].status3, "SwitchClean":this.ipt.items_2[0].status4, "Memo_1":this.ipt.items_2[0].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[1].status1, "Rust":this.ipt.items_2[1].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"10", "SwitchLock":this.ipt.items_2[1].status1, "Rust":this.ipt.items_2[1].status2, 
                     "Bearing":this.ipt.items_2[1].status3, "SwitchClean":this.ipt.items_2[1].status4, "Memo_1":this.ipt.items_2[1].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[2].status1, "Rust":this.ipt.items_2[2].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"12", "SwitchLock":this.ipt.items_2[2].status1, "Rust":this.ipt.items_2[2].status2, 
                     "Bearing":this.ipt.items_2[2].status3, "SwitchClean":this.ipt.items_2[2].status4, "Memo_1":this.ipt.items_2[2].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[3].status1, "Rust":this.ipt.items_2[3].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"14", "SwitchLock":this.ipt.items_2[3].status1, "Rust":this.ipt.items_2[3].status2, 
                     "Bearing":this.ipt.items_2[3].status3, "SwitchClean":this.ipt.items_2[3].status4, "Memo_1":this.ipt.items_2[3].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[4].status1, "Rust":this.ipt.items_2[4].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"16", "SwitchLock":this.ipt.items_2[4].status1, "Rust":this.ipt.items_2[4].status2, 
                     "Bearing":this.ipt.items_2[4].status3, "SwitchClean":this.ipt.items_2[4].status4, "Memo_1":this.ipt.items_2[4].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[5].status1, "Rust":this.ipt.items_2[5].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"18", "SwitchLock":this.ipt.items_2[5].status1, "Rust":this.ipt.items_2[5].status2, 
                     "Bearing":this.ipt.items_2[5].status3, "SwitchClean":this.ipt.items_2[5].status4, "Memo_1":this.ipt.items_2[5].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[6].status1, "Rust":this.ipt.items_2[6].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"20", "SwitchLock":this.ipt.items_2[6].status1, "Rust":this.ipt.items_2[6].status2, 
                     "Bearing":this.ipt.items_2[6].status3, "SwitchClean":this.ipt.items_2[6].status4, "Memo_1":this.ipt.items_2[6].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[7].status1, "Rust":this.ipt.items_2[7].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"22", "SwitchLock":this.ipt.items_2[7].status1, "Rust":this.ipt.items_2[7].status2, 
                     "Bearing":this.ipt.items_2[7].status3, "SwitchClean":this.ipt.items_2[7].status4, "Memo_1":this.ipt.items_2[7].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[8].status1, "Rust":this.ipt.items_2[8].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"24", "SwitchLock":this.ipt.items_2[8].status1, "Rust":this.ipt.items_2[8].status2, 
                     "Bearing":this.ipt.items_2[8].status3, "SwitchClean":this.ipt.items_2[8].status4, "Memo_1":this.ipt.items_2[8].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[9].status1, "Rust":this.ipt.items_2[9].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"26", "SwitchLock":this.ipt.items_2[9].status1, "Rust":this.ipt.items_2[9].status2, 
                     "Bearing":this.ipt.items_2[9].status3, "SwitchClean":this.ipt.items_2[9].status4, "Memo_1":this.ipt.items_2[9].note
                   },
                 ],
-            "Chk2_BeimenStation":
-                {"Sig_Chiayi":"2", "Memo_2":"None2" ,"Sig_Alishan":"1","Memo_3":"None3"}
+            "Chk2_ZhuqiStation":
+                {
+                  "Sig_Chiayi":this.ipt.items_3[0].status1, 
+                  "Memo_2":this.ipt.items_3[0].note, 
+                  "Sig_Alishan":this.ipt.items_3[1].status1,
+                  "Memo_3":this.ipt.items_3[1].note, 
+                }
           }
         ],
       }).then(res => {
@@ -730,6 +747,7 @@ export default {
     },
     // 關閉 dialog
     close() {
+      console.log("close!")
       this.Add = false;
       this.dialog3 = false;
       this.dialogShowEdit = false;
@@ -763,7 +781,11 @@ export default {
           "Rust",
           "Bearing",
           "SwitchClean",
-          "Memo_1"
+          "Memo_1",
+          "Sig_Chiayi",
+          "Memo_2",
+          "Sig_Alishan",
+          "Memo_3",
         ],
       }).then(res => {
         console.log(res.data.DT)
@@ -786,6 +808,7 @@ export default {
           this.ipt.items[step].status3 = dat[step].Bearing
           this.ipt.items[step].status4 = dat[step].SwitchClean
           this.ipt.items[step].note = dat[step].Memo_1
+          DBIndx++
         }
         for (step = 0; step < 10; step++) {
           this.ipt.items_2[step].status1 = dat[step].SwitchLock
@@ -793,7 +816,17 @@ export default {
           this.ipt.items_2[step].status3 = dat[step].Bearing
           this.ipt.items_2[step].status4 = dat[step].SwitchClean
           this.ipt.items_2[step].note = dat[step].Memo_1
+          DBIndx++
         }
+        console.log("DBIndx: " + DBIndx)
+        
+        let www = dat.length
+        console.log("dat.length: " + www)
+        console.log("dat[0].Memo_2: " + dat[0].Memo_2)
+        this.ipt.items_3[0].status1 = dat[0].Sig_Chiayi
+        this.ipt.items_3[0].note = dat[0].Memo_2
+        this.ipt.items_3[1].status1 = dat[0].Sig_Alishan
+        this.ipt.items_3[1].note = dat[0].Memo_3
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
