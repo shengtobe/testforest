@@ -14,6 +14,7 @@
 <script>
 import { mapActions } from 'vuex'
 // import { fetchWorkOrderOne } from '@/apis/workList/maintain'
+import { carAccidentEventStatus, locationOpts, evtTypes } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Show from '@/views/smis/carAccidentEvent/Show.vue'
 import ReviewComplated from '@/views/smis/carAccidentEvent/ReviewComplated.vue'
@@ -75,7 +76,8 @@ export default {
                     this.status = sessionStorage.getItem('itemStatus')
                     sessionStorage.removeItem('itemStatus')  // 清除 sessionStorage
 
-                    this.itemData = {
+                    // 測試資料
+                    let obj = {
                         status: this.status,  // 狀態
                         id: this.$route.params.id,  // 編號
                         findDate: '2017-01-25',  // 發現日期
@@ -208,6 +210,26 @@ export default {
                             { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
                         ],
                     }
+
+                    let topItems = [  // 上面的欄位
+                        { icon: 'mdi-calendar-text', title: '發現日期', text: `${obj.findDate} ${obj.findHour}:${obj.findMin}:00` },
+                        { icon: 'mdi-map-marker', title: '發現地點', text: `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M` },
+                        { icon: 'mdi-snowflake', title: '事故類型', text: evtTypes.find(item => item.value == obj.accidentType).text },
+                        { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == obj.status).text },
+                    ]
+
+                    // 設定下面的欄位資料
+                    let bottomItems = [
+                        { oneline: true, icon: 'mdi-cellphone-link-off', title: '設備受損情形', text: obj.eqLoss },
+                        { oneline: true, icon: 'mdi-alert-decagram', title: '運轉影響情形', text: obj.serviceShock },
+                        { oneline: false, icon: 'mdi-file-document', title: '處置過程', text: obj.handle.replace(/\n/g, '<br>') },
+                        { oneline: false, icon: 'mdi-file-document', title: '檢討過程', text: obj.review.replace(/\n/g, '<br>') },
+                        { oneline: false, icon: 'mdi-file-document', title: '原因分析', text: obj.reason.replace(/\n/g, '<br>') },
+                        { oneline: false, icon: 'mdi-file-document', title: '備註說明', text: obj.note.replace(/\n/g, '<br>') },
+                    ]
+
+                    this.itemData = { ...obj, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
+                    // this.status = res.data.Status
                 }
 
                 this.chLoadingShow()

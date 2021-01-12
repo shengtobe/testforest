@@ -3,7 +3,7 @@
     <h2 class="mb-4">工單編號：{{ workNumber }}</h2>
     
     <!-- 上面的欄位 -->
-    <TopBasicTable2 :items="topItems" />
+    <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
@@ -50,10 +50,9 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchWorkOrderOne, deleteOrder, closeOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import TopBasicTable2 from '@/components/TopBasicTable2.vue'
+import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 
 export default {
@@ -62,21 +61,11 @@ export default {
         workNumber: '',  // 工單編號
         done: false,  // 是否完成頁面操作
         newDispatcher: '',  // 轉單後的新派工人
-        // topItems: {  // 上面的欄位
-        //     eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-        //     createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
-        //     creater: { icon: 'mdi-account', title: '立案人', text: '' },
-        //     createDate: { icon: 'mdi-calendar-text', title: '立案時間', text: '' },
-        //     fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
-        //     dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-        //     fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-        //     status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-        // },
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
     }),
     components: {
-        TopBasicTable2,
+        TopBasicTable,
         BottomTable,
     },
     computed: {

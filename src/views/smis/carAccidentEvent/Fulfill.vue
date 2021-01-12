@@ -274,7 +274,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { carAccidentEventStatus, locationOpts, evtTypes } from '@/assets/js/smisData'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 
@@ -287,12 +286,7 @@ export default {
         files: [],  // 危害檔案
         evidences: [],  // 改善措施檢討證據
         controlReview: '',  // 措施檢討摘要
-        topItems: {  // 上面的欄位
-            findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
-            findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
-            accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: '' },
-        },
+        topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         notifyLinks: [],  // 連結的通報
         deathCount: '',  // 死傷人數
@@ -351,21 +345,8 @@ export default {
         setShowData(obj) {
             this.id = obj.id  // 編號
             this.status = obj.status  // 事故事件狀態(值)
-
-            this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
-            this.topItems.findLocation.text = `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M`  // 發現地點
-            this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
-            this.topItems.status.text = carAccidentEventStatus.find(ele => ele.value == obj.status).text  // 事故事件狀態(顯示的文字)
-
-            // 設定下面的欄位資料
-            this.bottomItems = [
-                { oneline: true, icon: 'mdi-cellphone-link-off', title: '設備受損情形', text: obj.eqLoss },
-                { oneline: true, icon: 'mdi-alert-decagram', title: '運轉影響情形', text: obj.serviceShock },
-                { oneline: false, icon: 'mdi-file-document', title: '處置過程', text: obj.handle.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-file-document', title: '檢討過程', text: obj.review.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-file-document', title: '原因分析', text: obj.reason.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-file-document', title: '備註說明', text: obj.note.replace(/\n/g, '<br>') },
-            ]
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
 
             this.files = [ ...obj.files ]  // 檔案附件
             this.deathCount = obj.deathCount  // 死傷人數
