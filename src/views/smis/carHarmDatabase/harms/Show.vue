@@ -110,7 +110,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { carHarmDbStatus } from '@/assets/js/smisData'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 
@@ -119,15 +118,7 @@ export default {
     data: () => ({
         id: '',  // 編號
         done: false,  // 是否完成頁面操作
-        topItems: {  // 上面的欄位
-            depart: { icon: 'mdi-bank', title: '權責單位', text: '' },
-            mode: { icon: 'mdi-snowflake', title: '營運模式', text: '' },
-            wbs: { icon: 'mdi-source-branch', title: '關聯子系統', text: '' },
-            serious: { icon: 'mdi-format-line-spacing', title: '風險嚴重性', text: '' },
-            frequency: { icon: 'mdi-signal-variant', title: '風險頻率', text: '' },
-            level: { icon: 'mdi-elevation-rise', title: '風險等級', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '危害狀態', text: '' },
-        },
+        topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         tableItems: [],  // 表格資料 (控制措施)
         headers: [  // 表格欄位
@@ -167,34 +158,8 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.id = obj.id  // 編號
-
-            // 影響、運轉影響情形字串
-            let affectsArr = []
-            if (obj.affectTraveler) affectsArr.push('影響旅客')
-            if (obj.affectStaff) affectsArr.push('影響員工')
-            if (obj.affectPublic) affectsArr.push('影響大眾')
-            if (obj.trainLate) affectsArr.push('列車誤點')
-            if (obj.stopOperation) affectsArr.push('中斷營運')
-
-            // 設定上面的欄位資料
-            this.topItems.depart.text = obj.depart  // 權責部門
-            this.topItems.mode.text = obj.mode  // 營運模式
-            this.topItems.wbs.text = obj.wbs  // 關聯子系統
-            this.topItems.serious.text = obj.serious  // 風險嚴重性
-            this.topItems.frequency.text = obj.frequency  // 風險頻率
-            this.topItems.level.text = obj.level  // 風險等級
-            this.topItems.status.text = carHarmDbStatus.find(ele => ele.value == obj.status).text  // 危害狀態(顯示的文字)
-
-            // 設定下面的欄位資料
-            this.bottomItems = [
-                { oneline: false, icon: 'mdi-pen', title: '危害說明', text: obj.desc.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-pen', title: '直接成因', text: obj.reason.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-pen', title: '可能的間接原因', text: obj.indirectReason.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-note', title: '備註', text: obj.note.replace(/\n/g, '<br>') },
-                { oneline: true, icon: 'mdi-alert-decagram', title: '影響、運轉影響情形', text: affectsArr.join('、') },
-                { oneline: true, icon: 'mdi-arrow-expand', title: '衍生事故', text: obj.accidents.join('、') },
-            ]
-
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
         },
         // 作廢

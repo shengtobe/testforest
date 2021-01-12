@@ -16,8 +16,8 @@ export const carHarmDbStatus = [
     { text: '已完備資料', value: '3' },
     { text: '審核中', value: '4' },
     { text: '風險已可接受', value: '5' },
-    { text: '審核中', value: '6' },
-    { text: '審核中', value: '7' },
+    { text: '審核中', value: '6' },  // 審核更新
+    { text: '審核中', value: '7' },  // 審核作廢
 ]
 
 // 事故主類

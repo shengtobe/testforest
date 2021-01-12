@@ -173,7 +173,6 @@ export default {
             this.id = obj.id  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-
             this.files = [ ...obj.files ]  // 檔案附件
             this.finishDeath = obj.finishDeath // 是否完成人員傷亡名單
             this.finishImprove = obj.finishImprove // 是否完成改善措施

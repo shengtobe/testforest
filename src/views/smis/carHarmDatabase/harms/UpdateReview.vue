@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">危害更新審核 (編號：{{ routeId }})</h2>
+    <h2 class="mb-4">危害更新審核 (編號：{{ id }})</h2>
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-12">
@@ -341,7 +341,7 @@ import VersionDiff from '@/components/smis/VersionDiff.vue'
 
 export default {
     data: () => ({
-        routeId: '',
+        id: '',
         done: false,  // 是否完成頁面操作
         before: {  // 變更前
             depart: '',// 權責部門
@@ -407,7 +407,7 @@ export default {
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow()
-            this.routeId = this.$route.params.id
+            this.id = this.$route.params.id
 
             // 新增測試用資料
             setTimeout(() => {

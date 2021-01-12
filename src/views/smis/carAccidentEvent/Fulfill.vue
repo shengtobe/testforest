@@ -347,7 +347,6 @@ export default {
             this.status = obj.status  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-
             this.files = [ ...obj.files ]  // 檔案附件
             this.deathCount = obj.deathCount  // 死傷人數
             this.deathData = [ ...obj.deathData ]  // 死傷資料
