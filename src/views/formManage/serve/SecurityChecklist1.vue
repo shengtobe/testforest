@@ -503,7 +503,7 @@ export default {
         ],
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ID", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -658,10 +658,12 @@ export default {
         this.ipt.items_2[step].status4 = "0"
         this.ipt.items_2[step].note = ''
       }
-      this.ipt.items_3[step].status1 = "0"
-      this.ipt.items_3[step].note = ''
-      this.ipt.items_4[step].status1 = "0"
-      this.ipt.items_4[step].note = ''
+      for (step = 0; step < 2; step++) {
+        this.ipt.items_3[step].status1 = "0"
+        this.ipt.items_3[step].note = ''
+        this.ipt.items_4[step].status1 = "0"
+        this.ipt.items_4[step].note = ''
+      }
     },
     unique(list){
       var arr = [];
@@ -723,6 +725,7 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
+          "FlowId"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
@@ -805,11 +808,11 @@ export default {
                     "Bearing":this.ipt.items[10].status3, "SwitchClean":this.ipt.items[10].status4, "Memo_1":this.ipt.items[10].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[0].status1, "Rust":this.ipt.items_2[0].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"2", "SwitchLock":this.ipt.items_2[0].status1, "Rust":this.ipt.items_2[0].status2, 
                     "Bearing":this.ipt.items_2[0].status3, "SwitchClean":this.ipt.items_2[0].status4, "Memo_1":this.ipt.items_2[0].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"7", "SwitchLock":this.ipt.items_2[1].status1, "Rust":this.ipt.items_2[1].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"7", "SwitchLock":this.ipt.items_2[1].status1, "Rust":this.ipt.items_2[1].status2, 
                     "Bearing":this.ipt.items_2[1].status3, "SwitchClean":this.ipt.items_2[1].status4, "Memo_1":this.ipt.items_2[1].note
                   },
                   {
@@ -817,56 +820,63 @@ export default {
                     "Bearing":this.ipt.items_2[2].status3, "SwitchClean":this.ipt.items_2[2].status4, "Memo_1":this.ipt.items_2[2].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"13", "SwitchLock":this.ipt.items_2[3].status1, "Rust":this.ipt.items_2[3].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"13", "SwitchLock":this.ipt.items_2[3].status1, "Rust":this.ipt.items_2[3].status2, 
                     "Bearing":this.ipt.items_2[3].status3, "SwitchClean":this.ipt.items_2[3].status4, "Memo_1":this.ipt.items_2[3].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"15", "SwitchLock":this.ipt.items_2[4].status1, "Rust":this.ipt.items_2[4].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"15", "SwitchLock":this.ipt.items_2[4].status1, "Rust":this.ipt.items_2[4].status2, 
                     "Bearing":this.ipt.items_2[4].status3, "SwitchClean":this.ipt.items_2[4].status4, "Memo_1":this.ipt.items_2[4].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"17", "SwitchLock":this.ipt.items_2[5].status1, "Rust":this.ipt.items_2[5].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"17", "SwitchLock":this.ipt.items_2[5].status1, "Rust":this.ipt.items_2[5].status2, 
                     "Bearing":this.ipt.items_2[5].status3, "SwitchClean":this.ipt.items_2[5].status4, "Memo_1":this.ipt.items_2[5].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"19", "SwitchLock":this.ipt.items_2[6].status1, "Rust":this.ipt.items_2[6].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"19", "SwitchLock":this.ipt.items_2[6].status1, "Rust":this.ipt.items_2[6].status2, 
                     "Bearing":this.ipt.items_2[6].status3, "SwitchClean":this.ipt.items_2[6].status4, "Memo_1":this.ipt.items_2[6].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"21", "SwitchLock":this.ipt.items_2[7].status1, "Rust":this.ipt.items_2[7].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"21", "SwitchLock":this.ipt.items_2[7].status1, "Rust":this.ipt.items_2[7].status2, 
                     "Bearing":this.ipt.items_2[7].status3, "SwitchClean":this.ipt.items_2[7].status4, "Memo_1":this.ipt.items_2[7].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"23", "SwitchLock":this.ipt.items_2[8].status1, "Rust":this.ipt.items_2[8].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"23", "SwitchLock":this.ipt.items_2[8].status1, "Rust":this.ipt.items_2[8].status2, 
                     "Bearing":this.ipt.items_2[8].status3, "SwitchClean":this.ipt.items_2[8].status4, "Memo_1":this.ipt.items_2[8].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"25", "SwitchLock":this.ipt.items_2[9].status1, "Rust":this.ipt.items_2[9].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"25", "SwitchLock":this.ipt.items_2[9].status1, "Rust":this.ipt.items_2[9].status2, 
                     "Bearing":this.ipt.items_2[9].status3, "SwitchClean":this.ipt.items_2[9].status4, "Memo_1":this.ipt.items_2[9].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"27", "SwitchLock":this.ipt.items_2[10].status1, "Rust":this.ipt.items_2[10].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"27", "SwitchLock":this.ipt.items_2[10].status1, "Rust":this.ipt.items_2[10].status2, 
                     "Bearing":this.ipt.items_2[10].status3, "SwitchClean":this.ipt.items_2[10].status4, "Memo_1":this.ipt.items_2[10].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"29", "SwitchLock":this.ipt.items_2[11].status1, "Rust":this.ipt.items_2[11].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"29", "SwitchLock":this.ipt.items_2[11].status1, "Rust":this.ipt.items_2[11].status2, 
                     "Bearing":this.ipt.items_2[11].status3, "SwitchClean":this.ipt.items_2[11].status4, "Memo_1":this.ipt.items_2[11].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"31", "SwitchLock":this.ipt.items_2[12].status1, "Rust":this.ipt.items_2[12].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"31", "SwitchLock":this.ipt.items_2[12].status1, "Rust":this.ipt.items_2[12].status2, 
                     "Bearing":this.ipt.items_2[12].status3, "SwitchClean":this.ipt.items_2[12].status4, "Memo_1":this.ipt.items_2[12].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"35", "SwitchLock":this.ipt.items_2[13].status1, "Rust":this.ipt.items_2[13].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"35", "SwitchLock":this.ipt.items_2[13].status1, "Rust":this.ipt.items_2[13].status2, 
                     "Bearing":this.ipt.items_2[13].status3, "SwitchClean":this.ipt.items_2[13].status4, "Memo_1":this.ipt.items_2[13].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"37", "SwitchLock":this.ipt.items_2[14].status1, "Rust":this.ipt.items_2[14].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":"2", "SwitchNo":"37", "SwitchLock":this.ipt.items_2[14].status1, "Rust":this.ipt.items_2[14].status2, 
                     "Bearing":this.ipt.items_2[14].status3, "SwitchClean":this.ipt.items_2[14].status4, "Memo_1":this.ipt.items_2[14].note
                   }
                 ],
             "Chk2_BeimenStation":
-                {"CrossAlarm":"2", "Memo_2":"None2" ,"CrossCable":"1","Memo_3":"None3", "Sig_Chiayi":"1", "Memo_4":"None4", "Sig_Alishan":"1", "Memo_5":"None5"}
+                {"CrossAlarm":this.ipt.items_3[0].status1, 
+                 "Memo_2":this.ipt.items_3[0].note, 
+                 "CrossCable":this.ipt.items_3[1].status1,
+                 "Memo_3":this.ipt.items_3[1].note, 
+                 "Sig_Chiayi":this.ipt.items_4[0].status1,
+                 "Memo_4":this.ipt.items_4[0].note, 
+                 "Sig_Alishan":this.ipt.items_4[1].status1, 
+                 "Memo_5":this.ipt.items_4[1].note}
           }
         ],
       }).then(res => {
@@ -915,9 +925,18 @@ export default {
           "Rust",
           "Bearing",
           "SwitchClean",
-          "Memo_1"
+          "Memo_1",
+          "CrossAlarm",
+          "Memo_2",
+          "CrossCable",
+          "Memo_3",
+          "Sig_Chiayi",
+          "Memo_4",
+          "Sig_Alishan",
+          "Memo_5",
         ],
       }).then(res => {
+        this.initInput();
         console.log(res.data.DT)
         let dat = JSON.parse(res.data.DT)
         console.log("data name: " + dat[0].Name)
@@ -932,13 +951,35 @@ export default {
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
         var step;
-        for (step = 0; step < 13; step++) {
-          this.ipt.items[step].status1 = dat[step].SwitchLock
-          this.ipt.items[step].status2 = dat[step].Rust
-          this.ipt.items[step].status3 = dat[step].Bearing
-          this.ipt.items[step].status4 = dat[step].SwitchClean
-          this.ipt.items[step].note = dat[step].Memo_1
+        var DBIndx = 0
+        for (step = 0; step < 11; step++) {
+          this.ipt.items[step].status1 = dat[DBIndx].SwitchLock
+          this.ipt.items[step].status2 = dat[DBIndx].Rust
+          this.ipt.items[step].status3 = dat[DBIndx].Bearing
+          this.ipt.items[step].status4 = dat[DBIndx].SwitchClean
+          this.ipt.items[step].note = dat[DBIndx].Memo_1
+          DBIndx++
         }
+        for (step = 0; step < 15; step++) {
+          this.ipt.items_2[step].status1 = dat[DBIndx].SwitchLock
+          this.ipt.items_2[step].status2 = dat[DBIndx].Rust
+          this.ipt.items_2[step].status3 = dat[DBIndx].Bearing
+          this.ipt.items_2[step].status4 = dat[DBIndx].SwitchClean
+          this.ipt.items_2[step].note = dat[DBIndx].Memo_1
+          DBIndx++
+        }
+        console.log("DBIndx: " + DBIndx)
+        let www = dat.length
+        console.log("dat.length: " + www)
+        console.log("dat[0].Memo_2: " + dat[0].Memo_2)
+        this.ipt.items_3[0].status1 = dat[0].CrossAlarm
+        this.ipt.items_3[0].note = dat[0].Memo_2
+        this.ipt.items_3[1].status1 = dat[0].CrossCable
+        this.ipt.items_3[1].note = dat[0].Memo_3
+        this.ipt.items_4[0].status1 = dat[0].Sig_Chiayi
+        this.ipt.items_4[0].note = dat[0].Memo_4
+        this.ipt.items_4[1].status1 = dat[0].Sig_Alishan
+        this.ipt.items_4[1].note = dat[0].Memo_4
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
