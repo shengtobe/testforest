@@ -42,7 +42,8 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          v-model="ipt2.depart"
+          :items="formDepartOptions"
           solo
         />
       </v-col>
@@ -70,7 +71,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -96,7 +97,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -104,7 +105,7 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -154,13 +155,13 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <!-- <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value readonly />
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -199,7 +200,7 @@
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="3" />
+                    <v-textarea hide-details auto-grow outlined rows="3" v-model="ipt.items[idx].note"/>
                   </v-col>
                 </v-row>
               </v-alert>
@@ -207,11 +208,11 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="memo_2"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="memo_3"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -220,7 +221,8 @@
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <!-- <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn> -->
+          <v-btn color="success" @click="save">送出</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -229,6 +231,11 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { maintainStatusOpts } from '@/assets/js/workList'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
@@ -251,61 +258,35 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      DB_Table: "RP008",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+    },
+      memo_2: "",
+      memo_3: "",
+      nowTime: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       headers: [
         // 表格顯示的欄位
-        {
-          text: "項次",
-          value: "a0",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "檢查日期",
-          value: "aa",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "審查狀態",
-          value: "cc",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "dd",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "功能",
-          value: "shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
-      tableItems: [
-        {
-          a0: "1",
-          aa: "2020-08-01",
-          cc: "已審查",
-          dd: "王大明",
+      tableItems: [],
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
         },
-        {
-          a0: "2",
-          aa: "2020-08-10",
-          cc: "審查中",
-          dd: "王大明",
-        },
-      ],
       ipt: {
         department: "",
         date: new Date().toISOString().substr(0, 10),
@@ -367,17 +348,167 @@ export default {
     };
   },
   components: { Pagination }, // 頁碼
+  computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
+    created() {
+      this.ipt2 = { ...this.defaultIpt }
+      //更新時間
+      var today=new Date();
+      let mStr = today.getMonth()+1;
+      let dStr = today.getDate();
+      if(mStr < 10){
+        mStr = '0' + mStr;
+      }
+      if(dStr < 10){
+        dStr = '0' + dStr;
+      }
+      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+  },
   methods: {
+    initInput(){
+      console.log("init create window form")
+      this.doMan.name = this.userData.UserName;
+      this.zs = this.nowTime;
+      var step;
+      for (step = 0; step < 24; step++) {
+        this.ipt.items[step].status = "0"
+        this.ipt.items[step].note = ""
+      }
+      this.memo_2 = ""
+      this.memo_3 = ""
+    },
+    newOne(){
+      this.Add = true
+      this.initInput();
+    },
+    unique(list){
+      var arr = [];
+      let b = false;
+      for (var i = 0; i < list.length; i++) {
+        if (i == 0) arr.push(list[i]);
+        b = false;
+        if (arr.length > 0 && i > 0) {
+          for (var j = 0; j < arr.length; j++) {
+            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
+              b = true;
+              //break;
+            }
+          }
+          if (!b) {
+            arr.push(list[i]);
+          }
+        }
+      }
+      return arr;
+    },
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
     // 搜尋
     search() {
-      console.log('click!!')
+      console.log("Search click!")
+      var today = new Date();
+
+      this.chLoadingShow()
+
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'StartDayVlaue','Value':this._data.z},
+          {"Column":"EndDayVlaue","Value":this._data.df},
+          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+                ],
+        QyName:[
+          // "DISTINCT (RPFlowNo)",
+          // // "ID",
+          // // "Name",
+          // // "CheckDay",
+          // // "CheckStatus",
+          // " * "
+          "RPFlowNo",
+          "ID",
+          "Name",
+          "CheckDay",
+          "CheckStatus",
+          "FlowId"
+        ],
+      }).then(res => {
+        let tbBuffer = JSON.parse(res.data.DT)
+        let aa = this.unique(tbBuffer)
+        this.tableItems = aa
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)
+
+      let i;
+      for (i = 0; i < 24; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      obj = new Object()
+      obj.Column = "Advice"
+      obj.Value = this.memo_2
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Measures"
+      obj.Value = this.memo_3
+      arr = arr.concat(obj)
+
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -390,6 +521,89 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
+    viewPage(item) {
+      console.log("item: " + item)
+      console.log("RPFlowNo: " + item.RPFlowNo)
+      this.chLoadingShow()
+        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+        fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+                ],
+        QyName:[
+          "CheckDay",
+          "DepartName",
+          "Name",
+          "CheckMan",
+          "SwitchLoc",
+          "SwitchNo",
+          "SwitchLock",
+          "Rust",
+          "Bearing",
+          "SwitchClean",
+          "Memo_1",
+          "CrossAlarm",
+          "Memo_2",
+          "CrossCable",
+          "Memo_3",
+          "Sig_Chiayi",
+          "Memo_4",
+          "Sig_Alishan",
+          "Memo_5",
+        ],
+      }).then(res => {
+        this.initInput();
+        console.log(res.data.DT)
+        let dat = JSON.parse(res.data.DT)
+        console.log("data name: " + dat[0].Name)
+        console.log("data time: " + dat[0].CheckDay)
+        this.Add = true
+        // this.zs = res.data.DT.CheckDay
+        this.doMan.name = dat[0].Name
+        let time1 = dat[0].CheckDay.substr(0,10)
+        console.log("data time1: " + time1)
+        this.zs = time1
+        console.log("doMan name: " + this.doMan.name)
+        // this.tableItems = JSON.parse(res.data.DT)
+        //123資料
+        var step;
+        var DBIndx = 0
+        // this.ipt.items[0].status = dat[1].SwitchLock
+        // for (step = 1; step < 25; step++) {
+        //   this.ipt.items[step].status = dat[DBIndx].SwitchLock
+        //   this.ipt.items[step].note = dat[DBIndx].Memo_1
+        //   DBIndx++
+        // }
+        // for (step = 0; step < 15; step++) {
+        //   this.ipt.items_2[step].status1 = dat[DBIndx].SwitchLock
+        //   this.ipt.items_2[step].status2 = dat[DBIndx].Rust
+        //   this.ipt.items_2[step].status3 = dat[DBIndx].Bearing
+        //   this.ipt.items_2[step].status4 = dat[DBIndx].SwitchClean
+        //   this.ipt.items_2[step].note = dat[DBIndx].Memo_1
+        //   DBIndx++
+        // }
+        // console.log("DBIndx: " + DBIndx)
+        // let www = dat.length
+        // console.log("dat.length: " + www)
+        // console.log("dat[0].Memo_2: " + dat[0].Memo_2)
+        // this.ipt.items_3[0].status1 = dat[0].CrossAlarm
+        // this.ipt.items_3[0].note = dat[0].Memo_2
+        // this.ipt.items_3[1].status1 = dat[0].CrossCable
+        // this.ipt.items_3[1].note = dat[0].Memo_3
+        // this.ipt.items_4[0].status1 = dat[0].Sig_Chiayi
+        // this.ipt.items_4[0].note = dat[0].Memo_4
+        // this.ipt.items_4[1].status1 = dat[0].Sig_Alishan
+        // this.ipt.items_4[1].note = dat[0].Memo_4
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },//viewPage
   },
 };
 </script>

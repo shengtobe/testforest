@@ -56,7 +56,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -67,7 +67,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -93,7 +93,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -101,7 +101,7 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -145,28 +145,28 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <!-- <v-col cols="12" sm="3">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value  />
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">保養人</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <!-- <v-col cols="12" sm="3">
                   <h3 class="mb-1">站長</h3>
                   <v-text-field solo/>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="12">
                   <h3 class="mb-1">站別</h3>
-            <v-radio-group
-            dense
-            row
-            class="pa-0 ma-0">
-            <v-radio color="blue" label="交力坪車站" value="1"></v-radio>
-            <v-radio color="blue" label="神木車站" value="2"></v-radio>
-            <v-radio color="blue" label="對高岳車站" value="3"></v-radio>
-            </v-radio-group>
+                <v-radio-group
+                dense
+                row v-model="station"
+                class="pa-0 ma-0">
+                <v-radio color="blue" label="交力坪車站" value="1"></v-radio>
+                <v-radio color="blue" label="神木車站" value="2"></v-radio>
+                <v-radio color="blue" label="對高岳車站" value="3"></v-radio>
+                </v-radio-group>
         </v-col>
               </v-row>
               <v-expansion-panels :disabled="disabled" multiple>
@@ -375,7 +375,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne } from '@/apis/formManage/serve'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
@@ -399,6 +399,7 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      station: "",
       DB_Table: "RP005",
       nowTime: "",
       test23: "test1111",
@@ -496,6 +497,7 @@ export default {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
+      this.station = "0";
       var step;
       for (step = 0; step < 2; step++) {
         this.ipt.items[step].status1 = "0"
@@ -540,14 +542,15 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    newOne(){
+      this.Add = true
+      this.initInput();
+    },
     // 搜尋
     search() {
       console.log("Search click!")
       var today = new Date();
-
-      console.log("1609")
       this.chLoadingShow()
-
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -566,7 +569,7 @@ export default {
           "FlowId"
         ],
       }).then(res => {
-        this.tableItems = JSON.parse(res.data.order_list)
+        let tbBuffer = JSON.parse(res.data.DT)
         let aa = this.unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
@@ -590,23 +593,23 @@ export default {
             "Chk1": 
                 [
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":this.value, "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":this.station, "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
                     "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":this.value, "SwitchNo":"2", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":this.station, "SwitchNo":"2", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
                     "Bearing":this.ipt.items[1].status3, "SwitchClean":this.ipt.items[1].status4, "Memo_1":this.ipt.items[1].note
                   },
                 ],
             "Chk2_JiaolipingShenmuDueigaoyueStation":
                 {"Sig_Chiayi":this.ipt.items_2[0].status1, 
-                 "Memo_2":this.ipt.items_3[0].note, 
+                 "Memo_2":this.ipt.items_2[0].note, 
                  "Sig_Alishan":this.ipt.items_2[1].status1,
-                 "Memo_3":this.ipt.items_3[1].note, 
+                 "Memo_3":this.ipt.items_2[1].note, 
                  "Light_Chiayi":this.ipt.items_3[0].status1,
-                 "Memo_4":this.ipt.items_4[0].note, 
+                 "Memo_4":this.ipt.items_3[0].note, 
                  "Light_Alishan":this.ipt.items_3[1].status1, 
-                 "Memo_5":this.ipt.items_4[1].note}
+                 "Memo_5":this.ipt.items_3[1].note}
           }
         ],
       }).then(res => {
@@ -681,6 +684,7 @@ export default {
         console.log("doMan name: " + this.doMan.name)
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
+        this.station = dat[0].SwitchLoc
         var step;
         var DBIndx = 0
         for (step = 0; step < 2; step++) {

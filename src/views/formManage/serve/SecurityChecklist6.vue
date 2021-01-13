@@ -55,7 +55,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -66,7 +66,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -92,7 +92,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -100,7 +100,7 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -150,7 +150,7 @@
                 </v-col-->
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">保養人</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
                 <!--v-col cols="12" sm="3">
                   <h3 class="mb-1">站長</h3>
@@ -158,7 +158,7 @@
                 </v-col-->
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">站別</h3>
-                  <v-radio-group
+                  <v-radio-group v-model="station"
                   dense
                   row
                   class="pa-0 ma-0">
@@ -373,7 +373,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne } from '@/apis/formManage/serve'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
@@ -397,6 +397,7 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      station: "",
       DB_Table: "RP006",
       nowTime: "",
       test23: "test1111",
@@ -409,13 +410,6 @@ export default {
         depart: '',
         checkManName: ''
       },
-      headers: [
-       headers2: [  // 表格顯示的欄位
-            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        ],
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -497,6 +491,7 @@ export default {
   },
   methods: {
      initInput(){
+       this.station = "0";
         this.doMan.name = this.userData.UserName;
         this.zs = this.nowTime;
         var step;
@@ -598,19 +593,19 @@ export default {
             "Chk1": 
                 [
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":value, "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":this.station, "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
                     "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":value, "SwitchNo":"2", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":this.station, "SwitchNo":"2", "SwitchLock":this.ipt.items[1].status1, "Rust":this.ipt.items[1].status2, 
                     "Bearing":this.ipt.items[1].status3, "SwitchClean":this.ipt.items[1].status4, "Memo_1":this.ipt.items[1].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":value, "SwitchNo":"3", "SwitchLock":this.ipt.items[2].status1, "Rust":this.ipt.items[2].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":this.station, "SwitchNo":"3", "SwitchLock":this.ipt.items[2].status1, "Rust":this.ipt.items[2].status2, 
                     "Bearing":this.ipt.items[2].status3, "SwitchClean":this.ipt.items[2].status4, "Memo_1":this.ipt.items[2].note
                   },
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":value, "SwitchNo":"4", "SwitchLock":this.ipt.items[3].status1, "Rust":this.ipt.items[3].status2, 
+                    "CheckDay":this.nowTime, "SwitchLoc":this.station, "SwitchNo":"4", "SwitchLock":this.ipt.items[3].status1, "Rust":this.ipt.items[3].status2, 
                     "Bearing":this.ipt.items[3].status3, "SwitchClean":this.ipt.items[3].status4, "Memo_1":this.ipt.items[3].note
                   },
                   
@@ -698,6 +693,7 @@ export default {
         console.log("doMan name: " + this.doMan.name)
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
+        this.station = dat[0].SwitchLoc;
         var step;
         var DBIndx = 0
         for (step = 0; step < 4; step++) {

@@ -700,10 +700,7 @@ export default {
     search() {
       console.log("Search click!")
       var today = new Date();
-
-      console.log("1609")
       this.chLoadingShow()
-
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id

@@ -802,20 +802,21 @@ export default {
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
         var step;
+        var DBIndx = 0
         for (step = 0; step < 9; step++) {
-          this.ipt.items[step].status1 = dat[step].SwitchLock
-          this.ipt.items[step].status2 = dat[step].Rust
-          this.ipt.items[step].status3 = dat[step].Bearing
-          this.ipt.items[step].status4 = dat[step].SwitchClean
-          this.ipt.items[step].note = dat[step].Memo_1
+          this.ipt.items[step].status1 = dat[DBIndx].SwitchLock
+          this.ipt.items[step].status2 = dat[DBIndx].Rust
+          this.ipt.items[step].status3 = dat[DBIndx].Bearing
+          this.ipt.items[step].status4 = dat[DBIndx].SwitchClean
+          this.ipt.items[step].note = dat[DBIndx].Memo_1
           DBIndx++
         }
         for (step = 0; step < 10; step++) {
-          this.ipt.items_2[step].status1 = dat[step].SwitchLock
-          this.ipt.items_2[step].status2 = dat[step].Rust
-          this.ipt.items_2[step].status3 = dat[step].Bearing
-          this.ipt.items_2[step].status4 = dat[step].SwitchClean
-          this.ipt.items_2[step].note = dat[step].Memo_1
+          this.ipt.items_2[step].status1 = dat[DBIndx].SwitchLock
+          this.ipt.items_2[step].status2 = dat[DBIndx].Rust
+          this.ipt.items_2[step].status3 = dat[DBIndx].Bearing
+          this.ipt.items_2[step].status4 = dat[DBIndx].SwitchClean
+          this.ipt.items_2[step].note = dat[DBIndx].Memo_1
           DBIndx++
         }
         console.log("DBIndx: " + DBIndx)

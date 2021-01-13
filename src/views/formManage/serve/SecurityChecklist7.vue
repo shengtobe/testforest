@@ -54,7 +54,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -65,7 +65,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -91,7 +91,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -99,7 +99,7 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -149,7 +149,7 @@
                 </v-col-->
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">保養人</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
                 <!--v-col cols="12" sm="3">
                   <h3 class="mb-1">站長</h3>
@@ -287,7 +287,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status1"
+                            v-model="ipt.items_2[idx].status1"
                             class="pa-0 ma-0">
                             <v-radio color="success" label="正常" value="1"></v-radio>
                             <v-radio color="red" label="異常" value="2"></v-radio>
@@ -321,7 +321,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne } from '@/apis/formManage/serve'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
@@ -474,6 +474,10 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    newOne(){
+      this.Add = true
+      this.initInput();
+    },
     // 搜尋
     search() {
       console.log("Search click!")
@@ -534,8 +538,8 @@ export default {
                  "Sig_Alishan":this.ipt.items_2[1].status1,
                  "Memo_3":this.ipt.items_2[1].note, 
                  "Sig_Mianyue":this.ipt.items_2[0].status1,
-                 "Memo_4":this.ipt.items_2[0].note, 
-          }
+                 "Memo_4":this.ipt.items_2[0].note,} 
+                }
         ],
       }).then(res => {
         console.log(res.data.DT)
@@ -585,14 +589,12 @@ export default {
           "Bearing",
           "SwitchClean",
           "Memo_1",
-          "CrossAlarm",
+          "Sig_Zhushan",
           "Memo_2",
-          "CrossCable",
-          "Memo_3",
-          "Sig_Chiayi",
-          "Memo_4",
           "Sig_Alishan",
-          "Memo_5",
+          "Memo_3",
+          "Sig_Mianyue",
+          "Memo_4",
         ],
       }).then(res => {
         this.initInput();
@@ -627,8 +629,8 @@ export default {
         this.ipt.items_2[0].note = dat[0].Memo_2
         this.ipt.items_2[1].status1 = dat[0].Sig_Alishan
         this.ipt.items_2[1].note = dat[0].Memo_3
-        this.ipt.items_2[0].status1 = dat[0].Sig_Mianyue
-        this.ipt.items_2[0].note = dat[0].Memo_4
+        this.ipt.items_2[2].status1 = dat[0].Sig_Mianyue
+        this.ipt.items_2[2].note = dat[0].Memo_4
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
