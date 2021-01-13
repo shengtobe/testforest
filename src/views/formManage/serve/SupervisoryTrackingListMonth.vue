@@ -231,6 +231,8 @@ export default {
     return {
       title: "各級主管走動管理督檢紀錄暨追蹤表(每月2 次)",
       newText: "追蹤表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -334,6 +336,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

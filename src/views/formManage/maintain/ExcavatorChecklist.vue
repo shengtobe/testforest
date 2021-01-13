@@ -222,8 +222,9 @@ export default {
     return {
       title: "挖掘機每日作業前檢點表(作業前)",
       newText: "檢點表",
-      panel: [0, 1, 2, 3],
+      isLoading: false,
       disabled: false,
+      panel: [0, 1, 2, 3],
       readonly: false,
       a: "",
       ass: "",
@@ -342,6 +343,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

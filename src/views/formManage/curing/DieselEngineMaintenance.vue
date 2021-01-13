@@ -287,6 +287,8 @@ export default {
   data: () => ({
     title:"柴油引擎保養",
     newText:"保養資料",
+    isLoading: false,
+    disabled: false,
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10) // 通報日期(迄)
@@ -556,6 +558,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;

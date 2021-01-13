@@ -103,3 +103,15 @@ export const dapartOptsForMember = [
     { text: '嘉義車庫', value: '嘉義車庫' },
     { text: '阿里山車庫', value: '阿里山車庫' },
 ]
+
+//-------- 組織下拉選單 部門代號對照表(表單用) --------
+export const formDepartOptions = [
+    { text: '綜合企劃科', value: 'ARCO003' },
+    { text: '鐵路服務科', value: 'ARCO004' },
+    { text: '鐵路維護科', value: 'ARCO015' },
+    { text: '車輛養護科', value: 'ARCO019' },
+    { text: '祕書室', value: 'ARCO023' },
+    { text: '人事室', value: 'ARCO024' },
+    { text: '主計室', value: 'ARCO025' },
+    { text: '政風室', value: 'ARCO026' },
+]

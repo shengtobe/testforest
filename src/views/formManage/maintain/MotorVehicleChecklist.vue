@@ -236,6 +236,8 @@ export default {
     return {
       title: "機動台車輛每日作業前自動檢點表",
       newText: "檢點表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -347,6 +349,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

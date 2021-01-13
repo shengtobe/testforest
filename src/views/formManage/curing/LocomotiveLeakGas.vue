@@ -221,6 +221,8 @@ export default {
   data: () => ({
     title: "機車韌缸漏氣量檢測紀錄表",
     newText: "紀錄表",
+    isLoading: false,
+    disabled: false,
     aas: "",
     bbs: "",
     ccs: "",
@@ -357,6 +359,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;

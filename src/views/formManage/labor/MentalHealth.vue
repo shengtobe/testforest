@@ -235,6 +235,8 @@ export default {
     return {
       title:"心理健康量表",
       newText:"量表",
+      isLoading: false,
+      disabled: false,
       ss: "",
       a: "",
       ass: "",
@@ -393,6 +395,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

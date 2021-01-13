@@ -218,6 +218,8 @@ export default {
     return {
       title:"乙炔熔接裝置每日作業前檢點表(作業前)",
       newText:"檢點表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -289,7 +291,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "1", note: "" },
@@ -324,6 +325,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

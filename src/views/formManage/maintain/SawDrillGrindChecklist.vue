@@ -244,6 +244,8 @@ export default {
     return {
       title: "鋼軌鋸軌、鑽孔、磨軌機定期檢查表(三個月)",
       newText: "檢查表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -356,6 +358,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

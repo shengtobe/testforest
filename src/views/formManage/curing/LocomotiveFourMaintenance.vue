@@ -123,6 +123,8 @@ export default {
   data: () => ({
     title: "柴油液力機車四級檢修記錄表",
     newText: "記錄表",
+    isLoading: false,
+    disabled: false,
     aas: "",
     bbs: "",
     ccs: "",
@@ -268,6 +270,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;

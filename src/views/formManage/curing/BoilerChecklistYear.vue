@@ -932,6 +932,8 @@ export default {
     return {
       title:"鍋爐定期檢查表(年)",
       newText:"檢查表",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -1003,7 +1005,6 @@ export default {
       ],
       ipt: {
         // department: "",
-        // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },
@@ -1098,6 +1099,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

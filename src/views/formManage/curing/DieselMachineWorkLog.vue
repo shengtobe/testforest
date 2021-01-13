@@ -180,6 +180,8 @@ export default {
   data: () => ({
     title:"柴油機車使用前後工作日誌",
     newText:"日誌",
+    isLoading: false,
+    disabled: false,
     a: "",
     z: "",
     q: "",
@@ -274,6 +276,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

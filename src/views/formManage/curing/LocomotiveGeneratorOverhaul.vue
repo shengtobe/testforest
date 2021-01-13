@@ -222,6 +222,8 @@ export default {
   data: () => ({
     title: "柴油液力機車發電機檢修",
     newText: "檢修紀錄",
+    isLoading: false,
+    disabled: false,
     aas: "",
     bbs: "",
     ccs: "",
@@ -392,6 +394,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;

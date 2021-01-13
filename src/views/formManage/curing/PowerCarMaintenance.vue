@@ -278,6 +278,8 @@ export default {
   data: () => ({
     title: "車歷卡",
     newText: "車歷卡",
+    isLoading: false,
+    disabled: false,
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -405,6 +407,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;

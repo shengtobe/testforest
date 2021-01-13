@@ -276,9 +276,11 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      // 自定義變數
       title: "",
       newText: "災害事故調查表(本處員工)",
-      // 自定義變數
+      isLoading: false,
+      disabled: false,
       CheckdayOn: "",
       QueryCheckdayOn: "",
       CheckdayOff: "",
@@ -395,6 +397,8 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;

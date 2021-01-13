@@ -406,9 +406,11 @@ import Pagination from "@/components/Pagination.vue";
 export default {
   data() {
     return {
+      // 自定義變數
       title: "隧道目視安全檢查表",
       newText: "檢查表",
-      // 自定義變數
+      isLoading: false,
+      disabled: false,
       note: "109年05月21日發生西南氣流豪雨，5/22日累積雨量達200mm以上，建立預警機制5/22日阿里山線暫時停駛。",
       temp1: "../../../assets/images/brgImg1_1.jpg",
       sbjNum: [],
@@ -678,6 +680,8 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;

@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">新增{{ title }}</p>
+      <p class="font-weight-black title text-center">新增{{ newText }}</p>
       <v-row class="white px-4">
         <!-- 上面的欄位 -->
         <v-col cols="12" sm="4">
@@ -2670,6 +2670,9 @@
 export default {
   data: () => ({
     title: "職場不法侵害預防之危害辨識及風險評估表",
+    newText: "評估表",
+    isLoading: false,
+    disabled: false,
     menu: false, // 時間選單是否顯示
     ipt: {
       department: "",

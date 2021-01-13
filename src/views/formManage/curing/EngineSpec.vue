@@ -680,6 +680,8 @@ export default {
     return {
       title: "引擎規範",
       newText: "",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       ss2: "",
@@ -752,7 +754,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },
@@ -832,6 +833,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

@@ -47,7 +47,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -394,6 +394,7 @@ export default {
       panel: [0, 1, 2, 3],
       disabled: false,
       readonly: false,
+      isLoading: true,
       a: "",
       ass: "",
       z: "",
@@ -465,7 +466,6 @@ export default {
       ],
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "1", note: "" },
@@ -506,7 +506,29 @@ export default {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      fetchOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: 'MMIS_WorkerOrder',  // DB table
+        KeyItem: [  // 屬性名
+          'CreatorID',  // 立案人id
+          'DispatchID',  // 派工人id
+          'CreateDTime_Start',  // 工單建立日期(起)
+          'CreateDTime_End',  // 工單建立日期(迄)
+          'WorkOrderID',  // 工單編號
+          'Status',  // 處理階段
+          'Shortage',  // 是否缺料
+          'Type',  // 維修類型
+          'MaintainCode_System',  // 設備標示編號1
+          'MaintainCode_Loc',  // 設備標示編號2
+          'MaintainCode_Eqp',  // 設備標示編號3
+          'MaintainCode_Seq',  // 設備標示編號4
+                ],
+      })
+    },
+    save() {
+    },
     // 關閉 dialog
     close() {
       this.Add = false;

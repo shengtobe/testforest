@@ -216,6 +216,8 @@ export default {
     return {
       title: "保安裝置保修工作紀錄簿",
       newText: "紀錄簿",
+      isLoading: false,
+      disabled: false,
       a: "",
       ass: "",
       z: "",
@@ -306,6 +308,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

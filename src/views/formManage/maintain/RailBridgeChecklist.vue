@@ -16,6 +16,8 @@ export default {
     return {
       title: "",
       newText: "",
+      isLoading: false,
+      disabled: false,
       headers: [
         //   { text: 'Calories', value: 'calories' },
         { text: "項次", value: "a1", width: 60},

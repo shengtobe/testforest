@@ -383,6 +383,8 @@ export default {
       // 自定義變數
       title:"_____車庫動力車狀態日報表",
       newText:"日報表",
+      isLoading: false,
+      disabled: false,
       CheckdayOn: "",
       QueryCheckdayOn: "",
       CheckdayOff: "",
@@ -544,6 +546,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

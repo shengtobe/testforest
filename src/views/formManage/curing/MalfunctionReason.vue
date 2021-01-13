@@ -178,6 +178,8 @@ export default {
   data: () => ({
     title: "SL__/DL__故障原因紀錄表",
     newText: "紀錄表",
+    isLoading: false,
+    disabled: false,
     a: "",
     z: "",
     q: "",
@@ -263,6 +265,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

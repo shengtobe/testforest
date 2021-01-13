@@ -235,8 +235,9 @@ export default {
     return {
       title: "鋁梯定期檢查表(半年)",
       newText: "檢查表",
-      panel: [0, 1, 2, 3],
+      isLoading: false,
       disabled: false,
+      panel: [0, 1, 2, 3],
       readonly: false,
       a: "",
       ass: "",
@@ -340,7 +341,87 @@ export default {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      fetchOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: 'RP008',  // DB table
+        KeyItem: [  // 屬性名
+          'FlowId',  // 流水號
+          'StationID',  // 站別
+          'CheckDay',  // 保養日期
+          'DepartCode',  // 保養人部門代碼
+          'DepartName',  // 保養人部門名稱
+          'ID',  // 保養人事編號
+          'Name',  // 保養人姓名
+          'CheckManID',  // 審核人事編號
+          'CheckMan',  // 審核人姓名
+          'SwitchLock',  // 檢查狀態(轉轍器是否加鎖)
+          'Rust',  // 檢查狀態(清除滑板生鏽或積油垢)
+          'Bearing',  // 檢查狀態(各部軸承、聯動桿、油孔注油)
+          'SwitchClean',  // 檢查狀態(轉轍器四周環境清潔)
+          'Memo_1',  // 備註
+          'Sig_Chiayi',  // 檢查狀態(嘉義方向進、出站號誌機是否正常)
+          'Memo_2',  // 備註
+          'Sig_Alishan',  // 檢查狀態(阿里山方向進、出站號誌機是否正常)
+          'Memo_3',  // 備註
+          'Light_Chiayi',  // 檢查狀態(嘉義方向開車燈是否正常；對高岳車站為祝山方向)
+          'Memo_4',  // 備註
+          'Light_Alishan',  // 檢查狀態(阿里山方向開車燈是否正常)
+          'Memo_5',  // 備註
+                ],
+        KeyValue: [  // 屬性值
+          this.ipt.flowId,
+          this.ipt.stationID,
+          this.ipt.checkDay,
+          this.ipt.departCode,
+          this.ipt.departName,
+          this.ipt.iD,
+          this.ipt.name,
+          this.ipt.checkManID,
+          this.ipt.checkMan,
+          this.ipt.switchLock,
+          this.ipt.rust,
+          this.ipt.bearing,
+          this.ipt.switchClean,
+          this.ipt.memo_1,
+          this.ipt.sig_Chiayi,
+          this.ipt.memo_2,
+          this.ipt.sig_Alishan,
+          this.ipt.memo_3,
+          this.ipt.light_Chiayi,
+          this.ipt.memo_4,
+          this.ipt.light_Alishan,
+          this.ipt.memo_5,
+        ],
+        QyName:[
+          'FlowId',  // 流水號
+          'StationID',  // 站別
+          'CheckDay',  // 保養日期
+          'DepartCode',  // 保養人部門代碼
+          'DepartName',  // 保養人部門名稱
+          'ID',  // 保養人事編號
+          'Name',  // 保養人姓名
+          'CheckManID',  // 審核人事編號
+          'CheckMan',  // 審核人姓名
+          'SwitchLock',  // 檢查狀態(轉轍器是否加鎖)
+          'Rust',  // 檢查狀態(清除滑板生鏽或積油垢)
+          'Bearing',  // 檢查狀態(各部軸承、聯動桿、油孔注油)
+          'SwitchClean',  // 檢查狀態(轉轍器四周環境清潔)
+          'Memo_1',  // 備註
+          'Sig_Chiayi',  // 檢查狀態(嘉義方向進、出站號誌機是否正常)
+          'Memo_2',  // 備註
+          'Sig_Alishan',  // 檢查狀態(阿里山方向進、出站號誌機是否正常)
+          'Memo_3',  // 備註
+          'Light_Chiayi',  // 檢查狀態(嘉義方向開車燈是否正常；對高岳車站為祝山方向)
+          'Memo_4',  // 備註
+          'Light_Alishan',  // 檢查狀態(阿里山方向開車燈是否正常)
+          'Memo_5',  // 備註
+        ],
+      })
+    },
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

@@ -182,8 +182,10 @@ import Pagination from "@/components/Pagination.vue";
 
 export default {
   data: () => ({
-      title: "營運異常狀況通報單",
-      newText: "通報單",
+    title: "營運異常狀況通報單",
+    newText: "通報單",
+    isLoading: false,
+    disabled: false,
     a: "",
     z: "",
     q: "",
@@ -278,6 +280,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

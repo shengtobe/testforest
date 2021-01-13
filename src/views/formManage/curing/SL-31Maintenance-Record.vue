@@ -190,6 +190,8 @@ export default {
   data: () => ({
     title: "SL__/DL__進廠維修紀錄",
     newText: "維修紀錄",
+    isLoading: false,
+    disabled: false,
     a: "",
     z: "",
     q: "",
@@ -293,6 +295,8 @@ export default {
     },
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

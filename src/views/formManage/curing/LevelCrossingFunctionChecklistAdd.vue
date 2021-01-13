@@ -4854,6 +4854,8 @@ export default {
   data() {
     return {
       showTF: false,
+      isLoading: false,
+      disabled: false,
       valShow: 0,
       title: "",
       newText: "平交道功能檢查紀錄表",
@@ -5081,6 +5083,8 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {},
+    // 存
+    save() {},
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;
