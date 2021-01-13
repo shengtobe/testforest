@@ -10,17 +10,17 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
         </h3>
-        <v-select solo hide-details />
+        <v-select solo hide-details v-model="ipt.depart" :items="deptData" item-text="value" item-value="key" label="選擇單位"/>
       </v-col>
 
       <v-col cols="12" sm="8" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>持有人
         </h3>
-        <v-text-field solo placeholder="請輸入關鍵字" />
+        <v-text-field solo v-model="ipt.man" placeholder="請輸入持有人編號或姓名" />
       </v-col>
 
-      <v-col cols="12" md="3" align-self="center">
+      <v-col cols="12" md="3" align-self="center" @click="setDataList">
         <v-btn color="green" dark large>
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
@@ -32,8 +32,8 @@
       <v-col cols="12">
         <v-card>
           <v-data-table
-            :headers="headers"
-            :items="tableItems"
+            :headers="header"
+            :items="tableItem"
             :options.sync="pageOpt"
             disable-sort
             disable-filtering
@@ -96,11 +96,11 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">類型</h3>
-                    <v-select :items="Type" label="類型" solo />
+                    <v-select :items="typeData" item-text="value" item-value="key" label="類型" solo />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">單位名稱</h3>
-                    <v-select :items="Dept" label="單位" solo />
+                    <v-select :items="deptData" item-text="value" item-value="key" label="單位" solo />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">車站</h3>
@@ -123,7 +123,7 @@
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+            <v-btn color="success" elevation="4">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -152,11 +152,11 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">類型</h3>
-                    <v-select :items="Type" label="類型" solo />
+                    <v-select :items="typeData" item-text="value" item-value="key" label="類型" solo />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">單位</h3>
-                    <v-select :items="Dept" label="單位" solo />
+                    <v-select :items="deptData" item-text="value" item-value="key" label="單位" solo />
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">車站</h3>
@@ -178,7 +178,7 @@
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
+            <v-btn color="success" elevation="4">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -198,14 +198,41 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
-
+import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
+import { radioQueryList } from '@/apis/materialManage/radioManage'
 export default {
   data: () => ({
     Add: false,
     Edit: false,
     Delete: false,
     pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數
+    typeData: [   //H:手持式、S:固定式、C:車裝台
+      {
+        key: 'H',
+        value: '手持式'
+      },
+      {
+        key: 'S',
+        value: '固定式'
+      },
+      {
+        key: 'C',
+        value: '車裝台'
+      },
+    ],
+    deptData: [
+      {
+        key: 'ARCO004',
+        value: '服務科'
+      },
+      {
+        key: 'ARCO015',
+        value: '維護科'
+      }
+    ],
+    
     tableItems: [
       {
         id: "1",
@@ -248,6 +275,7 @@ export default {
         Holder: "Any",
       },
     ], // 控制措施權責部門的表格資料
+    
     headers: [
       // 控制措施權責部門的表格欄位
       {
@@ -314,13 +342,117 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
     ],
-    Dept: ["服務科", "維護科"],
-    Type: ["手持式", "固定式", "車裝台"],
+    header: [
+      // 控制措施權責部門的表格欄位
+      {
+        text: "項次",
+        value: "id",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "機號",
+        value: "SerialNo",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "位置",
+        value: "Loc",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "類型",
+        value: "Type",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "單位",
+        value: "DepartParentName",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "車站",
+        value: "DepartName",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "持有人編號",
+        value: "ManID",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "持有人",
+        value: "Name",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "修改、刪除",
+        value: "a8",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+    ],
+    ipt: {
+      depart: '',
+      man: ''
+    },
+    tableItem: []
   }),
+  mounted: function() {
+    this.setDataList()
+  },
   components: {
     Pagination,
   },
   methods: {
+    ...mapActions('system', [
+      'chMsgbar',  // messageBar
+      'chLoadingShow'  // 切換 loading 圖顯示
+    ]),
+    setDataList() {
+      const that = this
+      this.chLoadingShow()
+      radioQueryList({
+        DepartCode: that.ipt.depart, 
+        Man: that.ipt.man,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          //that.chMsgbar({ success: true, msg: '送出成功' })
+          that.tableItem = [...res.data.query_list]
+          that.tableItem.forEach(function(e,i){
+            e.id=i+1
+            var indexFind = that.typeData.findIndex((ele) => ele.key == e.Type)
+            e.Type = that.typeData[indexFind].value
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，設備查詢失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        that.tableItem = decodeObject(that.tableItem)
+      })
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -330,6 +462,14 @@ export default {
       this.Edit = false;
       this.Delete = false;
     },
+  },
+  computed: {
+    ...mapState ('user', {
+      userData: state => state.userData,  // 使用者基本資料
+    }),
+  },
+  filters:{
+
   },
   created() {},
 };

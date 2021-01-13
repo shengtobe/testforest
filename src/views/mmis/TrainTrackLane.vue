@@ -10,21 +10,26 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
         </h3>
-        <v-select solo hide-details />
+        <v-select 
+          solo hide-details 
+          v-model="ipt.depart"
+          :items="selectItem"
+          item-text="value"
+          item-value="key"/>
       </v-col>
 
       <v-col cols="12" sm="8" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>設備標示編號
         </h3>
-        <v-text-field solo placeholder="請輸入關鍵字" />
+        <v-text-field solo placeholder="請輸入關鍵字" v-model="ipt.maintain" />
       </v-col>
 
       <v-col cols="12" md="3" align-self="center">
-        <v-btn color="green" dark large>
+        <v-btn color="green" dark large @click="setShowData()">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="Add = true">
+        <v-btn color="indigo" dark large class="ml-2" @click="add">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -33,7 +38,7 @@
         <v-card>
           <v-data-table
             :headers="headers"
-            :items="tableItems"
+            :items="tableItem"
             :single-expand="singleExpand"
             :expanded.sync="expanded"
             item-key="id"
@@ -54,40 +59,46 @@
                 <div class="row">
                   <div class="col-12 col-md-8">
                     <v-chip class="ma-2" color="cyan" label>型號</v-chip>
-                    {{ item.model }}
+                    {{ item.Type }}
                     <v-chip class="ma-2" color="cyan" label>版本</v-chip>
-                    {{ item.version }}
+                    {{ item.Ver }}
                     <v-chip class="ma-2" color="cyan" label>製造商</v-chip>
-                    {{ item.manufacturer }}
+                    {{ item.Company }}
                     <v-chip class="ma-2" color="cyan" label>供應商</v-chip>
-                    {{ item.supplier }}
+                    {{ item.Supplier }}
                     <br />
                     <v-chip class="ma-2" color="cyan" label>維修單位</v-chip>
-                    {{ item.Maintenance }}
+                    {{ item.DepartName }}
                     <v-chip class="ma-2" color="cyan" label>外部維修單位</v-chip>
-                    {{ item.ExternalMaintenance }}
+                    {{ item.OutMaintainDepart }}
                     <v-chip class="ma-2" color="cyan" label>技術文件</v-chip>
                     <v-chip
+                      v-if="item.LocDocument"
                       small
                       label
                       color="primary"
                       class="mr-2 mb-2 mb-sm-0"
                       href="../../../public/demofile/123.docx"
-                      :download="item.Technical"
-                    >{{ item.Technical }}</v-chip>
+                      :download="item.LocDocument"
+                    >{{ item.LocDocument }}</v-chip>
+                    <v-chip v-else>無上傳</v-chip>
                   </div>
                   <div class="col-12 col-md-4">
                     <v-img
+                      v-if="item.LocPic"
                       :lazy-src="url"
                       max-height="172"
                       max-width="280"
                       src="../../../public/demofile/demo3.jpg"
                     />
+                    <v-chip v-else>無上傳照片</v-chip>
                   </div>
                 </div>
               </td>
             </template>
-            <template v-slot:item.a8>
+            
+            <template v-slot:item.StatusPic="{item}">{{item.StatusPic|picStatus}}</template>
+            <template v-slot:item.a8="{item}">
               <v-btn
                 title="編輯"
                 class="mr-2"
@@ -95,11 +106,11 @@
                 dark
                 fab
                 color="info darken-1"
-                @click="Edit = true"
+                @click="goEdit(item.FlowId)"
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="Delete = true">
+              <v-btn title="刪除" small dark fab color="red" @click="confirmDelete(item.FlowId)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -111,8 +122,8 @@
       </v-col>
 
       <!-- 新增設備 modal -->
-      <v-dialog v-model="Add" max-width="900px">
-        <v-card>
+      <!-- <v-dialog v-model="Add" max-width="900px">
+       <v-card>
           <v-card-title class="blue white--text px-4 py-1">
             新增設備
             <v-spacer></v-spacer>
@@ -120,145 +131,30 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備標示編號</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備名稱</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備功能描述</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">型號</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">版本</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">製造商</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">供應商</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">維修單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">外部維修單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">外部維修單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">上傳照片</h3>
-                    <v-file-input solo multiple show-size truncate-length="15" />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">上傳技術文件</h3>
-                    <v-file-input solo multiple show-size truncate-length="15" />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-
+          <editPage :detailItems="detailItems"/>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
             <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
+        
+      </v-dialog> -->
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
         <v-card>
           <v-card-title class="blue white--text px-4 py-1">
-            編輯資料
+            {{dialog_title}}
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備標示編號</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備名稱</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">設備功能描述</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">型號</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">版本</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">製造商</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">供應商</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">維修單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">外部維修單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">外部維修單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">上傳照片</h3>
-                    <v-file-input solo multiple show-size truncate-length="15" />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">上傳技術文件</h3>
-                    <v-file-input solo multiple show-size truncate-length="15" />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
+          <editPage :detailItems="detailItems"/>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
+            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -269,7 +165,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="close">取消</v-btn>
-            <v-btn color="success">刪除</v-btn>
+            <v-btn color="success" @click="goDelete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -278,9 +174,12 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
+import { getNowFullTime,escapeHtml,encodeObject,decodeObject } from '@/assets/js/commonFun'
 // import UploadFileAdd from "@/components/UploadFileAdd.vue";
-
+import { largeQueryList, largeQueryDetail,largeQueryEdit,largeQueryDelete } from '@/apis/materialManage/largeMaterial'
+import editPage from '@/views/mmis/TrainTrackLaneCreate.vue'
 export default {
   data: () => ({
     Add: false,
@@ -295,40 +194,40 @@ export default {
         text: "項次",
         value: "id",
         align: "start",
-        sortable: false,
+        sortable: true,
         divider: true, // 線格
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "單位",
-        value: "a1",
+        value: "DepartName",
 
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "設備標示編號",
-        value: "wbs",
+        value: "MaintainCode",
 
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "設備名稱",
-        value: "device",
+        value: "EqipName",
 
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "照片",
-        value: "photo",
+        value: "StatusPic",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "設備功能描述",
-        value: "text",
+        value: "Description",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
@@ -337,75 +236,170 @@ export default {
         value: "a8",
         align: "center",
         divider: true,
+        sortable: false,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "",
         value: "data-table-expand",
         divider: true,
+        sortable: false,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
     ],
-    tableItems: [
-      {
-        id: "1",
-        a1: "維護科",
-        wbs: "TPK-ALL-SLP1-165",
-        device: "枕木(16*18*12)",
-        photo: "有",
-        text: "軌道組件",
-        model: "000-000-000-001",
-        version: "000-000-001",
-        manufacturer: "ICSC",
-        supplier: "台灣",
-        Maintenance: "維護科",
-        ExternalMaintenance: "廠商A",
-        Technical: "DC-TRK-ALL-SLP-165",
-      },
-      {
-        id: "2",
-        a1: "維護科",
-        wbs: "TPK-ALL-SLP1-165",
-        device: "枕木(16*18*12)",
-        photo: "有",
-        text: "軌道組件",
-      },
-      {
-        id: "3",
-        a1: "維護科",
-        wbs: "TPK-ALL-SLP1-165",
-        device: "枕木(16*18*12)",
-        photo: "有",
-        text: "軌道組件",
-      },
-      {
-        id: "4",
-        a1: "維護科",
-        wbs: "TPK-ALL-SLP1-165",
-        device: "枕木(16*18*12)",
-        photo: "有",
-        text: "軌道組件",
-      },
-      
-    ],
     ipt: {
-      // 給地點組件的預設值要先設
-      location: "l1", // 發現地點
-      locationK: "", // 路線k
-      locationM: "", // 路線m
-      locationOther: "", // 其他地點
+      //查詢條件
+      depart: '',
+      maintain: '',
     },
+    selectItem: [],
+    tableItem: [],
+    isLoading: false,  // 是否讀取中
+    detailItems: { },
+    dialog_title: "",
+    updateData:{
+      StatusPic: 'N',
+      ClientReqTime: '',
+      OperatorID: '',
+
+    },
+    deleteFlowId: -1,
   }),
+  mounted: function() {
+      this.setShowData()
+  },
   components: {
     Pagination,
+    editPage,
     // UploadFileAdd,
   },
-
+  computed: {
+    ...mapState ('user', {
+      userData: state => state.userData,  // 使用者基本資料
+    }),
+  },
   methods: {
+    ...mapActions('system', [
+      'chMsgbar',  // messageBar
+      'chLoadingShow'  // 切換 loading 圖顯示
+    ]),
+    //按下新增按鈕
+    add(){
+      const that = this
+      this.detailItems= {
+        Company: "",
+        DepartCode: that.userData.DeptList[0].DeptId,
+        DepartName: that.userData.DeptList[0].DeptDesc,
+        Description: "",
+        EqipName: "",
+        FlowId: -1,
+        LocDocument: "",
+        LocPic: "",
+        MaintainCode: "",
+        OutMaintainDepart: "",
+        StatusPic: "",
+        Supplier: "",
+        Type: "",
+        Ver: "",
+      }
+      this.dialog_title = "新增設備"
+      this.Edit=true
+    },
+    //抓顯示清單
+    setShowData(){
+      const that = this
+      this.chLoadingShow()
+      largeQueryList({
+        DepartCode: that.ipt.depart, 
+        MaintainCode: '%' + that.ipt.maintain + '%',
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          //that.chMsgbar({ success: true, msg: '送出成功' })
+          that.tableItem = res.data.query_list
+          that.tableItem.forEach(function(e,i){
+            e.id=i+1
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，設備查詢失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        if(that.selectItem==''){
+          that.selectItem.push({key:'',value:'全部單位'})
+          var listDepart = that.tableItem.map((item) => {
+            return {key:item.DepartCode,value:item.DepartName}
+          })
+          listDepart.forEach(function(e){
+            that.selectItem.push(e)
+          })
+          that.selectItem = [...new Set(that.selectItem)]
+          that.tableItem = decodeObject(that.tableItem)
+        }
+      });
+    },
+    //存檔
+    save(){
+      this.chLoadingShow()
+      const that = this
+      // const dataKeys = Object.keys(that.detailItems)
+      // dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])=="string")?escapeHtml(that.detailItems[e]):that.detailItems[e])
+      that.updateData = {...encodeObject(that.detailItems)}
+      that.updateData.ClientReqTime=getNowFullTime()  // client 端請求時間
+      that.updateData.OperatorID=that.userData.UserId  // 操作人id
+      //console.log(encodeObject(that.detailItems))
+      largeQueryEdit(that.updateData).then(res => {
+        if (res.data.ErrorCode == 0) {
+          that.chMsgbar({ success: true, msg: '編輯成功' })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch(err => {
+        that.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
+      }).finally(() => {
+        that.close()
+        that.setShowData()
+        that.chLoadingShow()
+      })
+      
+    },
+    //按下編輯按鈕
+    goEdit(flowId){
+      const FID = flowId
+      const that = this
+      this.dialog_title = "編輯資料"
+      this.chLoadingShow()
+      largeQueryDetail({
+        FlowId: FID,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          //that.chMsgbar({ success: true, msg: '資料取得成功' })
+          that.detailItems = res.data.query_detail[0]
+          that.detailItems = decodeObject(that.detailItems)
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch(err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
+        console.log(err)
+      }).finally(() => {
+        that.chLoadingShow()
+      })
+      this.Edit=true
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
+    //關閉dialog
     close() {
       this.Add = false;
       this.Edit = false;
@@ -419,6 +413,37 @@ export default {
     rmFile(idx) {
       this.ipt.files.splice(idx, 1);
     },
+    //是否刪除
+    confirmDelete(flowId) {
+      this.Delete = true
+      this.deleteFlowId = flowId
+    },
+    //確認刪除
+    goDelete() {
+      this.chLoadingShow()
+      const that = this
+      largeQueryDelete({
+        FlowId: this.deleteFlowId,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.chMsgbar({ success: true, msg: '刪除成功' })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch(err => {
+        that.chDialog({ show: true, msg: '伺服器發生問題，刪除失敗' })
+      }).finally(() => {
+        that.close()
+        that.setShowData()
+        that.chLoadingShow()
+      })
+    },
+  },
+  filters: {
+    picStatus:(data) => data=='Y'?'有':'無'
   },
   created() {},
 };

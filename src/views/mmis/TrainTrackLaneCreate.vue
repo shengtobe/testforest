@@ -40,6 +40,7 @@
             <v-select 
               solo 
               hide-details 
+              label="維修單位"
               v-model="detailItems.DepartCode"
               :items="departList"
               item-text="value"
