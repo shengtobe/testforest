@@ -117,7 +117,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -145,27 +144,9 @@ export default {
             { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
-        topItems: {  // 上面的欄位
-            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
-            creater: { icon: 'mdi-account', title: '立案人', text: '' },
-            createDate: { icon: 'mdi-calendar-text', title: '立案時間', text: '' },
-            fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
-            dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-            fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            acceptanceTime: { icon: 'mdi-calendar-text', title: '預計驗收日期', text: '' },
-            enterControl: { icon: 'mdi-alert-outline', title: '進場管制申請', text: '' },
-            specialDanger: { icon: 'mdi-alert-outline', title: '特殊危害作業', text: '' },
-            safeDanger: { icon: 'mdi-alert-outline', title: '安全危害作業', text: '' },
-            workLocation: { icon: 'mdi-map-marker', title: '工作地點', text: '' },
-            memberCount: { icon: 'mdi-account-multiple', title: '實際人數', text: '' },
-            arrivalFixDate: { icon: 'mdi-calendar-text', title: '到修日期', text: '' },
-            startFixDate: { icon: 'mdi-calendar-text', title: '動工日期', text: '' },
-            endFixDate: { icon: 'mdi-calendar-text', title: '完工日期', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-        },
+        topItems: [],  // 上面的欄位
+        bottomItems: [],  // 下面的欄位
     }),
-    bottomItems: [],  // 下面的欄位
     components: {
         TopBasicTable,
         BottomTable,
@@ -184,37 +165,8 @@ export default {
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.status = obj.Status  // 處理階段(值)
-
-            // 設定上面的欄位資料
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
-            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段(顯示的文字)
-            this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
-            this.topItems.creater.text = obj.Creator  // 立案人
-            this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
-            this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
-            this.topItems.createDate.text = `${obj.CreateDDay} ${obj.CreateDTime}時`  // 立案時間
-            this.topItems.acceptanceTime.text = obj.ExpectedDT  // 預計驗收日期
-            this.topItems.enterControl.text = (obj.WorkApplication == 'T')? '是' : '否'  // 進場管制申請
-            this.topItems.specialDanger.text = (obj.WorkSp == 'T')? '是' : '否'  // 特殊危害作業
-            this.topItems.safeDanger.text = (obj.WorkSafety == 'T')? '是' : '否'  // 安全危害作業
-            this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
-            this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
-            this.topItems.arrivalFixDate.text = obj.ToRepairDDate  // 到修日期
-            this.topItems.startFixDate.text = obj.StartWorkDDate  // 動工日期
-            this.topItems.endFixDate.text = obj.FinishDDate  // 完工日期
-
-            // 設定下面的欄位資料
-            this.bottomItems = [
-                { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
-                { oneline: false, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-note', title: '備註', text: obj.Memo.replace(/\n/g, '<br>') },
-                { oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: obj.PeopleLicense.map(ele => ele.PeopleName).join('、') },
-                { oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、') },
-                { oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: obj.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') },
-                { oneline: false, icon: 'mdi-wrench', title: '維修情況', text: obj.MaintainStatus.replace(/\n/g, '<br>') },
-            ]
-            
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額

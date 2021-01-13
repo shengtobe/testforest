@@ -20,6 +20,14 @@ export const carHarmDbStatus = [
     { text: '審核中', value: '7' },  // 審核作廢
 ]
 
+// 行車安全資訊狀態
+export const carSafeInfoStatus = [
+    { text: '已立案', value: '1' },
+    { text: '審核中', value: '2' },
+    { text: '加會中', value: '3' },
+    { text: '已發布', value: '4' },
+]
+
 // 事故主類
 // export const MainEvt = [
 //     { text: '重大事故', value: 'major' },

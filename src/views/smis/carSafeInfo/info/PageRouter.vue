@@ -3,13 +3,13 @@
     <!-- 待派工 -->
     <ListShow :itemData="itemData" v-if="status == '1'" />
 
-    <!-- 已派工待維修 -->
+    <!-- 審核中 -->
     <WorkShow :itemData="itemData" v-if="status == '2'" />
 
-    <!-- 已維修待驗收 -->
+    <!-- 加會中 -->
     <AcceptingShow :itemData="itemData" v-if="status == '3'" />
 
-    <!-- 已驗收待結案、已結案 -->
+    <!-- 已發布 -->
     <ClosedComplated :itemData="itemData" v-if="status == '4' || status == '5'" />
 </div>
 </template>
