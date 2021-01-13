@@ -43,10 +43,9 @@ export default {
         // 向後端取資料
         fetchData() {
             this.chLoadingShow()
-            // let id = this.$route.params.id  // 路由參數
             
             // fetchWorkOrderOne({
-            //     WorkOrderID: id,  // 工單編號
+            //     WorkOrderID: this.$route.params.id,  // 工單編號
             //     ClientReqTime: getNowFullTime(),  // client 端請求時間
             // }).then(res => {
             //     if (res.data.ErrorCode == 0) {
@@ -212,10 +211,10 @@ export default {
                     }
 
                     let topItems = [  // 上面的欄位
+                        { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == obj.status).text },
                         { icon: 'mdi-calendar-text', title: '發現日期', text: `${obj.findDate} ${obj.findHour}:${obj.findMin}:00` },
                         { icon: 'mdi-map-marker', title: '發現地點', text: `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M` },
                         { icon: 'mdi-snowflake', title: '事故類型', text: evtTypes.find(item => item.value == obj.accidentType).text },
-                        { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == obj.status).text },
                     ]
 
                     // 設定下面的欄位資料
@@ -229,7 +228,6 @@ export default {
                     ]
 
                     this.itemData = { ...obj, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
-                    // this.status = res.data.Status
                 }
 
                 this.chLoadingShow()

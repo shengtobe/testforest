@@ -166,13 +166,13 @@ export default {
                     if (obj.stopOperation) affectsArr.push('中斷營運')
 
                     let topItems = [  // 上面的欄位
+                        { icon: 'mdi-ray-vertex', title: '危害狀態', text: carHarmDbStatus.find(ele => ele.value == obj.status).text },
                         { icon: 'mdi-bank', title: '權責單位', text: obj.depart },
                         { icon: 'mdi-snowflake', title: '營運模式', text: obj.mode },
                         { icon: 'mdi-source-branch', title: '關聯子系統', text: obj.wbs },
                         { icon: 'mdi-format-line-spacing', title: '風險嚴重性', text: obj.serious },
                         { icon: 'mdi-signal-variant', title: '風險頻率', text: obj.frequency },
                         { icon: 'mdi-elevation-rise', title: '風險等級', text: obj.level },
-                        { icon: 'mdi-ray-vertex', title: '危害狀態', text: carHarmDbStatus.find(ele => ele.value == obj.status).text },
                     ]
 
                     // 設定下面的欄位資料

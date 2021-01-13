@@ -19,31 +19,31 @@ export const CarSafeInfoRouter = [
     {
         linkText: '詳細資訊', 
         path: '/smis/car-safeinfo/info/:id/show',
-        component: () => import('@/views/smis/carSafeInfo/info/Show.vue')
+        component: () => import('@/views/smis/carSafeInfo/info/PageRouter.vue')
     },
-    {
-        linkText: '審核中',
-        path: '/smis/car-safeinfo/info/:id/review',
-        component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
-        props: { closeStatus: 2 }
-    },
-    {
-        linkText: '加會中',
-        path: '/smis/car-safeinfo/info/:id/join',
-        component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
-        props: { closeStatus: 3 }
-    },
-    {
-        linkText: '已發布',
-        path: '/smis/car-safeinfo/info/:id/complated',
-        component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
-        props: { closeStatus: 4 }
-    },
-    {
-        linkText: '安全資訊讀取追蹤', 
-        path: '/smis/car-safeinfo/info/:id/read-track',
-        component: () => import('@/views/smis/carSafeInfo/info/ReadTrack.vue')
-    },
+    // {
+    //     linkText: '審核中',
+    //     path: '/smis/car-safeinfo/info/:id/review',
+    //     component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
+    //     props: { closeStatus: 2 }
+    // },
+    // {
+    //     linkText: '加會中',
+    //     path: '/smis/car-safeinfo/info/:id/join',
+    //     component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
+    //     props: { closeStatus: 3 }
+    // },
+    // {
+    //     linkText: '已發布',
+    //     path: '/smis/car-safeinfo/info/:id/complated',
+    //     component: () => import('@/views/smis/carSafeInfo/info/ReviewComplated.vue'),
+    //     props: { closeStatus: 4 }
+    // },
+    // {
+    //     linkText: '安全資訊讀取追蹤',  // 已合併至「已發布內」
+    //     path: '/smis/car-safeinfo/info/:id/read-track',
+    //     component: () => import('@/views/smis/carSafeInfo/info/ReadTrack.vue')
+    // },
 
     // ------------- 慢行通報 -------------
     {

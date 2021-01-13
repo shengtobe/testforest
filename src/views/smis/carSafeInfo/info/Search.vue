@@ -284,28 +284,25 @@ export default {
             // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
             // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
 
-            this.isLoading = true
-            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/show` })
+                    sessionStorage.itemStatus = '1'
                     break
                 case 2:  // 審核中
-                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/review` })
+                    sessionStorage.itemStatus = '2'
                     break
                 case 3:  // 加會中
-                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/join` })
+                    sessionStorage.itemStatus = '3'
                     break
                 case 4: // 已發布
-                    routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/complated` })
+                    sessionStorage.itemStatus = '4'
                     break
                 default:
                     break
             }
-            setTimeout(() => {
-                this.isLoading = false
-                window.open(routeData.href, '_blank')
-            }, 1000)
+
+            let routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/show` })
+            window.open(routeData.href, '_blank')
         },
     },
     created() {
