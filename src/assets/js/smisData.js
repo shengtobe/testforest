@@ -28,6 +28,15 @@ export const carSafeInfoStatus = [
     { text: '已發布', value: '4' },
 ]
 
+// 職安事故事件狀態
+export const jobDisasterSurveyStatus = [
+    { text: '已立案', value: '1' },
+    { text: '審核中', value: '2' },
+    { text: '已完備資料', value: '3' },
+    { text: '審核中', value: '4' },
+    { text: '改善措施已落實', value: '5' },
+]
+
 // 事故主類
 // export const MainEvt = [
 //     { text: '重大事故', value: 'major' },

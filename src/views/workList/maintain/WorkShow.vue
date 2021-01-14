@@ -412,6 +412,7 @@ export default {
         errorSituation: '',  // 必填欄位背景色-維修情況
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        allLicenseMembers: [],  // 所有林鐵人員下拉選單
         jobFormValid: true,  // 工時統計是否驗證欄位
         jobHour: {  // 工時
             dialogShow: false,
