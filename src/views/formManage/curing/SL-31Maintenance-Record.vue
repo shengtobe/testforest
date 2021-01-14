@@ -82,7 +82,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop="{ item }">
+          <template v-slot:item.content="{ item }">
             <v-btn title="編輯" class="mr-2" small dark fab color="info darken-1" @click="Add = true">
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>

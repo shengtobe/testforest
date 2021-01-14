@@ -85,7 +85,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -93,7 +93,7 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -247,103 +247,32 @@ export default {
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
+      //---api---
+      DB_Table: "RP001",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       headers: [
-        // 表格顯示的欄位
-        {
-          text: "項次",
-          value: "a0",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "上次填寫日期",
-          value: "a1",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "材料編號",
-          value: "a2",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "材料名稱",
-          value: "a3",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "存放地點",
-          value: "a4",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "a5",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "審查狀態",
-          value: "a6",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "功能",
-          value: "shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
-      tableItems: [
-        {
-          a0: "1",
-          a1: "2020-08-10",
-          a2: "001",
-          a3: "新枕木",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
-        },
-        {
-          a0: "2",
-          a1: "2020-08-11",
-          a2: "002",
-          a3: "舊枕木",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
-        },
-        {
-          a0: "3",
-          a1: "2020-08-12",
-          a2: "003",
-          a3: "舊鋼軌",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
-        },
-        {
-          a0: "4",
-          a1: "2020-08-13",
-          a2: "004",
-          a3: "新鋼軌",
-          a4: "竹崎",
-          a5: "王大明",
-          a6: "已審查"
-        },
-      ],
+      tableItems: [],
+      //------
       ipt: {
         department: "",
         name: JSON.parse(localStorage.getItem("user")).name,

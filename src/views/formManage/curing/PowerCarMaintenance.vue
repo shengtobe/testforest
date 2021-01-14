@@ -151,7 +151,7 @@
                     </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
-                    <template v-slot:item.shop="{ item }">
+                    <template v-slot:item.content="{ item }">
                       <v-btn
                         title="編輯"
                         class="mr-2"
@@ -159,8 +159,9 @@
                         dark
                         fab
                         color="info darken-1"
-                        @click="dialogShowEdit = true"
+                        @click="viewPage(item)"
                       >
+                        <!-- @click="dialogShowEdit = true" -->
                         <v-icon dark>mdi-pen</v-icon>
                       </v-btn>
                       <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
@@ -335,64 +336,33 @@ export default {
     bb: "",
     cc: "",
     disabled: true,
-    tableItems: [
-      {
-        date: "2020-08-01",
-        kilometer: "12044.3",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        startday: "2020/08/10",
-        note: "更換引擎機油"
-      }
-    ], // 表格資料
+    //---api---
+      DB_Table: "RP001",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
+      headers: [
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+      ],
+      tableItems: [],
+      //------
     pageOpt: { page: 1 }, // 目前頁數
-    headers: [
-      // 表格顯示的欄位
-      {
-        text: "保養日期",
-        value: "date",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "累計公里數",
-        value: "kilometer",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "保養內容",
-        value: "note",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "出廠日期",
-        value: "startday",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "保養人",
-        value: "name",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "功能",
-        value: "shop",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      }
-    ]
   }),
   components: { Pagination }, // 頁碼
 

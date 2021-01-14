@@ -85,7 +85,7 @@
             <span class="red--text subtitle-1">資料讀取中...</span>
           </template>
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.Shop="{ item }">
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -93,8 +93,9 @@
               dark
               fab
               color="info darken-1"
-              @click="AddDataModal = true"
+              @click="viewPage(item)"
             >
+              <!-- @click="AddDataModal = true" -->
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
           </template>
@@ -397,58 +398,32 @@ export default {
       },
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
-      headers: [ // Query標題
-        {
-          text: "項次",
-          value: "Item",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      //---api---
+      DB_Table: "RP001",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
         },
-        {
-          text: "檢查日期",
-          value: "Checkday",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "審查狀態",
-          value: "Review",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "Name",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "功能",
-          value: "Shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
+      headers: [
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
-      tableItems: [ // Query資料(目前假資料)
-        
-        {
-          Item: "1",
-          Checkday: "2020-08-01",
-          Review: "已審查",
-          Name: "王大明",
-        },
-        {
-          Item: "2",
-          Checkday: "2020-08-10",
-          Review: "審查中",
-          Name: "王大明",
-        },
-      ],
+      tableItems: [],
+      //------
       CarTypeData: [ // 新增動力車狀態-(寫死)
         {
           Question: "DL25噸",

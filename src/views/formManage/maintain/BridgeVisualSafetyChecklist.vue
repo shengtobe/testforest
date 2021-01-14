@@ -91,7 +91,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-           <template v-slot:item.Shop>
+           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -100,6 +100,7 @@
               fab
               color="info darken-1"
               to="/form-manage/curing/railway-worklog-add"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
@@ -140,57 +141,32 @@ export default {
       },
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
+      //---api---
+      DB_Table: "RP001",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       headers: [
-        {
-          text: "項次",
-          value: "Item",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "檢查日期",
-          value: "Checkday",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "審查狀態",
-          value: "Review",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "Name",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "功能",
-          value: "Shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
-      tableItems: [
-        {
-          Item: "1",
-          Checkday: "2020-08-01",
-          Review: "已審查",
-          Name: "王大明",
-        },
-        {
-          Item: "2",
-          Checkday: "2020-08-10",
-          Review: "審查中",
-          Name: "王大明",
-        },
-      ],
+      tableItems: [],
+      //------
     };
   },
   components: { Pagination }, // 頁碼

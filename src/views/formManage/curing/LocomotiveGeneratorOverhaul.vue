@@ -101,7 +101,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop="{ item }">
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="編輯"
               class="mr-2"
@@ -109,8 +109,9 @@
               dark
               fab
               color="info darken-1"
-              @click="dialogShowAdd = true"
+              @click="viewPage(item)"
             >
+              <!-- @click="dialogShowAdd = true" -->
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
             <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
@@ -286,100 +287,33 @@ export default {
     bb: "",
     cc: "",
     disabled: true,
-    tableItems: [
-      {
-        aa: "2020-08-08",
-        bb: 12,
-        cc: 36,
-        dd: "V",
-        ee: "V",
-        ff: "V",
-        gg: "V",
-        hh: "王大明",
-        ii: "阿華"
-      }
-    ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
-    headers: [
-      // 表格顯示的欄位
-      {
-        text: "保養日期",
-        value: "aa",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "11%"
+    //---api---
+      DB_Table: "RP001",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
       },
-      {
-        text: "使用時數(hr)",
-        value: "bb",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "10%"
-      },
-      {
-        text: "累計使用時數",
-        value: "cc",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "9.5%"
-      },
-      {
-        text: "機油更換",
-        value: "dd",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "10%"
-      },
-      {
-        text: "機油濾清芯子換新",
-        value: "ee",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "10%"
-      },
-      {
-        text: "柴油濾清芯子換新",
-        value: "ff",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "10%"
-      },
-      {
-        text: "空氣濾清芯子換新",
-        value: "gg",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "10%"
-      },
-      {
-        text: "保養人",
-        value: "hh",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "車庫主管",
-        value: "ii",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "功能",
-        value: "shop",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      }
-    ]
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
+      headers: [
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+      ],
+      tableItems: [],
+      //------
   }),
   components: { Pagination }, // 頁碼
 

@@ -264,13 +264,10 @@ export default {
         name: '',
         depart: '',
         checkManName: ''
-    },
+      },
       memo_2: "",
       memo_3: "",
       nowTime: "",
-      Add: false,
-      dialog3: false,
-      pageOpt: { page: 1 }, // 目前頁數
       headers: [
         // 表格顯示的欄位
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -281,6 +278,9 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
+      Add: false,
+      dialog3: false,
+      pageOpt: { page: 1 }, // 目前頁數
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',

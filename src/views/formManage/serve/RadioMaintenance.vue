@@ -99,7 +99,7 @@
               <v-btn color="teal" dark @click="sdad = true">檢視</v-btn>
             </template>
             <!-- headers 的 content 欄位 (檢視內容) -->
-            <template v-slot:item.shop>
+            <template v-slot:item.content="{ item }">
               <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
@@ -282,6 +282,32 @@ export default {
     newText: "紀錄表",
     isLoading: false,
     disabled: false,
+    //---api---
+      DB_Table: "RP001",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
+      headers: [
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+      ],
+      tableItems: [],
+      //------
     MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)

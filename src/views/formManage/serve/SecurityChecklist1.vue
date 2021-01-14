@@ -483,24 +483,21 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      //---api---
       DB_Table: "RP001",
       nowTime: "",
-      test23: "test1111",
-      Add: false,
-      dialog3: false,
-      pageOpt: { page: 1 }, // 目前頁數
       doMan:{
         id: '',
         name: '',
         depart: '',
         checkManName: ''
       },
-      headers2: [  // 表格顯示的欄位
-            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        ],
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -511,12 +508,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
-      ipt2: {},
-      defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
+      //------
       ipt: {
         // department: "",
         // name: JSON.parse(localStorage.getItem("user")).name,
@@ -569,6 +561,16 @@ export default {
           { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
         ],
       },
+      test23: "test1111",
+      Add: false,
+      dialog3: false,
+      pageOpt: { page: 1 }, // 目前頁數
+      headers2: [  // 表格顯示的欄位
+            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
       
       items1: [
         //北門車站岔道
