@@ -90,33 +90,35 @@
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/jobsafety/disaster-survey"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="dialog = true"
-                v-if="status == 2"
-            >退回</v-btn>
+            <template v-if="!done">
+                <v-btn dark  class="ma-2" color="error"
+                    @click="dialog = true"
+                    v-if="status == 2"
+                >退回</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-                v-if="status == 2"
-            >同意措施執行</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                    v-if="status == 2"
+                >同意措施執行</v-btn>
 
-            <v-btn dark  class="ma-2" color="primary"
-                @click="rerun"
-                v-if="status == 3"
-            >重提事故事件</v-btn>
+                <v-btn dark  class="ma-2" color="primary"
+                    @click="rerun"
+                    v-if="status == 3"
+                >重提事故事件</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="del"
-                v-if="status == 3"
-            >作廢</v-btn>
+                <v-btn dark  class="ma-2" color="error"
+                    @click="del"
+                    v-if="status == 3"
+                >作廢</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="closeCase"
-                v-if="status == 3"
-            >申請結案</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="closeCase"
+                    v-if="status == 3"
+                >申請結案</v-btn>
+            </template>
         </v-col>
     </v-row>
 
@@ -167,17 +169,12 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 上傳的檔案
         notifyLinks: [],  // 連結的通報
-        injuryLeaveStart: '',  // 公傷假(起)
-        injuryLeaveEnd: '',  // 公傷假(迄)
-        laborInspection: 'n',  // 通報勞檢
-        cause: '',  // 發生原因
-        note: '',  // 備註
-        improve: '',  // 改善措施
         controlReview: '',  // 措施檢討摘要
         evidences: [],  // 改善措施證據
         isLoading: false,  // 是否讀取中
@@ -193,6 +190,7 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         setShowData(obj) {
@@ -232,8 +230,8 @@ export default {
 
             setTimeout(() => {
                 this.chMsgbar({ success: true, msg: '退回成功'})
-                this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-                this.isLoading = false
+                this.isLoading = this.dialog = false
+                this.done = true  // 隱藏頁面操作按鈕
             }, 1000)
         },
         // 同意措施執行
@@ -243,8 +241,8 @@ export default {
 
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '同意措施執行成功'})
-                    this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                     this.chLoadingShow()
+                    this.done = true  // 隱藏頁面操作按鈕
                 }, 1000)
             }
         },
@@ -262,9 +260,9 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                     this.chMsgbar({ success: true, msg: '作廢成功'})
                     this.chLoadingShow()
+                    this.done = true  // 隱藏頁面操作按鈕
                 }, 1000)
             }
         },
@@ -275,8 +273,8 @@ export default {
 
                 setTimeout(() => {
                     this.chMsgbar({ success: true, msg: '申請結案成功'})
-                    this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                     this.chLoadingShow()
+                    this.done = true  // 隱藏頁面操作按鈕
                 }, 1000)
             }
         },
@@ -286,8 +284,9 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${this.id}/show` })
+                    this.chMsgbar({ success: true, msg: '重提事故事件成功'})
                     this.chLoadingShow()
+                    this.done = true  // 隱藏頁面操作按鈕
                 }, 1000)
             }
         },
