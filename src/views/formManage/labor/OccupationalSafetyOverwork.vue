@@ -41,7 +41,7 @@
         <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" elevation="3" dark large @click="Add = true">
+        <v-btn color="indigo" elevation="3" dark large @click="newOne">
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
@@ -313,6 +313,10 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { maintainStatusOpts } from '@/assets/js/workList'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 
 export default {
   data() {
