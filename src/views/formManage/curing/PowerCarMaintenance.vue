@@ -121,8 +121,9 @@
           dark
           large
           class="col-4 col-md-4 mr-3"
-          @click="dialogShowAdd = true"
+          @click="newOne"
         >
+          <!-- @click="dialogShowAdd = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>

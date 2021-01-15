@@ -46,7 +46,7 @@
           elevation="3"
           dark
           large
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>

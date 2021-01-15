@@ -47,7 +47,7 @@
           dark
           large
           class="col-4 col-md-2 mr-3"
-          @click="Add = true"
+          @click="newOn"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
