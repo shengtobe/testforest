@@ -1,16 +1,16 @@
 <template>
 <div>
     <!-- 待派工 -->
-    <ListShow :itemData="itemData" v-if="status == '1'" />
+    <ListShow :itemData="itemData" v-if="status == 1" />
 
     <!-- 已派工待維修 -->
-    <WorkShow :itemData="itemData" v-if="status == '2'" />
+    <WorkShow :itemData="itemData" v-if="status == 2" />
 
     <!-- 已維修待驗收 -->
-    <AcceptingShow :itemData="itemData" v-if="status == '3'" />
+    <AcceptingShow :itemData="itemData" v-if="status == 3" />
 
     <!-- 已驗收待結案、已結案 -->
-    <ClosedComplated :itemData="itemData" v-if="status == '4' || status == '5'" />
+    <ClosedComplated :itemData="itemData" v-if="status == 4 || status == 5" />
 </div>
 </template>
 

@@ -382,7 +382,6 @@ export default {
         },
         // 檢視內容
         viewPage(item) {
-            // ---- 依業主要求變更檢式頁面的方式，所以改為另開分頁 ---
             let routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/show` })
             window.open(routeData.href, '_blank')
         },

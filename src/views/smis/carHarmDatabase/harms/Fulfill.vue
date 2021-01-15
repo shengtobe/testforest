@@ -90,37 +90,37 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
                     @click="dialog = true"
-                    v-if="status == '4' || status == '7'"
+                    v-if="status == 4 || status == 7"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
-                    v-if="status == '4'"
+                    v-if="status == 4"
                 >同意結案</v-btn>
 
                 <v-btn dark  class="ma-2" color="error"
                     @click="del"
-                    v-if="status == '5' && version.nowId == version.lasterId"
+                    v-if="status == 5 && version.nowId == version.lasterId"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2" color="primary"
                     @click="rerun"
-                    v-if="status == '5' && version.nowId == version.lasterId"
+                    v-if="status == 5 && version.nowId == version.lasterId"
                 >重提危害</v-btn>
 
                 <v-btn dark  class="ma-2" color="brown"
                     @click="showVersion"
-                    v-if="status == '5'"
+                    v-if="status == 5"
                 >編修歷程紀錄</v-btn>
 
                 <v-btn dark  class="ma-2" color="indigo"
                     :to="`/smis/car-harmdb/harms/${id}/update`"
-                    v-if="status == '5' && version.nowId == version.lasterId"
+                    v-if="status == 5 && version.nowId == version.lasterId"
                 >危害更新</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="agreeDel"
-                    v-if="status == '7'"
+                    v-if="status == 7"
                 >同意作廢</v-btn>
             </template>
         </v-col>
@@ -128,7 +128,7 @@
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
-        v-if="status == '4' || status == '7'"
+        v-if="status == 4 || status == 7"
     >
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">

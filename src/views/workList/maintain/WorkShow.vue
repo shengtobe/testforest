@@ -460,6 +460,7 @@ export default {
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            this.defaultJobForm.Location = obj.WorkPlace  // 工作地點預設值
 
             // 組合所有林鐵人員下拉選單(用於選工作項)
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
@@ -562,7 +563,6 @@ export default {
                 // 新增時
                 this.jobHour.isEdit = false
                 this.jobForm = { ...this.defaultJobForm }
-                this.jobForm.Location = this.topItems.workLocation.text  // 工作地點
                 this.jobHour.titleName = '新增資料'
             } else {
                 // 編輯時

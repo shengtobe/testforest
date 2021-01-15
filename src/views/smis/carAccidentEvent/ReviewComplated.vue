@@ -177,27 +177,27 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
                     @click="dialog = true"
-                    v-if="status == '2'"
+                    v-if="status == 2"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
-                    v-if="status == '2'"
+                    v-if="status == 2"
                 >同意措施執行</v-btn>
 
                 <v-btn dark  class="ma-2" color="primary"
                     @click="rerun"
-                    v-if="status == '3'"
+                    v-if="status == 3"
                 >重提事故事件</v-btn>
 
                 <v-btn dark  class="ma-2" color="error"
                     @click="del"
-                    v-if="status == '3'"
+                    v-if="status == 3"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="closeCase"
-                    v-if="status == '3'"
+                    v-if="status == 3"
                 >申請結案</v-btn>
             </template>
         </v-col>

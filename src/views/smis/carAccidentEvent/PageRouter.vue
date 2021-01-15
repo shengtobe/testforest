@@ -1,13 +1,13 @@
 <template>
 <div>
     <!-- 待派工 -->
-    <Show :itemData="itemData" v-if="status == '1'" />
+    <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、已完備資料 -->
-    <ReviewComplated :itemData="itemData" v-if="status == '2' || status == '3'" />
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
 
     <!-- 審核中、改善措施已落實 -->
-    <Fulfill :itemData="itemData" v-if="status == '4' || status == '5'" />
+    <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 </div>
 </template>
 

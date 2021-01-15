@@ -54,34 +54,34 @@
                     :loading="isLoading"
                     color="error"
                     @click="showDialog(true)"
-                    v-if="status == '4'"
+                    v-if="status == 4"
                 >退回</v-btn>
 
                 <v-btn class="ma-2" dark
                     :loading="isLoading"
                     color="yellow darken-2"
                     @click="showDialog(false)"
-                    v-if="status == '4'"
+                    v-if="status == 4"
                 >徹銷</v-btn>
 
                 <v-btn dark class="ma-2"
                     :loading="isLoading"
                     color="success"
                     @click="save"
-                    v-if="status == '4'"
+                    v-if="status == 4"
                 >結案</v-btn>
             </template>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
-        <v-col cols="12" class="error--text" v-if="status == '4'">
+        <v-col cols="12" class="error--text" v-if="status == 4">
             <h4>按鈕出現說明</h4>
             竣工單、退回、徹銷、結案：結案人
         </v-col>
     </v-row>
 
     <!-- 退回 dialog -->
-    <v-dialog v-model="dialog" max-width="600px" v-if="status == '4'">
+    <v-dialog v-model="dialog" max-width="600px" v-if="status == 4">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>

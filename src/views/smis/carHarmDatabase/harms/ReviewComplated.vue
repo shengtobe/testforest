@@ -52,12 +52,12 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12" class="mt-12 mb-8" v-if="status == '3'">
+        <v-col cols="12" class="mt-12 mb-8" v-if="status == 3">
             <v-divider></v-divider>
         </v-col>
 
         <!-- 證據上傳 -->
-        <v-col cols="12" v-if="status == '3'">
+        <v-col cols="12" v-if="status == 3">
             <v-row>
                 <v-col cols="12" sm="4" md="3">
                     <h3 class="mb-1">
@@ -99,7 +99,7 @@
 
         <!-- 上傳的檔案列表 -->
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC" 
-            v-if="status == '3'"
+            v-if="status == 3"
             v-for="(list, i) in uploads"
             :key="list.controlId"
         >
@@ -138,27 +138,27 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
                     @click="dialog = true"
-                    v-if="status == '2'"
+                    v-if="status == 2"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
-                    v-if="status == '2'"
+                    v-if="status == 2"
                 >同意措施執行</v-btn>
 
                 <v-btn dark  class="ma-2" color="error"
                     @click="del"
-                    v-if="status == '3'"
+                    v-if="status == 3"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2" color="primary"
                     @click="rerun"
-                    v-if="status == '3'"
+                    v-if="status == 3"
                 >重提危害</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="closeCase"
-                    v-if="status == '3'"
+                    v-if="status == 3"
                 >申請結案</v-btn>
             </template>
         </v-col>
@@ -166,7 +166,7 @@
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
-        v-if="status == '2'"
+        v-if="status == 2"
     >
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">

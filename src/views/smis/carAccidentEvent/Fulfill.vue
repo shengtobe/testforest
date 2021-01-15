@@ -189,17 +189,17 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
                     @click="backDialog = true"
-                    v-if="status == '4'"
+                    v-if="status == 4"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
-                    v-if="status == '4'"
+                    v-if="status == 4"
                 >同意結案</v-btn>
 
                 <v-btn dark  class="ma-2" color="error"
                     @click="del"
-                    v-if="status == '5'"
+                    v-if="status == 5"
                 >作廢</v-btn>
             </template>
         </v-col>

@@ -1,16 +1,16 @@
 <template>
 <div>
     <!-- 已立案 -->
-    <Show :itemData="itemData" v-if="status == '1'" />
+    <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、已完備資料 -->
-    <ReviewComplated :itemData="itemData" v-if="status == '2' || status == '3'" />
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
 
     <!-- 審核中、風險已可接受 -->
-    <Fulfill :itemData="itemData" v-if="status == '4' || status == '5'" />
+    <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 
     <!-- 審核中(審核更新) -->
-    <UpdateReview :itemData="itemData" v-if="status == '6'" />
+    <UpdateReview :itemData="itemData" v-if="status == 6" />
 </div>
 </template>
 
@@ -188,7 +188,6 @@ export default {
                     // status 6 的審核更新，會使用二筆資料用來做比對，所以要另外處理
 
                     this.itemData = { ...obj, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
-                    // this.status = res.data.Status
                 }
 
                 this.chLoadingShow()

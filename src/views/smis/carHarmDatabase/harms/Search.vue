@@ -272,10 +272,6 @@ export default {
         },
         // 重新導向 (依結案狀態)
         redirect(item) {
-            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
             switch(item.status) {
                 case 1:  // 已立案
                     sessionStorage.itemStatus = '1'

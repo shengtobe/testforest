@@ -1,10 +1,10 @@
 <template>
 <div>
     <!-- 已立案 -->
-    <Show :itemData="itemData" v-if="status == '1'" />
+    <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、加會中、已發布 -->
-    <ReviewComplated :itemData="itemData" v-if="status == '2' || status == '3' || status == '4'" />
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3 || status == 4" />
 </div>
 </template>
 
