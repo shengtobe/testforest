@@ -469,12 +469,12 @@ export default {
       }
       obj = new Object()
       obj.Column = "Advice"
-      obj.Value = this.memo_2
+      obj.Value = this.Advice
       arr = arr.concat(obj)
 
       obj = new Object()
       obj.Column = "Measures"
-      obj.Value = this.memo_3
+      obj.Value = this.Measures
       arr = arr.concat(obj)
 
       console.log(JSON.stringify(arr))
