@@ -453,6 +453,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
+        console.log("search final")
         this.chLoadingShow()
       })
     },

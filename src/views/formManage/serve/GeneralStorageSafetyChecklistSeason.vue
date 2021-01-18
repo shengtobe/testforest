@@ -389,6 +389,9 @@ export default {
         ]),
 
     // 更換頁數
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
     chPage(n) {
       this.pageOpt.page = n;
     },
