@@ -483,6 +483,20 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
   },
+  created() {
+      this.ipt2 = { ...this.defaultIpt }
+      //更新時間
+      var today=new Date();
+      let mStr = today.getMonth()+1;
+      let dStr = today.getDate();
+      if(mStr < 10){
+        mStr = '0' + mStr;
+      }
+      if(dStr < 10){
+        dStr = '0' + dStr;
+      }
+      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+  },
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
