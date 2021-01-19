@@ -143,7 +143,7 @@
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">施工負責人</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">施工負責人電話</h3>
@@ -200,7 +200,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <h3>編號(由車站填寫)</h3>
-                          <input class="newinput" placeholder="號" />
+                          <input class="newinput" placeholder="號" v-model="NumberID"/>
                           <input class="newinput" placeholder="站" />
                         </v-col>
                         <v-col cols="12" sm="3">
@@ -448,6 +448,28 @@ export default {
         depart: '',
         checkManName: ''
       },
+      NumberID: '',
+      StationID: '',
+      BgWorkDay: '',
+      BgWorkTime: '',
+      FinDay: '',
+      FinTime: '',
+      DescriptionWork: '',
+      WorkID: '',
+      Station: '',
+      BgStation: '',
+      EndStation: '',
+      BgKm: '',
+      EndM: '',
+      EndKm: '',
+      EndM: '',
+      Line: '',
+      SwitchNo: '',
+      ReadyWorkDay: '',
+      ReadyWorkTime: '',
+      FinishDay: '',
+      FinishTime: '',
+      
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',
@@ -491,12 +513,9 @@ export default {
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
+      this.AddData.ApplicationDay = this.nowTime;
       var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
+      
       this.Advice = "";
       this.Measures = ""
     },
@@ -522,7 +541,7 @@ export default {
     },
     newOne(){
       console.log("newOne23")
-      this.Add = true
+      this.AddJobApplication = true
       console.log("this.Add: " + this.Add)
       this.initInput();
     },
