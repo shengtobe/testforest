@@ -8,3 +8,12 @@ export function serveNewListExecl(data) { return axios(
         data,
     }
 )}
+
+// 工單建立
+export function createWorkOrder(data) { return axios(
+    {
+        url: '/mmis/service_order/create',
+        method: 'post',
+        data,
+    }
+)}

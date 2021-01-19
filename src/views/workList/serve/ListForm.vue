@@ -142,7 +142,7 @@
                 ></v-text-field>
             </v-col>
 
-            <v-col cols="12" md="8">
+            <v-col cols="12" md="6">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>通報維修地點及事項
                 </h3>
@@ -153,30 +153,139 @@
                 ></v-text-field>
             </v-col>
 
-            <v-row class="px-2 mb-6">
-                <v-col cols="12" sm="6" md="3">
-                    <h3 class="mb-1">
-                        <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>工單性質
-                    </h3>
-                    <v-select
-                        v-model="ipt.type"
-                        :items="['契約', '小額採購']"
-                        solo
-                    ></v-select>
-                </v-col>
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>工單性質
+                </h3>
+                <v-select
+                    v-model="ipt.type"
+                    :items="[{ text: '契約', value: '3' }, { text: '小額採購', value: '4' }]"
+                    solo
+                ></v-select>
+            </v-col>
 
-                <v-col cols="12" sm="6" md="3">
-                    <h3 class="mb-1">
-                        <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>工單性質編號
-                    </h3>
-                    <v-text-field
-                        v-model.trim="ipt.typeNumber"
-                        placeholder="請輸入工單性質編號"
-                        solo
-                    ></v-text-field>
-                </v-col>
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>工單性質編號
+                </h3>
+                <v-text-field
+                    v-model.trim="ipt.typeNumber"
+                    placeholder="請輸入工單性質編號"
+                    solo
+                ></v-text-field>
+            </v-col>
+        </v-row>
                 
-                <v-col cols="12">
+        <!-- 設備標示編號 -->
+        <v-row class="px-2 mb-6">
+            <v-col cols="12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
+                    <span class="red--text">*</span>
+                </h3>
+
+                <p class="pl-8 mb-0">
+                    {{ ipt.eqNumber1 }}-{{ `${ipt.eqNumber2}${ipt.eqNumber22}` }}-{{ `${ipt.eqNumber3}${ipt.eqNumber32}` }}-{{ ipt.eqNumber4 }}
+
+                    <v-btn
+                        v-if="isEdit"
+                        class="ml-3 mb-1"
+                        color="primary"
+                        @click="editEqCode"
+                    >編輯</v-btn>
+                </p>
+                
+            </v-col>
+
+            <v-col cols="12" class="mt-n4">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">系統</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber1"
+                            :items="eqCodes.opt1"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="!canModifyEqCode"
+                        ></v-select>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">位置</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber2"
+                            :items="eqCodes.opt2"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="disableLv2"
+                        ></v-select>
+                    </v-col>
+
+                    <v-col cols="12" md="3" v-if="subIptShow.opt22">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber22"
+                            :items="eqCodes.opt22"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        ></v-select>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">設備</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber3"
+                            :items="eqCodes.opt3"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        ></v-select>
+                    </v-col>
+
+                    <v-col cols="12" md="3" v-if="subIptShow.opt32">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber32"
+                            :items="eqCodes.opt32"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                            :disabled="disableLv3"
+                        ></v-select>
+                    </v-col>
+                </v-row>
+            </v-col>
+
+            <v-col cols="12">
+                <v-row>
+                    <v-col cols="12" md="1" align-self="center">
+                        <h3 class="ml-md-6">序號</h3>
+                    </v-col>
+
+                    <v-col cols="12" md="3">
+                        <v-select solo hide-details
+                            v-model="ipt.eqNumber4"
+                            :items="eqCodes.opt4"
+                            :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
+                        ></v-select>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+
+
+
+
+
+                <!-- <v-col cols="12">
                     <h3 class="mb-1">
                         <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
                         <span class="red--text">*</span>
@@ -222,9 +331,11 @@
                         :disabled="disableLv4"
                     ></v-select>
                 </v-col>
-            </v-row>
+            </v-row> -->
 
-            <!-- 請修項目 -->
+
+        <!-- 請修項目 -->
+        <v-row class="px-2">
             <v-col cols="12">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>請修項目
@@ -251,7 +362,7 @@
                     
                         <!-- 插入 total 欄位做每筆的總計 -->
                         <template v-slot:item.total="{ item }">
-                            <span>{{ item.count * item.price }}</span>
+                            <span>{{ item.ServiceCount * item.ServicePrice }}</span>
                         </template>
 
                         <!-- 插入 action 欄位做刪除 -->
@@ -311,7 +422,7 @@
                     lazy-validation
                 >
                     <v-row>
-                        <v-col cols="12" sm="6" md="4">
+                        <!-- <v-col cols="12" sm="6" md="4">
                             <h3 class="mb-1">
                                 <v-icon class="mr-1 mb-1">mdi-apps</v-icon>項次
                             </h3>
@@ -320,14 +431,14 @@
                                 placeholder="請輸入項次"
                                 solo
                             ></v-text-field>
-                        </v-col>
+                        </v-col> -->
 
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="6" md="8">
                             <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>項目
+                                <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>工項(項目)
                             </h3>
                             <v-text-field
-                                v-model.trim="dialogForm.name"
+                                v-model.trim="dialogForm.ServiceItem"
                                 placeholder="請輸入項目"
                                 solo
                             ></v-text-field>
@@ -338,7 +449,7 @@
                                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>規格
                             </h3>
                             <v-text-field
-                                v-model.trim="dialogForm.spec"
+                                v-model.trim="dialogForm.ServiceSpec"
                                 placeholder="請輸入規格"
                                 solo
                             ></v-text-field>
@@ -349,7 +460,7 @@
                                 <v-icon class="mr-1 mb-1">mdi-cube</v-icon>單位
                             </h3>
                             <v-text-field
-                                v-model.trim="dialogForm.unit"
+                                v-model.trim="dialogForm.ServiceUnit"
                                 placeholder="請輸入單位"
                                 solo
                             ></v-text-field>
@@ -360,7 +471,7 @@
                                 <v-icon class="mr-1 mb-1">mdi-chart-bubble</v-icon>預估數量
                             </h3>
                             <v-text-field
-                                v-model.trim.number="dialogForm.count"
+                                v-model.trim.number="dialogForm.ServiceCount"
                                 placeholder="請輸入預估數量"
                                 solo
                             ></v-text-field>
@@ -371,7 +482,7 @@
                                 <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>單價
                             </h3>
                             <v-text-field
-                                v-model.trim.number="dialogForm.price"
+                                v-model.trim.number="dialogForm.ServicePrice"
                                 placeholder="請輸入單價"
                                 solo
                             ></v-text-field>
@@ -391,32 +502,35 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { serveNewListExecl } from '@/apis/workList/serve'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime, verifyIptError } from '@/assets/js/commonFun'
 import { fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '@/apis/workList/maintain'
+import { serveNewListExecl, createWorkOrder } from '@/apis/workList/serve'
 
 export default {
     data: () => ({
         valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
         isEdit: false,  // 是否為編輯
         routeId: '',  // 工單編號
-        ipt: {},
+        ipt: {
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber22: '',  // 設備標示編號2-2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber32: '',  // 設備標示編號3-2
+            eqNumber4: '',  // 設備標示編號4
+        },
         defaultIpt: {  // 表單預設值
             year: '',  // 年度
             expiryDate: new Date().toISOString().substr(0, 10),  // 履約到期日
-            money: '10萬',  // 預算金額
+            money: '',  // 預算金額
             workDateStart: new Date().toISOString().substr(0, 10),  // 通知施作日期 (起)
             workDateEnd: new Date().toISOString().substr(0, 10),  // 通知施作日期 (訖)
             noticeMethod: '',  // 通知方式
             noticeMember: '',  // 通知人
             noticeLocation: '',  // 通報維修地點及事項
-            type: '契約', // 工單性質
+            type: '3', // 工單性質
             typeNumber: '',  // 工單性質編號
-            eqNumber1: '',  // 設備標示編號1
-            eqNumber2: '',  // 設備標示編號2
-            eqNumber3: '',  // 設備標示編號3
-            eqNumber4: '',  // 設備標示編號4
             items: [],  // 請修項目
         },
         dateMenuShow: {  // 日期選單是否顯示
@@ -425,12 +539,12 @@ export default {
             workEnd: false,  // 通知施作日期 (訖)
         }, 
         headers: [  // 表格顯示的欄位
-            { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '項目', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規格', value: 'spec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '單位', value: 'unit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '預估數量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '單價', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            // { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工項(項目)', value: 'ServiceItem', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規格', value: 'ServiceSpec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單位', value: 'ServiceUnit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '預估數量', value: 'ServiceCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '單價', value: 'ServicePrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -438,109 +552,140 @@ export default {
         addValid: true,  // dialog 表單是否驗證
         dialogForm: {},
         dialogDefault: {
-            numbers: '',
-            name: '',
-            spec: '',
-            unit: '',
-            count: 1,
-            price: 0
+            // numbers: '',
+            ServiceItem: '',
+            ServiceSpec: '',
+            ServiceUnit: '',
+            ServiceCount: 1,
+            ServicePrice: 0
         },
         eqCodes: {
             opt1: [],  // 設備標示編號下拉選單-第1組
             opt2: [],  // 設備標示編號下拉選單-第2組
+            opt22: [],  // 設備標示編號下拉選單-第2組-2
             opt3: [],  // 設備標示編號下拉選單-第3組
+            opt32: [],  // 設備標示編號下拉選單-第3組-2
             opt4: [],  // 設備標示編號下拉選單-第4組
         },
         // 設備標示編號下拉選單是否禁用
         disableLv2: true,
         disableLv3: true,
         disableLv4: true,
+        resOptData: {  // 設備標示編號請求回來的資料
+            opt2: [],  // 第2組
+            opt3: [],  // 第3組
+        },
+        subIptShow: {  // 設備標示編號的子選項欄位是否顯示
+            opt22: false,  // 第2組-2
+            opt32: false,  // 第3組-2
+        },
+        canModifyEqCode: false,  // 是否能選擇設備標示編號下拉選單
     }),
     computed: {
         // 全部的總金額
         totalMoney() {
-            return this.ipt.items.reduce((a,b)=>a + b.count * b.price, 0)
+            return this.ipt.items.reduce((a,b)=>a + b.ServiceCount * b.ServicePrice, 0)
         },
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
-        // 換一個選項，向後端抓下一層的報修碼
+        // ------- 切換選項時，向後端抓下一層的報修碼 --------
+        // 系統
         'ipt.eqNumber1': function(newVal) {
-            if (newVal != '') {
-                this.ipt.eqNumber2 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
-                this.disableLv2 = false
-                this.disableLv3 = this.disableLv4 = true
-                this.fetchEqCodes(newVal, 2)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                    this.subIptShow.opt22 = this.subIptShow.opt32 = false
+                    this.disableLv2 = false
+                    this.disableLv3 = this.disableLv4 = true
+                    this.fetchEqCodes(newVal, 2)
+                }
             }
         },
+        // 位置
         'ipt.eqNumber2': function(newVal) {
-            if (newVal != '') {
-                this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
-                this.disableLv3 = false
-                this.disableLv4 = true
-                this.fetchEqCodes(newVal, 3)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt2.find(item => item.DeviceCode == newVal)
+                    
+                    this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber4 = ''
+                    this.subIptShow.opt32 = false
+                    this.disableLv3 = false
+                    this.disableLv4 = true
+                    this.fetchEqCodes(newVal, 3, obj.DeviceCodeParent)
+
+                    // 若第二層有子項目
+                    if (obj.device_query_child.length > 0) {
+                        this.setEqCodeOption(obj.device_query_child, 'opt22')
+                        this.subIptShow.opt22 = true
+                    } else {
+                        this.ipt.eqNumber22 = ''
+                        this.subIptShow.opt22 = false
+                    }
+                }
             }
         },
+        // 位置子項目
+        'ipt.eqNumber22': function(newVal) {
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt2.find(item => item.DeviceCode == this.ipt.eqNumber2)
+                    
+                    this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                    this.disableLv3 = false
+                    this.disableLv4 = true
+                    this.fetchEqCodes(this.ipt.eqNumber2, 3, obj.DeviceCodeParent, newVal)
+                }
+            }
+        },
+        // 設備
         'ipt.eqNumber3': function(newVal) {
-            if (newVal != '') {
-                this.ipt.eqNumber4 = ''
-                this.disableLv4 = false
-                this.fetchEqCodes(newVal, 4)
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt3.find(item => item.DeviceCode == newVal)
+                    
+                    this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                    this.disableLv4 = false
+                    this.fetchEqCodes(newVal, 4, obj.DeviceCodeParent)
+
+                    // 若第二層有子項目
+                    if (obj.device_query_child.length > 0) {
+                        this.setEqCodeOption(obj.device_query_child, 'opt32')
+                        this.subIptShow.opt32 = true
+                    } else {
+                        this.ipt.eqNumber32 = ''
+                        this.subIptShow.opt32 = false
+                    }
+                }
+            }
+        },
+        // 設備子項目
+        'ipt.eqNumber32': function(newVal) {
+            if (this.canModifyEqCode) {  // 若能選擇設備標示編號下拉選單
+                if (newVal != '') {
+                    let obj = this.resOptData.opt3.find(item => item.DeviceCode == this.ipt.eqNumber3)
+
+                    this.ipt.eqNumber4 = ''
+                    this.disableLv4 = false
+                    this.fetchEqCodes(this.ipt.eqNumber3, 4, obj.DeviceCodeParent, newVal)
+                }
             }
         },
     },
     methods: {
         ...mapActions('system', [
+            'chDialog',  // 改變 dialog
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'getNowFullTime',  // 取得目前時間
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化
         async initData() {
-            this.ipt = { ...this.defaultIpt }  // 初始化表單
-            this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
-            
-            // -------------- 編輯時 -------------- 
-            if (this.$route.params.id != undefined) {
-                this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
-                this.isEdit = true
-
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        year: '109',  // 年度
-                        expiryDate: '2020-12-20',  // 履約到期日
-                        money: '98萬6,517',  // 預算金額
-                        workDateStart: '2020-01-05',  // 通知施作日期 (起)
-                        workDateEnd: '2020-01-30',  // 通知施作日期 (訖)
-                        noticeMethod: '',  // 通知方式
-                        noticeMember: '',  // 通知人
-                        noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
-                        type: '契約', // 工單性質
-                        typeNumber: '',  // 工單性質編號
-                        items: [  // 請修項目
-                            {
-                                numbers: '1、1',
-                                name: '維修大工',
-                                spec: '',
-                                unit: '人*日',
-                                count: 1,
-                                price: 2230
-                            },
-                            {
-                                numbers: '1、2',
-                                name: '維修小工',
-                                spec: '',
-                                unit: '人*日',
-                                count: 2,
-                                price: 1962
-                            },
-                        ],
-                    }
-                    
-                    this.setInitDate(obj)
-                    this.chLoadingShow()
-                }, 1000)
-            }
+            this.chLoadingShow()
+            this.initFetchData()  // 判斷新增或編輯
 
             // 向後端請求第一層設備標示編號
             try {
@@ -549,19 +694,37 @@ export default {
             } catch (err) {
                 alert('設備報修資料取得失敗')
             }
+
+            this.chLoadingShow()
+        },
+        // 判斷新增或編輯
+        initFetchData() {
+            this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
+            this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
+
+            if (this.$route.params.id != undefined) {
+                // -------- 編輯時 -------
+                this.isEdit = true
+
+                // 向後端請求資料
+                this.fetchOrderOne()
+            } else {
+                // 新增的情況
+                this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
+            }
         },
         // 設定資料(編輯時)
-        setInitDate(obj) {
-            this.ipt.year = obj.year
-            this.ipt.expiryDate = obj.expiryDate
-            this.ipt.money = obj.money
-            this.ipt.workDateStart = obj.workDateStart
-            this.ipt.workDateEnd = obj.workDateEnd
-            this.ipt.noticeMethod = obj.noticeMethod
-            this.ipt.noticeMember = obj.noticeMember
-            this.ipt.noticeLocation = obj.noticeLocation
-            this.ipt.items = [ ...obj.items ]
-        },
+        // setInitDate(obj) {
+        //     this.ipt.year = obj.year
+        //     this.ipt.expiryDate = obj.expiryDate
+        //     this.ipt.money = obj.money
+        //     this.ipt.workDateStart = obj.workDateStart
+        //     this.ipt.workDateEnd = obj.workDateEnd
+        //     this.ipt.noticeMethod = obj.noticeMethod
+        //     this.ipt.noticeMember = obj.noticeMember
+        //     this.ipt.noticeLocation = obj.noticeLocation
+        //     this.ipt.items = [ ...obj.items ]
+        // },
         // 關閉 dialog
         close () {
             this.dialog = false
@@ -598,16 +761,88 @@ export default {
         // 送出表單
         save() {
             // if (this.$refs.form.validate()) {  // 表單驗證欄位
-                // 送出表單
                 this.chLoadingShow()
 
-                // 測試用資料
-                setTimeout(() => {
-                    let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
-                    if (!this.isEdit) this.$router.push({ path: '/worklist/serve' })
-                    this.chMsgbar({ success: true, msg: txt })
-                    this.chLoadingShow()
-                }, 1000)
+                if (this.isEdit) {
+                    // -------- 編輯時 -------
+                    // updateListOrder({
+                    //     WorkOrderID: this.workNumber,  // 工單編號
+                    //     WorkSubject: this.ipt.subject,  // 故障主旨
+                    //     DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
+                    //     Type: this.ipt.fixType,  // 維修類型
+                    //     CreateType: this.ipt.createType,  // 立案類型
+                    //     CreateDDay: this.ipt.date,  // 立案日期
+                    //     CreateDTime: this.ipt.hour,  // 立案時間 (小時)
+                    //     MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                    //     MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                    //     MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                    //     MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                    //     Malfunction: this.ipt.malfunctionDes,  // 故障描述
+                    //     ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    //     OperatorID: this.userData.UserId,  // 操作人id
+                    // }).then(res => {
+                    //     if (res.data.ErrorCode == 0) {
+                    //         this.chMsgbar({ success: true, msg: '編輯成功' })
+                    //         // 為避免使用者選立即派工，導致input的不會同步改變，所以重新向後端請求資料
+                    //         this.fetchOrderOne()
+                    //     } else {
+                    //         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    //         this.$router.push({ path: '/error' })
+                    //     }
+                    // }).catch(err => {
+                    //     this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
+                    // }).finally(() => {
+                    //     this.chLoadingShow()
+                    // })
+                } else {
+                    // -------- 新增時 -------
+                    createWorkOrder({
+                        CreatorID: this.userData.UserId,  // 立案人id
+                        WorkYear: this.ipt.year,  // 年度
+                        WorkBudget: this.ipt.money,  // 預算金額
+                        AgreementDTime: this.ipt.expiryDate,  // 履約到期日
+                        WorkNoticeStartDTime: this.ipt.workDateStart,  // 通知施作日期 (起)
+                        WorkNoticeEndDTime: this.ipt.workDateEnd,  // 通知施作日期 (訖)
+                        NoticeMethod: this.ipt.noticeMethod,  // 通知方式
+                        NoticeManID: this.ipt.noticeMember,  // 通知人
+                        Type: this.ipt.type,  // 工單性質
+                        OderTypeCode: this.ipt.typeNumber,  // 工單性質編號
+                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                        Malfunction: this.ipt.noticeLocation,  // 故障描述 (通報維修地點及事項)
+                        WorkSubject: '',  // 故障主旨(目前是備用的欄位)
+                        ItemCount: this.ipt.items, // 請修項目
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
+                            // this.clearErrIpt()
+                            this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
+                            this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chDialog({ show: true, msg: '伺服器發生問題，新增失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow()
+                        this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
+                    })
+                }
+            // } else {
+            //     // 欄位驗證
+            //     verifyIptError([
+            //         { label: '派工人', target: this.dispatchID, errTarget: 'dispatchID' },
+            //         { label: '設備標示編號(系統)', target: this.ipt.eqNumber1, errTarget: 'eqNumber1' },
+            //         { label: '設備標示編號(位置)', target: this.ipt.eqNumber2, errTarget: 'eqNumber2' },
+            //         { label: '設備標示編號(設備)', target: this.ipt.eqNumber3, errTarget: 'eqNumber3' },
+            //         { label: '設備標示編號(序號)', target: this.ipt.eqNumber4, errTarget: 'eqNumber4' },
+            //         { label: '故障描述', target: this.ipt.malfunctionDes, errTarget: 'malfunctionDes' },
+            //     ], this)
             // }
         },
         // 初始化設備標示編號
@@ -621,24 +856,37 @@ export default {
             })
         },
         // 向後端請求設備標示編號
-        // val: 上層所選的值, lv: 要向後端取得的層數 (2~4)
-        async fetchEqCodes(val, lv) {
+        // 參數說明：val => 上層所選的值, lv => 要向後端取得的層數 (2~4)
+        async fetchEqCodes(val, lv, parentVal='', subVal='') {
             this.chLoadingShow()
             let codeRes = {}
             switch(lv) {
                 case 2:
                     codeRes = await fetchEqCodeLv2({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    this.resOptData.opt2 = codeRes.data.device_query
                     break
                 case 3:
-                    codeRes = await fetchEqCodeLv3({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    codeRes = await fetchEqCodeLv3({
+                        ClientDeviceCode: val,  // 位置
+                        ClientDeviceCodeParent: parentVal,  // 位置父code
+                        ClientDeviceCodeChild: subVal,  // 位置子項目
+                        ClientReqTime: getNowFullTime() 
+                    })
+                    this.resOptData.opt3 = codeRes.data.device_query
                     break
                 case 4:
-                    codeRes = await fetchEqCodeLv4({ ClientDeviceCode: val, ClientReqTime: getNowFullTime() })
+                    codeRes = await fetchEqCodeLv4({
+                        ClientDeviceCode: val,  // 設備
+                        ClientDeviceCodeChildParent: val,  // 設備
+                        ClientDeviceCodeChild: subVal,  // 設備子項目
+                        ClientDeviceCodeParent: parentVal,  // 設備父code
+                        ClientReqTime: getNowFullTime()
+                    })
                     break
                 default:
                     break
             }
-
+            
             this.setEqCodeOption(codeRes.data.device_query, 'opt'+ lv)
             this.chLoadingShow()
         },

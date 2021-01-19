@@ -138,7 +138,7 @@ export default {
       }).then(res => {
         if (res.data.ErrorCode == 0) {
           localStorage.isLogined = true
-          localStorage.jwt = res.data.Token
+          localStorage.jwt = this.encode(res.data.Token, this.key)  // JWT 也進行加密，要使用時再解密就好
           localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
           localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
           this.$router.push('/')

@@ -363,15 +363,10 @@ export default {
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'WorkOrderID',
-                    // 'MaintainCode_System',
-                    // 'MaintainCode_Loc',
-                    // 'MaintainCode_Eqp',
-                    // 'MaintainCode_Seq',
                     'WorkSubject',
                     'Status'
                 ],
             }).then(res => {
-                console.log(res.data);
                 this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
                 console.log(err)
