@@ -25,7 +25,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <!-- <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>總費用
             </h3>
@@ -42,7 +42,7 @@
                 placeholder="請輸入最大金額"
                 solo
             ></v-text-field>
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
@@ -93,12 +93,12 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.type="{ item }">
-                        {{ `${item.type} (${item.typeNumber})` }}
+                    <template v-slot:item.Type="{ item }">
+                        {{ (item.Type == 3)? '契約' : '小額採購' }}
                     </template>
 
-                    <template v-slot:item.status="{ item }">
-                        {{ transferStatusText(item.status) }}
+                    <template v-slot:item.Status="{ item }">
+                        {{ statusOpt.find(ele => ele.value == item.Status).text }}
                     </template>
 
                    <template v-slot:item.content="{ item }">
@@ -126,38 +126,43 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-// import { getNowFullTime } from '@/assets/js/commonFun'
-// import { fetchOrderList } from '@/apis/workList/maintain'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { serveStatusOpts } from '@/assets/js/workList'
+import { fetchOrderList } from '@/apis/workList/serve'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
     data: () => ({
         year: new Date().getFullYear()-1911,  // 年度
-        status: '不限',  // 處理階段
-        moneyStart: '',  // 總費用(最小金額)
-        moneyEnd: '',  // 總費用(最大金額)
+        status: '',  // 處理階段
+        // moneyStart: '',  // 總費用(最小金額)
+        // moneyEnd: '',  // 總費用(最大金額)
         type: '', // 工單性質
         totalPrice: 0,  // 累計總費用
         typeOpts: [
             { text: '不限', value: '' },
-            { text: '契約', value: '契約' },
-            { text: '小額採購', value: '小額採購' },
+            { text: '契約', value: '3' },
+            { text: '小額採購', value: '4' },
         ],
-        statusOpt: ['不限', '待派工', '已派工待維修', '已維修待驗收', '已驗收待結案', '已結案'],  // 處理階段下拉選單
+        statusOpt: serveStatusOpts,  // 處理階段下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '年度', value: 'year', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '預算金額', value: 'money', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工單性質', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理階段', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '年度', value: 'WorkYear', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '總金額', value: 'TotalSpent', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工單性質', value: 'Type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -167,81 +172,53 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        year: '109',
-                        expiryDate: '2020-12-25',
-                        money: '98萬6,517',
-                        type: '契約',
-                        typeNumber: 'A123456', 
-                        status: 1,
-                    },
-                    {
-                        id: '222',
-                        year: '109',
-                        expiryDate: '2020-12-25',
-                        money: '98萬6,517',
-                        type: '契約',
-                        typeNumber: 'B44586',
-                        status: 2,
-                    },
-                    {
-                        id: '333',
-                        year: '109',
-                        expiryDate: '2020-12-25',
-                        money: '98萬6,517',
-                        type: '小額採購',
-                        typeNumber: 'A0147',
-                        status: 3,
-                    },
-                    {
-                        id: '444',
-                        year: '109',
-                        expiryDate: '2020-12-25',
-                        money: '98萬6,517',
-                        type: '契約',
-                        typeNumber: 'C9856',
-                        status: 4,
-                    },
-                    {
-                        id: '555',
-                        year: '109',
-                        expiryDate: '2020-12-25',
-                        money: '98萬6,517',
-                        type: '小額採購',
-                        typeNumber: 'A458632',
-                        status: 5,
-                    },
-                ]
-                this.totalPrice = 3540622
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    { tableColumn: 'WorkYear', columnValue: this.year },  // 年度
+                    { tableColumn: 'Type', columnValue: this.type },  // 工單性質
+                    { tableColumn: 'Status', columnValue: this.status },  // 處理階段
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkYear',
+                    'TotalSpent',
+                    'Type',
+                    'Status'
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.totalPrice = res.data.ListSpent
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 轉換狀態文字
-        transferStatusText(status) {
-            switch(status) {
-                case 1:
-                    return '待派工'
-                    break
-                case 2:
-                    return '已派工待維修'
-                    break
-                case 3:
-                    return '已維修待驗收'
-                    break
-                case 4:
-                    return '已驗收待結案'
-                    break
-                case 5:
-                    return '已結案'
-                    break
-                default:
-                    break
-            }
-        },
+        // transferStatusText(status) {
+        //     switch(status) {
+        //         case 1:
+        //             return '待派工'
+        //             break
+        //         case 2:
+        //             return '已派工待維修'
+        //             break
+        //         case 3:
+        //             return '已維修待驗收'
+        //             break
+        //         case 4:
+        //             return '已驗收待結案'
+        //             break
+        //         case 5:
+        //             return '已結案'
+        //             break
+        //         default:
+        //             break
+        //     }
+        // },
         // 檢視內容
         redirect(item) {
             // 依業主要求變更檢式頁面的方式，所以改為另開分頁

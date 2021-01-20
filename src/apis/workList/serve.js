@@ -17,3 +17,12 @@ export function createWorkOrder(data) { return axios(
         data,
     }
 )}
+
+// 工單搜尋
+export function fetchOrderList(data) { return axios(
+    {
+        url: '/mmis/service_order/queryarray',
+        method: 'post',
+        data,
+    }
+)}

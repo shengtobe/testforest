@@ -532,6 +532,12 @@ export default {
             type: '3', // 工單性質
             typeNumber: '',  // 工單性質編號
             items: [],  // 請修項目
+            eqNumber1: '',  // 設備標示編號1
+            eqNumber2: '',  // 設備標示編號2
+            eqNumber22: '',  // 設備標示編號2-2
+            eqNumber3: '',  // 設備標示編號3
+            eqNumber32: '',  // 設備標示編號3-2
+            eqNumber4: '',  // 設備標示編號4
         },
         dateMenuShow: {  // 日期選單是否顯示
             expiry: false,  // 履約到期
@@ -814,14 +820,15 @@ export default {
                         Malfunction: this.ipt.noticeLocation,  // 故障描述 (通報維修地點及事項)
                         WorkSubject: '',  // 故障主旨(目前是備用的欄位)
                         ItemCount: this.ipt.items, // 請修項目
+                        TotalSpent: this.totalMoney,  // 總金額
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
                             // this.clearErrIpt()
-                            this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
-                            this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
+                            // this.ipt = { ...this.defaultIpt }  // 初始化表單
+                            // this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
                         } else {
                             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                             this.$router.push({ path: '/error' })
