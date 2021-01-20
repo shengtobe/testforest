@@ -1,3 +1,13 @@
+<!--
+選擇設備報修碼的共用元件
+輸入:
+      ifLV5:是否也要選工作項? true為是，false為否
+      nowEqCode:現在已選擇好的設備報修碼
+      nowWorkCode:現在已選擇好的工作項
+回傳方法
+      _returnEqCode:回傳組好的設備報修碼
+      _returnWorkCode:回傳選擇的工作項
+-->
 <template>
   <v-row class="px-2 mb-6">
     <v-col cols="12">
@@ -124,7 +134,7 @@
 <script>
   import { mapState, mapActions } from 'vuex'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
-  import { fetchEqCode } from '@/apis/materialManage/equipCode'
+  import { fetchEqCode,fetchEqList } from '@/apis/materialManage/equipCode'
   export default {
     //外部傳入資料
     props: {
@@ -187,31 +197,72 @@
         'chMsgbar',  // messageBar
         'chLoadingShow'  // 切換 loading 圖顯示
       ]),
-      //紀錄一下 回傳東西的方法
-      sample(sample) {
-        this.$emit('sample', sample);
-      },
       //初始化
-      _componentInit() {
+      async _componentInit() {
+        this.selectItem = {
+        Lv1: '',
+        Lv2: '',
+        Lv22: '',
+        Lv3: '',
+        Lv32: '',
+        Lv4: '',
+        Lv5: ''
+      }
         if(this.nowEqCode == '' || this.nowEqCode == undefined || this.nowEqCode == null){ //沒有帶值進來
           this._getEqList('SYS','SYS_%','1','1')
         }else{  //有帶值進來
+          const that = this
+          let resdata = {}
           //先把清單帶出來
-          this._getEqList('SYS','SYS_%','1','1')
+          await this._getEqList('SYS','SYS_%','1','1')
           //改值之後觸發修改
           //用API把所有選項都帶出來
-
+          await fetchEqList({
+            FullCode: that.nowEqCode,
+            ClientReqTime: getNowFullTime(),
+            OperatorID: this.userData.UserId,  // 操作人id
+          }).then( res => {
+            if (res.data.ErrorCode == 0) {
+              console.log(res.data)
+                resdata = res.data
+            }else {
+              sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+              that.$router.push({ path: '/error' })
+            }
+          })
+          that.selectItem.Lv1 = resdata.EquipLv1
+          await that.goChange(that.selectItem.Lv1,'1')
+          that.selectItem.Lv2 = resdata.EquipLv2
+          await that.goChange(that.selectItem.Lv2,'2')
+          that.selectItem.Lv22 = resdata.EquipLv22
+          if(resdata.EquipLv22 != ""){
+            await that.goChange(that.selectItem.Lv22,'22')
+          }
+          that.selectItem.Lv3 = resdata.EquipLv3
+          await that.goChange(that.selectItem.Lv3,'3')
+          that.selectItem.Lv32 = resdata.EquipLv32
+          if(resdata.EquipLv32 != ""){
+            await that.goChange(that.selectItem.Lv32,'32')
+          }
+          that.selectItem.Lv4 = resdata.EquipLv4
+          await that.goChange(that.selectItem.Lv4,'4')
+          if(this.ifLV5){
+            that.selectItem.Lv5 = that.nowWorkCode
+            await that.goChange(that.selectItem.Lv5,'5')
+          }
         }
       },
       //取得項目
       async _getEqList(deptCode,parentCode,eqLevel,toObjectLv) {
-        //習慣秀加一個能用的that變數，避免呼叫到其他class的時候指錯對象
+        //習慣加一個能用的that變數，避免呼叫到其他class的時候指錯對象
         const that = this
         const toObject = 'eqCodeListLv' + toObjectLv
         await fetchEqCode({
           DeptCode: deptCode,
           ParentCode: parentCode,
-          EequipLevel: eqLevel
+          EequipLevel: eqLevel,
+          ClientReqTime: getNowFullTime(),
+          OperatorID: this.userData.UserId,  // 操作人id
         }).then( res => {
           if (res.data.ErrorCode == 0) {
             if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
@@ -223,8 +274,6 @@
           }
         }).catch( err => {
           this.chMsgbar({ success: false, msg: '伺服器發生問題，清單查詢失敗' })
-        }).finally(() => {
-
         })
       },
       //每次變動
@@ -365,7 +414,15 @@
     },
     //監視
     watch: {
-
+      nowEqCode: function(){
+        this._componentInit()
+      },
+      ifLV5: function(){
+        this._componentInit()
+      },
+      nowWorkCode: function(){
+        this._componentInit()
+      }
     }
   }
 </script>
