@@ -47,7 +47,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -156,13 +156,13 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <!-- <v-col cols="12" sm="3">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value  />
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value  v-model="doMan.name"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -202,10 +202,8 @@
                   </v-col>
                   <v-col cols="12" sm="3">
                           <span class="d-sm-none error--text">改善措施：</span>
-                          <v-textarea auto-grow
+                          <v-textarea auto-grow v-model="ipt.items[idx].note"
                            outlined rows="3"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
                         </v-col>
                 </v-row>
               </v-alert>
@@ -258,7 +256,7 @@ export default {
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP010",
       nowTime: "",
       doMan:{
         id: '',
@@ -350,7 +348,7 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 24; step++) {
+      for (step = 0; step < 10; step++) {
         this.ipt.items[step].status = "0"
         this.ipt.items[step].note = ""
       }
@@ -421,7 +419,48 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)               
+
+      let i;
+      for (i = 0; i < 10; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -457,9 +496,20 @@ export default {
           "Memo_2",
           "CheckOption3",
           "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
         ],
       }).then(res => {
         this.initInput();
@@ -479,9 +529,11 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
+            console.log("i:" + i + ", j:" + j + ", " + key + ":" + (dat[0])[key])
+            if(i >= 4 && i <= 23){
+              if(i % 2 == 0)
+              {
+                this.ipt.items[j].status = (dat[0])[key]
               }
               else{
                 this.ipt.items[j].note = (dat[0])[key]
@@ -490,9 +542,6 @@ export default {
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
         
       }).catch(err => {
         console.log(err)
