@@ -420,28 +420,28 @@ export default {
                     "CheckOption1":this.ipt.items[0].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[1].status
+                    "CheckOption2":this.ipt.items[1].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[2].status
+                    "CheckOption3":this.ipt.items[2].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[3].status
+                    "CheckOption4":this.ipt.items[3].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[4].status
+                    "CheckOption5":this.ipt.items[4].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[5].status
+                    "CheckOption6":this.ipt.items[5].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[6].status
+                    "CheckOption7":this.ipt.items[6].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[7].status
+                    "CheckOption8":this.ipt.items[7].status
                   },
                   {
-                    "CheckOption1":this.ipt.items[8].status
+                    "CheckOption9":this.ipt.items[8].status
                   },
                 ],
             "Chk2":
