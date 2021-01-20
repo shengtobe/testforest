@@ -238,7 +238,7 @@ export default {
       uu: "",
       yy: "",
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP019",
       nowTime: "",
       doMan:{
         id: '',
@@ -414,15 +414,18 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "Place",
+          "Content",
+          "BgWorkHour",
+          "BgWorkMinute",
+          "EndWorkHour",
+          "EndWorkMinute",
+          "WorkStatus",
+          "CheckManID",
+          "CheckMan",
+          "Worker",
+          "StopEqip",
+          "StopEqipStatus",
         ],
       }).then(res => {
         this.initInput();
@@ -453,9 +456,6 @@ export default {
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
         
       }).catch(err => {
         console.log(err)

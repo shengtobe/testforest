@@ -200,10 +200,10 @@
                       <v-textarea auto-grow outlined rows="2" />
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea auto-grow outlined rows="2" />
+                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].CheckAdvice"/>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea auto-grow outlined rows="2" />
+                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].CheckDescription"/>
                   </v-col>
                 </v-row>
               </v-alert>
@@ -256,7 +256,7 @@ export default {
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP015",
       nowTime: "",
       doMan:{
         id: '',
@@ -442,14 +442,33 @@ export default {
           "Name",
           "CheckMan",
           "CheckOption1",
-          "Memo_1",
+          "CheckAdvice1",
+          "CheckDescription1",
+          "CheckMemo1",
           "CheckOption2",
-          "Memo_2",
+          "CheckAdvice2",
+          "CheckDescription2",
+          "CheckMemo2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckAdvice3",
+          "CheckDescription3",
+          "CheckMemo3",
+          "CheckOption4",
+          "CheckAdvice4",
+          "CheckDescription4",
+          "CheckMemo4",
+          "CheckOption5",
+          "CheckAdvice5",
+          "CheckDescription5",
+          "CheckMemo5",
+          "CheckOption6",
+          "CheckAdvice6",
+          "CheckDescription6",
+          "CheckMemo6",
+          "CheckOption7",
+          "CheckAdvice7",
+          "CheckDescription7",
+          "CheckMemo7",
         ],
       }).then(res => {
         this.initInput();
@@ -469,20 +488,22 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
+            if(i > 3 && i < 32){
+              if(i % 3 == 1){
                   this.ipt.items[j].status = (dat[0])[key]
               }
-              else{
+              else if (i % 3 == 2){
                 this.ipt.items[j].note = (dat[0])[key]
                 j++
+              }
+              else
+              {
+
+                
               }
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
         
       }).catch(err => {
         console.log(err)

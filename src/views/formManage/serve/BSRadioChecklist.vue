@@ -203,7 +203,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status"
+                            v-model="ipt.items1[idx].status"
                             class="pa-0 ma-0"
                           >
                             <v-radio color="success" label="正常" value="1"></v-radio>
@@ -242,7 +242,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status"
+                            v-model="ipt.items2[idx].status"
                             class="pa-0 ma-0"
                           >
                             <v-radio color="success" label="正常" value="1"></v-radio>
@@ -281,7 +281,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status"
+                            v-model="ipt.items3[idx].status"
                             class="pa-0 ma-0"
                           >
                             <v-radio color="success" label="正常" value="1"></v-radio>
@@ -320,7 +320,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items[idx].status"
+                            v-model="ipt.items4[idx].status"
                             class="pa-0 ma-0"
                           >
                             <v-radio color="success" label="正常" value="1"></v-radio>
@@ -336,7 +336,7 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">不正常狀態及處理說明</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea hide-details auto-grow outlined rows="4" v-model="ipt.suggest"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -368,25 +368,11 @@ export default {
       isLoading: false,
       disabled: false,
       MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP018",
       nowTime: "",
       doMan:{
         id: '',
@@ -423,8 +409,31 @@ export default {
           { status: "0", note: "" },
           { status: "0", note: "" },
           { status: "0", note: "" },
+          
+        ],
+        items_2: [
+          { status: "0", note: "" },
           { status: "0", note: "" },
         ],
+         items_3: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+         items_4: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+
       },
       items1: [
         //無線電機(含電源供應器)
@@ -595,15 +604,11 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
+          "PAID",
           "CheckOption1",
-          "Memo_1",
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "Memo",
         ],
       }).then(res => {
         this.initInput();
