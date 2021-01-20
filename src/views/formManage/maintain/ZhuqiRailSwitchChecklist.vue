@@ -547,7 +547,7 @@ export default {
               this.ipt.items[j].Result = (dat[0])[key]
               i+=3
             }
-          }       
+          }        
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
