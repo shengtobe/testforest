@@ -72,7 +72,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="AddJobApplication = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -92,7 +92,7 @@
 
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
-            <v-btn title="詳細資料" class="mr-2" small dark fab color="info darken-1" @click="AddJobApplication = true">
+            <v-btn title="詳細資料" class="mr-2" small dark fab color="info darken-1" @click="Add = true">
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
           </template>
@@ -105,7 +105,7 @@
       </v-card>
     </v-col>
     <!-- 新增保安裝置保修工作申請書 modal -->
-    <v-dialog v-model="AddJobApplication" max-width="900px">
+    <v-dialog v-model="Add" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
             新增{{ title }}
@@ -122,77 +122,77 @@
                 <v-row no-gutter class="indigo--text">
                     <v-col cols="12" sm="3">
                         <h3 class="mb-1">站長姓名</h3>
-                        <v-text-field solo />
+                        <v-text-field solo v-model="doMan.name"/>
                     </v-col>
                     <v-col cols="12" sm="3">
                         <h3 class="mb-1">日期</h3>
                         <v-menu :close-on-content-click="false" transition="scale-transition" max-width="290px" min-width="290px">
                             <template v-slot:activator="{ on }">
-                                <v-text-field v-model.trim="AddData.MaintenanceDay" outlined v-on="on" dense single-line />
+                                <v-text-field v-model.trim="nowTime" outlined v-on="on" dense single-line />
                             </template>
-                            <v-date-picker color="purple" v-model="AddData.MaintenanceDay" @input="MaintenanceDay = false" locale="zh-tw"/>
+                            <v-date-picker color="purple" v-model="nowTime" @input="MaintenanceDay = false" locale="zh-tw"/>
                         </v-menu>
                     </v-col>
                     <v-col cols="12" sm="6"/>
                     <v-col cols="12" sm="3">
                         <h3 >機車</h3>
                         <h4 >號碼</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="No[0].value"/>
                     </v-col>
                     <v-col cols="12" sm="3">
                         <h3 class="hideText">機車</h3>
                         <h4 class="hideText">號碼</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="No[1].value"/>
                     </v-col>
                     <v-col cols="12" sm="3">
                         <h3 class="hideText">機車</h3>
                         <h4 class="hideText">號碼</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="No[2].value"/>
                     </v-col>
                     <v-col cols="12" sm="3">
                         <h3 class="hideText">機車</h3>
                         <h4 class="hideText">號碼</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="No[3].value"/>
                     </v-col>
                     <v-col cols="12" sm="3" style="margin-top:-5%">
                         <h4 >區間</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="Sec_1"/>
                     </v-col>
                     <v-col cols="12" sm="3" style="margin-top:-5%">
                         <h4 class="hideText">_</h4>
-                        <v-text-field solo />
+                        <v-text-field solo v-model="Sec_2"/>
                     </v-col>
                     <v-col cols="12" sm="3" style="margin-top:-5%">
                         <h4 class="hideText">_</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="Sec_3"/>
                     </v-col>
                     <v-col cols="12" sm="3" style="margin-top:-5%">
                         <h4 class="hideText">_</h4>
-                        <v-text-field solo/>
+                        <v-text-field solo v-model="Sec_4"/>
                     </v-col>
                     
                     <v-row>
                         <v-col cols="12" sm="3">
                             <h3 >車輛種類</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_1">
                                 <span slot="prepend">1:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_2">
                                 <span slot="prepend">2:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_3">
                                 <span slot="prepend">3:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_4">
                                 <span slot="prepend">4:</span>
                             </v-text-field>
                         </v-col>
@@ -201,25 +201,25 @@
                     <v-row style="margin-top:-7%">
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_5">
                                 <span slot="prepend">5:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_6">
                                 <span slot="prepend">6:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_7">
                                 <span slot="prepend">7:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_8">
                                 <span slot="prepend">8:</span>
                             </v-text-field>
                         </v-col>
@@ -227,25 +227,25 @@
                     <v-row style="margin-top:-7%">
                         <v-col cols="12" sm="3">
                         <h3 class="hideText">_</h3>
-                        <v-text-field solo>
+                        <v-text-field solo v-model="CarType_9">
                             <span slot="prepend">9:</span>
                         </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_10">
                                 <span slot="prepend">10:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_11">
                                 <span slot="prepend">11:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_12">
                                 <span slot="prepend">12:</span>
                             </v-text-field>
                         </v-col>
@@ -254,25 +254,25 @@
                     <v-row style="margin-top:-7%">
                         <v-col cols="12" sm="3">
                         <h3 class="hideText">_</h3>
-                        <v-text-field solo>
+                        <v-text-field solo v-model="CarType_13">
                             <span slot="prepend">13:</span>
                         </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_14">
                                 <span slot="prepend">14:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_15">
                                 <span slot="prepend">15:</span>
                             </v-text-field>
                         </v-col>
                         <v-col cols="12" sm="3">
                             <h3 class="hideText">_</h3>
-                            <v-text-field solo>
+                            <v-text-field solo v-model="CarType_16">
                                 <span slot="prepend">16:</span>
                             </v-text-field>
                         </v-col>
@@ -351,7 +351,7 @@
                         </v-col>
                         <v-col cols="12" sm="2">
                             <span class="d-sm-none error--text">備註</span>
-                            <v-textarea auto-grow outlined rows="2"/>
+                            <v-textarea auto-grow outlined rows="2" v-model="items1_2.note"/>
                         </v-col>
                     </v-row>
                 </v-alert>
@@ -366,31 +366,31 @@
                 <v-row no-gutter class="indigo--text" style="margin-left:8%">
                     <v-col cols="12" sm="2">
                         <h3 class="mb-1">起號</h3>
-                        <v-text-field solo />
+                        <v-text-field solo v-model="StartNo"/>
                     </v-col>
                     <v-col cols="12" sm="2">
                         <h3 class="mb-1">迄號</h3>
-                        <v-text-field solo />
+                        <v-text-field solo v-model="EndNo"/>
                     </v-col>
                     <v-col cols="12" sm="2">
                         <h3 class="mb-1">張數</h3>
-                        <v-text-field solo />
+                        <v-text-field solo v-model="AmountTick"/>
                     </v-col>
                     <v-col cols="12" sm="2">
                         <h3 class="mb-1">票價共計</h3>
-                        <v-text-field solo>
+                        <v-text-field solo v-model="PriceTick">
                             <span slot="append">元</span>
                         </v-text-field>
                     </v-col>
                     <v-col cols="12" sm="2">
                         <h3 class="mb-1">總計</h3>
-                        <v-text-field solo>
+                        <v-text-field solo v-model="TotalTick">
                             <span slot="append">元</span>
                         </v-text-field>
                     </v-col>
                     <v-col cols="12" sm="10" style="margin-top:-4%;">
                         <h3 class="mb-1">備註</h3>
-                        <v-textarea auto-grow outlined rows="2"/>
+                        <v-textarea auto-grow outlined rows="2" v-model="Memo_5"/>
                     </v-col>
                     
                 </v-row>
@@ -552,11 +552,43 @@ export default {
       items1_2: [
         { interval:"", car:"", num1:"0", num2:"0", sum:"0", note:"" },
       ],
-      AddJobApplication: false,
+      Add: false,
       ApplicationDay: "",
       pageOpt: { page: 1 }, // 目前頁數
+      No: [
+        {value: ''},
+        {value: ''},
+        {value: ''},
+        {value: ''},
+      ],
+      Sec_1: '',
+      Sec_2: '',
+      Sec_3: '',
+      Sec_4: '',
+      CarType_1: '',
+      CarType_2: '',
+      CarType_3: '',
+      CarType_4: '',
+      CarType_5: '',
+      CarType_6: '',
+      CarType_7: '',
+      CarType_8: '',
+      CarType_9: '',
+      CarType_10: '',
+      CarType_11: '',
+      CarType_12: '',
+      CarType_13: '',
+      CarType_14: '',
+      CarType_15: '',
+      CarType_16: '',
+      StartNo: '',
+      EndNo: '',
+      AmountTick: '',
+      PriceTick: '',
+      TotalTick: '',
+      Memo_5: '',
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP021",
       nowTime: "",
       doMan:{
         id: '',
@@ -613,21 +645,69 @@ export default {
         }
     },
     Add2(){
-            return Number(this.items1_2.num1) + Number(this.items1_2.num2)
+            var data = Number(this.items1_2.num1) + Number(this.items1_2.num2)
+            this.items1_2.sum = data
+            return data
         }
   },
   methods: {
     initInput(){
       console.log("init create window form")
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 24; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ""
+      // console.log("this.userData.UserName: " + this.userData.UserName)
+      // this.doMan.name = this.userData.UserName;
+      // this.zs = this.nowTime;
+      for (let index = 0; index < this.No.length; index++) {
+        this.No[index].value = '';
       }
-      this.memo_2 = ""
-      this.memo_3 = ""
+      this.doMan.name = this.userData.UserName;
+      this.Sec_1 = ''
+      this.Sec_2 = ''
+      this.Sec_3 = ''
+      this.Sec_4 = ''
+      this.CarType_1 = ''
+      this.CarType_2 = ''
+      this.CarType_3 = ''
+      this.CarType_4 = ''
+      this.CarType_5 = ''
+      this.CarType_6 = ''
+      this.CarType_7 = ''
+      this.CarType_8 = ''
+      this.CarType_9 = ''
+      this.CarType_10 = ''
+      this.CarType_11 = ''
+      this.CarType_12 = ''
+      this.CarType_13 = ''
+      this.CarType_14 = ''
+      this.CarType_15 = ''
+      this.CarType_16 = ''
+      this.StartNo = ''
+      this.EndNo = ''
+      this.AmountTick = ''
+      this.PriceTick = ''
+      this.TotalTick = ''
+      this.Memo_5 = ''
+      var step;
+      for (step = 0; step < 4; step++) {
+        this.items1_1[step].interval = ""
+        this.items1_1[step].car = ""
+        this.items1_1[step].num1 = ""
+        this.items1_1[step].num2 = ""
+        this.items1_1[step].sum = ""
+        this.items1_1[step].note = ""
+        this.Carriage[step].interval = ""
+        this.Carriage[step].end = ""
+        this.Carriage[step].itemName = ""
+        this.Carriage[step].count = ""
+        this.Carriage[step].id = ""
+        this.Carriage[step].note = ""
+        this.handover[step].start = ""
+        this.handover[step].end = ""
+        this.handover[step].num = ""
+        this.handover[step].reason = ""
+        this.handover[step].sign = ""
+        this.handover[step].note = ""
+
+      }
     },
     newOne(){
       this.Add = true
@@ -700,10 +780,78 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckMan"
+      obj.Value = this.doMan.checkManName
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckMan"
+      obj.Value = this.doMan.checkManName
+      arr = arr.concat(obj)
+      var NoAry = [this.No_1, this.No_2, this.No_3, this.No_4];
+      
+
+      var SecAry = [this.Sec_1, this.Sec_2, this.Sec_3, this.Sec_4];
+
+      var CarTypeAry = [CarType_1, CarType_2, CarType_3, CarType_4];
+      this.CarType_4 = ''
+      this.CarType_5 = ''
+      this.CarType_6 = ''
+      this.CarType_7 = ''
+      this.CarType_8 = ''
+      this.CarType_9 = ''
+      this.CarType_10 = ''
+      this.CarType_11 = ''
+      this.CarType_12 = ''
+      this.CarType_13 = ''
+      this.CarType_14 = ''
+      this.CarType_15 = ''
+      this.CarType_16 = ''
+
+      let i;
+      for (i = 0; i < 10; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     CloseJobApplication() {
-      this.AddJobApplication = false;
+      this.Add = false;
     },
     viewPage(item) {
       console.log("item: " + item)
@@ -741,9 +889,6 @@ export default {
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
         console.log("doMan name: " + this.doMan.name)
         //123資料
         let ad = Object.keys(dat[0])
