@@ -136,7 +136,7 @@
                   <h3 class="mb-1 indigo--text">工作內容</h3>
                   <v-textarea solo rows="4" />
                 </v-col>
-              </v-row>
+              </v-row> 
               <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
                 <v-row no-gutter>
                   <v-col cols="12" sm="4">
@@ -223,22 +223,8 @@ export default {
       newText: "紀錄簿",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP019",
       nowTime: "",
       doMan:{
         id: '',
@@ -414,15 +400,18 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "Place",
+          "Content",
+          "BgWorkHour",
+          "BgWorkMinute",
+          "EndWorkHour",
+          "EndWorkMinute",
+          "WorkStatus",
+          "CheckManID",
+          "CheckMan",
+          "Worker",
+          "StopEqip",
+          "StopEqipStatus",
         ],
       }).then(res => {
         this.initInput();
@@ -453,9 +442,6 @@ export default {
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
         
       }).catch(err => {
         console.log(err)

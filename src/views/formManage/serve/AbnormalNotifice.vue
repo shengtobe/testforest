@@ -154,16 +154,16 @@
             </v-col>
             <!-- 狀況及原因 -->
             <v-col cols="12">
-              <v-textarea hide-details label="異常狀況地點" auto-grow outlined rows="2" v-model.trim="ii" />
+              <v-textarea hide-details label="異常狀況地點" auto-grow outlined rows="2" v-model.trim="CheckOption1" />
             </v-col>
             <v-col cols="12">
-              <v-textarea hide-details label="異常情形概要" auto-grow outlined rows="8" v-model.trim="ii2" />
+              <v-textarea hide-details label="異常情形概要" auto-grow outlined rows="8" v-model.trim="CheckOption2" />
             </v-col>
             <v-col cols="12">
-              <v-textarea hide-details label="緊急應變措施" auto-grow outlined rows="6" v-model.trim="ii3" />
+              <v-textarea hide-details label="緊急應變措施" auto-grow outlined rows="6" v-model.trim="CheckOption3" />
             </v-col>
             <v-col cols="12">
-              <v-textarea hide-details label="影響情形" auto-grow outlined rows="6" v-model.trim="ii4" />
+              <v-textarea hide-details label="影響情形" auto-grow outlined rows="6" v-model.trim="CheckOption4" />
             </v-col>
           </v-row>
         </div>
@@ -191,23 +191,15 @@ export default {
     newText: "通報單",
     isLoading: false,
     disabled: false,
-    a: "",
-    z: "",
-    q: "",
-    df: "",
-    s: "",
-    qz: "",
-    wx: "",
-    pp: "",
-    oo: "",
-    ii: "",
-    uu: "",
-    yy: "",
+    CheckOption1:"",
+    CheckOption2:"",
+    CheckOption3:"",
+    CheckOption4:"",
     Add: false,
     dialog3: false,
     pageOpt: { page: 1 }, // 目前頁數
     //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP016",
       nowTime: "",
       doMan:{
         id: '',
@@ -263,12 +255,9 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 24; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ""
+      for (step = 0; step < 4; step++) {
+        this.ipt.items[step].CheckOption = ""
       }
-      this.memo_2 = ""
-      this.memo_3 = ""
     },
     newOne(){
       this.Add = true
@@ -364,19 +353,15 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
+          "AnnounceDay",
+          "AlarmDay",
           "DepartName",
           "Name",
           "CheckMan",
           "CheckOption1",
-          "Memo_1",
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
         ],
       }).then(res => {
         this.initInput();
@@ -396,21 +381,11 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
+            if(i > 4 && i < 9){
+              this.ipt.items[j].status = (dat[0])[key]
             }
             i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
+          }       
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
