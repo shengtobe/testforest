@@ -207,11 +207,11 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="ipt.items[idx].Advice"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="ipt.items[idx].Measures"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -241,25 +241,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP032",
       nowTime: "",
       doMan:{
         id: '',
@@ -309,7 +295,8 @@ export default {
         { question: "7.試運轉是否順暢、有無異常噪音", checkMethod: "動作測試" },
         { question: "8.其他", checkMethod: "目視點檢" },
       ],
-      suggest: "", // 改善建議
+      Advice: "", // 改善建議
+      Measures:"",// 改善措施
     };
   },
   components: { Pagination }, // 頁碼
@@ -338,12 +325,12 @@ export default {
         ]),
     // 更換頁數
     initInput(){
+      console.log("init create window form")
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 7; step++) {
+      for (step = 0; step < 8; step++) {
         this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
       }
       this.Advice = "";
       this.Measures = ""
@@ -417,7 +404,64 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+      createFormOrder({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {
+            "Chk1": 
+                [
+                  {
+                    "CheckOption1":this.ipt.items[0].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[1].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[2].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[3].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[4].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[5].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[6].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[7].status
+                  },
+                  {
+                    "CheckOption1":this.ipt.items[8].status
+                  },
+                ],
+            "Chk2":
+                {
+                  "Advice":this.ipt.Advice, 
+                 "Measures":this.ipt.Measures, 
+                }
+          }
+        ],
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -448,14 +492,15 @@ export default {
           "Name",
           "CheckMan",
           "CheckOption1",
-          "Memo_1",
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
           "Advice",
           "Measures",
-
         ],
       }).then(res => {
         this.initInput();
@@ -475,20 +520,13 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
+            if(i > 3 && i <12){
+              this.ipt.items[i].status = (dat[0])[key]
             }
             i++
           }
         this.memo_2 = dat[0].Advice
         this.memo_3 = dat[0].Measures
-
         
       }).catch(err => {
         console.log(err)

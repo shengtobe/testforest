@@ -203,10 +203,7 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註：</span>
-                          <v-textarea auto-grow
-                           outlined rows="3"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
+                         <v-textarea auto-grow outlined rows="3" v-model="ipt.items[idx].note"/>  
                         </v-col>
                 </v-row>
               </v-alert>
@@ -216,11 +213,11 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="ipt.Advice"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="ipt.Measures"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -250,25 +247,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP033",
       nowTime: "",
       doMan:{
         id: '',
@@ -325,7 +308,8 @@ export default {
         { question: "10.是否有「使用時禁戴手套」警語", checkMethod: "目視點檢" },
         { question: "11.其他", checkMethod: "" },
       ],
-      suggest: "", // 改善建議
+      Advice: "", // 改善建議
+      Measures:"",// 改善措施
     };
   },
   components: { Pagination }, // 頁碼
@@ -357,7 +341,7 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 7; step++) {
+      for (step = 0; step < 12; step++) {
         this.ipt.items[step].status = "0"
         this.ipt.items[step].note = ''
       }
@@ -433,7 +417,84 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+      createFormOrder({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {
+            "Chk1": 
+                [
+                  {
+                    "CheckOption1":this.ipt.items[0].status,
+                    "Memo_1":this.ipt.items[0].note
+                  },
+                  {
+                    "CheckOption2":this.ipt.items[1].status,
+                     "Memo_2":this.ipt.items[1].note
+                  },
+                  {
+                    "CheckOption3":this.ipt.items[2].status,
+                    "Memo_3":this.ipt.items[2].note
+                  },
+                  {
+                    "CheckOption4":this.ipt.items[3].status,
+                    "Memo_4":this.ipt.items[3].note
+                  },
+                  {
+                    "CheckOption5":this.ipt.items[4].status,
+                    "Memo_5":this.ipt.items[4].note
+                  },
+                  {
+                    "CheckOption6":this.ipt.items[5].status,
+                    "Memo_6":this.ipt.items[5].note
+                  },
+                  {
+                    "CheckOption7":this.ipt.items[6].status,
+                    "Memo_7":this.ipt.items[6].note
+                  },
+                  {
+                    "CheckOption8":this.ipt.items[7].status,
+                    "Memo_8":this.ipt.items[7].note
+                  },
+                  {
+                    "CheckOption9":this.ipt.items[8].status,
+                    "Memo_9":this.ipt.items[8].note
+                  },
+                  {
+                    "CheckOption10":this.ipt.items[9].status,
+                    "Memo_10":this.ipt.items[9].note
+                  },
+                  {
+                    "CheckOption11":this.ipt.items[10].status,
+                    "Memo_11":this.ipt.items[10].note
+                  },
+                  {
+                    "CheckOption12":this.ipt.items[11].status,
+                    "Memo_12":this.ipt.items[11].note
+                  },
+                ],
+            "Chk2":
+                {
+                  "Advice":this.ipt.Advice, 
+                  "Measures":this.ipt.Measures, 
+                }
+          }
+        ],
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -469,6 +530,22 @@ export default {
           "Memo_2",
           "CheckOption3",
           "Memo_3",
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
+          "CheckOption11",
+          "Memo_11",
           "Advice",
           "Measures",
 

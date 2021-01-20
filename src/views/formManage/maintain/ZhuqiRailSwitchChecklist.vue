@@ -201,21 +201,21 @@
                   </v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">建議:</span>
-                    <v-textarea auto-grow outlined rows="3"/>
+                    <v-textarea auto-grow outlined rows="3" v-model="ipt.items[idx].Advice"/>
                   </v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">結果確認:</span>
-                    <v-textarea auto-grow outlined rows="3"/>
+                    <v-textarea auto-grow outlined rows="3" v-model="ipt.items[idx].Result"/>
                   </v-col>
                 </v-row>
               </v-alert>
             </v-col>
-            <!-- 改善建議、改善追蹤 -->
+            <!-- 改善建議、改善追蹤 >
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
               <v-textarea auto-grow outlined rows="4" v-model.trim="ipt.suggest"></v-textarea>
             </v-col>
-            <!-- END 檢查項目 -->
+            < END 檢查項目 -->
           </v-row>
         </div>
 
@@ -243,25 +243,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP034",
       nowTime: "",
       doMan:{
         id: '',
@@ -291,14 +277,14 @@ export default {
         name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
+          { status: "0", Advice: "", Result:"" },
         ],
       },
       items: [
@@ -311,7 +297,6 @@ export default {
         { question: "7. 施工完後軌距、水平、高低、方向、平面等檢查" },
         { question: "8. 施工完竣測試運轉" },
       ],
-      suggest: "", // 改善建議
     };
   },
   components: { Pagination }, // 頁碼
@@ -418,7 +403,72 @@ export default {
         this.chLoadingShow()
       })},
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+      createFormOrder({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {
+            "Chk1": 
+                [
+                  {
+                    "CheckOption1":this.ipt.items[0].status,
+                     "Advice1":this.ipt.items[0].Advice,
+                     "Result1":this.ipt.items[0].Result,
+                  },
+                  {
+                    "CheckOption2":this.ipt.items[1].status,
+                     "Advice2":this.ipt.items[1].Advice,
+                     "Result2":this.ipt.items[1].Result,
+                  },
+                  {
+                    "CheckOption3":this.ipt.items[2].status,
+                     "Advice3":this.ipt.items[2].Advice,
+                     "Result3":this.ipt.items[2].Result,
+                  },
+                  {
+                    "CheckOption4":this.ipt.items[3].status,
+                     "Advice4":this.ipt.items[3].Advice,
+                     "Result4":this.ipt.items[3].Result,
+                  },
+                  {
+                    "CheckOption5":this.ipt.items[4].status,
+                     "Advice5":this.ipt.items[4].Advice,
+                     "Result5":this.ipt.items[4].Result,
+                  },
+                  {
+                    "CheckOption6":this.ipt.items[5].status,
+                     "Advice6":this.ipt.items[5].Advice,
+                     "Result6":this.ipt.items[5].Result,
+                  },
+                  {
+                    "CheckOption7":this.ipt.items[6].status,
+                     "Advice7":this.ipt.items[6].Advice,
+                     "Result7":this.ipt.items[6].Result,
+                  },
+                  {
+                    "CheckOption8":this.ipt.items[7].status,
+                     "Advice8":this.ipt.items[7].Advice,
+                     "Result8":this.ipt.items[7].Result,
+                  },
+                ],
+          }
+        ],
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -449,14 +499,29 @@ export default {
           "Name",
           "CheckMan",
           "CheckOption1",
-          "Memo_1",
+          "Advice1",
+          "Result1",
           "CheckOption2",
-          "Memo_2",
+          "Advice2",
+          "Result2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "Advice3",
+          "Result3",
+          "CheckOption4",
+          "Advice4",
+          "Result4",
+          "CheckOption5",
+          "Advice5",
+          "Result5",
+          "CheckOption6",
+          "Advice6",
+          "Result6",
+          "CheckOption7",
+          "Advice7",
+          "Result7",
+          "CheckOption8",
+          "Advice8",
+          "Result8",
         ],
       }).then(res => {
         this.initInput();
@@ -476,21 +541,13 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
+            if(i > 3 && i < 28){
+              this.ipt.items[j].status = (dat[0])[key]
+              this.ipt.items[j].Advice = (dat[0])[key]
+              this.ipt.items[j].Result = (dat[0])[key]
+              i+=3
             }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
+          }       
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
