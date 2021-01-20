@@ -182,6 +182,7 @@ export default {
                     { tableColumn: 'Status', columnValue: this.status },  // 處理階段
                 ],
                 QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
                     'WorkYear',
                     'TotalSpent',
                     'Type',
@@ -221,35 +222,8 @@ export default {
         // },
         // 檢視內容
         redirect(item) {
-            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
-            this.isLoading = true
-            let routeData = ''
-            switch(item.status) {
-                case 1:
-                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/listShow` })
-                    break
-                case 2:
-                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/workShow` })
-                    break
-                case 3:
-                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/acceptingShow` })
-                    break
-                case 4:
-                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/closedShow` })
-                    break
-                case 5:
-                    routeData = this.$router.resolve({ path: `/worklist/serve/${item.id}/complated` })
-                    break
-                default:
-                    break
-            }
-            setTimeout(() => {
-                this.isLoading = false
-                window.open(routeData.href, '_blank')
-            }, 1000)
+            let routeData = this.$router.resolve({ path: `/worklist/serve/${item.WorkOrderID}/show` })
+            window.open(routeData.href, '_blank')
         },
         // 更換頁數
         chPage(n) {

@@ -26,3 +26,12 @@ export function fetchOrderList(data) { return axios(
         data,
     }
 )}
+
+// 取得單一筆工單詳細資料
+export function fetchWorkOrderOne(data) { return axios(
+    {
+        url: '/mmis/service_order/querydetail',
+        method: 'post',
+        data,
+    }
+)}
