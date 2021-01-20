@@ -136,7 +136,7 @@
                   <h3 class="mb-1 indigo--text">工作內容</h3>
                   <v-textarea solo rows="4" />
                 </v-col>
-              </v-row>
+              </v-row> 
               <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
                 <v-row no-gutter>
                   <v-col cols="12" sm="4">
@@ -223,20 +223,6 @@ export default {
       newText: "紀錄簿",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       //---api---
       DB_Table: "RP019",
       nowTime: "",
