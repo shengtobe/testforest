@@ -199,7 +199,7 @@
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="3" />
+                    <v-textarea hide-details auto-grow outlined rows="3" v-model="ipt.note" />
                   </v-col>
                 </v-row>
               </v-alert>
@@ -207,11 +207,11 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="ipt.Advice"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="ipt.Measures"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -241,20 +241,6 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
@@ -314,7 +300,8 @@ export default {
         { question: "10. 試運轉轉動是否平衡，有無異狀", checkMethod: "動作測試" },
         { question: "11. 是否有「使用時禁戴手套」警語", checkMethod: "目視點檢" },
       ],
-      suggest: "", // 改善建議
+      Advice: "",   // 改善建議
+      Measures: "", // 改善措施
     };
   },
   components: { Pagination }, // 頁碼
@@ -422,7 +409,61 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+        
+      let arr = new Array()
+      let obj = new Object()
+
+      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)      
+      
+      let i;
+      for (i = 0; i < 11; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      obj = new Object()
+      obj.Column = "Advice"
+      obj.Value = this.memo_2
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Measures"
+      obj.Value = this.memo_3
+      arr = arr.concat(obj)
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -458,9 +499,24 @@ export default {
           "Memo_2",
           "CheckOption3",
           "Memo_3",
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
+          "CheckOption11",
+          "Memo_11",
           "Advice",
           "Measures",
-
         ],
       }).then(res => {
         this.initInput();
@@ -480,7 +536,7 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
+            if(i > 3 && i < 28){
               if(i % 2 == 0){
                   this.ipt.items[j].status = (dat[0])[key]
               }

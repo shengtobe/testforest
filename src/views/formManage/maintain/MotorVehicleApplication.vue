@@ -183,15 +183,15 @@
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">單位</h3>
-                  <v-text-field solo v-model="AddData.Department" />
+                  <v-text-field solo v-model="DepartName" />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">職稱</h3>
-                  <v-text-field solo v-model="AddData.JobTitle" />
+                  <v-text-field solo v-model="JobName" />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">申請人</h3>
-                  <v-text-field solo v-model="AddData.Applicant" />
+                  <v-text-field solo v-model="Name" />
                 </v-col>
               </v-row>
               <!-- 使用區間地點 -->
@@ -204,16 +204,16 @@
                   <v-col cols="12" class="fkj">
                     <v-col cols="12" sm="3" style="display: flex;">
                       <span class="mt-3 mr-2">自</span>
-                      <v-text-field solo v-model="AddData.Inside.Site1" />
+                      <v-text-field solo v-model="BgStation" />
                       <span class="mt-3 ml-2">站</span>
                     </v-col>
                     <v-col cols="12" sm="5" style="display: flex;">
                       <span class="mt-3 mr-2">至</span>
-                      <v-text-field solo v-model="AddData.Inside.Site2" />
+                      <v-text-field solo v-model="EndStation" />
                       <span class="mt-3 ml-2">站間</span>
                     </v-col>
                     <v-col cols="12" sm="4" style="display: flex;">
-                      <v-text-field solo v-model="AddData.Inside.Kilometer" />
+                      <v-text-field solo v-model="Km" />
                       <span class="mt-3 ml-2">公里</span>
                     </v-col>
                   </v-col>

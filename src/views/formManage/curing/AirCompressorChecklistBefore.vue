@@ -234,25 +234,11 @@ export default {
       newText:"檢點表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP040",
       nowTime: "",
       doMan:{
         id: '',
@@ -336,7 +322,7 @@ export default {
           checkMethod: "目測",
         },
       ],
-      suggest: "", // 改善建議
+
     };
   },
   components: { Pagination }, // 頁碼
@@ -364,12 +350,10 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 7; step++) {
+      for (step = 0; step < 15; step++) {
         this.ipt.items[step].status = "0"
         this.ipt.items[step].note = ''
       }
-      this.Advice = "";
-      this.Measures = ""
     },
     unique(list){
       var arr = [];
@@ -444,7 +428,63 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+        console.log('送出click! 0222')
+        this.chLoadingShow()
+        
+        let arr = new Array()
+        let obj = new Object()
+
+        console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)   
+
+      let i;
+      for (i = 0; i < 10; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      obj = new Object()
+      obj.Column = "Advice"
+      obj.Value = this.Advice
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Measures"
+      obj.Value = this.Measures
+      arr = arr.concat(obj)
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+
+
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -474,15 +514,37 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
+          "OptionID",
           "CheckOption1",
           "Memo_1",
           "CheckOption2",
           "Memo_2",
           "CheckOption3",
           "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
+          "CheckOption11",
+          "Memo_11",
+          "CheckOption12",
+          "Memo_12",
+          "CheckOption13",
+          "Memo_13",
+          "CheckOption14",
+          "Memo_14",
+          "CheckOption15",
+          "Memo_15",
         ],
       }).then(res => {
         this.initInput();
@@ -502,7 +564,7 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
+            if(i > 4 && i < 35){
               if(i % 2 == 0){
                   this.ipt.items[j].status = (dat[0])[key]
               }
@@ -513,8 +575,6 @@ export default {
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
