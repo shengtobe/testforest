@@ -50,7 +50,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { fetchWorkOrderOne, deleteOrder, closeOrder } from '@/apis/workList/maintain'
+import { deleteOrder, closeOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -100,7 +100,8 @@ export default {
                 
                 deleteOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
-                    ClientReqTime: getNowFullTime()  // client 端請求時間
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '刪除成功' })

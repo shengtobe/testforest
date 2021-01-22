@@ -146,7 +146,7 @@ export function cancelOrder(data) { return axios(
     }
 )}
 
-// 退回
+//  延後驗收
 export function delayOrder(data) { return axios(
     {
         url: '/mmis/order/delay',
