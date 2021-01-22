@@ -9,3 +9,24 @@ export function radioQueryList(data) {
         data,
     }
 )}
+export function radioDetail(data) {
+    return axios({
+        url: 'mmis/equipdata/radioquerydetail',
+        method: 'post',
+        data,
+    })
+}
+export function radioUpdate(data) {
+    return axios({
+        url: 'mmis/equipdata/radioedit',
+        method: 'post',
+        data
+    })
+}
+export function radioDelete(data) {
+    return axios({
+        url: 'mmis/equipdata/radiodelete',
+        method: 'post',
+        data
+    })
+}

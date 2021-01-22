@@ -25,12 +25,15 @@
         <v-text-field solo placeholder="請輸入關鍵字" v-model="ipt.maintain" />
       </v-col>
 
-      <v-col cols="12" md="3" align-self="center">
+      <v-col cols="12" md="6" align-self="center">
         <v-btn color="green" dark large @click="setShowData()">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn color="indigo" dark large class="ml-2" @click="add">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
+        </v-btn>
+        <v-btn color="red" dark large class="ml-2" to="/mmis/edit-eqcode">
+          <v-icon class="mr-1">mdi-data-matrix-edit</v-icon>編輯設備標示編號
         </v-btn>
       </v-col>
 
@@ -38,7 +41,7 @@
         <v-card>
           <v-data-table
             :headers="headers"
-            :items="tableItem"
+            :items="decodeTableItems"
             :single-expand="singleExpand"
             :expanded.sync="expanded"
             item-key="id"
@@ -120,26 +123,6 @@
           </v-data-table>
         </v-card>
       </v-col>
-
-      <!-- 新增設備 modal -->
-      <!-- <v-dialog v-model="Add" max-width="900px">
-       <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            新增設備
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <editPage :detailItems="detailItems"/>
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-          </v-card-actions>
-        </v-card>
-        
-      </v-dialog> -->
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
         <v-card>
@@ -150,7 +133,9 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <editPage :detailItems="detailItems"/>
+          <v-lazy>
+            <editPage :detailItems="detailItems"/>
+          </v-lazy>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
@@ -277,6 +262,9 @@ export default {
     ...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    decodeTableItems: function() {
+      return decodeObject(this.tableItem)
+    }
   },
   methods: {
     ...mapActions('system', [

@@ -272,7 +272,7 @@
           if (res.data.ErrorCode == 0) {
             if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
               that.eqCodes[toObject].push(...res.data.code_list)
-              that.eqCodes[toObject] = decodeObject(that.eqCodes[toOBject])
+              that.eqCodes[toObject] = decodeObject(that.eqCodes[toObject])
             }
           }else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
