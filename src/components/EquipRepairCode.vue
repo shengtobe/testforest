@@ -10,15 +10,6 @@
 -->
 <template>
   <v-row class="px-2 mb-6">
-    <v-col cols="12">
-      <h3 class="mb-1">
-        <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
-      </h3>
-
-      <p class="pl-8 mb-0">
-        
-      </p>                  
-    </v-col>
 
     <v-col cols="12" class="mt-n4">
       <v-row>
@@ -51,6 +42,7 @@
             @change="goChange($event,'2')"
             label="請選擇"
             v-model="selectItem.Lv2"
+            :disabled="_selectDisabled.eqCodeListLv2"
           ></v-select>
         </v-col>
         <v-col cols="12" v-if="_show22">
@@ -61,6 +53,7 @@
             @change="goChange($event,'22')"
             label="請選擇"
             v-model="selectItem.Lv22"
+            :disabled="_selectDisabled.eqCodeListLv22"
           ></v-select>
         </v-col>
       </v-row>
@@ -79,6 +72,7 @@
             @change="goChange($event,'3')"
             label="請選擇"
             v-model="selectItem.Lv3"
+            :disabled="_selectDisabled.eqCodeListLv3"
           ></v-select>
         </v-col>
         <v-col cols="12" v-if="_show32">
@@ -89,6 +83,7 @@
             @change="goChange($event,'32')"
             label="請選擇"
             v-model="selectItem.Lv32"
+            :disabled="_selectDisabled.eqCodeListLv32"
           ></v-select>
         </v-col>
       </v-row>
@@ -107,6 +102,7 @@
             @change="goChange($event,'4')"
             label="請選擇"
             v-model="selectItem.Lv4"
+            :disabled="_selectDisabled.eqCodeListLv4"
           ></v-select>
         </v-col>
       </v-row>
@@ -133,7 +129,7 @@
 </template>
 <script>
   import { mapState, mapActions } from 'vuex'
-  import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
+  import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
   import { fetchEqCode,fetchEqList } from '@/apis/materialManage/equipCode'
   export default {
     //外部傳入資料
@@ -189,6 +185,16 @@
       },
       _show32: function() {
         return (this.eqCodes.eqCodeListLv32.length > 0)?true:false
+      },
+      _selectDisabled: function() {
+        let rtnObj = {}
+        const that = this
+        rtnObj.eqCodeListLv2 = (that.eqCodes.eqCodeListLv1.length > 0 && that.selectItem.Lv1!='')?false:true
+        rtnObj.eqCodeListLv22 = (that.eqCodes.eqCodeListLv2.length > 0 && that.selectItem.Lv2!='')?false:true
+        rtnObj.eqCodeListLv3 = (that.eqCodes.eqCodeListLv2.length > 0 && (that._show22?that.selectItem.Lv22!='':that.selectItem.Lv2!=''))?false:true
+        rtnObj.eqCodeListLv32 = (that.eqCodes.eqCodeListLv3.length > 0 && that.selectItem.Lv3!='')?false:true
+        rtnObj.eqCodeListLv4 = (that.eqCodes.eqCodeListLv4.length > 0 && (that._show32?that.selectItem.Lv32!='':that.selectItem.Lv3!=''))?false:true
+        return rtnObj
       }
     },
     //函式
@@ -200,14 +206,14 @@
       //初始化
       async _componentInit() {
         this.selectItem = {
-        Lv1: '',
-        Lv2: '',
-        Lv22: '',
-        Lv3: '',
-        Lv32: '',
-        Lv4: '',
-        Lv5: ''
-      }
+          Lv1: '',
+          Lv2: '',
+          Lv22: '',
+          Lv3: '',
+          Lv32: '',
+          Lv4: '',
+          Lv5: ''
+        }
         if(this.nowEqCode == '' || this.nowEqCode == undefined || this.nowEqCode == null){ //沒有帶值進來
           this._getEqList('SYS','SYS_%','1','1')
         }else{  //有帶值進來
@@ -223,7 +229,6 @@
             OperatorID: this.userData.UserId,  // 操作人id
           }).then( res => {
             if (res.data.ErrorCode == 0) {
-              console.log(res.data)
                 resdata = res.data
             }else {
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -267,6 +272,7 @@
           if (res.data.ErrorCode == 0) {
             if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
               that.eqCodes[toObject].push(...res.data.code_list)
+              that.eqCodes[toObject] = decodeObject(that.eqCodes[toOBject])
             }
           }else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -309,10 +315,14 @@
             if(that.ifLV5){
               await that._getEqList(that.nowParent,LParentCode,'5','5')
             }
+            that.newEqCode = that.selectItem.Lv1 
             break;
           case '2':
             //reset
             that.eqCodes.eqCodeListLv22 = []
+            that.eqCodes.eqCodeListLv3 = []
+            that.eqCodes.eqCodeListLv32 = []
+            that.eqCodes.eqCodeListLv4 = []
             that.selectItem.Lv22 = ''
             that.selectItem.Lv3 = ''
             that.selectItem.Lv32 = ''
@@ -320,9 +330,16 @@
             that.selectItem.Lv5 = ''
             //get options
             await that._getEqList(that.nowParent,LParentCode,'2','22')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'3','3')
             await that._getEqList(that.nowParent,LParentCode,'3','3')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'4','4')
             await that._getEqList(that.nowParent,LParentCode,'4','4')
+            if(that.ifLV5){
+              await that._getEqList(that.nowParent,LParentCode,'5','5')
+            }
+            that.newEqCode = that.selectItem.Lv1 + '-' + that.selectItem.Lv2
             break;
+            
           case '22':
             //reset
             that.selectItem.Lv3 = ''
@@ -330,28 +347,55 @@
             that.selectItem.Lv4 = ''
             that.selectItem.Lv5 = ''
             await that._getEqList(that.nowParent,LParentCode,'3','3')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'4','4')
             await that._getEqList(that.nowParent,LParentCode,'4','4')
+            if(that.ifLV5){
+              await that._getEqList(that.nowParent,LParentCode,'5','5')
+            }
+            that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2)
             break;
+            
           case '3':
             //reset
             that.eqCodes.eqCodeListLv32 = []
+            that.eqCodes.eqCodeListLv4 = []
             that.selectItem.Lv32 = ''
             that.selectItem.Lv4 = ''
             that.selectItem.Lv5 = ''
             //get options
+            
             await that._getEqList(that.nowParent,LParentCode,'3','32')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv22,'4','4')
             await that._getEqList(that.nowParent,LParentCode,'4','4')
+            if(that.ifLV5){
+              await that._getEqList(that.nowParent,LParentCode,'5','5')
+            }
+            that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3
             break;
+            
           case '32':
             //reset
+            that.eqCodes.eqCodeListLv4 = []
             that.selectItem.Lv4 = ''
             that.selectItem.Lv5 = ''
             //get options
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv22,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv3,'4','4')
             await that._getEqList(that.nowParent,LParentCode,'4','4')
             const tempParent = that.eqCodes[listName].find(ele => ele.EquipCode == LParentCode).ParentCode
             LParentCode = tempParent + '/' + LParentCode
             await that._getEqList(that.nowParent,LParentCode,'4','4')
+            if(that.ifLV5){
+              await that._getEqList(that.nowParent,LParentCode,'5','5')
+            }
+            that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'') 
             break;
+            
           case '4':
             //reset
             that.selectItem.Lv5 = ''
@@ -360,6 +404,7 @@
             if(that.ifLV5){   //要取第五層
               //規則算寫死的
               let eqPCode = that.selectItem.Lv3
+              /*
               if(that.nowParent == 'SYS_S') {
                 if(that._show32){
                   eqPCode = eqPCode + '/' + that.selectItem.Lv32
@@ -386,18 +431,27 @@
                     break;
                 }
                 await that._getEqList(that.nowParent,eqPCode,'5','5')
+              }*/
+              await that._getEqList(that.nowParent,eqPCode,'5','5')
+              eqPCode = eqPCode + '-' + LParentCode
+              await that._getEqList(that.nowParent,eqPCode,'5','5')
+              eqPCode = that.selectItem.Lv1
+              await that._getEqList(that.nowParent,eqPCode,'5','5')
+              eqPCode = that.selectItem.Lv1 + '-' + LParentCode
+              await that._getEqList(that.nowParent,eqPCode,'5','5')
+              if(that._show32){
+                eqPCode = eqPCode + '/' + that.selectItem.Lv32
+                await that._getEqList(that.nowParent,eqPCode,'5','5')
               }
             } 
             //串值
-            if(that.nowParent == 'SYS_S' || that.nowParent == 'SYS_M') {
-              that.newEqCode = that.selectItem.Lv1 + '-' + that.selectItem.Lv2 + '-' + that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'') + '-' + that.selectItem.Lv4
-            }else if(that.nowParent == 'SYS_C') {
-              that.newEqCode = that.selectItem.Lv1 + '-' + (that.selectItem.Lv1=='RST'?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3 + '-' + that.selectItem.Lv4
-            }
+            that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'')  + '-' + that.selectItem.Lv4
+            that._returnEqCode()
             break;
           case '5':
             //串工作項
             that.newWorkCode = that.selectItem.Lv5
+            that._returnWorkCode()
             break;
         }
       },
@@ -415,9 +469,6 @@
     //監視
     watch: {
       nowEqCode: function(){
-        this._componentInit()
-      },
-      ifLV5: function(){
         this._componentInit()
       },
       nowWorkCode: function(){
