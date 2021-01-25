@@ -1,172 +1,51 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">工單編號：{{ routeId }}</h2>
+    <h2 class="mb-4">工單編號：{{ id }}</h2>
     
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>通報維修地點及事項
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="noticeLocation"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障描述
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="malfunctionDes"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="note"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>外包廠商
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ vendorsList }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-wrench</v-icon>維修情況
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="fixSituation"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-clock</v-icon>總工時
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ totalHour }} 小時</v-col>
-            </v-row>
-        </v-col> -->
+        <BottomTableNoIcon :items="bottomItems" />
 
         <!-- 請修項目 -->
-        <v-col cols="12" class="mt-8">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-view-list</v-icon>請修項目
-            </h3>
-
-            <v-card flat>
-                <v-data-table
-                    :headers="headers"
-                    :items="tableItems"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
-                >
-                    <template v-slot:no-data>
-                        <span class="red--text subtitle-1">沒有資料</span>
-                    </template>
-                
-                    <!-- 插入 total 欄位做每筆的總計 -->
-                    <template v-slot:item.total="{ item }">
-                        <span>{{ item.count * item.price }}</span>
-                    </template>
-
-                    <template v-slot:footer>
-                        <v-divider></v-divider>
-
-                        <p class="py-2 text-center">
-                            總工時： <span class="blue--text mr-5">{{ totalHour }}</span>
-                            總金額： <span class="red--text">{{ totalMoney }}</span>
-                        </p>
-                    </template>
-                </v-data-table>
-            </v-card>
-        </v-col>
+        <ShowTable :tableItems="tableItems" />
         
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="ma-2"
-                to="/worklist/serve"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
             <v-btn class="ma-2" dark
                 color="brown"
-                v-if="status == '已驗收待結案'"
             >竣工單</v-btn>
 
-            <v-btn class="ma-2"
-                color="error"
-                @click="showDialog(true)"
-                v-if="status == '已驗收待結案'"
-            >退回</v-btn>
+            <template v-if="!done">
+                <v-btn class="ma-2"
+                    color="error"
+                    @click="showDialog(true)"
+                    v-if="status == 4"
+                >退回</v-btn>
 
-            <v-btn class="ma-2" dark
-                color="yellow darken-2"
-                @click="showDialog(false)"
-                v-if="status == '已驗收待結案'"
-            >徹銷</v-btn>
+                <v-btn class="ma-2" dark
+                    color="yellow darken-2"
+                    @click="showDialog(false)"
+                    v-if="status == 4"
+                >徹銷</v-btn>
 
-            <v-btn dark class="ma-2"
-                color="success"
-                @click="save"
-                v-if="status == '已驗收待結案'"
-            >結案</v-btn>
+                <v-btn dark class="ma-2"
+                    color="success"
+                    @click="save"
+                    v-if="status == 4"
+                >結案</v-btn>
+            </template>
         </v-col>
     </v-row>
 
     <!-- 退回 dialog -->
-    <v-dialog v-model="dialog" max-width="600px" v-if="status == '已驗收待結案'">
+    <v-dialog v-model="dialog" max-width="600px" v-if="status == 4">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
@@ -201,70 +80,39 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-// import { fetchWorkOrderOne } from '@/apis/workList/maintain'
-// import { getNowFullTime } from '@/assets/js/commonFun'
+import { mapState, mapActions } from 'vuex'
+import { closeOrder, withdrawOrder, cancelOrder } from '@/apis/workList/serve'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
+import ShowTable from '@/views/workList/serve/ShowTable.vue'
 
 
 export default {
-    props: ['closeStatus'],  // 測試用的屬性
+    props: ['itemData'],
     data: () => ({
+        id: '',  // 工單編號
+        done: false,  // 是否完成頁面操作
+        status: '',  // 處理階段
         isLoading: false,  // 是否讀取中
-        routeId: '',  // 工單編號
-        topItems: {  // 上面的欄位
-            year: { icon: 'mdi-calendar-text', title: '年度', text: '' },
-            money: { icon: 'mdi-currency-usd', title: '預算金額', text: '' },
-            expiryDate: { icon: 'mdi-calendar-text', title: '履約到期日', text: '' },
-            workDateStart: { icon: 'mdi-calendar-text', title: '通知施作日(起)', text: '' },
-            workDateEnd: { icon: 'mdi-calendar-text', title: '通知施作日(訖)', text: '' },
-            noticeMethod: { icon: 'mdi-note', title: '通知方式', text: '' },
-            noticeMember: { icon: 'mdi-account', title: '通知人', text: '' },
-            creater: { icon: 'mdi-account', title: '立案人', text: '' },
-            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            type: { icon: 'mdi-snowflake', title: '工單性質', text: '' },
-            typeNumber: { icon: 'mdi-barcode', title: '工單性質編號', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-            arrivalFixDate: { icon: 'mdi-calendar-text', title: '到修日期', text: '' },
-            startFixDate: { icon: 'mdi-calendar-text', title: '動工日期', text: '' },
-            endFixDate: { icon: 'mdi-calendar-text', title: '完工日期', text: '' },
-        },
-        noticeLocation: '',  // 通報維修地點及事項
-        malfunctionDes: '',  // 故障描述
-        note: '',  // 備註
-        vendors: [],  // 外包廠商
+        topItems: [],  // 上面的欄位
+        bottomItems: [],  // 下面的欄位
         tableItems: [],  // 表格資料
-        headers: [  // 表格顯示的欄位
-            { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '項目', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規格', value: 'spec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '單位', value: 'unit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '預估數量', value: 'count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '單價', value: 'price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        ],
-        fixSituation: '',  // 維修情況
-        totalHour: '',  // 總工時
         dialog: false,  // dialog 是否顯示
         dialogTitle: '',  // dialog 標題
         dialogApiName: '',  // 使用的 API 函式名稱
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
-        status: '',  // 處理階段
     }),
-    components: { TopBasicTable },
+    components: {
+        TopBasicTable,
+        BottomTableNoIcon,
+        ShowTable,
+    },
     computed: {
-        // 合併外包廠商字串
-        vendorsList() {
-            let arr = this.vendors.map(item => {
-                return `${ item.name } (${ item.count }人)`
-            })
-            return arr.join('、')
-        },
-        // 全部的總金額
-        totalMoney() {
-            return this.tableItems.reduce((a,b)=>a + b.count * b.price, 0)
-        },
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -276,95 +124,21 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
-        // 向後端取資料
-        fetchData() {
-            this.chLoadingShow()
-            this.routeId = this.$route.params.id  // 路由參數
-
-            setTimeout(() => {
-                let obj = {
-                    year: '109',  // 年度
-                    expiryDate: '2020-12-20',  // 履約到期日
-                    money: '98萬6,517',  // 預算金額
-                    workDateStart: '2020-01-05',  // 通知施作日 (起)
-                    workDateEnd: '2020-01-30',  // 通知施作日 (訖)
-                    noticeMethod: '',  // 通知方式
-                    noticeMember: '',  // 通知人
-                    noticeLocation: '十字路車站上下車階梯連接通道、木構地坪設置',  // 通報維修地點及事項
-                    type: '契約', // 工單性質
-                    typeNumber: '',  // 工單性質編號
-                    MaintainCode: 'TRK-R06-EA0-002',  // 設備標示編號
-                    items: [  // 請修項目
-                        {
-                            numbers: '1、1',
-                            name: '維修大工',
-                            spec: '',
-                            unit: '人*日',
-                            count: 1,
-                            price: 2230
-                        },
-                        {
-                            numbers: '1、2',
-                            name: '維修小工',
-                            spec: '',
-                            unit: '人*日',
-                            count: 2,
-                            price: 1962
-                        },
-                    ],
-                    malfunctionDes: '文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明',  // 故障描述
-                    note: '',  // 備註
-                    vendors: [  // 外包廠商
-                        { name: '陽明鐵工廠', count: 5 },
-                    ],
-                    arrivalFixDate: '2020-03-15 14:00:00',  // 到修日期
-                    startFixDate: '2020-03-15 15:00:00',  // 動工日期
-                    endFixDate: '2020-03-15 16:00:00',  // 完工日期
-                    fixSituation: '維修說明文字維修說明文字維修說明文字維修說明文字維修說明文字維修說明文字',  // 維修情況
-                    totalHour: 5,  // 總工時
-                    creater: '王小明',  // 立案人
-                    // status: '已維修待驗收',  // 處理階段
-                }
-
-                this.setShowData(obj)  // 初始化資料
-                this.chLoadingShow()
-            }, 1000)
-        },
         // 初始化資料
         setShowData(obj) {
-            this.noticeLocation = obj.noticeLocation.replace(/\n/g, '<br>')  // 通報維修地點及事項
-            this.malfunctionDes = obj.malfunctionDes.replace(/\n/g, '<br>')  // 故障描述
-            this.note = obj.note.replace(/\n/g, '<br>')  // 備註
-            this.vendors = obj.vendors  // 外包廠商
-            this.fixSituation = obj.fixSituation.replace(/\n/g, '<br>')  // 維修情況
-            this.totalHour = obj.totalHour  // 總工時
-
-            // 設定上面的欄位資料
-            this.topItems.year.text = obj.year  // 年度
-            this.topItems.money.text = obj.money  // 預算金額
-            this.topItems.expiryDate.text = obj.expiryDate  // 履約到期日
-            this.topItems.workDateStart.text = obj.workDateStart  // 通知施作日 (起)
-            this.topItems.workDateEnd.text = obj.workDateEnd  // 通知施作日 (訖)
-            this.topItems.noticeMethod.text = obj.noticeMethod  // 通知方式
-            this.topItems.noticeMember.text = obj.noticeMember  // 通知人
-            this.topItems.arrivalFixDate.text = obj.arrivalFixDate  // 到修日期
-            this.topItems.startFixDate.text = obj.startFixDate  // 動工日期
-            this.topItems.endFixDate.text = obj.endFixDate  // 完工日期
-            this.topItems.creater.text = obj.creater  // 立案人
-            // this.topItems.status.text = obj.status  // 處理階段
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
-            this.topItems.type.text = obj.type  // 工單性質
-            this.topItems.typeNumber.text = obj.typeNumber  // 工單性質編號
-            this.topItems.status.text = this.status = this.closeStatus  // 處理階段
-
-            this.tableItems = [ ...obj.items ]  // 表格資料
+            this.id = obj.WorkOrderID  // 工單編號
+            this.status = obj.Status  // 處理階段(值)
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            this.tableItems = [ ...obj.tableItems ]  // 表格資料
         },
         // 顯示 dialog
         showDialog(bool) {
             // 若為 true 是退回、false 是徹銷
             this.dialogTitle = (bool)? '退回原因' : '徹銷原因'
-            this.dialogApiName = (bool)? 'api1' : 'api2'
+            this.dialogApiName = bool  // true 為退回，false 為徹銷
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
         },
@@ -372,32 +146,73 @@ export default {
         withdraw() {
             this.isLoading = true
 
-            // 由 this.dialogApiName 來判斷要傳送的 API
-            
-            // 範例效果
-            setTimeout(() => {
-                // 退回完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
-                this.$router.push({ path: '/worklist/serve' })
-            }, 1000)
+            if (this.dialogApiName) {
+                withdrawOrder({
+                    WorkOrderID: this.id,  // 工單編號
+                    ReturnReason: this.reason,  // 退回原因
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    this.isLoading = this.dialog = false
+                })
+            } else {
+                cancelOrder({
+                    WorkOrderID: this.id,  // 工單編號
+                    CancelReason: this.reason,  // 徹銷原因
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    this.isLoading = this.dialog = false
+                })
+            }
         },
         // 送出 (結案)
         save() {
             if (confirm('你確定要結案嗎?')) {
                 this.chLoadingShow()
-                
-                // 範例效果
-                setTimeout(() => {
-                    // 驗收完後，轉頁到搜尋頁
-                    this.chMsgbar({ success: true, msg: '結案成功' })
-                    this.$router.push({ path: '/worklist/serve' })
+
+                closeOrder({
+                    WorkOrderID: this.id,  // 工單編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '結案成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，結案失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },
     created() {
-        this.fetchData()
+        this.setShowData(this.itemData)
     }
 }
 </script>

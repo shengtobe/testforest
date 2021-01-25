@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { fetchWorkOrderOne } from '@/apis/workList/serve'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { serveStatusOpts } from '@/assets/js/workList'
@@ -87,27 +87,28 @@ export default {
                         }))
 
 
-                        // if (this.status > 1) {
-                        //     topItems.push({ icon: 'mdi-calendar-text', title: '預計驗收日期', text: res.data.ExpectedDT })
-                        //     topItems.push({ icon: 'mdi-alert-outline', title: '進場管制申請', text: (res.data.WorkApplication == 'T')? '是' : '否' })
-                        //     topItems.push({ icon: 'mdi-alert-outline', title: '特殊危害作業', text: (res.data.WorkSp == 'T')? '是' : '否' })
-                        //     topItems.push({ icon: 'mdi-alert-outline', title: '安全危害作業', text: (res.data.WorkSafety == 'T')? '是' : '否' })
-                        //     topItems.push({ icon: 'mdi-map-marker', title: '工作地點', text: res.data.WorkPlace })
-                        //     topItems.push({ icon: 'mdi-account-multiple', title: '實際人數', text: res.data.RealWorkerCount })
+                        if (this.status > 1) {
+                            topItems.push({ icon: 'mdi-calendar-text', title: '預計驗收日期', text: res.data.ExpectedDT })
+                            topItems.push({ icon: 'mdi-alert-outline', title: '進場管制申請', text: (res.data.WorkApplication == 'T')? '是' : '否' })
+                            topItems.push({ icon: 'mdi-alert-outline', title: '特殊危害作業', text: (res.data.WorkSp == 'T')? '是' : '否' })
+                            topItems.push({ icon: 'mdi-alert-outline', title: '安全危害作業', text: (res.data.WorkSafety == 'T')? '是' : '否' })
 
-                        //     bottomItems.push({ oneline: false, icon: 'mdi-note', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
-                        //     bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: res.data.PeopleLicense.map(ele => ele.PeopleName).join('、') })
-                        //     bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: res.data.PeopleNoLicense.map(ele => ele.PeopleName).join('、') })
-                        //     bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
-                        // }
+                            bottomItems.push({ oneline: false, icon: 'mdi-note', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
+                            bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
+                        }
 
-                        // if (this.status > 2) {
-                        //     topItems.push({ icon: 'mdi-calendar-text', title: '到修日期', text: res.data.ToRepairDDate })
-                        //     topItems.push({ icon: 'mdi-calendar-text', title: '動工日期', text: res.data.StartWorkDDate })
-                        //     topItems.push({ icon: 'mdi-calendar-text', title: '完工日期', text: res.data.FinishDDate })
+                        if (this.status > 2) {
+                            topItems.push({ icon: 'mdi-calendar-text', title: '到修日期', text: res.data.ToRepairDDate })
+                            topItems.push({ icon: 'mdi-calendar-text', title: '動工日期', text: res.data.StartWorkDDate })
+                            topItems.push({ icon: 'mdi-calendar-text', title: '完工日期', text: res.data.FinishDDate })
 
-                        //     bottomItems.push({ oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
-                        // }
+                            bottomItems.push({ oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
+                            bottomItems.push({ oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
+                        }
+
+                        if (this.status > 3) {
+                            topItems.push({ icon: 'mdi-clock', title: '總工時', text: res.data.TotalWorkTime })
+                        }
 
                         this.itemData = { ...res.data, topItems, bottomItems, tableItems }
                     }

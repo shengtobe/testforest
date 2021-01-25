@@ -97,6 +97,7 @@ export default {
                             topItems.push({ icon: 'mdi-calendar-text', title: '完工日期', text: res.data.FinishDDate })
 
                             bottomItems.push({ oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
+                            bottomItems.push({ oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
                         }
 
                         this.itemData = { ...res.data, topItems, bottomItems }
