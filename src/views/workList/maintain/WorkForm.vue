@@ -311,14 +311,6 @@
 
                 <template v-if="!done">
                     <v-btn
-                        :loading="isLoading"
-                        dark
-                        color="error"
-                        class="ma-2"
-                        @click="dialog = true"
-                    >退回</v-btn>
-
-                    <v-btn
                          class="ma-2"
                         :loading="isLoading"
                         color="success"
@@ -327,40 +319,6 @@
                 </template>
             </v-col>
         </v-row>
-
-        <!-- 退回 dialog -->
-        <v-dialog v-model="dialog" max-width="600px">
-            <v-card>
-                <v-toolbar dark flat dense color="error" class="mb-2">
-                    <v-toolbar-title>退回原因</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-toolbar>
-
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-textarea
-                                hide-details
-                                auto-grow
-                                solo
-                                rows="8"
-                                placeholder="請輸入原因"
-                                v-model.trim="reason"
-                            ></v-textarea>
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-                
-                <v-card-actions class="px-5 pb-5">
-                    <v-spacer></v-spacer>
-                    <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                    <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </v-form>
 </v-container>
 </template>
@@ -419,8 +377,6 @@ export default {
         acceptDateMenuShow: false,  // 預計驗收日曆是否顯示
         hasLicenLv1Select: '',  // 有證照所選擇的opt--科室
         hasLicenLv2Select: '',  // 有證照所選擇的opt--人員清單
-        dialog: false,  // dialog 是否顯示
-        reason: '',  // 退回原因
         vendorDialog: false,  // 外包廠商 dialog 是否顯示
         vendorForm: {},
         defaultVendorForm: {  // 外包廠商 dialog 的表單預設值
@@ -483,6 +439,9 @@ export default {
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 // 檢查是否有權限編輯
+                if (res.data.CreatorID != this.userData.UserId && res.data.CreatorID != this.userData.UserId) {
+                    this.$router.push({ path: '/no-permission' })
+                }
 
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
                 this.ipt.malfunctionDes = res.data.Malfunction  // 故障描述
@@ -567,18 +526,6 @@ export default {
                     this.chLoadingShow()
                 })
             }
-        },
-        // 退回
-        withdraw() {
-            this.isLoading = true
-                
-            // 範例效果
-            setTimeout(() => {
-                // 退回完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '退回成功' })
-                this.done = true  // 隱藏頁面操作按鈕
-                this.dialog = false
-            }, 1000)
         },
         // 刪除林鐵需證照人員、作業人員
         // 參數說明：第二參數為布林值，代表是否為需證照人員

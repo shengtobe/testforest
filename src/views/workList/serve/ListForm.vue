@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `工單編輯 (編號：${ routeId })` : '服務科工單新增' }}
+        {{ (this.isEdit)? `工單編輯 (編號：${ id })` : '服務科工單新增' }}
     </h2>
 
     <v-form
@@ -281,59 +281,6 @@
             </v-col>
         </v-row>
 
-
-
-
-
-                <!-- <v-col cols="12">
-                    <h3 class="mb-1">
-                        <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
-                        <span class="red--text">*</span>
-                    </h3>
-                    {{ ipt.eqNumber1 }}-{{ ipt.eqNumber2 }}-{{ ipt.eqNumber3 }}-{{ ipt.eqNumber4 }}
-                </v-col>
-
-                <v-col cols="12" sm="6" md="3">
-                    <v-select solo
-                        v-model="ipt.eqNumber1"
-                        :items="eqCodes.opt1"
-                        :background-color="ipt.errorEqNumber1"
-                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                    ></v-select>
-                </v-col>
-
-                <v-col cols="12" sm="6" md="3">
-                    <v-select solo
-                        v-model="ipt.eqNumber2"
-                        :items="eqCodes.opt2"
-                        :background-color="ipt.errorEqNumber2"
-                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                        :disabled="disableLv2"
-                    ></v-select>
-                </v-col>
-
-                <v-col cols="12" sm="6" md="3">
-                    <v-select solo
-                        v-model="ipt.eqNumber3"
-                        :items="eqCodes.opt3"
-                        :background-color="ipt.errorEqNumber3"
-                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                        :disabled="disableLv3"
-                    ></v-select>
-                </v-col>
-
-                <v-col cols="12" sm="6" md="3">
-                    <v-select solo
-                        v-model="ipt.eqNumber4"
-                        :items="eqCodes.opt4"
-                        :background-color="ipt.errorEqNumber4"
-                        :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
-                        :disabled="disableLv4"
-                    ></v-select>
-                </v-col>
-            </v-row> -->
-
-
         <!-- 請修項目 -->
         <v-row class="px-2">
             <v-col cols="12">
@@ -386,7 +333,13 @@
             </v-col>
 
             <v-col cols="12" class="text-center mb-8">
+                <v-btn dark class="mr-4"
+                    @click="closeWindow"
+                    v-if="isEdit"
+                >關閉視窗</v-btn>
+
                 <v-btn dark class="ma-2"
+                    v-else
                     to="/worklist/serve"
                 >回搜尋頁</v-btn>
 
@@ -505,13 +458,13 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, verifyIptError } from '@/assets/js/commonFun'
 import { fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '@/apis/workList/maintain'
-import { serveNewListExecl, createWorkOrder } from '@/apis/workList/serve'
+import { fetchWorkOrderOne, serveNewListExecl, createWorkOrder, updateListOrder } from '@/apis/workList/serve'
 
 export default {
     data: () => ({
         valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
         isEdit: false,  // 是否為編輯
-        routeId: '',  // 工單編號
+        id: '',  // 工單編號
         ipt: {
             eqNumber1: '',  // 設備標示編號1
             eqNumber2: '',  // 設備標示編號2
@@ -719,18 +672,47 @@ export default {
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
             }
         },
-        // 設定資料(編輯時)
-        // setInitDate(obj) {
-        //     this.ipt.year = obj.year
-        //     this.ipt.expiryDate = obj.expiryDate
-        //     this.ipt.money = obj.money
-        //     this.ipt.workDateStart = obj.workDateStart
-        //     this.ipt.workDateEnd = obj.workDateEnd
-        //     this.ipt.noticeMethod = obj.noticeMethod
-        //     this.ipt.noticeMember = obj.noticeMember
-        //     this.ipt.noticeLocation = obj.noticeLocation
-        //     this.ipt.items = [ ...obj.items ]
-        // },
+        // 向後端請求資料(編輯時用)
+        fetchOrderOne() {
+            this.chLoadingShow()
+
+            fetchWorkOrderOne({
+                WorkOrderID: this.$route.params.id,  // 工單編號
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                let obj = res.data
+
+                // 檢查是否有權限編輯 (僅立案人、派工人可編輯)
+                if (obj.CreatorID != this.userData.UserId && obj.CreatorID != this.userData.UserId) {
+                    this.$router.push({ path: '/no-permission' })
+                }
+
+                // 設定資料
+                    this.id = obj.WorkOrderID,  // 工單編號
+                    this.ipt.year = obj.WorkYear  // 年度
+                    this.ipt.expiryDate = obj.AgreementDTime  // 履約到期日
+                    this.ipt.money = obj.WorkBudget  // 預算金額
+                    this.ipt.workDateStart = obj.WorkNoticeStartDTime  // 通知施作日期 (起)
+                    this.ipt.workDateEnd = obj.WorkNoticeEndDTime  // 通知施作日期 (訖)
+                    this.ipt.noticeMethod = obj.NoticeMethod  // 通知方式
+                    this.ipt.noticeMember = obj.NoticeManID  // 通知人
+                    this.ipt.noticeLocation = obj.Malfunction  // 通報維修地點及事項
+                    this.ipt.type = obj.Type // 工單性質
+                    this.ipt.typeNumber = obj.OderTypeCode  // 工單性質編號
+                    this.ipt.items = [ ...obj.ItemCount ]  // 請修項目
+                    this.ipt.eqNumber1 = obj.MaintainCode_System  // 設備標示編號1
+                    this.ipt.eqNumber2 = obj.MaintainCode_Loc  // 設備標示編號2
+                    this.ipt.eqNumber22 = obj.MaintainCode_Loc2  // 設備標示編號2-2
+                    this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號3
+                    this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號3-2
+                    this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號4
+            }).catch(err => {
+                console.log(err)
+                alert('資料讀取失敗')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
         // 關閉 dialog
         close () {
             this.dialog = false
@@ -754,7 +736,28 @@ export default {
         },
         // 匯出 excel
         excel() {
-            serveNewListExecl(this.ipt).then(res => {
+            serveNewListExecl({
+                CreatorID: this.userData.UserId,  // 立案人id
+                WorkYear: this.ipt.year,  // 年度
+                WorkBudget: this.ipt.money,  // 預算金額
+                AgreementDTime: this.ipt.expiryDate,  // 履約到期日
+                WorkNoticeStartDTime: this.ipt.workDateStart,  // 通知施作日期 (起)
+                WorkNoticeEndDTime: this.ipt.workDateEnd,  // 通知施作日期 (訖)
+                NoticeMethod: this.ipt.noticeMethod,  // 通知方式
+                NoticeManID: this.ipt.noticeMember,  // 通知人
+                // Type: this.ipt.type,  // 工單性質
+                OderTypeCode: this.ipt.typeNumber,  // 工單性質編號
+                // MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                // MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                // MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                // MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                Malfunction: this.ipt.noticeLocation,  // 通報維修地點及事項
+                WorkSubject: '',  // 故障主旨(目前是備用的欄位)
+                ItemCount: this.ipt.items, // 請修項目
+                TotalSpent: this.totalMoney,  // 總金額
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
                 let link = document.createElement('a')
                 link.href = `/downloads/${res.data.file_name}`
                 link.setAttribute('download', res.data.file_name)
@@ -771,35 +774,41 @@ export default {
 
                 if (this.isEdit) {
                     // -------- 編輯時 -------
-                    // updateListOrder({
-                    //     WorkOrderID: this.workNumber,  // 工單編號
-                    //     WorkSubject: this.ipt.subject,  // 故障主旨
-                    //     DispatchID: this.dispatchID,  // 派工人id (從 vuex 抓)
-                    //     Type: this.ipt.fixType,  // 維修類型
-                    //     CreateType: this.ipt.createType,  // 立案類型
-                    //     CreateDDay: this.ipt.date,  // 立案日期
-                    //     CreateDTime: this.ipt.hour,  // 立案時間 (小時)
-                    //     MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
-                    //     MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
-                    //     MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
-                    //     MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
-                    //     Malfunction: this.ipt.malfunctionDes,  // 故障描述
-                    //     ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    //     OperatorID: this.userData.UserId,  // 操作人id
-                    // }).then(res => {
-                    //     if (res.data.ErrorCode == 0) {
-                    //         this.chMsgbar({ success: true, msg: '編輯成功' })
-                    //         // 為避免使用者選立即派工，導致input的不會同步改變，所以重新向後端請求資料
-                    //         this.fetchOrderOne()
-                    //     } else {
-                    //         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                    //         this.$router.push({ path: '/error' })
-                    //     }
-                    // }).catch(err => {
-                    //     this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
-                    // }).finally(() => {
-                    //     this.chLoadingShow()
-                    // })
+                    updateListOrder({
+                        WorkOrderID: this.id,  // 工單編號
+                        WorkYear: this.ipt.year,  // 年度
+                        WorkBudget: this.ipt.money,  // 預算金額
+                        AgreementDTime: this.ipt.expiryDate,  // 履約到期日
+                        WorkNoticeStartDTime: this.ipt.workDateStart,  // 通知施作日期 (起)
+                        WorkNoticeEndDTime: this.ipt.workDateEnd,  // 通知施作日期 (訖)
+                        NoticeMethod: this.ipt.noticeMethod,  // 通知方式
+                        NoticeManID: this.ipt.noticeMember,  // 通知人
+                        Type: this.ipt.type,  // 工單性質
+                        OderTypeCode: this.ipt.typeNumber,  // 工單性質編號
+                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                        Malfunction: this.ipt.noticeLocation,  // 通報維修地點及事項
+                        WorkSubject: '',  // 故障主旨(目前是備用的欄位)
+                        ItemCount: this.ipt.items, // 請修項目
+                        TotalSpent: this.totalMoney,  // 總金額
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '編輯成功' })
+                            // 為避免使用者選立即派工，導致input的不會同步改變，所以重新向後端請求資料
+                            this.fetchOrderOne()
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
                 } else {
                     // -------- 新增時 -------
                     createWorkOrder({
@@ -817,7 +826,7 @@ export default {
                         MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
                         MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
                         MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
-                        Malfunction: this.ipt.noticeLocation,  // 故障描述 (通報維修地點及事項)
+                        Malfunction: this.ipt.noticeLocation,  // 通報維修地點及事項
                         WorkSubject: '',  // 故障主旨(目前是備用的欄位)
                         ItemCount: this.ipt.items, // 請修項目
                         TotalSpent: this.totalMoney,  // 總金額
@@ -896,6 +905,13 @@ export default {
             
             this.setEqCodeOption(codeRes.data.device_query, 'opt'+ lv)
             this.chLoadingShow()
+        },
+        // 編輯
+        editEqCode() {
+            if (confirm('編輯設備標示編號會需要重新選擇，你確定嗎?')) {
+                this.ipt.eqNumber1 = this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+                this.canModifyEqCode = true
+            }
         },
     },
     created () {

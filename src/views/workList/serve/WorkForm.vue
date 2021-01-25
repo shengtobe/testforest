@@ -1,11 +1,14 @@
 <template>
 <v-container style="max-width: 1200px">
+    <!-- 組織表 -->
+    <OrganizeDialog @setNowIpt="settingMenbers" />  
+
     <v-form
         ref="form"
         v-model="valid"
         lazy-validation
     >
-        <h2 class="mb-4">工單編號：{{ routeId }}</h2>
+        <h2 class="mb-4">工單編號：{{ id }}</h2>
 
         <!-- 基本資訊 -->
         <v-row class="px-2">
@@ -41,11 +44,12 @@
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-account</v-icon>代理人
                 </h3>
-                <v-select
-                    v-model="ipt.agent"
-                    :items="agentOpts"
+                <v-text-field
+                    :value="ipt.agent.name"
                     solo
-                ></v-select>
+                    readonly
+                    @click="chooseMembers('agent')"
+                ></v-text-field>
             </v-col>
         </v-row>
 
@@ -186,78 +190,42 @@
             </v-col>
 
             <v-col cols="12" class="text-center">
-                <v-btn
-                    :loading="isLoading"
-                    dark
-                    class="ma-2"
-                    to="/worklist/serve"
-                >回搜尋頁</v-btn>
+                <v-btn dark class="ma-2"
+                    @click="closeWindow"
+                >關閉視窗</v-btn>
 
-                <v-btn
-                    :loading="isLoading"
-                    dark
-                    color="error"
-                    class="ma-2"
-                    @click="dialog = true"
-                >退回</v-btn>
-
-                <v-btn
-                    :loading="isLoading"
-                    color="success"
-                    class="ma-2"
-                    @click="save"
-                >送出</v-btn>
+                <template v-if="!done">
+                    <v-btn
+                        :loading="isLoading"
+                        color="success"
+                        class="ma-2"
+                        @click="save"
+                    >送出</v-btn>
+                </template>
             </v-col>
         </v-row>
-
-        <!-- 退回 dialog -->
-        <v-dialog v-model="dialog" max-width="600px">
-            <v-card>
-                <v-toolbar dark flat dense color="error" class="mb-2">
-                    <v-toolbar-title>退回原因</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-toolbar>
-
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-textarea
-                                hide-details
-                                auto-grow
-                                solo
-                                rows="8"
-                                placeholder="請輸入原因"
-                                v-model.trim="reason"
-                            ></v-textarea>
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-                
-                <v-card-actions class="px-5 pb-5">
-                    <v-spacer></v-spacer>
-                    <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                    <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
     </v-form>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import OrganizeDialog from '@/components/OrganizeDialog.vue'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { fetchWorkOrderOne, dispatchOrder } from '@/apis/workList/serve'
 
 export default {
     data: () => ({
-        routeId: '',  // 工單編號
+        id: '',  // 工單編號
+        done: false,  // 是否完成頁面操作
         valid: true,  // 表單是否驗證欄位
         isLoading: false,  // 是否讀取中
         ipt: {
             acceptanceTime: new Date().toISOString().substr(0, 10),  // 預計驗收日期
-            agent: '王小明',  // 代理人
+            agent: {  // 代理人
+                id: '',
+                name: '',
+            },
             enterControl: false,  // 進場管制申請
             specialDanger: false,  // 特殊危害作業
             safeDanger: false,  // 安全危害作業
@@ -265,10 +233,7 @@ export default {
             note: '',  // 備註
             vendors: [],  // 外包廠商資料
         },
-        agentOpts: ['王小明', '陳小華', '黃小美'],  // 代理人下拉選單
         acceptDateMenuShow: false,  // 預計驗收日曆是否顯示
-        dialog: false,  // dialog 是否顯示
-        reason: '',  // 退回原因
         vendorDialog: false,  // 外包廠商 dialog 是否顯示
         vendorForm: {},
         defaultVendorForm: {  // 外包廠商 dialog 的表單預設值
@@ -276,6 +241,17 @@ export default {
             count: 0,
         },
     }),
+    components: { OrganizeDialog },
+    computed: {
+        ...mapState ('organization', {  // 組織表資料
+            memberID: state => state.chose.uid,
+            memberName: state => state.chose.name,
+            nowIptName: state => state.nowIptName,  // 目前欄位名稱
+        }),
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -286,45 +262,66 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
+        ]),
+        ...mapActions('organization', [
+            'toggleShow',  // toggle dialog show
+            'chChose',  // 改變所選的組職表員工資料
+            'chIptName',  // 改變目前欄位
         ]),
         // 初始化資料
         initDate() {
-            // 向後端請求資料
             this.chLoadingShow()
-            this.routeId = this.$route.params.id  // 路由參數
 
-            // 檢查是否有派工權限
+            // 因為要檢查是否有權限編輯，向後端請求資料
+            fetchWorkOrderOne({
+                WorkOrderID: this.$route.params.id,  // 工單編號
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                // 檢查是否有權限編輯
+                if (res.data.CreatorID != this.userData.UserId && res.data.CreatorID != this.userData.UserId) {
+                    this.$router.push({ path: '/no-permission' })
+                }
 
-            // 範例效果
-            setTimeout(() => {
-                // 初始化外包人員的表單
-                this.vendorForm = Object.assign({}, this.defaultVendorForm)
-                
+                this.id = res.data.WorkOrderID  // 工單編號
+            }).catch(err => {
+                alert('資料讀取失敗')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         save() {
-            if (this.$refs.form.validate()) {  // 表單驗證欄位
-                this.isLoading = true
-                
-                // 範例效果
-                setTimeout(() => {
-                    this.isLoading = false
-                    this.chMsgbar({ success: true, msg: '派工成功' })
-                    this.$router.push({ path: '/worklist/serve' })
-                }, 1000)
-            }
-        },
-        // 退回
-        withdraw() {
-            this.isLoading = true
-                
-            // 範例效果
-            setTimeout(() => {
-                // 退回完後，轉頁到搜尋頁
-                this.chMsgbar({ success: true, msg: '退回成功' })
-                this.$router.push({ path: '/worklist/serve' })
-            }, 1000)
+            // if (this.$refs.form.validate()) {  // 表單驗證欄位
+                if (confirm('你確定要送出嗎?')) {
+                    this.chLoadingShow()
+                    
+                    dispatchOrder({
+                        WorkOrderID: this.id,  // 工單編號
+                        ExpectedDT: this.ipt.acceptanceTime,  // 預計驗收日期
+                        AgentID: this.ipt.agent.id,  // 代理人id
+                        WorkApplication: (this.ipt.enterControl)? 'T' : 'F',  // 進場管制申請
+                        WorkSp: (this.ipt.specialDanger)? 'T' : 'F',  // 特殊危害作業
+                        WorkSafety: (this.ipt.safeDanger)? 'T' : 'F',  // 安全危害作業
+                        Malfunction: this.ipt.malfunctionDes,  // 故障描述
+                        Memo: this.ipt.note,  // 備註
+                        OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '派工成功' })
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.ErrorCode, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，派工失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
+            // }
         },
         // 增加外包廠商
         addVendor() {
@@ -339,6 +336,16 @@ export default {
         deleteVendor(item) {
             let idx = this.ipt.vendors.indexOf(item)  // 取得該筆資料索引值
             this.ipt.vendors.splice(idx, 1)
+        },
+        // 選擇代理人、作業人員 (組識表組件用)
+        chooseMembers(iptName) {
+            this.chIptName(iptName)
+            this.toggleShow()
+        },
+        // 設定代理人 (組識表組件用)
+        settingMenbers() {
+            this.ipt[this.nowIptName].id = this.memberID
+            this.ipt[this.nowIptName].name = this.memberName
         },
     },
     created() {
