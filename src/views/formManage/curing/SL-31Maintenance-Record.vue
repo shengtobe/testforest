@@ -196,18 +196,7 @@ export default {
     newText: "維修紀錄",
     isLoading: false,
     disabled: false,
-    a: "",
-    z: "",
-    q: "",
-    df: "",
-    s: "",
-    qz: "",
-    wx: "",
-    pp: "",
-    oo: "",
-    ii: "",
-    uu: "",
-    yy: "",
+    DB_Table: "RP045",
     Add: false,
     dialog3: false,
     pageOpt: { page: 1 }, // 目前頁數
@@ -289,7 +278,16 @@ export default {
         gg: "V",
         hh: "王大明"
       }
-    ]
+    ],
+    ipt: {
+        CarHeadCode: "",
+        CarNo: "",
+        Km:"",
+        Memo_1: "",
+        Memo_2: "",
+        Memo_3: "",
+    }
+
   }),
   components: { Pagination }, // 頁碼
   computed: {
@@ -315,13 +313,12 @@ export default {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
+      this.CarHeadCode = ""; //車號前置碼
+      this.CarNo = "";//車號
+      this.Km = ""; //累計公里數
+      this.Memo_1 = "";//破損不良部分
+      this.Memo_2 = "";//狀況及原因
+      this.Memo_3 = "";//處置
     },
     unique(list){
       var arr = [];
@@ -396,7 +393,69 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+        
+      let arr = new Array()
+      let obj = new Object()
+
+      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)      
+      
+      obj = new Object()
+      obj.Column = "CarHeadCode"
+      obj.Value = this.CarHeadCode
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "CarNo"
+      obj.Value = this.CarNo
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Km"
+      obj.Value = this.CarNo
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Memo_1"
+      obj.Value = this.Memo_1
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Memo_2"
+      obj.Value = this.Memo_2
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Memo_3"
+      obj.Value = this.Memo_3
+      arr = arr.concat(obj)
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -426,14 +485,12 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
-          "CheckOption1",
+          "CarHeadCode",
+          "CarNo",
+          "Km",
           "Memo_1",
-          "CheckOption2",
           "Memo_2",
-          "CheckOption3",
           "Memo_3",
-          "Advice",
-          "Measures",
 
         ],
       }).then(res => {
@@ -452,21 +509,13 @@ export default {
         //123資料
         let ad = Object.keys(dat[0])
         console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        
+        this.CarHeadCode = dat[0].CarHeadCode
+        this.CarNo = dat[0].CarNo
+        this.Km = dat[0].Km
+        this.Memo_1 = dat[0].Memo_1
+        this.Memo_2 = dat[0].Memo_2
+        this.Memo_3 = dat[0].Memo_3
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
