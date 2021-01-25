@@ -1,27 +1,30 @@
 <!--
 選擇設備報修碼的共用元件
 輸入:
-      ifLV5:是否也要選工作項? true為是，false為否
-      nowEqCode:現在已選擇好的設備報修碼
-      nowWorkCode:現在已選擇好的工作項
-回傳方法
+      //ifLV5:是否也要選工作項? true為是，false為否
+      nowEqCode:現在已選擇好的設備報修碼，預設空
+      nowWorkCode:現在已選擇好的工作項，預設空
+      toLv: 顯示到第幾層，同時也在第幾層回傳，預設5(到工作項)
+      needIcon: 是否顯示icon，預設否
+      disableToLv: 第幾層前隱藏，需要先傳入值，預設0
+回傳event：
       _returnEqCode:回傳組好的設備報修碼
       _returnWorkCode:回傳選擇的工作項
 -->
 <template>
   <v-row class="px-2 mb-6">
 
-    <v-col cols="12" class="mt-n4">
+    <v-col cols="12" class="mt-n4" v-if="toLv >= 1" v-show="_levelShow.Lv1">
       <v-row>
         <v-col cols="12" align-self="center">
-          <h3 class="ml-md-6">系統</h3>
+          <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-buffer</v-icon> 系統</h3>
         </v-col>
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv1"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'1')"
+            @change="whenChange('1')"
             label="請選擇"
             v-model="selectItem.Lv1"
           ></v-select>
@@ -29,17 +32,17 @@
       </v-row>
     </v-col>
 
-    <v-col cols="12">
+    <v-col cols="12" v-if="toLv >= 2" v-show="_levelShow.Lv2">
       <v-row>
         <v-col cols="12" align-self="center">
-          <h3 class="ml-md-6">位置</h3>
+          <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-map-marker</v-icon> 位置</h3>
         </v-col>
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv2"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'2')"
+            @change="whenChange('2')"
             label="請選擇"
             v-model="selectItem.Lv2"
             :disabled="_selectDisabled.eqCodeListLv2"
@@ -50,7 +53,7 @@
             :items="eqCodes.eqCodeListLv22"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'22')"
+            @change="whenChange('22')"
             label="請選擇"
             v-model="selectItem.Lv22"
             :disabled="_selectDisabled.eqCodeListLv22"
@@ -59,17 +62,17 @@
       </v-row>
     </v-col>
 
-    <v-col cols="12">
+    <v-col cols="12" v-if="toLv >= 3" v-show="_levelShow.Lv3">
       <v-row>
         <v-col cols="12" align-self="center">
-          <h3 class="ml-md-6">設備</h3>
+          <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-anvil</v-icon> 設備</h3>
         </v-col>
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv3"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'3')"
+            @change="whenChange('3')"
             label="請選擇"
             v-model="selectItem.Lv3"
             :disabled="_selectDisabled.eqCodeListLv3"
@@ -80,7 +83,7 @@
             :items="eqCodes.eqCodeListLv32"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'32')"
+            @change="whenChange('32')"
             label="請選擇"
             v-model="selectItem.Lv32"
             :disabled="_selectDisabled.eqCodeListLv32"
@@ -89,17 +92,17 @@
       </v-row>
     </v-col>
 
-    <v-col cols="12">
+    <v-col cols="12" v-if="toLv >= 4" v-show="_levelShow.Lv4">
       <v-row>
         <v-col cols="12" align-self="center">
-          <h3 class="ml-md-6">序號</h3>
+          <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-cards-variant</v-icon> 序號</h3>
         </v-col>
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv4"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'4')"
+            @change="whenChange('4')"
             label="請選擇"
             v-model="selectItem.Lv4"
             :disabled="_selectDisabled.eqCodeListLv4"
@@ -108,19 +111,20 @@
       </v-row>
     </v-col>
 
-    <v-col cols="12" v-if="ifLV5">
+    <v-col cols="12" v-if="toLv == 5" v-show="_levelShow.Lv5">
       <v-row>
         <v-col cols="12" align-self="center">
-          <h3 class="ml-md-6">工作項</h3>
+          <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-format-list-bulleted</v-icon> 工作項</h3>
         </v-col>
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv5"
             item-text="EquipName"
             item-value="EquipCode"
-            @change="goChange($event,'5')"
+            @change="whenChange('5')"
             label="請選擇"
             v-model="selectItem.Lv5"
+            :disabled="_selectDisabled.eqCodeListLv5"
           ></v-select>
         </v-col>
       </v-row>
@@ -134,12 +138,16 @@
   export default {
     //外部傳入資料
     props: {
-      ifLV5: Boolean,
+      //ifLV5: Boolean,
       nowEqCode: String,
       nowWorkCode: String,
+      toLv: Number,
+      needIcon: Boolean,
+      disableToLv: Number,
     },
     //內部變數
     data: () => ({
+      ifIcon: false,
       //各層的選項變數
       eqCodes: {
         eqCodeListLv1:[],
@@ -164,7 +172,7 @@
         Lv5: ''
       },
       newEqCode: '',  //設備報修碼
-      newWorkCode: ''   //工作項目
+      newWorkCode: '',   //工作項目
     }),
     //渲染完成後
     mounted: function() {
@@ -189,11 +197,23 @@
       _selectDisabled: function() {
         let rtnObj = {}
         const that = this
-        rtnObj.eqCodeListLv2 = (that.eqCodes.eqCodeListLv1.length > 0 && that.selectItem.Lv1!='')?false:true
-        rtnObj.eqCodeListLv22 = (that.eqCodes.eqCodeListLv2.length > 0 && that.selectItem.Lv2!='')?false:true
-        rtnObj.eqCodeListLv3 = (that.eqCodes.eqCodeListLv2.length > 0 && (that._show22?that.selectItem.Lv22!='':that.selectItem.Lv2!=''))?false:true
-        rtnObj.eqCodeListLv32 = (that.eqCodes.eqCodeListLv3.length > 0 && that.selectItem.Lv3!='')?false:true
-        rtnObj.eqCodeListLv4 = (that.eqCodes.eqCodeListLv4.length > 0 && (that._show32?that.selectItem.Lv32!='':that.selectItem.Lv3!=''))?false:true
+        rtnObj.eqCodeListLv2 = (that.eqCodes.eqCodeListLv1.length > 0 && that.selectItem.Lv1 != '')?false:true
+        rtnObj.eqCodeListLv22 = (that.eqCodes.eqCodeListLv2.length > 0 && that.selectItem.Lv2 != '')?false:true
+        rtnObj.eqCodeListLv3 = (that.eqCodes.eqCodeListLv2.length > 0 && (that._show22?that.selectItem.Lv22 != '':that.selectItem.Lv2 != ''))?false:true
+        rtnObj.eqCodeListLv32 = (that.eqCodes.eqCodeListLv3.length > 0 && that.selectItem.Lv3 != '')?false:true
+        rtnObj.eqCodeListLv4 = (that.eqCodes.eqCodeListLv4.length > 0 && (that._show32?that.selectItem.Lv32 != '':that.selectItem.Lv3 != ''))?false:true
+        rtnObj.eqCodeListLv5 = (that.eqCodes.eqCodeListLv5.length > 0 && that.selectItem.Lv4 != '')?false:true
+        return rtnObj
+      },
+      _levelShow: function() {
+        let rtnObj = {}
+        const tLv = (!this.toLv)?5:this.toLv
+        const disToLv = (!this.disableToLv)?0:this.disableToLv
+        rtnObj.Lv1 = (tLv >= 1 && disToLv < 1)?true:false
+        rtnObj.Lv2 = (tLv >= 2 && disToLv < 2)?true:false
+        rtnObj.Lv3 = (tLv >= 3 && disToLv < 3)?true:false
+        rtnObj.Lv4 = (tLv >= 4 && disToLv < 4)?true:false
+        rtnObj.Lv5 = (tLv >= 5 && disToLv < 5)?true:false
         return rtnObj
       }
     },
@@ -214,7 +234,8 @@
           Lv4: '',
           Lv5: ''
         }
-        if(this.nowEqCode == '' || this.nowEqCode == undefined || this.nowEqCode == null){ //沒有帶值進來
+        this.ifIcon = (!this.needIcon)?false:this.needIcon
+        if(this.nowEqCode == '' || !this.nowEqCode){ //沒有帶值進來
           this._getEqList('SYS','SYS_%','1','1')
         }else{  //有帶值進來
           const that = this
@@ -235,25 +256,34 @@
               that.$router.push({ path: '/error' })
             }
           })
-          that.selectItem.Lv1 = resdata.EquipLv1
-          await that.goChange(that.selectItem.Lv1,'1')
-          that.selectItem.Lv2 = resdata.EquipLv2
-          await that.goChange(that.selectItem.Lv2,'2')
-          that.selectItem.Lv22 = resdata.EquipLv22
-          if(resdata.EquipLv22 != ""){
-            await that.goChange(that.selectItem.Lv22,'22')
+          if(that._toLv >= 1) {
+            await that._goChange('1')
+            that.selectItem.Lv1 = resdata.EquipLv1?resdata.EquipLv1:''
+            await that.whenChange('1')
           }
-          that.selectItem.Lv3 = resdata.EquipLv3
-          await that.goChange(that.selectItem.Lv3,'3')
-          that.selectItem.Lv32 = resdata.EquipLv32
-          if(resdata.EquipLv32 != ""){
-            await that.goChange(that.selectItem.Lv32,'32')
+          if(that._toLv >= 2) {
+            that.selectItem.Lv2 = resdata.EquipLv2?resdata.EquipLv2:''
+            await that.whenChange('2')
+            if(resdata.EquipLv22 != ""){
+              that.selectItem.Lv22 = resdata.EquipLv22?resdata.EquipLv22:''
+              await that.whenChange('22')
+            }
           }
-          that.selectItem.Lv4 = resdata.EquipLv4
-          await that.goChange(that.selectItem.Lv4,'4')
-          if(this.ifLV5){
-            that.selectItem.Lv5 = that.nowWorkCode
-            await that.goChange(that.selectItem.Lv5,'5')
+          if(that._toLv >= 3) {
+            that.selectItem.Lv3 = resdata.EquipLv3?resdata.EquipLv3:''
+            await that.whenChange('3')
+            if(resdata.EquipLv32 != ""){
+              that.selectItem.Lv32 = resdata.EquipLv32?resdata.EquipLv32:''
+              await that.whenChange('32')
+            }
+          }
+          if(that._toLv >= 4){
+            that.selectItem.Lv4 = resdata.EquipLv4?resdata.EquipLv4:''
+            await that.whenChange('4')
+          }
+          if(that._toLv == 5){
+            that.selectItem.Lv5 = that.nowWorkCode?that.nowWorkCode:''
+            await that.whenChange('5')
           }
         }
       },
@@ -283,7 +313,7 @@
         })
       },
       //每次變動
-      async goChange(LParentCode,eqLevel) {
+      /*async goChange(LParentCode,eqLevel) {
         const that = this
         const listName = 'eqCodeListLv' + eqLevel
         //動到系統就要重抓科別
@@ -404,34 +434,35 @@
             if(that.ifLV5){   //要取第五層
               //規則算寫死的
               let eqPCode = that.selectItem.Lv3
-              /*
-              if(that.nowParent == 'SYS_S') {
-                if(that._show32){
-                  eqPCode = eqPCode + '/' + that.selectItem.Lv32
-                  await that._getEqList(that.nowParent,eqPCode,'5','5')
-                }else{
-                  await that._getEqList(that.nowParent,eqPCode,'5','5')
-                  eqPCode = eqPCode + '-' + LParentCode
-                  await that._getEqList(that.nowParent,eqPCode,'5','5')
-                }
-              }else if(that.nowParent == 'SYS_M') {
-                //不動
-                await that._getEqList(that.nowParent,eqPCode,'5','5')
-              }else if(that.nowParent == 'SYS_C') {
-                switch(that.selectItem.Lv1) {
-                  case 'RST':
-                    eqPCode = eqPCode + '-' + LParentCode
-                    break;
-                  case 'RAD':
-                    eqPCode = that.selectItem.Lv1
-                    break;
-                  case 'PTT':
-                  case 'SIG':
-                    eqPCode = that.selectItem.Lv1 + '-' + LParentCode
-                    break;
-                }
-                await that._getEqList(that.nowParent,eqPCode,'5','5')
-              }*/
+              
+              // if(that.nowParent == 'SYS_S') {
+              //   if(that._show32){
+              //     eqPCode = eqPCode + '/' + that.selectItem.Lv32
+              //     await that._getEqList(that.nowParent,eqPCode,'5','5')
+              //   }else{
+              //     await that._getEqList(that.nowParent,eqPCode,'5','5')
+              //     eqPCode = eqPCode + '-' + LParentCode
+              //     await that._getEqList(that.nowParent,eqPCode,'5','5')
+              //   }
+              // }else if(that.nowParent == 'SYS_M') {
+              //   //不動
+              //   await that._getEqList(that.nowParent,eqPCode,'5','5')
+              // }else if(that.nowParent == 'SYS_C') {
+              //   switch(that.selectItem.Lv1) {
+              //     case 'RST':
+              //       eqPCode = eqPCode + '-' + LParentCode
+              //       break;
+              //     case 'RAD':
+              //       eqPCode = that.selectItem.Lv1
+              //       break;
+              //     case 'PTT':
+              //     case 'SIG':
+              //       eqPCode = that.selectItem.Lv1 + '-' + LParentCode
+              //       break;
+              //   }
+              //   await that._getEqList(that.nowParent,eqPCode,'5','5')
+              // }
+
               await that._getEqList(that.nowParent,eqPCode,'5','5')
               eqPCode = eqPCode + '-' + LParentCode
               await that._getEqList(that.nowParent,eqPCode,'5','5')
@@ -453,6 +484,180 @@
             that.newWorkCode = that.selectItem.Lv5
             that._returnWorkCode()
             break;
+        }
+      },*/
+      async whenChange(eqLevel){
+        const that = this
+        const listName = 'eqCodeListLv' + eqLevel
+        //動到系統就要重抓科別
+        switch(eqLevel) {
+          case '1':
+            that.nowParent = that.eqCodes[listName].find(ele => ele.EquipCode == that.selectItem.Lv1).ParentCode
+            if(that.toLv > 1){
+              that.eqCodes.eqCodeListLv2 = []
+              await that._goChange('2')
+            }else{
+              that.newEqCode = that.selectItem.Lv1 
+              that._returnEqCode()
+            }
+            break;
+          case '2':
+            that.eqCodes.eqCodeListLv22 = []
+            await that._goChange('22')
+            if(that.eqCodes.eqCodeListLv22.length == 0){
+              if(that.toLv > 2){
+                that.eqCodes.eqCodeListLv3 = []
+                await that._goChange('3')
+              }else{
+                that.newEqCode = that.selectItem.Lv1 + '-' + that.selectItem.Lv2
+                that._returnEqCode()
+              }
+            }
+            break;
+          case '22':
+            if(that.toLv > 2){
+              that.eqCodes.eqCodeListLv3 = []
+              await that._goChange('3')
+            }else{
+              that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2)
+              that._returnEqCode()
+            }
+            break;
+          case '3':
+            that.eqCodes.eqCodeListLv32 = []
+            await that._goChange('32')
+            if(that.eqCodes.eqCodeListLv32.length == 0){
+              if(that.toLv > 3){
+                that.eqCodes.eqCodeListLv4 = []
+                await that._goChange('4')
+              }else{
+                that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3
+                that._returnEqCode()
+              }
+            }
+            break;
+          case '32':
+            if(that.toLv > 3){
+              that.eqCodes.eqCodeListLv4 = []
+              await that._goChange('4')
+            }else{
+              that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'') 
+              that._returnEqCode()
+            }
+            break;
+          case '4':
+            if(that.toLv > 4){
+              that.eqCodes.eqCodeListLv5 = []
+              await that._goChange('5')
+            }
+            that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'')  + '-' + that.selectItem.Lv4
+            that._returnEqCode()
+            break;
+          case '5':
+            if(that.toLv == 5){
+              that.newWorkCode = that.selectItem.Lv5
+              that._returnWorkCode()
+            }
+            break;
+        }
+      },
+      async _goChange(eqLevel) {
+        const that = this
+        const listName = 'eqCodeListLv' + eqLevel
+        switch(eqLevel) {
+          case '1':
+            that.eqCodes.eqCodeListLv2 = []
+            that.eqCodes.eqCodeListLv22 = []
+            that.eqCodes.eqCodeListLv3 = []
+            that.eqCodes.eqCodeListLv32 = []
+            that.eqCodes.eqCodeListLv4 = []
+            that.eqCodes.eqCodeListLv5 = []
+            that.selectItem.Lv1 = ''
+            that.selectItem.Lv2 = ''
+            that.selectItem.Lv22 = ''
+            that.selectItem.Lv3 = ''
+            that.selectItem.Lv32 = ''
+            that.selectItem.Lv4 = ''
+            that.selectItem.Lv5 = ''
+            await this._getEqList('SYS','SYS_%','1','1')
+            break;
+          case '2':
+            that.eqCodes.eqCodeListLv22 = []
+            that.eqCodes.eqCodeListLv3 = []
+            that.eqCodes.eqCodeListLv32 = []
+            that.eqCodes.eqCodeListLv4 = []
+            that.eqCodes.eqCodeListLv5 = []
+            that.selectItem.Lv2 = ''
+            that.selectItem.Lv22 = ''
+            that.selectItem.Lv3 = ''
+            that.selectItem.Lv32 = ''
+            that.selectItem.Lv4 = ''
+            that.selectItem.Lv5 = ''
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'2','2')
+            break;
+          case '22':
+            that.eqCodes.eqCodeListLv3 = []
+            that.eqCodes.eqCodeListLv32 = []
+            that.eqCodes.eqCodeListLv4 = []
+            that.eqCodes.eqCodeListLv5 = []
+            that.selectItem.Lv22 = ''
+            that.selectItem.Lv3 = ''
+            that.selectItem.Lv32 = ''
+            that.selectItem.Lv4 = ''
+            that.selectItem.Lv5 = ''
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'2','22')
+            break;
+          case '3':
+            that.eqCodes.eqCodeListLv32 = []
+            that.eqCodes.eqCodeListLv4 = []
+            that.eqCodes.eqCodeListLv5 = []
+            that.selectItem.Lv3 = ''
+            that.selectItem.Lv32 = ''
+            that.selectItem.Lv4 = ''
+            that.selectItem.Lv5 = ''
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'3','3')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'3','3')
+            if(that._show22) {
+              await that._getEqList(that.nowParent,that.selectItem.Lv22,'3','3')
+            }
+            break;
+          case '32':
+            that.eqCodes.eqCodeListLv4 = []
+            that.eqCodes.eqCodeListLv5 = []
+            that.selectItem.Lv32 = ''
+            that.selectItem.Lv4 = ''
+            that.selectItem.Lv5 = ''
+            await that._getEqList(that.nowParent,that.selectItem.Lv3,'3','32')
+            break;
+          case '4':
+            that.eqCodes.eqCodeListLv5 = []
+            that.selectItem.Lv4 = ''
+            that.selectItem.Lv5 = ''
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv3,'4','4')
+            await that._getEqList(that.nowParent,that.selectItem.Lv32,'4','4')
+            if(that._show32) {
+              await that._getEqList(that.nowParent,that.selectItem.Lv3+'/'+that.selectItem.Lv32,'4','4')
+            }
+            break;  
+          case '5':
+            that.selectItem.Lv5 = ''
+            await that._getEqList(that.nowParent,that.selectItem.Lv1,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2,'5','5')
+            if(that._show22) {
+              await that._getEqList(that.nowParent,that.selectItem.Lv22,'5','5')
+            }
+            await that._getEqList(that.nowParent,that.selectItem.Lv3,'5','5')
+            if(that._show32) {
+              await that._getEqList(that.nowParent,that.selectItem.Lv32,'5','5')
+              await that._getEqList(that.nowParent,that.selectItem.Lv3+'/'+that.selectItem.Lv32,'5','5')
+            }
+            await that._getEqList(that.nowParent,that.selectItem.Lv4,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1+'-'+that.selectItem.Lv4,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv2+'-'+that.selectItem.Lv4,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv3+'-'+that.selectItem.Lv4,'5','5')
+            break;  
         }
       },
       _returnEqCode() {
