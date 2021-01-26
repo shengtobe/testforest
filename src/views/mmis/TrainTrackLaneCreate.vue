@@ -83,7 +83,7 @@
                 
               </p>                  
             </v-col>
-            <equipRepairOnject :ifLV5="ifLv5" :nowEqCode="detailItems.MaintainCode" @getEqCode="_getNewEqCode"></equipRepairOnject>
+            <equipRepairObject :toLv="toLv" :nowEqCode="detailItems.MaintainCode" @getEqCode="_getNewEqCode"></equipRepairObject>
             <v-card-actions class="px-5 pb-5">
               <v-spacer></v-spacer>
               <v-btn class="mr-2" elevation="4" @click="showMaintainCode=false">取消</v-btn>
@@ -101,7 +101,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
 import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
-import equipRepairOnject from '@/components/EquipRepairCode'
+import equipRepairObject from '@/components/EquipRepairCode'
 export default {
   props: {
     detailItems: Object,
@@ -116,13 +116,14 @@ export default {
     showMaintainCode: false,
     ifLv5: false,
     newEqCode: '',
+    toLv: 4,
   }),
   mounted: function() {
     //抓單位
     this._getOrg()
   },
   components: {
-    equipRepairOnject
+    equipRepairObject
   },
   computed: {
     ...mapState ('user', {
