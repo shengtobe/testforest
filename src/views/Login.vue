@@ -88,8 +88,8 @@ export default {
     hasError: false,
     errMsg: '',
     ipt: {
-      account: 'demoUser',
-      pwd: '000000'
+      account: '',
+      pwd: ''
     },
   }),
   computed: {
@@ -132,8 +132,8 @@ export default {
       this.errMsg = '認證中...'
 
       login({
-        UserId: '01009',  // 帳號(員工 id)
-        UserPasswd: '1234',  // 密碼
+        UserId: this.ipt.account,  // 帳號(員工ID，例如：01009)
+        UserPasswd: this.ipt.pwd,  // 密碼(例如：1234)
         ClientReqTime: getNowFullTime()  // client 端請求時間
       }).then(res => {
         if (res.data.ErrorCode == 0) {
