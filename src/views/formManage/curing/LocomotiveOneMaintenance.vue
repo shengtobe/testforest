@@ -194,7 +194,7 @@ export default {
     disabled: true,
     pageOpt: { page: 1 }, // 目前頁數
     //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP050",
       nowTime: "",
       doMan:{
         id: '',
@@ -219,6 +219,41 @@ export default {
       ],
       tableItems: [],
       //------
+      ipt: {
+
+        items: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
+          CarID:'',
+          LastChkDay:'',
+          LastKm:'',
+          BgChkDay:'',
+          EndChkDay:'',
+          Km:'',
+      }
+      
   }),
   components: { Pagination }, // 頁碼
   computed: {
@@ -328,7 +363,81 @@ export default {
         this.chLoadingShow()
       })},
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+      createFormOrder({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {
+            "LastChkDay":this.LastChkDay,
+            "LastKm":this.LastKm,
+            "BgChkDay":this.BgChkDay,
+            "EndChkDay":this.EndChkDay,
+            "Km":this.Km,
+            "CheckOption1":ipt.items[0].status,
+            "Memo_1":ipt.items[0].note,
+            "CheckOption2":ipt.items[1].status,
+            "Memo_2":ipt.items[1].note,
+            "CheckOption3":ipt.items[2].status,
+            "Memo_3":ipt.items[2].note,
+            "CheckOption4":ipt.items[3].status,
+            "Memo_4":ipt.items[3].note,
+            "CheckOption5":ipt.items[4].status,
+            "Memo_5":ipt.items[4].note,
+            "CheckOption6":ipt.items[5].status,
+            "Memo_6":ipt.items[5].note,
+            "CheckOption7":ipt.items[6].status,
+            "Memo_7":ipt.items[6].note,
+            "CheckOption8":ipt.items[7].status,
+            "Memo_8":ipt.items[7].note,
+            "CheckOption9":ipt.items[8].status,
+            "Memo_9":ipt.items[8].note,
+            "CheckOption10":ipt.items[9].status,
+            "Memo_10":ipt.items[9].note,
+            "CheckOption11":ipt.items[10].status,
+            "Memo_11":ipt.items[10].note,
+            "CheckOption12":ipt.items[11].status,
+            "Memo_12":ipt.items[11].note,
+            "CheckOption13":ipt.items[12].status,
+            "Memo_13":ipt.items[12].note,
+            "CheckOption14":ipt.items[13].status,
+            "Memo_14":ipt.items[13].note,
+            "CheckOption15":ipt.items[14].status,
+            "Memo_15":ipt.items[14].note,
+            "CheckOption16":ipt.items[15].status,
+            "Memo_16":ipt.items[15].note,
+            "CheckOption17":ipt.items[16].status,
+            "Memo_17":ipt.items[16].note,
+            "CheckOption18":ipt.items[17].status,
+            "Memo_18":ipt.items[17].note,
+            "CheckOption19":ipt.items[18].status,
+            "Memo_19":ipt.items[18].note,
+            "CheckOption20":ipt.items[19].status,
+            "Memo_20":ipt.items[19].note,
+            "CheckOption21":ipt.items[20].status,
+            "Memo_21":ipt.items[20].note,
+            "CheckOption22":ipt.items[21].status,
+            "Memo_22":ipt.items[21].note,
+            "CheckOption23":ipt.items[22].status,
+            "Memo_23":ipt.items[22].note,
+          },
+        ],
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+
+
+    },
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;
@@ -357,15 +466,58 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
+          "CarID",
+          "LastChkDay",
+          "LastKm",
+          "BgChkDay",
+          "EndChkDay",
+          "Km",
           "CheckOption1",
           "Memo_1",
           "CheckOption2",
           "Memo_2",
           "CheckOption3",
           "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
+          "CheckOption11",
+          "Memo_11",
+          "CheckOption12",
+          "Memo_12",
+          "CheckOption13",
+          "Memo_13",
+          "CheckOption14",
+          "Memo_14",
+          "CheckOption15",
+          "Memo_15",
+          "CheckOption16",
+          "Memo_16",
+          "CheckOption17",
+          "Memo_17",
+          "CheckOption18",
+          "Memo_18",
+          "CheckOption19",
+          "Memo_19",
+          "CheckOption20",
+          "Memo_20",
+          "CheckOption21",
+          "Memo_21",
+          "CheckOption22",
+          "Memo_22",
+          "CheckOption23",
+          "Memo_23",
         ],
       }).then(res => {
         this.initInput();
@@ -385,7 +537,7 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
+            if(i > 9 && i < 56){
               if(i % 2 == 0){
                   this.ipt.items[j].status = (dat[0])[key]
               }
@@ -396,8 +548,6 @@ export default {
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')

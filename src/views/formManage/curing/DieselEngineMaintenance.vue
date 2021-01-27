@@ -295,9 +295,14 @@ export default {
     newText:"保養資料",
     isLoading: false,
     disabled: false,
+    DB_Table: "RP047",
+
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
-      dateEnd: new Date().toISOString().substr(0, 10) // 通報日期(迄)
+      dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
+      Km:"",
+      Item:"",
+      Memo:"",
     },
     dateMemuShow: {
       // 日曆是否顯示
@@ -341,9 +346,6 @@ export default {
     dialogShowEdit: false, // model off
     dialogDel: false, // model off
     dialogm1: "2020-08-01",
-    aa: "",
-    bb: "",
-    cc: "",
     tableItems: [
       {
         date: "2020/08/01",
@@ -660,7 +662,54 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log('送出click! 0222')
+      this.chLoadingShow()
+        
+      let arr = new Array()
+      let obj = new Object()
+
+      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)      
+      
+      obj = new Object()
+      obj.Column = "Km"
+      obj.Value = this.Km
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Item"
+      obj.Value = this.Item
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Memo"
+      obj.Value = this.Memo
+      arr = arr.concat(obj)
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;
@@ -689,14 +738,9 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
+          "Km",
+          "Item",
+          "Memo",
 
         ],
       }).then(res => {
@@ -715,21 +759,10 @@ export default {
         //123資料
         let ad = Object.keys(dat[0])
         console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        
+        this.Km = dat[0].Km
+        this.Item = dat[0].Item
+        this.Memo = dat[0].Memo
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
