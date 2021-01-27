@@ -47,7 +47,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -154,16 +154,16 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <!-- <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value readonly />
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
               </v-row>
-              <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+              <v-expansion-panels :disabled="disabled" multiple>
                 <v-expansion-panel>
                   <v-expansion-panel-header color="teal" class="white--text">氧氣、乙炔氣鋼瓶</v-expansion-panel-header>
                   <v-expansion-panel-content>
@@ -210,9 +210,6 @@
                         <v-col cols="12" sm="3">
                           <span class="d-sm-none error--text">備註：</span>
                           <v-textarea hide-details auto-grow outlined rows="3" v-model="ipt.items[idx].note"/>
-                           outlined rows="2"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
                         </v-col>
                       </v-row>
                     </v-alert>
@@ -264,9 +261,6 @@
                         <v-col cols="12" sm="3">
                           <span class="d-sm-none error--text">備註：</span>
                           <v-textarea hide-details auto-grow outlined rows="3" v-model="ipt.items_2[idx].note"/>
-                           outlined rows="2"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
                         </v-col>
                       </v-row>
                     </v-alert>
@@ -318,9 +312,6 @@
                         <v-col cols="12" sm="3">
                           <span class="d-sm-none error--text">備註：</span>
                            <v-textarea hide-details auto-grow outlined rows="3" v-model="ipt.items_3[idx].note"/>
-                           outlined rows="2"/>
-                            <!-- v-model.trim="ipt.item[idx].note"
-                          /> -->
                         </v-col>
                       </v-row>
                     </v-alert>
@@ -616,23 +607,24 @@ export default {
       }
       for (i = 0; i < 6; i++) {
         obj = new Object()
-        obj.Column = "CheckOption" + (i+1)
+        obj.Column = "CheckOption" + (i+10)
         obj.Value = this.ipt.items_2[i].status
         arr = arr.concat(obj)
 
         obj = new Object()
-        obj.Column = "Memo_" + (i+1)
+        obj.Column = "Memo_" + (i+10)
         obj.Value = this.ipt.items_2[i].note
         arr = arr.concat(obj)
       }
+      //化學危險品
       for (i = 0; i < 4; i++) {
         obj = new Object()
-        obj.Column = "CheckOption" + (i+1)
+        obj.Column = "CheckOption" + (i+16)
         obj.Value = this.ipt.items_3[i].status
         arr = arr.concat(obj)
 
         obj = new Object()
-        obj.Column = "Memo_" + (i+1)
+        obj.Column = "Memo_" + (i+16)
         obj.Value = this.ipt.items_3[i].note
         arr = arr.concat(obj)
       }
@@ -691,50 +683,50 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "CheckOption4",
-          "Memo_4",
-          "CheckOption5",
-          "Memo_5",
-          "CheckOption6",
-          "Memo_6",
-          "CheckOption7",
-          "Memo_7",
-          "CheckOption8",
-          "Memo_8",
-          "CheckOption9",
-          "Memo_9",
-          "CheckOption10",
-          "Memo_10",
-          "CheckOption11",
-          "Memo_11",
-          "CheckOption12",
-          "Memo_12",
-          "CheckOption13",
-          "Memo_13",
-          "CheckOption14",
-          "Memo_14",
-          "CheckOption15",
-          "Memo_15",
-          "CheckOption16",
-          "Memo_16",
-          "CheckOption17",
-          "Memo_17",
-          "CheckOption18",
-          "Memo_18",
-          "CheckOption19",
-          "Memo_19",
-          "Advice",
-          "Measures",
+          "CheckDay",  //0
+          "DepartName",  //1
+          "Name",  //2
+          "CheckMan",  //3
+          "CheckOption1",  //4
+          "Memo_1",  //5
+          "CheckOption2",  //6
+          "Memo_2",  //7
+          "CheckOption3",  //8
+          "Memo_3",  //9
+          "CheckOption4",  //10
+          "Memo_4",  //11
+          "CheckOption5",  //12
+          "Memo_5",  //13
+          "CheckOption6",  //14
+          "Memo_6",  //15
+          "CheckOption7",  //16
+          "Memo_7",  //17
+          "CheckOption8",  //18
+          "Memo_8",  //19
+          "CheckOption9",  //20
+          "Memo_9",  //21
+          "CheckOption10",  //22
+          "Memo_10",  //23
+          "CheckOption11",  //24
+          "Memo_11",  //25
+          "CheckOption12",  //26
+          "Memo_12",  //27
+          "CheckOption13",  //28
+          "Memo_13",  //29
+          "CheckOption14",  //30
+          "Memo_14",  //31
+          "CheckOption15",  //32
+          "Memo_15",  //33
+          "CheckOption16",  //34
+          "Memo_16",  //35
+          "CheckOption17",  //36
+          "Memo_17",  //37
+          "CheckOption18",  //38
+          "Memo_18",  //39
+          "CheckOption19",  //40
+          "Memo_19",  //41
+          "Advice",  //42
+          "Measures",  //43
         ],
       }).then(res => {
         this.initInput();
@@ -753,12 +745,36 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 42){
+            if(i >= 4 && i <= 21){
               if(i % 2 == 0){
                   this.ipt.items[j].status = (dat[0])[key]
               }
               else{
                 this.ipt.items[j].note = (dat[0])[key]
+                j++
+              }
+            }
+
+            if(i == 22) j = 0
+
+            if(i >= 22 && i <= 33){
+              if(i % 2 == 0){
+                  this.ipt.items_2[j].status = (dat[0])[key]
+              }
+              else{
+                this.ipt.items_2[j].note = (dat[0])[key]
+                j++
+              }
+            }
+
+            if(i == 34) j = 0
+
+            if(i >= 34 && i <= 41){
+              if(i % 2 == 0){
+                  this.ipt.items_3[j].status = (dat[0])[key]
+              }
+              else{
+                this.ipt.items_3[j].note = (dat[0])[key]
                 j++
               }
             }

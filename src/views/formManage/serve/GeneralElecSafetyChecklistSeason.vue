@@ -47,7 +47,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -154,13 +154,13 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <!-- <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value  />
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -289,7 +289,7 @@ export default {
       //------
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },
@@ -339,20 +339,6 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
-    created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-  },
     created() {
       this.ipt2 = { ...this.defaultIpt }
       //更新時間
@@ -537,46 +523,46 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "CheckOption4",
-          "Memo_4",
-          "CheckOption5",
-          "Memo_5",
-          "CheckOption6",
-          "Memo_6",
-          "CheckOption7",
-          "Memo_7",
-          "CheckOption8",
-          "Memo_8",
-          "CheckOption9",
-          "Memo_9",
-          "CheckOption10",
-          "Memo_10",
-          "CheckOption11",
-          "Memo_11",
-          "CheckOption12",
-          "Memo_12",
-          "CheckOption13",
-          "Memo_13",
-          "CheckOption14",
-          "Memo_14",
-          "CheckOption15",
-          "Memo_15",
-          "CheckOption16",
-          "Memo_16",
-          "CheckOption17",
-          "Memo_17",
-          "Advice",
-          "Measures",
+          "CheckDay",//0
+          "DepartName",//1
+          "Name",//2
+          "CheckMan",//3
+          "CheckOption1",//4
+          "Memo_1",//5
+          "CheckOption2",//6
+          "Memo_2",//7
+          "CheckOption3",//8
+          "Memo_3",//9
+          "CheckOption4",//10
+          "Memo_4",//11
+          "CheckOption5",//12
+          "Memo_5",//13
+          "CheckOption6",//14
+          "Memo_6",//15
+          "CheckOption7",//16
+          "Memo_7",//17
+          "CheckOption8",//18
+          "Memo_8",//19
+          "CheckOption9",//20
+          "Memo_9",//21
+          "CheckOption10",//22
+          "Memo_10",//23
+          "CheckOption11",//24
+          "Memo_11",//25
+          "CheckOption12",//26
+          "Memo_12",//27
+          "CheckOption13",//28
+          "Memo_13",//29
+          "CheckOption14",//30
+          "Memo_14",//31
+          "CheckOption15",//32
+          "Memo_15",//33
+          "CheckOption16",//34
+          "Memo_16",//35
+          "CheckOption17",//36
+          "Memo_17",//37
+          "Advice",//38
+          "Measures",//39
         ],
       }).then(res => {
         this.initInput();
@@ -596,7 +582,7 @@ export default {
         console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 39){
+            if(i >= 4 && i < 37){
               if(i % 2 == 0){
                   this.ipt.items[j].status = (dat[0])[key]
               }
