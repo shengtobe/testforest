@@ -46,15 +46,25 @@
                 />
               </v-form>
               
-              <v-btn
-                class="my-3"
-                :color="mainColor"
-                block
-                dark
-                large
-                :loading="isLoading"
-                @click="submit"
-              >Login</v-btn>
+              <v-row>
+                <v-col sm="6">
+                  <v-btn block dark large
+                    class="my-3"
+                    :color="mainColor"
+                    :loading="isLoading"
+                    @click="submit(true)"
+                  >Login</v-btn>
+                </v-col>
+
+                <v-col sm="6">
+                  <v-btn block dark large
+                    class="my-3"
+                    :color="mainColor"
+                    :loading="isLoading"
+                    @click="submit(false)"
+                  >Login (無驗證)</v-btn>
+                </v-col>
+              </v-row>
 
               <v-expand-transition>
                 <v-alert
@@ -99,7 +109,7 @@ export default {
   },
   methods: {
     // 送出
-    submit() {
+    submit(bool) {
       // if (this.$refs.form.validate()) {  // 驗證欄位
       //   this.isLoading = true
       //   this.errMsg = '重新認證中...'
@@ -134,7 +144,8 @@ export default {
       login({
         UserId: this.ipt.account,  // 帳號(員工ID，例如：01009)
         UserPasswd: this.ipt.pwd,  // 密碼(例如：1234)
-        ClientReqTime: getNowFullTime()  // client 端請求時間
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        BackDoor: (bool)? 'F' : 'T'  // F 不走後門、T 走後門
       }).then(res => {
         if (res.data.ErrorCode == 0) {
           localStorage.isLogined = true
