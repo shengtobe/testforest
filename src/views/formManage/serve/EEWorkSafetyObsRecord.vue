@@ -100,8 +100,9 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="dialogShowAdd = true"
+          @click="newOne"
         >
+          <!-- @click="dialogShowAdd = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
@@ -134,7 +135,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop="{ item }">
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="編輯"
               class="mr-2"
@@ -142,8 +143,9 @@
               dark
               fab
               color="info darken-1"
-              @click="dialogShowAdd = true"
+              @click="viewPage(item)"
             >
+              <!--上面一行原程式: @click="dialogShowAdd = true" -->
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
             <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
@@ -185,11 +187,17 @@
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on }">
-                    <v-text-field hide-details v-on="on" solo />
+                    <v-text-field
+                      v-model.trim="CheckDay"
+                      outlined
+                      v-on="on"
+                      dense
+                      single-line
+                    />
                   </template>
                   <v-date-picker
                     color="purple"
-                    v-model="addItem.enterDate"
+                    v-model="CheckDay"
                     @input="dialogDateMenuShow.enters = false"
                     locale="zh-tw"
                   />
@@ -201,36 +209,36 @@
               
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">所屬單位</h3>
-                <v-text-field v-model="addItem.Kilometer" :rules="nameRules" required solo />
+                <v-text-field v-model="ObserDep" :rules="nameRules" required solo />
               </v-col>
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">職稱</h3>
-                <v-text-field v-model="addItem.Kilometers" :rules="nameRules" required solo />
+                <v-text-field v-model="JobName" :rules="nameRules" required solo />
               </v-col>
 
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">員工姓名</h3>
-                <v-text-field v-model="addItem.user" solo />
+                <v-text-field v-model="EmpName" :rules="nameRules" required solo />
               </v-col>
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">任現職年資</h3>
-                <v-text-field v-model="addItem.user" solo />
+                <v-text-field v-model="EmployeeYears" :rules="nameRules" required solo />
               </v-col>
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">工作名稱</h3>
-                <v-text-field v-model="addItem.user" solo />
+                <v-text-field v-model="JobDesp" :rules="nameRules" required solo />
               </v-col>
               <v-col cols="10">
                 <h3 class="mb-1">接受安全觀察之情況</h3>
                 <v-row class="ml-1" style="justify-content: left;">
-                  <v-checkbox class="mr-3" v-model="aas" label="計畫安全觀察之員工" value="A" />
-                  <v-checkbox class="mr-3" v-model="bbs" label="常不注意安全肇生事故者" value="B" />
-                  <v-checkbox class="mr-3" v-model="ccs" label="生病或不到工後恢復工作者" value="C" />
-                  <v-checkbox class="mr-3" v-model="dds" label="調換工作者" value="D" />
-                  <v-checkbox class="mr-3" v-model="dds" label="無經驗者" value="E" />
-                  <v-checkbox class="mr-3" v-model="dds" label="身體或心智不能安全工作者" value="F" />
-                  <v-checkbox class="mr-3" v-model="dds" label="似經情緒擾亂有怪異行動者" value="G" />
-                  <v-checkbox class="mr-3" v-model="dds" label="累遭意外者" value="H" />
+                  <v-checkbox class="mr-3" v-model="CheckOption1" label="計畫安全觀察之員工" value="A" />
+                  <v-checkbox class="mr-3" v-model="CheckOption2" label="常不注意安全肇生事故者" value="B" />
+                  <v-checkbox class="mr-3" v-model="CheckOption3" label="生病或不到工後恢復工作者" value="C" />
+                  <v-checkbox class="mr-3" v-model="CheckOption4" label="調換工作者" value="D" />
+                  <v-checkbox class="mr-3" v-model="CheckOption5" label="無經驗者" value="E" />
+                  <v-checkbox class="mr-3" v-model="CheckOption6" label="身體或心智不能安全工作者" value="F" />
+                  <v-checkbox class="mr-3" v-model="CheckOption7" label="似經情緒擾亂有怪異行動者" value="G" />
+                  <v-checkbox class="mr-3" v-model="CheckOption8" label="累遭意外者" value="H" />
                 </v-row>
               </v-col>
               <v-col cols="12">
@@ -238,50 +246,50 @@
               </v-col>
               <v-col cols="12">
               <h3 class="mb-1 indigo--text">一、工作步驟是否正確？合乎標準作業程序？</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption9"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">二、工作熟練程度如何？</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption10"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">三、不安全動作係由何種原因所致？</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption11"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">四、可能發生的意外有哪些？防止措施如何？</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption12"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">五、對工作者說明或糾正要點：</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption13"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">六、提請有關單位協辦事項有哪些？</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption14"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">七、工作者對進行此工作的意見：</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption15"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">八、其他</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="CheckOption16"/>
             </v-col>
             </v-row>
             <hr />
             <v-row>
                 <v-col cols="12" sm="4">
                 <h3 class="mb-1">觀察人員</h3>
-                <v-text-field v-model="addItem.Kilometer" :rules="nameRules" required solo />
+                <v-text-field v-model="ObserName" :rules="nameRules" required solo />
               </v-col>
               <v-col cols="12" sm="4">
                 <h3 class="mb-1">職安單位</h3>
-                <v-text-field v-model="addItem.Kilometer" :rules="nameRules" required solo />
+                <v-text-field v-model="OccupUnit" :rules="nameRules" required solo />
               </v-col>
               <v-col cols="12" sm="4">
                 <h3 class="mb-1">科長</h3>
-                <v-text-field v-model="addItem.Kilometer" :rules="nameRules" required solo />
+                <v-text-field v-model="CheckMan" :rules="nameRules" required solo />
               </v-col>
             </v-row>
           </div>
@@ -302,6 +310,11 @@
 <script>
 import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { maintainStatusOpts } from '@/assets/js/workList'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data: () => ({
@@ -309,10 +322,59 @@ export default {
     newText: "觀察表",
     isLoading: false,
     disabled: false,
-    aas: "",
-    bbs: "",
-    ccs: "",
-    dds: "",
+    QueryDayStart: "",
+      QueryDayEnd: "",
+      QueryData: {
+        DayStart: "",
+        DayEnd: "",
+      },
+    EmpName:"",
+    EmployeeYears:"",
+    JobDesp:"",
+    OccupUnit:"",
+    CheckOption1:"",
+    CheckOption2:"",
+    CheckOption3:"",
+    CheckOption4:"",
+    CheckOption5:"",
+    CheckOption6:"",
+    CheckOption7:"",
+    CheckOption8:"",
+    CheckOption9:"",
+    CheckOption10:"",
+    CheckOption11:"",
+    CheckOption12:"",
+    CheckOption13:"",
+    CheckOption14:"",
+    CheckOption15:"",
+    CheckOption16:"",
+
+    //---api---
+      DB_Table: "RP014",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
+      headers: [
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+      ],
+      tableItems: [],
+      //------
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -432,14 +494,111 @@ export default {
     ]
   }),
   components: { Pagination }, // 頁碼
+  computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
+    created() {
+      this.ipt2 = { ...this.defaultIpt }
+      //更新時間
+      var today=new Date();
+      let mStr = today.getMonth()+1;
+      let dStr = today.getDate();
+      if(mStr < 10){
+        mStr = '0' + mStr;
+      }
+      if(dStr < 10){
+        dStr = '0' + dStr;
+      }
+      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+  },
 
   methods: {
+    initInput(){
+      this.doMan.name = this.userData.UserName;
+      this.zs = this.nowTime;
+      var step;
+      for (step = 0; step < 3; step++) {
+        this.ipt.items[step].status = "0"
+      }
+      for (step = 0; step < 8; step++) {
+        this.ipt.items[step].memo = ""
+      }
+
+    },
+    unique(list){
+      var arr = [];
+      let b = false;
+      for (var i = 0; i < list.length; i++) {
+        if (i == 0) arr.push(list[i]);
+        b = false;
+        if (arr.length > 0 && i > 0) {
+          for (var j = 0; j < arr.length; j++) {
+            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
+              b = true;
+              //break;
+            }
+          }
+          if (!b) {
+            arr.push(list[i]);
+          }
+        }
+      }
+      return arr;
+    },
+    newOne(){
+      console.log("newOne23")
+      this.Add = true
+      console.log("this.Add: " + this.Add)
+      this.initInput();
+    },
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      console.log("Search click");
+      this.chLoadingShow()
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'StartDayVlaue','Value':this._data.z},
+          {"Column":"EndDayVlaue","Value":this._data.df},
+          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+                ],
+        QyName:[
+          // "DISTINCT (RPFlowNo)",
+          // // "ID",
+          // // "Name",
+          // // "CheckDay",
+          // // "CheckStatus",
+          // " * "
+          "RPFlowNo",
+          "ID",
+          "Name",
+          "CheckDay",
+          "CheckStatus",
+          "FlowId"
+        ],
+      }).then(res => {
+        let tbBuffer = JSON.parse(res.data.DT)
+        let aa = this.unique(tbBuffer)
+        this.tableItems = aa
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        console.log("search final")
+        this.chLoadingShow()
+      })
+    },
     // 存
     save() {},
     // 關閉 dialog
@@ -453,10 +612,84 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-    // 確定新增
-    save() {
-
-    },
+    viewPage(item) {
+      console.log("item: " + item)
+      console.log("RPFlowNo: " + item.RPFlowNo)
+      this.chLoadingShow()
+        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+        fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+                ],
+        QyName:[
+          "CheckDay",
+          "DepartName",
+          "Name",
+          "CheckMan",
+          "JobName",
+          "EmpID",
+          "EmpName",
+          "EmployeeYears",
+          "JobDesp",
+          "ObserID",
+          "ObserName",
+          "OccupUnit",
+          "CheckOption1",
+          "CheckOption2",
+          "CheckOption3",
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
+          "CheckOption9",
+          "CheckOption10",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "CheckOption15",
+          "CheckOption16",
+        ],
+      }).then(res => {
+        this.initInput();
+        console.log(res.data.DT)
+        let dat = JSON.parse(res.data.DT)
+        console.log("data name: " + dat[0].Name)
+        console.log("data time: " + dat[0].CheckDay)
+        this.Add = true
+        // this.zs = res.data.DT.CheckDay
+        this.doMan.name = dat[0].Name
+        let time1 = dat[0].CheckDay.substr(0,10)
+        console.log("data time1: " + time1)
+        this.zs = time1
+        console.log("doMan name: " + this.doMan.name)
+        //123資料
+        let ad = Object.keys(dat[0])
+        console.log(ad)
+        var i = 0, j = 0;
+          for(let key of Object.keys(dat[0])){
+            if(i > 3 && i < 36){
+              if(i % 2 == 0){
+                  this.ipt.items[j].status = (dat[0])[key]
+              }
+              else{
+                this.ipt.items[j].note = (dat[0])[key]
+                j++
+              }
+            }
+            i++
+          }       
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },//viewPage
   }
 };
 </script>

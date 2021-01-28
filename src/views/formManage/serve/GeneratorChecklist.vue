@@ -135,7 +135,7 @@
               <p>1.依職業安全衛生法第23條規定辦理。</p>
               <p>2.依檢查結果選擇良好、不良、無此項目。</p>
               <p>3.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-              <p>4.本表於月底前完成檢查，經主管核章後，留存於各檢查單位，保存五年備查。</p>
+              <p>4.本表於月底前完成檢查，經主管核章後，留存於各檢查單位，保存五年備查。</p> 
             </v-col>
             <!-- 檢查項目 -->
             <v-col cols="12">
@@ -264,13 +264,10 @@ export default {
         name: '',
         depart: '',
         checkManName: ''
-    },
+      },
       memo_2: "",
       memo_3: "",
       nowTime: "",
-      Add: false,
-      dialog3: false,
-      pageOpt: { page: 1 }, // 目前頁數
       headers: [
         // 表格顯示的欄位
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -281,6 +278,13 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
+      Add: false,
+      dialog3: false,
+      formDepartOptions: [  // 通報單位下拉選單
+            { text: '不限', value: '' },
+            ...formDepartOptions,
+        ],
+      pageOpt: { page: 1 }, // 目前頁數
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',
@@ -449,6 +453,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
+        console.log("search final")
         this.chLoadingShow()
       })
     },
@@ -466,7 +471,7 @@ export default {
       obj = new Object()
       obj.Column = "CheckDay"
       obj.Value = this.nowTime
-      arr = arr.concat(obj)
+      arr = arr.concat(obj)               
 
       let i;
       for (i = 0; i < 24; i++) {
@@ -538,21 +543,57 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
-          "SwitchLoc",
-          "SwitchNo",
-          "SwitchLock",
-          "Rust",
-          "Bearing",
-          "SwitchClean",
+          "CheckOption1",
           "Memo_1",
-          "CrossAlarm",
+          "CheckOption2",
           "Memo_2",
-          "CrossCable",
+          "CheckOption3",
           "Memo_3",
-          "Sig_Chiayi",
+          "CheckOption4",
           "Memo_4",
-          "Sig_Alishan",
+          "CheckOption5",
           "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
+          "CheckOption11",
+          "Memo_11",
+          "CheckOption12",
+          "Memo_12",
+          "CheckOption13",
+          "Memo_13",
+          "CheckOption14",
+          "Memo_14",
+          "CheckOption15",
+          "Memo_15",
+          "CheckOption16",
+          "Memo_16",
+          "CheckOption17",
+          "Memo_17",
+          "CheckOption18",
+          "Memo_18",
+          "CheckOption19",
+          "Memo_19",
+          "CheckOption20",
+          "Memo_20",
+          "CheckOption21",
+          "Memo_21",
+          "CheckOption22",
+          "Memo_22",
+          "CheckOption23",
+          "Memo_23",
+          "CheckOption24",
+          "Memo_24",
+          "Advice",
+          "Measures",
+
         ],
       }).then(res => {
         this.initInput();
@@ -567,36 +608,82 @@ export default {
         console.log("data time1: " + time1)
         this.zs = time1
         console.log("doMan name: " + this.doMan.name)
-        // this.tableItems = JSON.parse(res.data.DT)
         //123資料
-        var step;
-        var DBIndx = 0
-        // this.ipt.items[0].status = dat[1].SwitchLock
-        // for (step = 1; step < 25; step++) {
-        //   this.ipt.items[step].status = dat[DBIndx].SwitchLock
-        //   this.ipt.items[step].note = dat[DBIndx].Memo_1
-        //   DBIndx++
-        // }
-        // for (step = 0; step < 15; step++) {
-        //   this.ipt.items_2[step].status1 = dat[DBIndx].SwitchLock
-        //   this.ipt.items_2[step].status2 = dat[DBIndx].Rust
-        //   this.ipt.items_2[step].status3 = dat[DBIndx].Bearing
-        //   this.ipt.items_2[step].status4 = dat[DBIndx].SwitchClean
-        //   this.ipt.items_2[step].note = dat[DBIndx].Memo_1
-        //   DBIndx++
-        // }
-        // console.log("DBIndx: " + DBIndx)
-        // let www = dat.length
-        // console.log("dat.length: " + www)
-        // console.log("dat[0].Memo_2: " + dat[0].Memo_2)
-        // this.ipt.items_3[0].status1 = dat[0].CrossAlarm
-        // this.ipt.items_3[0].note = dat[0].Memo_2
-        // this.ipt.items_3[1].status1 = dat[0].CrossCable
-        // this.ipt.items_3[1].note = dat[0].Memo_3
-        // this.ipt.items_4[0].status1 = dat[0].Sig_Chiayi
-        // this.ipt.items_4[0].note = dat[0].Memo_4
-        // this.ipt.items_4[1].status1 = dat[0].Sig_Alishan
-        // this.ipt.items_4[1].note = dat[0].Memo_4
+        // let ad = Object.keys(dat[0])
+        // console.log(ad)
+        //   for(let key of Object.keys(dat[0])){
+        //     console.log(">>> " + key)
+        //     console.log((dat[0])[key])
+        //   }
+        let ad = Object.keys(dat[0])
+        console.log(ad)
+        var i = 0, j = 0;
+          for(let key of Object.keys(dat[0])){
+            if(i > 3 && i < 52){
+              if(i % 2 == 0){
+                  this.ipt.items[j].status = (dat[0])[key]
+              }
+              else{
+                this.ipt.items[j].note = (dat[0])[key]
+                j++
+              }
+            }
+            i++
+          }
+        // var step = 0;
+        // var DBIndx = 0
+        // this.ipt.items[0].status = dat[0].CheckOption1; //4
+        // this.ipt.items[0].note = dat[0].Memo_1; //5
+        // this.ipt.items[1].status = dat[0].CheckOption2 //6
+        // this.ipt.items[1].note = dat[0].Memo_2
+        // this.ipt.items[2].status = dat[0].CheckOption3
+        // this.ipt.items[2].note = dat[0].Memo_3
+        // this.ipt.items[3].status = dat[0].CheckOption4
+        // this.ipt.items[3].note = dat[0].Memo_4
+        // this.ipt.items[4].status = dat[0].CheckOption5
+        // this.ipt.items[4].note = dat[0].Memo_5
+        // this.ipt.items[5].status = dat[0].CheckOption6
+        // this.ipt.items[5].note = dat[0].Memo_6
+        // this.ipt.items[6].status = dat[0].CheckOption7
+        // this.ipt.items[6].note = dat[0].Memo_7
+        // this.ipt.items[7].status = dat[0].CheckOption8
+        // this.ipt.items[7].note = dat[0].Memo_8
+        // this.ipt.items[8].status = dat[0].CheckOption9
+        // this.ipt.items[8].note = dat[0].Memo_9
+        // this.ipt.items[9].status = dat[0].CheckOption10
+        // this.ipt.items[9].note = dat[0].Memo_10
+        // this.ipt.items[10].status = dat[0].CheckOption11
+        // this.ipt.items[10].note = dat[0].Memo_11
+        // this.ipt.items[11].status = dat[0].CheckOption12
+        // this.ipt.items[11].note = dat[0].Memo_12
+        // this.ipt.items[12].status = dat[0].CheckOption13
+        // this.ipt.items[12].note = dat[0].Memo_13
+        // this.ipt.items[13].status = dat[0].CheckOption14
+        // this.ipt.items[13].note = dat[0].Memo_14
+        // this.ipt.items[14].status = dat[0].CheckOption15
+        // this.ipt.items[14].note = dat[0].Memo_15
+        // this.ipt.items[15].status = dat[0].CheckOption16
+        // this.ipt.items[15].note = dat[0].Memo_16
+        // this.ipt.items[16].status = dat[0].CheckOption17
+        // this.ipt.items[16].note = dat[0].Memo_17
+        // this.ipt.items[17].status = dat[0].CheckOption18
+        // this.ipt.items[17].note = dat[0].Memo_18
+        // this.ipt.items[18].status = dat[0].CheckOption19
+        // this.ipt.items[18].note = dat[0].Memo_19
+        // this.ipt.items[19].status = dat[0].CheckOption20
+        // this.ipt.items[19].note = dat[0].Memo_20
+        // this.ipt.items[20].status = dat[0].CheckOption21
+        // this.ipt.items[20].note = dat[0].Memo_21
+        // this.ipt.items[21].status = dat[0].CheckOption22
+        // this.ipt.items[21].note = dat[0].Memo_22
+        // this.ipt.items[22].status = dat[0].CheckOption23
+        // this.ipt.items[22].note = dat[0].Memo_23
+        // this.ipt.items[23].status = dat[0].CheckOption24
+        // this.ipt.items[23].note = dat[0].Memo_24
+        this.memo_2 = dat[0].Advice
+        this.memo_3 = dat[0].Measures
+
+        
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')

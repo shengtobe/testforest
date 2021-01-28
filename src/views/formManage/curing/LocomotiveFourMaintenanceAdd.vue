@@ -18,6 +18,7 @@
         </v-col>
         <v-col cols="12" sm="4">
           <h3 class="mb-1">
+
             <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>機車編號
           </h3>
           <v-text-field solo value="EZ-555555" readonly />
