@@ -20,6 +20,7 @@
 
             <v-btn class="ma-2" dark
                 color="brown"
+                @click="excel"
             >竣工單</v-btn>
 
             <template v-if="!done">
@@ -81,7 +82,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { closeOrder, withdrawOrder, cancelOrder } from '@/apis/workList/serve'
+import { closeOrder, withdrawOrder, cancelOrder, orderFinalExecl } from '@/apis/workList/serve'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
@@ -185,6 +186,22 @@ export default {
                     this.isLoading = this.dialog = false
                 })
             }
+        },
+        // 匯出 excel (竣工單)
+        excel() {
+            orderFinalExecl({
+                WorkOrderID: this.id,  // 工單編號
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                let link = document.createElement('a')
+                link.href = `/downloads/${res.data.file_name}`
+                link.setAttribute('download', res.data.file_name)
+                document.body.appendChild(link)
+                link.click()
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
         },
         // 送出 (結案)
         save() {

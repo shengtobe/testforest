@@ -1,6 +1,6 @@
 import axios from '@/apis/axiosSetting'
 
-// 服務科工單立案匯出 excel
+// 通知單匯出 excel
 export function serveNewListExecl(data) { return axios(
     {
         url: '/mmis/service_order/export_excel',
@@ -114,6 +114,15 @@ export function delayOrder(data) { return axios(
     {
         url: '/mmis/service_order/delay',
         method: 'put',
+        data,
+    }
+)}
+
+// 竣工單匯出 excel
+export function orderFinalExecl(data) { return axios(
+    {
+        url: '/mmis/service_order/export_excel_final',
+        method: 'post',
         data,
     }
 )}
