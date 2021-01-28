@@ -45,6 +45,8 @@
             disable-sort
             disable-filtering
             hide-default-footer
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -107,6 +109,8 @@ export default {
     Add: false,
     Edit: false,
     Delete: false,
+    sortBy: 'id',
+    sortDesc: false,
     pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數 
     typeData: [   //H:手持式、S:固定式、C:車裝台
         {
@@ -322,6 +326,7 @@ export default {
     close() {
       this.Edit = false;
       this.Delete = false;
+      this.nowFlow = -1
       this.setDataList()
     },
     goEdit(flowId) {

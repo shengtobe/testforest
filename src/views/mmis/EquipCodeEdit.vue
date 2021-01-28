@@ -8,7 +8,7 @@
     </v-card-title>
     <v-row class="px-2">
       <v-col cols="2" align-self="center">
-        <h3 align="center">單位</h3>
+        <h3 align="center">科室單位</h3>
       </v-col>
       <v-col cols="10">
         <v-select solo hide-details
@@ -68,7 +68,7 @@
 </template>
 <script>
   import { mapState, mapActions } from 'vuex'
-  import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
+  import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { equipCodeDetail,equipCodeUpdate,equipCodeInsert } from '@/apis/materialManage/largeMaterial'
   export default {
     //外部傳入資料
@@ -174,8 +174,7 @@
       },
       save() {
         const that = this
-        if(this.inputType == 'edit'){
-          equipCodeUpdate({
+        let parmObj = {
             DeptCode: that.codeDetail.DeptCode,
             EquipCode: that.codeDetail.EquipCode,
             EquipLevel: that.codeDetail.EquipLevel,
@@ -183,7 +182,10 @@
             EquipName: that.codeDetail.EquipName,
             ClientReqTime: getNowFullTime(),
             OperatorID: that.userData.UserId,  // 操作人id
-          }).then(res => {
+          }
+        parmObj = encodeObject(parmObj)
+        if(this.inputType == 'edit'){
+          equipCodeUpdate(parmObj).then(res => {
             if (res.data.ErrorCode == 0) {
               that.chMsgbar({ success: true, msg: '編輯成功' })
             } else {
@@ -197,15 +199,7 @@
             that.close()
           })
         }else if(this.inputType == 'add') {
-          equipCodeInsert({
-            DeptCode: that.codeDetail.DeptCode,
-            EquipCode: that.codeDetail.EquipCode,
-            EquipLevel: that.codeDetail.EquipLevel,
-            ParentCode: that.codeDetail.ParentCode,
-            EquipName: that.codeDetail.EquipName,
-            ClientReqTime: getNowFullTime(),
-            OperatorID: that.userData.UserId,  // 操作人id
-          }).then(res => {
+          equipCodeInsert(parmObj).then(res => {
             if (res.data.ErrorCode == 0) {
               that.chMsgbar({ success: true, msg: '新增成功' })
             } else {

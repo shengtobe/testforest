@@ -170,6 +170,16 @@
         }).catch( err => {
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
         }).finally(() => {
+          that.detailItem = {
+            DepartName:"",
+            DepartParentCode:"",
+            Loc:"",
+            ManID:"",
+            Name:"",
+            SerialNo:"",
+            Type:"",
+            FlowId: -1
+          }
           that.closeAct()
         })
       }

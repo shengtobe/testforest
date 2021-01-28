@@ -48,6 +48,8 @@
             show-expand
             :options.sync="pageOpt"
             hide-default-footer
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -174,6 +176,8 @@ export default {
     pageOpt: { page: 1 },
     expanded: [],
     singleExpand: true,
+    sortBy: 'id',
+    sortDesc: false,
     headers: [
       {
         text: "項次",

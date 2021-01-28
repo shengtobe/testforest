@@ -8,8 +8,8 @@
       needIcon: 是否顯示icon，預設否
       disableToLv: 第幾層前隱藏，需要先傳入值，預設0
 回傳event：
-      _returnEqCode:回傳組好的設備報修碼
-      _returnWorkCode:回傳選擇的工作項
+      getEqCode:回傳組好的設備報修碼
+      getWorkCode:回傳選擇的工作項
 -->
 <template>
   <v-row class="px-2 mb-6">
