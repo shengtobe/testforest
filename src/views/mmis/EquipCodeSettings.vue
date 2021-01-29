@@ -27,10 +27,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv1 == ''" @click="goAdd('1')">
+                <!-- <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv1 == ''" @click="goAdd('1')">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
-                </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv1" @click="goEdit('1')">
+                </v-btn> -->
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv1 != ''" :disabled="_editDisabled.Lv1" @click="goEdit('1')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -178,10 +178,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv5 == ''" :disabled="_selectDisabled.eqCodeListLv5">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv5 == ''" @click="goAdd('5')" :disabled="_selectDisabled.eqCodeListLv5">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv5" >
+                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv5" @click="goEdit('5')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -191,7 +191,7 @@
       </v-col>
     </v-row>
     <v-dialog v-model="Edit">
-      <EquipCodeEdit :detailCode="detailCode" :inputType="inType" :parentList="editParent" :inLevel="editLevel" @close="close"></EquipCodeEdit>  
+      <EquipCodeEdit :detailCode="detailCode" :inputType="inType" :parentList="editParent" :inLevel="editLevel" @close="close" :key="componentKey"></EquipCodeEdit>  
     </v-dialog>
   </v-container>
 </template>
@@ -235,6 +235,7 @@ export default {
       editParent: [],
       editLevel: '',
       inType: '',
+      componentKey: 0,
     }),
     //渲染完成後
     mounted: function() {
@@ -456,24 +457,12 @@ export default {
             break;  
           case '5':
             that.selectItem.Lv5 = ''
-            await that._getEqList(that.nowParent,that.selectItem.Lv1,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv2,'5','5')
-            if(that._show22) {
-              await that._getEqList(that.nowParent,that.selectItem.Lv22,'5','5')
-            }
-            await that._getEqList(that.nowParent,that.selectItem.Lv3,'5','5')
-            if(that._show32) {
-              await that._getEqList(that.nowParent,that.selectItem.Lv32,'5','5')
-              await that._getEqList(that.nowParent,that.selectItem.Lv3+'/'+that.selectItem.Lv32,'5','5')
-            }
-            await that._getEqList(that.nowParent,that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv1+'-'+that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv2+'-'+that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv3+'-'+that.selectItem.Lv4,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1 + '-' + ((that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3 )+ (that._show32?'/'+that.selectItem.Lv32:'')  + '-' + that.selectItem.Lv4,'5','5')
             break;  
         }
       },
       goEdit(level) {
+        this.componentKey += 1
         this.editParent = []
         let LdeptCode,LparentCode,LequipCode
         //抓現在的代碼(不抓名稱是因為有機會會被改，雖然機會很低)
@@ -498,15 +487,21 @@ export default {
         this.Edit = true
       },
       goAdd(level) {
-        let LdeptCode
+        this.componentKey += 1
+        let LdeptCode,LparentCode
         if(level == '1'){
           LdeptCode = 'SYS'
         }else{
           LdeptCode = this.nowParent
         }
+        if(level == '5'){
+          LparentCode = this.eqCodes['eqCodeListLv'+level][1].ParentCode
+        }else{
+          LparentCode = ''
+        }
         this.detailCode = {
           DeptCode: LdeptCode,
-          ParentCode: "",
+          ParentCode: LparentCode,
           EquipCode: "",
           EquipLevel: level.substring(0,1)
         }

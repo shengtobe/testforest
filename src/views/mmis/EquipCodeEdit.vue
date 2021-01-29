@@ -24,13 +24,18 @@
         <h3 align="center">上層</h3>
       </v-col>
       <v-col cols="10">
-        <v-select solo hide-details
+        <v-select v-if="inLevel != '5'" solo hide-details
           :items="getParentCode"
           item-text="value"
           item-value="key"
           v-model="codeDetail.ParentCode"
           :disabled="editDisable"
         ></v-select>
+        <v-text-field
+          v-else
+          solo hide-details
+          v-model="codeDetail.ParentCode"
+          disabled></v-text-field>
       </v-col>
       <v-col cols="2" align-self="center">
         <h3 align="center">層級</h3>
@@ -99,11 +104,13 @@
     //渲染完成後
     mounted: function() {
       if(this.inputType == 'edit') {
+        this.codeDetail = {}
         this._getCodeDetail()
       }else if(this.inputType == 'add') {
         this.codeDetail = {}
         this.codeDetail.EquipLevel = this.inLevel.substring(0,1)
         this.codeDetail.DeptCode = this.detailCode.DeptCode
+        this.codeDetail.ParentCode = this.detailCode.ParentCode
       }
     },
     //引入元件
@@ -226,11 +233,13 @@
     watch: {
       detailCode: function() {
         if(this.inputType == 'edit'){
+          this.codeDetail = {}
           this._getCodeDetail()
         }else if(this.inputType == 'add') {
           this.codeDetail = {}
           this.codeDetail.EquipLevel = this.inLevel.substring(0,1)
           this.codeDetail.DeptCode = this.detailCode.DeptCode
+          this.codeDetail.ParentCode = this.detailCode.ParentCode
         }
       },
     },

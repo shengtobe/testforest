@@ -471,20 +471,7 @@
             break;  
           case '5':
             that.selectItem.Lv5 = ''
-            await that._getEqList(that.nowParent,that.selectItem.Lv1,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv2,'5','5')
-            if(that._show22) {
-              await that._getEqList(that.nowParent,that.selectItem.Lv22,'5','5')
-            }
-            await that._getEqList(that.nowParent,that.selectItem.Lv3,'5','5')
-            if(that._show32) {
-              await that._getEqList(that.nowParent,that.selectItem.Lv32,'5','5')
-              await that._getEqList(that.nowParent,that.selectItem.Lv3+'/'+that.selectItem.Lv32,'5','5')
-            }
-            await that._getEqList(that.nowParent,that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv1+'-'+that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv2+'-'+that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv3+'-'+that.selectItem.Lv4,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1 + '-' + ((that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3 )+ (that._show32?'/'+that.selectItem.Lv32:'')  + '-' + that.selectItem.Lv4,'5','5')
             break;  
         }
       },
