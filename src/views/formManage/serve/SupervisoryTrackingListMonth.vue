@@ -72,7 +72,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -157,7 +157,7 @@
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">督檢作業場所</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value  v-model="place"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -194,16 +194,16 @@
                   <v-col cols="12" sm="2">{{ item.question }}</v-col>
                   <v-col cols="12" sm="2">{{ item.decree }}</v-col>
                   <v-col cols="12" sm="2">
-                    <v-checkbox class="mx-2" v-model="aa" label="符合" value="A"></v-checkbox>
+                    <v-checkbox class="mx-2" v-model="ipt.items[idx].status" label="符合"></v-checkbox>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea auto-grow outlined rows="2" />
+                      <v-textarea auto-grow outlined rows="2" v-model="ipt.items[idx].note"/>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].CheckAdvice"/>
+                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].note2"/>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].CheckDescription"/>
+                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].note3"/>
                   </v-col>
                 </v-row>
               </v-alert>
@@ -254,6 +254,7 @@ export default {
       yy: "",
       Add: false,
       dialog3: false,
+      place:"",
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP015",
@@ -283,16 +284,16 @@ export default {
       //------
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
         ],
       },
       items: [
@@ -332,13 +333,14 @@ export default {
       console.log("init create window form")
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
+      this.place = "";
       var step;
-      for (step = 0; step < 24; step++) {
-        this.ipt.items[step].status = "0"
+      for (step = 0; step < 7; step++) {
+        this.ipt.items[step].status = false
         this.ipt.items[step].note = ""
+        this.ipt.items[step].note2 = ""
+        this.ipt.items[step].note3 = ""
       }
-      this.memo_2 = ""
-      this.memo_3 = ""
     },
     newOne(){
       this.Add = true
@@ -440,6 +442,7 @@ export default {
           "CheckDay",
           "DepartName",
           "Name",
+          "Place",
           "CheckMan",
           "CheckOption1",
           "CheckAdvice1",

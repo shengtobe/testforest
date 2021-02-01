@@ -78,7 +78,7 @@
         <v-text-field solo />
       </v-col>
       <v-col cols="12" sm="2" md="2" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -116,6 +116,15 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialogNull" persistent max-width="290">
+        <v-card>
+          <v-card-title class="red white--text px-4 py-1 headline">請填妥必要欄位</v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success" @click="dialogNull = false">確定</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <!-- 動力車保養紀錄 -->
       <v-col cols="12" sm="12" md="12">
         <v-data-table
@@ -137,7 +146,7 @@
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
             <v-btn
-              title="編輯"
+              title="詳細資料"
               class="mr-2"
               small
               dark
@@ -209,7 +218,11 @@
               
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">所屬單位</h3>
-                <v-text-field v-model="ObserDep" :rules="nameRules" required solo />
+                <v-select :rules="nameRules"
+                  v-model="EmpDepartCode"
+                  :items="formDepartOptions"
+                  solo
+                />
               </v-col>
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">職稱</h3>
@@ -220,6 +233,7 @@
                 <h3 class="mb-1">員工姓名</h3>
                 <v-text-field v-model="EmpName" :rules="nameRules" required solo />
               </v-col>
+              
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">任現職年資</h3>
                 <v-text-field v-model="EmployeeYears" :rules="nameRules" required solo />
@@ -231,14 +245,14 @@
               <v-col cols="10">
                 <h3 class="mb-1">接受安全觀察之情況</h3>
                 <v-row class="ml-1" style="justify-content: left;">
-                  <v-checkbox class="mr-3" v-model="CheckOption1" label="計畫安全觀察之員工" value="A" />
-                  <v-checkbox class="mr-3" v-model="CheckOption2" label="常不注意安全肇生事故者" value="B" />
-                  <v-checkbox class="mr-3" v-model="CheckOption3" label="生病或不到工後恢復工作者" value="C" />
-                  <v-checkbox class="mr-3" v-model="CheckOption4" label="調換工作者" value="D" />
-                  <v-checkbox class="mr-3" v-model="CheckOption5" label="無經驗者" value="E" />
-                  <v-checkbox class="mr-3" v-model="CheckOption6" label="身體或心智不能安全工作者" value="F" />
-                  <v-checkbox class="mr-3" v-model="CheckOption7" label="似經情緒擾亂有怪異行動者" value="G" />
-                  <v-checkbox class="mr-3" v-model="CheckOption8" label="累遭意外者" value="H" />
+                  <v-checkbox class="mr-3" v-model="CheckOption1" label="計畫安全觀察之員工"/>
+                  <v-checkbox class="mr-3" v-model="CheckOption2" label="常不注意安全肇生事故者"/>
+                  <v-checkbox class="mr-3" v-model="CheckOption3" label="生病或不到工後恢復工作者" />
+                  <v-checkbox class="mr-3" v-model="CheckOption4" label="調換工作者"/>
+                  <v-checkbox class="mr-3" v-model="CheckOption5" label="無經驗者"/>
+                  <v-checkbox class="mr-3" v-model="CheckOption6" label="身體或心智不能安全工作者"/>
+                  <v-checkbox class="mr-3" v-model="CheckOption7" label="似經情緒擾亂有怪異行動者"/>
+                  <v-checkbox class="mr-3" v-model="CheckOption8" label="累遭意外者"/>
                 </v-row>
               </v-col>
               <v-col cols="12">
@@ -323,23 +337,20 @@ export default {
     isLoading: false,
     disabled: false,
     QueryDayStart: "",
-      QueryDayEnd: "",
-      QueryData: {
-        DayStart: "",
-        DayEnd: "",
-      },
-    EmpName:"",
-    EmployeeYears:"",
-    JobDesp:"",
-    OccupUnit:"",
-    CheckOption1:"",
-    CheckOption2:"",
-    CheckOption3:"",
-    CheckOption4:"",
-    CheckOption5:"",
-    CheckOption6:"",
-    CheckOption7:"",
-    CheckOption8:"",
+    QueryDayEnd: "",
+    QueryData: {
+      DayStart: "",
+      DayEnd: "",
+    },
+    
+    CheckOption1: false,
+    CheckOption2:false,
+    CheckOption3:false,
+    CheckOption4:false,
+    CheckOption5:false,
+    CheckOption6:false,
+    CheckOption7:false,
+    CheckOption8:false,
     CheckOption9:"",
     CheckOption10:"",
     CheckOption11:"",
@@ -348,7 +359,22 @@ export default {
     CheckOption14:"",
     CheckOption15:"",
     CheckOption16:"",
-
+    CheckDay: "",
+    ObserName: "",
+    CheckMan: "",
+    ObserDep: "",
+    JobName: "",
+    EmpName:"",
+    EmpID: "",
+    EmployeeYears:"",
+    JobDesp:"",
+    OccupUnit:"",
+    EmpDepartName: "",
+    EmpDepartCode: "",
+    formDepartOptions: [  // 通報單位下拉選單
+        { text: '', value: '' },
+        ...formDepartOptions,
+    ],
     //---api---
       DB_Table: "RP014",
       nowTime: "",
@@ -427,6 +453,7 @@ export default {
     dialogShowAdd: false, // model off
     dialogShowEdit: false, // model off
     dialogDel: false, // model off
+    dialogNull: false, 
     dialogm1: "2020-08-01",
     aa: "",
     bb: "",
@@ -442,56 +469,6 @@ export default {
       }
     ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
-    headers: [
-      // 表格顯示的欄位
-      {
-        text: "編號",
-        value: "aa",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "8%"
-      },
-      {
-        text: "所屬單位",
-        value: "bb",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "20%"
-      },
-      {
-        text: "員工姓名",
-        value: "cc",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "20%"
-      },
-      {
-        text: "觀察人員",
-        value: "dd",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "20%"
-      },
-      {
-        text: "觀察日期",
-        value: "ee",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        width: "20%"
-      },
-      {
-        text: "功能",
-        value: "shop",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      }
-    ]
   }),
   components: { Pagination }, // 頁碼
   computed: {
@@ -516,16 +493,37 @@ export default {
 
   methods: {
     initInput(){
+      console.log("23231")
       this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 3; step++) {
-        this.ipt.items[step].status = "0"
-      }
-      for (step = 0; step < 8; step++) {
-        this.ipt.items[step].memo = ""
-      }
-
+      this.CheckDay = this.nowTime;
+      this.ObserName = this.doMan.name;
+      this.CheckOption1 = false;
+      this.CheckOption2 = false;
+      this.CheckOption3 = false;
+      this.CheckOption4 = false;
+      this.CheckOption5 = false;
+      this.CheckOption6 = false;
+      this.CheckOption7 = false;
+      this.CheckOption8 = false;
+      this.CheckOption9 = ""
+      this.CheckOption10 = ""
+      this.CheckOption11 = ""
+      this.CheckOption12 = ""
+      this.CheckOption13 = ""
+      this.CheckOption14 = ""
+      this.CheckOption15 = ""
+      this.CheckOption16 = ""
+      this.ObserName =  ""
+      this.CheckMan = ""
+      this.ObserDep = ""
+      this.JobName =  ""
+      this.EmpName = ""
+      this.EmployeeYears = ""
+      this.JobDesp = ""
+      this.OccupUnit = ""
+      this.EmpDepartName = ""
+      this.EmpDepartCode = ""
+      this.EmpID = ""
     },
     unique(list){
       var arr = [];
@@ -548,9 +546,8 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
+      console.log("newOne")
+      this.dialogShowAdd = true
       this.initInput();
     },
     ...mapActions('system', [
@@ -600,7 +597,64 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      if(this.EmpDepartCode == ""){
+        this.dialogNull = true;
+        return;
+      }
+      
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      console.log("EmpDepartCode: " + this.EmpDepartCode)
+      this.EmpDepartName = formDepartOptions.find(ele => ele.value == this.EmpDepartCode).text
+      console.log("EmpDepartName: " + this.EmpDepartName)
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {"Column":"CheckDay","Value":this.nowTime},
+          {"Column":"CheckOption1","Value":(this.CheckOption1 == true)?"1":"0"},
+          {"Column":"CheckOption2","Value":(this.CheckOption2 == true)?"1":"0"},
+          {"Column":"CheckOption3","Value":(this.CheckOption3 == true)?"1":"0"},
+          {"Column":"CheckOption4","Value":(this.CheckOption4 == true)?"1":"0"},
+          {"Column":"CheckOption5","Value":(this.CheckOption5 == true)?"1":"0"},
+          {"Column":"CheckOption6","Value":(this.CheckOption6 == true)?"1":"0"},
+          {"Column":"CheckOption7","Value":(this.CheckOption7 == true)?"1":"0"},
+          {"Column":"CheckOption8","Value":(this.CheckOption8 == true)?"1":"0"},
+          {"Column":"CheckOption9","Value":this.CheckOption9},
+          {"Column":"CheckOption10","Value":this.CheckOption10},
+          {"Column":"CheckOption11","Value":this.CheckOption11},
+          {"Column":"CheckOption12","Value":this.CheckOption12},
+          {"Column":"CheckOption13","Value":this.CheckOption13},
+          {"Column":"CheckOption14","Value":this.CheckOption14},
+          {"Column":"CheckOption15","Value":this.CheckOption15},
+          {"Column":"CheckOption16","Value":this.CheckOption16},
+          {"Column":"ObserName","Value":this.ObserName},
+          {"Column":"CheckMan","Value":this.CheckMan},
+          {"Column":"JobName","Value":this.JobName},
+          {"Column":"EmpName","Value":this.EmpName},
+          {"Column":"EmployeeYears","Value":this.EmployeeYears},
+          {"Column":"JobDesp","Value":this.JobDesp},
+          {"Column":"EmpDepartCode","Value":this.EmpDepartCode},
+          {"Column":"EmpDepartName","Value":this.EmpDepartName},
+          {"Column":"ObserDep","Value":this.EmpDepartName},
+          {"Column":"ObserId","Value":this.userData.UserId},
+          {"Column":"OccupUnit","Value":this.OccupUnit},
+        ]
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.dialogShowAdd = false;
+    },
     // 關閉 dialog
     close() {
       this.dialogShowAdd = false;
@@ -628,6 +682,8 @@ export default {
           "CheckDay",
           "DepartName",
           "Name",
+          "EmpDepartCode",
+          "EmpDepartName",
           "CheckMan",
           "JobName",
           "EmpID",
@@ -660,29 +716,42 @@ export default {
         let dat = JSON.parse(res.data.DT)
         console.log("data name: " + dat[0].Name)
         console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
+        this.dialogShowAdd = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
         console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
+        this.CheckDay = time1
         //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 36){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }       
+        this.CheckOption1 = dat[0].CheckOption1 == "1"?true:false
+        this.CheckOption2 = dat[0].CheckOption2 == "1"?true:false
+        console.log("CheckOption2: " + this.CheckOption2)
+        this.CheckOption3 = dat[0].CheckOption3 == "1"?true:false
+        this.CheckOption4 = dat[0].CheckOption4 == "1"?true:false
+        this.CheckOption5 = dat[0].CheckOption5 == "1"?true:false
+        this.CheckOption6 = dat[0].CheckOption6 == "1"?true:false
+        this.CheckOption7 = dat[0].CheckOption7 == "1"?true:false
+        this.CheckOption8 = dat[0].CheckOption8 == "1"?true:false
+        this.CheckOption9 = dat[0].CheckOption9
+        this.CheckOption10 = dat[0].CheckOption10
+        this.CheckOption11 = dat[0].CheckOption11
+        this.CheckOption12 = dat[0].CheckOption12
+        this.CheckOption13 = dat[0].CheckOption13
+        this.CheckOption14 = dat[0].CheckOption14
+        this.CheckOption15 = dat[0].CheckOption15
+        this.CheckOption16 = dat[0].CheckOption16
+        this.ObserName = dat[0].ObserName
+        this.CheckMan = dat[0].CheckMan
+        this.JobName = dat[0].JobName
+        this.EmpName = dat[0].EmpName
+        this.EmployeeYears = dat[0].EmployeeYears
+        this.JobDesp = dat[0].JobDesp
+        this.EmpDepartCode = dat[0].EmpDepartCode
+        this.EmpDepartName = dat[0].EmpDepartName
+        this.ObserDep = dat[0].ObserDep
+        this.ObserId = dat[0].ObserId
+        this.OccupUnit = dat[0].OccupUnit
+
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
