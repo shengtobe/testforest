@@ -183,11 +183,11 @@
       </v-dialog>
       <!-- 新增料件 modal -->
       <v-dialog v-model="Add" max-width="900px">
-        <CmaterialEdit @close="close" :materCode="nowMaterial" :key="componentKey" @save="save"></CmaterialEdit>
+        <CmaterialEdit @close="close" :materCode="nowMaterial" DType="add" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <CmaterialEdit @close="close" :materCode="nowMaterial" :key="componentKey" @save="save"></CmaterialEdit>
+        <CmaterialEdit @close="close" :materCode="nowMaterial" DType="edit" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">

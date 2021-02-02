@@ -9,7 +9,7 @@
           lazy-validation>
           <v-col cols="12">
             <h3 class="mb-1">設備標示編號<span class="red--text">*</span></h3>
-            <v-text-field solo value v-model="detailItems.MaintainCode" @focus="showMaintainCode=true" :rules="[v => (!!v && /[^\s]/.test(v) && !(/---/.test(v))) || '項目請勿空白']"/> 
+            <v-text-field solo value v-model="detailItems.MaintainCodeName" @focus="openDialog" :rules="[v => (!!v && /[^\s]/.test(v) && !(/---/.test(v))) || '項目請勿空白']"/> 
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1">設備名稱<span class="red--text">*</span></h3>
@@ -83,7 +83,7 @@
                 
               </p>                  
             </v-col>
-            <equipRepairObject :toLv="toLv" :nowEqCode="detailItems.MaintainCode" @getEqCode="_getNewEqCode"></equipRepairObject>
+            <equipRepairObject :toLv="toLv" :nowEqCode="nowEqCode" @getEqCode="_getNewEqCode" @getEqName="_getNewEqName" :key="componentKey"></equipRepairObject>
             <v-card-actions class="px-5 pb-5">
               <v-spacer></v-spacer>
               <v-btn class="mr-2" elevation="4" @click="showMaintainCode=false">取消</v-btn>
@@ -116,7 +116,10 @@ export default {
     showMaintainCode: false,
     ifLv5: false,
     newEqCode: '',
+    newEqName: '',
     toLv: 4,
+    componentKey: 0,
+    nowEqCode: '',
   }),
   mounted: function() {
     //抓單位
@@ -160,9 +163,19 @@ export default {
     selectMainCode() {
       this.showMaintainCode=false
       this.detailItems.MaintainCode = this.newEqCode
+      this.detailItems.MaintainCodeName = this.newEqName
+      this.componentKey += 1
     },
     _getNewEqCode(newCode) {
       this.newEqCode = newCode
+    },
+    _getNewEqName(newName) {
+      this.newEqName = newName
+    },
+    openDialog() {
+      this.componentKey += 1
+      this.nowEqCode = this.detailItems.MaintainCode
+      this.showMaintainCode=true
     }
   },
   filters: {

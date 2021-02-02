@@ -16,17 +16,17 @@
               <v-col cols="12" md="2" align-self="center">
                 <h3 class="ml-md-6">系統</h3>
               </v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv1"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('1')"
                   label="請選擇"
                   v-model="selectItem.Lv1"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
+              <v-col cols="3" align-self="center">
                 <!-- <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv1 == ''" @click="goAdd('1')">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn> -->
@@ -42,10 +42,10 @@
               <v-col cols="12" md="2" align-self="center">
                 <h3 class="ml-md-6">位置</h3>
               </v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv2"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('2')"
                   label="請選擇"
@@ -53,8 +53,8 @@
                   :disabled="_selectDisabled.eqCodeListLv2"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv2 == ''" @click="goAdd('2')" :disabled="_selectDisabled.eqCodeListLv2">
+              <v-col cols="3" align-self="center">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv2 == ''" @click="goAdd('2')" :disabled="_addDisabled.eqCodeListLv2">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
                 <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv2" @click="goEdit('2')">
@@ -64,10 +64,10 @@
             </v-row>
             <v-row v-if="_show22">
               <v-col cols="0" md="2"></v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv22"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('22')"
                   label="請選擇"
@@ -75,8 +75,8 @@
                   :disabled="_selectDisabled.eqCodeListLv22"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv22 == ''" @click="goAdd('22')" :disabled="_selectDisabled.eqCodeListLv22">
+              <v-col cols="3" align-self="center">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv22 == ''" @click="goAdd('22')" :disabled="_addDisabled.eqCodeListLv22">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
                 <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv22" @click="goEdit('22')">
@@ -91,10 +91,10 @@
               <v-col cols="12" md="2" align-self="center">
                 <h3 class="ml-md-6">設備</h3>
               </v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv3"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('3')"
                   label="請選擇"
@@ -102,8 +102,8 @@
                   :disabled="_selectDisabled.eqCodeListLv3"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv3 == ''" @click="goAdd('3')" :disabled="_selectDisabled.eqCodeListLv3">
+              <v-col cols="3" align-self="center">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv3 == ''" @click="goAdd('3')" :disabled="_addDisabled.eqCodeListLv3">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
                 <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv3" @click="goEdit('3')">
@@ -113,10 +113,10 @@
             </v-row>
             <v-row v-if="_show32">
               <v-col cols="0" md="2"></v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv32"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('32')"
                   label="請選擇"
@@ -124,8 +124,8 @@
                   :disabled="_selectDisabled.eqCodeListLv32"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv32 == ''" @click="goAdd('32')" :disabled="_selectDisabled.eqCodeListLv32">
+              <v-col cols="3" align-self="center">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv32 == ''" @click="goAdd('32')" :disabled="_addDisabled.eqCodeListLv32">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
                 <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv32" @click="goEdit('32')">
@@ -140,10 +140,10 @@
               <v-col cols="12" md="2" align-self="center">
                 <h3 class="ml-md-6">序號</h3>
               </v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv4"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('4')"
                   label="請選擇"
@@ -151,8 +151,8 @@
                   :disabled="_selectDisabled.eqCodeListLv4"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv4 == ''" @click="goAdd('4')" :disabled="_selectDisabled.eqCodeListLv4">
+              <v-col cols="3" align-self="center">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv4 == ''" @click="goAdd('4')" :disabled="_addDisabled.eqCodeListLv4">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
                 <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv4" @click="goEdit('4')">
@@ -166,10 +166,10 @@
               <v-col cols="12" md="2" align-self="center">
                 <h3 class="ml-md-6">工作項</h3>
               </v-col>
-              <v-col cols="10" md="8">
+              <v-col cols="10" md="7">
                 <v-select solo hide-details
                   :items="eqCodes.eqCodeListLv5"
-                  item-text="EquipName"
+                  item-text="FullShowName"
                   item-value="EquipCode"
                   @change="whenChange('5')"
                   label="請選擇"
@@ -177,13 +177,18 @@
                   :disabled="_selectDisabled.eqCodeListLv5"
                 ></v-select>
               </v-col>
-              <v-col cols="2" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv5 == ''" @click="goAdd('5')" :disabled="_selectDisabled.eqCodeListLv5">
+              <v-col cols="3" align-self="center">
+                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv5 == ''" @click="goAdd('5')" :disabled="_addDisabled.eqCodeListLv5">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv5" @click="goEdit('5')">
-                  <v-icon class="mr-1">mdi-pencil</v-icon>編輯
-                </v-btn>
+                <div v-else>
+                  <v-btn color="indigo" dark large class="ml-2"  :disabled="_editDisabled.Lv5" @click="goEdit('5')">
+                    <v-icon class="mr-1">mdi-pencil</v-icon>編輯
+                  </v-btn>
+                  <v-btn color="red" dark large class="ml-2" :disabled="_editDisabled.Lv5" @click="goDel('5')">
+                    <v-icon class="mr-1">mdi-delete-empty</v-icon>刪除
+                  </v-btn>
+                </div>
               </v-col>
             </v-row>
           </v-col>
@@ -193,6 +198,16 @@
     <v-dialog v-model="Edit">
       <EquipCodeEdit :detailCode="detailCode" :inputType="inType" :parentList="editParent" :inLevel="editLevel" @close="close" :key="componentKey"></EquipCodeEdit>  
     </v-dialog>
+    <v-dialog v-model="Del" persistent max-width="290">
+      <v-card>
+          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="close">取消</v-btn>
+            <v-btn color="success" @click="goDelete">刪除</v-btn>
+          </v-card-actions>
+        </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -200,6 +215,7 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime,escapeHtml,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { fetchEqCode,fetchEqList } from '@/apis/materialManage/equipCode'
+import { equipCodeRemove } from '@/apis/materialManage/largeMaterial'
 import EquipCodeEdit from '@/views/mmis/EquipCodeEdit'
 export default {
   //內部變數
@@ -231,6 +247,7 @@ export default {
       newWorkCode: '',   //工作項目
       dialogopen: false,
       Edit: false,
+      Del: false,
       detailCode: {},
       editParent: [],
       editLevel: '',
@@ -260,12 +277,23 @@ export default {
       _selectDisabled: function() {
         let rtnObj = {}
         const that = this
+        rtnObj.eqCodeListLv2 = (that.eqCodes.eqCodeListLv2.length > 0 && that.selectItem.Lv1!='')?false:true
+        rtnObj.eqCodeListLv22 = (!rtnObj.eqCodeListLv2 && that.eqCodes.eqCodeListLv22.length > 0 && that.selectItem.Lv2!='')?false:true
+        rtnObj.eqCodeListLv3 = (that.eqCodes.eqCodeListLv3.length > 0 && (that._show22?(that.selectItem.Lv22!=''&&!rtnObj.eqCodeListLv22):(that.selectItem.Lv2!=''&&!rtnObj.eqCodeListLv2)))?false:true
+        rtnObj.eqCodeListLv32 = (!rtnObj.eqCodeListLv3 && that.eqCodes.eqCodeListLv32.length > 0 && that.selectItem.Lv3!='')?false:true
+        rtnObj.eqCodeListLv4 = (that.eqCodes.eqCodeListLv4.length > 0 && (that._show32?(that.selectItem.Lv32!='' && !rtnObj.eqCodeListLv32):(that.selectItem.Lv3!='' && !rtnObj.eqCodeListLv3)))?false:true
+        rtnObj.eqCodeListLv5 = (!rtnObj.eqCodeListLv4 && that.eqCodes.eqCodeListLv5.length > 0 && that.selectItem.Lv4!='')?false:true
+        return rtnObj
+      },
+      _addDisabled: function() {
+         let rtnObj = {}
+        const that = this
         rtnObj.eqCodeListLv2 = (that.eqCodes.eqCodeListLv1.length > 0 && that.selectItem.Lv1!='')?false:true
         rtnObj.eqCodeListLv22 = (!rtnObj.eqCodeListLv2 && that.eqCodes.eqCodeListLv2.length > 0 && that.selectItem.Lv2!='')?false:true
         rtnObj.eqCodeListLv3 = (that.eqCodes.eqCodeListLv2.length > 0 && (that._show22?(that.selectItem.Lv22!=''&&!rtnObj.eqCodeListLv22):(that.selectItem.Lv2!=''&&!rtnObj.eqCodeListLv2)))?false:true
         rtnObj.eqCodeListLv32 = (!rtnObj.eqCodeListLv3 && that.eqCodes.eqCodeListLv3.length > 0 && that.selectItem.Lv3!='')?false:true
-        rtnObj.eqCodeListLv4 = (that.eqCodes.eqCodeListLv4.length > 0 && (that._show32?(that.selectItem.Lv32!='' && !rtnObj.eqCodeListLv32):(that.selectItem.Lv3!='' && !rtnObj.eqCodeListLv3)))?false:true
-        rtnObj.eqCodeListLv5 = (!rtnObj.eqCodeListLv4 && that.eqCodes.eqCodeListLv5.length > 0 && that.selectItem.Lv4!='')?false:true
+        rtnObj.eqCodeListLv4 = (that.eqCodes.eqCodeListLv3.length > 0 && (that._show32?(that.selectItem.Lv32!='' && !rtnObj.eqCodeListLv32):(that.selectItem.Lv3!='' && !rtnObj.eqCodeListLv3)))?false:true
+        rtnObj.eqCodeListLv5 = (!rtnObj.eqCodeListLv4 && that.eqCodes.eqCodeListLv4.length > 0 && that.selectItem.Lv4!='')?false:true
         return rtnObj
       },
       _editDisabled: function() {
@@ -316,8 +344,14 @@ export default {
             if(res.data.code_list.length > 0){
               // that.eqCodes[toObject].push({EquipCode:'',EquipName:'請選擇'})
               that.eqCodes[toObject].push(...res.data.code_list)
+              that.eqCodes[toObject].forEach(ele => {
+                let NeqCode = ''
+                // NeqCode = (ele.EquipCode.indexOf('-')!=-1)?(ele.EquipCode.split('-')[1]):ele.EquipCode
+                NeqCode = ele.EquipCode
+                ele.FullShowName = ele.EquipName + '(' + NeqCode +')'
+              })
               that.eqCodes[toObject] = decodeObject(that.eqCodes[toObject])
-              that.eqCodes[toObject] = [{EquipCode:'',EquipName:'請選擇'},...res.data.code_list]
+              that.eqCodes[toObject] = [{EquipCode:'',EquipName:'請選擇',FullShowName:'請選擇'},...res.data.code_list]
             }
           }else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -495,7 +529,11 @@ export default {
           LdeptCode = this.nowParent
         }
         if(level == '5'){
-          LparentCode = this.eqCodes['eqCodeListLv'+level][1].ParentCode
+          if(this.eqCodes.eqCodeListLv5.length > 0) {
+            LparentCode = this.eqCodes['eqCodeListLv'+level][1].ParentCode
+          }else{
+            LparentCode = this.selectItem.Lv1 + '-' + ((this.selectItem.Lv3.indexOf('-')==-1)?((this._show22?this.selectItem.Lv22:this.selectItem.Lv2) + '-' + this.selectItem.Lv3):this.selectItem.Lv3 )+ (this._show32?'/'+this.selectItem.Lv32:'')  + '-' + this.selectItem.Lv4
+          }
         }else{
           LparentCode = ''
         }
@@ -511,6 +549,27 @@ export default {
         this.editLevel = level
         this.inType = 'add'
         this.Edit = true
+      },
+      goDel(level) {
+        this.componentKey += 1
+        this.editParent = []
+        let LdeptCode,LparentCode,LequipCode
+        //抓現在的代碼(不抓名稱是因為有機會會被改，雖然機會很低)
+        //單位碼抓法不同
+        if(level == '1'){
+          LdeptCode = 'SYS'
+        }else{
+          LdeptCode = this.nowParent
+        }
+        LequipCode = this.selectItem['Lv'+level]
+        LparentCode = this.eqCodes['eqCodeListLv'+level].find(ele => ele.EquipCode == LequipCode).ParentCode
+        this.detailCode = {
+          DeptCode: LdeptCode,
+          ParentCode: LparentCode,
+          EquipCode: LequipCode,
+          EquipLevel: level.substring(0,1)
+        }
+        this.Del = true
       },
       _getParents(level) {
         switch(level) {
@@ -565,7 +624,43 @@ export default {
           await this.whenChange(level)
         }
         this.Edit = false
-      }
+        this.Del = false
+      },
+      goDelete() {
+        const that = this
+        let parmObj = {
+            DeptCode: that.detailCode.DeptCode,
+            EquipCode: that.detailCode.EquipCode,
+            EquipLevel: that.detailCode.EquipLevel,
+            ParentCode: that.detailCode.ParentCode,
+            ClientReqTime: getNowFullTime(),
+            OperatorID: that.userData.UserId,  // 操作人id
+          }
+        parmObj = encodeObject(parmObj)
+        equipCodeRemove(parmObj).then(res => {
+          if (res.data.ErrorCode == 0) {
+            that.chMsgbar({ success: true, msg: '刪除成功' })
+          } else {
+            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+            that.$router.push({ path: '/error' })
+          }
+        }).catch( err => {
+          that.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+          console.warn(err)
+        }).finally(() => {
+          that.DelClose('5')
+        })
+      },
+      async DelClose(level) {
+        if(level != '1'){
+          this.eqCodes['eqCodeListLv'+level] = []
+          await this._goChange(level)
+        }else{
+          await this._getEqList('SYS','SYS_%','1','1')
+        }
+        this.selectItem['Lv'+level] = ''
+        this.Del = false
+      },
     },
     //過濾
     filters: {

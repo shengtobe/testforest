@@ -66,3 +66,13 @@ export function equipCodeInsert(data) {
         }
     )
 }
+//設備標示分碼刪除
+export function equipCodeRemove(data) {
+    return axios(
+        {
+            url: '/mmis/equipdata/equipcoderemove',
+            method: 'post',
+            data
+        }
+    )
+}
