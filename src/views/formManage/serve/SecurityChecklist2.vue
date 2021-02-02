@@ -650,7 +650,7 @@ export default {
             "Chk1": 
                 [
                   {
-                    "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                    "CheckDay":this.zs, "SwitchLoc":"1", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
                     "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
                   },
                   {

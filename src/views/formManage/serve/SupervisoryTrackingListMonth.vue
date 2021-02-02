@@ -49,7 +49,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -413,7 +413,59 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)
+
+      let i;
+      for (i = 0; i < 7; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status == true?"1":"2"
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "CheckAdvice" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "CheckDescription" + (i+1)
+        obj.Value = this.ipt.items[i].note2
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "CheckMemo" + (i+1)
+        obj.Value = this.ipt.items[i].note3
+        arr = arr.concat(obj)
+      }
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -439,39 +491,46 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "Place",
-          "CheckMan",
-          "CheckOption1",
-          "CheckAdvice1",
-          "CheckDescription1",
-          "CheckMemo1",
-          "CheckOption2",
-          "CheckAdvice2",
-          "CheckDescription2",
-          "CheckMemo2",
-          "CheckOption3",
-          "CheckAdvice3",
-          "CheckDescription3",
-          "CheckMemo3",
-          "CheckOption4",
-          "CheckAdvice4",
-          "CheckDescription4",
-          "CheckMemo4",
-          "CheckOption5",
-          "CheckAdvice5",
-          "CheckDescription5",
-          "CheckMemo5",
-          "CheckOption6",
-          "CheckAdvice6",
-          "CheckDescription6",
-          "CheckMemo6",
-          "CheckOption7",
-          "CheckAdvice7",
-          "CheckDescription7",
-          "CheckMemo7",
+          "CheckDay",//0
+          "DepartName",//1
+          "Name",//2
+          "Place",//3
+          "CheckMan",//4
+          "CheckOption1",//5
+          "CheckAdvice1",//6
+          "CheckDescription1",//7
+          "CheckMemo1",//8
+          "CheckOption2",//9
+          "CheckAdvice2",//10
+          "CheckDescription2",//11
+          "CheckMemo2",//12
+          "CheckOption3",//13
+          "CheckAdvice3",//14
+          "CheckDescription3",//15
+          "CheckMemo3",//16
+          "CheckOption4",//17
+          "CheckAdvice4",//18
+          "CheckDescription4",//19
+          "CheckMemo4",//20
+          "CheckOption5",//21
+          "CheckAdvice5",//22
+          "CheckDescription5",//23
+          "CheckMemo5",//24
+          "CheckOption6",//25
+          "CheckAdvice6",//26
+          "CheckDescription6",//27
+          "CheckMemo6",//28
+          "CheckOption7",//29
+          "CheckAdvice7",//30
+          "CheckDescription7",//31
+          "CheckMemo7",//32
+          "Memo_15",//33
+          "CheckOption16",//34
+          "Memo_16",//35
+          "CheckOption17",//36
+          "Memo_17",//37
+          "Advice",//38
+          "Measures",//39
         ],
       }).then(res => {
         this.initInput();
@@ -490,23 +549,23 @@ export default {
         let ad = Object.keys(dat[0])
         console.log(ad)
         var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 32){
-              if(i % 3 == 1){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else if (i % 3 == 2){
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-              else
-              {
-
-                
-              }
+        for(let key of Object.keys(dat[0])){
+          if(i > 3 && i < 32){
+            if(i % 3 == 1){
+                this.ipt.items[j].status = (dat[0])[key]
             }
-            i++
+            else if (i % 3 == 2){
+              this.ipt.items[j].note = (dat[0])[key]
+              j++
+            }
+            else
+            {
+
+              
+            }
           }
+          i++
+        }
         
       }).catch(err => {
         console.log(err)

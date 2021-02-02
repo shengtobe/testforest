@@ -450,7 +450,7 @@ export default {
 
       obj = new Object()
       obj.Column = "CheckDay"
-      obj.Value = this.nowTime
+      obj.Value = this.zs
       arr = arr.concat(obj)               
 
       let i;
