@@ -126,3 +126,29 @@ export function getTodayDateString() {
     }
     return today.getFullYear() + "-" + mStr + "-" + dStr;
 }
+
+export function unique(list) {
+    var arr = [];
+    let b = false;
+    let id = 0;
+    for (var i = 0; i < list.length; i++) {
+        if (i == 0) {
+            list[i].PageNo = ++id;
+            arr.push(list[i]);
+        }
+        b = false;
+        if (arr.length > 0 && i > 0) {
+            for (var j = 0; j < arr.length; j++) {
+                if (arr[j].RPFlowNo == list[i].RPFlowNo) {
+                    b = true;
+                    //break;
+                }
+            }
+            if (!b) {
+                list[i].PageNo = ++id;
+                arr.push(list[i]);
+            }
+        }
+    }
+    return arr;
+}
