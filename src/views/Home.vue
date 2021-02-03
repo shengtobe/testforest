@@ -1,5 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
+    <p class="px-2">系統版本： {{ userData.Version }}</p>
+
     <v-row class="px-2 mb-8 mt-2">
         <!-- 個人訊息 -->
         <h3 class="px-3">個人訊息</h3>

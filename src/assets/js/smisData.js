@@ -37,6 +37,15 @@ export const jobDisasterSurveyStatus = [
     { text: '改善措施已落實', value: '5' },
 ]
 
+// 危害通報狀態
+export const harmNotifyStatus = [
+    { text: '不限', value: '' },
+    { text: '未回覆', value: '1' },
+    { text: '已回覆尚未立案', value: '2' },
+    { text: '已立案', value: '3' },
+    { text: '審核中', value: '4' },
+]
+
 // 事故主類
 // export const MainEvt = [
 //     { text: '重大事故', value: 'major' },
