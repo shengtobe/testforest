@@ -4853,6 +4853,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 // import form51lib from "@/components/Form51Lib.vue";
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
@@ -4861,6 +4862,11 @@ export default {
       isLoading: false,
       disabled: false,
       valShow: 0,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       title: "",
       newText: "平交道功能檢查紀錄表",
       // 自定義變數

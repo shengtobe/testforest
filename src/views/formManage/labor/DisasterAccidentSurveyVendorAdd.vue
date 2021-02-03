@@ -276,6 +276,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
@@ -291,6 +292,11 @@ export default {
       QueryCheckdayOff: "",
       AddWorkLogModal: false,
       MaintenanceDay: "",
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       apm: ["部門1", "部門2", "部門3", "部門4"],
       gender: ["男", "女", "其他"],
       week: ["日", "一", "二", "三", "四", "五", "六"],

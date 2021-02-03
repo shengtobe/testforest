@@ -279,6 +279,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data: () => ({
@@ -292,6 +293,11 @@ export default {
       case: "",
       eqLoss: ""
     },
+    formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
     dateMemuShow: {
       // 日曆是否顯示
       start: false,

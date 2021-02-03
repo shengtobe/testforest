@@ -403,6 +403,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       note: "109年05月21日發生西南氣流豪雨，5/22日累積雨量達200mm以上，建立預警機制5/22日阿里山線暫時停駛。",
       temp1: "../../../assets/images/brgImg1_1.jpg",
       sbjNum: [],

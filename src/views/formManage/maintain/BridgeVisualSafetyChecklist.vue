@@ -132,6 +132,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       n01: "0",
       CheckdayOn: "",
       QueryCheckdayOn: "",
