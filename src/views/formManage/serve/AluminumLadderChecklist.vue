@@ -245,6 +245,11 @@ export default {
       title: "鋁梯定期檢查表(半年)",
       newText: "檢查表",
       isLoading: false,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       disabled: false,
       panel: [0, 1, 2, 3],
       readonly: false,

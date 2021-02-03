@@ -264,6 +264,11 @@ export default {
         depart: '',
         checkManName: ''
       },
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',

@@ -44,7 +44,7 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          :items="formDepartOptions" v-model="ipt.department"
           solo
         />
       </v-col>
@@ -255,6 +255,11 @@ export default {
       Add: false,
       dialog3: false,
       place:"",
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP015",
@@ -274,10 +279,10 @@ export default {
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "督檢日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "督檢單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
@@ -382,9 +387,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.z},
+          {"Column":"EndDayVlaue","Value":this.df},
+          {"Column":"DepartCode","Value":this.ipt.department},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -396,6 +401,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "DepartName",
           "CheckDay",
           "CheckStatus",
           "FlowId"
@@ -422,7 +428,12 @@ export default {
 
       obj = new Object()
       obj.Column = "CheckDay"
-      obj.Value = this.nowTime
+      obj.Value = this.zs
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Place"
+      obj.Value = this.place
       arr = arr.concat(obj)
 
       let i;
@@ -495,42 +506,34 @@ export default {
           "DepartName",//1
           "Name",//2
           "Place",//3
-          "CheckMan",//4
-          "CheckOption1",//5
-          "CheckAdvice1",//6
-          "CheckDescription1",//7
-          "CheckMemo1",//8
-          "CheckOption2",//9
-          "CheckAdvice2",//10
-          "CheckDescription2",//11
-          "CheckMemo2",//12
-          "CheckOption3",//13
-          "CheckAdvice3",//14
-          "CheckDescription3",//15
-          "CheckMemo3",//16
-          "CheckOption4",//17
-          "CheckAdvice4",//18
-          "CheckDescription4",//19
-          "CheckMemo4",//20
-          "CheckOption5",//21
-          "CheckAdvice5",//22
-          "CheckDescription5",//23
-          "CheckMemo5",//24
-          "CheckOption6",//25
-          "CheckAdvice6",//26
-          "CheckDescription6",//27
-          "CheckMemo6",//28
-          "CheckOption7",//29
-          "CheckAdvice7",//30
-          "CheckDescription7",//31
-          "CheckMemo7",//32
-          "Memo_15",//33
-          "CheckOption16",//34
-          "Memo_16",//35
-          "CheckOption17",//36
-          "Memo_17",//37
-          "Advice",//38
-          "Measures",//39
+          "CheckOption1",//4
+          "CheckAdvice1",//5
+          "CheckDescription1",//6
+          "CheckMemo1",//7
+          "CheckOption2",//8
+          "CheckAdvice2",//9
+          "CheckDescription2",//10
+          "CheckMemo2",//11
+          "CheckOption3",//12
+          "CheckAdvice3",//13
+          "CheckDescription3",//14
+          "CheckMemo3",//15
+          "CheckOption4",//16
+          "CheckAdvice4",//17
+          "CheckDescription4",//18
+          "CheckMemo4",//19
+          "CheckOption5",//20
+          "CheckAdvice5",//21
+          "CheckDescription5",//22
+          "CheckMemo5",//23
+          "CheckOption6",//24
+          "CheckAdvice6",//25
+          "CheckDescription6",//26
+          "CheckMemo6",//27
+          "CheckOption7",//28
+          "CheckAdvice7",//29
+          "CheckDescription7",//30
+          "CheckMemo7",//31
         ],
       }).then(res => {
         this.initInput();
@@ -546,22 +549,26 @@ export default {
         this.zs = time1
         console.log("doMan name: " + this.doMan.name)
         //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
+        this.place = dat[0].Place
         var i = 0, j = 0;
         for(let key of Object.keys(dat[0])){
-          if(i > 3 && i < 32){
-            if(i % 3 == 1){
-                this.ipt.items[j].status = (dat[0])[key]
+          if(i >= 4 && i <= 31){
+            if(i % 4 == 0){
+              this.ipt.items[j].status = (dat[0])[key] == "1"?true:false
+              console.log("ipt.items[" + j + "].status: " + this.ipt.items[j].status + " >> key:" + key)
             }
-            else if (i % 3 == 2){
+            else if (i % 4 == 1){
               this.ipt.items[j].note = (dat[0])[key]
-              j++
+              console.log("ipt.items[" + j + "].note: " + this.ipt.items[j].note + " >> key:" + key)
             }
-            else
-            {
-
-              
+            else if (i % 4 == 2){
+              this.ipt.items[j].note2 = (dat[0])[key]
+              console.log("ipt.items[" + j + "].note2: " + this.ipt.items[j].note2 + " >> key:" + key)
+            }
+            else{
+              this.ipt.items[j].note3 = (dat[0])[key]
+              console.log("ipt.items[" + j + "].note3: " + this.ipt.items[j].note3 + " >> key:" + key)
+              j++
             }
           }
           i++

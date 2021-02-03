@@ -394,6 +394,11 @@ export default {
       pp: "",
       oo: "",
       ii: "",
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       uu: "",
       yy: "",
       Add: false,

@@ -425,6 +425,11 @@ export default {
         DayStart: "",
         DayEnd: "",
       },
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       WorkDayStart: "",
       WorkDayEnd: "",
       WorkCheckTime: "",

@@ -57,6 +57,15 @@
           ></v-date-picker>
         </v-menu>
       </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>通報單位
+        </h3>
+        <v-select
+          :items="formDepartOptions" v-model="ipt.department"
+          solo
+        />
+      </v-col>
       <div class="col-sm-4 col-md-8 col-12">
         <v-btn
           color="green"
@@ -318,6 +327,11 @@ export default {
     CheckOption2: "",
     CheckOption3: "",
     CheckOption4: "",
+    formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
     Add: false,
     yy: false,
     dialog3: false,
@@ -410,6 +424,7 @@ export default {
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
       case: "",
       eqLoss: "",
+      department: ''
     },
     dateMenuShow: {
       // 日曆是否顯示
@@ -500,6 +515,7 @@ export default {
         KeyItem: [
           { Column: "StartDayVlaue", Value: this.ipt.dateStart },
           { Column: "EndDayVlaue", Value: this.ipt.dateEnd },
+          { Column: "DepartCode", Value: this.ipt.department },
         ],
         QyName: [
           // "DISTINCT (RPFlowNo)",
