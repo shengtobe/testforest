@@ -8,3 +8,12 @@ export function fetchList(data) { return axios(
         data,
     }
 )}
+
+// 新增
+export function createNotify(data) { return axios(
+    {
+        url: '/sms/dangernotify/create',
+        method: 'post',
+        data,
+    }
+)}

@@ -92,24 +92,38 @@ export default {
                     })
 
                     if (file == undefined) {
+                        let reader = new FileReader()  // blob 用
+                        let reader2 = new FileReader()  // 產生縮圖用
+
+                        // --------- 上傳後端的 blob 資料處理 -------------
+                        // 設定 reader 物件的 result 屬性，為 ArrayBuffer
+                        reader.readAsArrayBuffer(ele)
+
+                        // 設定讀取完時的動作
+                        reader.onload = () => {
+                            // 抓出副檔名
+                            let nameArr = ele.name.split('.')  // 用小數點拆成陣列
+                            let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                            
+                            this.$emit('joinFile', { FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }, true)
+                        }
+                        
+                        // --------- 縮圖資料處理 -------------
                         if (['image/png', 'image/jpeg', 'image/gif'].includes(ele.type)) {
                             // ------ 若是圖片------ 
-                            let reader = new FileReader()
-
-                            // 設定 reader 物件的 result 屬性，為圖片 base64 資料
-                            reader.readAsDataURL(ele)
+                            // 設定 reader 物件的 result 屬性，為圖片 base64 資料 (用於圖片縮圖)
+                            reader2.readAsDataURL(ele)
 
                             // 設定讀取完圖片時的動作
-                            reader.onload = () => {
-                                ele.src = reader.result
-                                this.$emit('joinFile', ele)  // 若已加入列表中沒找到檔案則加入
+                            reader2.onload = () => {
+                                ele.src = reader2.result
+                                this.$emit('joinFile', { name: ele.name, src: ele.src }, false)  // 將檔案資料傳送至父組件
                             }
                         } else {
                             // ------ 其他類型檔案 ------ 
                             ele.src = '/images/file.jpg'
-                            this.$emit('joinFile', ele)  // 若已加入列表中沒找到檔案則加入
+                            this.$emit('joinFile', { name: ele.name, src: ele.src }, false)  // 將檔案資料傳送至父組件
                         }
-                        
                     }
                 })
                 this.choseFiles = null

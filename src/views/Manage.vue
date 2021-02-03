@@ -326,7 +326,6 @@ export default {
     created() {
         // ------------ 已寫好的登入功能，先備註掉 -------------
         this.checkLocalStorage()
-        console.log(this.userData)
     },
 }
 </script>
