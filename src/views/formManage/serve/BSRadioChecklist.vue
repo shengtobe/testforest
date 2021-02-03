@@ -15,9 +15,19 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
+            <v-text-field
+              v-model.trim="z"
+              solo
+              v-on="on"
+              readonly
+            ></v-text-field>
           </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
+          <v-date-picker
+            color="purple"
+            v-model="z"
+            @input="a = false"
+            locale="zh-tw"
+          ></v-date-picker>
         </v-menu>
       </v-col>
       <v-col cols="12" sm="3" md="3">
@@ -32,9 +42,19 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
+            <v-text-field
+              v-model.trim="df"
+              solo
+              v-on="on"
+              readonly
+            ></v-text-field>
           </template>
-          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
+          <v-date-picker
+            color="purple"
+            v-model="df"
+            @input="q = false"
+            locale="zh-tw"
+          ></v-date-picker>
         </v-menu>
       </v-col>
       <v-col cols="12" sm="3" md="3">
@@ -42,7 +62,13 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          :items="[
+            { text: '資訊科', value: 'A' },
+            { text: '資訊科2', value: 'B' },
+            { text: '資訊科3', value: 'C' },
+            { text: '資訊科4', value: 'D' },
+            { text: 'A0005', value: 'E' },
+          ]"
           solo
         />
       </v-col>
@@ -52,9 +78,7 @@
         </v-btn>
       </v-col>
 
-      
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-       
         <v-btn
           color="indigo"
           elevation="3"
@@ -122,20 +146,23 @@
         <div class="px-6 py-4">
           <v-row>
             <v-col cols="12">
-              <p>請於每月10日前完成車裝台、固定台檢查，每部設備使用1張檢查表。</p>
+              <p>
+                請於每月10日前完成車裝台、固定台檢查，每部設備使用1張檢查表。
+              </p>
             </v-col>
-            
+
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="6">
                   <h3 class="mb-1">設備</h3>
-                  <v-radio-group
-                    dense
-                    row
-                    class="pa-0 ma-0">
+                  <v-radio-group dense row class="pa-0 ma-0">
                     <v-radio color="blue" label="車裝台" value="1"></v-radio>
-                    <v-radio color="blue" label="基地台無線電機" value="2"></v-radio>
+                    <v-radio
+                      color="blue"
+                      label="基地台無線電機"
+                      value="2"
+                    ></v-radio>
                   </v-radio-group>
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -152,40 +179,54 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
+                      <v-text-field
+                        v-model.trim="zs"
+                        solo
+                        v-on="on"
+                        readonly
+                      ></v-text-field>
                     </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
+                    <v-date-picker
+                      color="purple"
+                      v-model="zs"
+                      @input="ass = false"
+                      locale="zh-tw"
+                    ></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">使用單位</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">機關(守)車</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">單位主管</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value />
                 </v-col>
               </v-row>
               <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">無線電機(含電源供應器)</v-expansion-panel-header>
+                  <v-expansion-panel-header color="teal" class="white--text"
+                    >無線電機(含電源供應器)</v-expansion-panel-header
+                  >
                   <v-expansion-panel-content>
-                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    <v-row
+                      no-gutter
+                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
                       </v-col>
                       <v-col cols="12" sm="5">
                         <h3 class="mb-1">檢查結果</h3>
                       </v-col>
-                     
                     </v-row>
                     <v-alert
                       dense
@@ -195,7 +236,8 @@
                       elevation="4"
                       v-for="(item, idx) in items1"
                       :key="idx"
-                      class="mb-6 mt-4">
+                      class="mb-6 mt-4"
+                    >
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.question }}</v-col>
                         <v-col cols="12" sm="5">
@@ -203,11 +245,19 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items1[idx].status"
+                            v-model="items1[idx].status"
                             class="pa-0 ma-0"
                           >
-                            <v-radio color="success" label="正常" value="1"></v-radio>
-                            <v-radio color="red" label="不正常" value="2"></v-radio>
+                            <v-radio
+                              color="success"
+                              label="正常"
+                              value="1"
+                            ></v-radio>
+                            <v-radio
+                              color="red"
+                              label="不正常"
+                              value="2"
+                            ></v-radio>
                           </v-radio-group>
                         </v-col>
                       </v-row>
@@ -215,16 +265,20 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">天線組件</v-expansion-panel-header>
+                  <v-expansion-panel-header color="teal" class="white--text"
+                    >天線組件</v-expansion-panel-header
+                  >
                   <v-expansion-panel-content>
-                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    <v-row
+                      no-gutter
+                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
                       </v-col>
                       <v-col cols="12" sm="5">
                         <h3 class="mb-1">檢查結果</h3>
                       </v-col>
-                     
                     </v-row>
                     <v-alert
                       dense
@@ -234,7 +288,8 @@
                       elevation="4"
                       v-for="(item, idx) in items2"
                       :key="idx"
-                      class="mb-6 mt-4">
+                      class="mb-6 mt-4"
+                    >
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.question }}</v-col>
                         <v-col cols="12" sm="5">
@@ -242,11 +297,19 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items2[idx].status"
+                            v-model="ipt.items_2[idx].status"
                             class="pa-0 ma-0"
                           >
-                            <v-radio color="success" label="正常" value="1"></v-radio>
-                            <v-radio color="red" label="不正常" value="2"></v-radio>
+                            <v-radio
+                              color="success"
+                              label="正常"
+                              value="1"
+                            ></v-radio>
+                            <v-radio
+                              color="red"
+                              label="不正常"
+                              value="2"
+                            ></v-radio>
                           </v-radio-group>
                         </v-col>
                       </v-row>
@@ -254,16 +317,20 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">電瓶、保險絲及電源線(車裝台免填)</v-expansion-panel-header>
+                  <v-expansion-panel-header color="teal" class="white--text"
+                    >電瓶、保險絲及電源線(車裝台免填)</v-expansion-panel-header
+                  >
                   <v-expansion-panel-content>
-                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    <v-row
+                      no-gutter
+                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
                       </v-col>
                       <v-col cols="12" sm="5">
                         <h3 class="mb-1">檢查結果</h3>
                       </v-col>
-                     
                     </v-row>
                     <v-alert
                       dense
@@ -273,7 +340,8 @@
                       elevation="4"
                       v-for="(item, idx) in items3"
                       :key="idx"
-                      class="mb-6 mt-4">
+                      class="mb-6 mt-4"
+                    >
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.question }}</v-col>
                         <v-col cols="12" sm="5">
@@ -281,11 +349,19 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items3[idx].status"
+                            v-model="ipt.items_3[idx].status"
                             class="pa-0 ma-0"
                           >
-                            <v-radio color="success" label="正常" value="1"></v-radio>
-                            <v-radio color="red" label="不正常" value="2"></v-radio>
+                            <v-radio
+                              color="success"
+                              label="正常"
+                              value="1"
+                            ></v-radio>
+                            <v-radio
+                              color="red"
+                              label="不正常"
+                              value="2"
+                            ></v-radio>
                           </v-radio-group>
                         </v-col>
                       </v-row>
@@ -293,16 +369,20 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">數位錄音設備（無者免填）</v-expansion-panel-header>
+                  <v-expansion-panel-header color="teal" class="white--text"
+                    >數位錄音設備（無者免填）</v-expansion-panel-header
+                  >
                   <v-expansion-panel-content>
-                    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    <v-row
+                      no-gutter
+                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
                       </v-col>
                       <v-col cols="12" sm="5">
                         <h3 class="mb-1">檢查結果</h3>
                       </v-col>
-                     
                     </v-row>
                     <v-alert
                       dense
@@ -312,7 +392,8 @@
                       elevation="4"
                       v-for="(item, idx) in items4"
                       :key="idx"
-                      class="mb-6 mt-4">
+                      class="mb-6 mt-4"
+                    >
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.question }}</v-col>
                         <v-col cols="12" sm="5">
@@ -320,11 +401,19 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items4[idx].status"
+                            v-model="ipt.items_4[idx].status"
                             class="pa-0 ma-0"
                           >
-                            <v-radio color="success" label="正常" value="1"></v-radio>
-                            <v-radio color="red" label="不正常" value="2"></v-radio>
+                            <v-radio
+                              color="success"
+                              label="正常"
+                              value="1"
+                            ></v-radio>
+                            <v-radio
+                              color="red"
+                              label="不正常"
+                              value="2"
+                            ></v-radio>
                           </v-radio-group>
                         </v-col>
                       </v-row>
@@ -336,7 +425,13 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">不正常狀態及處理說明</h3>
-              <v-textarea hide-details auto-grow outlined rows="4" v-model="ipt.suggest"/>
+              <v-textarea
+                hide-details
+                auto-grow
+                outlined
+                rows="4"
+                v-model="ipt.suggest"
+              />
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -345,7 +440,13 @@
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn
+            color="success"
+            elevation="4"
+            :loading="isLoading"
+            @click="save"
+            >送出</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -354,11 +455,16 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import { getNowFullTime } from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import {
+  fetchFormOrderList,
+  fetchFormOrderOne,
+  createFormOrder,
+  createFormOrder0,
+} from "@/apis/formManage/serve";
+import { formDepartOptions } from "@/assets/js/departOption";
 
 export default {
   data() {
@@ -369,36 +475,68 @@ export default {
       disabled: false,
       MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
       Add: false,
-      formDepartOptions: [
-        // 通報單位下拉選單
-        { text: "", value: "" },
-        ...formDepartOptions,
-      ],
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP018",
       nowTime: "",
-      doMan:{
-        id: '',
-        name: '',
-        depart: '',
-        checkManName: ''
+      doMan: {
+        id: "",
+        name: "",
+        depart: "",
+        checkManName: "",
       },
       ipt2: {},
-      defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
+      defaultIpt: {
+        // 預設的欄位值
+        startDay: "",
+        EndDay: "",
+        depart: "", // 單位
+      },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        {
+          text: "項次",
+          value: "FlowId",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養日期",
+          value: "CheckDay",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "審查狀態",
+          value: "CheckStatus",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "填寫人",
+          value: "Name",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養單位",
+          value: "DepartCode",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "功能",
+          value: "content",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
       ],
       tableItems: [],
       //------
@@ -406,7 +544,7 @@ export default {
         // department: "",
         // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
-        items: [
+        items_1: [
           { status: "0", note: "" },
           { status: "0", note: "" },
           { status: "0", note: "" },
@@ -414,22 +552,13 @@ export default {
           { status: "0", note: "" },
           { status: "0", note: "" },
           { status: "0", note: "" },
-          
         ],
         items_2: [
           { status: "0", note: "" },
           { status: "0", note: "" },
-        ],
-         items_3: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
           { status: "0", note: "" },
         ],
-         items_4: [
+        items_3: [
           { status: "0", note: "" },
           { status: "0", note: "" },
           { status: "0", note: "" },
@@ -438,17 +567,33 @@ export default {
           { status: "0", note: "" },
           { status: "0", note: "" },
         ],
-
+        items_4: [
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+          { status: "0", note: "" },
+        ],
       },
       items1: [
         //無線電機(含電源供應器)
-        { question: "1. 無線電機、電源供應器之清潔" },
-        { question: "2. 外觀檢查(面板、旋鈕等)" },
-        { question: "3. 麥克風纜線是否完好、按鍵功能是否正常" },
-        { question: "4. 天線纜線接頭是否鬆動" },
-        { question: "5. 電源線是否鎖緊在電源供應器之接點上 " },
-        { question: "6. 接收功能是否正常檢查" },
-        { question: "7. 發射功能是否正常檢查" },
+        { question: "1. 無線電機、電源供應器之清潔", status: "0", note: "" },
+        { question: "2. 外觀檢查(面板、旋鈕等)", status: "0", note: "" },
+        {
+          question: "3. 麥克風纜線是否完好、按鍵功能是否正常",
+          status: "0",
+          note: "",
+        },
+        { question: "4. 天線纜線接頭是否鬆動", status: "0", note: "" },
+        {
+          question: "5. 電源線是否鎖緊在電源供應器之接點上 ",
+          status: "0",
+          note: "",
+        },
+        { question: "6. 接收功能是否正常檢查", status: "0", note: "" },
+        { question: "7. 發射功能是否正常檢查", status: "0", note: "" },
       ],
       items2: [
         //天線組件
@@ -475,40 +620,40 @@ export default {
   },
   components: { Pagination }, // 頁碼
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
-    },
-    created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
+    }),
+  },
+  created() {
+    this.ipt2 = { ...this.defaultIpt };
+    //更新時間
+    var today = new Date();
+    let mStr = today.getMonth() + 1;
+    let dStr = today.getDate();
+    if (mStr < 10) {
+      mStr = "0" + mStr;
+    }
+    if (dStr < 10) {
+      dStr = "0" + dStr;
+    }
+    this.nowTime = today.getFullYear() + "-" + mStr + "-" + dStr;
   },
   methods: {
-    ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
+    ...mapActions("system", [
+      "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    initInput(){
+    initInput() {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
       for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
+        this.ipt.items[step].status = "0";
+        this.ipt.items[step].note = "";
       }
       this.Advice = "";
-      this.Measures = ""
+      this.Measures = "";
     },
-    unique(list){
+    unique(list) {
       var arr = [];
       let b = false;
       for (var i = 0; i < list.length; i++) {
@@ -528,13 +673,13 @@ export default {
       }
       return arr;
     },
-    newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
+    newOne() {
+      console.log("newOne23");
+      this.Add = true;
+      console.log("this.Add: " + this.Add);
       this.initInput();
     },
-        
+
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -542,17 +687,17 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow()
+      this.chLoadingShow();
       fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
-        QyName:[
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          { Column: "StartDayVlaue", Value: this._data.z },
+          { Column: "EndDayVlaue", Value: this._data.df },
+          { Column: "DepartCode", Value: this._data.ipt2.depart },
+        ],
+        QyName: [
           // "DISTINCT (RPFlowNo)",
           // // "ID",
           // // "Name",
@@ -564,19 +709,22 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId",
         ],
-      }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        console.log("search final")
-        this.chLoadingShow()
       })
+        .then((res) => {
+          let tbBuffer = JSON.parse(res.data.DT);
+          let aa = this.unique(tbBuffer);
+          this.tableItems = aa;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("查詢時發生問題，請重新查詢!");
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
     },
     // 存
     save() {},
@@ -593,18 +741,16 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
+      console.log("item: " + item);
+      console.log("RPFlowNo: " + item.RPFlowNo);
+      this.chLoadingShow();
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
+        QyName: [
           "CheckDay",
           "DepartName",
           "Name",
@@ -615,46 +761,47 @@ export default {
           "CheckOption3",
           "Memo",
         ],
-      }).then(res => {
-        this.initInput();
-        console.log(res.data.DT)
-        let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
-        //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
+      })
+        .then((res) => {
+          this.initInput();
+          console.log(res.data.DT);
+          let dat = JSON.parse(res.data.DT);
+          console.log("data name: " + dat[0].Name);
+          console.log("data time: " + dat[0].CheckDay);
+          this.Add = true;
+          // this.zs = res.data.DT.CheckDay
+          this.doMan.name = dat[0].Name;
+          let time1 = dat[0].CheckDay.substr(0, 10);
+          console.log("data time1: " + time1);
+          this.zs = time1;
+          console.log("doMan name: " + this.doMan.name);
+          //123資料
+          let ad = Object.keys(dat[0]);
+          console.log(ad);
+          var i = 0,
+            j = 0;
+          for (let key of Object.keys(dat[0])) {
+            if (i > 3 && i < 52) {
+              if (i % 2 == 0) {
+                this.ipt.items[j].status = dat[0][key];
+              } else {
+                this.ipt.items[j].note = dat[0][key];
+                j++;
               }
             }
-            i++
+            i++;
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
-      })
-    },//viewPage
+          this.memo_2 = dat[0].Advice;
+          this.memo_3 = dat[0].Measures;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("查詢時發生問題，請重新查詢!");
+        })
+        .finally(() => {
+          this.chLoadingShow();
+        });
+    }, //viewPage
   },
 };
 </script>
