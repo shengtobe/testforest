@@ -51,20 +51,20 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>輸入編號(或機號)
         </h3>
-        <v-text-field v-model.trim="ipt.eqLoss" solo />
+        <v-select :items="MachineID" v-model="ipt.PAID" solo/>
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇單位
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>檢查單位
         </h3>
         <v-select
           v-model="ipt.case"
-          :items="[{ text: '鐵路服務科', value: 'A' }, { text: '鐵路資訊科', value: 'B' }, { text: '鐵路餐飲科', value: 'C' }, { text: '鐵路英文科', value: 'D' }, { text: '鐵路數學科', value: 'E' }]"
+          :items="formDepartOptions"
           solo
         />
       </v-col>
       <div class="col-sm-4 col-md-8 col-12">
-        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
+        <v-btn color="green" dark large class="col-4 col-md-2 mr-3" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
@@ -80,41 +80,48 @@
         </v-btn>
       </div>
       <!-- 手攜無線電保養紀錄 -->
-      <v-col cols="12" sm="12" md="12">
-        <v-card>
-          <v-data-table
-            :headers="headers"
-            :items="tableItems"
-            :options.sync="pageOpt"
-            disable-sort
-            disable-filtering
-            hide-default-footer
-          >
-            <template v-slot:no-data>
-              <span class="red--text subtitle-1">沒有資料</span>
-            </template>
-            <template v-slot:loading>
-              <span class="red--text subtitle-1">資料讀取中...</span>
-            </template>
-            <template v-slot:item.bb>
-              <v-btn color="teal" dark @click="sdad = true">檢視</v-btn>
-            </template>
-            <!-- headers 的 content 欄位 (檢視內容) -->
-            <template v-slot:item.content="{ item }">
-              <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
-                <v-icon dark>mdi-delete</v-icon>
-              </v-btn>
-            </template>
+      <v-col cols="12">
+      <v-card>
+        <v-data-table
+          :headers="headers"
+          :items="tableItems"
+          :options.sync="pageOpt"
+          disable-sort
+          disable-filtering
+          hide-default-footer
+        >
+          <template v-slot:no-data>
+            <span class="red--text subtitle-1">沒有資料</span>
+          </template>
 
-            <!-- 頁碼 -->
-            <template v-slot:footer="footer">
-              <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
-            </template>
-          </v-data-table>
-        </v-card>
-      </v-col>
+          <template v-slot:loading>
+            <span class="red--text subtitle-1">資料讀取中...</span>
+          </template>
+
+          <!-- headers 的 content 欄位 (檢視內容) -->
+          <template v-slot:item.content="{ item }">
+            <v-btn
+              title="詳細資料"
+              class="mr-2"
+              small
+              dark
+              fab
+              color="info darken-1"
+              @click="viewPage(item)"
+            >
+              <v-icon dark>mdi-magnify</v-icon>
+            </v-btn>
+          </template>
+
+          <!-- 頁碼 -->
+          <template v-slot:footer="footer">
+            <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-col>
       <!-- 檢視保養項目 modal -->
-      <v-dialog v-model="sdad" max-width="600px">
+      <v-dialog v-model="Add" max-width="600px">
         <v-card>
           <!-- 標題 -->
           <v-card-title class="blue white--text px-4 py-1">
@@ -130,44 +137,44 @@
             <v-row>
               <!-- 外觀 -->
               <h3 class="mb-1">編號(或機號)</h3>
-              <v-select dense single-line :items="MachineID" outlined />
+              <v-select dense single-line :items="MachineID" v-model="PAID" outlined readonly/>
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
-                <v-radio-group row v-model="mainLocation1">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                <v-radio-group row v-model="mainLocation1" readonly>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="success" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 出廠日期 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">檢查天線是否斷裂</h3>
-                <v-radio-group row v-model="mainLocation2">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                <v-radio-group row v-model="mainLocation2" readonly>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="success" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 電池接點是否生銅繡 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">電池接點是否生銅繡</h3>
-                <v-radio-group row v-model="mainLocation3">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                <v-radio-group row v-model="mainLocation3" readonly>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="success" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 充電座指示燈亮否、功能是否正常 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">充電座指示燈亮否、功能是否正常</h3>
-                <v-radio-group row v-model="mainLocation4">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                <v-radio-group row v-model="mainLocation4" readonly>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="success" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 接收功能是否正常檢查 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">接收功能是否正常檢查</h3>
-                <v-radio-group row v-model="mainLocation5">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                <v-radio-group row v-model="mainLocation5" readonly>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="success" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 不正常狀況及處理說明 -->
@@ -175,7 +182,7 @@
                 <h3 class="mb-1">不正常狀況及處理說明</h3>
                 <v-textarea
                   hide-details
-                  auto-grow
+                  auto-grow readonly
                   outlined
                   rows="3"
                   v-model.trim="addItem.content"
@@ -200,51 +207,52 @@
           <div class="px-6 py-4">
             <v-row>
               <!-- 外觀 -->
-              <v-col cols="12">
-                <h3 class="mb-1">保養人員：王大明</h3>
-              </v-col>
-              <v-col cols="12">
+              <v-col cols="12" sm="4">
+                  <h3 class="mb-1">保養人員</h3>
+                  <v-text-field solo v-model="doMan.name" />
+                </v-col>
+              <v-col cols="12" sm="8">
                 <h3 class="mb-1">編號(或機號)</h3>
-                <v-select dense single-line :items="MachineID" outlined />
+                <v-select dense single-line :items="MachineID" v-model="PAID" outlined />
               </v-col>
               
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">外觀檢查(面板、旋鈕等)</h3>
                 <v-radio-group row v-model="mainLocation1">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="red" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 出廠日期 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">檢查天線是否斷裂</h3>
                 <v-radio-group row v-model="mainLocation2">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="red" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 電池接點是否生銅繡 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">電池接點是否生銅繡</h3>
                 <v-radio-group row v-model="mainLocation3">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="red" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 充電座指示燈亮否、功能是否正常 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">充電座指示燈亮否、功能是否正常</h3>
                 <v-radio-group row v-model="mainLocation4">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="red" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <!-- 接收功能是否正常檢查 -->
               <v-col cols="8" sm="6">
                 <h3 class="mb-1">接收功能是否正常檢查</h3>
                 <v-radio-group row v-model="mainLocation5">
-                  <v-radio label="正常" color="success" value="11"></v-radio>
-                  <v-radio label="不正常" color="success" value="l2"></v-radio>
+                  <v-radio label="正常" color="success" value="1"></v-radio>
+                  <v-radio label="不正常" color="red" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               
@@ -288,8 +296,9 @@ export default {
     newText: "紀錄表",
     isLoading: false,
     disabled: false,
+    PAID: '',
     //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP018",
       nowTime: "",
       doMan:{
         id: '',
@@ -306,10 +315,10 @@ export default {
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "檢查日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "檢查單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
@@ -319,7 +328,8 @@ export default {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
       case: "",
-      eqLoss: ""
+      eqLoss: "",
+      PAID: ""
     },
     dateMemuShow: {
       // 日曆是否顯示
@@ -328,6 +338,11 @@ export default {
     },
     sdad: false,
     evtTypeOpts: evtTypes,
+    formDepartOptions: [
+      // 通報單位下拉選單
+      { text: "", value: "" },
+      ...formDepartOptions,
+    ],
     locationOpts: locationOpts,
     dateMenuShow: false, // 日曆是否顯示
     dialogDateMenuShow: {
@@ -343,12 +358,7 @@ export default {
       startday: "2020-08-10",
       user: "王大明"
     },
-    addItem: {
-      Kilometer: null,
-      enterDate: "",
-      content: "", // 維修項目
-      enterDates: "",
-      user: ""
+    addItem: { Kilometer: null, enterDate: "", content: "", // 維修項目 enterDates: "", user: ""
     },
     defaultItem: {
       Kilometer: 0,
@@ -367,6 +377,7 @@ export default {
     mainLocation4: "", // 所選的地點
     mainLocation5: "", // 所選的地點
     OLocation: "", // 其他地點
+    Add: false,
     dialogShowAdd: false, // model off
     dialogShowEdit: false, // model off
     dialogDel: false, // model off
@@ -375,60 +386,52 @@ export default {
     bb: "",
     cc: "",
     disabled: true,
-    tableItems: [
-      {
-        aa: "2020-08-01",
-        mcid: "TRK-ALL-SLP-300",
-        jj: "王大明",
-        kk: "已審查"
-      }
-    ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
-    headers: [
-      // 表格顯示的欄位
-      {
-        text: "保養日期",
-        value: "aa",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "編號(或機號)",
-        value: "mcid",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "保養項目",
-        value: "bb",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "保養人",
-        value: "jj",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "審查狀態",
-        value: "kk",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      },
-      {
-        text: "功能",
-        value: "shop",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      }
-    ]
+    // headers: [
+    //   // 表格顯示的欄位
+    //   {
+    //     text: "保養日期",
+    //     value: "aa",
+    //     align: "center",
+    //     divider: true,
+    //     class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+    //   },
+    //   {
+    //     text: "編號(或機號)",
+    //     value: "mcid",
+    //     align: "center",
+    //     divider: true,
+    //     class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+    //   },
+    //   {
+    //     text: "保養項目",
+    //     value: "bb",
+    //     align: "center",
+    //     divider: true,
+    //     class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+    //   },
+    //   {
+    //     text: "保養人",
+    //     value: "jj",
+    //     align: "center",
+    //     divider: true,
+    //     class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+    //   },
+    //   {
+    //     text: "審查狀態",
+    //     value: "kk",
+    //     align: "center",
+    //     divider: true,
+    //     class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+    //   },
+    //   {
+    //     text: "功能",
+    //     value: "shop",
+    //     align: "center",
+    //     divider: true,
+    //     class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+    //   }
+    // ]
   }),
   components: { Pagination }, // 頁碼
   computed: {
@@ -463,17 +466,17 @@ export default {
     initInput(){
       console.log("init create window form")
       this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 24; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ""
-      }
-      this.memo_2 = ""
-      this.memo_3 = ""
+      // this.zs = this.nowTime;
+      this.PAID = '';
+      this.mainLocation1 = '';
+      this.mainLocation2 = '';
+      this.mainLocation3 = '';
+      this.mainLocation4 = '';
+      this.mainLocation5 = '';
+      this.addItem.content = '';
     },
     newOne(){
-      this.Add = true
+      this.dialogShowAdd = true
       this.initInput();
     },
     unique(list){
@@ -508,9 +511,10 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.ipt.dateStart},
+          {"Column":"EndDayVlaue","Value":this.ipt.dateEnd},
+          {"Column":"PAID","Value":this.ipt.PAID},
+          {"Column":"DepartCode","Value":this.ipt.case},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -522,6 +526,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "DepartName",
           "CheckDay",
           "CheckStatus",
           "FlowId"
@@ -539,7 +544,64 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)   
+      
+      let i;
+      
+      obj = new Object()
+      obj.Column = "PAID"
+      obj.Value = this.PAID
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckOption1"
+      obj.Value = this.mainLocation1
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckOption2"
+      obj.Value = this.mainLocation2
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckOption3"
+      obj.Value = this.mainLocation3
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckOption4"
+      obj.Value = this.mainLocation4
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "CheckOption5"
+      obj.Value = this.mainLocation5
+      arr = arr.concat(obj)
+      obj = new Object()
+      obj.Column = "Memo"
+      obj.Value = this.addItem.content
+      arr = arr.concat(obj)
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.dialogShowAdd = false;
+    },
     // 關閉 dialog
     close() {
       this.sdad = false;
@@ -569,15 +631,13 @@ export default {
           "DepartName",
           "Name",
           "CheckMan",
+          "PAID",
           "CheckOption1",
-          "Memo_1",
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
+          "CheckOption5",
+          "Memo",
         ],
       }).then(res => {
         this.initInput();
@@ -593,25 +653,13 @@ export default {
         this.zs = time1
         console.log("doMan name: " + this.doMan.name)
         //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
+        this.PAID = dat[0].PAID;
+        this.mainLocation1 = dat[0].CheckOption1;
+        this.mainLocation2 = dat[0].CheckOption2;
+        this.mainLocation3 = dat[0].CheckOption3;
+        this.mainLocation4 = dat[0].CheckOption4;
+        this.mainLocation5 = dat[0].CheckOption5;
+        this.addItem.content = dat[0].Memo;
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')

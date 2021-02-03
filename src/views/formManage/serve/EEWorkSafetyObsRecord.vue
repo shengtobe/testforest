@@ -63,16 +63,7 @@
         </h3>
         <v-select
           v-model="ipt.case"
-          :items="[
-            { text: '綜合企劃科', value: 'A' },
-            { text: '鐵路服務科', value: 'B' },
-            { text: '鐵路維護科', value: 'C' },
-            { text: '車輛養護科', value: 'D' },
-            { text: '人事室', value: 'E' },
-            { text: '主計室', value: 'F' },
-            { text: '政風室', value: 'G' },
-            { text: '秘書室', value: 'H' },
-          ]"
+          :items="formDepartOptions"
           solo
         />
       </v-col>
@@ -648,15 +639,6 @@ export default {
     bb: "",
     cc: "",
     disabled: true,
-    tableItems: [
-      {
-        aa: 1,
-        bb: "鐵路維護科",
-        cc: "王小明",
-        dd: "張大仁",
-        ee: "2020-08-08",
-      },
-    ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
   }),
   components: { Pagination }, // 頁碼

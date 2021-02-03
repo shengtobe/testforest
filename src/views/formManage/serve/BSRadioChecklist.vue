@@ -369,6 +369,11 @@ export default {
       disabled: false,
       MachineID: ["TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
       Add: false,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---

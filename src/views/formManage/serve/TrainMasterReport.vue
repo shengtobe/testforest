@@ -128,9 +128,9 @@
                         <h3 class="mb-1">日期</h3>
                         <v-menu :close-on-content-click="false" transition="scale-transition" max-width="290px" min-width="290px">
                             <template v-slot:activator="{ on }">
-                                <v-text-field v-model.trim="nowTime" outlined v-on="on" dense single-line />
+                                <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
                             </template>
-                            <v-date-picker color="purple" v-model="nowTime" @input="MaintenanceDay = false" locale="zh-tw"/>
+                            <v-date-picker color="purple" v-model="zs" @input="MaintenanceDay = false" locale="zh-tw"/>
                         </v-menu>
                     </v-col>
                     <v-col cols="12" sm="6"/>
@@ -514,6 +514,11 @@ export default {
       disabled: false,
       indexN:0,
       sumN:0,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       QueryDayStart: "",
       QueryDayEnd: "",
       QueryData: {
@@ -612,6 +617,7 @@ export default {
           EndDay: '',
           depart: '',  // 單位
         },
+      zs: '',
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -628,12 +634,13 @@ export default {
   },
   components: { Pagination }, // 頁碼
   created() {
-      for(let i = 0; i < 76; i++){
-        this.item.push
-      }
+      // for(let i = 0; i < 76; i++){
+      //   this.item.push
+      // }
 
       this.ipt2 = { ...this.defaultIpt }
       //更新時間
+      console.log("更新時間")
       var today=new Date();
       let mStr = today.getMonth()+1;
       let dStr = today.getDate();
@@ -667,7 +674,7 @@ export default {
       console.log("init create window form")
       // console.log("this.userData.UserName: " + this.userData.UserName)
       this.doMan.name = this.userData.UserName;
-      // this.zs = this.nowTime;
+      this.zs = this.nowTime;
       for (let index = 0; index < this.No.length; index++) {
         this.No[index].value = '';
       }

@@ -253,6 +253,11 @@ export default {
       wx: "",
       pp: "",
       oo: "",
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       ii: "",
       uu: "",
       yy: "",

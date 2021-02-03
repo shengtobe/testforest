@@ -57,6 +57,12 @@
           ></v-date-picker>
         </v-menu>
       </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>通報單位
+        </h3>
+        <v-select :items="formDepartOptions" v-model="input.department" solo />
+      </v-col>
       <div class="col-sm-4 col-md-8 col-12">
         <v-btn
           color="green"
@@ -342,6 +348,14 @@ export default {
       alarmDate: false,
     },
 
+    formDepartOptions: [
+      // 通報單位下拉選單
+      { text: "", value: "" },
+      ...formDepartOptions,
+    ],
+    Add: false,
+    yy: false,
+    dialog3: false,
     pageOpt: { page: 1 }, // 目前頁數
     //---api---
     DB_Table: "RP016",
@@ -365,7 +379,7 @@ export default {
       // 表格顯示的欄位 DepartCode ID Name
       {
         text: "項次",
-        value: "PageNo", // 給使用者看得項次，非FlowId
+        value: "Id", // 給使用者看得項次，非FlowId
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -420,6 +434,7 @@ export default {
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
       case: "",
       eqLoss: "",
+      department: "",
     },
     confirmDelete: false,
 
@@ -476,6 +491,7 @@ export default {
         KeyItem: [
           { Column: "StartDayVlaue", Value: this.input.dateStart },
           { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "DepartCode", Value: this.input.department },
         ],
         QyName: [
           "RPFlowNo",

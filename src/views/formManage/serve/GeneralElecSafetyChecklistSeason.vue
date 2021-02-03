@@ -245,6 +245,11 @@ export default {
       a: "",
       ass: "",
       z: "",
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "", value: "" },
+        ...formDepartOptions,
+      ],
       zs: "",
       q: "",
       df: "",
