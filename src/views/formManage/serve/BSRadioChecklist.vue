@@ -493,6 +493,7 @@
 
         <v-card-actions class="px-5 pb-5">
           <v-btn
+            v-if="action != actions.add"
             class="mr-2"
             elevation="4"
             color="red"
@@ -551,6 +552,7 @@ export default {
     return {
       title: "車裝台/基地台無線電機檢查紀錄表",
       action: Actions.add,
+      actions: Actions,
       newText: "紀錄表",
       isLoading: false,
       disabled: false,
@@ -740,6 +742,7 @@ export default {
   },
   methods: {
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     initInput() {
@@ -801,7 +804,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           console.log("search final");
@@ -854,10 +857,11 @@ export default {
         updateFormOrder(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.updateFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -867,10 +871,11 @@ export default {
         createFormOrder0(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.insertFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -934,7 +939,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           this.chLoadingShow();
@@ -954,10 +959,11 @@ export default {
       })
         .then((res) => {
           this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.deleteFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
           this.chLoadingShow();

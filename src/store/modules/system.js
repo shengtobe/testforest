@@ -1,9 +1,10 @@
-import { 
+import {
     SET_SYSTEM_DIALOG,
     SET_SYSTEM_MSGBAR,
     TOGGLE_SYSTEM_LOADING,
     SET_SYSTEM_VIEW_DIALOG
 } from '../mutation-types'
+
 
 // state
 const state = {
@@ -28,51 +29,51 @@ const state = {
 
 // getters
 const getters = {
-    
+
 }
 
 // mutations
 const mutations = {
     // 設定重要訊息 dialog
-    [SET_SYSTEM_DIALOG] (state, payload) {
+    [SET_SYSTEM_DIALOG](state, payload) {
         state.dialog.show = payload.show  // dialog 是否顯示
-        state.dialog.msg = (payload.msg == undefined)? '' : payload.msg  // 沒內容就設為空字串
+        state.dialog.msg = (payload.msg == undefined) ? '' : payload.msg  // 沒內容就設為空字串
     },
     // 設定 messageBar
-    [SET_SYSTEM_MSGBAR] (state, payload) {
+    [SET_SYSTEM_MSGBAR](state, payload) {
         // 依是否成功來判斷樣式
-        state.msgbar.icon = (payload.success)? 'mdi-check-circle-outline' : 'mdi-alert-circle-outline'
-        state.msgbar.color = (payload.success)? 'green accent-4' : 'red'
+        state.msgbar.icon = (payload.success) ? 'mdi-check-circle-outline' : 'mdi-alert-circle-outline'
+        state.msgbar.color = (payload.success) ? 'green accent-4' : 'red'
         state.msgbar.show = true  // 顯示 msgbar
-        state.msgbar.msg = (payload.msg == undefined)? '' : payload.msg  // 沒內容就設為空字串
+        state.msgbar.msg = (payload.msg == undefined) ? '' : payload.msg  // 沒內容就設為空字串
     },
     // 切換 loading 圖顯示
-    [TOGGLE_SYSTEM_LOADING] (state) {
+    [TOGGLE_SYSTEM_LOADING](state) {
         state.loading.show = !state.loading.show
     },
     // 設定檢視內容 dialog
-    [SET_SYSTEM_VIEW_DIALOG] (state, payload) {
+    [SET_SYSTEM_VIEW_DIALOG](state, payload) {
         state.viewDialog.show = payload.show  // 是否顯示
-        state.viewDialog.content = (payload.content == undefined)? '' : payload.content  // 沒內容就設為空字串
+        state.viewDialog.content = (payload.content == undefined) ? '' : payload.content  // 沒內容就設為空字串
     },
 }
 
 // actions
 const actions = {
     // 改變重要訊息 dialog 內容及顯示
-    chDialog ({ commit }, payload) {
+    chDialog({ commit }, payload) {
         commit('SET_SYSTEM_DIALOG', payload)
     },
     // 改變 messageBar 內容
-    chMsgbar ({ commit }, payload) {
+    chMsgbar({ commit }, payload) {
         commit('SET_SYSTEM_MSGBAR', payload)
     },
     // 切換 loading 圖顯示
-    chLoadingShow ({ commit }) {
+    chLoadingShow({ commit }) {
         commit('TOGGLE_SYSTEM_LOADING')
     },
     // 改變檢視內容 dialog 內容及顯示
-    chViewDialog ({ commit }, payload) {
+    chViewDialog({ commit }, payload) {
         commit('SET_SYSTEM_VIEW_DIALOG', payload)
     },
     // 關閉視窗 (用於關另開的分頁)

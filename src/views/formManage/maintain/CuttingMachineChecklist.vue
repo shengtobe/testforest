@@ -155,7 +155,7 @@
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="close">取消</v-btn>
+          <v-btn @click="dialogDel=false">取消</v-btn>
           <v-btn color="red" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
             >刪除</v-btn
           >
@@ -312,8 +312,16 @@
         </div>
 
         <v-card-actions class="px-5 pb-5">
+          <v-btn
+            v-if="action != actions.add"
+            class="mr-2"
+            elevation="4"
+            color="red"
+            @click="dialogDel = true"
+            >刪除</v-btn
+          >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2" elevation="4" @click="ShowDetailDialog = false">取消</v-btn>
           <v-btn
             color="success"
             elevation="4"
@@ -362,6 +370,7 @@ export default {
     return {
       title: "切割機定期檢查表(三個月)",
       action: Actions.add,
+      actions: Actions,
       newText: "檢查表",
       isLoading: false,
       disabled: false,
@@ -531,6 +540,7 @@ export default {
       this.initInput();
     },
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     // 更換頁數
@@ -568,7 +578,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           console.log("search final");
@@ -631,10 +641,11 @@ export default {
         updateFormOrder(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.updateFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -644,10 +655,11 @@ export default {
         createFormOrder0(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.insertFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -751,7 +763,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           this.chLoadingShow();
@@ -769,10 +781,11 @@ export default {
       })
         .then((res) => {
           this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.deleteFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
           this.chLoadingShow();

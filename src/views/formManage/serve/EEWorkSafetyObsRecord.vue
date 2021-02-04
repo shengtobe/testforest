@@ -61,11 +61,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇部門
         </h3>
-        <v-select
-          v-model="ipt2.depart"
-          :items="formDepartOptions"
-          solo
-        />
+        <v-select v-model="ipt2.depart" :items="formDepartOptions" solo />
       </v-col>
       <v-col cols="12" sm="2" md="2">
         <h3 class="mb-1">
@@ -464,7 +460,11 @@
 import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from "vuex";
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import {
   fetchFormOrderList,
@@ -660,7 +660,7 @@ export default {
       dStr = "0" + dStr;
     }
     this.nowTime = today.getFullYear() + "-" + mStr + "-" + dStr;
-    this.z = this.df = this.nowTime
+    this.z = this.df = this.nowTime;
   },
 
   methods: {
@@ -722,6 +722,7 @@ export default {
       this.initInput();
     },
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     // 更換頁數
@@ -755,7 +756,7 @@ export default {
           "DepartName",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId",
         ],
       })
         .then((res) => {

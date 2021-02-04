@@ -2,8 +2,8 @@
   <v-container style="max-width: 1200px">
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
-      <v-col cols="12" sm="4" md="3">
+    <v-row class="px-2 mb-8">
+      <v-col cols="12" sm="8" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(起)
         </h3>
@@ -69,14 +69,15 @@
         </h3>
         <v-select v-model="ipt.case" :items="formDepartOptions" solo />
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn
-          color="green"
-          dark
-          large
-          class="col-4 col-md-2 mr-3"
-          @click="search"
-        >
+
+      <v-col
+        cols="12"
+        sm="8"
+        md="12"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
+        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
@@ -84,13 +85,17 @@
           elevation="3"
           dark
           large
-          class="col-4 col-md-3 mr-3"
+          class="mr-3 mb-3"
           @click="newOne"
         >
           <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
-      </div>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
+        </v-btn>
+      </v-col>
+
       <!-- 手攜無線電保養紀錄 -->
       <v-col cols="12">
         <v-card>
@@ -293,6 +298,7 @@
           </div>
           <v-card-actions class="px-5 pb-5">
             <v-btn
+              v-if="action != actions.add"
               class="mr-2"
               elevation="4"
               color="red"
@@ -342,6 +348,7 @@ export default {
   data: () => ({
     title: "手攜無線電機檢查紀錄表",
     action: Actions.add,
+    actions: Actions,
     newText: "紀錄表",
     isLoading: false,
     disabled: false,
@@ -359,9 +366,11 @@ export default {
     ipt2: {},
     defaultIpt: {
       // 預設的欄位值
-      startDay: "",
-      EndDay: "",
-      depart: "", // 單位
+      dateStart: "", // 通報日期(起)
+      dateEnd: "", // 通報日期(迄)
+      case: "",
+      eqLoss: "",
+      PAID: "",
     },
     headers: [
       // 表格顯示的欄位 DepartCode ID Name
@@ -503,8 +512,13 @@ export default {
       this.$emit("chLocation", {});
     },
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 清除搜尋內容
+    reset() {
+      this.ipt = { ...this.defaultIpt };
+    },
     // 更換頁數
     initInput() {
       console.log("init create window form");
@@ -642,10 +656,11 @@ export default {
         updateFormOrder(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.updateFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -655,10 +670,11 @@ export default {
         createFormOrder0(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.insertFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -750,10 +766,11 @@ export default {
       })
         .then((res) => {
           this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.deleteFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
           this.chLoadingShow();
