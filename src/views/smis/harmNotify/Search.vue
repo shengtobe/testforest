@@ -66,15 +66,15 @@
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>通報狀態
             </h3>
             <v-select
-                v-model="ipt.case"
-                :items="['未回覆', '已回覆尚未立案', '已立案', '審核中']"
+                v-model="ipt.status"
+                :items="statusOpts"
                 solo
             ></v-select>
         </v-col>
 
         <v-col cols="12" sm="4" md="3" align-self="center" class="mb-8 mb-md-0">
             <v-btn color="green" dark large
-                @click="search"
+                @click="search(false)"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
@@ -99,11 +99,15 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.ReportStatus="{ item }">
+                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                        </template>
+
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             :loading="isLoading"
-                            @click="redirect(item)"
+                            @click="viewPage(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -130,7 +134,7 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
-                    <v-list-item to="/smis/harmnotify/case-type">
+                    <v-list-item to="/smis/harmnotify/status-type">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         立案類型統計圖
                     </v-list-item>
@@ -152,113 +156,80 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { harmNotifyStatus } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
-// import { fetchOrderList } from '@/apis/workList/maintain'
+import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
     data: () => ({
         ipt: {
             dateStart:  new Date().toISOString().substr(0, 10),  // 通報日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 通報日期(迄)
-            case: '未回覆',  // 通報狀態
+            status: '',  // 通報狀態
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
             end: false,
         },
+        statusOpts: harmNotifyStatus,  // 狀態下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '通報日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報人', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報主旨', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        initData() {
-            this.chLoadingShow()
-
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 'SH458987',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '王小明',
-                        title: '阿里山站外發現鐵軌上有倒下的樹木',
-                        status: '未回覆',
-                    },
-                    {
-                        id: 'SH995413',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '王小明',
-                        title: '路基持續有噴泥現象',
-                        status: '已立案',
-                    },
-                    {
-                        id: 'SH995420',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '陳小華',
-                        title: '1070225事故資訊',
-                        status: '已立案',
-                    },
-                    {
-                        id: 'SH785641',
-                        date: new Date().toISOString().substr(0, 10),
-                        name: '王小明',
-                        title: '主線 5K+60 M 處發現落石',
-                        status: '審核中',
-                    },
-                ]
-                this.chLoadingShow()
-            }, 1000)
-        },
-        // 搜尋
-        search() {
+        // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
+        search(bool) {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            setTimeout(() => {
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportData',  // DB table
+                KeyItem: [
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 通報日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd },  // 通報日期(迄)
+                    { tableColumn: 'ReportStatus', columnValue: this.ipt.status },  // 狀態
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerID',
+                    'EndangerFindDate',
+                    'PeopleName',
+                    'ReportTitle',
+                    'ReportStatus',
+                ],
+                IsFirstLoad: (bool)? 'T' : 'F',
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
-        // 重新導向 (依結案狀態)
-        redirect(item) {
-            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
-            this.isLoading = true
-            let routeData = ''
-            switch(item.status) {
-                case '未回覆':
-                    routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/show` })
-                    break
-                case '已回覆尚未立案':
-                    routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/show` })
-                    break
-                case '審核中':
-                    routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/review` })
-                    break
-                case '已立案':
-                    routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/complated` })
-                    break
-                default:
-                    break
-            }
-
-            setTimeout(() => {
-                this.isLoading = false
-                window.open(routeData.href, '_blank')
-            }, 1000)
+        // 檢視內容
+        viewPage(item) {
+            let routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+            window.open(routeData.href, '_blank')
         },
         // 更換頁數
         chPage(n) {
@@ -266,7 +237,7 @@ export default {
         },
     },
     created() {
-        this.initData()
+        this.search(true)
     },
 }
 </script>

@@ -79,7 +79,8 @@ export default {
         "TypeCode": "01",
         "TypeName": "正式人員",
         "UserId": "01009",
-        "UserName": "洪淑霞"
+        "UserName": "洪淑霞",
+        "Version": "0.0.1",
     },
     "UserDataSample": null
 }

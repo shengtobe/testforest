@@ -1,0 +1,119 @@
+<template>
+<div>
+    <!-- 未回覆 -->
+    <Show :itemData="itemData" v-if="status == 1 || status == 2" />
+
+    <!-- 已立案、審核中 -->
+    <ReviewComplated :itemData="itemData" v-if="status == 3 || status == 4" />
+</div>
+</template>
+
+<script>
+import { mapActions } from 'vuex'
+import { fetchNotifyOne } from '@/apis/smis/harmNotify'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { harmNotifyStatus, locationOpts } from '@/assets/js/smisData'
+import Show from '@/views/smis/harmNotify/Show.vue'
+import ReviewComplated from '@/views/smis/harmNotify/ReviewComplated.vue'
+
+export default {
+    data: () => ({
+        itemData: {},  // 工單資料
+        status: '',  // 狀態
+    }),
+    components: {
+        Show,
+        ReviewComplated,
+    },
+    watch: {
+        // 路由參數變化時，重新向後端取資料
+        $route(to, from) {
+            // … 
+        },
+    },
+    methods: {
+        ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        // 向後端取資料
+        fetchData() {
+            this.chLoadingShow()
+
+            fetchNotifyOne({
+                EndangerID: this.$route.params.id,  // 危害通報編號 (從路由參數抓取)
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
+                        this.$router.push({ path: '/404' })
+                    } else {
+                        this.status = res.data.ReportStatus  // 狀態
+
+                        // 設定上面的欄位資料
+                        let topItems = [
+                            { icon: 'mdi-ray-vertex', title: '通報狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
+                            { icon: 'mdi-account', title: '通報人', text: res.data.NoticePeople },
+                            { icon: 'mdi-apps', title: '所屬部門', text: res.data.NoticePeopleDepart },
+                            { icon: 'mdi-calendar-text', title: '發現日期', text: res.data.FindDTime },
+                            { icon: 'mdi-calendar-text', title: '填報日期', text: res.data.FillDTime },
+                        ]
+
+                        // 設定下面的欄位資料
+                        // 組合發現地點
+                        let locationLabel = locationOpts.find(item => item.value == res.data.FindLine).text
+
+                        if (['l2', 'l3', 'l41', 'l5'].includes(res.data.FindLine)) {  // 若為本線、祝山線、眠月線、水山線
+                            locationLabel = `${locationLabel} (${res.data.FindKLine}K+${res.data.FindMLine}M)`
+                        } else if (res.data.FindLine == 'other') {  // 若為其他
+                            locationLabel = `${locationLabel} (${res.data.FindLineOther})`
+                        }
+
+                        let bottomItems = [
+                            { oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
+                            { oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
+                            { oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
+                        ]
+
+                        // if (this.status > 1) {
+                        //     topItems.push({ icon: 'mdi-calendar-text', title: '預計驗收日期', text: res.data.ExpectedDT })
+                        //     topItems.push({ icon: 'mdi-alert-outline', title: '進場管制申請', text: (res.data.WorkApplication == 'T')? '是' : '否' })
+                        //     topItems.push({ icon: 'mdi-alert-outline', title: '特殊危害作業', text: (res.data.WorkSp == 'T')? '是' : '否' })
+                        //     topItems.push({ icon: 'mdi-alert-outline', title: '安全危害作業', text: (res.data.WorkSafety == 'T')? '是' : '否' })
+                        //     topItems.push({ icon: 'mdi-map-marker', title: '工作地點', text: res.data.WorkPlace })
+                        //     topItems.push({ icon: 'mdi-account-multiple', title: '實際人數', text: res.data.RealWorkerCount })
+
+                        //     bottomItems.push({ oneline: false, icon: 'mdi-note', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
+                        //     bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: res.data.PeopleLicense.map(ele => ele.PeopleName).join('、') })
+                        //     bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: res.data.PeopleNoLicense.map(ele => ele.PeopleName).join('、') })
+                        //     bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
+                        // }
+
+                        // if (this.status > 2) {
+                        //     topItems.push({ icon: 'mdi-calendar-text', title: '到修日期', text: res.data.ToRepairDDate })
+                        //     topItems.push({ icon: 'mdi-calendar-text', title: '動工日期', text: res.data.StartWorkDDate })
+                        //     topItems.push({ icon: 'mdi-calendar-text', title: '完工日期', text: res.data.FinishDDate })
+
+                        //     bottomItems.push({ oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
+                        //     bottomItems.push({ oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
+                        // }
+
+                        this.itemData = { ...res.data, topItems, bottomItems }
+                    }
+                } else {
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，資料讀取失敗')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
+    },
+    created() {
+        this.fetchData()
+    }
+}
+</script>

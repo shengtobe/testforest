@@ -1,41 +1,13 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">通報編號：{{ routeId }}</h2>
+    <h2 class="mb-4">通報編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報主旨
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ subject }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-note</v-icon>通報內容
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="content"
-                ></v-col>
-            </v-row>
-        </v-col>
+        <BottomTable :items="bottomItems" />
 
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
@@ -50,11 +22,11 @@
                 <v-col class="white pa-3">
                     <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
                         v-for="item in files"
-                        :key="item.fileName"
-                        :href="item.link"
-                        :download="item.fileName"
+                        :key="item.FileName"
+                        :href="item.FileFullPath"
+                        :download="item.FileName"
                     >
-                        {{ item.fileName }}
+                        {{ item.FileName }}
                     </v-chip>
                 </v-col>
             </v-row>
@@ -245,7 +217,7 @@
 
     <!-- dialog - 行車事故事件 -->
     <!-- <NotifyEvtDialog
-        :id="routeId"
+        :id="id"
         :dialogShow="dialogShow.carEvt"
         :headers="headers.carEvt"
         :items="dialogTableItems.carEvt"
@@ -256,7 +228,7 @@
 
     <!-- dialog - 行車危害 -->
     <!-- <NotifyHarmDialog
-        :id="routeId"
+        :id="id"
         :dialogShow="dialogShow.carHarm"
         :headers="headers.carHarm"
         dialog="carHarm"
@@ -266,7 +238,7 @@
 
     <!-- dialog - 職災事故 -->
     <!-- <NotifyEvtDialog
-        :id="routeId"
+        :id="id"
         :dialogShow="dialogShow.jobEvt"
         :headers="headers.jobEvt"
         :items="dialogTableItems.jobEvt"
@@ -277,7 +249,7 @@
 
     <!-- dialog - 職災危害 -->
     <!-- <NotifyHarmDialog
-        :id="routeId"
+        :id="id"
         :dialogShow="dialogShow.jobHarm"
         :headers="headers.jobHarm"
         dialog="jobHarm"
@@ -288,16 +260,17 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import BottomTable from '@/components/BottomTable.vue'
 import NotifyEvtDialog from '@/components/smis/NotifyEvtDialog.vue'
 import NotifyHarmDialog from '@/components/smis/NotifyHarmDialog.vue'
 import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
-import { locationOpts } from '@/assets/js/smisData'
 
 export default {
+    props: ['itemData'],
     data: () => ({
-        routeId: '',
+        id: '',  // 危害通報編號
         done: false,  // 是否完成頁面操作
         replay: {
             replied: false,  // 是否已回覆
@@ -305,16 +278,8 @@ export default {
             time: '',  // 回覆日期
         },
         cacheData: {},  // 暫存資料 (sessionStorage 會取用)
-        topItems: {  // 上面的欄位
-            creater: { icon: 'mdi-account', title: '通報人', text: '' },
-            depart: { icon: 'mdi-apps', title: '所屬部門', text: '' },
-            findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
-            createDate: { icon: 'mdi-calendar-text', title: '填報日期', text: '' },
-            findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '通報狀態', text: '' },
-        },
-        subject: '',  // 通報主旨
-        content: '',  // 通報內容
+        topItems: [],  // 上面的欄位
+        bottomItems: [],  // 下面的欄位
         files: [],  // 檔案附件
         ipt: {
             reply: 1,  // 回覆處理
@@ -408,8 +373,14 @@ export default {
     }),
     components: {
         TopBasicTable,
+        BottomTable,
         NotifyEvtDialog,
         NotifyHarmDialog,
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -423,55 +394,12 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
-        // 向後端取得資料
-        fetchData() {
-            this.chLoadingShow()
-            this.routeId = this.$route.params.id
-
-            // 新增測試用資料
-            setTimeout(() => {
-                let obj = {
-                    id: 'a201586369',  // 通報id
-                    creater: '王小明',  // 通報人
-                    createrId: 'OB851234',  // 員工編號
-                    depart: '鐵路服務科',  // 部門
-                    findDate: '2020-03-15',  // 發現日期
-                    findHour: '14',  // 發現日期(時)
-                    findMin: '00',  // 發現日期(分)
-                    createDate: '2020-03-15 15:20:00',  // 填表日期
-                    location: 't17',  // 發現地點
-                    locationK: '',  // 路線k
-                    locationM: '',　// 路線m
-                    locationOther: '',　// 其他地點
-                    status: '未回覆',  // 通報狀態
-                    subject: '阿里山站外發現鐵軌上有倒下的樹木',  // 通報主旨
-                    content: '鐵軌上有倒下的樹木數十根，會影響行車，樹木寬目測直徑皆超過100公分，需多人協助移除',  // 通報內容
-                    files: [
-                        { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
-                        { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        { fileName: '123.docx', link: '/demofile/123.docx' },
-                        { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
-                    ],
-                }
-
-                this.setShowData(obj)
-                this.cacheData = { ...obj }
-                this.chLoadingShow()
-            }, 1000)
-        },
         // 初始化資料
         setShowData(obj) {
-            this.topItems.creater.text = `${obj.creater} (${obj.createrId})`  // 通報人
-            this.topItems.depart.text = obj.depart  // 部門
-            this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
-            this.topItems.createDate.text = obj.createDate  // 填表日期
-            this.topItems.findLocation.text = locationOpts.find(item => item.value == obj.location).text  // 發現地點
-            this.topItems.status.text = obj.status  // 通報狀態
-
-            this.subject = obj.subject  // 通報主旨
-            this.content = obj.content // 通報內容
-            this.files = [ ...obj.files ]  // 檔案附件
+            this.id = obj.EndangerID  // 危害通報編號
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            this.files = [ ...obj.FileCount ]  // 檔案附件
         },
         // 連結行車事故事件
         connCarEvt() {
@@ -620,7 +548,7 @@ export default {
         },
     },
     created() {
-        this.fetchData()
+        this.setShowData(this.itemData)
     },
 }
 </script>

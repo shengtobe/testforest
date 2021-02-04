@@ -25,6 +25,12 @@
     
     <v-spacer></v-spacer>
 
+    <!-- 登入者資訊 -->
+    <div class="mr-4 d-none d-sm-flex">
+        {{ `${userData.DeptList[0].DeptDesc} - ${userData.UserName}(${userData.UserId})` }}
+    </div>
+    
+
     <v-btn icon @click="logout">
       <v-icon>mdi-export</v-icon>
     </v-btn>
@@ -263,6 +269,7 @@ export default {
     computed: {
         ...mapState ('user', {
             key: state => state.key,  // 加密金鑰
+            userData: state => state.userData,  // 使用者基本資料
         })
     },
     components: {
