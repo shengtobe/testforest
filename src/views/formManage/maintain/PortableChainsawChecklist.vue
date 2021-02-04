@@ -519,7 +519,6 @@ export default {
           "Memo_5",
           "Advice",
           "Measures",
-
         ],
       }).then(res => {
         this.initInput();
