@@ -540,7 +540,7 @@ export default {
       // 表格顯示的欄位 DepartCode ID Name
       {
         text: "項次",
-        value: "FlowId",
+        value: "ItemNo",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
