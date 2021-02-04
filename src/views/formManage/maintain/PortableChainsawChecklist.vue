@@ -47,7 +47,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -407,6 +407,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "DepartName",
           "CheckDay",
           "CheckStatus",
           "FlowId", "DepartName"
@@ -512,6 +513,10 @@ export default {
           "Memo_2",
           "CheckOption3",
           "Memo_3",
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
           "Advice",
           "Measures",
 
