@@ -93,7 +93,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="close">取消</v-btn>
-          <v-btn color="success" @click="deleteRecord">刪除</v-btn>
+          <v-btn color="red" @click="deleteRecord">刪除</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -293,7 +293,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >送出</v-btn
+            >{{ action }}</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -657,6 +657,7 @@ export default {
         })
         .finally(() => {
           this.chLoadingShow();
+          this.ShowDetailDialog = false;
           this.search();
         });
     },
