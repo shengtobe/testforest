@@ -146,7 +146,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="close">取消</v-btn>
-          <v-btn color="success" @click="deleteRecord">刪除</v-btn>
+          <v-btn color="red" @click="deleteRecord">刪除</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -162,7 +162,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <!-- 新增自動檢點表 modal -->
+    <!-- 新增/編輯自動檢點表 modal -->
     <v-dialog v-model="ShowDetailDialog" max-width="700px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
@@ -498,7 +498,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >送出</v-btn
+            >{{ action }}</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -948,6 +948,7 @@ export default {
         })
         .finally(() => {
           this.chLoadingShow();
+          this.ShowDetailDialog = false;
           this.search();
         });
     },
