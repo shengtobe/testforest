@@ -320,6 +320,7 @@ import {
 } from "@/apis/formManage/serve";
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data: () => ({
@@ -379,7 +380,7 @@ export default {
       // 表格顯示的欄位 DepartCode ID Name
       {
         text: "項次",
-        value: "Id", // 給使用者看得項次，非FlowId
+        value: "ItemNo", // 給使用者看得項次，非FlowId
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -512,7 +513,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("查詢時發生問題，請重新查詢!");
+          alert(Constrant.queryFailedString);
         })
         .finally(() => {
           console.log("search final");
@@ -522,7 +523,6 @@ export default {
     // 存
     save() {
       // 必要欄位檢查
-
       if (this.CheckDay == "" || this.AlarmDay == "" || this.Name == "") {
         this.dialogNull = true;
         return;
@@ -557,7 +557,7 @@ export default {
           })
           .catch((err) => {
             console.log(err);
-            alert("更新資料時發生問題，請重新編輯!");
+            alert(Constrant.updateFailedString);
           })
           .finally(() => {
             this.chLoadingShow();
@@ -570,7 +570,7 @@ export default {
           })
           .catch((err) => {
             console.log(err);
-            alert("新增資料時發生問題，請重新新增!");
+            alert(Constrant.insertFailedString);
           })
           .finally(() => {
             this.chLoadingShow();
@@ -630,7 +630,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("查詢時發生問題，請重新查詢!");
+          alert(Constrant.queryFailedString);
         })
         .finally(() => {
           this.chLoadingShow();
@@ -653,7 +653,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("刪除時發生問題，請重試!");
+          alert(Constrant.deleteFailedString);
         })
         .finally(() => {
           this.chLoadingShow();

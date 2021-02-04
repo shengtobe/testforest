@@ -133,7 +133,7 @@ export function unique(list) {
     let id = 0;
     for (var i = 0; i < list.length; i++) {
         if (i == 0) {
-            list[i].Id = ++id;
+            list[i].ItemNo = ++id;
             arr.push(list[i]);
         }
         b = false;
@@ -145,7 +145,7 @@ export function unique(list) {
                 }
             }
             if (!b) {
-                list[i].Id = ++id;
+                list[i].ItemNo = ++id;
                 arr.push(list[i]);
             }
         }
