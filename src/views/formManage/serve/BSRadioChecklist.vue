@@ -61,16 +61,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
-        <v-select
-          :items="[
-            { text: '資訊科', value: 'A' },
-            { text: '資訊科2', value: 'B' },
-            { text: '資訊科3', value: 'C' },
-            { text: '資訊科4', value: 'D' },
-            { text: 'A0005', value: 'E' },
-          ]"
-          solo
-        />
+        <v-select :items="formDepartOptions" v-model="input.department" solo />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
@@ -121,7 +112,7 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
             </v-btn>
             <v-btn
               title="刪除"
@@ -305,8 +296,10 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="itemlist.items1[idx].status"
+                            v-model="item.status"
                             class="pa-0 ma-0"
+                            :rules="nameRules"
+                            required
                           >
                             <v-radio
                               color="success"
@@ -357,7 +350,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="itemlist.items2[idx].status"
+                            v-model="item.status"
                             class="pa-0 ma-0"
                           >
                             <v-radio
@@ -409,7 +402,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="itemlist.items3[idx].status"
+                            v-model="item.status"
                             class="pa-0 ma-0"
                           >
                             <v-radio
@@ -461,7 +454,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="itemlist.items4[idx].status"
+                            v-model="item.status"
                             class="pa-0 ma-0"
                           >
                             <v-radio
@@ -535,10 +528,11 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 
 class Question {
-  constructor(description) {
+  constructor(description, status, note, required) {
     this.description = description;
     this.status = 0;
     this.note = "";
+    this.required = required;
   }
 }
 
@@ -673,18 +667,23 @@ export default {
       itemlist: {
         items1: [
           //無線電機(含電源供應器)
-          new Question("1. 無線電機、電源供應器之清潔"),
-          new Question("2. 外觀檢查(面板、旋鈕等)"),
-          new Question("3. 麥克風纜線是否完好、按鍵功能是否正常"),
-          new Question("4. 天線纜線接頭是否鬆動"),
-          new Question("5. 電源線是否鎖緊在電源供應器之接點上 "),
-          new Question("6. 接收功能是否正常檢查"),
-          new Question("7. 發射功能是否正常檢查"),
+          new Question("1. 無線電機、電源供應器之清潔", "0", "", true),
+          new Question("2. 外觀檢查(面板、旋鈕等)", "0", "", true),
+          new Question(
+            "3. 麥克風纜線是否完好、按鍵功能是否正常",
+            "0",
+            "",
+            true
+          ),
+          new Question("4. 天線纜線接頭是否鬆動", "0", "", true),
+          new Question("5. 電源線是否鎖緊在電源供應器之接點上 ", "0", "", true),
+          new Question("6. 接收功能是否正常檢查", "0", "", true),
+          new Question("7. 發射功能是否正常檢查", "0", "", true),
         ],
         items2: [
           //天線組件
-          new Question("1. 天線及固定支架外觀檢查"),
-          new Question("2. 纜線穿牆進入辦公室之防水滲漏檢查"),
+          new Question("1. 天線及固定支架外觀檢查", "0", "", true),
+          new Question("2. 纜線穿牆進入辦公室之防水滲漏檢查", "0", "", true),
         ],
         items3: [
           //電瓶、保險絲及電源線(車裝台免填)
@@ -723,7 +722,6 @@ export default {
   created() {
     this.ipt2 = { ...this.defaultIpt };
     this.nowTime = getTodayDateString();
-    console.log(this.userData);
     this.doMan.name = this.userData.UserName;
     this.doMan.id = this.userData.UserId;
     this.doMan.depart = this.userData.DeptList[0].DeptDesc;
@@ -750,7 +748,7 @@ export default {
       }
     },
     newOne() {
-      console.log("newOne23");
+      this.action = Actions.add;
       this.ShowDetailDialog = true;
       console.log("this.ShowDetailDialog: " + this.ShowDetailDialog);
       this.initInput();
@@ -787,7 +785,6 @@ export default {
         .then((res) => {
           let tbBuffer = JSON.parse(res.data.DT);
           let aa = unique(tbBuffer);
-          console.log(aa);
           this.tableItems = aa;
         })
         .catch((err) => {
@@ -831,6 +828,12 @@ export default {
         });
       }
 
+      // TODO: 必要欄位檢查
+      // if (data.CheckDay == "" || this.AlarmDay == "" || this.Name == "") {
+      //   this.dialogNull = true;
+      //   return;
+      // }
+
       // 修改
       if (this.action == Actions.edit) {
         // update 要自行增加RPFlowNo欄位
@@ -867,7 +870,6 @@ export default {
     // 關閉 dialog
     close() {
       this.ShowDetailDialog = false;
-      this.dialog3 = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
       setTimeout(() => {
@@ -891,12 +893,12 @@ export default {
       })
         .then((res) => {
           this.initInput();
-          console.log("Raw response data");
-          console.log(res.data.DT);
+          // console.log("Raw response data");
+          // console.log(res.data.DT);
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
-          console.log("Parsed JSON object");
-          console.log(data);
+          // console.log("Parsed JSON object");
+          // console.log(data);
           this.Name = data.Name;
           this.CheckDay = data.CheckDay.substr(0, 10);
           this.DeviceType = data.DeviceType;
@@ -906,17 +908,6 @@ export default {
           this.RPFlowNo = data.RPFlowNo;
           this.Memo = data.Memo;
 
-          // 取出CheckOption
-          // let CheckOptions = [];
-          // for (let key of Object.keys(data)) {
-          //   //console.log(key + ": " + data[key]);
-          //   if (key.toString().startsWith("CheckOption")) {
-          //     CheckOptions.push(key);
-          //   }
-          // }
-          // console.log("CheckOptions");
-          // console.log(CheckOptions);
-          // 加入CheckOption1~18的值
           let j = 1;
           for (var items in this.itemlist) {
             const element = this.itemlist[items];
