@@ -17,3 +17,12 @@ export function createNotify(data) { return axios(
         data,
     }
 )}
+
+// 取得單一筆工單詳細資料
+export function fetchNotifyOne(data) { return axios(
+    {
+        url: '/sms/dangernotify/detail',
+        method: 'post',
+        data,
+    }
+)}

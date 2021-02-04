@@ -107,7 +107,7 @@
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             :loading="isLoading"
-                            @click="redirect(item)"
+                            @click="viewPage(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -226,36 +226,11 @@ export default {
                 this.chLoadingShow()
             })
         },
-        // 重新導向 (依結案狀態)
-        // redirect(item) {
-        //     // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        //     // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-        //     // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
-        //     this.isLoading = true
-        //     let routeData = ''
-        //     switch(item.status) {
-        //         case '1':
-        //             routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/show` })
-        //             break
-        //         case '2':
-        //             routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/show` })
-        //             break
-        //         case '3':
-        //             routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/complated` })
-        //             break
-        //         case '4':
-        //             routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.id}/review` })
-        //             break
-        //         default:
-        //             break
-        //     }
-
-        //     setTimeout(() => {
-        //         this.isLoading = false
-        //         window.open(routeData.href, '_blank')
-        //     }, 1000)
-        // },
+        // 檢視內容
+        viewPage(item) {
+            let routeData = this.$router.resolve({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+            window.open(routeData.href, '_blank')
+        },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n

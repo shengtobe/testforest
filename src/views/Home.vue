@@ -53,7 +53,7 @@
         <!-- 待辦事項 -->
         <h3 class="px-3">待辦事項</h3>
 
-        <v-col cols="12">
+        <v-col cols="12" class="mb-4">
             <v-card>
                 <v-data-table
                     :headers="headers.todo"
@@ -96,7 +96,10 @@
         </v-col>
 
         <!-- 版本資訊 -->
-        <!-- <p class="px-2">系統版本： {{ userData.Version }}</p> -->
+        <v-col cols="12" class="mb-8 px-4">
+            <p>系統版本： {{ userData.Version }}</p>
+            <div v-html="userData.VersionMemo.replace(/\n/g, '<br>')"></div>
+        </v-col>
     </v-row>
 </v-container>
 </template>
