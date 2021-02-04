@@ -4849,7 +4849,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 // import form51lib from "@/components/Form51Lib.vue";
@@ -4864,7 +4864,7 @@ export default {
       valShow: 0,
       formDepartOptions: [
         // 通報單位下拉選單
-        { text: "", value: "" },
+        { text: "不限", value: "" },
         ...formDepartOptions,
       ],
       title: "",

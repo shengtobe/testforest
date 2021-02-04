@@ -403,7 +403,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
@@ -419,6 +419,11 @@ export default {
       note: "109年05月21日發生西南氣流豪雨，5/22日累積雨量達200mm以上，建立預警機制5/22日阿里山線暫時停駛。",
       temp1: "../../../assets/images/brgImg1_1.jpg",
       sbjNum: [],
+      formDepartOptions: [
+      // 通報單位下拉選單
+      { text: "不限", value: "" },
+      ...formDepartOptions,
+    ],
       i_num: 0,
       manImg: require("../../../assets/images/brgImg1_1.jpg"),
       manImg2: require("../../../assets/images/brgImg1_2.jpg"),
@@ -760,11 +765,11 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId", "DepartName"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)

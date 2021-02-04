@@ -273,7 +273,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
@@ -294,7 +294,7 @@ export default {
       MaintenanceDay: "",
       formDepartOptions: [
         // 通報單位下拉選單
-        { text: "", value: "" },
+        { text: "不限", value: "" },
         ...formDepartOptions,
       ],
       apm: ["部門1", "部門2", "部門3", "部門4"],
@@ -458,11 +458,11 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId", "DepartName"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)

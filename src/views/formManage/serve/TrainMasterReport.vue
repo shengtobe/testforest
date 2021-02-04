@@ -15,11 +15,11 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryData.DayStart" solo v-on="on" readonly />
+            <v-text-field v-model.trim="z" solo v-on="on" readonly />
           </template>
           <v-date-picker
             color="purple"
-            v-model="QueryData.DayStart"
+            v-model="z"
             @input="QueryDayStart = false"
             locale="zh-tw"
           />
@@ -37,11 +37,11 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryData.DayEnd" solo v-on="on" readonly />
+            <v-text-field v-model.trim="df" solo v-on="on" readonly />
           </template>
           <v-date-picker
             color="purple"
-            v-model="QueryData.DayEnd"
+            v-model="df"
             @input="QueryDayEnd = false"
             locale="zh-tw"
           />
@@ -128,7 +128,7 @@
                         <h3 class="mb-1">日期</h3>
                         <v-menu :close-on-content-click="false" transition="scale-transition" max-width="290px" min-width="290px">
                             <template v-slot:activator="{ on }">
-                                <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
+                                <v-text-field v-model.trim="zs" solo v-on="on" />
                             </template>
                             <v-date-picker color="purple" v-model="zs" @input="MaintenanceDay = false" locale="zh-tw"/>
                         </v-menu>
@@ -500,7 +500,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
@@ -514,9 +514,11 @@ export default {
       disabled: false,
       indexN:0,
       sumN:0,
+      z: '',
+      df: '',
       formDepartOptions: [
         // 通報單位下拉選單
-        { text: "", value: "" },
+        { text: "不限", value: "" },
         ...formDepartOptions,
       ],
       QueryDayStart: "",
@@ -620,11 +622,11 @@ export default {
       zs: '',
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "報告日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "報告人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "報告單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
@@ -651,6 +653,7 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
   },
   computed: {
     ...mapState ('user', {
@@ -774,12 +777,12 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId", "DepartName"
         ],
       }).then(res => {
         console.log("res.data.DT: " + res.data.DT)
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)

@@ -62,7 +62,7 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇部門
         </h3>
         <v-select
-          v-model="ipt.case"
+          v-model="ipt2.depart"
           :items="formDepartOptions"
           solo
         />
@@ -464,7 +464,7 @@
 import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from "vuex";
-import { getNowFullTime } from "@/assets/js/commonFun";
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import {
   fetchFormOrderList,
@@ -517,7 +517,7 @@ export default {
     EmpDepartCode: "",
     formDepartOptions: [
       // 通報單位下拉選單
-      { text: "", value: "" },
+      { text: "不限", value: "" },
       ...formDepartOptions,
     ],
     //---api---
@@ -568,7 +568,7 @@ export default {
       },
       {
         text: "保養單位",
-        value: "DepartCode",
+        value: "DepartName",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -660,6 +660,7 @@ export default {
       dStr = "0" + dStr;
     }
     this.nowTime = today.getFullYear() + "-" + mStr + "-" + dStr;
+    this.z = this.df = this.nowTime
   },
 
   methods: {
@@ -751,14 +752,15 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "DepartName",
           "CheckDay",
           "CheckStatus",
-          "FlowId",
+          "FlowId"
         ],
       })
         .then((res) => {
           let tbBuffer = JSON.parse(res.data.DT);
-          let aa = this.unique(tbBuffer);
+          let aa = unique(tbBuffer);
           this.tableItems = aa;
         })
         .catch((err) => {
