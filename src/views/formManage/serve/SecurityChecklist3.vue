@@ -367,7 +367,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
@@ -413,11 +413,11 @@ export default {
       ],
       headers: [
         // 表格顯示的欄位
-        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
@@ -507,6 +507,7 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
   },
   methods: {
     initInput(){
@@ -580,6 +581,7 @@ export default {
                 ],
         QyName:[
           "RPFlowNo",
+          "DepartName",
           "ID",
           "Name",
           "CheckDay",
@@ -587,7 +589,7 @@ export default {
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)
@@ -610,7 +612,7 @@ export default {
             "Chk1":
             [
               {
-                "CheckDay":this.nowTime, "SwitchLoc":"1", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                "CheckDay":this.zs, "SwitchLoc":"1", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
                 "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
               },
               {

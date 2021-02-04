@@ -42,12 +42,12 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          :items="formDepartOptions" v-model="ipt2.depart"
           solo
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -154,13 +154,13 @@
                     <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
-                <v-col cols="12" sm="4">
+                <!-- <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
                   <v-text-field solo value readonly />
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="doMan.name"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -199,7 +199,7 @@
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="3" />
+                    <v-textarea hide-details auto-grow outlined v-model="ipt.items[idx].note" rows="3" />
                   </v-col>
                 </v-row>
               </v-alert>
@@ -207,11 +207,11 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="Advice"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="Measures"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -230,9 +230,10 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
@@ -245,6 +246,11 @@ export default {
       ass: "",
       z: "",
       zs: "",
+      formDepartOptions: [
+      // 通報單位下拉選單
+      { text: "不限", value: "" },
+      ...formDepartOptions,
+    ],
       q: "",
       df: "",
       s: "",
@@ -255,11 +261,13 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      memo_2: "",
+      memo_3: "",
       Add: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP023",
       nowTime: "",
       doMan:{
         id: '',
@@ -269,24 +277,26 @@ export default {
       },
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
+        startDay: '',
+        EndDay: '',
+        depart: '',  // 單位
+      },
+      Advice: '',
+      Measures: '',
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
       //------
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },
@@ -328,13 +338,14 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
   },
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 7; step++) {
+      for (step = 0; step < 6; step++) {
         this.ipt.items[step].status = "0"
         this.ipt.items[step].note = ''
       }
@@ -362,9 +373,8 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+      console.log("newOne")
       this.Add = true
-      console.log("this.Add: " + this.Add)
       this.initInput();
     },
     ...mapActions('system', [
@@ -397,13 +407,14 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "DepartName",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId", "DepartName"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)
@@ -414,7 +425,59 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.zs
+      arr = arr.concat(obj)               
+
+      let i;
+      for (i = 0; i < 6; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      obj = new Object()
+      obj.Column = "Advice"
+      obj.Value = this.Advice
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Measures"
+      obj.Value = this.Measures
+      arr = arr.concat(obj)
+
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -450,9 +513,12 @@ export default {
           "Memo_2",
           "CheckOption3",
           "Memo_3",
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
           "Advice",
           "Measures",
-
         ],
       }).then(res => {
         this.initInput();

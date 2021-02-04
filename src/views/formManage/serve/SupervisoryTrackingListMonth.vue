@@ -44,12 +44,12 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          :items="formDepartOptions" v-model="ipt.department"
           solo
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -72,7 +72,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -157,7 +157,7 @@
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">督檢作業場所</h3>
-                  <v-text-field solo value  />
+                  <v-text-field solo value  v-model="place"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -194,16 +194,16 @@
                   <v-col cols="12" sm="2">{{ item.question }}</v-col>
                   <v-col cols="12" sm="2">{{ item.decree }}</v-col>
                   <v-col cols="12" sm="2">
-                    <v-checkbox class="mx-2" v-model="aa" label="符合" value="A"></v-checkbox>
+                    <v-checkbox class="mx-2" v-model="ipt.items[idx].status" label="符合"></v-checkbox>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea auto-grow outlined rows="2" />
+                      <v-textarea auto-grow outlined rows="2" v-model="ipt.items[idx].note"/>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].CheckAdvice"/>
+                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].note2"/>
                   </v-col>
                   <v-col cols="12" sm="2">
-                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].CheckDescription"/>
+                      <v-textarea hide-details auto-grow outlined rows="2" v-model="ipt.items[idx].note3"/>
                   </v-col>
                 </v-row>
               </v-alert>
@@ -226,7 +226,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
@@ -254,6 +254,12 @@ export default {
       yy: "",
       Add: false,
       dialog3: false,
+      place:"",
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP015",
@@ -272,27 +278,27 @@ export default {
         },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "督檢日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "督檢單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
       //------
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
+          { status: false, note: "", note2:"", note3:"" },
         ],
       },
       items: [
@@ -326,19 +332,21 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
   },
   methods: {
     initInput(){
       console.log("init create window form")
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
+      this.place = "";
       var step;
-      for (step = 0; step < 24; step++) {
-        this.ipt.items[step].status = "0"
+      for (step = 0; step < 7; step++) {
+        this.ipt.items[step].status = false
         this.ipt.items[step].note = ""
+        this.ipt.items[step].note2 = ""
+        this.ipt.items[step].note3 = ""
       }
-      this.memo_2 = ""
-      this.memo_3 = ""
     },
     newOne(){
       this.Add = true
@@ -380,9 +388,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.z},
+          {"Column":"EndDayVlaue","Value":this.df},
+          {"Column":"DepartCode","Value":this.ipt.department},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -396,11 +404,11 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId"
+          "FlowId", "DepartName"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)
@@ -411,7 +419,64 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.zs
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Place"
+      obj.Value = this.place
+      arr = arr.concat(obj)
+
+      let i;
+      for (i = 0; i < 7; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status == true?"1":"2"
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "CheckAdvice" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "CheckDescription" + (i+1)
+        obj.Value = this.ipt.items[i].note2
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "CheckMemo" + (i+1)
+        obj.Value = this.ipt.items[i].note3
+        arr = arr.concat(obj)
+      }
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -437,38 +502,38 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "CheckAdvice1",
-          "CheckDescription1",
-          "CheckMemo1",
-          "CheckOption2",
-          "CheckAdvice2",
-          "CheckDescription2",
-          "CheckMemo2",
-          "CheckOption3",
-          "CheckAdvice3",
-          "CheckDescription3",
-          "CheckMemo3",
-          "CheckOption4",
-          "CheckAdvice4",
-          "CheckDescription4",
-          "CheckMemo4",
-          "CheckOption5",
-          "CheckAdvice5",
-          "CheckDescription5",
-          "CheckMemo5",
-          "CheckOption6",
-          "CheckAdvice6",
-          "CheckDescription6",
-          "CheckMemo6",
-          "CheckOption7",
-          "CheckAdvice7",
-          "CheckDescription7",
-          "CheckMemo7",
+          "CheckDay",//0
+          "DepartName",//1
+          "Name",//2
+          "Place",//3
+          "CheckOption1",//4
+          "CheckAdvice1",//5
+          "CheckDescription1",//6
+          "CheckMemo1",//7
+          "CheckOption2",//8
+          "CheckAdvice2",//9
+          "CheckDescription2",//10
+          "CheckMemo2",//11
+          "CheckOption3",//12
+          "CheckAdvice3",//13
+          "CheckDescription3",//14
+          "CheckMemo3",//15
+          "CheckOption4",//16
+          "CheckAdvice4",//17
+          "CheckDescription4",//18
+          "CheckMemo4",//19
+          "CheckOption5",//20
+          "CheckAdvice5",//21
+          "CheckDescription5",//22
+          "CheckMemo5",//23
+          "CheckOption6",//24
+          "CheckAdvice6",//25
+          "CheckDescription6",//26
+          "CheckMemo6",//27
+          "CheckOption7",//28
+          "CheckAdvice7",//29
+          "CheckDescription7",//30
+          "CheckMemo7",//31
         ],
       }).then(res => {
         this.initInput();
@@ -484,26 +549,30 @@ export default {
         this.zs = time1
         console.log("doMan name: " + this.doMan.name)
         //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
+        this.place = dat[0].Place
         var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 32){
-              if(i % 3 == 1){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else if (i % 3 == 2){
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-              else
-              {
-
-                
-              }
+        for(let key of Object.keys(dat[0])){
+          if(i >= 4 && i <= 31){
+            if(i % 4 == 0){
+              this.ipt.items[j].status = (dat[0])[key] == "1"?true:false
+              console.log("ipt.items[" + j + "].status: " + this.ipt.items[j].status + " >> key:" + key)
             }
-            i++
+            else if (i % 4 == 1){
+              this.ipt.items[j].note = (dat[0])[key]
+              console.log("ipt.items[" + j + "].note: " + this.ipt.items[j].note + " >> key:" + key)
+            }
+            else if (i % 4 == 2){
+              this.ipt.items[j].note2 = (dat[0])[key]
+              console.log("ipt.items[" + j + "].note2: " + this.ipt.items[j].note2 + " >> key:" + key)
+            }
+            else{
+              this.ipt.items[j].note3 = (dat[0])[key]
+              console.log("ipt.items[" + j + "].note3: " + this.ipt.items[j].note3 + " >> key:" + key)
+              j++
+            }
           }
+          i++
+        }
         
       }).catch(err => {
         console.log(err)

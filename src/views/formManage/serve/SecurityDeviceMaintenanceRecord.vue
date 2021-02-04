@@ -48,7 +48,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -128,13 +128,13 @@
                 </v-col>
                 <v-col cols="12" sm="6">
                   <h3 class="mb-1">工作地點</h3>
-                  <v-text-field solo value />
+                  <v-text-field solo value v-model="Place"/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12">
                   <h3 class="mb-1 indigo--text">工作內容</h3>
-                  <v-textarea solo rows="4" />
+                  <v-textarea solo rows="4" v-model="Content"/>
                 </v-col>
               </v-row> 
               <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
@@ -144,22 +144,22 @@
                   </v-col>
                   <v-col cols="12" sm="4" style="display: flex;">
                     <h3 class="mt-3 mr-1">起</h3>
-                    <v-text-field type="number"  solo style="width: 0px;" placeholder="時"/>
+                    <v-text-field type="number" v-model="BgWorkHour" solo style="width: 0px;" placeholder="時"/>
                     <h3 class="mt-3">：</h3>
-                    <v-text-field type="number" solo style="width: 0px;" placeholder="分"/>
+                    <v-text-field type="number" v-model="BgWorkMinute" solo style="width: 0px;" placeholder="分"/>
                   </v-col>
                   <v-col cols="12" sm="4" style="display: flex;">
                     <h3 class="mt-3 mr-1">迄</h3>
-                    <v-text-field type="number" solo style="width: 0px;" placeholder="時"/>
+                    <v-text-field type="number" v-model="EndWorkHour" solo style="width: 0px;" placeholder="時"/>
                     <h3 class="mt-3">：</h3>
-                    <v-text-field type="number" solo style="width: 0px;" placeholder="分"/>
+                    <v-text-field type="number" v-model="EndWorkMinute" solo style="width: 0px;" placeholder="分"/>
                   </v-col>
                 </v-row>
                 <v-row no-gutter>
                   <v-col cols="12" sm="4">
                     <h3 class="mt-4">
                       工作狀態
-                      <v-radio-group dense row class="pa-0 ma-0">
+                      <v-radio-group dense row class="pa-0 ma-0" v-model="WorkStatus">
                         <v-radio color="success" label="開始" value="1" />
                         <v-radio color="orange" label="暫停或終了" value="2" />
                       </v-radio-group>
@@ -171,7 +171,7 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">施工聯絡人</h3>
-                    <v-textarea auto-grow outlined rows="1" />
+                    <v-textarea auto-grow outlined rows="1" v-model="Worker" />
                   </v-col>
                 </v-row>
                 <v-row no-gutter>
@@ -211,7 +211,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
@@ -232,6 +232,21 @@ export default {
         depart: '',
         checkManName: ''
       },
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
+      Place: '',
+      Content: '',
+      BgWorkHour: '',
+      BgWorkMinute: '',
+      EndWorkHour: '',
+      EndWorkMinute: '',
+      WorkStatus: '',
+      Worker: '',
+      StopEqip: '',
+      StopEqipStatus: '',
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',
@@ -240,11 +255,11 @@ export default {
         },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "FlowId", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
@@ -254,7 +269,7 @@ export default {
       pageOpt: { page: 1 }, // 目前頁數
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },
@@ -284,19 +299,23 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
   },
   methods: {
     initInput(){
       console.log("init create window form")
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 24; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ""
-      }
-      this.memo_2 = ""
-      this.memo_3 = ""
+      this.Place = '',
+      this.Content = '',
+      this.BgWorkHour = '',
+      this.BgWorkMinute = '',
+      this.EndWorkHour = '',
+      this.EndWorkMinute = '',
+      this.WorkStatus = '',
+      this.Worker = '',
+      this.StopEqip = '',
+      this.StopEqipStatus = ''
     },
     newOne(){
       this.Add = true
@@ -353,13 +372,14 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "DepartName",
           "CheckDay",
           "CheckStatus",
           "FlowId"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = this.unique(tbBuffer)
+        let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
         console.log(err)
@@ -374,7 +394,7 @@ export default {
     // 關閉 dialog
     close() {
       this.Add = false;
-      this.dialog3 = false;
+      this.dialog = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
       setTimeout(() => {
