@@ -10,25 +10,25 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
         </h3>
-        <v-select solo hide-details />
+        <v-text-field solo placeholder="請輸入監工區/班別" v-model="searchDepartName"/>
       </v-col>
 
       <v-col cols="12" sm="8" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>材料名稱
         </h3>
-        <v-text-field solo placeholder="請輸入關鍵字" />
+        <v-text-field solo placeholder="請輸入關鍵字" v-model="searchMaterialName"/>
       </v-col>
 
       <v-col cols="12" md="6" align-self="center">
-        <v-btn color="green" dark large>
+        <v-btn color="green" dark large @click="searchData">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="Add = true">
+        <v-btn color="indigo" dark large class="ml-2" @click="goAdd()">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
         <v-btn color="pink lighten-2" dark large class="ml-2" @click="Del = true">
-          <v-icon class="mr-1">mdi-pencil-off</v-icon>移存申請單
+          <v-icon class="mr-1">mdi-folder-move-outline</v-icon>移存申請單
         </v-btn>
       </v-col>
 
@@ -37,11 +37,13 @@
         <v-card>
           <v-data-table
             :headers="headers"
-            :items="tableItems"
+            :items="tableItem"
             :options.sync="pageOpt"
             disable-sort
             disable-filtering
             hide-default-footer
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -50,22 +52,22 @@
             <!-- 本月結存數量小於安全庫存量時，系統會特以紅色底色標註提醒使用者 -->
             <!--  style="background: #ff9999;" -->
             <template v-slot:item.ViewTicket="{ item }">
-              <v-btn fab small dark color="teal" @click="view(item)">
+              <v-btn fab small dark color="teal" @click="getDetail(item.Material)">
                 <v-icon>mdi-file-document</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:item.Balance="{ item }">
-              <div v-if="item.Balance < item.Stock" style="background: #ff9999;">{{ item.Balance }}</div>
+              <div v-if="parseInt(item.Balance) < parseInt(item.Stock)" style="background: #ff9999;">{{ item.Balance }}</div>
               <span v-else>{{ item.Balance }}</span>
             </template>
 
-            <template v-slot:item.a8>
-              <v-btn fab small color="primary" class="mr-2" @click="Edit = true">
+            <template v-slot:item.a8="{ item }">
+              <v-btn fab small color="primary" class="mr-2" @click="goEdit(item.Material)">
                 <v-icon>mdi-pen</v-icon>
               </v-btn>
 
-              <v-btn fab small color="error" @click="Delete = true">
+              <v-btn fab small color="error" @click="wantDelete(item.Material)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -91,7 +93,7 @@
             <v-row no-gutters>
               <v-col cols="12">
                 <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>
-                監工區(廠/庫)： {{ content.Position }}
+                監工區(廠/庫)： {{ detailItem.Position }}
               </v-col>
 
               <v-col cols="12">
@@ -99,11 +101,11 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-more</v-icon>
-                班別(組)： {{ content.Group }}
+                班別(組)： {{ detailItem.Group }}
               </v-col>
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-more</v-icon>
-                材料編號： {{ content.Material }}
+                材料編號： {{ detailItem.Material }}
               </v-col>
 
               <v-col cols="12">
@@ -111,7 +113,7 @@
               </v-col>
               <v-col cols="12">
                 <v-icon class="mr-1 mb-1">mdi-more</v-icon>
-                規範： {{ content.Specification }}
+                規範： {{ detailItem.Specification }}
               </v-col>
               <v-col cols="12">
                 <v-divider class="mt-2 mb-3" />
@@ -119,12 +121,12 @@
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-domain</v-icon>
-                材料名稱： {{ content.MaterialName }}
+                材料名稱： {{ detailItem.MaterialName }}
               </v-col>
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-timetable</v-icon>
-                單位： {{ content.Dept }}
+                單位： {{ detailItem.Dept }}
               </v-col>
 
               <v-col cols="12">
@@ -133,12 +135,12 @@
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-package-variant-closed</v-icon>
-                上月結存數量： {{ content.LastBalance }}
+                上月結存數量： {{ detailItem.LastBalance }}
               </v-col>
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-package-variant</v-icon>
-                本月實收數量： {{ content.Paid }}
+                本月實收數量： {{ detailItem.Paid }}
               </v-col>
 
               <v-col cols="12">
@@ -147,12 +149,12 @@
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-calendar-check</v-icon>
-                本月領用數量： {{ content.Receiving }}
+                本月領用數量： {{ detailItem.Receiving }}
               </v-col>
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-calendar-multiple-check</v-icon>
-                本月結存數量： {{ content.Balance }}
+                本月結存數量： {{ detailItem.Balance }}
               </v-col>
 
               <v-col cols="12">
@@ -160,12 +162,12 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-calendar-check</v-icon>
-                安全庫存數量： {{ content.Stock }}
+                安全庫存數量： {{ detailItem.Stock }}
               </v-col>
 
               <v-col cols="12" sm="6">
                 <v-icon class="mr-1 mb-1">mdi-calendar-multiple-check</v-icon>
-                單價： {{ content.UnitPrice }}
+                單價： {{ detailItem.UnitPrice }}
               </v-col>
 
               <v-col cols="12">
@@ -173,7 +175,7 @@
               </v-col>
               <v-col cols="12">
                 <v-icon class="mr-1 mb-1">mdi-wrench</v-icon>
-                備註： {{ content.Remarks }}
+                備註： {{ detailItem.Remarks }}
               </v-col>
             </v-row>
           </div>
@@ -181,167 +183,11 @@
       </v-dialog>
       <!-- 新增料件 modal -->
       <v-dialog v-model="Add" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            新增料件
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">監工區(廠/庫)</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">班別(組)</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">材料編號</h3>
-                    <v-text-field solo />
-                    <!-- <v-select :items="Type" label="類型" solo /> -->
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">材料名稱</h3>
-                    <v-text-field solo />
-                    <!-- <v-select :items="Dept" label="單位" solo /> -->
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">規範</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">上月結存數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">本月實收數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">本月領用數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">本月結存數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">安全庫存數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單價</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">備註</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" @click="save">送出</v-btn>
-          </v-card-actions>
-        </v-card>
+        <CmaterialEdit @close="close" :materCode="nowMaterial" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            編輯資料
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">監工區(廠/庫)</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">班別(組)</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">材料編號</h3>
-                    <v-text-field solo />
-                    <!-- <v-select :items="Type" label="類型" solo /> -->
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">材料名稱</h3>
-                    <v-text-field solo />
-                    <!-- <v-select :items="Dept" label="單位" solo /> -->
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">規範</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">上月結存數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">本月實收數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">本月領用數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">本月結存數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">安全庫存數量</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單價</h3>
-                    <v-text-field type="number" min="0" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">備註</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4">送出</v-btn>
-          </v-card-actions>
-        </v-card>
+        <CmaterialEdit @close="close" :materCode="nowMaterial" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -350,7 +196,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="close">取消</v-btn>
-            <v-btn color="success">刪除</v-btn>
+            <v-btn color="success" @click="goDelete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -427,84 +273,28 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
-
+import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
+import { materialQueryList,materialQuery,materialDelete,materialEdit } from '@/apis/materialManage/material'
+import CmaterialEdit from '@/views/mmis/MaterialEdit'
 export default {
   data() {
     return {
-      ddd: 0,
+      searchDepartName: '',
+      searchMaterialName: '',
+      tableItem: [],
+      sortBy: 'id',
+      sortDesc: false,
+      detailItem:{},
+      nowMaterial: '',
       pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數
-      tableItems: [
-        {
-          id: "1",
-          Position: "奮起湖監工區",
-          Group: "1",
-          Material: "1",
-          MaterialName: "道碴",
-          Specification: "",
-          Dept: "m³",
-          LastBalance: "313",
-          Paid: "",
-          Receiving: "",
-          Balance: 313,
-          Stock: 100,
-          UnitPrice: 10,
-          Remarks: "11/27入帳307立方",
-        },
-        {
-          id: "2",
-          Position: "奮起湖監工區",
-          Group: "2",
-          Material: "2",
-          MaterialName: "魚尾鈑螺絲(公)",
-          Specification: "",
-          Dept: "支",
-          LastBalance: "",
-          Paid: "",
-          Receiving: "",
-          Balance: 999,
-          Stock: 900,
-          UnitPrice: "20",
-          Remarks: "列入魚尾鈑螺絲組",
-        },
-        {
-          id: "3",
-          Position: "阿里山監工區",
-          Group: "3",
-          Material: "3",
-          MaterialName: "魚尾鈑螺絲帽(母)",
-          Specification: "",
-          Dept: "支",
-          LastBalance: "689",
-          Paid: "",
-          Receiving: "",
-          Balance: 689,
-          Stock: 700,
-          UnitPrice: 10,
-          Remarks: "四角螺絲",
-        },
-        {
-          id: "4",
-          Position: "竹崎監工區",
-          Group: "3",
-          Material: "4",
-          MaterialName: "魚尾鈑螺絲組",
-          Specification: "(公+母)為1組",
-          Dept: "組",
-          LastBalance: "2873",
-          Paid: "",
-          Receiving: 300,
-          Balance: 2573,
-          Stock: 2400,
-          UnitPrice: 10,
-          Remarks: "",
-        },
-      ],
       headers: [
         {
           text: "項次",
           value: "id",
           align: "center",
+          sortable: true,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -512,6 +302,7 @@ export default {
           text: "監工區(廠/庫)",
           value: "Position",
           align: "center",
+          sortable: true,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -519,6 +310,7 @@ export default {
           text: "班別(組)",
           value: "Group",
           align: "center",
+          sortable: true,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -526,6 +318,7 @@ export default {
           text: "材料編號",
           value: "Material",
           align: "center",
+          sortable: true,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -533,6 +326,7 @@ export default {
           text: "材料名稱",
           value: "MaterialName",
           align: "center",
+          sortable: true,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -540,6 +334,7 @@ export default {
           text: " 安全庫存數量",
           value: "Stock",
           align: "center",
+          sortable: false,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -547,6 +342,7 @@ export default {
           text: "本月結存數量",
           value: "Balance",
           align: "center",
+          sortable: false,
           divider: true,
           class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
@@ -572,36 +368,175 @@ export default {
       Delete: false,
       Del: false,
       snack: false,
-      snackColor: "",
-      snackText: "",
+      snackColor: '',
+      snackText: '',
+      componentKey: 0,
+      deleteKey: ''
     };
+  },
+  mounted:function() {
+    this._dataInit()
   },
   components: {
     Pagination,
+    CmaterialEdit,
   },
-  computed: {},
+  computed: {
+    ...mapState ('user', {
+      userData: state => state.userData,  // 使用者基本資料
+    }),
+  },
   methods: {
+    ...mapActions('system', [
+      'chMsgbar',  // messageBar
+      'chLoadingShow'  // 切換 loading 圖顯示
+    ]),
+    _dataInit() {
+      this.searchData()
+    },
+    //清單查詢
+    searchData() {
+      const that = this
+      const departName = '%' + that.searchDepartName + '%'
+      const materialName = '%' + that.searchMaterialName + '%'
+      that.chLoadingShow()
+      materialQueryList({
+        DepartCode: departName,
+        MaterialName: materialName,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          let tempObj
+          that.tableItem = []
+          res.data.query_list.forEach(function(element,index){
+            tempObj = {
+              id: '',
+              Position: '',
+              Group: '',
+              Material: '',
+              MaterialName: '',
+              Balance: '',
+              Stock: '',
+            }
+            tempObj.id = (index + 1).toString()
+            tempObj.Position = element.Supervision
+            tempObj.Group = element.ClassGroup
+            tempObj.Material = element.MaterialCode
+            tempObj.MaterialName = element.MaterialName
+            tempObj.Balance = element.Amount
+            tempObj.Stock = element.SaftyAmount
+            that.tableItem.push(tempObj)
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        that.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        that.tableItem = decodeObject(that.tableItem)
+      })
+    },
+    //詳細查詢
+    getDetail(matCode) {
+      const that = this
+      that.chLoadingShow()
+      materialQuery({
+        MaterialCode: matCode,  
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          that.detailItem.Position = res.data.Supervision
+          that.detailItem.Group = res.data.ClassGroup
+          that.detailItem.Material = res.data.MaterialCode
+          that.detailItem.Specification = res.data.Specification
+          that.detailItem.MaterialName = res.data.MaterialName
+          that.detailItem.Dept = res.data.Unit
+          that.detailItem.LastBalance = res.data.LastMonthAmount
+          that.detailItem.Paid = res.data.MonthAmountRcv
+          that.detailItem.Receiving = res.data.MonthAmountGet
+          that.detailItem.Balance = res.data.Amount
+          that.detailItem.Stock = res.data.SaftyAmount
+          that.detailItem.UnitPrice = res.data.Price
+          that.detailItem.Remarks = res.data.Memo
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        that.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        that.detailItem = decodeObject(that.detailItem)
+        this.contentShow = true;
+      })
+    },
+    goEdit(materl) {
+      this.componentKey += 1
+      this.nowMaterial = materl
+      this.Edit = true
+    },
+    goAdd() {
+      this.componentKey += 1
+      this.Add = true
+    },
+    save(rtnObj) {
+      const that = this
+      const editObject = encodeObject(rtnObj)
+      that.chLoadingShow()
+      materialEdit({
+        ...editObject,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if(res.data.ErrorCode == 0){
+          that.chMsgbar({success:true, msg:'資料編輯成功！'})
+        }else{
+          that.chMsgbar({ success: false, msg: '伺服器發生問題，資料編輯失敗' })
+        }
+      }).catch( err => {
+        that.chMsgbar({ success: false, msg: '伺服器發生問題，資料編輯失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        that.searchData()
+      })
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
-    save() {
-      this.snack = true;
-      this.snackColor = "success";
-      this.snackText = "Data saved";
+    wantDelete(materialCode) {
+      this.deleteKey = materialCode
+      this.Delete = true
     },
-    cancel() {
-      this.snack = true;
-      this.snackColor = "error";
-      this.snackText = "Canceled";
-    },
-    open() {
-      this.snack = true;
-      this.snackColor = "info";
-      this.snackText = "Dialog opened";
+    goDelete() {
+      this.chLoadingShow()
+      materialDelete({
+        MaterialCode: this.deleteKey,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if(res.data.ErrorCode == 0){
+          this.chMsgbar({success:true, msg:'資料刪除成功！'})
+        }else{
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+      }).finally(() => {
+        this.chLoadingShow()
+        this.searchData()
+        this.close()
+      })
     },
     close() {
-      console.log("Dialog closed");
+      //console.log("Dialog closed");
+      this.nowMaterial = undefined
+      this.nowMaterial = ''
       this.Add = false;
       this.Edit = false;
       this.Delete = false;

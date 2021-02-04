@@ -10,7 +10,14 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
         </h3>
-        <v-select solo hide-details v-model="ipt.depart" :items="deptData" item-text="value" item-value="key" label="選擇單位"/>
+        <v-select 
+          solo 
+          hide-details 
+          v-model="ipt.depart" 
+          :items="deptData" 
+          item-text="value" 
+          item-value="key" 
+          label="選擇單位"/>
       </v-col>
 
       <v-col cols="12" sm="8" md="3">
@@ -24,7 +31,7 @@
         <v-btn color="green" dark large>
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="Add = true">
+        <v-btn color="indigo" dark large class="ml-2" @click="goEdit(-1)">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -38,6 +45,8 @@
             disable-sort
             disable-filtering
             hide-default-footer
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -47,7 +56,7 @@
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
 
-            <template v-slot:item.a8>
+            <template v-slot:item.a8={item}>
               <v-btn
                 title="編輯"
                 class="mr-2"
@@ -55,11 +64,11 @@
                 dark
                 fab
                 color="info darken-1"
-                @click="Edit = true"
+                @click="goEdit(item.FlowId)"
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="Delete = true">
+              <v-btn title="刪除" small dark fab color="red" @click="openDelete(item.FlowId)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -70,117 +79,9 @@
           </v-data-table>
         </v-card>
       </v-col>
-      <!-- 新增無線電 modal -->
-      <v-dialog v-model="Add" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            新增無線電
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">機號</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">位置</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">類型</h3>
-                    <v-select :items="typeData" item-text="value" item-value="key" label="類型" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位名稱</h3>
-                    <v-select :items="deptData" item-text="value" item-value="key" label="單位" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">車站</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">持有人編號</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">持有人</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4">送出</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            編輯資料
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">機號</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">位置</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">類型</h3>
-                    <v-select :items="typeData" item-text="value" item-value="key" label="類型" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位</h3>
-                    <v-select :items="deptData" item-text="value" item-value="key" label="單位" solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">車站</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">持有人編號</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">持有人</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4">送出</v-btn>
-          </v-card-actions>
-        </v-card>
+        <radioEdit :nowFlowId="nowFlow" @closeAct="close"></radioEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -189,7 +90,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="close">取消</v-btn>
-            <v-btn color="success">刪除</v-btn>
+            <v-btn color="success" @click="goDelete()">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -201,81 +102,44 @@
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
-import { radioQueryList } from '@/apis/materialManage/radioManage'
+import { radioQueryList,radioDelete } from '@/apis/materialManage/radioManage'
+import radioEdit from '@/views/mmis/RadioCreate.vue'
 export default {
   data: () => ({
     Add: false,
     Edit: false,
     Delete: false,
-    pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數
+    sortBy: 'id',
+    sortDesc: false,
+    pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數 
     typeData: [   //H:手持式、S:固定式、C:車裝台
-      {
-        key: 'H',
-        value: '手持式'
-      },
-      {
-        key: 'S',
-        value: '固定式'
-      },
-      {
-        key: 'C',
-        value: '車裝台'
-      },
-    ],
+        {
+          key: 'H',
+          value: '手持式'
+        },
+        {
+          key: 'S',
+          value: '固定式'
+        },
+        {
+          key: 'C',
+          value: '車裝台'
+        },
+      ],
     deptData: [
-      {
-        key: 'ARCO004',
-        value: '服務科'
-      },
-      {
-        key: 'ARCO015',
-        value: '維護科'
-      }
-    ],
-    
-    tableItems: [
-      {
-        id: "1",
-        Machine: "037TKN3741",
-        Position: "",
-        Type: "手持式",
-        Dept: "服務科",
-        Station: "嘉義",
-        HolderNumber: "111111",
-        Holder: "Bill",
-      },
-      {
-        id: "2",
-        Machine: "037TKN3742",
-        Position: "",
-        Type: "手持式",
-        Dept: "服務科",
-        Station: "北門",
-        HolderNumber: "111111",
-        Holder: "Bill",
-      },
-      {
-        id: "3",
-        Machine: "037TKN3743",
-        Position: "",
-        Type: "手持式",
-        Dept: "服務科",
-        Station: "竹崎車站",
-        HolderNumber: "22222",
-        Holder: "Tom",
-      },
-      {
-        id: "4",
-        Machine: "037TKN3744",
-        Position: "",
-        Type: "手持式",
-        Dept: "服務科",
-        Station: "阿里山車站",
-        HolderNumber: "22222",
-        Holder: "Any",
-      },
-    ], // 控制措施權責部門的表格資料
-    
+        {
+          key: '',
+          value: '選擇單位'
+        },
+        {
+          key: 'ARCO004',
+          value: '服務科'
+        },
+        {
+          key: 'ARCO015',
+          value: '維護科'
+        }
+      ],
     headers: [
       // 控制措施權責部門的表格欄位
       {
@@ -412,13 +276,15 @@ export default {
       depart: '',
       man: ''
     },
-    tableItem: []
+    tableItem: [],
+    nowFlow: 0
   }),
   mounted: function() {
     this.setDataList()
   },
   components: {
     Pagination,
+    radioEdit,
   },
   methods: {
     ...mapActions('system', [
@@ -458,10 +324,40 @@ export default {
       this.pageOpt.page = n;
     },
     close() {
-      this.Add = false;
       this.Edit = false;
       this.Delete = false;
+      this.nowFlow = -1
+      this.setDataList()
     },
+    goEdit(flowId) {
+      this.nowFlow = flowId
+      this.Edit = true
+    },
+    openDelete(flowId) {
+      this.Delete = true
+      this.nowFlow = flowId
+    },
+    goDelete() {
+      const that = this
+      that.chLoadingShow()
+      radioDelete({
+        FlowId: that.nowFlow,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          that.chMsgbar({success:true, msg:'刪除成功！'})
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        that.close()
+      })
+    }
   },
   computed: {
     ...mapState ('user', {

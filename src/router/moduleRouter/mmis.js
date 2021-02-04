@@ -9,6 +9,12 @@ export const MmisRouter = [
             import ('@/views/mmis/TrainTrackLane.vue')
     },
     {
+        linkText: '編輯設備標示編號',
+        path: '/mmis/edit-eqcode',
+        component: () =>
+            import ('@/views/mmis/EquipCodeSettings.vue')
+    },
+    {
         linkText: '無線電設備管理',
         path: '/mmis/radio',
         component: () =>
