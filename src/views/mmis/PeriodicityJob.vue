@@ -51,10 +51,10 @@
         </v-menu>
       </v-col>
       <v-col cols="12" md="3" align-self="center">
-        <v-btn color="green" dark large>
+        <v-btn color="green" dark large @click="getQueryList">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="Add = true">
+        <v-btn color="indigo" dark large class="ml-2" @click="_goAdd">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -78,12 +78,12 @@
             <template v-slot:loading>
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
-            <template v-slot:item.a8>
-              <v-btn fab small color="primary" class="mr-2" @click="Edit = true">
+            <template v-slot:item.a8="{item}">
+              <v-btn fab small color="primary" class="mr-2" @click="_goEdit(item.AlarmFlowID)">
                 <v-icon>mdi-pen</v-icon>
               </v-btn>
 
-              <v-btn fab small color="error" @click="Delete = true">
+              <v-btn fab small color="error" @click="_goDelete(item.AlarmFlowID)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -104,148 +104,9 @@
           </v-data-table>
         </v-card>
       </v-col>
-
-      <!-- 新增工作提醒 modal -->
-      <v-dialog v-model="Add" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            新增工作提醒
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位(廠/庫、監工區)</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">通知起始日</h3>
-                    <v-menu
-                      v-model="a_datestart"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field v-model.trim="add.datestart" solo v-on="on" readonly />
-                      </template>
-                      <v-date-picker
-                        color="purple"
-                        v-model="add.datestart"
-                        @input="a_datestart = false"
-                        locale="zh-tw"
-                      />
-                    </v-menu>
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">提醒週期</h3>
-                    <v-text-field type="number" min="1" solo />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">提醒多人</h3>
-                    <v-autocomplete
-                      :items="name"
-                      solo
-                      clearable
-                      deletable-chips
-                      multiple
-                      small-chips
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">工作提醒事項</h3>
-                    <v-textarea auto-grow solo rows="4" />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            編輯資料
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">單位(廠/庫、監工區)</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">通知起始日</h3>
-                    <v-menu
-                      v-model="a_datestart"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field v-model.trim="add.datestart" solo v-on="on" readonly />
-                      </template>
-                      <v-date-picker
-                        color="purple"
-                        v-model="add.datestart"
-                        @input="a_datestart = false"
-                        locale="zh-tw"
-                      />
-                    </v-menu>
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">提醒週期</h3>
-                    <v-text-field type="number" min="1" solo />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">提醒多人</h3>
-                    <v-autocomplete
-                      :items="name"
-                      solo
-                      clearable
-                      deletable-chips
-                      multiple
-                      small-chips
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">工作提醒事項</h3>
-                    <v-textarea auto-grow solo rows="4" />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
-          </v-card-actions>
-        </v-card>
+        <PeriodcityEdit :key="componentKey" :flowId="thisflow" :inType="inType" @close="close"/>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -254,7 +115,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="close">取消</v-btn>
-            <v-btn color="success">刪除</v-btn>
+            <v-btn :loading="isLoading" color="success" @click="_delete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -263,8 +124,12 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
-
+import { jobQueryList,jobDelete } from '@/apis/materialManage/routine'
+import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
+import PeriodcityEdit from '@/views/mmis/PeriodicityJobEdit'
+import LocomotiveThreeMaintenanceAddVue from '../formManage/curing/LocomotiveThreeMaintenanceAdd.vue';
 export default {
   data: () => ({
     Add: false,
@@ -285,28 +150,28 @@ export default {
       },
       {
         text: "單位(廠/庫、監工區)",
-        value: "a11",
+        value: "DepartName",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "工作提醒事項",
-        value: "a18",
+        value: "Memo",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "通知起始日",
-        value: "a10",
+        value: "AlarmDTime",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "提醒週期",
-        value: "a9",
+        value: "Cycle",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -326,37 +191,118 @@ export default {
       },
     ],
     tableItems: [
-      {
-        id: "1",
-        a11: "維護科",
-        a18: "竹崎某段鐵軌檢查",
-        a10: "2020-10-20",
-        a9: "2週",
-        t_name: "Bill, Mom, Tom, May",
-      },
+      
     ],
     q_datestart: "",
     q_dateend: "",
-    datestart: "",
-    dateend: "",
-    add: {
+    a_datestart: "",
       datestart: "",
-    },
+      dateend: "",
+      add: {
+        datestart: "",
+      },
+    isLoading: false,
+    componentKey: 0,
+    thisflow: "",
+    inType: "",
+    flow: ""
   }),
   components: {
     Pagination,
+    PeriodcityEdit,
   },
   methods: {
+    ...mapActions('system', [
+      'chMsgbar',  // messageBar
+      'chLoadingShow'  // 切換 loading 圖顯示
+    ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
     close() {
-      this.Add = false;
       this.Edit = false;
       this.Delete = false;
+      this.thisflow = ""
+      this.getQueryList()
     },
+    _goEdit(flow) {
+      this.componentKey += 1
+      this.thisflow = flow
+      this.inType = "edit"
+      this.Edit = true
+    },
+    _goAdd() {
+      this.componentKey += 1
+      this.thisflow = ""
+      this.inType = "add"
+      this.Edit = true
+    },
+    getQueryList() { //抓清單
+      if(parseInt(this.datestart.replace(/-/g,"")) <= parseInt(this.dateend.replace(/-/g,"")) || (this.dateend == "" && this.datestart== "")){
+        this.chLoadingShow()
+        jobQueryList({
+          CreateDTime_Start: this.datestart,
+          CreateDTime_End: this.dateend,
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+          if (res.data.ErrorCode == 0) {
+            this.tableItems = decodeObject(res.data.JobList)
+            this.tableItems.forEach((e,i) => {
+              e.AlarmDTime = e.AlarmDTime.split(' ')[0]
+              e.id = (i+1).toString()
+            })
+          } else {
+            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+            this.$router.push({ path: '/error' })
+          }
+        }).catch( err => {
+          this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+        }).finally(() => {
+          this.chLoadingShow()
+        })
+      }else{
+        this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })
+      }
+    },
+    _goDelete(flow) {
+      this.flow = flow
+      this.Delete = true
+    },
+    _delete() {
+      this.isLoading = true
+      let flow = this.flow
+      jobDelete({
+        AlarmFlowID: flow,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.chMsgbar({ success: true, msg: '資料刪除成功' })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+      }).finally(() => {
+        this.isLoading = false
+        this.flow = ""
+        this.close()
+      })
+    }
   },
-  created() {},
+  computed: {
+    ...mapState ('user', {
+      userData: state => state.userData,  // 使用者基本資料
+    }),
+  },
+  filters:{
+
+  },
+  created() {
+    this.getQueryList()
+  },
 };
 </script>
