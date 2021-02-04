@@ -59,10 +59,19 @@ export default {
                         ]
 
                         // 設定下面的欄位資料
+                        // 組合發現地點
+                        let locationLabel = locationOpts.find(item => item.value == res.data.FindLine).text
+
+                        if (['l2', 'l3', 'l41', 'l5'].includes(res.data.FindLine)) {  // 若為本線、祝山線、眠月線、水山線
+                            locationLabel = `${locationLabel} (${res.data.FindKLine}K+${res.data.FindMLine}M)`
+                        } else if (res.data.FindLine == 'other') {  // 若為其他
+                            locationLabel = `${locationLabel} (${res.data.FindLineOther})`
+                        }
+
                         let bottomItems = [
-                            { oneline: true, title: '發現地點', text: locationOpts.find(item => item.value == res.data.FindLine).text },
-                            { oneline: true, title: '通報主旨', text: res.data.ReportTitle },
-                            { oneline: false, title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
+                            { oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
+                            { oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
+                            { oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
                         ]
 
                         // if (this.status > 1) {
