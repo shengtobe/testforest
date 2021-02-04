@@ -145,7 +145,7 @@
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="close">取消</v-btn>
+          <v-btn @click="dialogDel = false">取消</v-btn>
           <v-btn color="red" @click="deleteRecord">刪除</v-btn>
         </v-card-actions>
       </v-card>
@@ -208,6 +208,7 @@
                     :items="MachineID"
                     v-model="PAID"
                     outlined
+                    :readonly="readonly"
                   />
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -491,8 +492,17 @@
         </div>
 
         <v-card-actions class="px-5 pb-5">
+          <v-btn
+            class="mr-2"
+            elevation="4"
+            color="red"
+            @click="dialogDel = true"
+            >刪除</v-btn
+          >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2" elevation="4" @click="ShowDetailDialog = false"
+            >取消</v-btn
+          >
           <v-btn
             color="success"
             elevation="4"
@@ -651,6 +661,7 @@ export default {
       DeviceType: "",
       PAID: "",
       CarNo: "",
+      readonly: false,
 
       // controls for dialog
       ShowDetailDialog: false,
@@ -749,6 +760,7 @@ export default {
     },
     newOne() {
       this.action = Actions.add;
+      this.readonly = false;
       this.ShowDetailDialog = true;
       console.log("this.ShowDetailDialog: " + this.ShowDetailDialog);
       this.initInput();
@@ -880,6 +892,7 @@ export default {
     },
     viewPage(item) {
       this.action = Actions.edit;
+      this.readonly = true;
       console.log("item: " + item);
       console.log("RPFlowNo: " + item.RPFlowNo);
       this.chLoadingShow();

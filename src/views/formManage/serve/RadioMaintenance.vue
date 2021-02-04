@@ -308,7 +308,7 @@
               elevation="4"
               :loading="isLoading"
               @click="save"
-              >{{ this.action }}</v-btn
+              >{{ action }}</v-btn
             >
           </v-card-actions>
         </v-card>
