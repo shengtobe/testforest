@@ -223,7 +223,7 @@
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查日期</h3>
                   <v-menu
-                    v-model="datePickerShowControl.checkDate"
+                    v-model="datePickerShowControl.checkDay"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     max-width="290px"
@@ -240,7 +240,7 @@
                     <v-date-picker
                       color="purple"
                       v-model="CheckDay"
-                      @input="datePickerShowControl.checkDate = false"
+                      @input="datePickerShowControl.checkDay = false"
                       locale="zh-tw"
                     ></v-date-picker>
                   </v-menu>

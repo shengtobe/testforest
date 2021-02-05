@@ -192,7 +192,7 @@
     <v-dialog v-model="ShowDetailDialog" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增{{ title }}
+          {{ action }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -213,7 +213,7 @@
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查日期</h3>
                   <v-menu
-                    v-model="datePickerShowControl.checkDate"
+                    v-model="datePickerShowControl.checkDay"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     max-width="290px"
@@ -230,7 +230,7 @@
                     <v-date-picker
                       color="purple"
                       v-model="CheckDay"
-                      @input="datePickerShowControl.checkDate = false"
+                      @input="datePickerShowControl.checkDay = false"
                       locale="zh-tw"
                     ></v-date-picker>
                   </v-menu>
@@ -390,17 +390,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
       formDepartOptions: [
         // 通報單位下拉選單
         { text: "", value: "" },
         ...formDepartOptions,
       ],
-      Add: false,
-      dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP022",

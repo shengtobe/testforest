@@ -184,7 +184,7 @@
             <v-col cols="8" sm="4">
               <h3 class="mb-1">通報時間</h3>
               <v-menu
-                v-model="datePickerShowControl.checkDate"
+                v-model="datePickerShowControl.checkDay"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -204,7 +204,7 @@
                 <v-date-picker
                   color="purple"
                   v-model="CheckDay"
-                  @input="datePickerShowControl.checkDate = false"
+                  @input="datePickerShowControl.checkDay = false"
                   locale="zh-tw"
                 />
               </v-menu>
