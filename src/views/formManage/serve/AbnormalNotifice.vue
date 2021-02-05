@@ -8,7 +8,7 @@
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(起)
         </h3>
         <v-menu
-          v-model="dataPickerShowControl.startDate"
+          v-model="datePickerShowControl.startDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -25,7 +25,7 @@
           <v-date-picker
             color="purple"
             v-model="input.dateStart"
-            @input="dataPickerShowControl.startDate = false"
+            @input="datePickerShowControl.startDate = false"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -35,7 +35,7 @@
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(迄)
         </h3>
         <v-menu
-          v-model="dataPickerShowControl.endDate"
+          v-model="datePickerShowControl.endDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -52,7 +52,7 @@
           <v-date-picker
             color="purple"
             v-model="input.dateEnd"
-            @input="dataPickerShowControl.endDate = false"
+            @input="datePickerShowControl.endDate = false"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -63,27 +63,33 @@
         </h3>
         <v-select :items="formDepartOptions" v-model="input.department" solo />
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn
-          color="green"
-          dark
-          large
-          class="col-4 col-md-2 mr-3"
-          @click="search"
-        >
+      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
+        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+        md="3"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="col-4 col-md-2 mr-3"
+          class="mr-3 mb-3"
           @click="newOne"
         >
+          <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
-      </div>
+      </v-col>
     </v-row>
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <v-card>
@@ -92,7 +98,7 @@
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="close">取消</v-btn>
+          <v-btn @click="dialogDel = false">取消</v-btn>
           <v-btn color="red" @click="deleteRecord">刪除</v-btn>
         </v-card-actions>
       </v-card>
@@ -178,7 +184,7 @@
             <v-col cols="8" sm="4">
               <h3 class="mb-1">通報時間</h3>
               <v-menu
-                v-model="dataPickerShowControl.checkDate"
+                v-model="datePickerShowControl.checkDate"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -198,7 +204,7 @@
                 <v-date-picker
                   color="purple"
                   v-model="CheckDay"
-                  @input="dataPickerShowControl.checkDate = false"
+                  @input="datePickerShowControl.checkDate = false"
                   locale="zh-tw"
                 />
               </v-menu>
@@ -206,7 +212,7 @@
             <v-col cols="8" sm="4">
               <h3 class="mb-1">異常狀況時間</h3>
               <v-menu
-                v-model="dataPickerShowControl.alarmDate"
+                v-model="datePickerShowControl.alarmDate"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -226,7 +232,7 @@
                 <v-date-picker
                   color="purple"
                   v-model="AlarmDay"
-                  @input="dataPickerShowControl.alarmDate = false"
+                  @input="datePickerShowControl.alarmDate = false"
                   locale="zh-tw"
                 />
               </v-menu>
@@ -353,7 +359,7 @@ export default {
     dialogNull: false,
 
     // controls for date picker
-    dataPickerShowControl: {
+    datePickerShowControl: {
       startDate: false,
       endDate: false,
       checkDate: false,
@@ -383,9 +389,11 @@ export default {
     ipt2: {},
     defaultIpt: {
       // 預設的欄位值
-      startDay: "",
-      EndDay: "",
-      depart: "", // 單位
+      dateStart: "", // 通報日期(起)
+      dateEnd: "", // 通報日期(迄)
+      case: "",
+      eqLoss: "",
+      department: "",
     },
     headers: [
       // 表格顯示的欄位 DepartCode ID Name
@@ -473,6 +481,10 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 清除搜尋內容
+    reset() {
+      this.input = { ...this.defaultIpt };
+    },
     initInput() {
       console.log("init create window form");
       this.Name = this.doMan.name;

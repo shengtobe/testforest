@@ -70,16 +70,21 @@
         <v-select v-model="ipt.case" :items="formDepartOptions" solo />
       </v-col>
 
-      <v-col
-        cols="12"
-        sm="8"
-        md="12"
-        align-self="end"
-        class="mb-5 text-md-right"
-      >
+      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
         <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+        md="3"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
         <v-btn
           color="indigo"
           elevation="3"
@@ -90,9 +95,6 @@
         >
           <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
-        <v-btn elevation="2" large class="mb-3" @click="reset">
-          <v-icon>mdi-reload</v-icon>清除搜尋內容
         </v-btn>
       </v-col>
 
@@ -296,6 +298,7 @@
               </v-col>
             </v-row>
           </div>
+          <!-- 輸出/取消 -->
           <v-card-actions class="px-5 pb-5">
             <v-btn
               v-if="action != actions.add"
@@ -355,6 +358,7 @@ export default {
     PAID: "",
     //---api---
     DB_Table: "RP018",
+    //
     RPFlowNo: "",
     nowTime: "",
     doMan: {
@@ -432,7 +436,6 @@ export default {
       start: false,
       end: false,
     },
-    sdad: false,
     formDepartOptions: [
       // 通報單位下拉選單
       { text: "不限", value: "" },
@@ -474,8 +477,6 @@ export default {
     mainLocation4: "", // 所選的地點
     mainLocation5: "", // 所選的地點
     OLocation: "", // 其他地點
-    Add: false,
-    ShowDetailDialog: false, // model off
     dialogShowEdit: false, // model off
     dialogDel: false, // model off
     dialogm1: "2020-08-01",
@@ -522,7 +523,7 @@ export default {
     // 更換頁數
     initInput() {
       console.log("init create window form");
-      this.doMan.name = this.userData.UserName;
+      this.Name = this.doMan.name;
       // this.zs = this.nowTime;
       this.PAID = "";
       this.mainLocation1 = "";
@@ -578,7 +579,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("查詢時發生問題，請重新查詢!");
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           console.log("search final");
@@ -685,7 +686,6 @@ export default {
     },
     // 關閉 dialog
     close() {
-      this.Add = false;
       this.ShowDetailDialog = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
@@ -748,7 +748,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("查詢時發生問題，請重新查詢!");
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           this.chLoadingShow();
