@@ -4,7 +4,7 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
+        <!-- <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
         </h3>
         <v-menu
@@ -28,7 +28,8 @@
             @input="datePickerShowControl.startDate = false"
             locale="zh-tw"
           ></v-date-picker>
-        </v-menu>
+        </v-menu> -->
+        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" />
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
@@ -371,7 +372,7 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
-
+import dateSelect from "@/components/forManage/dateSelect"
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -506,7 +507,7 @@ export default {
       },
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { Pagination,dateSelect }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
