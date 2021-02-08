@@ -10,11 +10,11 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
         </h3>
-        <v-select solo hide-details :items="selectdata" />
+        <v-select solo hide-details :items="selectdata" v-model="searchItem" />
       </v-col>
 
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large>
+        <v-btn color="green" dark large @click="goSearch">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn color="indigo" dark large class="ml-2" @click="goAdd">
@@ -74,7 +74,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="close">取消</v-btn>
-            <v-btn color="success">刪除</v-btn>
+            <v-btn color="success" @click="Del">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -87,7 +87,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
-import { jobQueryList,jobDelete } from '@/apis/materialManage/routine'
+import { classQueryList,classDelete } from '@/apis/materialManage/workClass'
 import WorkShiftEdit from '@/views/mmis/WorkShiftEdit'
 export default {
   data: () => ({
@@ -95,14 +95,7 @@ export default {
     Edit: false,
     Delete: false,
     pageOpt: { page: 1 },
-    tableItems: [
-      {
-        id: "1",
-        DepartName2: "奮起湖監工區",
-        Class: "1",
-        PeopleName: "Bill",
-      },
-    ],
+    tableItems: [],
     selectdata: ["維修科", "養護科"],
     headers: [
       {
@@ -145,13 +138,14 @@ export default {
     componentKey: 0,
     detailFlow: "",
     inType: "",
+    searchItem: "",
   }),
   components: {
     Pagination,
     WorkShiftEdit,
   },
   mounted: function() {
-    // this.goSearch()
+    this.goSearch()
     this.getOrg()
   },
   computed: {
@@ -185,13 +179,13 @@ export default {
     },
     goSearch() {
       this.chLoadingShow()
-      jobQueryList({
+      classQueryList({
         DepartName: this.searchItem,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.tableItems = decodeObject(res.data.VendorList)
+          this.tableItems = decodeObject(res.data.PeopleList)
           this.tableItems.forEach((e,i)=>{
             e.id=i+1
           })
@@ -222,7 +216,7 @@ export default {
     },
     Del() {
       this.isLoading = true
-      jobDelete({
+      classDelete({
         FlowID: this.detailFlow,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -237,6 +231,7 @@ export default {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
       }).finally(() => {
         this.isLoading = false
+        this.close()
       })
     },
     // 更換頁數
@@ -247,6 +242,7 @@ export default {
       this.Add = false;
       this.Edit = false;
       this.Delete = false;
+      this.goSearch()
     },
 
   },

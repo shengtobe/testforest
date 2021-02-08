@@ -40,7 +40,7 @@
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
       <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-      <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
+      <v-btn color="success" elevation="4" :loading="isLoading" @click="goSave">送出</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -48,7 +48,7 @@
   import { mapState, mapActions } from 'vuex'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { fetchOrganization } from '@/apis/organization'
-  import { jobQuery,jobInsert,jobUpdate } from '@/apis/materialManage/routine'
+  import { classQuery,classInsert,classUpdate } from '@/apis/materialManage/workClass'
   export default {
     props: {
       flowId: String,
@@ -107,7 +107,7 @@
         if(this.inType == 'edit') {
           this.titleShow = "編輯"
           this.isLoading = true
-          jobQuery({
+          classQuery({
             FlowID: this.flowId,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
             OperatorID: this.userData.UserId,  // 操作人id
@@ -137,8 +137,10 @@
       },
       goSave() {
         this.isLoading = true
+        this.queryItem = encodeObject(this.queryItem)
+        console.log(this.queryItem)
         if(this.inType == 'edit') {
-          jobUpdate({
+          classUpdate({
             FlowID: this.flowId,
             ...this.queryItem,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -154,9 +156,10 @@
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
           }).finally(() => {
             this.isLoading = false
+            this.close()
           })
         }else if(this.inType == 'add') {
-          jobInsert({
+          classInsert({
             ...this.queryItem,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
             OperatorID: this.userData.UserId,  // 操作人id
@@ -171,6 +174,7 @@
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
           }).finally(() => {
             this.isLoading = false
+            this.close()
           })
         }
       }
