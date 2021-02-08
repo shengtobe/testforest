@@ -29,7 +29,7 @@
             locale="zh-tw"
           ></v-date-picker>
         </v-menu> -->
-        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :iconYN="formIconShow" />
+        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :showIcon="formIconShow" />
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <!-- <h3 class="mb-1">
@@ -57,13 +57,14 @@
             locale="zh-tw"
           ></v-date-picker>
         </v-menu> -->
-        <dateSelect label="檢查日期(迄)" v-model="input.dateEnd" key="dateStart" :iconYN="formIconShow" />
+        <dateSelect label="檢查日期(迄)" v-model="input.dateEnd" key="dateStart" :showIcon="formIconShow" />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
+        <!-- <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
-        <v-select :items="formDepartOptions" v-model="input.department" solo />
+        <v-select :items="formDepartOptions" v-model="input.department" solo /> -->
+        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
       </v-col>
       <v-col cols="12" sm="3" md="3"></v-col>
 
@@ -263,7 +264,7 @@
                   <h3 class="mb-1">備註</h3>
                 </v-col>
               </v-row>
-              <v-alert
+              <!-- <v-alert
                 dense
                 border="top"
                 colored-border
@@ -305,6 +306,56 @@
                   <v-col cols="12" sm="3">
                     <v-textarea
                       v-model="item.memo"
+                      hide-details
+                      auto-grow
+                      outlined
+                      rows="3"
+                    />
+                  </v-col>
+                </v-row>
+              </v-alert> -->
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="n in 10"
+                :key="n"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="3">{{ deatilItemDesc['desc'+n] }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <v-select
+                      :items="[
+                        { text: '動作測試', value: '1' },
+                        { text: '目視點檢', value: '2' },
+                      ]"
+                      v-model="detailItem['CheckMethod'+n]"
+                      solo
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group
+                      dense
+                      row
+                      v-model="detailItem['CheckOption'+n]"
+                      class="pa-0 ma-0"
+                    >
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio
+                        color="black"
+                        label="無此項目"
+                        value="3"
+                      ></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea
+                      v-model="detailItem['Memo'+n]"
                       hide-details
                       auto-grow
                       outlined
@@ -360,6 +411,7 @@ import {
   getNowFullTime,
   getTodayDateString,
   unique,
+  decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import {
@@ -374,6 +426,7 @@ import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect"
+import deptSelect from "@/components/forManage/deptSelect"
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -415,6 +468,7 @@ export default {
         case: "",
         eqLoss: "",
         departName: "",
+        department: "",
       },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
@@ -508,9 +562,22 @@ export default {
       },
 
       formIconShow: true,
+      detailItem: {},
+      deatilItemDesc: {
+        desc1: "1. 防護蓋有否裝設",
+        desc2: "2. 護目鏡是否配置",
+        desc3: "3. 機台固定裝置是否穩固",
+        desc4: "4. 馬達絕緣電阻",
+        desc5: "5. 電源線有無損傷",
+        desc6: "6. 外殼接地線是否裝設",
+        desc7: "7. 磨輪規格是否正確，有無裂痕",
+        desc8: "8. 磨輪固定情況是否良好",
+        desc9: "9. 試運轉是否平衡，有無異狀",
+        desc10: "10. 是否有「使用時禁戴手套」警語",
+      }
     };
   },
-  components: { Pagination,dateSelect }, // 頁碼
+  components: { Pagination,dateSelect,deptSelect }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -746,11 +813,11 @@ export default {
         .then((res) => {
           this.initInput();
           //console.log("Raw response data");
-          //console.log(res.data.DT);
+          // console.log(res.data.DT);
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
           //console.log("Parsed JSON object");
-          //console.log(data);
+          // console.log(data);
 
           this.Name = data.Name;
           this.CheckMan = data.CheckMan;
@@ -773,6 +840,7 @@ export default {
           }
           this.RPFlowNo = data.RPFlowNo;
           this.ShowDetailDialog = true;
+          this.detailItem = decodeObject(data)
         })
         .catch((err) => {
           console.log(err);
