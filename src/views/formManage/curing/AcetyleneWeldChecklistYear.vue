@@ -4,58 +4,20 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="datePickerShowControl.startDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateStart"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateStart"
-            @input="datePickerShowControl.startDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="datePickerShowControl.endDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateEnd"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateEnd"
-            @input="datePickerShowControl.endDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateEnd"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
@@ -162,6 +124,12 @@
       </v-card>
     </v-col>
     <!-- 刪除確認視窗 -->
+    <!-- <dialogDelete
+      :show="dialogDel"
+      :id="doMan.id"
+      :DB_Table="DB_Table"
+      :RPFlowNo="RPFlowNo"
+    /> -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <v-card>
         <v-card-title class="red white--text px-4 py-1 headline"
@@ -214,29 +182,11 @@
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="datePickerShowControl.checkDay"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="CheckDay"
-                        solo
-                        v-on="on"
-                        readonly
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="CheckDay"
-                      @input="datePickerShowControl.checkDay = false"
-                      locale="zh-tw"
-                    ></v-date-picker>
-                  </v-menu>
+                  <dateSelect
+                    label="檢查日期(迄)"
+                    v-model="CheckDay"
+                    key="CheckDay"
+                  />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
@@ -244,7 +194,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field v-model="Name" solo />
+                  <v-text-field v-model="Name" solo readonly />
                 </v-col>
               </v-row>
               <v-row
@@ -305,21 +255,21 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">檢查發現危害、分析危害因素</h3>
-              <v-textarea v-model="Memo_9" auto-grow outlined rows="4" />
+              <v-textarea v-model="Memo_10" auto-grow outlined rows="4" />
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">
                 評估危害風險(嚴重性及可能性分析)
               </h3>
-              <v-textarea v-model="Memo_10" auto-grow outlined rows="4" />
-            </v-col>
-            <v-col cols="12">
-              <h3 class="mb-1 indigo--text">評估結果改善措施</h3>
               <v-textarea v-model="Memo_11" auto-grow outlined rows="4" />
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">檢討改善措施之合宜性</h3>
+              <h3 class="mb-1 indigo--text">評估結果改善措施</h3>
               <v-textarea v-model="Memo_12" auto-grow outlined rows="4" />
+            </v-col>
+            <v-col cols="12">
+              <h3 class="mb-1 indigo--text">檢討改善措施之合宜性</h3>
+              <v-textarea v-model="Memo_13" auto-grow outlined rows="4" />
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -371,6 +321,9 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
+import dateSelect from "@/components/forManage/dateSelect";
+import dialogDelete from "@/components/forManage/dialogDelete";
+
 class Question {
   constructor(description, option, memo) {
     this.description = description;
@@ -388,27 +341,11 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
       formDepartOptions: [
         // 通報單位下拉選單
         { text: "不限", value: "" },
         ...formDepartOptions,
       ],
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
-      Add: false,
-      dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP055",
@@ -518,9 +455,10 @@ export default {
         eqLoss: "",
         departName: "",
       },
+      formIconShow: true,
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { Pagination, dateSelect, dialogDelete }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -689,7 +627,6 @@ export default {
     close() {
       this.ShowDetailDialog = false;
       this.dialogShowEdit = false;
-      this.dialogDel = false;
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.addItem = Object.assign({}, this.defaultItem);

@@ -4,60 +4,20 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <!-- <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="datePickerShowControl.startDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateStart"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateStart"
-            @input="datePickerShowControl.startDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu> -->
-        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :showIcon="formIconShow" />
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <!-- <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="datePickerShowControl.endDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateEnd"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateEnd"
-            @input="datePickerShowControl.endDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu> -->
-        <dateSelect label="檢查日期(迄)" v-model="input.dateEnd" key="dateStart" :showIcon="formIconShow" />
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <!-- <h3 class="mb-1">
@@ -214,29 +174,12 @@
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="datePickerShowControl.checkDay"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="CheckDay"
-                        solo
-                        v-on="on"
-                        readonly
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="CheckDay"
-                      @input="datePickerShowControl.checkDay = false"
-                      locale="zh-tw"
-                    ></v-date-picker>
-                  </v-menu>
+                  <dateSelect
+                    label="檢查日期"
+                    v-model="CheckDay"
+                    key="dateStart"
+                    :showIcon="formIconShow"
+                  />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
@@ -244,7 +187,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field v-model="CheckMan" solo />
+                  <v-text-field v-model="Name" solo readonly />
                 </v-col>
               </v-row>
               <v-row
@@ -425,8 +368,8 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
-import dateSelect from "@/components/forManage/dateSelect"
-import deptSelect from "@/components/forManage/deptSelect"
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -536,7 +479,6 @@ export default {
       Name: "",
       DepartName: "",
       CheckDay: "",
-      CheckMan: "",
       Advice: "",
       Measures: "",
 
@@ -577,7 +519,7 @@ export default {
       }
     };
   },
-  components: { Pagination,dateSelect,deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -596,7 +538,6 @@ export default {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;
       this.CheckDay = getTodayDateString();
-      this.CheckMan = "";
 
       for (var items in this.itemlist) {
         const element = this.itemlist[items];
@@ -677,7 +618,6 @@ export default {
         KeyName: this.DB_Table, // DB table
         KeyItem: [
           { Column: "CheckDay", Value: this.CheckDay },
-          { Column: "CheckMan", Value: this.CheckMan },
           { Column: "Advice", Value: this.Advice },
           { Column: "Measures", Value: this.Measures },
         ],
@@ -729,6 +669,7 @@ export default {
           })
           .finally(() => {
             this.chLoadingShow();
+            this.search();
           });
       } else {
         // 新增
@@ -820,7 +761,6 @@ export default {
           // console.log(data);
 
           this.Name = data.Name;
-          this.CheckMan = data.CheckMan;
           this.CheckDay = data.CheckDay.substr(0, 10);
           this.Advice = data.Advice;
           this.Measures = data.Measures;
