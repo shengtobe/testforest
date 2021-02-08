@@ -20,13 +20,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <deptSelect
-          label="管理單位"
-          v-model="input.department"
-          :iconYN="formIconShow"
-          outType="key"
-          key="department"
-        />
+        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
       </v-col>
       <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
         <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
@@ -185,13 +179,30 @@
                     :readonly="readonly"
                   />
                 </v-col>
-                <v-col cols="12" sm="3" md="3">
-                  <dateSelect
-                    label="檢查日期"
-                    v-model="CheckDay"
-                    key="CheckDay"
-                    :showIcon="formIconShow"
-                  />
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">檢查日期</h3>
+                  <v-menu
+                    v-model="datePickerShowControl.checkDay"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model.trim="CheckDay"
+                        solo
+                        v-on="on"
+                        readonly
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      color="purple"
+                      v-model="CheckDay"
+                      @input="datePickerShowControl.checkDay = false"
+                      locale="zh-tw"
+                    ></v-date-picker>
+                  </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">使用單位</h3>
@@ -685,7 +696,12 @@ export default {
         eqLoss: "",
         departName: "",
       },
-      formIconShow: true,
+      formIconShow = true,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
     };
   },
   components: { Pagination, dateSelect, deptSelect },

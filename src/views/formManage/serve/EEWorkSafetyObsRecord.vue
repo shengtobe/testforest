@@ -3,65 +3,24 @@
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <v-row class="px-2">
       <!-- 第一排選項 -->
-      <v-col cols="12" sm="2" md="2">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(起)
-        </h3>
-        <v-menu
-          v-model="dateMenuShow.start"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="ipt.dateStart"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="ipt.dateStart"
-            @input="dateMenuShow.start = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
-      <v-col cols="12" sm="2" md="2">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(迄)
-        </h3>
-        <v-menu
-          v-model="dateMemuShow.end"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="ipt.dateEnd"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="ipt.dateEnd"
-            @input="dateMemuShow.end = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="2">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇部門
-        </h3>
-        <v-select v-model="ipt2.depart" :items="formDepartOptions" solo />
+        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
       </v-col>
       <v-col cols="12" sm="2" md="2">
         <h3 class="mb-1">
@@ -198,30 +157,12 @@
                 </p>
               </v-col>
               <v-col cols="12" sm="4">
-                <h3 class="mb-1">觀察日期</h3>
-                <v-menu
-                  v-model="dialogDateMenuShow.enters"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model.trim="CheckDay"
-                      outlined
-                      v-on="on"
-                      dense
-                      single-line
-                    />
-                  </template>
-                  <v-date-picker
-                    color="purple"
+                <dateSelect
+                    label="觀察日期"
                     v-model="CheckDay"
-                    @input="dialogDateMenuShow.enters = false"
-                    locale="zh-tw"
+                    key="dateStart"
+                    :showIcon="formIconShow"
                   />
-                </v-menu>
               </v-col>
               <v-col cols="12" sm="4" />
               <v-col cols="12" sm="4" />
@@ -457,13 +398,13 @@
 </template>
 
 <script>
-import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from "vuex";
 import {
   getNowFullTime,
   getTodayDateString,
   unique,
+  decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import {
@@ -471,8 +412,22 @@ import {
   fetchFormOrderOne,
   createFormOrder,
   createFormOrder0,
+  updateFormOrder,
+  deleteFormOrder,
 } from "@/apis/formManage/serve";
 import { formDepartOptions } from "@/assets/js/departOption";
+import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+class Question {
+  constructor(description, method, result, memo) {
+    this.description = description;
+    this.method = method;
+    this.result = result;
+    this.memo = memo;
+  }
+}
 
 export default {
   data: () => ({
@@ -480,6 +435,14 @@ export default {
     newText: "觀察表",
     isLoading: false,
     disabled: false,
+    input: {
+      dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
+      dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
+      case: "",
+      eqLoss: "",
+      departName: "",
+    },
+    formIconShow: true,
     QueryDayStart: "",
     QueryDayEnd: "",
     QueryData: {
@@ -641,7 +604,7 @@ export default {
     disabled: true,
     pageOpt: { page: 1 }, // 目前頁數
   }),
-  components: { Pagination }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -739,9 +702,9 @@ export default {
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table, // DB table
         KeyItem: [
-          { Column: "StartDayVlaue", Value: this._data.z },
-          { Column: "EndDayVlaue", Value: this._data.df },
-          { Column: "DepartCode", Value: this._data.ipt2.depart },
+          { Column: "StartDayVlaue", Value: this.input.dateStart },
+          { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "DepartCode", Value: this.input.department },
         ],
         QyName: [
           // "DISTINCT (RPFlowNo)",
