@@ -1,14 +1,15 @@
 <!--
   輸入: 
-    label: 標題
+    label: String 標題
+    iconYN: Boolean 是否要圖標，預設否 
   v-model: 綁定變數
   使用範例:
-    <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart"/>
+    <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :iconYN="變數名稱"/>
 -->
 <template>
   <div>
     <h3 class="mb-1">
-      <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>{{label}}
+      <v-icon class="mr-1 mb-1" v-if="ifIcon">mdi-calendar-text</v-icon>{{label}}
     </h3>
     <v-menu
       v-model="showYN"
@@ -38,18 +39,21 @@
 export default {
   name: "dateSelect",
   props:{
+    iconYN: Boolean,
     label: String,
     value: String,
   },
   data: () => ({
     showYN: false,
     dataSet: "",
+    ifIcon: false,
   }),
   components: {
   
   },
   mounted() {
     this.dataSet = this.value
+    this.ifIcon=(this.iconYN)?this.iconYN:this.ifIcon
   },
   computed: {
     // compute_name:function() {

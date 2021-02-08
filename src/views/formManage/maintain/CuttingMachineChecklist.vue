@@ -29,10 +29,10 @@
             locale="zh-tw"
           ></v-date-picker>
         </v-menu> -->
-        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" />
+        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :iconYN="formIconShow" />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
+        <!-- <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
         </h3>
         <v-menu
@@ -56,7 +56,8 @@
             @input="datePickerShowControl.endDate = false"
             locale="zh-tw"
           ></v-date-picker>
-        </v-menu>
+        </v-menu> -->
+        <dateSelect label="檢查日期(迄)" v-model="input.dateEnd" key="dateStart" :iconYN="formIconShow" />
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
@@ -505,6 +506,8 @@ export default {
         eqLoss: "",
         departName: "",
       },
+
+      formIconShow: true,
     };
   },
   components: { Pagination,dateSelect }, // 頁碼
