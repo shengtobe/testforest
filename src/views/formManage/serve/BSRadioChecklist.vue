@@ -8,7 +8,7 @@
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
         </h3>
         <v-menu
-          v-model="dataPickerShowControl.startDate"
+          v-model="datePickerShowControl.startDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -25,7 +25,7 @@
           <v-date-picker
             color="purple"
             v-model="input.dateStart"
-            @input="dataPickerShowControl.startDate = false"
+            @input="datePickerShowControl.startDate = false"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -35,7 +35,7 @@
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
         </h3>
         <v-menu
-          v-model="dataPickerShowControl.endDate"
+          v-model="datePickerShowControl.endDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -52,7 +52,7 @@
           <v-date-picker
             color="purple"
             v-model="input.dateEnd"
-            @input="dataPickerShowControl.endDate = false"
+            @input="datePickerShowControl.endDate = false"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -63,21 +63,30 @@
         </h3>
         <v-select :items="formDepartOptions" v-model="input.department" solo />
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
+        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
+          <v-icon>mdi-magnify</v-icon>查詢
+        </v-btn>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
         </v-btn>
       </v-col>
-
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
+      <v-col
+        cols="12"
+        sm="8"
+        md="3"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
+          class="mr-3 mb-3"
           @click="newOne"
         >
+          <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
@@ -214,7 +223,7 @@
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查日期</h3>
                   <v-menu
-                    v-model="dataPickerShowControl.checkDate"
+                    v-model="datePickerShowControl.checkDay"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     max-width="290px"
@@ -231,7 +240,7 @@
                     <v-date-picker
                       color="purple"
                       v-model="CheckDay"
-                      @input="dataPickerShowControl.checkDate = false"
+                      @input="datePickerShowControl.checkDay = false"
                       locale="zh-tw"
                     ></v-date-picker>
                   </v-menu>
@@ -574,10 +583,11 @@ export default {
       },
       ipt2: {},
       defaultIpt: {
-        // 預設的欄位值
-        startDay: "",
-        EndDay: "",
-        depart: "", // 單位
+        dateStart: "", // 通報日期(起)
+        dateEnd: "", // 通報日期(迄)
+        case: "",
+        eqLoss: "",
+        departName: "",
       },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
@@ -671,7 +681,7 @@ export default {
       dialogNull: false,
 
       // controls for date picker
-      dataPickerShowControl: {
+      datePickerShowControl: {
         startDate: false,
         endDate: false,
         checkDate: false,
@@ -723,6 +733,11 @@ export default {
         eqLoss: "",
         departName: "",
       },
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
     };
   },
   components: { Pagination }, // 頁碼
@@ -745,6 +760,10 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 清除搜尋內容
+    reset() {
+      this.input = { ...this.defaultIpt };
+    },
     initInput() {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;
