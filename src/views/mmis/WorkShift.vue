@@ -17,7 +17,7 @@
         <v-btn color="green" dark large>
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="Add = true">
+        <v-btn color="indigo" dark large class="ml-2" @click="goAdd">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -40,7 +40,7 @@
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
 
-            <template v-slot:item.a8>
+            <template v-slot:item.a8="{item}">
               <v-btn
                 title="編輯"
                 class="mr-2"
@@ -48,11 +48,11 @@
                 dark
                 fab
                 color="info darken-1"
-                @click="Edit = true"
+                @click="goEdit(item.FlowID)"
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="Delete = true">
+              <v-btn title="刪除" small dark fab color="red" @click="goDelete(item.FlowID)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -63,84 +63,9 @@
           </v-data-table>
         </v-card>
       </v-col>
-
-      <!-- 新增工班 modal -->
-      <v-dialog v-model="Add" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            新增工班
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">監工區(廠/庫)</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">班別(組)</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">姓名</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            編輯資料
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">監工區(廠/庫)</h3>
-                    <v-text-field solo value readonly />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">班別(組)</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="4">
-                    <h3 class="mb-1">姓名</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading">送出</v-btn>
-          </v-card-actions>
-        </v-card>
+        <WorkShiftEdit :flowId="detailFlow" :inType="inType" :key="componentKey" @close="close"></WorkShiftEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -159,7 +84,11 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
+import { fetchOrganization } from '@/apis/organization'
+import { jobQueryList,jobDelete } from '@/apis/materialManage/routine'
+import WorkShiftEdit from '@/views/mmis/WorkShiftEdit'
 export default {
   data: () => ({
     Add: false,
@@ -169,39 +98,9 @@ export default {
     tableItems: [
       {
         id: "1",
-        a11: "奮起湖監工區",
-        a10: "1",
-        a9: "Bill",
-      },
-      {
-        id: "2",
-        a11: "奮起湖監工區",
-        a10: "1",
-        a9: "Tom",
-      },
-      {
-        id: "3",
-        a11: "奮起湖監工區",
-        a10: "2",
-        a9: "Mom",
-      },
-      {
-        id: "4",
-        a11: "竹崎監工區",
-        a10: "3",
-        a9: "May",
-      },
-      {
-        id: "5",
-        a11: "竹崎監工區",
-        a10: "3",
-        a9: "Amy",
-      },
-      {
-        id: "6",
-        a11: "阿里山監工區",
-        a10: "1",
-        a9: "Peter",
+        DepartName2: "奮起湖監工區",
+        Class: "1",
+        PeopleName: "Bill",
       },
     ],
     selectdata: ["維修科", "養護科"],
@@ -215,21 +114,21 @@ export default {
       },
       {
         text: "監工區(廠/庫)",
-        value: "a11",
+        value: "DepartName2",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "班別(組)",
-        value: "a10",
+        value: "Class",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "姓名",
-        value: "a9",
+        value: "PeopleName",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -242,11 +141,104 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
     ],
+    isLoading: false,
+    componentKey: 0,
+    detailFlow: "",
+    inType: "",
   }),
   components: {
     Pagination,
+    WorkShiftEdit,
+  },
+  mounted: function() {
+    // this.goSearch()
+    this.getOrg()
+  },
+  computed: {
+    ...mapState ('user', {
+      userData: state => state.userData,  // 使用者基本資料
+    }),
   },
   methods: {
+     ...mapActions('system', [
+      'chMsgbar',  // messageBar
+      'chLoadingShow'  // 切換 loading 圖顯示
+    ]),
+    getOrg() {
+      this.chLoadingShow()
+      fetchOrganization({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.selectdata = encodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName))
+          this.selectdata = ["" , ...this.selectdata]
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },
+    goSearch() {
+      this.chLoadingShow()
+      jobQueryList({
+        DepartName: this.searchItem,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.tableItems = decodeObject(res.data.VendorList)
+          this.tableItems.forEach((e,i)=>{
+            e.id=i+1
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },
+    goAdd() {
+      this.componentKey += 1
+      this.inType = "add"
+      this.Edit = true
+    },
+    goEdit(flow) {
+      this.componentKey += 1
+      this.detailFlow = flow
+      this.inType = "edit"
+      this.Edit = true
+    },
+    goDelete(flow) {
+      this.detailFlow = flow;
+      this.Delete = true
+    },
+    Del() {
+      this.isLoading = true
+      jobDelete({
+        FlowID: this.detailFlow,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          this.chMsgbar({ success: true, msg: '資料刪除成功' })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+      }).finally(() => {
+        this.isLoading = false
+      })
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -256,6 +248,7 @@ export default {
       this.Edit = false;
       this.Delete = false;
     },
+
   },
   created() {},
 };
