@@ -4,7 +4,7 @@
     iconYN: Boolean 是否要圖標，預設否 
   v-model: 綁定變數
   使用範例:
-    <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :iconYN="變數名稱"/>
+    <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :iconYN="formIconShow"/>
 -->
 <template>
   <div>
