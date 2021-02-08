@@ -106,7 +106,20 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="
+                dialogDel = true;
+                RPFlowNo = item.RPFlowNo;
+              "
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -117,6 +130,21 @@
         </v-data-table>
       </v-card>
     </v-col>
+     <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <v-card>
+        <v-card-title class="red white--text px-4 py-1 headline"
+          >確認是否刪除?</v-card-title
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="dialogDel=false">取消</v-btn>
+          <v-btn color="red" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
+            >刪除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <!-- 新增手提鏈鋸定期檢查表(三個月) modal -->
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
@@ -229,17 +257,32 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import {
+  fetchFormOrderList,
+  fetchFormOrderOne,
+  createFormOrder,
+  createFormOrder0,
+  updateFormOrder,
+  deleteFormOrder,
+} from "@/apis/formManage/serve";
+import { formDepartOptions } from "@/assets/js/departOption";
+import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data() {
     return {
       title: "手提鏈鋸定期檢查表(三個月)",
       newText: "檢查表",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
       a: "",
@@ -264,6 +307,7 @@ export default {
       memo_2: "",
       memo_3: "",
       Add: false,
+      dialogDel: false,
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
@@ -413,6 +457,7 @@ export default {
           "FlowId", "DepartName"
         ],
       }).then(res => {
+        console.log("DT: " + res.data.DT)
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
@@ -500,7 +545,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+          {Column:'RPFlowNo',Value:item.RPFlowNo},
                 ],
         QyName:[
           "CheckDay",
@@ -517,6 +562,8 @@ export default {
           "Memo_4",
           "CheckOption5",
           "Memo_5",
+          "CheckOption6",
+          "Memo_6",
           "Advice",
           "Measures",
         ],
@@ -549,8 +596,8 @@ export default {
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        this.Advice = dat[0].Advice
+        this.Measures = dat[0].Measures
 
         
       }).catch(err => {
@@ -560,6 +607,30 @@ export default {
         this.chLoadingShow()
       })
     },//viewPage
+    deleteRecord(UserId, DB_Table, RPFlowNo) {
+      this.action = Actions.delete;
+      this.chLoadingShow();
+      deleteFormOrder({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: UserId, // 操作人id
+        KeyName: DB_Table, // DB table
+        RPFlowNo: RPFlowNo,
+        KeyItem: [{ Column: "RPFlowNo", Value: RPFlowNo }],
+      })
+        .then((res) => {
+          this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
+        })
+        .finally(() => {
+          this.chLoadingShow();
+          this.ShowDetailDialog = false;
+          this.search();
+        });
+    },
   },
 };
 </script>
