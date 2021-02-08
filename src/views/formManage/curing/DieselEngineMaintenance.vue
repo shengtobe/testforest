@@ -640,7 +640,7 @@ export default {
     }),
   },
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     //更新時間
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;

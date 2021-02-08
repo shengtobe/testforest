@@ -16,7 +16,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model.trim="ipt.dateStart"
+              v-model.trim="input.dateStart"
               solo
               v-on="on"
               readonly
@@ -24,7 +24,7 @@
           </template>
           <v-date-picker
             color="purple"
-            v-model="ipt.dateStart"
+            v-model="input.dateStart"
             @input="dateMenuShow.start = false"
             locale="zh-tw"
           ></v-date-picker>
@@ -43,7 +43,7 @@
         >
           <template v-slot:activator="{ on }">
             <v-text-field
-              v-model.trim="ipt.dateEnd"
+              v-model.trim="input.dateEnd"
               solo
               v-on="on"
               readonly
@@ -51,7 +51,7 @@
           </template>
           <v-date-picker
             color="purple"
-            v-model="ipt.dateEnd"
+            v-model="input.dateEnd"
             @input="dateMenuShow.end = false"
             locale="zh-tw"
           ></v-date-picker>
@@ -61,13 +61,13 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>輸入編號(或機號)
         </h3>
-        <v-select :items="MachineID" v-model="ipt.PAID" solo />
+        <v-select :items="MachineID" v-model="input.PAID" solo />
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>檢查單位
         </h3>
-        <v-select v-model="ipt.case" :items="formDepartOptions" solo />
+        <v-select v-model="input.case" :items="formDepartOptions" solo />
       </v-col>
 
       <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
@@ -424,7 +424,7 @@ export default {
     tableItems: [],
     //------
     MachineID: ["", "TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
-    ipt: {
+    input: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
       case: "",
@@ -498,7 +498,7 @@ export default {
     }),
   },
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     //更新時間
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
@@ -518,7 +518,7 @@ export default {
     ]),
     // 清除搜尋內容
     reset() {
-      this.ipt = { ...this.defaultIpt };
+      this.input = { ...this.defaultIpt };
     },
     // 更換頁數
     initInput() {
@@ -551,10 +551,10 @@ export default {
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table, // DB table
         KeyItem: [
-          { Column: "StartDayVlaue", Value: this.ipt.dateStart },
-          { Column: "EndDayVlaue", Value: this.ipt.dateEnd },
-          { Column: "PAID", Value: this.ipt.PAID },
-          { Column: "DepartCode", Value: this.ipt.case },
+          { Column: "StartDayVlaue", Value: this.input.dateStart },
+          { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "PAID", Value: this.input.PAID },
+          { Column: "DepartCode", Value: this.input.case },
         ],
         QyName: [
           // "DISTINCT (RPFlowNo)",

@@ -517,7 +517,7 @@ export default {
     }),
   },
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
     this.doMan.id = this.userData.UserId;

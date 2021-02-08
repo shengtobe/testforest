@@ -61,7 +61,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
-        <v-select :items="formDepartOptions" v-model="ipt2.depart" solo />
+        <v-select :items="formDepartOptions" v-model="input.department" solo />
       </v-col>
       <v-col cols="12" sm="3" md="3"></v-col>
 
@@ -374,7 +374,6 @@ export default {
         depart: "",
         checkManName: "",
       },
-      ipt2: {},
       defaultIpt: {
         dateStart: "", // 通報日期(起)
         dateEnd: "", // 通報日期(迄)
@@ -478,7 +477,7 @@ export default {
     }),
   },
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
     this.doMan.id = this.userData.UserId;
