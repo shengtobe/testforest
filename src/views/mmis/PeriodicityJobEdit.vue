@@ -37,7 +37,27 @@
               </v-menu>
             </v-col>
             <v-col cols="12" sm="4">
-              <h3 class="mb-1">提醒週期</h3>
+              <h3 class="mb-1">通知結束日</h3>
+              <v-menu
+                v-model="a_dateend"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field v-model.trim="queryItem.AlarmEndDTime" solo v-on="on" readonly />
+                </template>
+                <v-date-picker
+                  color="purple"
+                  v-model="queryItem.AlarmEndDTime"
+                  @input="a_dateend = false"
+                  locale="zh-tw"
+                />
+              </v-menu>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">提醒週期(日曆天)</h3>
               <v-text-field type="number" min="1" solo  v-model="queryItem.Cycle" />
             </v-col>
             <v-col cols="12" sm="6">
@@ -84,6 +104,7 @@
     data: () => ({
       titleShow: '',
       a_datestart: "",
+      a_dateend: "",
       add: {
         datestart: "",
       },
@@ -95,6 +116,7 @@
         DepartName: "",
         Memo: "",
         AlarmDTime: "",
+        AlarmEndDTime: "",
         Cycle: "",
         PeopleList: []
       }
@@ -227,7 +249,8 @@
               console.log(res.data)
               this.queryItem.DepartName = res.data.DepartName
               this.queryItem.Memo = res.data.Memo
-              this.queryItem.AlarmDTime = res.data.AlarmDTime.split(' ')[0]
+              this.queryItem.AlarmDTime = res.data.AlarmDTime.split(' ')[0].replace(/\//g, "-")
+              this.queryItem.AlarmEndDTime = res.data.AlarmEndDTime.split(' ')[0].replace(/\//g, "-")
               this.queryItem.Cycle = res.data.Cycle
               this.queryItem.PeopleList = res.data.PeopleList.map(item=>item.PeopleId)
               this.queryItem = decodeObject(this.queryItem)

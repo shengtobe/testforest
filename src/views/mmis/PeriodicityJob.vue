@@ -61,13 +61,20 @@
 
       <v-col cols="12">
         <v-card>
-          <v-data-table
+          <!-- <v-data-table
             :headers="headers"
             :items="tableItems"
             :single-expand="singleExpand"
             :expanded.sync="expanded"
             item-key="id"
             show-expand
+            :options.sync="pageOpt"
+            hide-default-footer
+          > -->
+          <v-data-table
+            :headers="headers"
+            :items="tableItems"
+            item-key="id"
             :options.sync="pageOpt"
             hide-default-footer
           >
@@ -87,7 +94,7 @@
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
-            <template v-slot:expanded-item="{ headers, item }">
+            <!-- <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length">
                 <div class="row">
                   <div class="col-12 col-md-8">
@@ -96,7 +103,7 @@
                   </div>
                 </div>
               </td>
-            </template>
+            </template> -->
 
             <template v-slot:footer="footer">
               <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
@@ -170,7 +177,7 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "提醒週期",
+        text: "提醒週期(日曆天)",
         value: "Cycle",
         align: "center",
         divider: true,
@@ -183,12 +190,12 @@ export default {
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
-      {
-        text: "",
-        value: "data-table-expand",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-      },
+      // {
+      //   text: "",
+      //   value: "data-table-expand",
+      //   divider: true,
+      //   class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      // },
     ],
     tableItems: [
       
@@ -250,7 +257,8 @@ export default {
           if (res.data.ErrorCode == 0) {
             this.tableItems = decodeObject(res.data.JobList)
             this.tableItems.forEach((e,i) => {
-              e.AlarmDTime = e.AlarmDTime.split(' ')[0]
+              e.AlarmDTime = e.AlarmDTime.split(' ')[0].replace(/\//g, "-")
+              e.AlarmEndDTime = e.AlarmEndDTime.split(' ')[0].replace(/\//g, "-")
               e.id = (i+1).toString()
             })
           } else {
