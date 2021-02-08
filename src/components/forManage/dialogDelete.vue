@@ -65,13 +65,13 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
-          this.chLoadingShow();
-          this.ShowDetailDialog = false;
+          //this.chLoadingShow();
+          //this.ShowDetailDialog = false;
           this.search();
         });
     },
     doClose() {
-      this.$emit("dialogData", false); //子组件对openStatus修改后向父组件发送事件通知
+      this.$emit("dialogData", false);
     },
   },
   filters: {

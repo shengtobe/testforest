@@ -51,6 +51,7 @@ export default {
   components: {},
   mounted() {
     this.dataSet = this.value;
+    this.showIcon = this.showIcon ? this.showIcon : false;
   },
   computed: {
     // compute_name:function() {
