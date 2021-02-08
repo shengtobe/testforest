@@ -173,29 +173,12 @@
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="datePickerShowControl.checkDay"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="CheckDay"
-                        solo
-                        v-on="on"
-                        readonly
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="CheckDay"
-                      @input="datePickerShowControl.checkDay = false"
-                      locale="zh-tw"
-                    ></v-date-picker>
-                  </v-menu>
+                  <dateSelect
+                    label="檢查日期"
+                    v-model="CheckDay"
+                    key="dateStart"
+                    :showIcon="formIconShow"
+                  />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
@@ -619,6 +602,7 @@ export default {
           })
           .finally(() => {
             this.chLoadingShow();
+            this.search();
           });
       } else {
         // 新增
