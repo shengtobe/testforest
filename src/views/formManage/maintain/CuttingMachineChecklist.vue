@@ -155,7 +155,7 @@
     <v-dialog v-model="ShowDetailDialog" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          {{ action }}{{ title }}
+          {{ contentType|editStatus }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -516,7 +516,8 @@ export default {
         desc8: "8. 磨輪固定情況是否良好",
         desc9: "9. 試運轉是否平衡，有無異狀",
         desc10: "10. 是否有「使用時禁戴手套」警語",
-      }
+      },
+      contentType: "",
     };
   },
   components: { Pagination, dateSelect, deptSelect }, // 頁碼
@@ -551,8 +552,9 @@ export default {
       this.Measures = "";
     },
     newOne() {
+      this.contentType = "add";
       this.action = Actions.add;
-      this.ShowDetailDialog = true;
+      this.ShowDetailDialog = true; //開啟dialog
       console.log("this.ShowDetailDialog: " + this.ShowDetailDialog);
       this.initInput();
     },
@@ -815,5 +817,20 @@ export default {
         });
     },
   },
+  filters: {
+    editStatus: function(value) {
+      let rtnStr = "";
+      if(value == "add") {
+        rtnStr = "新增";
+      }else if(value == "edit") {
+        rtnStr = "編輯";
+      }else if(value == "delete") {
+        rtnStr = "刪除";
+      }else{
+        rtnStr = "";
+      }
+      return rtnStr;
+    }
+  }
 };
 </script>
