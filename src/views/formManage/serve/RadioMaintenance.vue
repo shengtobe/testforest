@@ -494,6 +494,7 @@ export default {
     // 更換頁數
     initInput() {
       console.log("init create window form");
+      this.CheckDay = getTodayDateString();
       this.Name = this.doMan.name;
       // this.zs = this.nowTime;
       this.PAID = "";

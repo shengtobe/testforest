@@ -528,7 +528,7 @@ export default {
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
-      this.CheckDay = this.nowTime;
+      this.CheckDay = getTodayDateString();
       var step;
       
       this.CheckMan = '',

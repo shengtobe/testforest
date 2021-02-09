@@ -370,6 +370,7 @@ export default {
     },
     initInput(){
       this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
       var step;
       for (step = 0; step < 7; step++) {

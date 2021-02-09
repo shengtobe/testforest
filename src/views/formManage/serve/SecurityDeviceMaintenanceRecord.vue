@@ -325,6 +325,7 @@ export default {
     initInput(){
       console.log("init create window form")
       this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
       this.Place = '',
       this.Content = '',

@@ -647,7 +647,7 @@ export default {
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
+      this.CheckDay = getTodayDateString();
       var step;
       for (step = 0; step < 11; step++) {
         this.ipt.items[step].status1 = "0"

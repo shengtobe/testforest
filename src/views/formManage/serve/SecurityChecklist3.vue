@@ -513,6 +513,7 @@ export default {
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
       console.log("this.doMan.name: " + this.doMan.name)
       this.zs = this.nowTime;
       var step;
