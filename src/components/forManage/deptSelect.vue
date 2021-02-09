@@ -103,3 +103,8 @@ export default {
   }
 }
 </script>
+<style>
+  .theme--light.v-select .v-select__selection--disabled{
+    color:black;
+  }
+</style>
