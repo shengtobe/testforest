@@ -270,7 +270,7 @@ export default {
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP023",
+      DB_Table: "RP010",
       nowTime: "",
       doMan:{
         id: '',
@@ -366,6 +366,7 @@ export default {
     initInput(){
       console.log("init create window form")
       this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
       var step;
       for (step = 0; step < 10; step++) {

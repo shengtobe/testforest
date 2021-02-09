@@ -687,6 +687,7 @@ export default {
       console.log("init create window form")
       // console.log("this.userData.UserName: " + this.userData.UserName)
       this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
       for (let index = 0; index < this.No.length; index++) {
         this.No[index].value = '';

@@ -434,6 +434,7 @@ export default {
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
       var step;
       for (step = 0; step < 1; step++) {

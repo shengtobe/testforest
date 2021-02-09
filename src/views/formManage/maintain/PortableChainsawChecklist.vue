@@ -44,13 +44,7 @@
         <dateSelect label="檢查日期(迄)" v-model="input.dateEnd" key="dateStart" :iconYN="formIconShow" />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="formDepartOptions" v-model="input.department"
-          solo
-        />
+        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
@@ -206,7 +200,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo v-model="Name"/>
+                  <v-text-field solo v-model="Name" readonly/>
                 </v-col>
               </v-row>
               <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
@@ -310,6 +304,7 @@ import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect"
+import deptSelect from "@/components/forManage/deptSelect";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -437,7 +432,7 @@ export default {
       },
     };
   },
-  components: { Pagination,dateSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -556,7 +551,6 @@ export default {
         KeyName: this.DB_Table, // DB table
         KeyItem: [
           { Column: "CheckDay", Value: this.CheckDay },
-          { Column: "CheckMan", Value: this.CheckMan },
           { Column: "Advice", Value: this.Advice },
           { Column: "Measures", Value: this.Measures },
         ],
@@ -576,7 +570,6 @@ export default {
           obj3.Value = item.memo;
 
           data.KeyItem.push(obj1);
-          data.KeyItem.push(obj2);
           data.KeyItem.push(obj3);
           j++;
         });

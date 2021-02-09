@@ -629,7 +629,7 @@ export default {
   methods: {
     initInput() {
       this.doMan.name = this.userData.UserName;
-      this.CheckDay = this.nowTime;
+      this.CheckDay = getTodayDateString();
       this.ObserName = this.doMan.name;
       this.CheckOption1 = false;
       this.CheckOption2 = false;
