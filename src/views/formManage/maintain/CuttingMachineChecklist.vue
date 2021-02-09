@@ -24,7 +24,7 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select :items="formDepartOptions" v-model="input.department" solo /> -->
-        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
+        <deptSelect label="管理單位" v-model="input.department" :showIcon="formIconShow" outType="key" key="department"/>
       </v-col>
       <v-col cols="12" sm="3" md="3"></v-col>
 

@@ -12,20 +12,21 @@
     <h3 class="mb-1">
       <v-icon class="mr-1 mb-1" v-if="ifIcon">mdi-domain</v-icon>{{label}}
     </h3>
-    <v-select :items="deptOptions" item-text="value" :item-value="outType" v-model="dataSet" solo :loading="isLoading" />
+    <v-select :items="deptOptions" item-text="value" :item-value="outType" v-model="dataSet" solo :loading="isLoading" :readonly="isReadonly"/>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState,mapActions } from 'vuex'
 import { fetchOrganization } from '@/apis/organization'
 import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
 export default {
   name: "deptSelect",
   props:{
-    iconYN: Boolean,
+    showIcon: Boolean,
     label: String,
     value: String,
     outType: String,
+    readonly: Boolean,
   },
   data: () => ({
     showYN: false,
@@ -33,6 +34,7 @@ export default {
     ifIcon: false,
     deptOptions: [],
     isLoading: false,
+    isReadonly: false,
     itemValue: "value",
   }),
   components: {
@@ -40,8 +42,9 @@ export default {
   },
   mounted() {
     this.dataSet = this.value
-    this.ifIcon = (this.iconYN)?this.iconYN:this.ifIcon
+    this.ifIcon = (this.showIcon)?this.showIcon:this.ifIcon
     this.itemValue = (this.outType)?this.outType:this.itemValue 
+    this.isReadonly = this.readonly?this.readonly:this.isReadonly
     this._getOrg()
   },
   computed: {
@@ -56,6 +59,10 @@ export default {
   
   },
   methods: {
+    ...mapActions("system", [
+      "chMsgbar", // messageBar
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
    //抓單位清單
     _getOrg(){
       const that = this
