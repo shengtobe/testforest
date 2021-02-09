@@ -87,7 +87,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
-import { classQueryList,classDelete } from '@/apis/materialManage/outsource.js'
+import { outsourceQueryList,outsourceDelete } from '@/apis/materialManage/outsource.js'
 import OutsourcDataEdit from '@/views/mmis/OutsourcDataEdit'
 export default {
   data: () => ({
@@ -96,17 +96,7 @@ export default {
     Delete: false,
     searchItem: "",
     pageOpt: { page: 1 },
-    tableItems: [
-      {
-        id: "1",
-        DepartName: "服務科",
-        VendorName: "廠商A",
-        Name: "Bill",
-        TEL: "(07)333-1234",
-        UniNumber: "",
-        Memo: "",
-      }
-    ],
+    tableItems: [],
     selectdata: [],
     headers: [
       {
@@ -176,8 +166,8 @@ export default {
     OutsourcDataEdit,
   },
   mounted: function() {
-    this.goSearch()
     this.getOrg()
+    this.goSearch()
   },
   computed: {
       ...mapState ('user', {
@@ -191,12 +181,13 @@ export default {
     ]),
     goSearch() {
       this.chLoadingShow()
-      classQueryList({
+      outsourceQueryList({
         DepartName: this.searchItem,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
+          console.log(res.data)
           this.tableItems = decodeObject(res.data.VendorList)
           this.tableItems.forEach((e,i)=>{
             e.id=i+1
@@ -247,7 +238,7 @@ export default {
     },
     Del() {
       this.isLoading = true
-      classDelete({
+      outsourceDelete({
         FlowID: this.detailFlow,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -262,6 +253,7 @@ export default {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
       }).finally(() => {
         this.isLoading = false
+        this.close()
       })
     },
     // 更換頁數
@@ -269,6 +261,7 @@ export default {
       this.pageOpt.page = n;
     },
     close() {
+      this.goSearch()
       this.Add = false;
       this.Edit = false;
       this.Delete = false;

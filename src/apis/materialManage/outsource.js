@@ -2,46 +2,46 @@
 import axios from '@/apis/axiosSetting'
 
 //清單
-export function classQueryList(data) { 
+export function outsourceQueryList(data) { 
     return axios(
     {
-        url: '/mmis/routine/classquerylist',
+        url: '/mmis/outsourcing/outsourcequerylist',
         method: 'post',
         data,
     }
 )}
 //明細
-export function classQuery(data) { 
+export function outsourceQuery(data) { 
   return axios(
   {
-      url: '/mmis/routine/jobquery',
+      url: '/mmis/outsourcing/outsourcequery',
       method: 'post',
       data,
   }
 )}
 //新增
-export function classInsert(data) { 
+export function outsourceInsert(data) { 
   return axios(
   {
-      url: '/mmis/routine/jobinsert',
+      url: '/mmis/outsourcing/outsourceinsert',
       method: 'post',
       data,
   }
 )}
 //刪除
-export function classDelete(data) { 
+export function outsourceDelete(data) { 
   return axios(
   {
-      url: '/mmis/routine/jobdelete',
+      url: '/mmis/outsourcing/outsourcedelete',
       method: 'post',
       data,
   }
 )}
 //修改
-export function classUpdate(data) { 
+export function outsourceUpdate(data) { 
   return axios(
   {
-      url: '/mmis/routine/jobupdate',
+      url: '/mmis/outsourcing/outsourceupdate',
       method: 'post',
       data,
   }

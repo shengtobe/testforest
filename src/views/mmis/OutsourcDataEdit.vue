@@ -30,7 +30,7 @@
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">統一編號</h3>
-              <v-text-field solo v-model="queryItem.UnitNumber" />
+              <v-text-field solo v-model="queryItem.UniNumber" />
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">備註</h3>
@@ -52,7 +52,7 @@
   import { mapState, mapActions } from 'vuex'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { fetchOrganization } from '@/apis/organization'
-  import { classQuery,classInsert,classUpdate } from '@/apis/materialManage/outsource.js'
+  import { outsourceQuery,outsourceInsert,outsourceUpdate } from '@/apis/materialManage/outsource.js'
   export default {
     props: {
       flowId: String,
@@ -66,7 +66,7 @@
         DepartName: "",
         VendorName: "",
         Name: "",
-        UnitNumber: "",
+        UniNumber: "",
         TEL: "",
         Memo: "",
       }
@@ -112,18 +112,19 @@
         if(this.inType == 'edit') {
           this.titleShow = "編輯"
           this.isLoading = true
-          classQuery({
+          outsourceQuery({
             FlowID: this.flowId,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
             OperatorID: this.userData.UserId,  // 操作人id
           }).then(res => {
             if (res.data.ErrorCode == 0) {
+              console.log(res.data)
               this.queryItem.DepartName = res.data.DepartName
-              this.queryItem.VendorName = res.data.VendorName
-              this.queryItem.Name = res.data.Name
-              this.queryItem.UnitNumber = res.data.UnitNumber
-              this.queryItem.TEL = res.data.TEL
-              this.queryItem.Memo = res.data.Memo
+              this.queryItem.VendorName = res.data.VendorList[0].VendorName
+              this.queryItem.Name = res.data.VendorList[0].Name
+              this.queryItem.UniNumber = res.data.VendorList[0].UniNumber
+              this.queryItem.TEL = res.data.VendorList[0].TEL
+              this.queryItem.Memo = res.data.VendorList[0].Memo
               this.queryItem = decodeObject(this.queryItem)
             } else {
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -143,10 +144,13 @@
       },
       goSave() {
         this.isLoading = true
+        let saveData = []
+        saveData.push(this.queryItem)
         if(this.inType == 'edit') {
-          classUpdate({
+          outsourceUpdate({
             FlowID: this.flowId,
-            ...this.queryItem,
+            DepartName: this.queryItem.DepartName,
+            VendorList: saveData,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
             OperatorID: this.userData.UserId,  // 操作人id
           }).then(res=>{
@@ -160,10 +164,12 @@
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
           }).finally(() => {
             this.isLoading = false
+            this.close()
           })
         }else if(this.inType == 'add') {
-          classInsert({
-            ...this.queryItem,
+          outsourceInsert({
+            DepartName: this.queryItem.DepartName,
+            VendorList: saveData,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
             OperatorID: this.userData.UserId,  // 操作人id
           }).then(res=>{
@@ -177,6 +183,7 @@
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
           }).finally(() => {
             this.isLoading = false
+            this.close()
           })
         }
       }
