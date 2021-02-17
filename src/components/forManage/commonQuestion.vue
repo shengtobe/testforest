@@ -2,37 +2,52 @@
   <div class="px-6 py-4">
     <v-row>
       <v-col cols="12">
-        <p v-for="(item,index) in settings.subtitle" :key="'subtitle'+index">{{item}}</p>
+        <p v-for="(item, index) in settings.subtitle" :key="'subtitle' + index">
+          {{ item }}
+        </p>
       </v-col>
       <!-- 檢查項目 -->
       <v-col cols="12">
         <v-row no-gutter class="indigo--text">
           <v-col cols="12" sm="4">
-            <dateSelect 
-              label="檢查日期" 
+            <dateSelect
+              label="檢查日期"
               key="checkDate"
               :showIcon="commonSettings.iconShow"
-              v-model="value.editableData.CheckDay"/>
+              v-model="value.editableData.CheckDay"
+            />
           </v-col>
           <v-col cols="12" sm="4">
-            <deptSelect 
-              label="管理單位" 
-              v-model="value.DepartCode" 
-              :showIcon="commonSettings.iconShow" 
-              outType="key" 
+            <deptSelect
+              label="管理單位"
+              v-model="value.DepartCode"
+              :showIcon="commonSettings.iconShow"
+              outType="key"
               :readonly="commonSettings.deptReadonly"
-              key="department"/>
+              key="department"
+            />
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">檢查人員</h3>
-            <v-text-field solo v-model="value.Name" :readonly="commonSettings.deptReadonly"/>
+            <v-text-field
+              solo
+              v-model="value.Name"
+              :readonly="commonSettings.deptReadonly"
+            />
           </v-col>
         </v-row>
-        <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+        <v-row
+          no-gutter
+          class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+        >
           <v-col cols="12" :sm="settings.width.qusetion">
             <h3 class="mb-1">檢查部分</h3>
           </v-col>
-          <v-col cols="12" v-if="settings.width.method" :sm="settings.width.method">
+          <v-col
+            cols="12"
+            v-if="settings.width.method"
+            :sm="settings.width.method"
+          >
             <h3 class="mb-1">檢查方法</h3>
           </v-col>
           <v-col cols="12" :sm="settings.width.option">
@@ -41,7 +56,11 @@
           <v-col cols="12" v-if="settings.width.memo" :sm="settings.width.memo">
             <h3 class="mb-1">備註</h3>
           </v-col>
-          <v-col cols="12" v-if="settings.width.memo2" :sm="settings.width.memo2">
+          <v-col
+            cols="12"
+            v-if="settings.width.memo2"
+            :sm="settings.width.memo2"
+          >
             <h3 class="mb-1"><slot name="memo2Name">備註2</slot></h3>
           </v-col>
         </v-row>
@@ -61,7 +80,9 @@
               <v-select
                 v-if="settings.columns.method"
                 :items="methodOptions"
-                v-model="value.editableData[settings.columns.method+(idx+1)]"
+                v-model="
+                  value.editableData[settings.columns.method + (idx + 1)]
+                "
                 solo
               >
               </v-select>
@@ -69,7 +90,14 @@
             </v-col>
             <v-col cols="12" sm="2">
               <span class="d-sm-none error--text">檢查結果：</span>
-              <v-radio-group dense row v-model="value.editableData[settings.columns.option+(idx+1)]" class="pa-0 ma-0">
+              <v-radio-group
+                dense
+                row
+                v-model="
+                  value.editableData[settings.columns.option + (idx + 1)]
+                "
+                class="pa-0 ma-0"
+              >
                 <slot name="resultOtions">
                   <v-radio color="success" label="正常" value="1"></v-radio>
                   <v-radio color="red" label="異常" value="2"></v-radio>
@@ -78,22 +106,42 @@
               </v-radio-group>
             </v-col>
             <v-col cols="12" sm="3" v-if="settings.width.memo">
-                <v-textarea auto-grow outlined rows="2" v-model="value.editableData[settings.columns.memo+(idx+1)]"/>
+              <v-textarea
+                auto-grow
+                outlined
+                rows="2"
+                v-model="value.editableData[settings.columns.memo + (idx + 1)]"
+              />
             </v-col>
             <v-col cols="12" sm="3" v-if="settings.width.memo2">
-                <v-textarea auto-grow outlined rows="2" v-model="value.editableData[settings.columns.memo2+(idx+1)]"/>
+              <v-textarea
+                auto-grow
+                outlined
+                rows="2"
+                v-model="value.editableData[settings.columns.memo2 + (idx + 1)]"
+              />
             </v-col>
           </v-row>
         </v-alert>
       </v-col>
       <!-- 改善建議、改善追蹤 -->
-      <v-col cols="12" v-if="settings.advice.Advice">
+      <v-col cols="12" v-if="settings.textarea.Advice">
         <h3 class="mb-1 indigo--text">改善建議</h3>
-        <v-textarea auto-grow outlined rows="4" v-model="value.editableData.Advice"/>
+        <v-textarea
+          auto-grow
+          outlined
+          rows="4"
+          v-model="value.editableData.Advice"
+        />
       </v-col>
-      <v-col cols="12" v-if="settings.advice.Measures">
+      <v-col cols="12" v-if="settings.textarea.Measures">
         <h3 class="mb-1 indigo--text">改善措施</h3>
-        <v-textarea auto-grow outlined rows="4" v-model="value.editableData.Measures"/>
+        <v-textarea
+          auto-grow
+          outlined
+          rows="4"
+          v-model="value.editableData.Measures"
+        />
       </v-col>
       <!-- END 檢查項目 -->
     </v-row>
@@ -130,7 +178,7 @@ settings: {
       }
     ]
   },
-  advice: { 是否顯示改善
+  textarea: { 是否顯示改善
     Advice: 建議,
     Measures: 措施,
   }
@@ -154,25 +202,27 @@ export default {
     defaultSettings: {
       options: {
         method: [
-          { text: '動作測試', value: '1' },
-          { text: '目視點檢', value: '2' },
-        ]
-      }
+          { text: "動作測試", value: "1" },
+          { text: "目視點檢", value: "2" },
+        ],
+      },
     },
-    methodOptions:[]
+    methodOptions: [],
   }),
   components: {
     dateSelect,
     deptSelect,
   },
   mounted() {
-    console.log(this.defaultSettings.options.method)
-    this.methodOptions = this.settings.options?this.settings.options.method:this.defaultSettings.options.method
-	},
+    console.log(this.defaultSettings.options.method);
+    this.methodOptions = this.settings.options
+      ? this.settings.options.method
+      : this.defaultSettings.options.method;
+  },
   watch: {
-    value: function(value) {
+    value: function (value) {
       this.$emit("input", value);
-    }
-  }
-}
+    },
+  },
+};
 </script>

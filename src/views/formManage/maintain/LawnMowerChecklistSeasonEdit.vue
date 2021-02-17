@@ -128,6 +128,14 @@
     </div> -->
     <commonQuestion v-model="inputData" :settings="settings" />
     <v-card-actions class="px-5 pb-5">
+      <v-btn
+        v-if="editType != actions.add"
+        elevation="4"
+        color="red"
+        class="mr-2 white--text"
+        @click="deleteRecord"
+        >刪除</v-btn
+      >
       <v-spacer></v-spacer>
       <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
       <v-btn
@@ -165,7 +173,6 @@ export default {
   },
   data: () => ({
     DB_Table: "RP032",
-    action: Actions.add,
     actions: Actions,
     commonSettings: {
       iconShow: false,
@@ -238,7 +245,7 @@ export default {
         option: 2,
         memo: 3,
       },
-      advice: {
+      textarea: {
         Advice: true,
         Measures: true,
       },
@@ -330,6 +337,7 @@ export default {
     },
     close() {
       this.$emit("close");
+      this.$emit("search");
     },
     save() {
       const that = this;
@@ -395,6 +403,9 @@ export default {
             that.close();
           });
       }
+    },
+    deleteRecord() {
+      this.$emit("deleteRecord", this.inputData.RPFlowNo);
     },
   },
   filters: {

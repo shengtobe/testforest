@@ -103,6 +103,7 @@
         :id="doMan.id"
         :DB_Table="DB_Table"
         :RPFlowNo="RPFlowNo"
+        :key="DynamicKey"
         @search="search"
         @close="close"
         @cancel="closeDialogDel"

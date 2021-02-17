@@ -76,7 +76,17 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -87,10 +97,24 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="900px">
       <EditPage
         @close="close"
+        @search="search"
+        @deleteRecord="deleteRecord"
         :key="DynamicKey"
         :item="editItem"
         :editType="editType"
@@ -114,6 +138,7 @@ import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import EditPage from "@/views/formManage/maintain/LawnMowerChecklistSeasonEdit";
 import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 
 export default {
@@ -125,10 +150,14 @@ export default {
       actions: Actions,
       isLoading: false,
       disabled: false,
+      // controls for dialog
+      ShowDetailDialog: false,
+      dialogDel: false, // model off
       Add: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP032",
+      RPFlowNo: "",
       //搜尋欄位設定
       formData: {
         settings: {
@@ -141,6 +170,7 @@ export default {
         },
       },
       DynamicKey: 0,
+      DelDynamicKey: 0,
       editType: "",
       editItem: {},
       //
@@ -199,6 +229,7 @@ export default {
     deptSelect,
     EditPage,
     ToolBar,
+    dialogDelete,
   },
   computed: {
     ...mapState("user", {
@@ -270,9 +301,14 @@ export default {
           this.chLoadingShow();
         });
     },
+    // 關閉刪除確認dialod
+    closeDialogDel() {
+      this.dialogDel = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
+      this.dialogDel = false;
     },
     viewPage(item) {
       console.log(item);
@@ -281,6 +317,11 @@ export default {
       this.editType = this.actions.edit;
       this.editItem = item;
       this.Add = true;
+    },
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
     },
   },
 };
