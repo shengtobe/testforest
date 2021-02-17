@@ -43,8 +43,14 @@
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
+      <ToolBar
+        @search="search"
+        @reset="reset"
+        @newOne="newOne"
+        :text="newText"
+      />
     </v-row>
-    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
+
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
