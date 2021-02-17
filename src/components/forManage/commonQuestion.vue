@@ -2,7 +2,7 @@
   <div class="px-6 py-4">
     <v-row>
       <v-col cols="12">
-        <p v-for="item in settings.subtitle">{{item}}</p>
+        <p v-for="(item,index) in settings.subtitle" :key="'subtitle'+index">{{item}}</p>
       </v-col>
       <!-- 檢查項目 -->
       <v-col cols="12">
