@@ -51,7 +51,7 @@
           colored-border
           color="teal"
           elevation="4"
-          v-for="(item, idx) in questionItem"
+          v-for="(item, idx) in settings.qestions"
           :key="idx"
           class="mb-6"
         >
@@ -65,7 +65,7 @@
                 solo
               >
               </v-select>
-              <label v-else>{{ item.checkMethod }}</label>
+              <label v-else>{{ item.method }}</label>
             </v-col>
             <v-col cols="12" sm="2">
               <span class="d-sm-none error--text">檢查結果：</span>
@@ -87,11 +87,11 @@
         </v-alert>
       </v-col>
       <!-- 改善建議、改善追蹤 -->
-      <v-col cols="12" v-if="value.editableData.Advice">
+      <v-col cols="12" v-if="settings.advice.Advice">
         <h3 class="mb-1 indigo--text">改善建議</h3>
         <v-textarea auto-grow outlined rows="4" v-model="value.editableData.Advice"/>
       </v-col>
-      <v-col cols="12" v-if="value.editableData.Measures">
+      <v-col cols="12" v-if="settings.advice.Measures">
         <h3 class="mb-1 indigo--text">改善措施</h3>
         <v-textarea auto-grow outlined rows="4" v-model="value.editableData.Measures"/>
       </v-col>
@@ -108,13 +108,13 @@ settings: {
       question: 題目,
       <method: 固定檢查方法>, 
     }
-  ]
+  ],
   columns: { 欄位前綴 string
     <method: 檢查方法>,
     option: 檢查結果,
     <memo: 備註>,
     <memo2: 備註2>,
-  }
+  },
   width: { 寬度 number
     qusetion: 題目,
     method: 檢查方法,
@@ -129,9 +129,17 @@ settings: {
         value: 資料值
       }
     ]
+  },
+  advice: { 是否顯示改善
+    Advice: 建議,
+    Measures: 措施,
   }
 }
+使用範例
+<commonQuestion v-model="inputData" :settings="settings"/>
 */
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
 export default {
   name: "commonQuestion",
   props: {
@@ -153,8 +161,13 @@ export default {
     },
     methodOptions:[]
   }),
+  components: {
+    dateSelect,
+    deptSelect,
+  },
   mounted() {
-    this.methodOptions = this.settings.options.method || this.defaultSettings.options.method
+    console.log(this.defaultSettings.options.method)
+    this.methodOptions = this.settings.options?this.settings.options.method:this.defaultSettings.options.method
 	},
   watch: {
     value: function(value) {

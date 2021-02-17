@@ -8,7 +8,7 @@
       </v-btn>
     </v-card-title>
 
-    <div class="px-6 py-4">
+    <!-- <div class="px-6 py-4">
       <v-row>
         <v-col cols="12">
           <p>1.依職業安全衛生法第23條規定辦理。</p>
@@ -19,9 +19,9 @@
           <p>
             4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查
           </p>
-        </v-col>
+        </v-col> -->
         <!-- 檢查項目 -->
-        <v-col cols="12">
+        <!-- <v-col cols="12">
           <v-row no-gutter class="indigo--text">
             <v-col cols="12" sm="4">
               <dateSelect
@@ -103,9 +103,9 @@
               </v-col>
             </v-row>
           </v-alert>
-        </v-col>
+        </v-col> -->
         <!-- 改善建議、改善追蹤 -->
-        <v-col cols="12">
+        <!-- <v-col cols="12">
           <h3 class="mb-1 indigo--text">改善建議</h3>
           <v-textarea
             auto-grow
@@ -122,11 +122,11 @@
             rows="4"
             v-model="inputData.editableData.Measures"
           />
-        </v-col>
+        </v-col> -->
         <!-- END 檢查項目 -->
-      </v-row>
-    </div>
-
+      <!-- </v-row>
+    </div> -->
+    <commonQuestion v-model="inputData" :settings="settings"/>
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
       <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
@@ -155,8 +155,9 @@ import {
 } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import commonQuestion from "@/components/forManage/commonQuestion";
 import { Actions } from "@/assets/js/actions";
-
+import { Constrant } from "@/assets/js/constrant";
 export default {
   props: {
     item: Object,
@@ -210,10 +211,43 @@ export default {
       { question: "7.試運轉是否順暢、有無異常噪音", checkMethod: "動作測試" },
       { question: "8.其他", checkMethod: "目視點檢" },
     ],
+    settings:{
+      subtitle:[
+        "1.依職業安全衛生法第23條規定辦理。",
+        "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
+        "3.缺點由使用單位自行改善，不克者委請設備商修護。",
+        "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
+      ],
+      qestions: [
+        { question: "1.刀刃是否牢固有無裂痕或不堪使用", method: "目視點檢" },
+        { question: "2.護罩有無破裂或不堪使用", method: "目視點檢" },
+        { question: "3.引擎是否牢固、有無漏油", method: "動作測試" },
+        { question: "4.各部位螺栓有無鬆脫", method: "動作測試" },
+        { question: "5.背帶有無斷裂或不堪使用", method: "目視點檢" },
+        { question: "6.控制把手是否牢固、油門是否順暢", method: "目視點檢" },
+        { question: "7.試運轉是否順暢、有無異常噪音", method: "動作測試" },
+        { question: "8.其他", method: "目視點檢" },
+      ],
+      columns: {
+        option: "CheckOption",
+        memo: "Memo_",
+      },
+      width: {
+        qusetion: 4,
+        method: 3,
+        option: 2,
+        memo: 3,
+      },
+      advice: { 
+        Advice: true,
+        Measures: true,
+      }
+    }
   }),
   components: {
     dateSelect,
     deptSelect,
+    commonQuestion,
   },
   mounted() {
     this.editType == this.actions.edit
@@ -305,7 +339,7 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-
+      console.log(rtnObj)
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
