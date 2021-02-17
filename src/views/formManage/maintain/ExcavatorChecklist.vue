@@ -4,53 +4,31 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="a"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
-      </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="q"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
-      </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="formDepartOptions" v-model="ipt2.depart"
-          solo
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <deptSelect
+          label="管理單位"
+          v-model="formData.searchItem.department"
+          :showIcon="formData.settings.formIconShow"
+          outType="key"
+          key="department"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3"></v-col>
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
@@ -64,18 +42,15 @@
         <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
       </v-col>
+      <ToolBar
+        @search="search"
+        @reset="reset"
+        @newOne="newOne"
+        :text="newText"
+      />
     </v-row>
+
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -117,157 +92,60 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <!-- 新增挖掘機每日作業前自動檢點表 modal -->
+    <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="900px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
-          新增{{ title }}
-          <v-spacer></v-spacer>
-          <v-btn dark fab small text @click="close" class="mr-n2">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <div class="px-6 py-4">
-          <v-row>
-            <v-col cols="12">
-              <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。</p>
-              <p>2.依檢查結果選擇正常、異常、無此項目。</p>
-              <p>3.缺點由使用單位自行改善，不克者委請設備商修護。</p>
-              <p>4.本表月底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。</p>
-            </v-col>
-            <!-- 檢查項目 -->
-            <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="ass"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value readonly />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
-                </v-col>
-              </v-row>
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查項目</h3>
-                </v-col>
-                <v-col cols="12" sm="5">
-                  <h3 class="mb-1">檢查結果</h3>
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">備註</h3>
-                </v-col>
-              </v-row>
-              <v-alert
-                dense
-                border="top"
-                colored-border
-                color="teal"
-                elevation="4"
-                v-for="(item, idx) in items"
-                :key="idx"
-                class="mb-6"
-              >
-                <v-row no-gutter>
-                  <v-col cols="12" sm="4">{{ item.qq }}</v-col>
-                  <v-col cols="12" sm="5">
-                    <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="良好" value="1"></v-radio>
-                      <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="0"></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                  <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined rows="3" />
-                  </v-col>
-                </v-row>
-              </v-alert>
-            </v-col>
-            <!-- END 檢查項目 -->
-          </v-row>
-        </div>
-
-        <v-card-actions class="px-5 pb-5">
-          <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-        </v-card-actions>
-      </v-card>
+      <EditPage
+        @close="close"
+        :key="DynamicKey"
+        :item="editItem"
+        :editType="editType"
+      />
     </v-dialog>
   </v-container>
 </template>
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+  decodeObject,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import EditPage from "@/views/formManage/maintain/ExcavatorChecklistEdit";
+import { Actions } from "@/assets/js/actions";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
     return {
       title: "挖掘機每日作業前檢點表(作業前)",
       newText: "檢點表",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
-      panel: [0, 1, 2, 3],
-      readonly: false,
-      a: "",
-      ass: "",
-      formDepartOptions: [
-      // 通報單位下拉選單
-      { text: "不限", value: "" },
-      ...formDepartOptions,
-    ],
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
       Add: false,
-      dialog3: false,
+      DB_Table: "RP024",
       pageOpt: { page: 1 }, // 目前頁數
-      //---api---
-      DB_Table: "RP001",
-      nowTime: "",
-      doMan:{
-        id: '',
-        name: '',
-        depart: '',
-        checkManName: ''
-      },
-      ipt2: {},
-      defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
+      formData: {
+        settings: {
+          formIconShow: true,
         },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
+      DynamicKey: 0,
+      editType: "",
+      editItem: {},
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -278,28 +156,6 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
-      //------
-      ipt: {
-        department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
-        date: new Date().toISOString().substr(0, 10),
-        items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-        ],
-      },
       items: [
         { qq: "1. 引擎冷卻水(水箱)" },
         { qq: "2. 引擎機油" },
@@ -316,29 +172,22 @@ export default {
         { qq: "13. 各部機件異常聲音及不正常動作" },
         { qq: "14. 制動器、連結裝置是否正常" },
       ],
-      suggest: "", // 改善建議
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    EditPage,
+    ToolBar,
+  },
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
-    created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+  created() {
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   methods: {
     initInput(){
@@ -378,6 +227,11 @@ export default {
       console.log("this.Add: " + this.Add)
       this.initInput();
     },
+    reset() {
+      this.formData.searchItem.dateStart = "";
+      this.formData.searchItem.dateEnd = "";
+      this.formData.searchItem.department = "";
+    },
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
@@ -397,7 +251,7 @@ export default {
           {'Column':'StartDayVlaue','Value':this._data.z},
           {"Column":"EndDayVlaue","Value":this._data.df},
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
+        ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
           // // "ID",
@@ -472,7 +326,6 @@ export default {
         console.log("data name: " + dat[0].Name)
         console.log("data time: " + dat[0].CheckDay)
         this.Add = true
-        // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
         console.log("data time1: " + time1)
