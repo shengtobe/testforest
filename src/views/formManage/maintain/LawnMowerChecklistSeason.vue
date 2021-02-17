@@ -4,26 +4,29 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <dateSelect 
-          label="檢查日期(起)" 
+        <dateSelect
+          label="檢查日期(起)"
           key="dateStart"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateStart"/>
+          v-model="formData.searchItem.dateStart"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <dateSelect 
-          label="檢查日期(迄)" 
+        <dateSelect
+          label="檢查日期(迄)"
           key="dateEnd"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateEnd"/>
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <deptSelect 
-          label="管理單位" 
-          v-model="formData.searchItem.department" 
-          :showIcon="formData.settings.formIconShow" 
-          outType="key" 
-          key="department"/>
+        <deptSelect
+          label="管理單位"
+          v-model="formData.searchItem.department"
+          :showIcon="formData.settings.formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
@@ -98,25 +101,39 @@
     </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="900px">
-      <EditPage @close="close" :key="DynamicKey" :item="editItem" :editType="editType"/>
+      <EditPage
+        @close="close"
+        :key="DynamicKey"
+        :item="editItem"
+        :editType="editType"
+      />
     </v-dialog>
   </v-container>
 </template>
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique, decodeObject } from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, deleteFormOrder } from '@/apis/formManage/serve'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+  decodeObject,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
-import EditPage from '@/views/formManage/maintain/LawnMowerChecklistSeasonEdit'
+import EditPage from "@/views/formManage/maintain/LawnMowerChecklistSeasonEdit";
+import { Actions } from "@/assets/js/actions";
+
 export default {
   data() {
     return {
       title: "割草機定期檢查表(三個月)",
       newText: "檢查表",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
       Add: false,
@@ -132,53 +149,89 @@ export default {
           dateSart: "",
           dateEnd: "",
           department: "",
-        }
+        },
       },
       DynamicKey: 0,
-      editType: '',
+      editType: "",
       editItem: {},
       //
       nowTime: "",
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        {
+          text: "項次",
+          value: "ItemNo",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養日期",
+          value: "CheckDay",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "審查狀態",
+          value: "CheckStatus",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "填寫人",
+          value: "Name",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養單位",
+          value: "DepartName",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "功能",
+          value: "content",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
       ],
       tableItems: [],
     };
   },
-  components: { 
+  components: {
     Pagination, // 頁碼
     dateSelect,
     deptSelect,
     EditPage,
-  }, 
+  },
   computed: {
-    ...mapState ('user', {
-        userData: state => state.userData,  // 使用者基本資料
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
     }),
   },
   created() {
-    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString()
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   mounted() {
-    this.search()
+    this.search();
   },
   methods: {
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
-      this.DynamicKey += 1
-      this.editType = 'add'
+    newOne() {
+      console.log("newOne23");
+      this.Add = true;
+      console.log("this.Add: " + this.Add);
+      this.DynamicKey += 1;
+      this.editType = this.actions.add;
     },
     // 更換頁數
     chPage(n) {
@@ -187,47 +240,53 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow()
+      this.chLoadingShow();
       fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
-          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
-          {"Column":"DepartCode","Value":this.formData.searchItem.department},
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          {
+            Column: "StartDayVlaue",
+            Value: this.formData.searchItem.dateStart,
+          },
+          { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
+          { Column: "DepartCode", Value: this.formData.searchItem.department },
         ],
-        QyName:[
+        QyName: [
           "RPFlowNo",
           "ID",
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId", 
-          "DepartName"
+          "FlowId",
+          "DepartName",
         ],
-      }).then(res => {
-        this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
-      }).catch(err => {
-        console.log(err)
-        this.chMsgbar({ success: false, msg: '查詢時發生問題，請重新查詢!' })
-      }).finally(() => {
-        console.log("search final")
-        this.chLoadingShow()
       })
+        .then((res) => {
+          this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
     },
     // 關閉 dialog
     close() {
       this.Add = false;
     },
     viewPage(item) {
-      console.log(item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.DynamicKey += 1
-      this.editType = 'edit'
-      this.editItem = item
-      this.Add = true
-    }
+      console.log(item);
+      console.log("RPFlowNo: " + item.RPFlowNo);
+      this.DynamicKey += 1;
+      this.editType = this.actions.edit;
+      this.editItem = item;
+      this.Add = true;
+    },
   },
 };
 </script>
