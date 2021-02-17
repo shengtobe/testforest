@@ -75,8 +75,12 @@
           class="mb-6"
         >
           <v-row no-gutter>
-            <v-col cols="12" sm="4">{{ item.question }}</v-col>
-            <v-col cols="12" sm="3">
+            <v-col cols="12" :sm="settings.width.qusetion">{{ item.question }}</v-col>
+            <v-col 
+              cols="12" 
+              v-if="settings.width.method"
+              :sm="settings.width.method"
+            >
               <v-select
                 v-if="settings.columns.method"
                 :items="methodOptions"
@@ -88,7 +92,7 @@
               </v-select>
               <label v-else>{{ item.method }}</label>
             </v-col>
-            <v-col cols="12" sm="2">
+            <v-col cols="12" :sm="settings.width.qusetion">
               <span class="d-sm-none error--text">檢查結果：</span>
               <v-radio-group
                 dense
@@ -105,7 +109,7 @@
                 </slot>
               </v-radio-group>
             </v-col>
-            <v-col cols="12" sm="3" v-if="settings.width.memo">
+            <v-col cols="12" v-if="settings.width.memo" :sm="settings.width.memo">
               <v-textarea
                 auto-grow
                 outlined
@@ -113,7 +117,11 @@
                 v-model="value.editableData[settings.columns.memo + (idx + 1)]"
               />
             </v-col>
-            <v-col cols="12" sm="3" v-if="settings.width.memo2">
+            <v-col
+              cols="12"
+              v-if="settings.width.memo2"
+              :sm="settings.width.memo2"
+            >
               <v-textarea
                 auto-grow
                 outlined
