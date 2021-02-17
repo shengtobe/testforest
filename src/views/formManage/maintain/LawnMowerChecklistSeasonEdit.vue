@@ -245,10 +245,16 @@ export default {
         option: 2,
         memo: 3,
       },
-      textarea: {
-        Advice: true,
-        Measures: true,
-      },
+      textarea: [
+        {
+          label: "改善建議",
+          column: "Advice"
+        },
+        {
+          label: "改善追蹤",
+          column: "Measures"
+        }  
+      ]
     },
   }),
   components: {
