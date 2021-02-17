@@ -37,3 +37,12 @@ export function materialDelete(data) {
       data,
   }
 )}
+
+export function mmaterialRequistision(data) { 
+  return axios(
+  {
+      url: '/mmis/equipdata/materialrequistision',
+      method: 'post',
+      data,
+  }
+)}

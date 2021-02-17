@@ -10,6 +10,8 @@
 回傳event：
       getEqCode:回傳組好的設備報修碼
       getWorkCode:回傳選擇的工作項
+      getEqName:回傳設備報修碼中文
+      getWorkName:回傳工作項中文
 -->
 <template>
   <v-row class="px-2 mb-6">
@@ -22,7 +24,7 @@
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv1"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('1')"
             label="請選擇"
@@ -40,7 +42,7 @@
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv2"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('2')"
             label="請選擇"
@@ -51,7 +53,7 @@
         <v-col cols="12" v-if="_show22">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv22"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('22')"
             label="請選擇"
@@ -70,7 +72,7 @@
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv3"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('3')"
             label="請選擇"
@@ -81,7 +83,7 @@
         <v-col cols="12" v-if="_show32">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv32"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('32')"
             label="請選擇"
@@ -100,7 +102,7 @@
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv4"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('4')"
             label="請選擇"
@@ -119,7 +121,7 @@
         <v-col cols="12">
           <v-select solo hide-details
             :items="eqCodes.eqCodeListLv5"
-            item-text="EquipName"
+            item-text="FullShowName"
             item-value="EquipCode"
             @change="whenChange('5')"
             label="請選擇"
@@ -173,6 +175,8 @@
       },
       newEqCode: '',  //設備報修碼
       newWorkCode: '',   //工作項目
+      newEqName: '',
+      newWorkName: '',
     }),
     //渲染完成後
     mounted: function() {
@@ -303,6 +307,11 @@
             // if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
             if(res.data.code_list.length > 0){
               that.eqCodes[toObject].push(...res.data.code_list)
+              that.eqCodes[toObject].forEach((ele,index) => {
+                let NeqCode = ''
+                NeqCode = (ele.EquipCode.indexOf('-')!=-1)?(ele.EquipCode.split('-')[1]):ele.EquipCode
+                ele.FullShowName = ele.EquipName + '(' + NeqCode +')'
+              })
               that.eqCodes[toObject] = decodeObject(that.eqCodes[toObject])
             }
           }else {
@@ -471,28 +480,22 @@
             break;  
           case '5':
             that.selectItem.Lv5 = ''
-            await that._getEqList(that.nowParent,that.selectItem.Lv1,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv2,'5','5')
-            if(that._show22) {
-              await that._getEqList(that.nowParent,that.selectItem.Lv22,'5','5')
-            }
-            await that._getEqList(that.nowParent,that.selectItem.Lv3,'5','5')
-            if(that._show32) {
-              await that._getEqList(that.nowParent,that.selectItem.Lv32,'5','5')
-              await that._getEqList(that.nowParent,that.selectItem.Lv3+'/'+that.selectItem.Lv32,'5','5')
-            }
-            await that._getEqList(that.nowParent,that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv1+'-'+that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv2+'-'+that.selectItem.Lv4,'5','5')
-            await that._getEqList(that.nowParent,that.selectItem.Lv3+'-'+that.selectItem.Lv4,'5','5')
+            await that._getEqList(that.nowParent,that.selectItem.Lv1 + '-' + ((that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3 )+ (that._show32?'/'+that.selectItem.Lv32:'')  + '-' + that.selectItem.Lv4,'5','5')
             break;  
         }
       },
-      _returnEqCode() {
-        this.$emit('getEqCode',this.newEqCode)
+      async _returnEqCode() {
+        const that = this
+        await that.$emit('getEqCode',that.newEqCode)
+        that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + '-'
+        that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + '-'
+        that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + '-'
+        that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).FullShowName
+        await that.$emit('getEqName',that.newEqName)
       },
-      _returnWorkCode() {
-        this.$emit('getWorkCode',this.newWorkCode)
+      async _returnWorkCode() {
+        await this.$emit('getWorkCode',this.newWorkCode)
+        await this.$emit('getWorkName',this.eqCodes.eqCodeListLv5.find(ele => ele.EquipCode == this.selectItem.Lv5).FullShowName)
       }
     },
     //過濾
@@ -501,12 +504,12 @@
     },
     //監視
     watch: {
-      nowEqCode: function(){
-        this._componentInit()
-      },
-      nowWorkCode: function(){
-        this._componentInit()
-      }
+      // nowEqCode: function(){
+      //   this._componentInit()
+      // },
+      // nowWorkCode: function(){
+      //   this._componentInit()
+      // }
     }
   }
 </script>

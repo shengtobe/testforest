@@ -288,6 +288,7 @@ export default {
         LocDocument: "",
         LocPic: "",
         MaintainCode: "",
+        MaintainCodeName: "",
         OutMaintainDepart: "",
         StatusPic: "",
         Supplier: "",
@@ -381,7 +382,7 @@ export default {
         }
       }).catch(err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
-        console.log(err)
+        // console.log(err)
       }).finally(() => {
         that.chLoadingShow()
       })
