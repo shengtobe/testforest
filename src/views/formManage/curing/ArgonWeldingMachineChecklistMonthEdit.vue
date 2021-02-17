@@ -51,9 +51,9 @@ export default {
   props: {
     item: Object,
     editType: String,
+    DB_Table: String,
   },
   data: () => ({
-    DB_Table: "RP089",
     actions: Actions,
     commonSettings: {
       iconShow: false,

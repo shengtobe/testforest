@@ -89,6 +89,7 @@
         :key="'E'+editLog.EditDynamicKey"
         :item="editLog.editItem"
         :editType="editLog.editType"
+        :DB_Table="DB_Table"
       />
     </v-dialog>
     <!-- 刪除確認視窗 -->
