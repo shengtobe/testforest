@@ -28,11 +28,7 @@
           key="department"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
-      </v-col>
+      <v-col cols="12" sm="3" md="3"></v-col>
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
@@ -46,18 +42,9 @@
         <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
       </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -126,6 +113,7 @@ import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import EditPage from "@/views/formManage/maintain/LawnMowerChecklistSeasonEdit";
 import { Actions } from "@/assets/js/actions";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
@@ -146,7 +134,7 @@ export default {
           formIconShow: true,
         },
         searchItem: {
-          dateSart: "",
+          dateStart: "",
           dateEnd: "",
           department: "",
         },
@@ -209,6 +197,7 @@ export default {
     dateSelect,
     deptSelect,
     EditPage,
+    ToolBar,
   },
   computed: {
     ...mapState("user", {
@@ -232,6 +221,11 @@ export default {
       console.log("this.Add: " + this.Add);
       this.DynamicKey += 1;
       this.editType = this.actions.add;
+    },
+    reset() {
+      this.formData.searchItem.dateStart = "";
+      this.formData.searchItem.dateEnd = "";
+      this.formData.searchItem.department = "";
     },
     // 更換頁數
     chPage(n) {
