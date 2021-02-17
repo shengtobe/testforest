@@ -51,9 +51,9 @@ export default {
   props: {
     item: Object,
     editType: String,
+    DB_Table: String,
   },
   data: () => ({
-    DB_Table: "RP032",
     actions: Actions,
     commonSettings: {
       iconShow: false,
@@ -129,13 +129,13 @@ export default {
       textarea: [
         {
           label: "改善建議",
-          column: "Advice"
+          column: "Advice",
         },
         {
           label: "改善追蹤",
-          column: "Measures"
-        }  
-      ]
+          column: "Measures",
+        },
+      ],
     },
   }),
   components: {

@@ -118,6 +118,7 @@
         :key="DynamicKey"
         :item="editItem"
         :editType="editType"
+        :DB_Table="DB_Table"
       />
     </v-dialog>
   </v-container>
