@@ -75,8 +75,12 @@
           class="mb-6"
         >
           <v-row no-gutter>
-            <v-col cols="12" sm="4">{{ item.question }}</v-col>
-            <v-col cols="12" sm="3">
+            <v-col cols="12" :sm="settings.width.qusetion">{{ item.question }}</v-col>
+            <v-col 
+              cols="12" 
+              v-if="settings.width.method"
+              :sm="settings.width.method"
+            >
               <v-select
                 v-if="settings.columns.method"
                 :items="methodOptions"
@@ -88,7 +92,7 @@
               </v-select>
               <label v-else>{{ item.method }}</label>
             </v-col>
-            <v-col cols="12" sm="2">
+            <v-col cols="12" :sm="settings.width.option">
               <span class="d-sm-none error--text">檢查結果：</span>
               <v-radio-group
                 dense
@@ -105,7 +109,7 @@
                 </slot>
               </v-radio-group>
             </v-col>
-            <v-col cols="12" sm="3" v-if="settings.width.memo">
+            <v-col cols="12" v-if="settings.width.memo" :sm="settings.width.memo">
               <v-textarea
                 auto-grow
                 outlined
@@ -113,7 +117,11 @@
                 v-model="value.editableData[settings.columns.memo + (idx + 1)]"
               />
             </v-col>
-            <v-col cols="12" sm="3" v-if="settings.width.memo2">
+            <v-col
+              cols="12"
+              v-if="settings.width.memo2"
+              :sm="settings.width.memo2"
+            >
               <v-textarea
                 auto-grow
                 outlined
@@ -124,23 +132,16 @@
           </v-row>
         </v-alert>
       </v-col>
+    </v-row>
+    <v-row v-if="settings.textarea">
       <!-- 改善建議、改善追蹤 -->
-      <v-col cols="12" v-if="settings.textarea.Advice">
-        <h3 class="mb-1 indigo--text">改善建議</h3>
+      <v-col cols="12" v-for="(item,index) in settings.textarea" :key="'ta'+index">
+        <h3 class="mb-1 indigo--text">{{ item.label }}</h3>
         <v-textarea
           auto-grow
           outlined
           rows="4"
-          v-model="value.editableData.Advice"
-        />
-      </v-col>
-      <v-col cols="12" v-if="settings.textarea.Measures">
-        <h3 class="mb-1 indigo--text">改善措施</h3>
-        <v-textarea
-          auto-grow
-          outlined
-          rows="4"
-          v-model="value.editableData.Measures"
+          v-model="value.editableData[item.column]"
         />
       </v-col>
       <!-- END 檢查項目 -->
@@ -178,10 +179,12 @@ settings: {
       }
     ]
   },
-  textarea: { 是否顯示改善
-    Advice: 建議,
-    Measures: 措施,
-  }
+  textarea: [
+    {
+      label: 名稱,
+      column: 欄位 
+    }
+  ]
 }
 使用範例
 <commonQuestion v-model="inputData" :settings="settings"/>

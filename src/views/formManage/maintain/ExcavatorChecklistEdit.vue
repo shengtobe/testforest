@@ -7,16 +7,10 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-    <commonQuestion v-model="inputData" :settings="settings" />
+
+    
+    <commonQuestion v-model="inputData" :settings="settings"/>
     <v-card-actions class="px-5 pb-5">
-      <v-btn
-        v-if="editType != actions.add"
-        elevation="4"
-        color="red"
-        class="mr-2 white--text"
-        @click="deleteRecord"
-        >刪除</v-btn
-      >
       <v-spacer></v-spacer>
       <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
       <v-btn
@@ -53,11 +47,12 @@ export default {
     editType: String,
   },
   data: () => ({
-    DB_Table: "RP032",
+    DB_Table: "RP024",
+    action: Actions.add,
     actions: Actions,
     commonSettings: {
       iconShow: false,
-      title: "割草機定期檢查表(三個月)",
+      title: "挖掘機每日作業前檢點表(作業前)",
       isLoading: false,
       deptReadonly: true,
     },
@@ -77,44 +72,53 @@ export default {
         CheckOption6: "0",
         CheckOption7: "0",
         CheckOption8: "0",
-        Memo_1: "",
-        Memo_2: "",
-        Memo_3: "",
-        Memo_4: "",
-        Memo_5: "",
-        Memo_6: "",
-        Memo_7: "",
-        Memo_8: "",
-        Advice: "",
+        CheckOption9: "0",
+        CheckOption10: "0",
+        CheckOption11: "0",
+        CheckOption12: "0",
+        CheckOption13: "0",
+        CheckOption14: "0",
         Measures: "",
       },
     },
     items: [
-      { question: "1.刀刃是否牢固有無裂痕或不堪使用", checkMethod: "目視點檢" },
-      { question: "2.護罩有無破裂或不堪使用", checkMethod: "目視點檢" },
-      { question: "3.引擎是否牢固、有無漏油", checkMethod: "動作測試" },
-      { question: "4.各部位螺栓有無鬆脫", checkMethod: "動作測試" },
-      { question: "5.背帶有無斷裂或不堪使用", checkMethod: "目視點檢" },
-      { question: "6.控制把手是否牢固、油門是否順暢", checkMethod: "目視點檢" },
-      { question: "7.試運轉是否順暢、有無異常噪音", checkMethod: "動作測試" },
-      { question: "8.其他", checkMethod: "目視點檢" },
+        { question: "1. 引擎冷卻水(水箱)" },
+        { question: "2. 引擎機油" },
+        { question: "3. 履帶鬆緊度及有無損傷" },
+        { question: "4. 電瓶及電器設備" },
+        { question: "5. 各動作部分潤滑" },
+        { question: "6. 空氣濾清器清潔" },
+        { question: "7. 液壓油檢查(操作油)" },
+        { question: "8. 方向操作系統動作範圍檢查" },
+        { question: "9. 煞車能力動作情況檢查" },
+        { question: "10. 儀表、燈及喇叭操作情況檢查" },
+        { question: "11. 柴油油量" },
+        { question: "12. 有否漏油現象檢查" },
+        { question: "13. 各部機件異常聲音及不正常動作" },
+        { question: "14. 制動器、連結裝置是否正常" },
     ],
-    settings: {
-      subtitle: [
-        "1.依職業安全衛生法第23條規定辦理。",
-        "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
+    settings:{
+      subtitle:[
+        "1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。",
+        "2.依檢查結果選擇正常、異常、無此項目。",
         "3.缺點由使用單位自行改善，不克者委請設備商修護。",
-        "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
+        "4.本表月底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。",
       ],
       qestions: [
-        { question: "1.刀刃是否牢固有無裂痕或不堪使用", method: "目視點檢" },
-        { question: "2.護罩有無破裂或不堪使用", method: "目視點檢" },
-        { question: "3.引擎是否牢固、有無漏油", method: "動作測試" },
-        { question: "4.各部位螺栓有無鬆脫", method: "動作測試" },
-        { question: "5.背帶有無斷裂或不堪使用", method: "目視點檢" },
-        { question: "6.控制把手是否牢固、油門是否順暢", method: "目視點檢" },
-        { question: "7.試運轉是否順暢、有無異常噪音", method: "動作測試" },
-        { question: "8.其他", method: "目視點檢" },
+        { question: "1. 引擎冷卻水(水箱)" },
+        { question: "2. 引擎機油" },
+        { question: "3. 履帶鬆緊度及有無損傷" },
+        { question: "4. 電瓶及電器設備" },
+        { question: "5. 各動作部分潤滑" },
+        { question: "6. 空氣濾清器清潔" },
+        { question: "7. 液壓油檢查(操作油)" },
+        { question: "8. 方向操作系統動作範圍檢查" },
+        { question: "9. 煞車能力動作情況檢查" },
+        { question: "10. 儀表、燈及喇叭操作情況檢查" },
+        { question: "11. 柴油油量" },
+        { question: "12. 有否漏油現象檢查" },
+        { question: "13. 各部機件異常聲音及不正常動作" },
+        { question: "14. 制動器、連結裝置是否正常" },
       ],
       columns: {
         option: "CheckOption",
@@ -122,21 +126,14 @@ export default {
       },
       width: {
         qusetion: 4,
-        method: 3,
-        option: 2,
+        option: 5,
         memo: 3,
       },
-      textarea: [
-        {
-          label: "改善建議",
-          column: "Advice"
-        },
-        {
-          label: "改善追蹤",
-          column: "Measures"
-        }  
-      ]
-    },
+      advice: { 
+        Advice: true,
+        Measures: true,
+      }
+    }
   }),
   components: {
     dateSelect,
@@ -224,7 +221,6 @@ export default {
     },
     close() {
       this.$emit("close");
-      this.$emit("search");
     },
     save() {
       const that = this;
@@ -234,7 +230,7 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj);
+      console.log(rtnObj)
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -291,22 +287,9 @@ export default {
           });
       }
     },
-    deleteRecord() {
-      this.$emit("deleteRecord", this.inputData.RPFlowNo);
-    },
   },
   filters: {
-    // editStatus: function (value) {
-    //   let rtnStr = "";
-    //   if (value == this.actions.add) {
-    //     rtnStr = "新增";
-    //   } else if (value == this.actions.edit) {
-    //     rtnStr = "編輯";
-    //   } else {
-    //     rtnStr = "";
-    //   }
-    //   return rtnStr;
-    // },
+
   },
   watch: {},
 };
