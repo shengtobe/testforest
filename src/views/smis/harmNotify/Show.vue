@@ -9,7 +9,7 @@
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
@@ -30,8 +30,11 @@
                     </v-chip>
                 </v-col>
             </v-row>
-        </v-col>
+        </v-col> -->
     </v-row>
+
+    <!-- 檔案列表 -->
+    <FileListShow :fileList="files" />
     
     <v-row class="mt-8 mb-4">
         <v-col cols="12">
@@ -263,6 +266,7 @@
 import { mapState, mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import FileListShow from '@/components/FileListShow.vue'
 import NotifyEvtDialog from '@/components/smis/NotifyEvtDialog.vue'
 import NotifyHarmDialog from '@/components/smis/NotifyHarmDialog.vue'
 import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
@@ -374,6 +378,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow,
         NotifyEvtDialog,
         NotifyHarmDialog,
     },

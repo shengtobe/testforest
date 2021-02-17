@@ -69,9 +69,9 @@ export default {
                         }
 
                         let bottomItems = [
-                            { oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
-                            { oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
-                            { oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
+                            { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
+                            { dataType: 'text', oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
                         ]
 
                         // if (this.status > 1) {
