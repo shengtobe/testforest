@@ -40,35 +40,9 @@
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
-      <v-col cols="12" sm="3" md="6"></v-col>
-      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
-        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
-          <v-icon>mdi-magnify</v-icon>查詢
-        </v-btn>
-        <v-btn elevation="2" large class="mb-3" @click="reset">
-          <v-icon>mdi-reload</v-icon>清除搜尋內容
-        </v-btn>
-      </v-col>
-      <v-col
-        cols="12"
-        sm="8"
-        md="3"
-        align-self="end"
-        class="mb-5 text-md-right"
-      >
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="mr-3 mb-3"
-          @click="newOne"
-        >
-          <!-- @click="ShowDetailDialog = true" -->
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
-      </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
+
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -124,25 +98,15 @@
       </v-card>
     </v-col>
     <!-- 刪除確認視窗 -->
-    <!-- <dialogDelete
-      :show="dialogDel"
-      :id="doMan.id"
-      :DB_Table="DB_Table"
-      :RPFlowNo="RPFlowNo"
-    /> -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
-      <v-card>
-        <v-card-title class="red white--text px-4 py-1 headline"
-          >確認是否刪除?</v-card-title
-        >
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="dialogDel = false">取消</v-btn>
-          <v-btn color="red" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
-            >刪除</v-btn
-          >
-        </v-card-actions>
-      </v-card>
+      <dialogDelete
+        :id="doMan.id"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
     </v-dialog>
     <!-- 必填欄位空白提醒視窗 -->
     <v-dialog v-model="dialogNull" persistent max-width="290">
@@ -278,9 +242,9 @@
         <v-card-actions class="px-5 pb-5">
           <v-btn
             v-if="action != actions.add"
-            class="mr-2"
             elevation="4"
             color="red"
+            class="mr-2 white--text"
             @click="dialogDel = true"
             >刪除</v-btn
           >
@@ -293,7 +257,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -323,6 +287,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 class Question {
   constructor(description, option, memo) {
@@ -458,7 +423,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, dialogDelete }, // 頁碼
+  components: { Pagination, dateSelect, dialogDelete, ToolBar }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -623,10 +588,15 @@ export default {
       }
       this.ShowDetailDialog = false;
     },
+    // 關閉刪除確認dialod
+    closeDialogDel() {
+      this.dialogDel = false;
+    },
     // 關閉 dialog
     close() {
       this.ShowDetailDialog = false;
       this.dialogShowEdit = false;
+      this.dialogDel = false;
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.addItem = Object.assign({}, this.defaultItem);
@@ -709,30 +679,6 @@ export default {
           this.chLoadingShow();
         });
     }, //viewPage
-    deleteRecord(UserId, DB_Table, RPFlowNo) {
-      this.action = Actions.delete;
-      this.chLoadingShow();
-      deleteFormOrder({
-        ClientReqTime: getNowFullTime(), // client 端請求時間
-        OperatorID: UserId, // 操作人id
-        KeyName: DB_Table, // DB table
-        RPFlowNo: RPFlowNo,
-        KeyItem: [{ Column: "RPFlowNo", Value: RPFlowNo }],
-      })
-        .then((res) => {
-          this.dialogDel = false;
-          this.chMsgbar({ success: true, msg: Constrant.delete.success });
-        })
-        .catch((err) => {
-          console.log(err);
-          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
-        })
-        .finally(() => {
-          this.chLoadingShow();
-          this.ShowDetailDialog = false;
-          this.search();
-        });
-    },
   },
 };
 </script>

@@ -3,7 +3,7 @@
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
-     <v-col cols="12" sm="3" md="3">
+      <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
           v-model="input.dateStart"
@@ -24,7 +24,13 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>通報單位
         </h3>
         <v-select :items="formDepartOptions" v-model="input.department" solo /> -->
-        <deptSelect label="通報單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
+        <deptSelect
+          label="通報單位"
+          v-model="input.department"
+          :iconYN="formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
       <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
         <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
@@ -263,7 +269,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-btn
             v-if="action != actions.add"
-            class="mr-2"
+            class="mr-2 white--text"
             elevation="4"
             color="red"
             @click="dialogDel = true"
@@ -278,7 +284,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>

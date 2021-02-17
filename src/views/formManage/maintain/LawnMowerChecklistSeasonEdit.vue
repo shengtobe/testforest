@@ -20,8 +20,8 @@
             4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查
           </p>
         </v-col> -->
-        <!-- 檢查項目 -->
-        <!-- <v-col cols="12">
+    <!-- 檢查項目 -->
+    <!-- <v-col cols="12">
           <v-row no-gutter class="indigo--text">
             <v-col cols="12" sm="4">
               <dateSelect
@@ -104,8 +104,8 @@
             </v-row>
           </v-alert>
         </v-col> -->
-        <!-- 改善建議、改善追蹤 -->
-        <!-- <v-col cols="12">
+    <!-- 改善建議、改善追蹤 -->
+    <!-- <v-col cols="12">
           <h3 class="mb-1 indigo--text">改善建議</h3>
           <v-textarea
             auto-grow
@@ -123,10 +123,10 @@
             v-model="inputData.editableData.Measures"
           />
         </v-col> -->
-        <!-- END 檢查項目 -->
-      <!-- </v-row>
+    <!-- END 檢查項目 -->
+    <!-- </v-row>
     </div> -->
-    <commonQuestion v-model="inputData" :settings="settings"/>
+    <commonQuestion v-model="inputData" :settings="settings" />
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
       <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
@@ -211,8 +211,8 @@ export default {
       { question: "7.試運轉是否順暢、有無異常噪音", checkMethod: "動作測試" },
       { question: "8.其他", checkMethod: "目視點檢" },
     ],
-    settings:{
-      subtitle:[
+    settings: {
+      subtitle: [
         "1.依職業安全衛生法第23條規定辦理。",
         "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
         "3.缺點由使用單位自行改善，不克者委請設備商修護。",
@@ -238,11 +238,11 @@ export default {
         option: 2,
         memo: 3,
       },
-      advice: { 
+      advice: {
         Advice: true,
         Measures: true,
-      }
-    }
+      },
+    },
   }),
   components: {
     dateSelect,
@@ -339,7 +339,7 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj)
+      console.log(rtnObj);
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間

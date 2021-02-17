@@ -24,7 +24,13 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select :items="formDepartOptions" v-model="input.department" solo /> -->
-        <deptSelect label="管理單位" v-model="input.department" :showIcon="formIconShow" outType="key" key="department"/>
+        <deptSelect
+          label="管理單位"
+          v-model="input.department"
+          :showIcon="formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3"></v-col>
 
@@ -155,7 +161,7 @@
     <v-dialog v-model="ShowDetailDialog" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          {{ contentType|editStatus }}{{ title }}
+          {{ contentType | editStatus }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -268,14 +274,16 @@
                 class="mb-6"
               >
                 <v-row no-gutter>
-                  <v-col cols="12" sm="3">{{ deatilItemDesc['desc'+n] }}</v-col>
+                  <v-col cols="12" sm="3">{{
+                    deatilItemDesc["desc" + n]
+                  }}</v-col>
                   <v-col cols="12" sm="3">
                     <v-select
                       :items="[
                         { text: '動作測試', value: '1' },
                         { text: '目視點檢', value: '2' },
                       ]"
-                      v-model="detailItem['CheckMethod'+n]"
+                      v-model="detailItem['CheckMethod' + n]"
                       solo
                     />
                   </v-col>
@@ -284,7 +292,7 @@
                     <v-radio-group
                       dense
                       row
-                      v-model="detailItem['CheckOption'+n]"
+                      v-model="detailItem['CheckOption' + n]"
                       class="pa-0 ma-0"
                     >
                       <v-radio color="success" label="良好" value="1"></v-radio>
@@ -298,7 +306,7 @@
                   </v-col>
                   <v-col cols="12" sm="3">
                     <v-textarea
-                      v-model="detailItem['Memo'+n]"
+                      v-model="detailItem['Memo' + n]"
                       hide-details
                       auto-grow
                       outlined
@@ -324,7 +332,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-btn
             v-if="action != actions.add"
-            class="mr-2"
+            class="mr-2 white--text"
             elevation="4"
             color="red"
             @click="dialogDel = true"
@@ -339,7 +347,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -782,7 +790,7 @@ export default {
           }
           this.RPFlowNo = data.RPFlowNo;
           this.ShowDetailDialog = true;
-          this.detailItem = decodeObject(data)
+          this.detailItem = decodeObject(data);
         })
         .catch((err) => {
           console.log(err);
@@ -818,19 +826,19 @@ export default {
     },
   },
   filters: {
-    editStatus: function(value) {
+    editStatus: function (value) {
       let rtnStr = "";
-      if(value == "add") {
+      if (value == "add") {
         rtnStr = "新增";
-      }else if(value == "edit") {
+      } else if (value == "edit") {
         rtnStr = "編輯";
-      }else if(value == "delete") {
+      } else if (value == "delete") {
         rtnStr = "刪除";
-      }else{
+      } else {
         rtnStr = "";
       }
       return rtnStr;
-    }
-  }
+    },
+  },
 };
 </script>

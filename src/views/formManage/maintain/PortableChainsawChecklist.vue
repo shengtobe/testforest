@@ -38,13 +38,29 @@
         </v-menu>
       </v-col> -->
       <v-col cols="12" sm="3" md="3">
-        <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :iconYN="formIconShow" />
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :iconYN="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <dateSelect label="檢查日期(迄)" v-model="input.dateEnd" key="dateStart" :iconYN="formIconShow" />
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :iconYN="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
+        <deptSelect
+          label="管理單位"
+          v-model="input.department"
+          :iconYN="formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
@@ -130,7 +146,7 @@
         </v-data-table>
       </v-card>
     </v-col>
-     <!-- 刪除確認視窗 -->
+    <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <v-card>
         <v-card-title class="red white--text px-4 py-1 headline"
@@ -138,7 +154,7 @@
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="dialogDel=false">取消</v-btn>
+          <v-btn @click="dialogDel = false">取消</v-btn>
           <v-btn color="red" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
             >刪除</v-btn
           >
@@ -189,9 +205,19 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="CheckDay" solo v-on="on" readonly></v-text-field>
+                      <v-text-field
+                        v-model.trim="CheckDay"
+                        solo
+                        v-on="on"
+                        readonly
+                      ></v-text-field>
                     </template>
-                    <v-date-picker color="purple" v-model="CheckDay" @input="datePickerShowControl.checkDay = false" locale="zh-tw"></v-date-picker>
+                    <v-date-picker
+                      color="purple"
+                      v-model="CheckDay"
+                      @input="datePickerShowControl.checkDay = false"
+                      locale="zh-tw"
+                    ></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -200,10 +226,13 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo v-model="Name" readonly/>
+                  <v-text-field solo v-model="Name" readonly />
                 </v-col>
               </v-row>
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+              <v-row
+                no-gutter
+                class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+              >
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">檢查項目</h3>
                 </v-col>
@@ -232,14 +261,29 @@
                   <v-col cols="12" sm="3">{{ item.method }}</v-col>
                   <v-col cols="12" sm="3">
                     <span class="d-sm-none error--text">檢查結果：</span>
-                    <v-radio-group dense row v-model="item.result" class="pa-0 ma-0">
+                    <v-radio-group
+                      dense
+                      row
+                      v-model="item.result"
+                      class="pa-0 ma-0"
+                    >
                       <v-radio color="success" label="良好" value="1"></v-radio>
                       <v-radio color="red" label="不良" value="2"></v-radio>
-                      <v-radio color="black" label="無此項目" value="3"></v-radio>
+                      <v-radio
+                        color="black"
+                        label="無此項目"
+                        value="3"
+                      ></v-radio>
                     </v-radio-group>
                   </v-col>
                   <v-col cols="12" sm="3">
-                    <v-textarea hide-details auto-grow outlined v-model="item.memo" rows="3" />
+                    <v-textarea
+                      hide-details
+                      auto-grow
+                      outlined
+                      v-model="item.memo"
+                      rows="3"
+                    />
                   </v-col>
                 </v-row>
               </v-alert>
@@ -247,11 +291,11 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善建議</h3>
-              <v-textarea auto-grow outlined rows="4" v-model="Advice"/>
+              <v-textarea auto-grow outlined rows="4" v-model="Advice" />
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" v-model="Measures"/>
+              <v-textarea auto-grow outlined rows="4" v-model="Measures" />
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -260,7 +304,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-btn
             v-if="action != actions.add"
-            class="mr-2"
+            class="mr-2 white--text"
             elevation="4"
             color="red"
             @click="dialogDel = true"
@@ -275,7 +319,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -303,7 +347,7 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
-import dateSelect from "@/components/forManage/dateSelect"
+import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 class Question {
   constructor(description, method, result, memo) {
@@ -333,7 +377,7 @@ export default {
       ass: "",
       z: "",
       zs: "",
-      
+
       q: "",
       df: "",
       s: "",
@@ -347,16 +391,16 @@ export default {
       memo_2: "",
       memo_3: "",
       CheckDay: "",
-      
+
       //---api---
       DB_Table: "RP023",
       RPFlowNo: "",
       nowTime: "",
-      doMan:{
-        id: '',
-        name: '',
-        depart: '',
-        checkManName: ''
+      doMan: {
+        id: "",
+        name: "",
+        depart: "",
+        checkManName: "",
       },
       ipt2: {},
       defaultIpt: {
@@ -376,12 +420,48 @@ export default {
       formIconShow: true,
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        {
+          text: "項次",
+          value: "ItemNo",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養日期",
+          value: "CheckDay",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "審查狀態",
+          value: "CheckStatus",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "填寫人",
+          value: "Name",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養單位",
+          value: "DepartName",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "功能",
+          value: "content",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
       ],
       tableItems: [],
       //------
@@ -434,10 +514,10 @@ export default {
   },
   components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
-    },
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
+    }),
+  },
   created() {
     this.input = { ...this.defaultIpt };
     this.nowTime = getTodayDateString();
@@ -447,7 +527,7 @@ export default {
     this.doMan.departId = this.userData.DeptList[0].DeptId;
   },
   methods: {
-    initInput(){
+    initInput() {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;
       this.CheckDay = getTodayDateString();
@@ -460,9 +540,9 @@ export default {
         });
       }
       this.Advice = "";
-      this.Measures = ""
+      this.Measures = "";
     },
-    unique(list){
+    unique(list) {
       var arr = [];
       let b = false;
       for (var i = 0; i < list.length; i++) {
@@ -487,9 +567,9 @@ export default {
       this.ShowDetailDialog = true;
       this.initInput();
     },
-    ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+    ...mapActions("system", [
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
     // 清除搜尋內容
     reset() {
       this.input = { ...this.defaultIpt };
@@ -501,17 +581,17 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow()
+      this.chLoadingShow();
       fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
           { Column: "StartDayVlaue", Value: this.input.dateStart },
           { Column: "EndDayVlaue", Value: this.input.dateEnd },
           { Column: "DepartCode", Value: this.input.department },
-                ],
-        QyName:[
+        ],
+        QyName: [
           // "DISTINCT (RPFlowNo)",
           // // "ID",
           // // "Name",
@@ -524,20 +604,24 @@ export default {
           "DepartName",
           "CheckDay",
           "CheckStatus",
-          "FlowId", "DepartName"
+          "FlowId",
+          "DepartName",
         ],
-      }).then(res => {
-        console.log("DT: " + res.data.DT)
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        console.log("search final")
-        this.chLoadingShow()
       })
+        .then((res) => {
+          console.log("DT: " + res.data.DT);
+          let tbBuffer = JSON.parse(res.data.DT);
+          let aa = unique(tbBuffer);
+          this.tableItems = aa;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("查詢時發生問題，請重新查詢!");
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
     },
     // 存
     save() {
@@ -629,18 +713,16 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {Column:'RPFlowNo',Value:item.RPFlowNo},
-                ],
-        QyName:[
+      console.log("item: " + item);
+      console.log("RPFlowNo: " + item.RPFlowNo);
+      this.chLoadingShow();
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
+        QyName: [
           "CheckDay",
           "DepartName",
           "Name",
@@ -660,46 +742,47 @@ export default {
           "Advice",
           "Measures",
         ],
-      }).then(res => {
-        this.initInput();
-        console.log(res.data.DT)
-        let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
-        this.ShowDetailDialog = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
-        //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
+      })
+        .then((res) => {
+          this.initInput();
+          console.log(res.data.DT);
+          let dat = JSON.parse(res.data.DT);
+          console.log("data name: " + dat[0].Name);
+          console.log("data time: " + dat[0].CheckDay);
+          this.ShowDetailDialog = true;
+          // this.zs = res.data.DT.CheckDay
+          this.doMan.name = dat[0].Name;
+          let time1 = dat[0].CheckDay.substr(0, 10);
+          console.log("data time1: " + time1);
+          this.zs = time1;
+          console.log("doMan name: " + this.doMan.name);
+          //123資料
+          let ad = Object.keys(dat[0]);
+          console.log(ad);
+          var i = 0,
+            j = 0;
+          for (let key of Object.keys(dat[0])) {
+            if (i > 3 && i < 52) {
+              if (i % 2 == 0) {
+                this.ipt.items[j].status = dat[0][key];
+              } else {
+                this.ipt.items[j].note = dat[0][key];
+                j++;
               }
             }
-            i++
+            i++;
           }
-        this.Advice = dat[0].Advice
-        this.Measures = dat[0].Measures
-
-        
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
-      })
-    },//viewPage
+          this.Advice = dat[0].Advice;
+          this.Measures = dat[0].Measures;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("查詢時發生問題，請重新查詢!");
+        })
+        .finally(() => {
+          this.chLoadingShow();
+        });
+    }, //viewPage
     deleteRecord(UserId, DB_Table, RPFlowNo) {
       this.action = Actions.delete;
       this.chLoadingShow();

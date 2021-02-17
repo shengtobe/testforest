@@ -1,60 +1,67 @@
 <!--
   輸入: 
-    label: String 標題
-    showIcon: Boolean 是否要圖標，預設否 
-  v-model: 綁定變數
+    id: String 操作人員編號
+    DB_Table: String 表單編號，Ex：RP055
+    RPFlowNo: String 紀錄編號
   使用範例:
-    <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :showIcon="true | false"/>
+    <dialogDelete
+        :id="doMan.id"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+  可參考檔案：AcetyleneWeldChecklistYear.vue
 -->
 <template>
-  <v-dialog v-model="showThis" @close="doClose" persistent max-width="290">
-    <v-card>
-      <v-card-title class="red white--text px-4 py-1 headline"
-        >確認是否刪除?</v-card-title
+  <v-card>
+    <v-card-title class="red white--text px-4 py-1 headline"
+      >確認是否刪除?</v-card-title
+    >
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn @click="cancel">取消</v-btn>
+      <v-btn color="red" @click="deleteRecord()" class="white--text"
+        >刪除</v-btn
       >
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn @click="showThis = false">取消</v-btn>
-        <v-btn color="red" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
-          >刪除</v-btn
-        >
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    </v-card-actions>
+  </v-card>
 </template>
 <script>
+import { mapState, mapActions } from "vuex";
 import { deleteFormOrder } from "@/apis/formManage/serve";
+import { getNowFullTime } from "@/assets/js/commonFun";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
-  name: "dateSelect",
   props: {
-    show: Boolean,
-    id: String,
-    DB_Table: String,
-    RPFlowNo: String,
+    id: String, // 執行人員id
+    DB_Table: String, // 資料表代號
+    RPFlowNo: String, // Key No.
   },
-  data: () => ({
-    showThis: false,
-  }),
+  data: () => ({}),
   components: {},
-  mounted() {
-    //this.dataSet = this.value;
-  },
+  mounted() {},
   computed: {
-    // compute_name:function() {
-    // }
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
+    }),
   },
   created: function () {},
   methods: {
-    deleteRecord(UserId, DB_Table, RPFlowNo) {
-      this.action = Actions.delete;
+    ...mapActions("system", [
+      "chMsgbar", // messageBar
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
+    deleteRecord() {
       this.chLoadingShow();
       deleteFormOrder({
         ClientReqTime: getNowFullTime(), // client 端請求時間
-        OperatorID: UserId, // 操作人id
-        KeyName: DB_Table, // DB table
-        RPFlowNo: RPFlowNo,
-        KeyItem: [{ Column: "RPFlowNo", Value: RPFlowNo }],
+        OperatorID: this.id, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        RPFlowNo: this.RPFlowNo,
+        KeyItem: [{ Column: "RPFlowNo", Value: this.RPFlowNo }],
       })
         .then((res) => {
           this.dialogDel = false;
@@ -65,30 +72,19 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
-          //this.chLoadingShow();
-          //this.ShowDetailDialog = false;
-          this.search();
+          this.chLoadingShow();
+          this.success();
         });
     },
-    doClose() {
-      this.$emit("dialogData", false);
+    success() {
+      this.$emit("search");
+      this.$emit("close");
+    },
+    cancel() {
+      this.$emit("cancel");
     },
   },
-  filters: {
-    // filter_name:function(value) {
-    // }
-  },
-  watch: {
-    // dataSet: function (value) {
-    //   this.$emit("input", value);
-    // },
-    // value: function (value) {
-    //   this.dataSet = value;
-    // },
-    show: function (value) {
-      this.showThis = value;
-      console.log("ShowThis: " + value);
-    },
-  },
+  filters: {},
+  watch: {},
 };
 </script>

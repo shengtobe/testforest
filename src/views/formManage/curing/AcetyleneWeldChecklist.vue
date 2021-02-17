@@ -253,7 +253,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-btn
             v-if="action != actions.add"
-            class="mr-2"
+            class="mr-2 white--text"
             elevation="4"
             color="red"
             @click="dialogDel = true"
@@ -268,7 +268,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>
