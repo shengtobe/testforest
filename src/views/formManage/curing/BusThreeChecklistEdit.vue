@@ -11,9 +11,7 @@
     <div class="px-6 py-4">
       <v-row>
         <v-col cols="12">
-          <p>
-            1.連結器檢查，於連結棒圓桿與長方形狀交接處，應以放大鏡輔助檢查。
-          </p>
+          <p>1.連結器檢查，於連結桿圓桿與長方形狀交接處，應以液體滲透檢查。</p>
         </v-col>
         <!-- 檢查項目 -->
         <v-col cols="12">
@@ -200,11 +198,12 @@ export default {
     return {
       actions: Actions,
       commonSettings: {
-        iconShow: false,
-        title: "客車二級檢修記錄表",
+        iconShow: true,
+        title: "客車三級檢修記錄表",
         isLoading: false,
         deptReadonly: true,
       },
+
       inputData: {
         RPFlowNo: "",
         DepartCode: "",
@@ -389,86 +388,89 @@ export default {
           Memo85: "",
           CheckOption86: "",
           Memo86: "",
+          CheckOption87: "",
+          Memo87: "",
+          CheckOption88: "",
+          Memo88: "",
+          CheckOption89: "",
+          Memo89: "",
+          CheckOption90: "",
+          Memo90: "",
         },
       },
-
-      // index for render
-
       itemsList: [
         {
           title: "行走裝置",
           items: [
             { question: "1. 輪、軸位置無鬆弛移位現象" },
             { question: "2. 車輪背距在679±5mm範圍內" },
-            { question: "3. 輪、軸無裂痕" },
+            { question: "3. 車輪及車軸無裂痕" },
             { question: "4. 車軸無彎曲" },
             { question: "5. 輪緣磨耗無超限(厚度大於24mm)" },
             { question: "6. 輪緣高度無超出輪踏面31mm" },
             { question: "7. 輪緣缺損長度無超過27mm、寬度無超過9mm" },
-            { question: "8. 踏面擦傷長度單處無超過40mm" },
+            { question: "8. 踏面擦傷長度無超過40mm" },
             { question: "9. 軸承箱與導板間隙無超過6mm" },
             { question: "10. 車輪直徑大於540mm，各輪徑檢查(端面有凹痕記號)" },
-            { question: "11. 軸承箱、箱蓋無裂痕或破損" },
+            { question: "11. 軸承箱無裂痕或破損" },
             { question: "12. 軸承箱螺栓無鬆弛或脫落" },
-            { question: "13. 潤滑油無漏失" },
+            { question: "13. 更換潤滑油脂，檢查外側油封是否漏油" },
             { question: "14. 軸承箱內各機件無變形、鬆弛、斷裂或磨損" },
+            { question: "15. 軸承轉動順暢無異音" },
           ],
         },
         {
           title: "軔機裝置",
           items: [
+            { question: "1. 軔塊調整桿彎曲方向正確" },
+            { question: "2. 銷、孔、軸頸及襯套之直徑磨耗量小於2mm" },
+            { question: "3. 各桿與車體其他部分無不當碰觸" },
+            { question: "4. 氣軔軟管無超過耐用6年期限" },
+            { question: "5. 軔管無破損、漏氣" },
+            { question: "6. 手軔機各機件無磨耗過量或潤滑不良" },
             {
               question:
-                "1. 拉桿、軔槓桿、挺桿、軔塊調整桿、軔樑、軔吊、軔吊托、圓梢、開口梢、襯套等無破損、變形、鬆弛或脫落",
-            },
-            { question: "2. 軔塊調整桿彎曲方向正確" },
-            { question: "3. 銷、孔、軸頸及襯套之直徑磨耗量無大於2mm" },
-            { question: "4. 各桿與車體其他部分無不當碰觸" },
-            { question: "5. 氣軔軟管無超過耐用期限" },
-            { question: "6. 軔管無破損、漏氣" },
-            { question: "7. 手軔機各機件無磨耗過量或潤滑不良" },
-            {
-              question:
-                "8. 如需檢修軔缸時，應將其分解，施以各部之清拭及檢修，並將不良部分更換，塗布油脂後重新裝配之。確認無軔缸皮碗磨損過量、復原彈簧疲勞、活塞桿彎曲等",
+                "7. 檢修軔缸時，應將其分解，施以各部之清拭及檢修，並將不良部分更換，塗布油脂後重新裝配之",
             },
             {
               question:
-                "9. 檢修K閥及EA閥時，應將其分解，施以各部之清拭、檢修，並將不良部分更換，以#10號油潤滑後重新裝配之",
+                "8. 檢修K閥及EA閥時，應將其分解，施以各部之清拭、檢修，並將不良部分更換，以#10號油潤滑後重新裝配之，間隔一次更換橡膠零件",
             },
-            { question: "10. 濾塵器檢修及清理" },
-            { question: "11. 各儲氣筒凝結水排除" },
+            { question: "9. 濾塵器檢修及清理" },
+            { question: "10. 各儲氣筒凝結水排除" },
           ],
         },
         {
           title: "連結裝置",
           items: [
             { question: "1. 連結器、軛無裂痕或變形" },
-            { question: "2. 連結器磨耗量不超過百分之三十" },
-            { question: "3. 連結器緩衝彈簧無太鬆或太緊" },
-            { question: "4. 軛固定螺栓無脫落或防鬆鐵絲斷掉" },
+            { question: "2. 連結器及軛直徑磨損量無超過百分之三十" },
+            { question: "3. 拆解連結器液滲檢查軸頸，及調整彈簧緊度" },
+            { question: "4. 軛固定螺栓無脫落或防鬆鐵絲緊固" },
             { question: "5. 導架螺栓無鬆脫" },
-            { question: "6. 導架滑動面潤滑正常" },
+            { question: "6. 導架滑動面有油潤" },
             { question: "7. 安全鏈及螺栓無鬆脫" },
-            { question: "8. 連結銷直徑磨耗量小於10mm" },
+            { question: "8. 連結銷直徑磨耗量無超過10mm" },
           ],
         },
         {
           title: "電氣裝置",
           items: [
             { question: "1. 蓄電池外箱無破損、洩漏" },
-            { question: "2. 蓄電池導線或接頭正常" },
-            { question: "3. 蓄電池電解液充足" },
+            { question: "2. 蓄電池導線或接頭良好" },
+            { question: "3. 蓄電池電解液高度適當" },
             { question: "4. 電氣連接線絕緣物無破損" },
             { question: "5. 配電箱無破損" },
-            { question: "6. 保險絲燒斷，保險絲容量適當" },
+            { question: "6. 保險絲良好，保險絲容量適當" },
             { question: "7. 電氣開關、插頭、插座、接頭等無破損、鬆弛或不良" },
             {
               question:
-                "8. 各式燈具外蓋拆開清理，燈具、燈架無破損、不良或髒污，或燈泡、燈管無氧化變黑",
+                "8. 各式燈具外蓋拆開清理，燈具、燈架無破損，或燈泡、燈管功能正常",
             },
             { question: "9. 變壓器、充電器裝置無破損或機能不良" },
             { question: "10. 播音機、喇叭無破損或機能不良" },
             { question: "11. 雨刷機無破損或機能不良" },
+            { question: "12. 440V插頭拆解檢查電線與銅極焊合情形" },
           ],
         },
         {
@@ -476,16 +478,16 @@ export default {
           items: [
             { question: "1. 空調機配電盤內各機件之安裝螺絲無鬆弛" },
             { question: "2. 運轉指示燈顯示正確" },
-            { question: "3. 空氣過濾網無髒污" },
+            { question: "3. 空氣過濾網清潔" },
             {
               question:
-                "4. 運轉中之冷媒低壓值在3～7kg/cm2，高壓值在13～22kg/cm2之範圍內",
+                "4. 運轉中之冷媒低壓值在3~7kg/cm2，高壓值在13~22kg/cm2之範圍內",
             },
             { question: "5. 風扇運轉正常" },
-            { question: "6. 空調機運轉中聲音正常" },
+            { question: "6. 空調機運轉中無異音" },
             { question: "7. 出風口無破裂或作用不良" },
-            { question: "8. 出風口風量適當" },
-            { question: "9. 車廂內冷度適當" },
+            { question: "8. 出風口風量正常可調整" },
+            { question: "9. 車廂內冷度正常可調整" },
             { question: "10. 檢查空調機金屬外殼與上面電線無摩擦破皮情形" },
             { question: "11. 空調機基座無銹蝕、固定良好，門蓋板作用正常" },
             {
@@ -506,13 +508,13 @@ export default {
                 "1. 廁所盥洗設備之鏡子、洗手台、馬桶、坐墊自動掀起裝置、扶手、垃圾桶、沖洗按鈕開關、衛生紙架、排風扇及其他附屬設備無破損或作用不良",
             },
             { question: "2. 儲水筒及供水管路無阻塞" },
-            { question: "3. 馬桶水量充足、沖水正常" },
+            { question: "3. 馬桶水量、沖力、沖水功能正常" },
             { question: "4. 馬桶沖洗時間正常" },
             { question: "5. 廁所控制氣壓管無漏氣" },
-            { question: "6. 馬桶切斷閥正常" },
+            { question: "6. 馬桶切斷閥功能正常" },
             { question: "7. 水龍頭關閉位置無漏水" },
             { question: "8. 座椅布無破損或髒污" },
-            { question: "9. 座椅迴轉或椅背復位氣壓桿正常" },
+            { question: "9. 座椅迴轉或椅背復位氣壓桿功能正常" },
             { question: "10. 座椅扶手、煙灰缸、踏板等無缺損或不良" },
             { question: "11. 座號、茶杯架無破損" },
             {
@@ -520,24 +522,29 @@ export default {
                 "12. 門窗、膠條、行李架、扶桿、頂板、璧板、地板等無髒污、破損、銹蝕或不良",
             },
             { question: "13. 車內各式固定螺絲無缺損或突出" },
-            { question: "14. 滅火器無過期、洩漏或破損" },
-            { question: "15. 車窗擊破鎚無缺損" },
+            { question: "14. 滅火器無過期、洩露或破損" },
+            { question: "15. 車窗擊破鎚無缺損或鬆弛" },
           ],
         },
         {
           title: "車架及轉向架",
           items: [
+            { question: "1. 車架各梁無銹蝕破損" },
             {
               question:
-                "1. 轉向框架、彎樑、導板、搖枕、角銷、懸吊系統、中心盤及其他轉向架機件無斷裂、變形、銹蝕、擦撞痕跡或作用不良",
+                "2. 轉向框架、彎樑、導板、搖枕、角銷、懸吊系統、中心盤及其他轉向架機件無斷裂、變形、銹蝕、擦撞痕跡或作用不良",
             },
-            { question: "2. 車身車架各樑無銹蝕破損" },
-            { question: "3. 各式螺栓、襯套及銷無鬆脫或斷裂" },
+            { question: "3. 各式螺栓、襯套、銷無鬆脫或斷裂" },
             { question: "4. 排障器無缺損、斷裂、變形" },
             { question: "5. 旁承座間隙在3~6mm之間" },
             { question: "6. 旁承座無磨損過量" },
-            { question: "7. 中心盤上、下盤無破裂" },
-            { question: "8. 檢查轉向架中間橫梁變形量不超過3mm" },
+            { question: "7. 中心盤上、下盤無破裂，鎖固良好" },
+            { question: "8. 拆解橫梁吊桿，銷、孔及襯套之直徑磨耗量小於2.5mm" },
+            {
+              question:
+                "9. 上搖枕與中間橫梁凸耳單邊磨耗間隙小於5mm，總間隙小於9mm",
+            },
+            { question: "10. 檢查轉向架中間橫梁變形量不超過3mm" },
           ],
         },
         {
@@ -548,7 +555,7 @@ export default {
             { question: "3. 車身側面及車頂油漆無龜裂、剝落、褪色、髒污" },
             { question: "4. 車身鈑金無變形、龜裂、銹蝕" },
             { question: "5. 通路渡板及扶手無銹蝕、不良" },
-            { question: "6. 檢查車門開關正常，軸承固定良好" },
+            { question: "6. 檢查車門開關正常，上下軸承固定良好" },
           ],
         },
       ],
@@ -578,6 +585,7 @@ export default {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    // 計算各群組的起始位置
     newItemList: function () {
       let rtnObj = [...this.itemsList];
       rtnObj.forEach((element, index) => {
@@ -797,6 +805,14 @@ export default {
           "Memo85",
           "CheckOption86",
           "Memo86",
+          "CheckOption87",
+          "Memo87",
+          "CheckOption88",
+          "Memo88",
+          "CheckOption89",
+          "Memo89",
+          "CheckOption90",
+          "Memo90",
         ],
       })
         .then((res) => {
