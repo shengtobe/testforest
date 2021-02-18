@@ -98,7 +98,7 @@ export default {
         CheckOption14: "0",
         CheckOption15: "0",
         CheckOption16: "0",
-        CheckOption17: "",
+        Measures: "",
       },
     },
     settings: {
@@ -134,7 +134,7 @@ export default {
       textarea: [
         {
           label: "改善措施",
-          column: "CheckOption17"
+          column: "Measures"
         }
       ]
     },
@@ -200,7 +200,7 @@ export default {
           "CheckOption14",
           "CheckOption15",
           "CheckOption16",
-          "CheckOption17",
+          "Measures",
         ],
       })
         .then((res) => {
