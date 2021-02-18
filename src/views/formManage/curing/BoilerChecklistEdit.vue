@@ -84,7 +84,11 @@ export default {
         CheckOption8: "0",
         CheckOption9: "0",
         CheckOption10: "0",
-        Memo11: "",
+        CheckOption11: "0",
+        CheckOption12: "0",
+        CheckOption13: "0",
+        CheckOption14: "0",
+        Memo: "",
       },
     },
     settings: {
@@ -101,10 +105,10 @@ export default {
         { question: "6.檢視供油槽、油位調節器、油位計是否正常" },
         { question: "7.檢視火燄檢出裝置機能是否正常" },
         { question: "8.檢視水位調節裝置及警報器之機能是否正常" },
-        // { question: "9.檢視電氣配線端子及操作盤指示燈是否正常" },
-        // { question: "10.檢視給水裝置之機能是否正常" },
-        // { question: "11.檢視水處理裝置之機能是否正常" },
-        // { question: "12.檢視壓力表壓力指示是否正常" },
+        { question: "9.檢視電氣配線端子及操作盤指示燈是否正常" },
+        { question: "10.檢視給水裝置之機能是否正常" },
+        { question: "11.檢視水處理裝置之機能是否正常" },
+        { question: "12.檢視壓力表壓力指示是否正常" },
         { question: "13.檢視液位計液位指示是否正常" },
         { question: "14.檢視安全閥有無異狀" },
       ],
@@ -119,7 +123,7 @@ export default {
       textarea: [
         {
           label: "改善建議",
-          column: "Memo11"
+          column: "Memo"
         }
       ]
     },
@@ -177,7 +181,11 @@ export default {
           "CheckOption8",
           "CheckOption9",
           "CheckOption10",
-          "Memo11",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "Memo",
         ],
       })
         .then((res) => {
