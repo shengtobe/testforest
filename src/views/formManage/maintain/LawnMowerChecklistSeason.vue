@@ -134,7 +134,7 @@ import {
   decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
-import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
+import { fetchFormOrderList } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import EditPage from "@/views/formManage/maintain/LawnMowerChecklistSeasonEdit";
