@@ -7,7 +7,12 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-    <commonQuestion v-model="inputData" :settings="settings" />
+    <commonQuestion v-model="inputData" :settings="settings">
+      <template v-slot:resultOtions>
+        <v-radio color="success" label="正常" value="1"></v-radio>
+        <v-radio color="red" label="異常" value="2"></v-radio>
+      </template>
+    </commonQuestion>
     <v-card-actions class="px-5 pb-5">
       <v-btn
         v-if="editType != actions.add"
