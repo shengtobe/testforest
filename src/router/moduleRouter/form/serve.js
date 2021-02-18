@@ -83,13 +83,13 @@ export const FormServeRouter = [
         linkText: '員工工作安全觀察表(每月2 次)',// 90
         path: '/form-manage/serve/ee-work-safety-obs-record',
         component: () => import('@/views/formManage/serve/EEWorkSafetyObsRecord.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '各級主管走動管理督檢紀錄暨追蹤表(每月2 次)',//91
         path: '/form-manage/serve/supervisory-tracking-list-month',
         component: () => import('@/views/formManage/serve/SupervisoryTrackingListMonth.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '營運異常狀況通報單',// 114
