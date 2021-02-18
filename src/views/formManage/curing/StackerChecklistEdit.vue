@@ -1,16 +1,22 @@
 <template>
   <v-card>
     <v-card-title class="blue white--text px-4 py-1">
-      {{ editType }}{{ commonSettings.title }}
+      {{ editType }}{{ title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="settings">
-      <template v-slot:resultOtions>
-        <v-radio color="success" label="正常" value="1"></v-radio>
-        <v-radio color="red" label="異常" value="2"></v-radio>
+      <template v-slot:moreDetails>
+        <v-col cols="12" sm="4">
+          <h3 class="mb-1">型式</h3>
+          <v-text-field solo value v-model="inputData.editableData.Type" />
+        </v-col>
+        <v-col cols="12" sm="4">
+          <h3 class="mb-1">堆高荷重</h3>
+          <v-text-field solo value v-model="inputData.editableData.Load" />
+        </v-col>
       </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
@@ -57,12 +63,12 @@ export default {
     item: Object,
     editType: String,
     DB_Table: String,
+    title: String,
   },
   data: () => ({
     actions: Actions,
     commonSettings: {
       iconShow: false,
-      title: "鍋爐每日作業前檢點表(作業前)",
       isLoading: false,
       deptReadonly: true,
     },
@@ -74,6 +80,8 @@ export default {
       Name: "",
       editableData: {
         CheckDay: "",
+        Type: "",
+        Load: "",
         CheckOption1: "0",
         CheckOption2: "0",
         CheckOption3: "0",
@@ -84,7 +92,13 @@ export default {
         CheckOption8: "0",
         CheckOption9: "0",
         CheckOption10: "0",
-        Memo11: "",
+        CheckOption11: "0",
+        CheckOption12: "0",
+        CheckOption13: "0",
+        CheckOption14: "0",
+        CheckOption15: "0",
+        CheckOption16: "0",
+        CheckOption17: "",
       },
     },
     settings: {
@@ -93,33 +107,35 @@ export default {
         "2.缺點由使用單位自行改善，不克者委請設備商修護。",
       ],
       qestions: [
-        { question: "1.檢視本體保溫材、外殼有無損傷或洩漏" },
-        { question: "2.檢視油加熱器、過濾器之機能是否正常" },
-        { question: "3.檢視燃燒室及燃料輸送裝置是否正常" },
-        { question: "4.檢視耐火材、燃燒保護材有無崩落或損傷" },
-        { question: "5.檢視爆發門作動是否正常" },
-        { question: "6.檢視供油槽、油位調節器、油位計是否正常" },
-        { question: "7.檢視火燄檢出裝置機能是否正常" },
-        { question: "8.檢視水位調節裝置及警報器之機能是否正常" },
-        // { question: "9.檢視電氣配線端子及操作盤指示燈是否正常" },
-        // { question: "10.檢視給水裝置之機能是否正常" },
-        // { question: "11.檢視水處理裝置之機能是否正常" },
-        // { question: "12.檢視壓力表壓力指示是否正常" },
-        { question: "13.檢視液位計液位指示是否正常" },
-        { question: "14.檢視安全閥有無異狀" },
+        { question: "1. （漏水與否）引擎冷卻水檢查" },
+        { question: "2. 引擎機油檢查" },
+        { question: "3. 檢查輪胎氣壓及有無損傷" },
+        { question: "4. 吊句防脫裝置" },
+        { question: "5. 螺帽檢查輪殼的鎖緊" },
+        { question: "6. 動作情況檢查離合器踏板" },
+        { question: "7. 液壓油檢查" },
+        { question: "8. 範圍檢查方向盤動作" },
+        { question: "9. 情況檢查手煞車動作" },
+        { question: "10. 操作情況檢查儀表、燈及喇叭" },
+        { question: "11. 不正常現象檢查荷重架有否" },
+        { question: "12. 有否漏油現象檢查" },
+        { question: "13. 油水分離器檢查" },
+        { question: "14. 煞車之性能制動裝置及" },
+        { question: "15. 有無損壞頂蓬及桅桿" },
+        { question: "16. 其他" },
       ],
       columns: {
         option: "CheckOption",
         memo: "Memo",
       },
       width: {
-        qusetion: 5,
-        option: 7,
+        qusetion: 7,
+        option: 5,
       },
       textarea: [
         {
-          label: "改善建議",
-          column: "Memo11"
+          label: "改善措施",
+          column: "CheckOption17"
         }
       ]
     },
@@ -167,6 +183,8 @@ export default {
           "DepartName",
           "ID",
           "Name",
+          "Type",
+          "Load",
           "CheckOption1",
           "CheckOption2",
           "CheckOption3",
@@ -177,7 +195,13 @@ export default {
           "CheckOption8",
           "CheckOption9",
           "CheckOption10",
-          "Memo11",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "CheckOption15",
+          "CheckOption16",
+          "CheckOption17",
         ],
       })
         .then((res) => {

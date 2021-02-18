@@ -62,7 +62,7 @@ export default {
     actions: Actions,
     commonSettings: {
       iconShow: false,
-      title: "氬焊機定期檢查表(月)",
+      title: "吊掛用具定期檢查表(三個月)",
       isLoading: false,
       deptReadonly: true,
     },
