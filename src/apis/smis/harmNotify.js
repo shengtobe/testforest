@@ -26,3 +26,12 @@ export function fetchNotifyOne(data) { return axios(
         data,
     }
 )}
+
+// 危害通報回覆
+export function replyNotify(data) { return axios(
+    {
+        url: '/sms/dangernotify/reply',
+        method: 'post',
+        data,
+    }
+)}
