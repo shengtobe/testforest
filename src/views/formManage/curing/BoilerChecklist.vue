@@ -220,8 +220,8 @@ export default {
         userData: state => state.userData,  // 使用者基本資料
     }),
 },
-  created() {
-      
+  mounted() {
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.formData.default.dateStart = this.formData.default.dateEnd = getTodayDateString();
   },
   methods: {
     ...mapActions('system', [

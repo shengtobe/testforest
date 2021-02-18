@@ -35,6 +35,7 @@
               :readonly="commonSettings.deptReadonly"
             />
           </v-col>
+          <slot name="moreDetails"></slot>
         </v-row>
         <v-row
           no-gutter

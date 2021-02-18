@@ -1,16 +1,18 @@
 <template>
   <v-card>
     <v-card-title class="blue white--text px-4 py-1">
-      {{ editType }}{{ commonSettings.title }}
+      {{ editType }}{{ title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="settings">
+      <template v-slot:memo2Name>改善措施</template>
       <template v-slot:resultOtions>
-        <v-radio color="success" label="正常" value="1"></v-radio>
-        <v-radio color="red" label="異常" value="2"></v-radio>
+        <v-radio color="success" label="良好" value="1"></v-radio>
+        <v-radio color="red" label="不良" value="2"></v-radio>
+        <v-radio color="black" label="無此項目" value="3"></v-radio>
       </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
@@ -57,12 +59,12 @@ export default {
     item: Object,
     editType: String,
     DB_Table: String,
+    title: String,
   },
   data: () => ({
     actions: Actions,
     commonSettings: {
       iconShow: false,
-      title: "鍋爐每日作業前檢點表(作業前)",
       isLoading: false,
       deptReadonly: true,
     },
@@ -75,57 +77,53 @@ export default {
       editableData: {
         CheckDay: "",
         CheckOption1: "0",
+        Memo1: "",
         CheckOption2: "0",
+        Memo2: "",
         CheckOption3: "0",
+        Memo3: "",
         CheckOption4: "0",
+        Memo4: "",
         CheckOption5: "0",
+        Memo5: "",
         CheckOption6: "0",
+        Memo6: "",
         CheckOption7: "0",
+        Memo7: "",
         CheckOption8: "0",
+        Memo8: "",
         CheckOption9: "0",
-        CheckOption10: "0",
-        CheckOption11: "0",
-        CheckOption12: "0",
-        CheckOption13: "0",
-        CheckOption14: "0",
-        Memo: "",
+        Memo9: "",
       },
     },
     settings: {
       subtitle: [
-        "1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。",
-        "2.缺點由使用單位自行改善，不克者委請設備商修護。",
+        "1.依職業安全衛生法第23條及職業安全衛生管理辦法第15條規定辦理。",
+        "2.依檢查結果選擇良好、不良、無此項目。",
+        "3.缺點由管理單位自行改善，不克者委請設備商修護。",
+        "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。",
       ],
       qestions: [
-        { question: "1.檢視本體保溫材、外殼有無損傷或洩漏" },
-        { question: "2.檢視油加熱器、過濾器之機能是否正常" },
-        { question: "3.檢視燃燒室及燃料輸送裝置是否正常" },
-        { question: "4.檢視耐火材、燃燒保護材有無崩落或損傷" },
-        { question: "5.檢視爆發門作動是否正常" },
-        { question: "6.檢視供油槽、油位調節器、油位計是否正常" },
-        { question: "7.檢視火燄檢出裝置機能是否正常" },
-        { question: "8.檢視水位調節裝置及警報器之機能是否正常" },
-        { question: "9.檢視電氣配線端子及操作盤指示燈是否正常" },
-        { question: "10.檢視給水裝置之機能是否正常" },
-        { question: "11.檢視水處理裝置之機能是否正常" },
-        { question: "12.檢視壓力表壓力指示是否正常" },
-        { question: "13.檢視液位計液位指示是否正常" },
-        { question: "14.檢視安全閥有無異狀" },
+        { question: "1. 檢查升降台上升、下降動作是否平穩水平，定位輪確實牢固定位", method: "反覆操作查看作動及停止位罝" },
+        { question: "2. 升降裝置極限開關、及其他安全裝置是否正常", method: "目視點檢" },
+        { question: "3. 電纜、電線無破損", method: "目視點檢" },
+        { question: "4. 配線、集電裝置、配電盤、開關及控制、裝置有無異常", method: "反覆操作查看作動及電譯情形" },
+        { question: "5. 檢查馬達動作聲音是否有異", method: "檢查有無異音" },
+        { question: "6. 現場是否標示最高荷重10T", method: "目視點檢" },
+        { question: "7. 箱(控制箱)蓋門應完好，箱內電器清潔，無受潮", method: "反覆操作查看作動" },
+        { question: "8. 接線端子無鬆脫現象", method: "目視點檢" },
+        { question: "9. 其他", method: "目視點檢" },
       ],
       columns: {
         option: "CheckOption",
-        memo: "Memo",
+        memo2: "Memo",
       },
       width: {
-        qusetion: 5,
-        option: 7,
+        qusetion: 3,
+        method: 3,
+        option: 3,
+        memo2: 3,
       },
-      textarea: [
-        {
-          label: "改善建議",
-          column: "Memo"
-        }
-      ]
     },
   }),
   components: {
@@ -172,20 +170,23 @@ export default {
           "ID",
           "Name",
           "CheckOption1",
+          "Memo1",
           "CheckOption2",
+          "Memo2",
           "CheckOption3",
+          "Memo3",
           "CheckOption4",
+          "Memo4",
           "CheckOption5",
+          "Memo5",
           "CheckOption6",
+          "Memo6",
           "CheckOption7",
+          "Memo7",
           "CheckOption8",
+          "Memo8",
           "CheckOption9",
-          "CheckOption10",
-          "CheckOption11",
-          "CheckOption12",
-          "CheckOption13",
-          "CheckOption14",
-          "Memo",
+          "Memo9",
         ],
       })
         .then((res) => {
