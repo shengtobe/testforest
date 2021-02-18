@@ -7,7 +7,7 @@
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <BottomTableNoIcon :items="bottomItems" />
+        <BottomTable :items="bottomItems" />
 
         <!-- 請修項目 -->
         <ShowTable :tableItems="tableItems" />
@@ -183,7 +183,7 @@ import { mapState, mapActions } from 'vuex'
 import { acceptanceOrder, withdrawOrder, cancelOrder, delayOrder, orderFinalExecl } from '@/apis/workList/serve'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
+import BottomTable from '@/components/BottomTable.vue'
 import ShowTable from '@/views/workList/serve/ShowTable.vue'
 
 
@@ -213,7 +213,7 @@ export default {
     }),
     components: {
         TopBasicTable,
-        BottomTableNoIcon,
+        BottomTable,
         ShowTable,
     },
     computed: {

@@ -77,7 +77,7 @@ export default {
 
                         // 設定下面的欄位資料
                         let bottomItems = [
-                            { dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '通報維修地點及事項', text: res.data.Malfunction.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: false, icon: 'none', title: '通報維修地點及事項', text: res.data.Malfunction.replace(/\n/g, '<br>') },
                         ]
 
                         // 工項資料
@@ -93,8 +93,8 @@ export default {
                             topItems.push({ icon: 'mdi-alert-outline', title: '特殊危害作業', text: (res.data.WorkSp == 'T')? '是' : '否' })
                             topItems.push({ icon: 'mdi-alert-outline', title: '安全危害作業', text: (res.data.WorkSafety == 'T')? '是' : '否' })
 
-                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-note', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
-                            bottomItems.push({ dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
+                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'none', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
+                            bottomItems.push({ dataType: 'text', oneline: true, icon: 'none', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
                         }
 
                         if (this.status > 2) {
@@ -102,8 +102,8 @@ export default {
                             topItems.push({ icon: 'mdi-calendar-text', title: '動工日期', text: res.data.StartWorkDDate })
                             topItems.push({ icon: 'mdi-calendar-text', title: '完工日期', text: res.data.FinishDDate })
 
-                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
-                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
+                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'none', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
+                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'none', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
                         }
 
                         if (this.status > 3) {

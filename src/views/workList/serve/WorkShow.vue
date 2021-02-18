@@ -7,7 +7,7 @@
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <BottomTableNoIcon :items="bottomItems" />
+        <BottomTable :items="bottomItems" />
 
         <!-- 請修項目 -->
         <ShowTable :tableItems="tableItems" />
@@ -263,7 +263,7 @@ import { maintainOrder, withdrawOrder } from '@/apis/workList/serve'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
+import BottomTable from '@/components/BottomTable.vue'
 import ShowTable from '@/views/workList/serve/ShowTable.vue'
 
 export default {
@@ -300,7 +300,7 @@ export default {
     }),
     components: {
         TopBasicTable,
-        BottomTableNoIcon,
+        BottomTable,
         ShowTable,
     },
     computed: {
