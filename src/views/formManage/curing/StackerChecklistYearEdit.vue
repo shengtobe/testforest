@@ -7,7 +7,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-    <commonQuestion v-model="inputData" :settings="settings">
+    <commonQuestion v-model="inputData" :settings="setting">
       <template v-slot:moreDetails="item">
         <v-col cols="12" sm="4">
           <h3 class="mb-1">型式</h3>
@@ -122,6 +122,95 @@ export default {
           Review: "",
         },
       },
+      /*
+        subtitles: 固定,
+        textareas: 固定,
+        questions: => 1.小題產生器 2.大題產生器
+          2.產生1.的設定檔，然後2.再把1.的東西push進去array再回傳
+          小題產生器: 
+            {
+              pnaelLabel: <string>,
+              questionLabels: [
+                {
+                  width: <number>,
+                  text: <string>,
+                  generate: <boolean>,  //要被自動產生的寫ture，不要的寫false
+                },
+              ],
+              answerStart: <number>,
+              notGenerate: [            //預設不自動產生的都是純文字欄位，依照順序填入
+                [
+                  <string>,
+                ]
+              ],
+              generate: [               //按順序填入
+                {
+                  model: <變數名稱前綴 string>, //預設所有可變動資料都放在editableData裡面
+                  type: <text/number/radio/select/area string>,
+                  <number:{
+                    min: <numbebr>,
+                    max: <number>,
+                  },>
+                  <radio: [
+                    {
+                      color: <string>,
+                      label: <string>,
+                      value: <string>,
+                    }
+                  ],> 
+                  <select: [
+                    {
+                      text: <string>,
+                      value: <string>,
+                    }
+                  ],>
+                },
+              ]
+            }
+          大題產生器
+            {
+              panelQuestion: [      //題目
+                {
+                  panelLabel: <string>,
+                  questions: [
+                    [
+                      <string>,
+                    ],
+                  ],
+                }
+              ],
+              questionLabels: [       //標題
+                {
+                  width: <number>,
+                  text: <string>,
+                  generate: <boolean>,  //要被自動產生的寫ture，不要的寫false
+                },
+              ],
+              panelAnswer: [      //輸入欄位
+                {
+                  model: <變數名稱前綴 string>, //預設所有可變動資料都放在editableData裡面
+                  type: <text/number/radio/select/area string>,
+                  <number:{
+                    min: <numbebr>,
+                    max: <number>,
+                  },>
+                  <radio: [
+                    {
+                      color: <string>,
+                      label: <string>,
+                      value: <string>,
+                    }
+                  ],> 
+                  <select: [
+                    {
+                      text: <string>,
+                      value: <string>,
+                    }
+                  ],>
+                },
+              ]
+            }
+      */
       settings: {
         subtitles: [
           "1.依職業安全衛生法第23條及職業安全衛生管理辦法第17條規定辦理。",
@@ -154,17 +243,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 手剎車性能",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、實測",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -182,7 +268,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -190,17 +275,14 @@ export default {
               ],
               [
                 {
-                  width: 3,
                   label: "2. 腳踏車性能",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、實測",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -218,7 +300,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -250,17 +331,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 離合器性能",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、實測",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -278,7 +356,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -310,17 +387,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 方向盤性能",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、實測",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -338,7 +412,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -346,17 +419,14 @@ export default {
               ],
               [
                 {
-                  width: 3,
                   label: "2. 左方向燈",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、實測",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -374,7 +444,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -382,17 +451,14 @@ export default {
               ],
               [
                 {
-                  width: 3,
                   label: "3. 右方向燈",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、實測",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -410,7 +476,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -442,17 +507,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 前叉",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "目視檢查",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -470,7 +532,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -478,17 +539,14 @@ export default {
               ],
               [
                 {
-                  width: 3,
                   label: "2. 積載性能",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "荷重試驗",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -506,7 +564,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -538,17 +595,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 喇叭",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作測試",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -566,7 +620,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -574,17 +627,14 @@ export default {
               ],
               [
                 {
-                  width: 3,
                   label: "2. 煞車燈",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、目視",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -602,7 +652,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -634,17 +683,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 上下升降",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作測試",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -662,7 +708,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -670,17 +715,14 @@ export default {
               ],
               [
                 {
-                  width: 3,
                   label: "2. 前傾、後仰",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作測試",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -698,7 +740,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -730,17 +771,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 頂蓬",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "目視檢查",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -758,7 +796,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -790,17 +827,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 桅桿",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "目視檢查",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -818,7 +852,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -850,17 +883,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 滅焰器",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作、目視",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -878,7 +908,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -910,17 +939,14 @@ export default {
             questionAnswers:[
               [
                 {
-                  width: 3,
                   label: "1. 全車狀況",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "操作測試",
                   type: "label",
                 },
                 {
-                  width: 3,
                   label: "檢查結果：",
                   type: "radio",
                   model: "CheckOption",
@@ -938,7 +964,6 @@ export default {
                   ]
                 },
                 {
-                  width: 3,
                   label: "備註：",
                   type: "area",
                   model: "Memo",
@@ -965,7 +990,196 @@ export default {
             model: "Review",
           },
         ]
-      }
+      },
+      testSettings: {
+        subtitles: [
+          "1.依職業安全衛生法第23條及職業安全衛生管理辦法第17條規定辦理。",
+          "2.檢查結果請依情況選擇良好、不良。並應做檢查發現危害、分析危害因素，評估危害風險，依檢查風險評估結果採取改善措施、檢討改善措施之合宜性。",
+          "3.缺點由使用單位自行改善，不克者委請設備商維護。",
+          "4.本表於12月年底前完成檢查，經主管核章後，留存於管理單位之系統以保存備查。",
+        ],
+        textareas: [
+          {
+            label: "檢查發現危害、分析危害因素",
+            model: "Analysis",
+          },
+          {
+            label: "評估危害風險(嚴重性及可能性分析)",
+            model: "Evaluation",
+          },
+          {
+            label: "評估結果改善措施",
+            model: "Ameliorate",
+          },
+          {
+            label: "檢討改善措施之合宜性",
+            model: "Review",
+          },
+        ],
+        questions: {
+          panelQuestion: [      //題目
+            {
+              panelLabel: "制動裝置",
+              questions: [
+                [
+                  "1. 手剎車性能",
+                  "操作、實測",
+                ],
+                [
+                  "2. 腳踏車性能",
+                  "操作、實測",
+                ],
+              ],
+            },
+            {
+              panelLabel: "離合器裝置",
+              questions: [
+                [
+                  "1. 離合器性能",
+                  "操作、實測",
+                ],
+              ],
+            },
+            {
+              panelLabel: "方向裝置",
+              questions: [
+                [
+                  "1. 方向盤性能",
+                  "操作、實測",
+                ],
+                [
+                  "2. 左方向燈",
+                  "操作、實測",
+                ],
+                [
+                  "3. 右方向燈",
+                  "操作、實測",
+                ],
+              ],
+            },
+            {
+              panelLabel: "積載裝置",
+              questions: [
+                [
+                  "1. 前叉",
+                  "目視檢查",
+                ],
+                [
+                  "2. 積載性能",
+                  "荷重試驗",
+                ],
+              ],
+            },
+            {
+              panelLabel: "警報裝置",
+              questions: [
+                [
+                  "1. 喇叭",
+                  "操作測試",
+                ],
+                [
+                  "2. 煞車燈",
+                  "操作、目視",
+                ],
+              ],
+            },
+            {
+              panelLabel: "油壓裝置",
+              questions: [
+                [
+                  "1. 上下升降",
+                  "操作測試",
+                ],
+                [
+                  "2. 前傾、後仰",
+                  "操作測試",
+                ],
+              ],
+            },
+            {
+              panelLabel: "頂蓬",
+              questions: [
+                [
+                  "1. 頂蓬",
+                  "目視檢查",
+                ],
+              ],
+            },
+            {
+              panelLabel: "桅桿",
+              questions: [
+                [
+                  "1. 桅桿",
+                  "目視檢查",
+                ],
+              ],
+            },
+            {
+              panelLabel: "滅焰器",
+              questions: [
+                [
+                  "1. 滅焰器",
+                  "操作、目視",
+                ],
+              ],
+            },
+            {
+              panelLabel: "全車狀況",
+              questions: [
+                [
+                  "1. 全車狀況",
+                  "操作測試",
+                ],
+              ],
+            },
+          ],
+          questionLabels: [       //標題
+            {
+              width: 3,
+              text: "檢查項目",
+              generate: false,
+            },
+            {
+              width: 3,
+              text: "檢查方法",
+              generate: false,
+            },
+            {
+              width: 3,
+              text: "檢查結果",
+              generate: true,
+            },
+            {
+              width: 3,
+              text: "備註",
+              generate: true,
+            },
+          ],
+          panelAnswer: [      //輸入欄位
+            {
+              type: "radio",
+              model: "CheckOption",
+              radio: [
+                {
+                  color: "success",
+                  label: "良好",
+                  value: "1",
+                },
+                {
+                  color: "red",
+                  label: "不良",
+                  value: "2",
+                },
+              ]
+            },
+            {
+              type: "area",
+              model: "Memo",
+            }
+          ]
+        }
+      },
+      setting: {}
     }
   },
   components: {
@@ -977,6 +1191,7 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
+    this.setting = this.generateSettings(this.testSettings)
   },
   computed: {
     ...mapState("user", {
@@ -1142,6 +1357,84 @@ export default {
     deleteRecord() {
       this.$emit("deleteRecord", this.inputData.RPFlowNo);
     },
+    generateSettings(shortenObj){
+      let rtnObj = {}
+      //先把固定的東西丟進去
+      rtnObj.subtitles = shortenObj.subtitles
+      rtnObj.textareas = shortenObj.textareas
+      //再來處理後面的產生器
+      rtnObj.questions = this.generatePanel(shortenObj.questions)
+      return rtnObj
+    },
+    generatePanel(shortenObj) {
+      let rtnArr = []
+      let toObj = {}
+      let tempArr = []
+      for(let panelCount = 0 ; panelCount < shortenObj.panelQuestion.length ; panelCount++) {
+        toObj.questionLabels = shortenObj.questionLabels
+        toObj.generate = shortenObj.panelAnswer
+        let thisQuestion = shortenObj.panelQuestion[panelCount]
+        toObj.panelLabel = thisQuestion.panelLabel
+        toObj.notGenerate = thisQuestion.questions
+        if(panelCount==0){
+          toObj.answerStart = 1
+        }else{
+          toObj.answerStart = tempArr[panelCount-1].answerStart + tempArr[panelCount-1].notGenerate.length
+        }
+        tempArr.push(toObj)
+        toObj = {}
+      }
+      const that = this
+      rtnArr = tempArr.map(element=>that.generateQuestion(element))
+      return rtnArr
+    },
+    generateQuestion(shortenObj) {    //小題產生器
+      let rtnObj = {}
+      //固定值先塞
+      rtnObj.panelLabel = shortenObj.panelLabel
+      rtnObj.answerStart = shortenObj.answerStart
+      //再來處理動態的部分
+      let dynamicCount = 0  //用來計算動態(題目)的位置
+      let staticCount = 0   //用來計算靜態(輸入)的位置
+      rtnObj.questionLabels = shortenObj.questionLabels.map(element=>{
+        return {
+          width: element.width,
+          text: element.text,
+        }
+      })
+      const answerLength = shortenObj.questionLabels.length     //一題的長度
+      const questionLength = shortenObj.notGenerate.length       //題數
+      let nowNoGen = []
+      let thisQuestion = []
+      for(let toEveryQuestion = 0 ; toEveryQuestion < questionLength ; toEveryQuestion++) {
+        nowNoGen = shortenObj.notGenerate[toEveryQuestion]   //把該題的文字敘述拿出來
+        dynamicCount = 0
+        staticCount = 0
+        let thisAnswer = []
+        for(let toEveryAnswer = 0 ; toEveryAnswer < answerLength ; toEveryAnswer++) {
+          if(shortenObj.questionLabels[toEveryAnswer].generate){
+            //要自動產生的 => 使用者輸入欄位
+            const thisObject = shortenObj.generate[staticCount]
+            const toObject = { 
+              label: shortenObj.questionLabels[toEveryAnswer].text + ':',
+              ...thisObject,
+            }
+            staticCount++
+            thisAnswer.push(toObject)
+          }else{
+            //不自動產生的 => 文字欄位
+            thisAnswer.push({
+              label: nowNoGen[dynamicCount],
+              type: 'label',
+            })
+            dynamicCount++
+          }
+        }
+        thisQuestion.push(thisAnswer)
+      }
+      rtnObj.questionAnswers = thisQuestion
+      return rtnObj
+    }
   },
 }
 </script>
