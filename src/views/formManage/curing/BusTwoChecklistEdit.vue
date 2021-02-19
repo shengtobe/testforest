@@ -66,7 +66,7 @@
           <v-expansion-panels multiple>
             <template v-for="(list, index) in newItemList">
               <v-expansion-panel :key="'EP_' + (index + 1)">
-                <v-expansion-panel-header>{{
+                <v-expansion-panel-header color="teal" class="white--text">{{
                   list.title
                 }}</v-expansion-panel-header>
                 <v-expansion-panel-content>
@@ -392,8 +392,6 @@ export default {
         },
       },
 
-      // index for render
-
       itemsList: [
         {
           title: "行走裝置",
@@ -584,7 +582,6 @@ export default {
         if (index == 0) {
           element.startIndex = 1;
         } else {
-          console.log(rtnObj[index - 1]);
           element.startIndex =
             parseInt(rtnObj[index - 1].startIndex) +
             parseInt(rtnObj[index - 1].items.length);
@@ -607,8 +604,6 @@ export default {
     },
     viewPage(item) {
       const that = this;
-      console.log("item: " + item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
       this.chLoadingShow();
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -800,7 +795,6 @@ export default {
         ],
       })
         .then((res) => {
-          console.log(res.data.DT);
           let dat = JSON.parse(res.data.DT);
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
@@ -817,7 +811,6 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -836,7 +829,7 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj);
+
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -857,7 +850,6 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
@@ -885,7 +877,6 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {

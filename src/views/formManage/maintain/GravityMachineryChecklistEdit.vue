@@ -8,21 +8,25 @@
       </v-btn>
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="settings">
-        <template v-slot:moreDetails>
+      <template v-slot:moreDetails>
         <v-col cols="12" sm="4">
           <h3 class="mb-1">單位</h3>
           <v-text-field solo value v-model="inputData.editableData.Section" />
         </v-col>
         <v-col cols="12" sm="4">
           <h3 class="mb-1">名稱及編號</h3>
-          <v-text-field solo value v-model="inputData.editableData.NameAndNum" />
+          <v-text-field
+            solo
+            value
+            v-model="inputData.editableData.NameAndNum"
+          />
         </v-col>
       </template>
-        <template v-slot:resultOtions>
-            <v-radio color="success" label="良好" value="1"></v-radio>
-            <v-radio color="red" label="尚可" value="2"></v-radio>
-            <v-radio color="black" label="不良待修" value="3"></v-radio>
-        </template>
+      <template v-slot:resultOtions>
+        <v-radio color="success" label="良好" value="1"></v-radio>
+        <v-radio color="red" label="尚可" value="2"></v-radio>
+        <v-radio color="black" label="不良待修" value="3"></v-radio>
+      </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
       <v-btn
@@ -114,12 +118,13 @@ export default {
       },
     },
     settings: {
-    //   subtitle: [
-    //     "1.依職業安全衛生法第23條規定辦理。",
-    //     "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
-    //     "3.缺點由使用單位自行改善，不克者委請設備商修護。",
-    //     "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
-    //   ],
+      disableCommonFields: false,
+      //   subtitle: [
+      //     "1.依職業安全衛生法第23條規定辦理。",
+      //     "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
+      //     "3.缺點由使用單位自行改善，不克者委請設備商修護。",
+      //     "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
+      //   ],
       qestions: [
         { question: "1. 水箱" },
         { question: "2. 機油" },
@@ -131,7 +136,7 @@ export default {
         { question: "8. 潤滑部分" },
         { question: "9. 電瓶及電器設備" },
         { question: "10. 氣壓系統" },
-        { question: "11. 其他工作地點" }
+        { question: "11. 其他工作地點" },
       ],
       columns: {
         option: "CheckOption",
