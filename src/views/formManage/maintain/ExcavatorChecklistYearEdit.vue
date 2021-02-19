@@ -7,9 +7,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-
-    
-    <commonQuestion v-model="inputData" :settings="settings"/>
+    <commonQuestion v-model="inputData" :settings="settings" />
     <v-card-actions class="px-5 pb-5">
       <v-btn
         v-if="editType != actions.add"
@@ -53,14 +51,13 @@ export default {
   props: {
     item: Object,
     editType: String,
+    DB_Table: String,
   },
   data: () => ({
-    DB_Table: "RP024",
-    action: Actions.add,
     actions: Actions,
     commonSettings: {
       iconShow: false,
-      title: "挖掘機每日作業前檢點表(作業前)",
+      title: "挖掘機定期檢查表(年)",
       isLoading: false,
       deptReadonly: true,
     },
@@ -84,8 +81,6 @@ export default {
         CheckOption10: "0",
         CheckOption11: "0",
         CheckOption12: "0",
-        CheckOption13: "0",
-        CheckOption14: "0",
         Memo_1: "",
         Memo_2: "",
         Memo_3: "",
@@ -98,49 +93,30 @@ export default {
         Memo_10: "",
         Memo_11: "",
         Memo_12: "",
-        Memo_13: "",
-        Memo_14: "",
+        Advice: "",
         Measures: "",
       },
     },
-    items: [
-        { question: "1. 引擎冷卻水(水箱)" },
-        { question: "2. 引擎機油" },
-        { question: "3. 履帶鬆緊度及有無損傷" },
-        { question: "4. 電瓶及電器設備" },
-        { question: "5. 各動作部分潤滑" },
-        { question: "6. 空氣濾清器清潔" },
-        { question: "7. 液壓油檢查(操作油)" },
-        { question: "8. 方向操作系統動作範圍檢查" },
-        { question: "9. 煞車能力動作情況檢查" },
-        { question: "10. 儀表、燈及喇叭操作情況檢查" },
-        { question: "11. 柴油油量" },
-        { question: "12. 有否漏油現象檢查" },
-        { question: "13. 各部機件異常聲音及不正常動作" },
-        { question: "14. 制動器、連結裝置是否正常" },
-    ],
-    settings:{
-      subtitle:[
-        "1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。",
-        "2.依檢查結果選擇正常、異常、無此項目。",
+    settings: {
+      subtitle: [
+        "1.依職業安全衛生法第23條及職業安全衛生管理辦法第16條規定辦理。",
+        "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
         "3.缺點由使用單位自行改善，不克者委請設備商修護。",
-        "4.本表月底前完成檢查，經主管核章後，留存於管理單位，保存三年備查。",
+        "4.本定期檢查表於月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
       ],
       qestions: [
-        { question: "1. 引擎冷卻水(水箱)" },
-        { question: "2. 引擎機油" },
-        { question: "3. 履帶鬆緊度及有無損傷" },
-        { question: "4. 電瓶及電器設備" },
-        { question: "5. 各動作部分潤滑" },
-        { question: "6. 空氣濾清器清潔" },
-        { question: "7. 液壓油檢查(操作油)" },
-        { question: "8. 方向操作系統動作範圍檢查" },
-        { question: "9. 煞車能力動作情況檢查" },
-        { question: "10. 儀表、燈及喇叭操作情況檢查" },
-        { question: "11. 柴油油量" },
-        { question: "12. 有否漏油現象檢查" },
-        { question: "13. 各部機件異常聲音及不正常動作" },
-        { question: "14. 制動器、連結裝置是否正常" },
+        { question: "1.制動器是否正常", method: "動作測試" },
+        { question: "2.離合器是否正常", method: "動作測試" },
+        { question: "3.操作裝置是否正常", method: "動作測試" },
+        { question: "4.作業裝置是否適當", method: "目視點檢" },
+        { question: "5.鋼索、鏈有無損傷斷裂", method: "目視點檢" },
+        { question: "6.吊斗有無損傷斷裂", method: "目視點檢" },
+        { question: "7.電瓶及電器設備是否正常", method: "動作測試" },
+        { question: "8.方向操作系統動作是否正常", method: "動作測試" },
+        { question: "9.剎車能力動作情況檢查是否正常", method: "動作測試" },
+        { question: "10.儀表、燈及喇叭操作情況檢查是否正常", method: "動作測試" },
+        { question: "11.各部機件是否有漏油現象", method: "目視點檢" },
+        { question: "12.各部機件是否有異常聲音及不正常動作", method: "動作測試" },
       ],
       columns: {
         option: "CheckOption",
@@ -148,10 +124,21 @@ export default {
       },
       width: {
         qusetion: 4,
-        option: 5,
+        method: 3,
+        option: 2,
         memo: 3,
       },
-    }
+      textarea: [
+        {
+          label: "改善建議",
+          column: "Advice",
+        },
+        {
+          label: "改善追蹤",
+          column: "Measures",
+        },
+      ],
+    },
   }),
   components: {
     dateSelect,
@@ -175,7 +162,6 @@ export default {
     ]),
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
-      console.log("CheckDay: " + this.inputData.editableData.CheckDay)
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
       this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
@@ -185,7 +171,6 @@ export default {
       const that = this;
       console.log("item: " + item);
       console.log("RPFlowNo: " + item.RPFlowNo);
-      console.log(getNowFullTime());
       this.chLoadingShow();
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -222,10 +207,8 @@ export default {
           "Memo_11",
           "CheckOption12",
           "Memo_12",
-          "CheckOption13",
-          "Memo_13",
-          "CheckOption14",
-          "Memo_14",
+          "Advice",
+          "Measures",
         ],
       })
         .then((res) => {
@@ -235,14 +218,9 @@ export default {
           this.inputData.RPFlowNo = this.item.RPFlowNo;
           this.inputData.DepartCode = dat[0].DepartCode;
           this.inputData.Name = dat[0].Name;
-          console.log("33 Gooooooooooo")
           dat[0] = decodeObject(dat[0]);
-          console.log("44")
           const inputArr = Object.keys(this.inputData.editableData);
-          console.log("inputArr: ")
-          console.log(inputArr)
           inputArr.forEach((e) => {
-              console.log(e)
             that.inputData.editableData[e] = dat[0][e];
           });
         })
@@ -256,6 +234,7 @@ export default {
     },
     close() {
       this.$emit("close");
+      this.$emit("search");
     },
     save() {
       const that = this;
@@ -265,7 +244,7 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj)
+      console.log(rtnObj);
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -327,7 +306,17 @@ export default {
     },
   },
   filters: {
-
+    // editStatus: function (value) {
+    //   let rtnStr = "";
+    //   if (value == this.actions.add) {
+    //     rtnStr = "新增";
+    //   } else if (value == this.actions.edit) {
+    //     rtnStr = "編輯";
+    //   } else {
+    //     rtnStr = "";
+    //   }
+    //   return rtnStr;
+    // },
   },
   watch: {},
 };
