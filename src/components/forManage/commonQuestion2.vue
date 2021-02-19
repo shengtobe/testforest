@@ -10,7 +10,7 @@
     <v-row no-gutter class="indigo--text">
       <v-col cols="12" sm="4">
         <dateSelect
-          label="檢查日期"
+          :label="forDate"
           key="checkDate"
           :showIcon="commonSettings.iconShow"
           v-model="value.editableData.CheckDay"
@@ -18,7 +18,7 @@
       </v-col>
       <v-col cols="12" sm="4">
         <deptSelect
-          label="管理單位"
+          :label="forDept"
           v-model="value.DepartCode"
           :showIcon="commonSettings.iconShow"
           outType="key"
@@ -151,6 +151,8 @@
   slots =>
     manLabel => 檢查人員改label名稱
     moreDetails => 新增上層多出來的內容
+  dateLabel => 檢查日期改label名稱
+  deptLabel => 管理單位改label名稱
 
   settings: {
     subtitles: [
@@ -209,16 +211,24 @@ export default {
   props: {
     value: Object,
     settings: Object,
+    dateLabel: String,
+    deptLabel: String,
   },
   data: () => ({
     commonSettings: {
       iconShow: false,
       deptReadonly: true,
     },
+    forDate: '檢查日期',
+    forDept: '管理單位',
   }),
   components: {
     dateSelect,
     deptSelect,
+  },
+  mounted() {
+    this.forDate = (this.dateLabel == undefined || this.dateLabel == null)?this.forDate:this.dateLabel
+    this.forDept = (this.deptLabel == undefined || this.deptLabel == null)?this.forDept:this.deptLabel
   },
   watch: {
     value: function (value) {
