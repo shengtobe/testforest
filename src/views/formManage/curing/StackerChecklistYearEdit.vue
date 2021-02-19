@@ -116,6 +116,10 @@ export default {
           Memo14: "",
           Memo15: "",
           Memo16: "",
+          Analysis: "",
+          Evaluation: "",
+          Ameliorate: "",
+          Review: "",
         },
       },
       settings: {
@@ -943,7 +947,24 @@ export default {
             ]
           }
         ],
-        
+        textareas: [
+          {
+            label: "檢查發現危害、分析危害因素",
+            model: "Analysis",
+          },
+          {
+            label: "評估危害風險(嚴重性及可能性分析)",
+            model: "Evaluation",
+          },
+          {
+            label: "評估結果改善措施",
+            model: "Ameliorate",
+          },
+          {
+            label: "檢討改善措施之合宜性",
+            model: "Review",
+          },
+        ]
       }
     }
   },
@@ -1022,6 +1043,10 @@ export default {
           "Memo13",
           "Memo14",
           "Memo15",
+          "Analysis",
+          "Evaluation",
+          "Ameliorate",
+          "Review",
         ],
       })
         .then((res) => {

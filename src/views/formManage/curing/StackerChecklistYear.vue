@@ -144,7 +144,7 @@ export default {
       newText: "檢查表",
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP069",
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
