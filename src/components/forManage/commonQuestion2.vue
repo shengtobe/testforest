@@ -62,7 +62,7 @@
             :key="'EXP_QA_'+(question.answerStart+ind)"
             class="mb-6 mt-4">
             <v-row no-gutter>
-              <v-col cols="12" :sm="element.width" v-for="(element,i) in answer" :key="'EXP_QA_'+(question.answerStart+ind).toString()+'_'+i">
+              <v-col cols="12" :sm="question.questionLabels[i].width" v-for="(element,i) in answer" :key="'EXP_QA_'+(question.answerStart+ind).toString()+'_'+i">
                 <!-- 顯示純文字 -->
                 <template v-if="element.type=='label'">
                   {{ element.label }}
@@ -169,7 +169,6 @@
         questionAnswers:[
           [    
             {
-              width: <number>,
               label: <string>,
               <model: <變數名稱前綴 string>, //預設所有可變動資料都放在editableData裡面>
               type: <label/text/number/radio/select/area string>,
