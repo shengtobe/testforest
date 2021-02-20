@@ -69,7 +69,7 @@
                 </template>
                 <!-- 字串輸入 -->
                 <template v-else-if="element.type=='text'">
-                  <span class="d-sm-none error--text">{{ element.label }}</span>
+                  <span class="d-sm-none error--text" v-if="element.label">{{ element.label }}</span>
                   <v-text-field
                     solo
                     type="text"
@@ -78,7 +78,7 @@
                 </template>
                 <!-- 數字輸入 -->
                 <template v-else-if="element.type=='number'">
-                  <span class="d-sm-none error--text">{{ element.label }}</span>
+                  <span class="d-sm-none error--text" v-if="element.label">{{ element.label }}</span>
                   <v-text-field
                     solo
                     type="number"
@@ -89,7 +89,7 @@
                 </template>
                 <!-- 單選按鈕 -->
                 <template v-else-if="element.type=='radio'">
-                  <span class="d-sm-none error--text">{{ element.label }}</span>
+                  <span class="d-sm-none error--text" v-if="element.label">{{ element.label }}</span>
                   <v-radio-group
                     dense
                     row
@@ -107,7 +107,7 @@
                 </template>
                 <!-- 下拉選單 -->
                 <template v-else-if="element.type=='select'">
-                  <span class="d-sm-none error--text">{{ element.label }}</span>
+                  <span class="d-sm-none error--text" v-if="element.label">{{ element.label }}</span>
                   <v-select
                     :items="element.select"
                     v-model="value.editableData[element.model+(question.answerStart+ind)]"
@@ -116,7 +116,7 @@
                 </template>
                 <!-- 輸入區域 -->
                 <template v-else-if="element.type=='area'">
-                  <span class="d-sm-none error--text">{{ element.label }}</span>
+                  <span class="d-sm-none error--text" v-if="element.label">{{ element.label }}</span>
                   <v-textarea 
                     auto-grow
                     outlined 
