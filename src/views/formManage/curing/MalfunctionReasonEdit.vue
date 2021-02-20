@@ -32,10 +32,10 @@
         </v-col>
       </v-row>
       <v-row>
-        <!-- 保養日期 -->
+        <!-- 檢修日期 -->
         <v-col cols="12" sm="4">
           <dateSelect
-            label="保養日期"
+            label="檢修日期"
             key="CheckDay"
             :showIcon="commonSettings.iconShow"
             v-model="inputData.editableData.CheckDay"
