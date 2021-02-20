@@ -1,7 +1,7 @@
 <template>
   <div class="px-6 py-4">
     <!-- 說明區域 -->
-    <v-row no-gutter>
+    <v-row no-gutter v-if="settings.subtitles">
       <v-col cols="12">
         <p v-for="(sub,sIndex) in settings.subtitles" :key="'S_'+sIndex">{{ sub }}</p>
       </v-col>
