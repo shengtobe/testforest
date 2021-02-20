@@ -49,13 +49,6 @@ export const FormCuringRouter = [{
         import('@/views/formManage/curing/LocomotiveOneMaintenance.vue'),
     formGroup: ['curing']
 },
-// {
-//     linkText: '柴油液力機車一級檢修記錄表Add', // 17
-//     path: '/form-manage/curing/locomotive-one-level-maintenance-add',
-//     component: () =>
-//         import ('@/views/formManage/curing/LocomotiveOneMaintenanceAdd.vue'),
-//     formGroup: []
-// },
 {
     linkText: '柴油液力機車二級檢修紀錄表', // 18
     path: '/form-manage/curing/locomotive-two-level-maintenance',
@@ -63,13 +56,6 @@ export const FormCuringRouter = [{
         import('@/views/formManage/curing/LocomotiveTwoMaintenance.vue'),
     formGroup: ['curing']
 },
-// {
-//     linkText: '柴油液力機車二級檢修紀錄表Add', // 18
-//     path: '/form-manage/curing/locomotive-two-level-maintenance-add',
-//     component: () =>
-//         import('@/views/formManage/curing/LocomotiveTwoMaintenanceAdd.vue'),
-//     formGroup: []
-// },
 {
     linkText: '柴油液力機車三級檢修紀錄表', // 19
     path: '/form-manage/curing/locomotive-three-level-maintenance',
@@ -77,13 +63,6 @@ export const FormCuringRouter = [{
         import('@/views/formManage/curing/LocomotiveThreeMaintenance.vue'),
     formGroup: ['curing']
 },
-// {
-//     linkText: '柴油液力機車三級檢修紀錄表Add', // 19
-//     path: '/form-manage/curing/locomotive-three-level-maintenance-add',
-//     component: () =>
-//         import('@/views/formManage/curing/LocomotiveThreeMaintenanceAdd.vue'),
-//     formGroup: []
-// },
 {
     linkText: '柴油液力機車四級檢修紀錄表', // 20
     path: '/form-manage/curing/locomotive-four-level-maintenance',
@@ -91,13 +70,6 @@ export const FormCuringRouter = [{
         import('@/views/formManage/curing/LocomotiveFourMaintenance.vue'),
     formGroup: ['curing']
 },
-// {
-//     linkText: '柴油液力機車四級檢修紀錄表Add', // 20
-//     path: '/form-manage/curing/locomotive-four-level-maintenance-add',
-//     component: () =>
-//         import('@/views/formManage/curing/LocomotiveFourMaintenanceAdd.vue'),
-//     formGroup: []
-// },
 {
     linkText: '乙炔熔接裝置每日作業前檢點表(作業前)', // 22
     path: '/form-manage/curing/acetylene-weld-checklist',

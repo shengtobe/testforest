@@ -291,11 +291,9 @@ export default {
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
-          console.log(this.tableItems);
           this.tableItems.forEach((item) => {
             item.CarNo = item.CarHeadCode.toUpperCase() + "-" + item.CarNo;
           });
-          console.log(this.tableItems);
         })
         .catch((err) => {
           console.log(err);
