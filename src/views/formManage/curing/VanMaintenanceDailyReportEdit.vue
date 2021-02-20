@@ -92,10 +92,10 @@
             </v-radio-group>
           </v-col>
           <v-col>
-            <h3>說明</h3>
             <v-textarea
               auto-grow
               outlined
+              label="說明"
               rows="4"
               v-model="
                 inputData.editableData[settings.columns.memo + (idx + 1)]
