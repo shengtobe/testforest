@@ -7,7 +7,57 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-    <commonQuestion v-model="inputData" :settings="settings"/>
+    <commonQuestion v-model="inputData" :settings="settings">
+      <template v-slot:afterQuestions="item">
+        <v-alert
+          dense
+          border="top"
+          colored-border
+          color="teal"
+          elevation="4"
+          key="10"
+          class="mb-6"
+        >
+          <v-row no-gutter>
+            <v-col cols="12" sm="4">11.其他</v-col>
+            <v-col 
+              cols="12"
+              sm="3"
+            >
+              <v-select
+                :items="checkoptions11"
+                v-model="
+                  item.editItem.Method11
+                "
+                solo
+              >
+              </v-select>
+            </v-col>
+            <v-col cols="12" sm="2">
+              <span class="d-sm-none error--text">檢查結果：</span>
+              <v-radio-group
+                dense
+                row
+                v-model="item.editItem.CheckOption11"
+                class="pa-0 ma-0"
+              >
+                <v-radio color="success" label="正常" value="1"></v-radio>
+                <v-radio color="red" label="異常" value="2"></v-radio>
+                <v-radio color="black" label="無此項目" value="3"></v-radio>
+              </v-radio-group>
+            </v-col>
+            <v-col cols="12" v-if="settings.width.memo" sm="3">
+              <v-textarea
+                auto-grow
+                outlined
+                rows="2"
+                v-model="item.editItem.Memo_11"
+              />
+            </v-col>
+          </v-row>
+        </v-alert>
+      </template>
+    </commonQuestion>
     <v-card-actions class="px-5 pb-5">
       <v-btn
         v-if="editType != actions.add"
@@ -80,6 +130,18 @@ export default {
         CheckOption9: "0",
         CheckOption10: "0",
         CheckOption11: "0",
+        Memo_1: "",
+        Memo_2: "",
+        Memo_3: "",
+        Memo_4: "",
+        Memo_5: "",
+        Memo_6: "",
+        Memo_7: "",
+        Memo_8: "",
+        Memo_9: "",
+        Memo_10: "",
+        Memo_11: "",
+        Method11: "",
         Advice: "",
         Measures: "",
       },
@@ -149,6 +211,16 @@ export default {
         },
       ],
     },
+    checkoptions11:[
+      {
+        text: "目視點檢",
+        value: "目視點檢",
+      },
+      {
+        text: "動作測試",
+        value: "動作測試",
+      }
+    ]
   }),
   components: {
     dateSelect,
@@ -159,7 +231,7 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.settings.qestions.push({question:"11.其他" ,method:""})
+    //this.settings.qestions.push({question:"11.其他" ,method:""})
   },
   computed: {
     ...mapState("user", {

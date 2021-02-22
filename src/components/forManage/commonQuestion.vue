@@ -35,7 +35,7 @@
               :readonly="commonSettings.deptReadonly"
             />
           </v-col>
-          <slot name="moreDetails"></slot>
+          <slot name="moreDetails" :editItem="value.editableData"></slot>
         </v-row>
         <v-row
           no-gutter
@@ -132,6 +132,7 @@
             </v-col>
           </v-row>
         </v-alert>
+        <slot name="afterQuestions" :editItem="value.editableData"></slot>
       </v-col>
     </v-row>
     <v-row v-if="settings.textarea">
