@@ -40,6 +40,7 @@
     </v-row>
     <!-- 摺疊題目區 -->
     <v-expansion-panels multiple>
+      <slot name="preExpan" :editItem="value.editableData"></slot>
       <v-expansion-panel v-for="(question,index) in settings.questions" :key="'EXP_'+index">
         <v-expansion-panel-header color="teal" class="white--text">
           {{ question.panelLabel }}
@@ -129,6 +130,7 @@
           </v-alert>
         </v-expansion-panel-content>
       </v-expansion-panel>
+      <slot name="afterExpan" :editItem="value.editableData"></slot>
     </v-expansion-panels>
     <!-- 文字區塊 -->
     <v-row v-if="settings.textareas">
@@ -151,6 +153,8 @@
   slots =>
     manLabel => 檢查人員改label名稱
     moreDetails => 新增上層多出來的內容
+    preExpan => 在統一產生的之前的題目(摺疊區)
+    afterExpan => 在統一產生之後的題目(摺疊區)
   dateLabel => 檢查日期改label名稱
   deptLabel => 管理單位改label名稱
 
