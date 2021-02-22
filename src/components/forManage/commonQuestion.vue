@@ -64,6 +64,7 @@
           >
             <h3 class="mb-1"><slot name="memo2Name">備註2</slot></h3>
           </v-col>
+          <slot name="moreTitle"></slot>
         </v-row>
         <v-alert
           dense
@@ -130,6 +131,7 @@
                 v-model="value.editableData[settings.columns.memo2 + (idx + 1)]"
               />
             </v-col>
+            <slot name="moreMemo" :editItem="value.editableData" :index="idx"></slot>
           </v-row>
         </v-alert>
         <slot name="afterQuestions" :editItem="value.editableData"></slot>
