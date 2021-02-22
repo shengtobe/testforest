@@ -477,7 +477,7 @@ export default {
         ]),
     // 更換頁數
     initInput(){
-      this.doMan.name = this.userData.UserName;
+      // this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
       for (step = 0; step < 7; step++) {

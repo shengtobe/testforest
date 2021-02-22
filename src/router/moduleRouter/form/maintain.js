@@ -36,13 +36,13 @@ export const FormMaintainRouter = [
             import ('@/views/formManage/maintain/ExcavatorChecklistYear.vue'),
         formGroup: ['maintain', 'labor']
     },
-    {
-        linkText: '重力機械使用前檢查表', // 56
-        path: '/form-manage/maintain/gravity-machinery-checklist',
-        component: () =>
-            import ('@/views/formManage/maintain/GravityMachineryChecklist.vue'),
-        formGroup: ['maintain']
-    },
+    // {
+    //     linkText: '重力機械使用前檢查表', // 56
+    //     path: '/form-manage/maintain/gravity-machinery-checklist',
+    //     component: () =>
+    //         import ('@/views/formManage/maintain/GravityMachineryChecklist.vue'),
+    //     formGroup: ['maintain']
+    // },
     {
         linkText: '竹崎監工區大型物料存放位置表', // 61
         path: '/form-manage/maintain/takezaki-large-materials',
