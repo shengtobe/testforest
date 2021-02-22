@@ -1,3 +1,5 @@
+// --------- 危險通報 API --------------
+
 import axios from '@/apis/axiosSetting'
 
 // 搜尋

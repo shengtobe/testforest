@@ -258,10 +258,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { evtTypes, locationOpts } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
-import { carEventItems } from '@/assets/js/smisTestData'
+import { fetchOrderList } from '@/apis/smis/carAccidentEvent'
 
 export default {
     data: () => ({
@@ -306,6 +306,11 @@ export default {
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -319,11 +324,34 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [ ...carEventItems ]
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_AccidentEventData',  // DB table
+                KeyItem: [
+                    { tableColumn: 'WorkYear', columnValue: this.year },  // 年度
+                    { tableColumn: 'Type', columnValue: this.type },  // 工單性質
+                    { tableColumn: 'Status', columnValue: this.status },  // 處理階段
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'AccidentCode',
+                    'AccidentFindDate',
+                    'FindLine',
+                    'AccidentType',
+                    'HurtPeopleCount',
+                    'AccidentStatus',
+                    'DelStatus',
+                    'CancelStatus',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.totalPrice = res.data.ListSpent
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
