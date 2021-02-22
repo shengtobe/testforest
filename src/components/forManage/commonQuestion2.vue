@@ -65,9 +65,7 @@
             <v-row no-gutter>
               <v-col cols="12" :sm="question.questionLabels[i].width" v-for="(element,i) in answer" :key="'EXP_QA_'+(question.answerStart+ind).toString()+'_'+i">
                 <!-- 顯示純文字 -->
-                <template v-if="element.type=='label'">
-                  {{ element.label }}
-                </template>
+                <div v-if="element.type=='label'" v-html="element.label"></div>
                 <!-- 字串輸入 -->
                 <template v-else-if="element.type=='text'">
                   <span class="d-sm-none error--text" v-if="element.label">{{ element.label }}</span>
