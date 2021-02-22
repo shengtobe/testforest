@@ -207,8 +207,8 @@
                         </v-btn>
                     </template>
 
-                    <template v-slot:item.status="{ item }">
-                        {{ transferStatusText(item.status) }}
+                   <template v-slot:item.Status="{ item }">
+                        {{ accidentEventStatus.find(ele => ele.value == item.Status).text }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -259,9 +259,10 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { evtTypes, locationOpts } from '@/assets/js/smisData'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { carAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
-import { fetchOrderList } from '@/apis/smis/carAccidentEvent'
+import { fetchList } from '@/apis/smis/carAccidentEvent'
 
 export default {
     data: () => ({
@@ -283,8 +284,8 @@ export default {
             start: false,
             end: false,
         },
-        evtTypeOpts: evtTypes,
-        locationOpts: locationOpts,
+        evtTypeOpts: evtTypes,  // 事故類型
+        locationOpts: locationOpts,  // 事故發生地點
         statusOpts: [  // 事故事件狀態下拉選單 (審核中有二個，故傳中文值讓後端判斷)
             { text: '不限', value: '' },
             { text: '已立案', value: '已立案' },
@@ -295,14 +296,15 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '傷亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'AccidentFindDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '事故類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '傷亡人數', value: 'HurtPeopleCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
@@ -324,14 +326,13 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            fetchOrderList({
+            fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'SMS_AccidentEventData',  // DB table
                 KeyItem: [
-                    { tableColumn: 'WorkYear', columnValue: this.year },  // 年度
-                    { tableColumn: 'Type', columnValue: this.type },  // 工單性質
-                    { tableColumn: 'Status', columnValue: this.status },  // 處理階段
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 發生日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd },  // 發生日期(迄)
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'AccidentCode',
@@ -344,8 +345,8 @@ export default {
                     'CancelStatus',
                 ],
             }).then(res => {
-                this.tableItems = JSON.parse(res.data.order_list)
-                this.totalPrice = res.data.ListSpent
+                // this.tableItems = JSON.parse(res.data.order_list)
+                console.log(res.data)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
