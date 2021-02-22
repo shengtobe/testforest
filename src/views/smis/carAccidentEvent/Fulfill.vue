@@ -1,103 +1,13 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">事故事件編號：{{ routeId }}</h2>
+    <h2 class="mb-4">事故事件編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ eqLoss }}</v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>運轉影響情形
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3">{{ serviceShock }}</v-col>
-            </v-row>
-        </v-col>
-        
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>處置過程
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="handle"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>檢討過程
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="review"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>原因分析
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="reason"
-                ></v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註說明
-                    </span>
-                </v-col>
-
-                <v-col class="white pa-3"
-                    v-html="note"
-                ></v-col>
-            </v-row>
-        </v-col>
+        <BottomTable :items="bottomItems" />
 
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
@@ -363,43 +273,33 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import { locationOpts, evtTypes } from '@/assets/js/smisData'
+import BottomTable from '@/components/BottomTable.vue'
 
 export default {
-    props: ['closeStatus'],  // 測試用屬性
+    props: ['itemData'],
     data: () => ({
-        routeId: '',
+        id: '',  // 編號
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
-        eqLoss: '',// 設備受損情形
-        serviceShock: '', // 運轉影響情形
-        handle: '', // 處置過程
-        review: '', // 檢討過程
-        reason: '', // 原因分析
-        note: '', // 備註說明
         files: [],  // 危害檔案
         evidences: [],  // 改善措施檢討證據
         controlReview: '',  // 措施檢討摘要
-        topItems: {  // 上面的欄位
-            findDate: { icon: 'mdi-calendar-text', title: '發現日期', text: '' },
-            findLocation: { icon: 'mdi-map-marker', title: '發現地點', text: '' },
-            accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: '' },
-        },
+        topItems: [],  // 上面的欄位
+        bottomItems: [],  // 下面的欄位
         notifyLinks: [],  // 連結的通報
         deathCount: '',  // 死傷人數
         deathData: [],  // 死傷資料
         headers: [  // 死傷表格顯示的欄位
             { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '75px' },
             { text: '性別', value: 'sex', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '75px' },
-            { text: '生日', value: 'birthday', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110px' },
+            { text: '生日', value: 'birthday', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '90px' },
             { text: '住址', value: 'addr', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150px' },
-            { text: '電話', value: 'phone', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110px' },
-            { text: '傷亡種類', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
-            { text: '收治醫院', value: 'hospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '68px' },
-            { text: '賠償金額', value: 'money', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
+            { text: '電話', value: 'phone', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '90px' },
+            { text: '傷亡種類', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80px' },
+            { text: '收治醫院', value: 'hospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80px' },
+            { text: '賠償金額', value: 'money', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80px' },
             { text: '保險註記', value: 'insurance', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110px' },
             { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
         ],
@@ -421,6 +321,12 @@ export default {
     }),
     components: {
         TopBasicTable,
+        BottomTable,
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -435,165 +341,16 @@ export default {
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
         ]),
-        // 向後端取得資料
-        fetchData() {
-            this.chLoadingShow()
-            this.routeId = this.$route.params.id
-
-            // 新增測試用資料
-            setTimeout(() => {
-                let obj = {
-                    findDate: '2017-01-25',  // 發現日期
-                    findHour: '15',  // 發現日期(時)
-                    findMin: '56',  // 發現日期(分)
-                    location: 'l1',  // 發現地點
-                    locationK: 20,  // 路線k
-                    locationM: 445,　// 路線m
-                    locationOther: '',　// 其他地點
-                    accidentType: 'M2',  // 事故類型
-                    eqLoss: 'APC3 車廂轉向架受損',  // 設備受損情形
-                    serviceShock: '影響列車計2列次',  // 運轉影響情形
-                    handle: "1430 312次由奮起湖車站開出。\n1556 312次行駛至嘉義線 20K+445M 出軌，列車於嘉義線 19K+700M停止 司機員及列車員立即通報嘉義車庫及竹崎車站請求救援。\n1633 接駁列車511 次自北門站開出至事故現場接駁 6 次旅客。\n1658 312次將第 1 車廂重新編組載運 29 位旅客離開事故現場。\n1703 搶修列車521 次自北門車站開出辦理搶修作業。\n1734 接駁列車511 次抵達事故現場。\n1803 312次將第 1 車廂重新編組載運 29 位旅客抵達嘉義車站。\n1816 接駁列車511 次自事故現場開出。\n1915 接駁列車511 次抵達嘉義車站。\n1919 復軌完成。\n2000 路線測試完成恢復正常。\n2139 搶修列車521 次返回北門車站。",  // 處置過程
-                    review: '新增行車事故事件本事故事發後，鐵道局於107年3月5日啟動專案調查，並於同月8、9日辦理本事故專案調查簡報討論、文件檢視及現場勘查 。同年5月3日召開本事故專案調查工作會議。最終於同年8月15日召開交通部鐵路行車事故調查小組第24次會議，確認本事故專案調查結果。',  // 檢討過程
-                    reason: "<直接原因>\n事故路段因氣候易潮濕，加上路基排水狀況不佳 造成該路段有多處噴泥現象， 當鋼軌受列車重壓下沉致軌枕沉 陷、鋼軌產生前後高低不整之現象，在 列車於動態行駛下易致鋼軌單邊下沉產生平面性扭曲，使車輪浮動爬上出軌。\n<間接原因>\n部分路段道碴存有厚度不足加上列車反覆作用下，致使路基土壤細粒料因壓力而循道碴間隙上升， 使路基出現鬆動現象。\n<其他因素>\n有關天候、車輛、人員及運轉等部分，經檢討尚無涉事故原因。",  // 原因分析
-                    note: '本事故由鐵道局( 鐵路營運監理小組) 及 5位具軌道、力學、車輛及營運等專業之外聘專案委員組成團隊進行專案調查，並由本部鐵路行車事故調查小組 定期委員開會確認調查結果。', // 備註說明
-                    files: [
-                        { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
-                        { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        { fileName: '123.docx', link: '/demofile/123.docx' },
-                        { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
-                    ],
-                    notifyLinks: [  // 連結的通報
-                        {
-                            id: 'SH458987',
-                            status: '審核中',
-                        },
-                        {
-                            id: 'SH378011',
-                            status: '已結案',
-                        },
-                    ],
-                    deathCount: 1,  // 死傷人數
-                    deathData: [  // 死傷資料
-                        {
-                            id: 1,
-                            name: '王小明',
-                            sex: '男',
-                            birthday: '1962-03-11',
-                            addr: '高雄市三民區中正路180巷9號3樓-3',
-                            phone: '0987654321',
-                            type: '輕傷',
-                            hospital: '高雄長庚醫院',
-                            money: 50000,
-                            insurance: '由勞工保險理賠',
-                            note: '住院3天',
-                        },
-                    ],
-                    summary: '摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字',  // 改善措施摘要
-                    controlReview: ' 檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要',  // 檢討摘要
-                    evidences: [  // 改善措施證據
-                        { fileName: '123.docx', link: '/demofile/123.docx' },
-                        { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
-                    ],
-                }
-
-                this.setShowData(obj)
-                this.chLoadingShow()
-            }, 1000)
-        },
         // 初始化資料
         setShowData(obj) {
-            this.topItems.findDate.text = `${obj.findDate} ${obj.findHour}:${obj.findMin}:00`  // 發現日期
-            this.topItems.findLocation.text = `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M`  // 發現地點
-            this.topItems.accidentType.text = evtTypes.find(item => item.value == obj.accidentType).text  // 事故類型
-            this.topItems.status.text = (this.closeStatus == 5)? '改善措施已落實' : '審核中'  // 事故事件狀態
-
-            this.eqLoss = obj.eqLoss  // 設備受損情形
-            this.serviceShock = obj.serviceShock  // 運轉影響情形
-            this.handle = obj.handle.replace(/\n/g, '<br>')  // 處置過程
-            this.review = obj.review.replace(/\n/g, '<br>')  // 檢討過程
-            this.reason = obj.reason.replace(/\n/g, '<br>')  // 原因分析
-            this.note = obj.note.replace(/\n/g, '<br>') // 備註說明
+            this.id = obj.id  // 編號
+            this.status = obj.status  // 事故事件狀態(值)
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.files ]  // 檔案附件
             this.deathCount = obj.deathCount  // 死傷人數
             this.deathData = [ ...obj.deathData ]  // 死傷資料
-            this.controlItems = [  // 控制措施
-                {
-                    id: 21,
-                    subject: '定期巡檢枕木',
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                    depart: '服務科',
-                    file: { name: '123.pdf', link: '/demofile/123.pdf' },
-                    note: '',
-                    evidences: [
-                        {
-                            name: '456.xlsx',
-                            link: '/demofile/456.xlsx'
-                        },
-                        {
-                            name: '123.pdf',
-                            link: '/demofile/123.pdf'
-                        },
-                    ],
-                },
-                {
-                    id: 36,
-                    subject: '定期巡檢扣件',
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                    depart: '服務科',
-                    file: { name: '123.docx', link: '/demofile/123.docx' },
-                    note: '',
-                    evidences: [
-                        {
-                            name: '123.pdf',
-                            link: '/demofile/123.pdf'
-                        },
-                    ],
-                },
-                {
-                    id: 45,
-                    subject: '維修後慢行觀察',
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                    depart: '服務科',
-                    file: { name: '123.docx', link: '/demofile/123.docx' },
-                    note: '',
-                    evidences: [
-                        {
-                            name: '123.pdf',
-                            link: '/demofile/123.pdf'
-                        },
-                    ],
-                },
-                {
-                    id: 49,
-                    subject: '定期校驗軌道檢測儀',
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                    depart: '服務科',
-                    file: { name: '123.docx', link: '/demofile/123.docx' },
-                    note: '',
-                    evidences: [
-                        {
-                            name: '123.pdf',
-                            link: '/demofile/123.pdf'
-                        },
-                    ],
-                },
-                {
-                    id: 53,
-                    subject: '強化鋼軌與軌枕間之扣夾力',
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                    depart: '服務科',
-                    file: { name: '123.docx', link: '/demofile/123.docx' },
-                    note: '',
-                    evidences: [
-                        {
-                            name: '123.pdf',
-                            link: '/demofile/123.pdf'
-                        },
-                    ],
-                },
-            ]
+            this.controlItems = [ ...obj.controlItems ] // 控制措施
             this.summary = obj.summary.replace(/\n/g, '<br>')  // 改善措施摘要
             this.evidences = [ ...obj.evidences ]  // 改善措施證據
             this.controlReview = obj.controlReview.replace(/\n/g, '<br>')  // 措施檢討摘要
@@ -621,9 +378,6 @@ export default {
                 }
             })
             this.notifyLinks = [ ...arr ]
-            
-            // 設定狀態(測試資料)
-            this.status = this.closeStatus
         },
         // 退回
         withdraw() {
@@ -670,7 +424,7 @@ export default {
         },
     },
     created() {
-        this.fetchData()
+        this.setShowData(this.itemData)
     }
 }
 </script>

@@ -42,7 +42,7 @@
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
         </h3>
         <v-select
-          :items="[{ text: '資訊科', value: 'A' }, { text: '資訊科2', value: 'B' }, { text: '資訊科3', value: 'C' }, { text: '資訊科4', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          :items="formDepartOptions" v-model="ipt2.depart"
           solo
         />
       </v-col>
@@ -70,7 +70,7 @@
           dark
           large
           class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="Add = true"
+          @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -96,7 +96,7 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
@@ -104,7 +104,7 @@
               dark
               fab
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -222,84 +222,55 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from '@/assets/js/workList'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
     return {
       title:"空氣壓縮機每日作業前檢點表(作業前)",
       newText:"檢點表",
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
+      isLoading: false,
+      disabled: false,
       Add: false,
       dialog3: false,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
       pageOpt: { page: 1 }, // 目前頁數
+      //---api---
+      DB_Table: "RP040",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       headers: [
-        // 表格顯示的欄位
-        {
-          text: "項次",
-          value: "a0",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "檢查日期",
-          value: "aa",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "審查狀態",
-          value: "cc",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "填寫人",
-          value: "dd",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
-        {
-          text: "功能",
-          value: "shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-        },
+        // 表格顯示的欄位 DepartCode ID Name
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
-      tableItems: [
-        {
-          a0: "1",
-          aa: "2020-08-01",
-          cc: "已審查",
-          dd: "王大明",
-        },
-        {
-          a0: "2",
-          aa: "2020-08-10",
-          cc: "審查中",
-          dd: "王大明",
-        },
-      ],
+      tableItems: [],
+      //------
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "0", note: "" },
@@ -357,17 +328,170 @@ export default {
           checkMethod: "目測",
         },
       ],
-      suggest: "", // 改善建議
+
     };
   },
   components: { Pagination }, // 頁碼
+  computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+  },
+  created() {
+      this.ipt2 = { ...this.defaultIpt }
+      //更新時間
+      var today=new Date();
+      let mStr = today.getMonth()+1;
+      let dStr = today.getDate();
+      if(mStr < 10){
+        mStr = '0' + mStr;
+      }
+      if(dStr < 10){
+        dStr = '0' + dStr;
+      }
+      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
+  },
   methods: {
+    initInput(){
+      this.doMan.name = this.userData.UserName;
+      this.zs = this.nowTime;
+      var step;
+      for (step = 0; step < 15; step++) {
+        this.ipt.items[step].status = "0"
+        this.ipt.items[step].note = ''
+      }
+    },
+    unique(list){
+      var arr = [];
+      let b = false;
+      for (var i = 0; i < list.length; i++) {
+        if (i == 0) arr.push(list[i]);
+        b = false;
+        if (arr.length > 0 && i > 0) {
+          for (var j = 0; j < arr.length; j++) {
+            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
+              b = true;
+              //break;
+            }
+          }
+          if (!b) {
+            arr.push(list[i]);
+          }
+        }
+      }
+      return arr;
+    },
+    newOne(){
+      console.log("newOne23")
+      this.Add = true
+      console.log("this.Add: " + this.Add)
+      this.initInput();
+    },
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      console.log("Search click");
+      this.chLoadingShow()
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'StartDayVlaue','Value':this._data.z},
+          {"Column":"EndDayVlaue","Value":this._data.df},
+          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+                ],
+        QyName:[
+          // "DISTINCT (RPFlowNo)",
+          // // "ID",
+          // // "Name",
+          // // "CheckDay",
+          // // "CheckStatus",
+          // " * "
+          "RPFlowNo",
+          "ID",
+          "Name",
+          "CheckDay",
+          "CheckStatus",
+          "FlowId", "DepartName"
+        ],
+      }).then(res => {
+        let tbBuffer = JSON.parse(res.data.DT)
+        let aa = unique(tbBuffer)
+        this.tableItems = aa
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        console.log("search final")
+        this.chLoadingShow()
+      })
+    },
+    // 存
+    save() {
+        console.log('送出click! 0222')
+        this.chLoadingShow()
+        
+        let arr = new Array()
+        let obj = new Object()
+
+        console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.nowTime
+      arr = arr.concat(obj)   
+
+      let i;
+      for (i = 0; i < 10; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+
+        obj = new Object()
+        obj.Column = "Memo_" + (i+1)
+        obj.Value = this.ipt.items[i].note
+        arr = arr.concat(obj)
+      }
+      obj = new Object()
+      obj.Column = "Advice"
+      obj.Value = this.Advice
+      arr = arr.concat(obj)
+
+      obj = new Object()
+      obj.Column = "Measures"
+      obj.Value = this.Measures
+      arr = arr.concat(obj)
+
+      console.log(JSON.stringify(arr))
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:arr,
+      }).then(res => {
+        console.log(res.data.DT)
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+      this.Add = false;
+
+
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -380,6 +504,91 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
+    viewPage(item) {
+      console.log("item: " + item)
+      console.log("RPFlowNo: " + item.RPFlowNo)
+      this.chLoadingShow()
+        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+        fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+                ],
+        QyName:[
+          "CheckDay",
+          "DepartName",
+          "Name",
+          "CheckMan",
+          "OptionID",
+          "CheckOption1",
+          "Memo_1",
+          "CheckOption2",
+          "Memo_2",
+          "CheckOption3",
+          "Memo_3",
+          "CheckOption4",
+          "Memo_4",
+          "CheckOption5",
+          "Memo_5",
+          "CheckOption6",
+          "Memo_6",
+          "CheckOption7",
+          "Memo_7",
+          "CheckOption8",
+          "Memo_8",
+          "CheckOption9",
+          "Memo_9",
+          "CheckOption10",
+          "Memo_10",
+          "CheckOption11",
+          "Memo_11",
+          "CheckOption12",
+          "Memo_12",
+          "CheckOption13",
+          "Memo_13",
+          "CheckOption14",
+          "Memo_14",
+          "CheckOption15",
+          "Memo_15",
+        ],
+      }).then(res => {
+        this.initInput();
+        console.log(res.data.DT)
+        let dat = JSON.parse(res.data.DT)
+        console.log("data name: " + dat[0].Name)
+        console.log("data time: " + dat[0].CheckDay)
+        this.Add = true
+        // this.zs = res.data.DT.CheckDay
+        this.doMan.name = dat[0].Name
+        let time1 = dat[0].CheckDay.substr(0,10)
+        console.log("data time1: " + time1)
+        this.zs = time1
+        console.log("doMan name: " + this.doMan.name)
+        //123資料
+        let ad = Object.keys(dat[0])
+        console.log(ad)
+        var i = 0, j = 0;
+          for(let key of Object.keys(dat[0])){
+            if(i > 4 && i < 35){
+              if(i % 2 == 0){
+                  this.ipt.items[j].status = (dat[0])[key]
+              }
+              else{
+                this.ipt.items[j].note = (dat[0])[key]
+                j++
+              }
+            }
+            i++
+          }
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },//viewPage
   },
 };
 </script>

@@ -363,10 +363,6 @@ export default {
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'WorkOrderID',
-                    // 'MaintainCode_System',
-                    // 'MaintainCode_Loc',
-                    // 'MaintainCode_Eqp',
-                    // 'MaintainCode_Seq',
                     'WorkSubject',
                     'Status'
                 ],
@@ -381,7 +377,6 @@ export default {
         },
         // 檢視內容
         viewPage(item) {
-            // ---- 依業主要求變更檢式頁面的方式，所以改為另開分頁 ---
             let routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/show` })
             window.open(routeData.href, '_blank')
         },

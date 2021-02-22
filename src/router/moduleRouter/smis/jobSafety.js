@@ -18,9 +18,9 @@ export const JobSafetyRouter = [
         component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue')
     },
     {
-        linkText: '事故事件詳細內容',  // 已立案
+        linkText: '事故事件詳細內容',
         path: '/smis/jobsafety/disaster-survey/:id/show', 
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/Show.vue')
+        component: () => import('@/views/smis/jobSafety/disasterSurvey/PageRouter.vue')
     },
     {
         linkText: '編輯事故事件',
@@ -32,30 +32,30 @@ export const JobSafetyRouter = [
         path: '/smis/jobsafety/disaster-survey/:id/improve',
         component: () => import('@/views/smis/jobSafety/disasterSurvey/Improve.vue')
     },
-    {
-        linkText: '審核中',  // 審核中 (審核完備資料)
-        path: '/smis/jobsafety/disaster-survey/:id/review',
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/ReviewComplated.vue'),
-        props: { closeStatus: 2 }
-    },
-    {
-        linkText: '已完備資料',
-        path: '/smis/jobsafety/disaster-survey/:id/complated',
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/ReviewComplated.vue'),
-        props: { closeStatus: 3 }
-    },
-    {
-        linkText: '審核中',  // 審核中 (審核措施落實)
-        path: '/smis/jobsafety/disaster-survey/:id/fulfill-review',
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/Fulfill.vue'),
-        props: { closeStatus: 4 }
-    },
-    {
-        linkText: '改善措施已落實',
-        path: '/smis/jobsafety/disaster-survey/:id/fulfill-complated',
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/Fulfill.vue'),
-        props: { closeStatus: 5 }
-    },
+    // {
+    //     linkText: '審核中',  // 審核中 (審核完備資料)
+    //     path: '/smis/jobsafety/disaster-survey/:id/review',
+    //     component: () => import('@/views/smis/jobSafety/disasterSurvey/ReviewComplated.vue'),
+    //     props: { closeStatus: 2 }
+    // },
+    // {
+    //     linkText: '已完備資料',
+    //     path: '/smis/jobsafety/disaster-survey/:id/complated',
+    //     component: () => import('@/views/smis/jobSafety/disasterSurvey/ReviewComplated.vue'),
+    //     props: { closeStatus: 3 }
+    // },
+    // {
+    //     linkText: '審核中',  // 審核中 (審核措施落實)
+    //     path: '/smis/jobsafety/disaster-survey/:id/fulfill-review',
+    //     component: () => import('@/views/smis/jobSafety/disasterSurvey/Fulfill.vue'),
+    //     props: { closeStatus: 4 }
+    // },
+    // {
+    //     linkText: '改善措施已落實',
+    //     path: '/smis/jobsafety/disaster-survey/:id/fulfill-complated',
+    //     component: () => import('@/views/smis/jobSafety/disasterSurvey/Fulfill.vue'),
+    //     props: { closeStatus: 5 }
+    // },
 
     // ----------------- 職災危害資料庫 -----------------
     {

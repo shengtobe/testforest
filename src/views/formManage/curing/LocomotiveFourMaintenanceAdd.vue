@@ -18,6 +18,7 @@
         </v-col>
         <v-col cols="12" sm="4">
           <h3 class="mb-1">
+
             <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>機車編號
           </h3>
           <v-text-field solo value="EZ-555555" readonly />
@@ -105,10 +106,11 @@ export default {
   data: () => ({
     title: "柴油液力機車四級檢修記錄表",
     newText: "記錄表",
+    isLoading: false,
+    disabled: false,
     menu: false, // 時間選單是否顯示
     ipt: {
       department: "",
-      name: JSON.parse(localStorage.getItem("user")).name,
       date: new Date().toISOString().substr(0, 10),
       items: [
         { status: "1", note: "" },

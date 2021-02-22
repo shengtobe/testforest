@@ -61,7 +61,7 @@
         <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" elevation="3" dark large @click="Add = true">
+        <v-btn color="indigo" elevation="3" dark large @click="newOne">
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
@@ -110,14 +110,14 @@
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
-          <template v-slot:item.shop>
+          <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
               class="mr-2"
               small
               dark
               color="info darken-1"
-              @click="Add = true"
+              @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
@@ -341,12 +341,19 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from '@/assets/js/workList'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { formDepartOptions } from '@/assets/js/departOption'
 
 export default {
   data() {
     return {
       title: "肌肉骨骼症狀調查表",
       newText: "調查表",
+      isLoading: false,
+     disabled: false,
       apm: ["綜合企劃科", "鐵路服務科", "鐵路維護科", "車輛養護科", "秘書室", "人事室", "主計室", "政風室", "修理工廠", "嘉義車庫", "阿里山車庫", "竹崎監工區", "奮起湖監工區", "阿里山監工區"],
       gender: ["男", "女", "其他"],
       handedness: ["右手", "左手"],
@@ -357,6 +364,11 @@ export default {
       HarmCount: 5,
       NoHarmCount: 13,
       SumHarmCount: null,
+      formDepartOptions: [
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
       a: "",
       ass: "",
       z: "",
@@ -546,17 +558,114 @@ export default {
   },
   components: { Pagination }, // 頁碼
   computed: {
+    ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     Add2(){
       return this.HarmCount + this.NoHarmCount
     }
   },
+  created() {
+      this.ipt2 = { ...this.defaultIpt }
+      //更新時間
+      var today=new Date();
+      let mStr = today.getMonth()+1;
+      let dStr = today.getDate();
+      if(mStr < 10){
+        mStr = '0' + mStr;
+      }
+      if(dStr < 10){
+        dStr = '0' + dStr;
+      }
+      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+      this.z = this.df = this.nowTime
+  },
   methods: {
+    initInput(){
+      this.doMan.name = this.userData.UserName;
+      this.zs = this.nowTime;
+      var step;
+      for (step = 0; step < 7; step++) {
+        this.ipt.items[step].status = "0"
+        this.ipt.items[step].note = ''
+      }
+      this.Advice = "";
+      this.Measures = ""
+    },
+    unique(list){
+      var arr = [];
+      let b = false;
+      for (var i = 0; i < list.length; i++) {
+        if (i == 0) arr.push(list[i]);
+        b = false;
+        if (arr.length > 0 && i > 0) {
+          for (var j = 0; j < arr.length; j++) {
+            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
+              b = true;
+              //break;
+            }
+          }
+          if (!b) {
+            arr.push(list[i]);
+          }
+        }
+      }
+      return arr;
+    },
+    newOne(){
+      console.log("newOne23")
+      this.Add = true
+      console.log("this.Add: " + this.Add)
+      this.initInput();
+    },
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
     // 搜尋
-    search() {},
+    search() {
+      console.log("Search click");
+      this.chLoadingShow()
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'StartDayVlaue','Value':this._data.z},
+          {"Column":"EndDayVlaue","Value":this._data.df},
+          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+                ],
+        QyName:[
+          // "DISTINCT (RPFlowNo)",
+          // // "ID",
+          // // "Name",
+          // // "CheckDay",
+          // // "CheckStatus",
+          // " * "
+          "RPFlowNo",
+          "ID",
+          "Name",
+          "CheckDay",
+          "CheckStatus",
+          "FlowId", "DepartName"
+        ],
+      }).then(res => {
+        let tbBuffer = JSON.parse(res.data.DT)
+        let aa = unique(tbBuffer)
+        this.tableItems = aa
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        console.log("search final")
+        this.chLoadingShow()
+      })
+    },
+    // 存
+    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -569,6 +678,73 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
+    viewPage(item) {
+      console.log("item: " + item)
+      console.log("RPFlowNo: " + item.RPFlowNo)
+      this.chLoadingShow()
+        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+        fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem: [ 
+          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+                ],
+        QyName:[
+          "CheckDay",
+          "DepartName",
+          "Name",
+          "CheckMan",
+          "CheckOption1",
+          "Memo_1",
+          "CheckOption2",
+          "Memo_2",
+          "CheckOption3",
+          "Memo_3",
+          "Advice",
+          "Measures",
+
+        ],
+      }).then(res => {
+        this.initInput();
+        console.log(res.data.DT)
+        let dat = JSON.parse(res.data.DT)
+        console.log("data name: " + dat[0].Name)
+        console.log("data time: " + dat[0].CheckDay)
+        this.Add = true
+        // this.zs = res.data.DT.CheckDay
+        this.doMan.name = dat[0].Name
+        let time1 = dat[0].CheckDay.substr(0,10)
+        console.log("data time1: " + time1)
+        this.zs = time1
+        console.log("doMan name: " + this.doMan.name)
+        //123資料
+        let ad = Object.keys(dat[0])
+        console.log(ad)
+        var i = 0, j = 0;
+          for(let key of Object.keys(dat[0])){
+            if(i > 3 && i < 52){
+              if(i % 2 == 0){
+                  this.ipt.items[j].status = (dat[0])[key]
+              }
+              else{
+                this.ipt.items[j].note = (dat[0])[key]
+                j++
+              }
+            }
+            i++
+          }
+        this.memo_2 = dat[0].Advice
+        this.memo_3 = dat[0].Measures
+
+        
+      }).catch(err => {
+        console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow()
+      })
+    },//viewPage
     Add() {
       alert("123");
     }

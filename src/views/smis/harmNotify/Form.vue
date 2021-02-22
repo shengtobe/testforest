@@ -94,7 +94,7 @@
         <UploadFileAdd
             title="檔案上傳"
             :uploadDisnable="false"
-            :fileList="ipt.files"
+            :fileList="showFiles"
             @joinFile="joinFile"
             @rmFile="rmFile"
         />
@@ -119,9 +119,9 @@
 </template>
 
 <script>
-// import { mapState, mapActions } from 'vuex'
-// import { getNowFullTime } from '@/assets/js/commonFun'
-// import { createWorkOrder } from '@/apis/workList/maintain'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { createNotify } from '@/apis/smis/harmNotify'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import LocationSelect from '@/components/smis/LocationSelect.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
@@ -132,7 +132,7 @@ export default {
         isEdit: false,  // 是否為編輯
         notifyNumber: '',  // 通報編號
         ipt: {  // 給地點組件的預設值要先設
-            location: 'l1',  // 發現地點
+            location: 'l1',  // 發現地點(radio 的值)
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
@@ -154,28 +154,23 @@ export default {
             hour: hourOptions,  // 小時
             min: minOptions,  // 分
         },
+        showFiles: [],  // 要顯示的縮圖
     }),
     components: {
         LocationSelect,
         UploadFileAdd,
     },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
-        // 初始化資料
-        initData() {
-            this.ipt = { ...this.defaultIpt }  // 初始化新增表單
-
-            // 範例效果
-            // setTimeout(() => {
-                
-            // }, 1000)
-        },
-        // 設定發現地點
+        ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        // 設定發現地點 (組件用)
         setLocation(payload) {
             this.ipt.location = payload.location
             this.ipt.locationK = payload.locationK
@@ -184,19 +179,54 @@ export default {
         },
         // 送出
         save() {
-            
+            this.chLoadingShow()
+
+            createNotify({
+                FindDDay: this.ipt.date,  // 發現日期
+                FindDHour: this.ipt.hour,  // 發現時間(小時)
+                FindDMin: this.ipt.min,  // 發現時間(分)
+                FindLine: this.ipt.location,  // 發現地點
+                FindKLine: this.ipt.locationK,  // 發現地點-路線k
+                FindMLine: this.ipt.locationM,  // 發現地點-路線m
+                FindLineOther: this.ipt.locationOther,  // 其他地點
+                ReportTitle: this.ipt.subject,  // 通報主旨
+                ReportContent: this.ipt.content,  // 通報內容
+                FileCount: this.ipt.files,  // 附件檔案
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '新增成功' })
+                    this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+                    this.ipt.files = [ ...[]]
+                    this.showFiles = [ ...[]]
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
+            }).finally(() => {
+                this.chLoadingShow()
+            })
         },
-        // 加入要上傳的檔案
-        joinFile(file) {
-            this.ipt.files.push(file)
+        // 加入檔案 (組件用)
+        // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
+        joinFile(obj, bool) {
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
         },
-        // 移除要上傳的檔案
+        // 移除要上傳的檔案 (組件用)
         rmFile(idx) {
+            this.showFiles.splice(idx, 1)
             this.ipt.files.splice(idx, 1)
         },
     },
     created() {
-        this.initData()
+        this.ipt = { ...this.defaultIpt }  // 初始化新增表單
     }
 }
 </script>

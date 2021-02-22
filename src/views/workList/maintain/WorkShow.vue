@@ -300,9 +300,16 @@
             <!-- 插入 action 欄位編輯 -->
             <template v-slot:item.action="{ item }">
                 <v-btn small dark fab color="info darken-1"
+                    class="mr-3"
                     @click="setJobHour(true, item)"
                 >
                     <v-icon dark>mdi-pen</v-icon>
+                </v-btn>
+
+                <v-btn fab small color="error"
+                    @click="del(item)"
+                >
+                    <v-icon>mdi-delete</v-icon>
                 </v-btn>
             </template>
         </v-data-table>
@@ -375,7 +382,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { maintainStatusOpts } from '@/assets/js/workList'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
@@ -411,23 +417,9 @@ export default {
             fixSituation: '',  // 維修情況
         },
         errorSituation: '',  // 必填欄位背景色-維修情況
-        topItems: {  // 上面的欄位
-            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
-            creater: { icon: 'mdi-account', title: '立案人', text: '' },
-            createDate: { icon: 'mdi-calendar-text', title: '立案時間', text: '' },
-            fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
-            dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-            fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            acceptanceTime: { icon: 'mdi-calendar-text', title: '預計驗收日期', text: '' },
-            enterControl: { icon: 'mdi-alert-outline', title: '進場管制申請', text: '' },
-            specialDanger: { icon: 'mdi-alert-outline', title: '特殊危害作業', text: '' },
-            safeDanger: { icon: 'mdi-alert-outline', title: '安全危害作業', text: '' },
-            workLocation: { icon: 'mdi-map-marker', title: '工作地點', text: '' },
-            memberCount: { icon: 'mdi-account-multiple', title: '實際人數', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-        },
+        topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        allLicenseMembers: [],  // 所有林鐵人員下拉選單
         jobFormValid: true,  // 工時統計是否驗證欄位
         jobHour: {  // 工時
             dialogShow: false,
@@ -473,35 +465,13 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            this.defaultJobForm.Location = obj.WorkPlace  // 工作地點預設值
 
-            // 設定上面的欄位資料
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
-            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
-            this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
-            this.topItems.creater.text = obj.Creator  // 立案人
-            this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
-            this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
-            this.topItems.createDate.text = `${obj.CreateDDay} ${obj.CreateDTime}時`  // 立案時間
-            this.topItems.acceptanceTime.text = obj.ExpectedDT  // 預計驗收日期
-            this.topItems.enterControl.text = (obj.WorkApplication == 'T')? '是' : '否'  // 進場管制申請
-            this.topItems.specialDanger.text = (obj.WorkSp == 'T')? '是' : '否'  // 特殊危害作業
-            this.topItems.safeDanger.text = (obj.WorkSafety == 'T')? '是' : '否'  // 安全危害作業
-            this.topItems.workLocation.text = obj.WorkPlace  // 工作地點
-            this.topItems.memberCount.text = obj.RealWorkerCount  // 實際人數
-
-            // 設定下面的欄位資料
-            this.bottomItems = [
-                { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
-                { oneline: false, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
-                { oneline: false, icon: 'mdi-note', title: '備註', text: obj.Memo.replace(/\n/g, '<br>') },
-                { oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: obj.PeopleLicense.map(ele => ele.PeopleName).join('、') },
-                { oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: obj.PeopleNoLicense.map(ele => ele.PeopleName).join('、') },
-                { oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: obj.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') },
-            ]
-
+            // 組合所有林鐵人員下拉選單(用於選工作項)
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
-            this.allLicenseMembers = arr.map(ele => ({  // 因為要當下拉選單，所以重新組合
+            this.allLicenseMembers = arr.map(ele => ({
                 text: ele.PeopleName,
                 value: ele.PeopleId,
             }))
@@ -516,7 +486,7 @@ export default {
                 Count: 1, 
             }))
 
-            // 查詢工作項
+            // 向後端查詢工作項
             fetchJobName({
                 DeviceCode: obj.MaintainCode,  // 工單編號
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -600,7 +570,6 @@ export default {
                 // 新增時
                 this.jobHour.isEdit = false
                 this.jobForm = { ...this.defaultJobForm }
-                this.jobForm.Location = this.topItems.workLocation.text  // 工作地點
                 this.jobHour.titleName = '新增資料'
             } else {
                 // 編輯時
@@ -610,6 +579,11 @@ export default {
                 this.jobHour.titleName = `編輯資料 - ${item.PeopleName}`
             }
             this.jobHour.dialogShow = true
+        },
+        // 刪除工作項
+        del(item) {
+            let idx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
+            this.jobHour.items.splice(idx, 1)
         },
         // 儲存工作表單
         saveJob() {
@@ -621,6 +595,7 @@ export default {
                 this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
                 // 新增時 (照林鐵人員要求，新增後不關閉視窗)
                 this.jobHour.items.push(this.jobForm)
+                this.jobForm = { ...this.defaultJobForm }
             } else {
                 // 編輯時
                 Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)

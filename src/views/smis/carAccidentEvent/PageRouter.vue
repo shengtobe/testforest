@@ -1,27 +1,24 @@
 <template>
 <div>
     <!-- 待派工 -->
-    <Show :itemData="itemData" v-if="status == '1'" />
+    <Show :itemData="itemData" v-if="status == 1" />
 
-    <!-- 已派工待維修 -->
-    <WorkShow :itemData="itemData" v-if="status == '2'" />
+    <!-- 審核中、已完備資料 -->
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
 
-    <!-- 已維修待驗收 -->
-    <AcceptingShow :itemData="itemData" v-if="status == '3'" />
-
-    <!-- 已驗收待結案、已結案 -->
-    <ClosedComplated :itemData="itemData" v-if="status == '4' || status == '5'" />
+    <!-- 審核中、改善措施已落實 -->
+    <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 // import { fetchWorkOrderOne } from '@/apis/workList/maintain'
+import { carAccidentEventStatus, locationOpts, evtTypes } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Show from '@/views/smis/carAccidentEvent/Show.vue'
-import WorkShow from '@/views/workList/maintain/WorkShow.vue'
-import AcceptingShow from '@/views/workList/maintain/AcceptingShow.vue'
-import ClosedComplated from '@/views/workList/maintain/ClosedComplated.vue'
+import ReviewComplated from '@/views/smis/carAccidentEvent/ReviewComplated.vue'
+import Fulfill from '@/views/smis/carAccidentEvent/Fulfill.vue'
 
 export default {
     data: () => ({
@@ -30,9 +27,8 @@ export default {
     }),
     components: {
         Show,
-        WorkShow,
-        AcceptingShow,
-        ClosedComplated,
+        ReviewComplated,
+        Fulfill,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -47,10 +43,9 @@ export default {
         // 向後端取資料
         fetchData() {
             this.chLoadingShow()
-            // let id = this.$route.params.id  // 路由參數
             
             // fetchWorkOrderOne({
-            //     WorkOrderID: id,  // 工單編號
+            //     WorkOrderID: this.$route.params.id,  // 工單編號
             //     ClientReqTime: getNowFullTime(),  // client 端請求時間
             // }).then(res => {
             //     if (res.data.ErrorCode == 0) {
@@ -80,7 +75,8 @@ export default {
                     this.status = sessionStorage.getItem('itemStatus')
                     sessionStorage.removeItem('itemStatus')  // 清除 sessionStorage
 
-                    this.itemData = {
+                    // 測試資料
+                    let obj = {
                         status: this.status,  // 狀態
                         id: this.$route.params.id,  // 編號
                         findDate: '2017-01-25',  // 發現日期
@@ -130,8 +126,108 @@ export default {
                                 note: '住院3天',
                             },
                         ],
+                        controlItems: [  // 控制措施
+                            {
+                                id: 21,
+                                subject: '定期巡檢枕木',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.pdf', link: '/demofile/123.pdf' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '456.xlsx',
+                                        link: '/demofile/456.xlsx'
+                                    },
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 36,
+                                subject: '定期巡檢扣件',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 45,
+                                subject: '維修後慢行觀察',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 49,
+                                subject: '定期校驗軌道檢測儀',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                            {
+                                id: 53,
+                                subject: '強化鋼軌與軌枕間之扣夾力',
+                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                                depart: '服務科',
+                                file: { name: '123.docx', link: '/demofile/123.docx' },
+                                note: '',
+                                evidences: [
+                                    {
+                                        name: '123.pdf',
+                                        link: '/demofile/123.pdf'
+                                    },
+                                ],
+                            },
+                        ],
                         summary: '摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字摘要文字',  // 改善措施摘要
+                        controlReview: ' 檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要檢討摘要',  // 檢討摘要
+                        evidences: [  // 改善措施證據
+                            { fileName: '123.docx', link: '/demofile/123.docx' },
+                            { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                        ],
                     }
+
+                    let topItems = [  // 上面的欄位
+                        { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == obj.status).text },
+                        { icon: 'mdi-calendar-text', title: '發現日期', text: `${obj.findDate} ${obj.findHour}:${obj.findMin}:00` },
+                        { icon: 'mdi-map-marker', title: '發現地點', text: `${locationOpts.find(item => item.value == obj.location).text} ${obj.locationK}K+${obj.locationM}M` },
+                        { icon: 'mdi-snowflake', title: '事故類型', text: evtTypes.find(item => item.value == obj.accidentType).text },
+                    ]
+
+                    // 設定下面的欄位資料
+                    let bottomItems = [
+                        { oneline: true, icon: 'mdi-cellphone-link-off', title: '設備受損情形', text: obj.eqLoss },
+                        { oneline: true, icon: 'mdi-alert-decagram', title: '運轉影響情形', text: obj.serviceShock },
+                        { oneline: false, icon: 'mdi-file-document', title: '處置過程', text: obj.handle.replace(/\n/g, '<br>') },
+                        { oneline: false, icon: 'mdi-file-document', title: '檢討過程', text: obj.review.replace(/\n/g, '<br>') },
+                        { oneline: false, icon: 'mdi-file-document', title: '原因分析', text: obj.reason.replace(/\n/g, '<br>') },
+                        { oneline: false, icon: 'mdi-file-document', title: '備註說明', text: obj.note.replace(/\n/g, '<br>') },
+                    ]
+
+                    this.itemData = { ...obj, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
                 }
 
                 this.chLoadingShow()

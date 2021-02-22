@@ -653,7 +653,6 @@ export default {
                         this.chDialog({ show: true, msg: '伺服器發生問題，新增失敗' })
                     }).finally(() => {
                         this.chLoadingShow()
-                        this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化新增表單
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                     })
                 }

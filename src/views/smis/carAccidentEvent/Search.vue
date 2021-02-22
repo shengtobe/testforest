@@ -207,8 +207,8 @@
                         </v-btn>
                     </template>
 
-                    <template v-slot:item.status="{ item }">
-                        {{ transferStatusText(item.status) }}
+                   <template v-slot:item.Status="{ item }">
+                        {{ accidentEventStatus.find(ele => ele.value == item.Status).text }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -258,10 +258,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { evtTypes, locationOpts } from '@/assets/js/smisData'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { carAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
-import { carEventItems } from '@/assets/js/smisTestData'
+import { fetchList } from '@/apis/smis/carAccidentEvent'
 
 export default {
     data: () => ({
@@ -283,8 +284,8 @@ export default {
             start: false,
             end: false,
         },
-        evtTypeOpts: evtTypes,
-        locationOpts: locationOpts,
+        evtTypeOpts: evtTypes,  // 事故類型
+        locationOpts: locationOpts,  // 事故發生地點
         statusOpts: [  // 事故事件狀態下拉選單 (審核中有二個，故傳中文值讓後端判斷)
             { text: '不限', value: '' },
             { text: '已立案', value: '已立案' },
@@ -295,17 +296,23 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '傷亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'AccidentFindDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '事故類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '傷亡人數', value: 'HurtPeopleCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -319,11 +326,33 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [ ...carEventItems ]
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_AccidentEventData',  // DB table
+                KeyItem: [
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 發生日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd },  // 發生日期(迄)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'AccidentCode',
+                    'AccidentFindDate',
+                    'FindLine',
+                    'AccidentType',
+                    'HurtPeopleCount',
+                    'AccidentStatus',
+                    'DelStatus',
+                    'CancelStatus',
+                ],
+            }).then(res => {
+                // this.tableItems = JSON.parse(res.data.order_list)
+                console.log(res.data)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -353,30 +382,21 @@ export default {
         },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
-            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
             switch(item.status) {
                 case 1:  // 已立案
                     sessionStorage.itemStatus = '1'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
                     break
                 case 2:  // 審核中 (審核完備資料)
                     sessionStorage.itemStatus = '2'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/review` })
                     break
                 case 3:  // 已完備資料
                     sessionStorage.itemStatus = '3'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/complated` })
                     break
                 case 4: // 審核中 (審核措施落實)
                     sessionStorage.itemStatus = '4'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-review` })
                     break
                 case 5: // 改善措施已落實
                     sessionStorage.itemStatus = '5'
-                    // routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/fulfill-complated` })
                     break
                 default:
                     break

@@ -263,7 +263,7 @@ export default {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
-        },
+        }
     },
     methods: {
         ...mapActions('system', [

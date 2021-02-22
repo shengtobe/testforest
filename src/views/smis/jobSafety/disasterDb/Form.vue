@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `職災危害編輯 (編號：${ routeId })` : '職災危害新增' }}
+        {{ (this.isEdit)? `職災危害編輯 (編號：${ ipt.code1 }-${ ipt.code2 }-${ ipt.code3 })` : '職災危害新增' }}
     </h2>
 
     <v-row class="px-2">

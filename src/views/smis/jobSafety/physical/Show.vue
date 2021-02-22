@@ -9,7 +9,7 @@
 
     <v-row no-gutters class="mt-8">
         <!-- 下面的欄位 -->
-        <BottomTableNoIcon :items="bottomItems" />
+        <BottomTable :items="bottomItems" />
 
         <v-col cols="12" class="text-center mb-8">
             <v-btn dark class="mr-3"
@@ -32,7 +32,7 @@
 <script>
 import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
-import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
+import BottomTable from '@/components/BottomTable.vue'
 import { departOptions } from '@/assets/js/departOption'
 import { jobUrineOpts } from '@/assets/js/smisData'
 
@@ -58,7 +58,7 @@ export default {
     }),
     components: {
         TopBasicTable,
-        BottomTableNoIcon,
+        BottomTable,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -145,36 +145,36 @@ export default {
             this.topItems.level.text = obj.level // 健檢評級
             
             this.bottomItems = [
-                { oneline: true, title: '身高(cm)', text: obj.heigh },
-                { oneline: true, title: '體重(kg)', text: obj.weight },
-                { oneline: true, title: '血壓收縮壓(mmHg)', text: obj.systolicBlood },
-                { oneline: true, title: '血壓舒張壓(mmHg)', text: obj.diastolicBlood },
-                { oneline: true, title: '脈搏(次/分鐘)', text: obj.pulse },
-                { oneline: true, title: '腰圍(cm)', text: obj.waistline },
-                { oneline: true, title: '視力', text: obj.vision },
-                { oneline: true, title: '聽力', text: obj.hearing },
-                { oneline: true, title: '尿蛋白', text: jobUrineOpts.find(item => item.value == obj.urineProtein).text },
-                { oneline: true, title: '尿潛血', text: jobUrineOpts.find(item => item.value == obj.urineBlood).text },
-                { oneline: true, title: '白血球數(個/ul)', text: obj.whiteBlood },
-                { oneline: true, title: '血色素(g/dL)', text: obj.hemoglobin },
-                { oneline: true, title: '胸部 X 光', text: obj.chestXray },
-                { oneline: true, title: 'GPT(U/L)', text: obj.gpt },
-                { oneline: true, title: 'B 肝抗原', text: obj.BLiver },
-                { oneline: true, title: '尿酸(mg/dL)', text: obj.uricAcid },
-                { oneline: true, title: '肌酸酐(mg/dL)', text: obj.creatinine },
-                { oneline: true, title: '膽固醇(mg/dL)', text: obj.cholesterol },
-                { oneline: true, title: 'HDL(mg/dL)', text: obj.hdl },
-                { oneline: true, title: 'LDL(mg/dL)', text: obj.ldl },
-                { oneline: true, title: '三酸甘油酯(mg/dL)', text: obj.triglyceride },
-                { oneline: true, title: '飯前血糖(mg/dL)', text: obj.bloodSugar },
-                { oneline: true, title: '運動心電圖', text: obj.egc },
-                { oneline: false, title: '應處理及注意事項', text: obj.note.replace(/\n/g, '<br>') },
-                { oneline: true, title: '適任性', text: (obj.competence == 'y')? '合格' : '不合格' },
-                { oneline: false, title: '複檢狀況', text: obj.recheck.replace(/\n/g, '<br>') },
-                { oneline: true, title: '醫師姓名', text: obj.doctorName },
-                { oneline: true, title: '醫療機構名稱', text: obj.hospitalName },
-                { oneline: true, title: '醫療機構地址', text: obj.hospitalAddr },
-                { oneline: true, title: '醫療機構電話', text: obj.hospitalPhone },
+                { dataType: 'text', oneline: true, icon: 'none', title: '身高(cm)', text: obj.heigh },
+                { dataType: 'text', oneline: true, icon: 'none', title: '體重(kg)', text: obj.weight },
+                { dataType: 'text', oneline: true, icon: 'none', title: '血壓收縮壓(mmHg)', text: obj.systolicBlood },
+                { dataType: 'text', oneline: true, icon: 'none', title: '血壓舒張壓(mmHg)', text: obj.diastolicBlood },
+                { dataType: 'text', oneline: true, icon: 'none', title: '脈搏(次/分鐘)', text: obj.pulse },
+                { dataType: 'text', oneline: true, icon: 'none', title: '腰圍(cm)', text: obj.waistline },
+                { dataType: 'text', oneline: true, icon: 'none', title: '視力', text: obj.vision },
+                { dataType: 'text', oneline: true, icon: 'none', title: '聽力', text: obj.hearing },
+                { dataType: 'text', oneline: true, icon: 'none', title: '尿蛋白', text: jobUrineOpts.find(item => item.value == obj.urineProtein).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '尿潛血', text: jobUrineOpts.find(item => item.value == obj.urineBlood).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '白血球數(個/ul)', text: obj.whiteBlood },
+                { dataType: 'text', oneline: true, icon: 'none', title: '血色素(g/dL)', text: obj.hemoglobin },
+                { dataType: 'text', oneline: true, icon: 'none', title: '胸部 X 光', text: obj.chestXray },
+                { dataType: 'text', oneline: true, icon: 'none', title: 'GPT(U/L)', text: obj.gpt },
+                { dataType: 'text', oneline: true, icon: 'none', title: 'B 肝抗原', text: obj.BLiver },
+                { dataType: 'text', oneline: true, icon: 'none', title: '尿酸(mg/dL)', text: obj.uricAcid },
+                { dataType: 'text', oneline: true, icon: 'none', title: '肌酸酐(mg/dL)', text: obj.creatinine },
+                { dataType: 'text', oneline: true, icon: 'none', title: '膽固醇(mg/dL)', text: obj.cholesterol },
+                { dataType: 'text', oneline: true, icon: 'none', title: 'HDL(mg/dL)', text: obj.hdl },
+                { dataType: 'text', oneline: true, icon: 'none', title: 'LDL(mg/dL)', text: obj.ldl },
+                { dataType: 'text', oneline: true, icon: 'none', title: '三酸甘油酯(mg/dL)', text: obj.triglyceride },
+                { dataType: 'text', oneline: true, icon: 'none', title: '飯前血糖(mg/dL)', text: obj.bloodSugar },
+                { dataType: 'text', oneline: true, icon: 'none', title: '運動心電圖', text: obj.egc },
+                { dataType: 'text', oneline: false, icon: 'none', title: '應處理及注意事項', text: obj.note.replace(/\n/g, '<br>') },
+                { dataType: 'text', oneline: true, icon: 'none', title: '適任性', text: (obj.competence == 'y')? '合格' : '不合格' },
+                { dataType: 'text', oneline: false, icon: 'none', title: '複檢狀況', text: obj.recheck.replace(/\n/g, '<br>') },
+                { dataType: 'text', oneline: true, icon: 'none', title: '醫師姓名', text: obj.doctorName },
+                { dataType: 'text', oneline: true, icon: 'none', title: '醫療機構名稱', text: obj.hospitalName },
+                { dataType: 'text', oneline: true, icon: 'none', title: '醫療機構地址', text: obj.hospitalAddr },
+                { dataType: 'text', oneline: true, icon: 'none', title: '醫療機構電話', text: obj.hospitalPhone },
             ]
         },
         // 作廢

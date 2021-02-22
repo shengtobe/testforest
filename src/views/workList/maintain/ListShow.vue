@@ -50,8 +50,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchWorkOrderOne, deleteOrder, closeOrder } from '@/apis/workList/maintain'
+import { deleteOrder, closeOrder } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -62,16 +61,7 @@ export default {
         workNumber: '',  // 工單編號
         done: false,  // 是否完成頁面操作
         newDispatcher: '',  // 轉單後的新派工人
-        topItems: {  // 上面的欄位
-            eqCodes: { icon: 'mdi-codepen', title: '設備標示編號', text: '' },
-            createrDepart: { icon: 'mdi-apps', title: '立案單位', text: '' },
-            creater: { icon: 'mdi-account', title: '立案人', text: '' },
-            createDate: { icon: 'mdi-calendar-text', title: '立案時間', text: '' },
-            fixUnit: { icon: 'mdi-apps', title: '維修單位', text: '' },
-            dispatcher: { icon: 'mdi-account', title: '派工人', text: '' },
-            fixType: { icon: 'mdi-source-branch', title: '維修類型', text: '' },
-            status: { icon: 'mdi-ray-vertex', title: '處理階段', text: '' },
-        },
+        topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
     }),
     components: {
@@ -100,22 +90,8 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
-
-            // 設定上面的欄位資料
-            this.topItems.eqCodes.text = obj.MaintainCode  // 設備標示編號
-            this.topItems.status.text = maintainStatusOpts.find(ele => ele.value == obj.Status).text  // 處理階段
-            this.topItems.createrDepart.text = obj.CreatorDepart  // 立案單位
-            this.topItems.creater.text = obj.Creator  // 立案人
-            this.topItems.fixUnit.text = obj.DispatchDepart  // 維修單位
-            this.topItems.dispatcher.text = obj.DispatchMan  // 派工人
-            this.topItems.fixType.text = (obj.Type == '1')? '故障檢修' : ((obj.Type == '2')? '例行保養' : '')   // 維修類型
-            this.topItems.createDate.text = `${obj.CreateDDay} ${obj.CreateDTime}時`  // 立案時間
-
-            // 設定下面的欄位資料
-            this.bottomItems = [
-                { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: obj.WorkSubject },
-                { oneline: false, icon: 'mdi-pen', title: '故障描述', text: obj.Malfunction.replace(/\n/g, '<br>') },
-            ]
+            this.topItems = obj.topItems  // 上面的欄位資料
+            this.bottomItems = obj.bottomItems  // 下面的欄位資料
         },
         // 刪除
         deleteItem() {
@@ -124,7 +100,8 @@ export default {
                 
                 deleteOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
-                    ClientReqTime: getNowFullTime()  // client 端請求時間
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '刪除成功' })

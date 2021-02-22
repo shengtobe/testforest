@@ -27,11 +27,11 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="ma-2"
+            <!-- <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
                 <v-icon class="mr-1">mdi-reload</v-icon>清除搜尋內容
-            </v-btn>
+            </v-btn> -->
         </v-col>
 
         <!-- 表格資料 -->

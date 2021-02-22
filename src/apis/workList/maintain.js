@@ -1,4 +1,4 @@
-// ------------ 維修、養護科工單 api -----------------
+// ------------ 維修、養護科工單 API -----------------
 
 import axios from '@/apis/axiosSetting'
 
@@ -146,7 +146,7 @@ export function cancelOrder(data) { return axios(
     }
 )}
 
-// 退回
+//  延後驗收
 export function delayOrder(data) { return axios(
     {
         url: '/mmis/order/delay',

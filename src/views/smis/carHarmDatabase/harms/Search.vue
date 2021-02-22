@@ -272,41 +272,33 @@ export default {
         },
         // 重新導向 (依結案狀態)
         redirect(item) {
-            // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-            // 為避免搜尋頁的每筆資料的處理階段狀態是舊的
-            // 在開分頁前都先向後端請求最新資料，依最新的處理階段狀態來決定轉頁
-
-            this.isLoading = true
-            let routeData = ''
             switch(item.status) {
                 case 1:  // 已立案
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/show` })
+                    sessionStorage.itemStatus = '1'
                     break
                 case 2:  // 審核完備資料
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/review` })
+                    sessionStorage.itemStatus = '2'
                     break
                 case 3:  // 已完備資料
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/complated` })
+                    sessionStorage.itemStatus = '3'
                     break
                 case 4:  // 審核風險已可接受
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-review` })
+                    sessionStorage.itemStatus = '4'
                     break
                 case 5:  // 風險已可接受
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/fulfill-complated` })
+                    sessionStorage.itemStatus = '5'
                     break
                 case 6:  // 審核更新
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/update-review` })
+                    sessionStorage.itemStatus = '6'
                     break
                 case 7:  // 審核作廢
-                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/invalid` })
+                    sessionStorage.itemStatus = '7'
                     break
                 default:
                     break
             }
-            setTimeout(() => {
-                this.isLoading = false
-                window.open(routeData.href, '_blank')
-            }, 1000)
+            let routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/show` })
+            window.open(routeData.href, '_blank')
         },
     },
 }

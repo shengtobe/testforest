@@ -459,7 +459,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
 import Pagination from '@/components/Pagination.vue'
