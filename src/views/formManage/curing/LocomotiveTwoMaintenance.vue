@@ -837,9 +837,7 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      console.log("newOne23");
       this.Add = true;
-      console.log("this.Add: " + this.Add);
       this.DynamicKey += 1;
       this.editType = this.actions.add;
     },

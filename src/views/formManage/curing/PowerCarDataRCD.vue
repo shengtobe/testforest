@@ -4,20 +4,8 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <dateSelect
-          label="檢修日期(起)"
-          key="dateStart"
-          :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateStart"
-        />
-      </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <dateSelect
-          label="檢修日期(迄)"
-          key="dateEnd"
-          :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateEnd"
-        />
+        <h3 class="mb-1">車號</h3>
+        <v-text-field solo v-model="formData.searchItem.carNo"></v-text-field>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -111,7 +99,7 @@ import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
-import EditPage from "@/views/formManage/curing/MalfunctionReasonEdit";
+import EditPage from "@/views/formManage/curing/PowerCarDataRCDEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
@@ -119,8 +107,8 @@ import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data: () => ({
-    title: "SL__/DL__故障原因紀錄表",
-    newText: "紀錄表",
+    title: "動力車車籍資料維護",
+    newText: "車籍資料表",
     actions: Actions,
     isLoading: false,
     disabled: false,
@@ -130,7 +118,7 @@ export default {
     Add: false,
     pageOpt: { page: 1 }, // 目前頁數
     //---api---
-    DB_Table: "RP046",
+    DB_Table: "RP097",
     RPFlowNo: "",
     //搜尋欄位設定
     formData: {
@@ -158,13 +146,6 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "保養日期",
-        value: "CheckDay",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-      },
-      {
         text: "審查狀態",
         value: "CheckStatus",
         align: "center",
@@ -179,8 +160,8 @@ export default {
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
-        text: "保養單位",
-        value: "DepartName",
+        text: "車號",
+        value: "CarNo",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
@@ -221,9 +202,7 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      console.log("newOne23");
       this.Add = true;
-      console.log("this.Add: " + this.Add);
       this.DynamicKey += 1;
       this.editType = this.actions.add;
     },
@@ -244,34 +223,20 @@ export default {
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table, // DB table
-        KeyItem: [
-          {
-            Column: "StartDayVlaue",
-            Value: this.formData.searchItem.dateStart,
-          },
-          { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
-          { Column: "DepartCode", Value: this.formData.searchItem.department },
-          { Column: "CarNo", Value: this.formData.searchItem.carNo },
-        ],
+        KeyItem: [{ Column: "CarNo", Value: this.formData.searchItem.carNo }],
         QyName: [
           "RPFlowNo",
           "ID",
           "Name",
-          "CheckDay",
           "CheckStatus",
+          "CheckDay",
           "FlowId",
-          "DepartName",
-          "CarHeadCode",
           "CarNo",
-          "Memo_1",
-          "Memo_2",
+          "Year",
         ],
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
-          this.tableItems.forEach((item) => {
-            item.CarNo = item.CarHeadCode.toUpperCase() + "-" + item.CarNo;
-          });
         })
         .catch((err) => {
           console.log(err);
