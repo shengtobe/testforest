@@ -1,6 +1,12 @@
 // -------- 表單-車輛養護科 -------
 
 export const FormCuringRouter = [{
+    linkText: '動力車資料維護', // 3
+    path: '/form-manage/curing/power-car-data-rcd',
+    component: () =>
+        import('@/views/formManage/curing/PowerCarDataRCD.vue'),
+    formGroup: ['curing']
+}, {
     linkText: '車歷卡', // 3
     path: '/form-manage/curing/power-car-maintenance',
     component: () =>

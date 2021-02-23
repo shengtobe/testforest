@@ -137,6 +137,7 @@ import EditPage from "@/views/formManage/curing/LocomotiveCommonMaintenanceEdit"
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data: () => ({

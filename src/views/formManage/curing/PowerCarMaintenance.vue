@@ -3,65 +3,39 @@
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
-      <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(起)
-        </h3>
-        <v-menu
-          v-model="dateMenuShow.start"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="ipt.dateStart" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="ipt.dateStart"
-            @input="dateMenuShow.start = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="保養日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
+        />
       </v-col>
-      <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(迄)
-        </h3>
-        <v-menu
-          v-model="dateMemuShow.end"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="ipt.dateEnd" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="ipt.dateEnd"
-            @input="dateMemuShow.end = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="保養日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇車號
         </h3>
         <v-select
-          v-model="ipt.case"
-          :items="[{ text: 'A0001', value: 'A' }, { text: 'A0002', value: 'B' }, { text: 'A0003', value: 'C' }, { text: 'A0004', value: 'D' }, { text: 'A0005', value: 'E' }]"
+          v-model="formData.searchItem.carNo"
+          v-on:change="search()"
+          :items="carNos"
           solo
         />
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn color="green" dark large class="col-4 col-md-2 mr-3" @click="disabled = false">
-          <v-icon>mdi-magnify</v-icon>查詢
-        </v-btn>
-      </div>
+      <ToolBar
+        @search="search"
+        @reset="reset"
+        @newOne="newOne"
+        :text="newText"
+      />
       <!-- 車歷卡資料 -->
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
@@ -71,50 +45,144 @@
               <v-row>
                 <v-col cols="12" sm="4" md="3">
                   <h3 class="mb-1">車號</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">型式</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">皮重</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">載重</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.CarNo"
+                    solo
+                    readonly
+                  ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="4" md="3">
+                <v-col>
                   <h3 class="mb-1">廠牌</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">年份</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">電源</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">電瓶規格</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Brand"
+                    solo
+                    readonly
+                  ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="4" md="3">
+                <v-col>
                   <h3 class="mb-1">空調機編號</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">客室設備</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">窗</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
-                  <h3 class="mb-1">門</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.AirCond"
+                    solo
+                    readonly
+                  ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="4" md="3">
+                <v-col>
                   <h3 class="mb-1">車輪直徑</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.WheelDiam"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <h3 class="mb-1">型式</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Type"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <h3 class="mb-1">年份</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Year"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <h3 class="mb-1">客室設備</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.GuestEqip"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
                   <h3 class="mb-1">轉向架中心距離</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.DistBogie"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="4" md="3">
+                  <h3 class="mb-1">皮重</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Tare"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <h3 class="mb-1">電源</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.PowerType"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <h3 class="mb-1">窗</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Window"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
                   <h3 class="mb-1">軸距</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Wheelbase"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="12" sm="4" md="3">
+                  <h3 class="mb-1">載重</h3>
+                  <v-text-field
+                    solo
+                    :placeholder="inputData.editableData.Load"
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <h3 class="mb-1">電瓶規格</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Battery"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <h3 class="mb-1">門</h3>
+                  <v-text-field
+                    :placeholder="inputData.editableData.Door"
+                    solo
+                    readonly
+                  ></v-text-field>
+                </v-col>
+                <v-col>
                   <h3 class="mb-1">連結器中心高度</h3>
-                  <v-text-field v-model.trim="ipt.eqLoss" solo></v-text-field>
+                  <v-text-field
+                    :placeholder="inputData.editableData.LinkerHeight"
+                    solo
+                    readonly
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
+      <!-- <div class="col-sm-4 col-md-8 col-12">
         <v-btn
           color="indigo"
           elevation="3"
@@ -123,10 +191,9 @@
           class="col-4 col-md-4 mr-3"
           @click="newOne"
         >
-          <!-- @click="dialogShowAdd = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
-      </div>
+      </div> -->
       <!-- 動力車保養紀錄 -->
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
@@ -154,7 +221,7 @@
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
                       <v-btn
-                        title="編輯"
+                        title="詳細資料"
                         class="mr-2"
                         small
                         dark
@@ -162,17 +229,27 @@
                         color="info darken-1"
                         @click="viewPage(item)"
                       >
-                        <!-- @click="dialogShowEdit = true" -->
                         <v-icon dark>mdi-pen</v-icon>
                       </v-btn>
-                      <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
+                      <v-btn
+                        title="刪除"
+                        small
+                        dark
+                        fab
+                        color="red"
+                        @click="deleteRecord(item.RPFlowNo)"
+                      >
                         <v-icon dark>mdi-delete</v-icon>
                       </v-btn>
                     </template>
 
                     <!-- 頁碼 -->
                     <template v-slot:footer="footer">
-                      <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
+                      <Pagination
+                        :footer="footer"
+                        :pageOpt="pageOpt"
+                        @chPage="chPage"
+                      />
                     </template>
                   </v-data-table>
                 </v-card>
@@ -181,261 +258,205 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
-      <!-- 新增保養資料 modal -->
-      <v-dialog v-model="dialogShowAdd" max-width="600px">
-        <v-card>
-          <!-- 標題 -->
-          <v-card-title class="blue white--text px-4 py-1">
-            新增{{ title }}
-            <v-spacer />
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-          <!-- 內容 -->
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 保養日期 -->
-              <v-col cols="8" sm="4">
-                <h3 class="mb-1">保養日期</h3>
-                <v-menu
-                  v-model="dialogDateMenuShow.enters"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field hide-details v-on="on" solo />
-                  </template>
-                  <v-date-picker
-                    color="purple"
-                    v-model="addItem.enterDate"
-                    @input="dialogDateMenuShow.enters = false"
-                    locale="zh-tw"
-                  />
-                </v-menu>
-              </v-col>
-              <!-- 出廠日期 -->
-              <v-col cols="8" sm="4">
-                <h3 class="mb-1">出廠日期</h3>
-                <v-menu
-                  v-model="dialogDateMenuShow.enter"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field hide-details v-model="addItem.enterDates" v-on="on" solo />
-                  </template>
-                  <v-date-picker
-                    color="purple"
-                    v-model="addItem.enterDates"
-                    @input="dialogDateMenuShow.enter = false"
-                    locale="zh-tw"
-                  />
-                </v-menu>
-              </v-col>
-              <!-- 累計公里數 -->
-              <v-col cols="8" sm="4">
-                <h3 class="mb-1">累計公里數</h3>
-                <v-text-field v-model="addItem.Kilometer" :rules="nameRules" required solo />
-              </v-col>
-              <!-- 保養人 -->
-              <v-col cols="8" sm="4">
-                <h3 class="mb-1">保養人</h3>
-                <v-text-field v-model="addItem.user" solo />
-              </v-col>
-              <!-- 保養內容 -->
-              <v-col cols="12">
-                <h3 class="mb-1">保養內容</h3>
-                <v-textarea
-                  hide-details
-                  auto-grow
-                  outlined
-                  rows="6"
-                  v-model.trim="addItem.content"
-                />
-              </v-col>
-            </v-row>
-          </div>
-          <!-- 輸出/取消 -->
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-row>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
+    <!-- 新增自動檢點表 modal -->
+    <v-dialog v-model="Add" max-width="900px">
+      <EditPage
+        @close="close"
+        @search="search"
+        @deleteRecord="deleteRecord"
+        :key="DynamicKey"
+        :item="editItem"
+        :editType="editType"
+        :DB_Table="DB_Table"
+        :title="title"
+        :carNo="inputData.editableData.CarNo"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+  decodeObject,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import EditPage from "@/views/formManage/curing/PowerCarMaintenanceEdit";
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data: () => ({
     title: "車歷卡",
-    newText: "車歷卡",
+    newText: "保養紀錄",
+    actions: Actions,
     isLoading: false,
-    disabled: false,
-    ipt: {
-      dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
-      dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
-      case: "",
-      eqLoss: ""
-    },
-    formDepartOptions: [
-        // 通報單位下拉選單
-        { text: "不限", value: "" },
-        ...formDepartOptions,
-      ],
-    dateMemuShow: {
-      // 日曆是否顯示
-      start: false,
-      end: false
-    },
-    evtTypeOpts: evtTypes,
-    locationOpts: locationOpts,
-    dateMenuShow: false, // 日曆是否顯示
-    dialogDateMenuShow: {
-      // dialog 日期 menu 是否顯示
-      enter: false,
-      enters: false,
-      out: false
-    },
-    editedItem: {
-      Kilometer: 12044.3,
-      enterDate: "2020-08-10",
-      content: "更換引擎機油", // 維修項目
-      startday: "2020-08-10",
-      user: "王大明"
-    },
-    addItem: {
-      Kilometer: null,
-      enterDate: "",
-      content: "", // 維修項目
-      enterDates: "",
-      user: ""
-    },
-    defaultItem: {
-      Kilometer: 0,
-      enterDate: "2020-08-10",
-      content: "", // 維修項目
-      user: ""
-    },
-    nameRules: [
-      v => !!v || "公里數必須填寫",
-      v => v.length > 0 || "公里數必須大於0"
-    ],
-    dialogForm: {},
-    mainLocation: "", // 所選的地點
-    OLocation: "", // 其他地點
-    dialogShowAdd: false, // model off
-    dialogShowEdit: false, // model off
-    dialogDel: false, // model off
-    dialogm1: "2020-08-01",
     disabled: true,
-    //---api---
-      DB_Table: "RP044",
-      nowTime: "",
-      doMan:{
-        id: '',
-        name: '',
-        depart: '',
-        checkManName: ''
-      },
-      ipt2: {},
-      defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
-      headers: [
-        // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-      ],
-      tableItems: [],
-      //------
+    nameRules: [
+      (v) => !!v || "公里數必須填寫",
+      (v) => v.length > 0 || "公里數必須大於0",
+    ],
+    // controls for dialog
+    ShowDetailDialog: false,
+    dialogDel: false, // model off
+    Add: false,
     pageOpt: { page: 1 }, // 目前頁數
+    //---api---
+    DB_Table: "RP044",
+    DB_Table_097: "RP097",
+    RPFlowNo: "",
+    //搜尋欄位設定
+    formData: {
+      settings: {
+        formIconShow: true,
+      },
+      searchItem: {
+        dateStart: "",
+        dateEnd: "",
+        department: "",
+        carNo: "請選擇...",
+      },
+    },
+    DynamicKey: 0,
+    DelDynamicKey: 0,
+    editType: "",
+    editItem: {},
+    headers: [
+      // 表格顯示的欄位 DepartCode ID Name
+      {
+        text: "項次",
+        value: "ItemNo",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "保養日期",
+        value: "CheckDay",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "審查狀態",
+        value: "CheckStatus",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "填寫人",
+        value: "Name",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "保養單位",
+        value: "DepartName",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "功能",
+        value: "content",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+    ],
+    tableItems: [],
+    inputData: {
+      RPFlowNo: "",
+      DepartCode: "",
+      DepartName: "",
+      ID: "",
+      Name: "",
+      editableData: {
+        CheckDay: "",
+        CarNo: "",
+        Type: "",
+        Tare: "",
+        Load: "",
+        Brand: "",
+        Year: "",
+        PowerType: "",
+        Battery: "",
+        AirCond: "",
+        GuestEqip: "",
+        Window: "",
+        Door: "",
+        WheelDiam: "",
+        DistBogie: "",
+        Wheelbase: "",
+        LinkerHeight: "",
+      },
+    },
+    carNos: [],
+    expand: [0],
   }),
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    EditPage,
+    ToolBar,
+    dialogDelete,
+  },
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
+    }),
   },
   created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
-
+  mounted() {
+    this.getCarNoList();
+    //this.search();
+  },
   methods: {
-    initInput(){
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-
-      this.FactoryDay = "";//出廠日期
-      this.Km = "";  //累計公里數
-      this.Memo = ""; //保養內容
-    },
-    unique(list){
-      var arr = [];
-      let b = false;
-      for (var i = 0; i < list.length; i++) {
-        if (i == 0) arr.push(list[i]);
-        b = false;
-        if (arr.length > 0 && i > 0) {
-          for (var j = 0; j < arr.length; j++) {
-            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
-              b = true;
-              //break;
-            }
-          }
-          if (!b) {
-            arr.push(list[i]);
-          }
-        }
+    ...mapActions("system", [
+      "chMsgbar", // messageBar
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
+    newOne() {
+      if (this.inputData.editableData.CarNo != "") {
+        console.log("newOne23");
+        this.Add = true;
+        console.log("this.Add: " + this.Add);
+        this.DynamicKey += 1;
+        this.editType = this.actions.add;
       }
-      return arr;
     },
-    newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
-      this.initInput();
+    reset() {
+      this.formData.searchItem.dateStart = "";
+      this.formData.searchItem.dateEnd = "";
+      this.formData.searchItem.carNo = "";
     },
-    // 更新資料
-    update() {
-      this.$emit("chLocation", {});
-    },
-    ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -443,140 +464,162 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow()
+      const that = this;
+      // RP097
+      this.chLoadingShow();
       fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
-        QyName:[
-          // "DISTINCT (RPFlowNo)",
-          // // "ID",
-          // // "Name",
-          // // "CheckDay",
-          // // "CheckStatus",
-          // " * "
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table_097, // DB table
+        KeyItem: [{ Column: "CarNo", Value: this.formData.searchItem.carNo }],
+        QyName: [
+          "CheckDay",
+          "CarNo",
+          "Type",
+          "Tare",
+          "Load",
+          "Brand",
+          "Year",
+          "PowerType",
+          "Battery",
+          "AirCond",
+          "GuestEqip",
+          "Window",
+          "Door",
+          "WheelDiam",
+          "DistBogie",
+          "Wheelbase",
+          "LinkerHeight",
+        ],
+      })
+        .then((res) => {
+          if (res.data.ErrorCode == 0) {
+            let data = decodeObject(unique(JSON.parse(res.data.DT)));
+            if (data.length > 0) {
+              this.disabled = false;
+              console.log(data.length);
+              const inputArr = Object.keys(this.inputData.editableData);
+              inputArr.forEach((e) => {
+                if (e.endsWith("Day")) {
+                  that.inputData.editableData[e] = data[0][e].substr(0, 10);
+                } else {
+                  that.inputData.editableData[e] = data[0][e];
+                }
+              });
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
+
+      // RP044
+      this.chLoadingShow();
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          {
+            Column: "StartDayVlaue",
+            Value: this.formData.searchItem.dateStart,
+          },
+          { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
+          { Column: "DepartCode", Value: this.formData.searchItem.department },
+          { Column: "CarNo", Value: this.formData.searchItem.carNo },
+        ],
+        QyName: [
           "RPFlowNo",
           "ID",
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId", "DepartName"
+          "FlowId",
+          "DepartName",
+          "CarNo",
         ],
-      }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        console.log("search final")
-        this.chLoadingShow()
       })
+        .then((res) => {
+          let data = decodeObject(unique(JSON.parse(res.data.DT)));
+          this.tableItems = data;
+          if (data.length > 0) this.disabled = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
     },
-    // 存
-    save() {
-      console.log('送出click! 0222')
-      this.chLoadingShow()
-      obj = new Object()
-      obj.Column = "FactoryDay"
-      obj.Value = this.FactoryDay
-      arr = arr.concat(obj)
-
-      obj = new Object()
-      obj.Column = "Km"
-      obj.Value = this.Km
-      arr = arr.concat(obj)
-
-      obj = new Object()
-      obj.Column = "Memo"
-      obj.Value = this.Memo
-      arr = arr.concat(obj)
-
-
-      console.log(JSON.stringify(arr))
-
-      createFormOrder0({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
-        // OperatorID: "16713",  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem:arr,
-      }).then(res => {
-        console.log(res.data.DT)
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
-      })
-      this.Add = false;
-
+    // 關閉刪除確認dialod
+    closeDialogDel() {
+      this.dialogDel = false;
     },
     // 關閉 dialog
     close() {
-      this.dialogShowAdd = false;
-      this.dialogShowEdit = false;
+      this.Add = false;
       this.dialogDel = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.addItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "FactoryDay",
-          "Km",
-          "Memo",
-        ],
-      }).then(res => {
-        this.initInput();
-        console.log(res.data.DT)
-        let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
-        //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-       
-        this.FactoryDay = dat[0].FactoryDay
-        this.Km = dat[0].Km
-        this.Memo = dat[0].Memo
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
+      console.log(item);
+      console.log("RPFlowNo: " + item.RPFlowNo);
+      this.DynamicKey += 1;
+      this.editType = this.actions.edit;
+      this.editItem = item;
+      this.Add = true;
+    },
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
+    },
+    getCarNoList() {
+      const that = this;
+      that.isLoading = true;
+      let keys = new Set();
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table_097, // DB table
+        KeyItem: [],
+        QyName: ["Distinct RPFlowNo", "FlowId", "CarNo"],
       })
-    },//viewPage
-  }
+        .then((res) => {
+          if (res.data.ErrorCode == 0) {
+            let dat = JSON.parse(res.data.DT);
+            dat.forEach((item) => {
+              let carNo = item.CarNo;
+              if (!keys.has(carNo)) {
+                keys.add(carNo);
+              }
+            });
+          } else {
+            sessionStorage.errData = JSON.stringify({
+              errCode: res.data.Msg,
+              msg: res.data.Msg,
+            });
+            that.$router.push({ path: "/error" });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          that.isLoading = false;
+          let tmp = [...keys];
+          tmp.sort();
+          that.carNos = ["請選擇...", ...tmp];
+        });
+    },
+  },
+  watch: {},
 };
 </script>
