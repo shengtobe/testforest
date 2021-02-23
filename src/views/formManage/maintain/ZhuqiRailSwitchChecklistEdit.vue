@@ -8,54 +8,42 @@
       </v-btn>
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="settings">
-      <template v-slot:afterQuestions="item">
-        <v-alert
-          dense
-          border="top"
-          colored-border
-          color="teal"
-          elevation="4"
-          key="10"
-          class="mb-6"
-        >
-          <v-row no-gutter>
-            <v-col cols="12" sm="4">11.其他</v-col>
-            <v-col 
-              cols="12"
-              sm="3"
+        <template v-slot:memo2Name>修正事項與建議</template>
+        <template v-slot:moreTitle>
+          <v-col cols="12" sm="3">
+            <h3 class="mb-1">確認結果</h3>
+          </v-col>
+        </template>
+        <template v-slot:moreMemo="item">
+          <v-col
+            cols="12"
+            sm="3"
             >
-              <v-select
-                :items="checkoptions11"
-                v-model="
-                  item.editItem.Method11
-                "
-                solo
-              >
-              </v-select>
+            <v-textarea
+              auto-grow
+              outlined
+              rows="2"
+              v-model="item.editItem['Result' + (item.index + 1)]"
+            />
+          </v-col>
+        </template>
+        <template v-slot:moreDetails>
+            <v-col cols="12" sm="4">
+                <h3 class="mb-1">工作地點</h3>
+                <v-text-field solo value v-model="inputData.editableData.Place" />
             </v-col>
-            <v-col cols="12" sm="2">
-              <span class="d-sm-none error--text">檢查結果：</span>
-              <v-radio-group
-                dense
-                row
-                v-model="item.editItem.CheckOption11"
-                class="pa-0 ma-0"
-              >
-                <v-radio color="success" label="正常" value="1"></v-radio>
-                <v-radio color="red" label="異常" value="2"></v-radio>
-                <v-radio color="black" label="無此項目" value="3"></v-radio>
-              </v-radio-group>
+            <v-col cols="12" sm="4">
+                <h3 class="mb-1">班長</h3>
+                <v-text-field solo value v-model="inputData.editableData.Supervisor1" />
             </v-col>
-            <v-col cols="12" v-if="settings.width.memo" sm="3">
-              <v-textarea
-                auto-grow
-                outlined
-                rows="2"
-                v-model="item.editItem.Memo_11"
-              />
+            <v-col cols="12" sm="4">
+                <h3 class="mb-1">工務長</h3>
+                <v-text-field solo value v-model="inputData.editableData.Supervisor2" />
             </v-col>
-          </v-row>
-        </v-alert>
+            <v-col cols="12" sm="4">
+                <h3 class="mb-1">監工長</h3>
+                <v-text-field solo value v-model="inputData.editableData.Supervisor3" />
+            </v-col>
       </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
@@ -79,7 +67,9 @@
     </v-card-actions>
   </v-card>
 </template>
+
 <script>
+import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from "vuex";
 import {
   getNowFullTime,
@@ -97,106 +87,129 @@ import deptSelect from "@/components/forManage/deptSelect";
 import commonQuestion from "@/components/forManage/commonQuestion";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
+
 export default {
   props: {
     item: Object,
     editType: String,
     DB_Table: String,
   },
-  data: () => ({
-    actions: Actions,
-    commonSettings: {
-      iconShow: false,
-      title: "機動台車定期檢查表(月)",
-      isLoading: false,
-      deptReadonly: true,
-    },
-    inputData: {
-      RPFlowNo: "",
-      DepartCode: "",
-      DepartName: "",
-      ID: "",
-      Name: "",
-      editableData: {
-        CheckDay: "",
-        CheckOption1: "0",
-        CheckOption2: "0",
-        CheckOption3: "0",
-        CheckOption4: "0",
-        CheckOption5: "0",
-        CheckOption6: "0",
-        CheckOption7: "0",
-        CheckOption8: "0",
-        CheckOption9: "0",
-        CheckOption10: "0",
-        CheckOption11: "0",
-        Memo_1: "",
-        Memo_2: "",
-        Memo_3: "",
-        Memo_4: "",
-        Memo_5: "",
-        Memo_6: "",
-        Memo_7: "",
-        Memo_8: "",
-        Memo_9: "",
-        Memo_10: "",
-        Memo_11: "",
-        Method11: "",
-        Advice: "",
-        Measures: "",
+  data() {
+    return {
+      actions: Actions,
+      commonSettings: {
+        iconShow: false,
+        title: "竹崎監工區抽換道岔作業自主檢查表",
+        isLoading: false,
+        deptReadonly: true,
       },
-    },
-    settings: {
-      subtitle: [
-        "1.依職業安全衛生法第23條規定辦理",
-        "2.檢查結果依狀態選擇良好、不良、無此項目打。",
-        "3.缺點由使用單位自行改善，不克者委請設備商修護。",
-        "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
-      ],
-      qestions: [
-        { question: "1.機油液面是否正常、油質良好", method: "檢視標尺" },
-        { question: "2.各油管表面是否漏油", method: "目視點檢" },
-        { question: "3.各安裝螺絲是否有鬆弛", method: "目視點檢" },
-        { question: "4.輪鋸片、研磨輪、鑽頭是否有裂痕", method: "動作測試" },
-        { question: "5.機械防護裝置安裝良好(例:護罩)", method: "目視點檢" },
-        { question: "6.每日作業開始前試轉一分鐘以上", method: "作用檢查" },
-        { question: "7.各活動部位是否清潔、上油潤滑", method: "目視點檢" },
-        { question: "8.引擎啟動時、啟動後、加速時是否有異音", method: "動作測試" },
-        { question: "9.操作人員個人防護具(例:護目鏡、安全帽)", method: "目視點檢" },
-        { question: "10.是否有「使用時禁戴手套」警語", method: "目視點檢" },
-      ],
-      columns: {
-        option: "CheckOption",
-        memo: "Memo_",
+      inputData: {
+        RPFlowNo: "",
+        DepartCode: "",
+        DepartName: "",
+        ID: "",
+        Name: "",
+        editableData: {
+          CheckDay: "",
+          Place: "",
+          Supervisor1: "",
+          Supervisor2: "",
+          Supervisor3: "",
+          CheckOption1: "",
+          Advice1: "",
+          Result1: "",
+          CheckOption2: "",
+          Advice2: "",
+          Result2: "",
+          CheckOption3: "",
+          Advice3: "",
+          Result3: "",
+          CheckOption4: "",
+          Advice4: "",
+          Result4: "",
+          CheckOption5: "",
+          Advice5: "",
+          Result5: "",
+          CheckOption6: "",
+          Advice6: "",
+          Result6: "",
+          CheckOption7: "",
+          Advice7: "",
+          Result7: "",
+          CheckOption8: "",
+          Advice8: "",
+          Result8: "",
+        },
       },
-      width: {
-        qusetion: 4,
-        method: 3,
-        option: 2,
-        memo: 3,
-      },
-      textarea: [
+      headers: [
+        // 表格顯示的欄位 DepartCode ID Name
         {
-          label: "改善建議",
-          column: "Advice",
+          text: "項次",
+          value: "ItemNo",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
         {
-          label: "改善追蹤",
-          column: "Measures",
+          text: "保養日期",
+          value: "CheckDay",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "審查狀態",
+          value: "CheckStatus",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "填寫人",
+          value: "Name",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "保養單位",
+          value: "DepartName",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        },
+        {
+          text: "功能",
+          value: "content",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
         },
       ],
-    },
-    checkoptions11:[
-      {
-        text: "目視點檢",
-        value: "目視點檢",
+      tableItems: [],
+      settings: {
+        qestions: [
+            { question: "1. 檢查道岔材料(組裝前)" },
+            { question: "2. 基礎整地是否水平" },
+            { question: "3. 組裝工作是否依規章執行" },
+            { question: "4. 抽換工作前複檢工作" },
+            { question: "5. 檢驗密貼情形" },
+            { question: "6. 施工前工具及人力檢查" },
+            { question: "7. 施工完後軌距、水平、高低、方向、平面等檢查" },
+            { question: "8. 施工完竣測試運轉" },
+        ],
+        columns: {
+          option: "CheckOption",
+          memo2: "Advice",
+        },
+        width: {
+          qusetion: 4,
+          option: 2,
+          memo2: 3,
+        },
       },
-      {
-        text: "動作測試",
-        value: "動作測試",
-      }
-    ]
-  }),
+    };
+  },
   components: {
     dateSelect,
     deptSelect,
@@ -206,12 +219,26 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    //this.settings.qestions.push({question:"11.其他" ,method:""})
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+  },
+  created() {
+    this.ipt2 = { ...this.defaultIpt };
+    //更新時間
+    var today = new Date();
+    let mStr = today.getMonth() + 1;
+    let dStr = today.getDate();
+    if (mStr < 10) {
+      mStr = "0" + mStr;
+    }
+    if (dStr < 10) {
+      dStr = "0" + dStr;
+    }
+    this.nowTime = today.getFullYear() + "-" + mStr + "-" + dStr;
+    this.z = this.df = this.nowTime;
   },
   methods: {
     ...mapActions("system", [
@@ -241,31 +268,34 @@ export default {
           "DepartName",
           "ID",
           "Name",
+          "Place",
+          "Supervisor1",
+          "Supervisor2",
+          "Supervisor3",
           "CheckOption1",
+          "Advice1",
+          "Result1",
           "CheckOption2",
+          "Advice2",
+          "Result2",
           "CheckOption3",
+          "Advice3",
+          "Result3",
           "CheckOption4",
+          "Advice4",
+          "Result4",
           "CheckOption5",
+          "Advice5",
+          "Result5",
           "CheckOption6",
+          "Advice6",
+          "Result6",
           "CheckOption7",
+          "Advice7",
+          "Result7",
           "CheckOption8",
-          "CheckOption9",
-          "CheckOption10",
-          "CheckOption11",
-          "Memo_1",
-          "Memo_2",
-          "Memo_3",
-          "Memo_4",
-          "Memo_5",
-          "Memo_6",
-          "Memo_7",
-          "Memo_8",
-          "Memo_9",
-          "Memo_10",
-          "Memo_11",
-          "Method11",
-          "Advice",
-          "Measures",
+          "Advice8",
+          "Result8",
         ],
       })
         .then((res) => {
