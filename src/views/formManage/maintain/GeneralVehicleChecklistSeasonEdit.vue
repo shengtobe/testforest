@@ -8,54 +8,11 @@
       </v-btn>
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="settings">
-      <template v-slot:afterQuestions="item">
-        <v-alert
-          dense
-          border="top"
-          colored-border
-          color="teal"
-          elevation="4"
-          key="10"
-          class="mb-6"
-        >
-          <v-row no-gutter>
-            <v-col cols="12" sm="4">11.其他</v-col>
-            <v-col 
-              cols="12"
-              sm="3"
-            >
-              <v-select
-                :items="checkoptions11"
-                v-model="
-                  item.editItem.Method11
-                "
-                solo
-              >
-              </v-select>
+        <template v-slot:moreDetails>
+            <v-col cols="12" sm="4">
+                <h3 class="mb-1">車號</h3>
+                <v-text-field solo value v-model="inputData.editableData.CarNo" />
             </v-col>
-            <v-col cols="12" sm="2">
-              <span class="d-sm-none error--text">檢查結果：</span>
-              <v-radio-group
-                dense
-                row
-                v-model="item.editItem.CheckOption11"
-                class="pa-0 ma-0"
-              >
-                <v-radio color="success" label="正常" value="1"></v-radio>
-                <v-radio color="red" label="異常" value="2"></v-radio>
-                <v-radio color="black" label="無此項目" value="3"></v-radio>
-              </v-radio-group>
-            </v-col>
-            <v-col cols="12" v-if="settings.width.memo" sm="3">
-              <v-textarea
-                auto-grow
-                outlined
-                rows="2"
-                v-model="item.editItem.Memo_11"
-              />
-            </v-col>
-          </v-row>
-        </v-alert>
       </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
@@ -107,7 +64,7 @@ export default {
     actions: Actions,
     commonSettings: {
       iconShow: false,
-      title: "機動台車定期檢查表(月)",
+      title: "一般車輛定期檢查表(三個月)",
       isLoading: false,
       deptReadonly: true,
     },
@@ -119,6 +76,7 @@ export default {
       Name: "",
       editableData: {
         CheckDay: "",
+        CarNo: "",
         CheckOption1: "0",
         CheckOption2: "0",
         CheckOption3: "0",
@@ -128,52 +86,35 @@ export default {
         CheckOption7: "0",
         CheckOption8: "0",
         CheckOption9: "0",
-        CheckOption10: "0",
-        CheckOption11: "0",
-        Memo_1: "",
-        Memo_2: "",
-        Memo_3: "",
-        Memo_4: "",
-        Memo_5: "",
-        Memo_6: "",
-        Memo_7: "",
-        Memo_8: "",
-        Memo_9: "",
-        Memo_10: "",
-        Memo_11: "",
-        Method11: "",
         Advice: "",
         Measures: "",
       },
     },
     settings: {
       subtitle: [
-        "1.依職業安全衛生法第23條規定辦理",
-        "2.檢查結果依狀態選擇良好、不良、無此項目打。",
+        "1.依職業安全衛生法第23條規定辦理。",
+        "2.檢查結果應詳實紀錄。檢查結果請依狀態選擇正常、異常、無此項目。",
         "3.缺點由使用單位自行改善，不克者委請設備商修護。",
         "4.本定期檢查表於每年1.4.7.10月月底前完成檢查，經主管核章後，留存於管理單位之系統保存備查。",
       ],
       qestions: [
-        { question: "1.機油液面是否正常、油質良好", method: "檢視標尺" },
-        { question: "2.各油管表面是否漏油", method: "目視點檢" },
-        { question: "3.各安裝螺絲是否有鬆弛", method: "目視點檢" },
-        { question: "4.輪鋸片、研磨輪、鑽頭是否有裂痕", method: "動作測試" },
-        { question: "5.機械防護裝置安裝良好(例:護罩)", method: "目視點檢" },
-        { question: "6.每日作業開始前試轉一分鐘以上", method: "作用檢查" },
-        { question: "7.各活動部位是否清潔、上油潤滑", method: "目視點檢" },
-        { question: "8.引擎啟動時、啟動後、加速時是否有異音", method: "動作測試" },
-        { question: "9.操作人員個人防護具(例:護目鏡、安全帽)", method: "目視點檢" },
-        { question: "10.是否有「使用時禁戴手套」警語", method: "目視點檢" },
+        { question: "1. 引擎齒輪油是否正常", method:"抽取探測棒" },
+        { question: "2. 煞車、離合器系統是否正常", method:"踏踩、排擋測試" },
+        { question: "3. 空氣濾清器是否正常", method:"必要時更換" },
+        { question: "4. 電瓶樁頭、電瓶水是否正常", method:"扳動、目視電瓶液位" },
+        { question: "5. 輪胎狀況是否正常", method:"檢查胎壓及外表" },
+        { question: "6. 轉向接桿及方向盤游隙是否正常", method:"動作測試及目視" },
+        { question: "7. 油表、溫度表是否正常", method:"運轉測試及目視" },
+        { question: "8. 各部燈光、喇叭是否正常", method:"動作測試及目視" },
+        { question: "9. 其他(安全帶、三腳架、滅火器)是否正常", method:"檢查安全帶及環扣帶有無破裂，三腳架是否破裂、滅火器壓力及噴嘴" },
       ],
       columns: {
         option: "CheckOption",
-        memo: "Memo_",
       },
       width: {
-        qusetion: 4,
+        qusetion: 6,
         method: 3,
-        option: 2,
-        memo: 3,
+        option: 3,
       },
       textarea: [
         {
@@ -186,16 +127,6 @@ export default {
         },
       ],
     },
-    checkoptions11:[
-      {
-        text: "目視點檢",
-        value: "目視點檢",
-      },
-      {
-        text: "動作測試",
-        value: "動作測試",
-      }
-    ]
   }),
   components: {
     dateSelect,
@@ -206,7 +137,6 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    //this.settings.qestions.push({question:"11.其他" ,method:""})
   },
   computed: {
     ...mapState("user", {
@@ -241,6 +171,7 @@ export default {
           "DepartName",
           "ID",
           "Name",
+          "CarNo",
           "CheckOption1",
           "CheckOption2",
           "CheckOption3",
@@ -250,20 +181,6 @@ export default {
           "CheckOption7",
           "CheckOption8",
           "CheckOption9",
-          "CheckOption10",
-          "CheckOption11",
-          "Memo_1",
-          "Memo_2",
-          "Memo_3",
-          "Memo_4",
-          "Memo_5",
-          "Memo_6",
-          "Memo_7",
-          "Memo_8",
-          "Memo_9",
-          "Memo_10",
-          "Memo_11",
-          "Method11",
           "Advice",
           "Measures",
         ],
