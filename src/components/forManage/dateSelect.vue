@@ -8,7 +8,7 @@
 -->
 <template>
   <div>
-    <h3 class="mb-1">
+    <h3 class="mb-1" v-if="label">
       <v-icon class="mr-1 mb-1" v-if="showIcon">mdi-calendar-text</v-icon
       >{{ label }}
     </h3>
@@ -23,6 +23,7 @@
         <v-text-field
           v-model.trim="dataSet"
           solo
+          hide-details
           v-on="on"
           readonly
         ></v-text-field>
