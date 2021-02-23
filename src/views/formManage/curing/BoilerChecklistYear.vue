@@ -191,7 +191,8 @@ export default {
       },
       //---------------------------
     };
-  },components: {
+  },
+  components: {
     Pagination, // 頁碼
     dateSelect,
     deptSelect,
@@ -253,7 +254,8 @@ export default {
       }).finally(() => {
         console.log("search final")
         this.chLoadingShow()
-      })},
+      })
+    },
     // 關閉 dialog
     close() {
       this.editLog.dealogEdit = false
