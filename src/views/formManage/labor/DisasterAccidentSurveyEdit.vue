@@ -611,6 +611,7 @@ export default {
       : this.newPage();
     this.inputData.editableData.CheckOption1 = this.type;
   },
+  created() {},
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -701,7 +702,7 @@ export default {
             if (isDateObject(tmp)) {
               that.inputData.editableData[e] = tmp.substr(0, 10);
             } else {
-              that.inputData.editableData[e] = temp;
+              that.inputData.editableData[e] = tmp;
             }
           });
         })

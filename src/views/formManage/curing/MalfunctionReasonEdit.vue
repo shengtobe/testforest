@@ -213,18 +213,20 @@ export default {
         .then((res) => {
           console.log(res.data.DT);
           let dat = JSON.parse(res.data.DT);
-          dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
+          let data = dat[0];
+          data.CheckDay = data.CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
-          this.inputData.DepartCode = dat[0].DepartCode;
-          this.inputData.Name = dat[0].Name;
-          dat[0] = decodeObject(dat[0]);
+          this.inputData.DepartCode = data.DepartCode;
+          this.inputData.Name = data.Name;
+          this.inputData.DepartName = data.DepartName;
+          data = decodeObject(data);
           const inputArr = Object.keys(this.inputData.editableData);
           inputArr.forEach((e) => {
             var tmp = data[e];
             if (isDateObject(tmp)) {
               that.inputData.editableData[e] = tmp.substr(0, 10);
             } else {
-              that.inputData.editableData[e] = temp;
+              that.inputData.editableData[e] = tmp;
             }
           });
         })
