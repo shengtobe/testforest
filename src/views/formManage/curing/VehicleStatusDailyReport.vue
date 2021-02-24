@@ -20,13 +20,10 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <deptSelect
-          label="填寫人單位"
-          v-model="formData.searchItem.department"
-          :showIcon="formData.settings.formIconShow"
-          outType="key"
-          key="department"
-        />
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1" v-if="formData.settings.formIconShow">mdi-domain</v-icon>車庫
+        </h3>
+        <v-select :items="formData.settings.deptOptions" item-text="value" item-value="key" v-model="formData.searchItem.department" solo/>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -115,6 +112,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique, decodeObject} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { fetchOrganization } from '@/apis/organization'
 import { formDepartOptions } from '@/assets/js/departOption'
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
@@ -146,6 +144,7 @@ export default {
       formData: {
         settings: {
           formIconShow: true,
+          deptOptions:[]
         },
         searchItem: {
           dateStart: "",
@@ -191,12 +190,35 @@ export default {
   },
   mounted() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.formData.default.dateStart = this.formData.default.dateEnd = getTodayDateString();
+    this._getOrg()
   },
   methods: {
     ...mapActions('system', [
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    //抓單位清單
+    _getOrg(){
+      const that = this
+      that.isLoading = true
+      fetchOrganization({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.formData.settings.deptOptions = res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
+          
+        }else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
+      }).finally(() => {
+          that.deptOptions = decodeObject(that.deptOptions)
+          that.isLoading = false
+      })
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

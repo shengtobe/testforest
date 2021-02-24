@@ -21,6 +21,12 @@
                 v-model="inputData.editableData.CheckDay"
               />
             </v-col>
+            <v-col cols="12" sm="3" md="4">
+              <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1" v-if="commonSettings.iconShow">mdi-domain</v-icon>車庫
+              </h3>
+              <v-select :items="deptOptions" item-text="value" item-value="key" v-model="inputData.DepartCode" solo/>
+            </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">檢查人員</h3>
               <v-text-field solo value v-model="inputData.Name"/>
@@ -155,6 +161,7 @@ import {
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import commonQuestion from "@/components/forManage/commonQuestion3";
+import { fetchOrganization } from '@/apis/organization'
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 export default {
@@ -171,6 +178,7 @@ export default {
       isLoading: false,
       deptReadonly: true,
     },
+    deptOptions:[],
     headers: [
       { width: 1, text:"車種別" },
       { width: 2, text:"現有車輛總數(輛)", model: "AmountTrain" },
@@ -420,6 +428,7 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
+    this._getOrg()
   },
   computed: {
     ...mapState("user", {
@@ -494,6 +503,27 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    //抓單位清單
+    _getOrg(){
+      const that = this
+      that.isLoading = true
+      fetchOrganization({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.deptOptions = res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
+        }else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
+      }).finally(() => {
+          that.deptOptions = decodeObject(that.deptOptions)
+          that.isLoading = false
+      })
+    },
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
