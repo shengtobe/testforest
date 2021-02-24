@@ -1,14 +1,17 @@
 // -------- 組織下拉選單 --------
 
 export const departOptions = [
-    { text: '綜合企劃科', value: 'd1' },
-    { text: '鐵路服務科', value: 'd2' },
-    { text: '鐵路維護科', value: 'd3' },
-    { text: '車輛養護科', value: 'd4' },
-    { text: '祕書室', value: 'd5' },
-    { text: '人事室', value: 'd6' },
-    { text: '主計室', value: 'd7' },
-    { text: '政風室', value: 'd8' },
+    { text: '處長室', value: 'ARCO001' },
+    { text: '副處長室', value: 'ARCO002' },
+    { text: '秘書室', value: 'ARCO023' },
+    { text: '綜合企劃科', value: 'ARCO003' },
+    { text: '鐵路服務科', value: 'ARCO004' },
+    { text: '鐵路維護科', value: 'ARCO015' },
+    { text: '車輛養護科', value: 'ARCO019' },
+    { text: '人事室', value: 'ARCO024' },
+    { text: '主計室', value: 'ARCO025' },
+    { text: '政風室', value: 'ARCO026' },
+    { text: '秘書', value: 'ARCO027' },
 ]
 
 // 組織下拉選單 (期初報告書圖2-21)

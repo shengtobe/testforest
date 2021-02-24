@@ -58,11 +58,11 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large
+            <!-- <v-btn elevation="2" large class="mr-3"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
-            </v-btn>
+            </v-btn> -->
         </v-col>
         
         <!-- 表格資料 -->
@@ -84,20 +84,20 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.depart="{ item }">
-                        {{ transferDepartTxt(item.depart) }}
+                    <template v-slot:item.type="{ item }">
+                        {{ typeOpts.find(ele => ele.value == item.FileType).text }}
                     </template>
 
-                    <template v-slot:item.type="{ item }">
-                        {{ transferTypeTxt(item.type) }}
+                     <template v-slot:item.depart="{ item }">
+                        {{ departOpts.find(ele => ele.value == item.MaintainDesp).text }}
                     </template>
 
                     <template v-slot:item.file="{ item }">
                         <v-chip small label color="primary"
-                            :href="item.file.link"
-                            :download="item.file.fileName"
+                            :href="item.file_path"
+                            :download="item.FileFullName"
                         >
-                            {{ item.file.fileName }}
+                            {{ item.FileFullName }}
                         </v-chip>
                     </template>
 
@@ -201,7 +201,7 @@
                         </v-col>
 
                         <v-col cols="12" v-if="itemIndex > -1" class="mt-n10">
-                            <span class="error--text">目前檔案： {{ ipt.file.fileName }}</span>
+                            <span class="error--text">目前檔案： {{ ipt.nowfile }}</span>
                         </v-col>
                     </v-row>
                 <!-- </v-form> -->
@@ -218,9 +218,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { departOptions } from '@/assets/js/departOption'
+import { regulfetchList, regulCreate } from '@/apis/smis/safeFile'
 
 export default {
     data: () => ({
@@ -233,13 +235,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '文件類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '文件名稱', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '版次', value: 'version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '版次', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         serchDepartOpts: [  // 搜尋表單維護單位下拉選單
@@ -248,30 +249,33 @@ export default {
         ],
         serchTypeOpts: [  // 搜尋表單文件類型下拉選單
             { text: '不限', value: '' },
-            { text: '品質文件', value: 1 },
-            { text: '維修管理文件', value: 2 },
-            { text: '其他文件', value: 3 },
+            { text: '品質文件', value: '1' },
+            { text: '維修管理文件', value: '2' },
+            { text: '其他文件', value: '3' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
         itemIndex: -1,  // 作用中的物件索引值 (小於0為新增的情況)
         ipt: {},  // dialog 欄位
         defaultIpt: {  // dialog 欄位預設值
-            depart: 'd1',  // 維護單位
-            type: 1,  // 文件類型
+            depart: 'ARCO001',  // 維護單位
+            type: '1',  // 文件類型
             version: '',  // 版次
             file: null,  // 檔案
             note: '',  // 備註
         },
         departOpts: departOptions,  // dialog 維護單位下拉選單
         typeOpts: [  // dialog 文件類型下拉選單
-            { text: '品質文件', value: 1 },
-            { text: '維修管理文件', value: 2 },
-            { text: '其他文件', value: 3 },
+            { text: '品質文件', value: '1' },
+            { text: '維修管理文件', value: '2' },
+            { text: '其他文件', value: '3' },
         ],
     }),
     components: { Pagination },  // 頁碼
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         dialogTitle () {
             return this.itemIndex === -1 ? '新增資料' : '編輯資料'
         },
@@ -286,44 +290,38 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        depart: 'd2',
-                        type: 3,
-                        file: { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        updateTime: '2020-05-01 09:30:00',
-                        version: '1',
-                        note: '',
-                    },
-                    {
-                        id: '222',
-                        depart: 'd4',
-                        type: 2,
-                        file: { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        updateTime: '2020-04-16 15:20:00',
-                        version: '1',
-                        note: '',
-                    },
-                    {
-                        id: '333',
-                        depart: 'd4',
-                        type: 2,
-                        file: { fileName: '123.docx', link: '/demofile/123.docx' },
-                        updateTime: '2020-03-21 11:40:00',
-                        version: '1',
-                        note: '',
-                    },
-                ]
+            regulfetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_RegulFileManage',  // DB table
+                KeyItem: [
+                    { tableColumn: 'MaintainDesp', columnValue: this.searchIpt.depart },  // 維護單位
+                    { tableColumn: 'FileType', columnValue: this.searchIpt.type },  // 文件類型
+                    // { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.fileName },  // 文件名稱
+                    // { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.note },  // 備註
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'PolicyCode',
+                    'FileType',
+                    'FileFullName',
+                    'MaintainDesp',
+                    'Version',
+                    'Remark',
+                    'UpdateDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 清除搜尋內容
-        reset() {
-            this.searchIpt.depart = this.searchIpt.type = this.searchIpt.fileName = ''
-        },
+        // reset() {
+        //     this.searchIpt.depart = this.searchIpt.type = this.searchIpt.fileName = ''
+        // },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
@@ -332,17 +330,53 @@ export default {
         save() {
             this.isLoading = true
 
-            setTimeout(() => {
-                let txt = this.itemIndex === -1 ? '新增成功' : '更新成功'
+            if (this.itemIndex === -1) {
+                // -------- 新增時 -------
+                regulCreate({
+                    SelectFileType: this.ipt.type,  // 文件類別
+                    MaintainDesp: this.ipt.depart,  // 維護單位
+                    Version: this.ipt.version,  // 版次
+                    Remark: this.ipt.note,  // 備註
+                    FileName: this.ipt.upload.fileName,  // 檔案名稱
+                    FileType: this.ipt.upload.fileType,  // 檔案類型
+                    UnitData: this.ipt.upload.unitData,  // 檔案內容
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '新增成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '新增失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ show: true, msg: '伺服器發生問題' })
+                }).finally(() => {
+                     this.isLoading = this.dialog = false
+                })
 
-                // 編輯時，待後端回傳檔案資訊，再一併寫回 this.tableItems[this.itemIndex] 中
-                if (this.itemIndex > -1) {
-                    
-                }
-
-                this.chMsgbar({ success: true, msg: txt })
-                this.isLoading = this.dialog = false
-            }, 1000)
+            } else {
+                // -------- 編輯時 -------
+                updateListOrder({
+                    WorkOrderID: this.id,  // 工單編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        // 待後回覆無問題，再一併寫回 this.tableItems[this.itemIndex] 現有資料中
+                        this.chMsgbar({ success: true, msg: '更新成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '新增失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ show: true, msg: '伺服器發生問題' })
+                }).finally(() => {
+                    this.isLoading = this.dialog = false
+                })
+            }
         },
         // 新增
         add() {
@@ -353,7 +387,15 @@ export default {
         // 編輯
         edit (item) {
             this.itemIndex = this.tableItems.indexOf(item)  // 取得索引值
-            this.ipt = { ...item }  // 設定表單資料
+            this.ipt = {  // 設定表單資料
+                id: item.PolicyCode,  // 編號
+                depart: item.MaintainDesp,  // 維護單位
+                type: item.FileType,  // 文件類型
+                version: item.Version,  // 版次
+                file: null,  // 檔案
+                note: item.Remark,  // 備註
+                nowfile: item.FileFullName,  // 目前檔案名稱
+            }
             this.dialog = true
         },
         // 刪除
@@ -372,14 +414,20 @@ export default {
         // 選擇檔案(dialog內)
         select(file) {
             this.ipt.file = file
-        },
-        // 轉換單位名稱
-        transferDepartTxt(value) {
-            return departOptions.find(item => item.value == value).text
-        },
-        // 轉換文件類型名稱
-        transferTypeTxt(value) {
-            return this.typeOpts.find(item => item.value == value).text
+
+            let reader = new FileReader()  // blob 用
+
+            // 設定 reader 物件的 result 屬性，為 ArrayBuffer
+            reader.readAsArrayBuffer(file)
+
+            // 設定讀取完時的動作
+            reader.onload = () => {
+                // 抓出副檔名
+                let nameArr = file.name.split('.')  // 用小數點拆成陣列
+                let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                
+                this.ipt.upload = { fileName: file.name, fileType: type, unitData: Array.from(new Uint8Array(reader.result)) }
+            }
         },
     },
     created() {

@@ -298,7 +298,7 @@ export default {
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '發生日期', value: 'AccidentFindDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '事故類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '傷亡人數', value: 'HurtPeopleCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -338,6 +338,9 @@ export default {
                     'AccidentCode',
                     'AccidentFindDate',
                     'FindLine',
+                    'LineK',
+                    'LineM',
+                    'FindLineOther',
                     'AccidentType',
                     'HurtPeopleCount',
                     'AccidentStatus',
@@ -358,50 +361,8 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 轉換事故事件狀態文字
-        transferStatusText(status) {
-            switch(status) {
-                case 1:
-                    return '已立案'
-                    break
-                case 2:  // 審核完備資料
-                    return '審核中'
-                    break
-                case 3:
-                    return '已完備資料'
-                    break
-                case 4:  // 審核措施落實
-                    return '審核中'
-                    break
-                case 5:
-                    return '改善措施已落實'
-                    break
-                default:
-                    break
-            }
-        },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
-            switch(item.status) {
-                case 1:  // 已立案
-                    sessionStorage.itemStatus = '1'
-                    break
-                case 2:  // 審核中 (審核完備資料)
-                    sessionStorage.itemStatus = '2'
-                    break
-                case 3:  // 已完備資料
-                    sessionStorage.itemStatus = '3'
-                    break
-                case 4: // 審核中 (審核措施落實)
-                    sessionStorage.itemStatus = '4'
-                    break
-                case 5: // 改善措施已落實
-                    sessionStorage.itemStatus = '5'
-                    break
-                default:
-                    break
-            }
-
             let routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
             window.open(routeData.href, '_blank')
         },
