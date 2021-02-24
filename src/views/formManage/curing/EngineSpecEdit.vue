@@ -23,14 +23,18 @@
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">引擎號碼</h3>
-              <v-text-field solo value v-model="inputData.editableData.EngineNo"/>
+              <v-text-field
+                solo
+                value
+                v-model="inputData.editableData.EngineNo"
+              />
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">檢查人員</h3>
-              <v-text-field solo value v-model="inputData.Name"/>
+              <v-text-field solo value v-model="inputData.Name" />
             </v-col>
           </v-row>
-          <commonQuestion :settings="settings" v-model="inputData"/>
+          <commonQuestion :settings="settings" v-model="inputData" />
         </v-col>
         <!-- END 檢查項目 -->
       </v-row>
@@ -86,581 +90,480 @@ export default {
   data: () => ({
     actions: Actions,
     commonSettings: {
-        iconShow: false,
-        isLoading: false,
-        deptReadonly: true,
-      },
+      iconShow: false,
+      isLoading: false,
+      deptReadonly: true,
+    },
     settings: {
       headers: [
-        {  width: 3, text:"名稱" },
-        {  width: 5, text:"摘要", model: "CheckOption" },
-        {  width: 4, text:"備註", model: "Memo" }
+        { width: 3, text: "名稱" },
+        { width: 5, text: "摘要", model: "CheckOption" },
+        { width: 4, text: "備註", model: "Memo" },
       ],
       alerts: [
         {
           startAt: 1,
-          columns:[
-            { 
-             rows: [
-                { label: "型式",type: "label" }
-              ]
+          columns: [
+            {
+              rows: [{ label: "型式", type: "label" }],
             },
-            { 
-              rows: [
-                { label: "摘要", type: "area", placeholder: "AAA-00A" },
-              ]
+            {
+              rows: [{ label: "摘要", type: "area", placeholder: "AAA-00A" }],
             },
-            { 
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+            {
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 2,
-          columns:[
-            { 
-              rows: [
-                { label: "製造廠名", type: "label" }
-              ]
-            },
-            { 
-              rows: [
-                { label: "摘要", type: "area", },
-              ]
+          columns: [
+            {
+              rows: [{ label: "製造廠名", type: "label" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "摘要", type: "area" }],
+            },
+            {
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 3,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "製造日期", type: "label", }
-              ]
+              rows: [{ label: "製造日期", type: "label" }],
             },
             {
-              rows: [
-                { type: "date" },
-              ]
+              rows: [{ type: "date" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 4,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "開始使用時間", type: "label" }
-              ]
+              rows: [{ label: "開始使用時間", type: "label" }],
             },
             {
-              rows: [
-                { type: "date" },
-              ]
+              rows: [{ type: "date" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 5,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "價格", type: "label", }
-              ]
+              rows: [{ label: "價格", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "number", min: 0 },
-              ]
+              rows: [{ label: "摘要", type: "number", min: 0 }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 6,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "爆發順序", type: "label" }
-              ]
+              rows: [{ label: "爆發順序", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "text", placeholder: "1-5-3-6-2-4" }
-              ]
+                { label: "摘要", type: "text", placeholder: "1-5-3-6-2-4" },
+              ],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 7,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "壓縮比", type: "label", }
-              ]
+              rows: [{ label: "壓縮比", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text", placeholder: "88:88", },
-              ]
+              rows: [{ label: "摘要", type: "text", placeholder: "88:88" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 8,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "迴轉方向", type: "label", }
-              ]
+              rows: [{ label: "迴轉方向", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "select", placeholder: "點此選擇",
+                {
+                  label: "摘要",
+                  type: "select",
+                  placeholder: "點此選擇",
                   select: [
-                    { text: '順時針', value: 'A' }, 
-                    { text: '逆時針', value: 'B' }
-                  ]
+                    { text: "順時針", value: "A" },
+                    { text: "逆時針", value: "B" },
+                  ],
                 },
-              ]
+              ],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 9,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "引擎重量", type: "label" }
-              ]
+              rows: [{ label: "引擎重量", type: "label" }],
             },
             {
               rows: [
                 { label: "摘要", type: "text", placeholder: "加液油後 1234kg" },
-              ]
+              ],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 10,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "引擎尺寸", type: "label" }
-              ]
+              rows: [{ label: "引擎尺寸", type: "label" }],
             },
             {
               rows: [
                 { label: "摘要", type: "text", placeholder: "長 x 寬 x 高" },
-              ]
+              ],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 11,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "總排氣量", type: "label", }
-              ]
+              rows: [{ label: "總排氣量", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text", placeholder: "1234 in³" }
-              ]
+              rows: [{ label: "摘要", type: "text", placeholder: "1234 in³" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 12,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "直徑 x 衝程 x 數", type: "label" }
-              ]
+              rows: [{ label: "直徑 x 衝程 x 數", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "text", placeholder: "888.8 x 888.8", prepend: "最大", append: "M/sec" },
-                { type: "text", placeholder: "888.8 x 888.8", prepend: "標準", append: "M/sec" },
-              ]
+                {
+                  label: "摘要",
+                  type: "text",
+                  placeholder: "888.8 x 888.8",
+                  prepend: "最大",
+                  append: "M/sec",
+                },
+                {
+                  type: "text",
+                  placeholder: "888.8 x 888.8",
+                  prepend: "標準",
+                  append: "M/sec",
+                },
+              ],
             },
             {
               rows: [
                 { label: "備註", type: "area", placeholder: "備註" },
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+                { label: "備註", type: "area", placeholder: "備註" },
+              ],
+            },
+          ],
         },
         {
           startAt: 14,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "活塞移動量", type: "label", }
-              ]
+              rows: [{ label: "活塞移動量", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "number", append: "m³", min: "0" },
-              ]
+              rows: [{ label: "摘要", type: "number", append: "m³", min: "0" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 15,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "活塞平均速度", type: "label", }
-              ]
+              rows: [{ label: "活塞平均速度", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 16,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "爆發壓力", type: "label", }
-              ]
+              rows: [{ label: "爆發壓力", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 17,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "馬力", type: "label", }
-              ]
+              rows: [{ label: "馬力", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "number",prepend: "最大", append: "HP" },
-                { type: "number",prepend: "標準", append: "HP" },
-              ]
+                {
+                  label: "摘要",
+                  type: "number",
+                  prepend: "最大",
+                  append: "HP",
+                },
+                { type: "number", prepend: "標準", append: "HP" },
+              ],
             },
             {
               rows: [
                 { label: "備註", type: "area", placeholder: "備註" },
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+                { label: "備註", type: "area", placeholder: "備註" },
+              ],
+            },
+          ],
         },
         {
           startAt: 19,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "轉速", type: "label", }
-              ]
+              rows: [{ label: "轉速", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "number",prepend: "最大", append: "RPM" },
-                { type: "number",prepend: "標準", append: "RPM" },
-              ]
+                {
+                  label: "摘要",
+                  type: "number",
+                  prepend: "最大",
+                  append: "RPM",
+                },
+                { type: "number", prepend: "標準", append: "RPM" },
+              ],
             },
             {
               rows: [
                 { label: "備註", type: "area", placeholder: "備註" },
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+                { label: "備註", type: "area", placeholder: "備註" },
+              ],
+            },
+          ],
         },
         {
           startAt: 21,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "燃料", type: "label", }
-              ]
+              rows: [{ label: "燃料", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "text",prepend: "種類",placeholder: "高級柴油" },
-                { type: "text",prepend: "消費量於標準HP", append: "以下" },
-              ]
+                {
+                  label: "摘要",
+                  type: "text",
+                  prepend: "種類",
+                  placeholder: "高級柴油",
+                },
+                { type: "text", prepend: "消費量於標準HP", append: "以下" },
+              ],
             },
             {
               rows: [
                 { label: "備註", type: "area", placeholder: "備註" },
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+                { label: "備註", type: "area", placeholder: "備註" },
+              ],
+            },
+          ],
         },
         {
           startAt: 23,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "燃料供給裝置", type: "label", }
-              ]
+              rows: [{ label: "燃料供給裝置", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "text",prepend: "燃油泵" },
-                { type: "text",prepend: "噴油嘴保持器" },
-                { type: "text",prepend: "噴油嘴" },
-              ]
+                { label: "摘要", type: "text", prepend: "燃油泵" },
+                { type: "text", prepend: "噴油嘴保持器" },
+                { type: "text", prepend: "噴油嘴" },
+              ],
             },
             {
               rows: [
                 { label: "備註", type: "area", placeholder: "備註" },
                 { label: "備註", type: "area", placeholder: "備註" },
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+                { label: "備註", type: "area", placeholder: "備註" },
+              ],
+            },
+          ],
         },
         {
           startAt: 26,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "閥開閉時期", type: "label", }
-              ]
+              rows: [{ label: "閥開閉時期", type: "label" }],
             },
             {
               rows: [
-                { label: "摘要", type: "text",prepend: "進氣-開" },
-                { type: "text",prepend: "進氣-閉" },
-                { type: "text",prepend: "排氣-開" },
-                { type: "text",prepend: "排氣-閉" },
-              ]
+                { label: "摘要", type: "text", prepend: "進氣-開" },
+                { type: "text", prepend: "進氣-閉" },
+                { type: "text", prepend: "排氣-開" },
+                { type: "text", prepend: "排氣-閉" },
+              ],
             },
             {
               rows: [
                 { label: "備註", type: "area", placeholder: "備註" },
                 { label: "備註", type: "area", placeholder: "備註" },
                 { label: "備註", type: "area", placeholder: "備註" },
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+                { label: "備註", type: "area", placeholder: "備註" },
+              ],
+            },
+          ],
         },
         {
           startAt: 30,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "潤滑方式", type: "label", }
-              ]
+              rows: [{ label: "潤滑方式", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 31,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "冷卻方式", type: "label", }
-              ]
+              rows: [{ label: "冷卻方式", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 32,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "啟動馬達", type: "label", }
-              ]
+              rows: [{ label: "啟動馬達", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 33,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "充電發電機", type: "label", }
-              ]
+              rows: [{ label: "充電發電機", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 34,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "冷卻水泵", type: "label", }
-              ]
+              rows: [{ label: "冷卻水泵", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 35,
-          columns:[
+          columns: [
             {
-              rows: [
-                { label: "涼油器", type: "label", }
-              ]
+              rows: [{ label: "涼油器", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
         {
           startAt: 36,
-          columns:[
-            { 
-              rows: [
-                { label: "節溫器", type: "label", }
-              ]
+          columns: [
+            {
+              rows: [{ label: "節溫器", type: "label" }],
             },
             {
-              rows: [
-                { label: "摘要", type: "text" },
-              ]
+              rows: [{ label: "摘要", type: "text" }],
             },
             {
-              rows: [
-                { label: "備註", type: "area", placeholder: "備註" }
-              ]
-            }
-          ]
+              rows: [{ label: "備註", type: "area", placeholder: "備註" }],
+            },
+          ],
         },
-      ]
+      ],
     },
     inputData: {
       RPFlowNo: "",
@@ -748,7 +651,7 @@ export default {
   }),
   components: {
     commonQuestion,
-    dateSelect
+    dateSelect,
   },
   mounted() {
     this.editType == this.actions.edit
@@ -953,5 +856,5 @@ export default {
       this.$emit("deleteRecord", this.inputData.RPFlowNo);
     },
   },
-}
+};
 </script>

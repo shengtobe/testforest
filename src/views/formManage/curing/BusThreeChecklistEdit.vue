@@ -176,6 +176,7 @@ import {
   getTodayDateString,
   encodeObject,
   decodeObject,
+  isDateObject,
 } from "@/assets/js/commonFun";
 import {
   fetchFormOrderOne,
@@ -821,10 +822,11 @@ export default {
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);
           inputArr.forEach((e) => {
-            if (e.endsWith("Day")) {
-              that.inputData.editableData[e] = dat[0][e].substr(0, 10);
+            var tmp = data[e];
+            if (isDateObject(tmp)) {
+              that.inputData.editableData[e] = tmp.substr(0, 10);
             } else {
-              that.inputData.editableData[e] = dat[0][e];
+              that.inputData.editableData[e] = temp;
             }
           });
         })
