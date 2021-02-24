@@ -3,68 +3,33 @@
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="a"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
-      </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="q"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
-      </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="formDepartOptions" v-model="ipt2.depart"
-          solo
+     <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
-
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
+      <v-col cols="12" sm="3" md="3">
+        <deptSelect
+          label="填寫人單位"
+          v-model="formData.searchItem.department"
+          :showIcon="formData.settings.formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -95,7 +60,17 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -107,391 +82,29 @@
       </v-card>
     </v-col>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
-          新增{{ title }}
-          <v-spacer></v-spacer>
-          <v-btn dark fab small text @click="close" class="mr-n2">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <div class="px-6 py-4">
-          <v-row>
-            <!-- 檢查部分 -->
-            <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="ass"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo />
-                </v-col>
-              </v-row>
-              <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">客車</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <!-- ---------------------K閥--------------------- -->
-                    <v-col cols="13" sm="12">
-                      <v-toolbar color="teal lighten-2" dark>
-                        <v-spacer />
-                        <v-toolbar-title>K閥</v-toolbar-title>
-                        <v-spacer />
-                      </v-toolbar>
-                    </v-col>
-                    <v-row
-                      no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">車種別</h3>
-                      </v-col>
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">現有車輛總數</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">車輛狀態</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">備註</h3>
-                      </v-col>
-                    </v-row>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      v-for="(item, idx) in items1_1"
-                      :key="idx"
-                      class="mb-6 mt-4"
-                    >
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="2">{{ item.question }}</v-col>
-                        <v-col cols="12" sm="2">
-                          <span class="d-sm-none error--text">現有車輛總數</span>
-                          <v-text-field v-model="items1_1[idx].status" auto-grow outlined rows="1" value="" type="number"/>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">檢查結果：</span>
-                          <v-radio-group
-                            dense
-                            row
-                            v-model="ipt.items[idx].status"
-                            class="pa-0 ma-0"
-                          >
-                            <v-radio color="success" label="使用" value="1"></v-radio>
-                            <v-radio color="blue" label="待用" value="2"></v-radio>
-                            <v-radio color="orange" label="委外修繕" value="3"></v-radio>
-                            <v-radio color="orange" label="待修" value="4"></v-radio>
-                            <v-radio color="orange" label="保養維修" value="5"></v-radio>
-                            <v-radio color="red" label="停用" value="6"></v-radio>
-                          </v-radio-group>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">備註：</span>
-                          <v-textarea auto-grow outlined rows="2" />
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                    <!-- ---------------------EA閥連控--------------------- -->
-                    <v-col cols="13" sm="12">
-                      <v-toolbar color="teal lighten-2" dark>
-                        <v-spacer />
-                        <v-toolbar-title>EA閥連控</v-toolbar-title>
-                        <v-spacer />
-                      </v-toolbar>
-                    </v-col>
-                    <v-row
-                      no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">車種別</h3>
-                      </v-col>
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">現有車輛總數</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">車輛狀態</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">備註</h3>
-                      </v-col>
-                    </v-row>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      v-for="(item, idx) in items1_2"
-                      :key="idx"
-                      class="mb-6 mt-4"
-                    >
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="2">{{ item.question }}</v-col>
-                        <v-col cols="12" sm="2">
-                          <span class="d-sm-none error--text">現有車輛總數</span>
-                          <v-text-field v-model="items1_2[idx].status" auto-grow outlined rows="1" type="number"/>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">檢查結果：</span>
-                          <v-radio-group
-                            dense
-                            row
-                            v-model="ipt.items[idx].status"
-                            class="pa-0 ma-0"
-                          >
-                            <v-radio color="success" label="使用" value="1"></v-radio>
-                            <v-radio color="blue" label="待用" value="2"></v-radio>
-                            <v-radio color="orange" label="委外修繕" value="3"></v-radio>
-                            <v-radio color="orange" label="待修" value="4"></v-radio>
-                            <v-radio color="orange" label="保養維修" value="5"></v-radio>
-                            <v-radio color="red" label="停用" value="6"></v-radio>
-                          </v-radio-group>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">備註：</span>
-                          <v-textarea auto-grow outlined rows="2" />
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">貨車</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <!-- ---------------------K閥--------------------- -->
-                    <v-col cols="13" sm="12">
-                      <v-toolbar color="teal lighten-2" dark>
-                        <v-spacer />
-                        <v-toolbar-title>K閥</v-toolbar-title>
-                        <v-spacer />
-                      </v-toolbar>
-                    </v-col>
-                    <v-row
-                      no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">車種別</h3>
-                      </v-col>
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">現有車輛總數</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">車輛狀態</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">備註</h3>
-                      </v-col>
-                    </v-row>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      v-for="(item, idx) in items2"
-                      :key="idx"
-                      class="mb-6 mt-4"
-                    >
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="2">{{ item.question }}</v-col>
-                        <v-col cols="12" sm="2">
-                          <span class="d-sm-none error--text">現有車輛總數</span>
-                          <v-text-field v-model="items2[idx].status" auto-grow outlined rows="1" type="number"/>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">檢查結果：</span>
-                          <v-radio-group
-                            dense
-                            row
-                            v-model="ipt.items[idx].status"
-                            class="pa-0 ma-0"
-                          >
-                            <v-radio color="success" label="使用" value="1"></v-radio>
-                            <v-radio color="blue" label="待用" value="2"></v-radio>
-                            <v-radio color="orange" label="委外修繕" value="3"></v-radio>
-                            <v-radio color="orange" label="待修" value="4"></v-radio>
-                            <v-radio color="orange" label="保養維修" value="5"></v-radio>
-                            <v-radio color="red" label="停用" value="6"></v-radio>
-                          </v-radio-group>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">備註：</span>
-                          <v-textarea auto-grow outlined rows="2" />
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">展示車</v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <!-- ---------------------K閥--------------------- -->
-                    <v-col cols="13" sm="12">
-                      <v-toolbar color="teal lighten-2" dark>
-                        <v-spacer />
-                        <v-toolbar-title>K閥</v-toolbar-title>
-                        <v-spacer />
-                      </v-toolbar>
-                    </v-col>
-                    <v-row
-                      no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
-                    >
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">車種別</h3>
-                      </v-col>
-                      <v-col cols="12" sm="2">
-                        <h3 class="mb-1">現有車輛總數</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">車輛狀態</h3>
-                      </v-col>
-                      <v-col cols="12" sm="4">
-                        <h3 class="mb-1">備註</h3>
-                      </v-col>
-                    </v-row>
-                    <v-alert
-                      dense
-                      border="top"
-                      colored-border
-                      color="teal"
-                      elevation="4"
-                      v-for="(item, idx) in items3"
-                      :key="idx"
-                      class="mb-6 mt-4"
-                    >
-                      <v-row no-gutter>
-                        <v-col cols="12" sm="2">{{ item.question }}</v-col>
-                        <v-col cols="12" sm="2">
-                          <span class="d-sm-none error--text">現有車輛總數</span>
-                          <v-text-field v-model="items3[idx].status" auto-grow outlined rows="1" type="number">0</v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">檢查結果：</span>
-                          <v-radio-group
-                            dense
-                            row
-                            v-model="ipt.items[idx].status"
-                            class="pa-0 ma-0"
-                          >
-                            <v-radio color="success" label="使用" value="1"></v-radio>
-                            <v-radio color="blue" label="待用" value="2"></v-radio>
-                            <v-radio color="orange" label="委外修繕" value="3"></v-radio>
-                            <v-radio color="orange" label="待修" value="4"></v-radio>
-                            <v-radio color="orange" label="保養維修" value="5"></v-radio>
-                            <v-radio color="red" label="停用" value="6"></v-radio>
-                          </v-radio-group>
-                        </v-col>
-                        <v-col cols="12" sm="4">
-                          <span class="d-sm-none error--text">備註：</span>
-                          <v-textarea auto-grow outlined rows="2" />
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-            <!-- 改善建議、改善追蹤 -->
-            <v-col cols="13" sm="12">
-              <v-toolbar color="teal lighten-2" dark>
-                <v-spacer />
-                <v-toolbar-title>合計</v-toolbar-title>
-                <v-spacer />
-              </v-toolbar>
-            </v-col>
-            <v-col cols="12" sm="2">
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="12">
-                  <h3 class="mb-1">現有車輛總數</h3>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12" sm="10" style="margin-top: -30px">
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">使用</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">待用</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">委外修繕</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">待修</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">保養維修</h3>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <h3 class="mb-1">停用</h3>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12" sm="2">
-              <v-row >
-                <v-col cols="12" sm="12">
-                  <!-- 現有車輛總數 -->
-                  <v-text-field v-model="count_AllCar" solo v-on="on" readonly></v-text-field>
-                </v-col>
-              </v-row>
-            </v-col>
-             <v-col cols="12" sm="10">
-              <v-row no-gutter >
-                <v-col cols="12" sm="2">
-                  <v-text-field solo v-model="using" readonly></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <v-text-field v-model="stand" solo v-on="on" readonly></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <v-text-field v-model="outService" solo v-on="on" readonly></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <v-text-field v-model="waitService" solo v-on="on" readonly></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <v-text-field v-model="Service" solo v-on="on" readonly></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="2">
-                  <v-text-field v-model="deactivated" solo v-on="on" readonly></v-text-field>
-                </v-col>
-              </v-row>
-            </v-col>
-            <!-- END 檢查部分 -->
-          </v-row>
-        </div>
-        <v-card-actions class="px-5 pb-5">
-          <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-dialog v-model="editLog.dealogEdit" max-width="900px">
+      <EditPage 
+        @close="close"
+        @search="search"
+        @deleteRecord="deleteRecord"
+        :key="'E'+editLog.EditDynamicKey"
+        :item="editLog.editItem"
+        :editType="editLog.editType"
+        :DB_Table="DB_Table"
+        :title="title"
+      />
+    </v-dialog>    
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="delLog.dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="delLog.RPFlowNo"
+        :key="'D' + delLog.DelDynamicKey"
+        @search="search"
+        @close="closeDialogDel();close()"
+        @cancel="closeDialogDel"
+      />
     </v-dialog>
   </v-container>
 </template>
@@ -499,296 +112,99 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
+import { getNowFullTime, getTodayDateString, unique, decodeObject} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
+import { Actions } from "@/assets/js/actions";
+import EditPage from '@/views/formManage/curing/VehicleStatusDailyReportEdit'
 
 export default {
   data() {
     return {
       title: "_____車庫客貨車輛狀態日報表",
       newText: "日報表",
-      isLoading: false,
-      disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      formDepartOptions: [
-        // 通報單位下拉選單
-        { text: "不限", value: "" },
-        ...formDepartOptions,
-      ],
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
-      Add: false,
-      dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
-      nowTime: "",
-      doMan:{
-        id: '',
-        name: '',
-        depart: '',
-        checkManName: ''
-      },
-      ipt2: {},
-      defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
+      DB_Table: "RP082",
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "填寫人單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
       //------
-      ipt: {//這是預設值
-        // department: "",
-        // date: new Date().toISOString().substr(0, 10),
-        items: [
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-          { status: "0", note: "" },
-        ],
-        items1_1: [
-          { status: "0"},
-          { status: "0"},
-        ],
-        items1_2: [
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-        ],
-        items2: [
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-          { status: "0"},
-        ],
-        items3: [
-          { status: "0"},
-          { status: "0"},
-        ]
+      //------formData 搜尋欄-----
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+        default: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        }
       },
-      items1_1: [
-        //K閥
-        { question: "阿里山號" },
-        { question: "電源客車" },
-      ],
-      items1_2: [
-        //EA閥連控
-        { question: "商務客車" },
-        { question: "阿里山號" },
-        { question: "中興號" },
-        { question: "檜木客車" },
-        { question: "祝客客車" },
-      ],
-      items2: [
-        //貨車 K閥
-        { question: "平守車" },
-        { question: "平甲車" },
-        { question: "蓬甲車" },
-        { question: "搶修車" },
-        { question: "砂石敞車" },
-        { question: "油罐車" },
-        { question: "高甲車" },
-      ],
-      items3: [
-        //展示車 K閥
-        { question: "普通客車", count: "0" },
-        { question: "普通客車", count: "0" },
-      ],
-      suggest: "", // 改善建議
+      //--------------------------
+      //---------delLog-----------
+      delLog: {
+        RPFlowNo: "",
+        DelDynamicKey: 0,
+        dialogDel: false
+      },
+      //---------------------------
+      //-------------editLog-------
+      editLog: {
+        editItem: {},
+        dealogEdit: false,
+        EditDynamicKey: 0,
+        editType: ""
+      },
+      //---------------------------
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+    EditPage,
+  },
   computed: {
     ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
-    count_AllCar() {
-      var total = 0;
-      // total = document.getElementById("input-152").value
-      // total = $("#input-152").val()
-
-      // total = Number(this.input-152);
-      // for (let index = 0; index < this.ipt.items.length; index++) {
-      //   total += Number(this.ipt.items[index].status);
-      // }
-      for (let index = 0; index < this.items1_1.length; index++) {
-        total += Number(this.items1_1[index].status);
-      }
-      for (let index = 0; index < this.items1_2.length; index++) {
-        total += Number(this.items1_2[index].status);
-      }
-      for (let index = 0; index < this.items2.length; index++) {
-        total += Number(this.items2[index].status);
-      }
-      for (let index = 0; index < this.items3.length; index++) {
-        total += Number(this.items3[index].status);
-      }
-      // var roundDecimal = function (val, precision) {
-      //   return (
-      //     Math.round(
-      //       Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10
-      //     ) / Math.pow(10, precision || 0)
-      //   );
-      // };
-
-      // total = total / 6;
-      return total
-    },
-    using() {//使用數量
-      var total = 0;
-      for (let index = 0; index < this.ipt.items.length; index++) {
-        if(this.ipt.items[index].status == "1"){
-          total++
-        }
-      }
-      return total
-    },
-    stand() {//待用數量
-      var total = 0;
-      for (let index = 0; index < this.ipt.items.length; index++) {
-        if(this.ipt.items[index].status == "2"){
-          total++
-        }
-      }
-      return total
-    },
-    outService() {//委外修繕數量
-      var total = 0;
-      for (let index = 0; index < this.ipt.items.length; index++) {
-        if(this.ipt.items[index].status == "3"){
-          total++
-        }
-      }
-      return total
-    },
-    waitService() {//待修數量
-      var total = 0;
-      for (let index = 0; index < this.ipt.items.length; index++) {
-        if(this.ipt.items[index].status == "4"){
-          total++
-        }
-      }
-      return total
-    },
-    Service() {//保養維修數量
-      var total = 0;
-      for (let index = 0; index < this.ipt.items.length; index++) {
-        if(this.ipt.items[index].status == "5"){
-          total++
-        }
-      }
-      return total
-    },
-    deactivated() {//停用數量
-      var total = 0;
-      for (let index = 0; index < this.ipt.items.length; index++) {
-        if(this.ipt.items[index].status == "6"){
-          total++
-        }
-      }
-      return total
-    },
+        userData: state => state.userData,  // 使用者基本資料
+    }),
   },
-  created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+  mounted() {
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.formData.default.dateStart = this.formData.default.dateEnd = getTodayDateString();
   },
   methods: {
-    initInput(){
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
-    },
-    unique(list){
-      var arr = [];
-      let b = false;
-      for (var i = 0; i < list.length; i++) {
-        if (i == 0) arr.push(list[i]);
-        b = false;
-        if (arr.length > 0 && i > 0) {
-          for (var j = 0; j < arr.length; j++) {
-            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
-              b = true;
-              //break;
-            }
-          }
-          if (!b) {
-            arr.push(list[i]);
-          }
-        }
-      }
-      return arr;
+    ...mapActions('system', [
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
+    reset(){
+      this.formData.searchItem = {...this.formData.default}
     },
     newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
-      this.initInput();
+      this.editLog.dealogEdit = true
+      this.editLog.editType = Actions.add;
+      this.editLog.EditDynamicKey += 1
     },
-    ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -802,17 +218,11 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
+          {"Column":"DepartCode","Value":this.formData.searchItem.department},
                 ],
         QyName:[
-          // "DISTINCT (RPFlowNo)",
-          // // "ID",
-          // // "Name",
-          // // "CheckDay",
-          // // "CheckStatus",
-          // " * "
           "RPFlowNo",
           "ID",
           "Name",
@@ -821,95 +231,34 @@ export default {
           "FlowId", "DepartName"
         ],
       }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
+        this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
       }).catch(err => {
         console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
+        this.chMsgbar({ success: false, msg: Constrant.query.failed });
       }).finally(() => {
         console.log("search final")
         this.chLoadingShow()
-      })},
-    // 存
-    save() {},
+      })
+    },
     // 關閉 dialog
     close() {
-      this.Add = false;
-      this.dialog3 = false;
-      this.dialogShowEdit = false;
-      this.dialogDel = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.addItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
+      this.editLog.dealogEdit = false
     },
     viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
-        ],
-      }).then(res => {
-        this.initInput();
-        console.log(res.data.DT)
-        let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
-        //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
-      })
-    },//viewPage
+      console.log("RPFlowNo: " + item.RPFlowNo);
+      this.editLog.EditDynamicKey += 1;
+      this.editLog.editType = Actions.edit;
+      this.editLog.editItem = item;
+      this.editLog.dealogEdit = true;
+    },
+    closeDialogDel() {
+      this.delLog.dialogDel = false
+    },
+    deleteRecord(RPFlowNo) {
+      this.delLog.dialogDel = true;
+      this.delLog.DelDynamicKey += 1;
+      this.delLog.RPFlowNo = RPFlowNo;
+    },
   },
 };
 </script>
