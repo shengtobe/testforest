@@ -152,3 +152,12 @@ export function unique(list) {
     }
     return arr;
 }
+
+export function isDateObject(input) {
+    if (input == null) {
+        return false;
+    }
+    var pattern = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/g;
+    var tmp = input.match(pattern);
+    return tmp == null || tmp.length > 0 ? true : false;
+}

@@ -46,7 +46,7 @@
                 <v-col cols="12" sm="4" md="3">
                   <h3 class="mb-1">車號</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.CarNo"
+                    :placeholder="powerCarData.CarNo"
                     solo
                     readonly
                   ></v-text-field>
@@ -54,7 +54,7 @@
                 <v-col>
                   <h3 class="mb-1">廠牌</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Brand"
+                    :placeholder="powerCarData.Brand"
                     solo
                     readonly
                   ></v-text-field>
@@ -62,7 +62,7 @@
                 <v-col>
                   <h3 class="mb-1">空調機編號</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.AirCond"
+                    :placeholder="powerCarData.AirCond"
                     solo
                     readonly
                   ></v-text-field>
@@ -70,7 +70,7 @@
                 <v-col>
                   <h3 class="mb-1">車輪直徑</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.WheelDiam"
+                    :placeholder="powerCarData.WheelDiam"
                     solo
                     readonly
                   ></v-text-field>
@@ -80,7 +80,7 @@
                 <v-col>
                   <h3 class="mb-1">型式</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Type"
+                    :placeholder="powerCarData.Type"
                     solo
                     readonly
                   ></v-text-field>
@@ -88,7 +88,7 @@
                 <v-col>
                   <h3 class="mb-1">年份</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Year"
+                    :placeholder="powerCarData.Year"
                     solo
                     readonly
                   ></v-text-field>
@@ -96,7 +96,7 @@
                 <v-col>
                   <h3 class="mb-1">客室設備</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.GuestEqip"
+                    :placeholder="powerCarData.GuestEqip"
                     solo
                     readonly
                   ></v-text-field>
@@ -104,7 +104,7 @@
                 <v-col>
                   <h3 class="mb-1">轉向架中心距離</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.DistBogie"
+                    :placeholder="powerCarData.DistBogie"
                     solo
                     readonly
                   ></v-text-field>
@@ -114,7 +114,7 @@
                 <v-col cols="12" sm="4" md="3">
                   <h3 class="mb-1">皮重</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Tare"
+                    :placeholder="powerCarData.Tare"
                     solo
                     readonly
                   ></v-text-field>
@@ -122,7 +122,7 @@
                 <v-col>
                   <h3 class="mb-1">電源</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.PowerType"
+                    :placeholder="powerCarData.PowerType"
                     solo
                     readonly
                   ></v-text-field>
@@ -130,7 +130,7 @@
                 <v-col>
                   <h3 class="mb-1">窗</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Window"
+                    :placeholder="powerCarData.Window"
                     solo
                     readonly
                   ></v-text-field>
@@ -138,7 +138,7 @@
                 <v-col>
                   <h3 class="mb-1">軸距</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Wheelbase"
+                    :placeholder="powerCarData.Wheelbase"
                     solo
                     readonly
                   ></v-text-field>
@@ -149,14 +149,14 @@
                   <h3 class="mb-1">載重</h3>
                   <v-text-field
                     solo
-                    :placeholder="inputData.editableData.Load"
+                    :placeholder="powerCarData.Load"
                     readonly
                   ></v-text-field>
                 </v-col>
                 <v-col>
                   <h3 class="mb-1">電瓶規格</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Battery"
+                    :placeholder="powerCarData.Battery"
                     solo
                     readonly
                   ></v-text-field>
@@ -164,7 +164,7 @@
                 <v-col>
                   <h3 class="mb-1">門</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.Door"
+                    :placeholder="powerCarData.Door"
                     solo
                     readonly
                   ></v-text-field>
@@ -172,7 +172,7 @@
                 <v-col>
                   <h3 class="mb-1">連結器中心高度</h3>
                   <v-text-field
-                    :placeholder="inputData.editableData.LinkerHeight"
+                    :placeholder="powerCarData.LinkerHeight"
                     solo
                     readonly
                   ></v-text-field>
@@ -182,19 +182,6 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
-      <!-- <div class="col-sm-4 col-md-8 col-12">
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="col-4 col-md-4 mr-3"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
-      </div> -->
-      <!-- 動力車保養紀錄 -->
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
           <v-expansion-panel>
@@ -282,7 +269,7 @@
         :editType="editType"
         :DB_Table="DB_Table"
         :title="title"
-        :carNo="inputData.editableData.CarNo"
+        :carNo="powerCarData.CarNo"
       />
     </v-dialog>
   </v-container>
@@ -297,8 +284,7 @@ import {
   unique,
   decodeObject,
 } from "@/assets/js/commonFun";
-import { maintainStatusOpts } from "@/assets/js/workList";
-import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
+import { fetchFormOrderList } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import EditPage from "@/views/formManage/curing/PowerCarMaintenanceEdit";
@@ -389,31 +375,24 @@ export default {
       },
     ],
     tableItems: [],
-    inputData: {
-      RPFlowNo: "",
-      DepartCode: "",
-      DepartName: "",
-      ID: "",
-      Name: "",
-      editableData: {
-        CheckDay: "",
-        CarNo: "",
-        Type: "",
-        Tare: "",
-        Load: "",
-        Brand: "",
-        Year: "",
-        PowerType: "",
-        Battery: "",
-        AirCond: "",
-        GuestEqip: "",
-        Window: "",
-        Door: "",
-        WheelDiam: "",
-        DistBogie: "",
-        Wheelbase: "",
-        LinkerHeight: "",
-      },
+    powerCarData: {
+      CheckDay: "",
+      CarNo: "",
+      Type: "",
+      Tare: "",
+      Load: "",
+      Brand: "",
+      Year: "",
+      PowerType: "",
+      Battery: "",
+      AirCond: "",
+      GuestEqip: "",
+      Window: "",
+      Door: "",
+      WheelDiam: "",
+      DistBogie: "",
+      Wheelbase: "",
+      LinkerHeight: "",
     },
     carNos: [],
     expand: [0],
@@ -444,7 +423,7 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      if (this.inputData.editableData.CarNo != "") {
+      if (this.powerCarData.CarNo != "") {
         console.log("newOne23");
         this.Add = true;
         console.log("this.Add: " + this.Add);
@@ -498,12 +477,12 @@ export default {
             if (data.length > 0) {
               this.disabled = false;
               console.log(data.length);
-              const inputArr = Object.keys(this.inputData.editableData);
+              const inputArr = Object.keys(this.powerCarData);
               inputArr.forEach((e) => {
                 if (e.endsWith("Day")) {
-                  that.inputData.editableData[e] = data[0][e].substr(0, 10);
+                  that.powerCarData[e] = data[0][e].substr(0, 10);
                 } else {
-                  that.inputData.editableData[e] = data[0][e];
+                  that.powerCarData[e] = data[0][e];
                 }
               });
             }

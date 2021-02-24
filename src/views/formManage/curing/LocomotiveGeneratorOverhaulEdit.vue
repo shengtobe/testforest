@@ -11,58 +11,88 @@
     <!-- 內容 -->
     <div class="px-6 py-4">
       <v-row>
-        <!-- 車號 -->
-        <v-col cols="8" sm="4">
-          <h3 class="mb-1">車號</h3>
-          <v-text-field v-model="carNo" :rules="nameRules" readonly solo />
+        <v-col cols="12" sm="4">
+          <h3 class="mb-1">車輛編號</h3>
+          <v-text-field
+            v-model.trim="inputData.editableData.CarNo"
+            solo
+          ></v-text-field>
         </v-col>
         <!-- 保養日期 -->
         <v-col cols="12" sm="4">
           <dateSelect
-            label="檢修日期"
+            label="保養日期"
             key="CheckDay"
             :showIcon="commonSettings.iconShow"
             v-model="inputData.editableData.CheckDay"
+            readonly
           />
         </v-col>
-        <!-- 出廠日期 -->
-        <v-col cols="12" sm="4">
-          <dateSelect
-            label="出廠日期"
-            key="CheckDay"
-            :showIcon="commonSettings.iconShow"
-            v-model="inputData.editableData.FactoryDay"
-          />
-        </v-col>
-
-        <!-- 累計公里數 -->
+        <!-- 使用時數(hr) -->
         <v-col cols="8" sm="4">
-          <h3 class="mb-1">累計公里數</h3>
+          <h3 class="mb-1">使用時數(hr)</h3>
           <v-text-field
-            v-model="inputData.editableData.Km"
+            v-model="inputData.editableData.UsedHour"
             :rules="nameRules"
             required
             solo
           />
         </v-col>
+        <!-- 累計使用時數 -->
+        <v-col cols="8" sm="4">
+          <h3 class="mb-1">累計使用時數</h3>
+          <v-text-field
+            v-model="inputData.editableData.Hours"
+            :rules="nameRules"
+            required
+            solo
+          />
+        </v-col>
+
         <!-- 保養人 -->
         <v-col cols="8" sm="4">
           <h3 class="mb-1">保養人</h3>
-          <v-text-field v-model="inputData.Name" solo />
+          <v-text-field v-model="inputData.editableData.Name" solo />
         </v-col>
-        <!-- 保養內容 -->
-        <v-col cols="12">
-          <h3 class="mb-1">保養內容</h3>
-          <v-textarea
-            hide-details
-            auto-grow
-            outlined
-            rows="6"
-            v-model.trim="inputData.editableData.Memo"
-          />
+        <!-- 車庫主管 -->
+        <v-col cols="8" sm="4">
+          <h3 class="mb-1">車庫主管</h3>
+          <v-text-field v-model="inputData.editableData.Supervisor" solo />
+        </v-col>
+        <!-- 保養項目 -->
+        <v-col cols="10">
+          <h3 class="mb-1">保養項目</h3>
+          <v-row class="ml-1" style="justify-content: left">
+            <v-checkbox
+              class="mr-3"
+              v-model="subItems.option1"
+              label="機油更換"
+              value="1"
+            />
+            <v-checkbox
+              class="mr-3"
+              v-model="subItems.option2"
+              label="機油濾清芯子換新"
+              value="2"
+            />
+            <v-checkbox
+              class="mr-3"
+              v-model="subItems.option3"
+              label="柴油濾清芯子換新"
+              value="3"
+            />
+            <v-checkbox
+              class="mr-3"
+              v-model="subItems.option4"
+              label="空氣濾清芯子換新"
+              value="4"
+            />
+          </v-row>
         </v-col>
       </v-row>
+      <hr />
     </div>
+    <!-- 輸出/取消 -->
     <v-card-actions class="px-5 pb-5">
       <v-btn
         v-if="editType != actions.add"
@@ -92,6 +122,7 @@ import {
   getTodayDateString,
   encodeObject,
   decodeObject,
+  isDateObject,
 } from "@/assets/js/commonFun";
 import {
   fetchFormOrderOne,
@@ -108,39 +139,38 @@ export default {
     item: Object,
     editType: String,
     DB_Table: String,
-    carNo: String,
   },
   data: () => ({
     actions: Actions,
     commonSettings: {
       iconShow: true,
-      title: "保養紀錄",
+      title: "柴油液力機車發電機檢修紀錄",
       isLoading: false,
       deptReadonly: true,
     },
-    nameRules: [
-      (v) => !!v || "公里數必須填寫",
-      (v) => v.length > 0 || "公里數必須大於0",
-    ],
+    nameRules: [(v) => !!v || "時數必須填寫", (v) => v > 0 || "時數必須大於0"],
     inputData: {
       RPFlowNo: "",
       DepartCode: "",
       DepartName: "",
       ID: "",
-      Name: "",
-      CarNo: "",
       editableData: {
+        Name: "",
+        CarNo: "",
         CheckDay: "",
-        FactoryDay: "",
-        Km: "",
-        Memo: "",
+        UsedHour: "",
+        Hours: "",
+        Supervisor: "",
+        Item: "",
       },
     },
+    subItems: { option1: "", option2: "", option3: "", option4: "" },
   }),
   components: {
     dateSelect,
     deptSelect,
   },
+
   mounted() {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
@@ -174,15 +204,15 @@ export default {
         KeyName: this.DB_Table, // DB table
         KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
         QyName: [
-          "CheckDay",
-          "DepartCode",
-          "DepartName",
-          "ID",
-          "Name",
+          "FlowId",
           "CarNo",
-          "FactoryDay",
-          "Km",
-          "Memo",
+          "CheckDay",
+          "Name",
+          "RPFlowNo",
+          "UsedHour",
+          "Hours",
+          "Supervisor",
+          "Item",
         ],
       })
         .then((res) => {
@@ -196,6 +226,7 @@ export default {
           this.inputData.DepartName = data.DepartName;
           data = decodeObject(data);
           const inputArr = Object.keys(this.inputData.editableData);
+          console.log(data);
           inputArr.forEach((e) => {
             var tmp = data[e];
             if (isDateObject(tmp)) {
@@ -204,6 +235,14 @@ export default {
               that.inputData.editableData[e] = tmp;
             }
           });
+          // deal with item to option1~4
+          if (data.Item != null) {
+            var tmp = data.Item;
+            tmp.split("/").forEach((e, idx) => {
+              that.subItems["option" + e] = e;
+            });
+          }
+          console.log(that.subItems);
         })
         .catch((err) => {
           console.log(err);
@@ -220,11 +259,20 @@ export default {
     save() {
       const that = this;
       let rtnObj = [];
+      // deal with option1~4
+      var items = [];
+      for (let index = 1; index <= 4; index++) {
+        const element = this.subItems["option" + index];
+        if (element != 0) {
+          items.push(element);
+        }
+      }
+      that.inputData.editableData.Item = items.join("/");
+      // --
       const keyArr = Object.keys(that.inputData.editableData);
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
-      rtnObj.push({ Column: "CarNo", Value: that.carNo });
       encodeObject(rtnObj);
       console.log(rtnObj);
       if (this.editType == this.actions.add) {

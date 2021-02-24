@@ -71,7 +71,7 @@
           elevation="3"
           dark
           large
-          to="/form-manage/labor/disaster-accident-survey-vendor-add"
+          to="/form-manage/labor/disaster-accident-survey-add"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
@@ -143,7 +143,7 @@ export default {
   data() {
     return {
       // 自定義變數
-      title: "災害事故調查表(承攬商)",
+      title: "災害事故調查表(本處員工)",
       newText: "調查表",
       isLoading: false,
       disabled: false,

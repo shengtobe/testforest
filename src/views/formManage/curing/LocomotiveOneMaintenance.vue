@@ -132,7 +132,6 @@ import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
-//import EditPage from "@/views/formManage/curing/LocomotiveOneMaintenanceEdit";
 import EditPage from "@/views/formManage/curing/LocomotiveCommonMaintenanceEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";

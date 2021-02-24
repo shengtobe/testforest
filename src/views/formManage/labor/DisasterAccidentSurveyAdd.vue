@@ -16,7 +16,12 @@
               </template>
               <span>以事故當天日期年月日+兩碼流水號</span>
             </v-tooltip>
-            <v-text-field dense single-line outlined placeholder="ex:108082301"/>
+            <v-text-field
+              dense
+              single-line
+              outlined
+              placeholder="ex:108082301"
+            />
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">調查日期</h3>
@@ -45,14 +50,20 @@
               />
             </v-menu>
           </v-col>
-          
+
           <v-col cols="12" sm="3">
             <h3 class="mb-1">罹災者姓名(姓名代號)</h3>
             <v-text-field dense single-line outlined />
           </v-col>
           <v-col cols="12" sm="1">
             <h3 class="mb-1">年齡</h3>
-            <v-text-field class="iwidth" type="number" dense single-line outlined />
+            <v-text-field
+              class="iwidth"
+              type="number"
+              dense
+              single-line
+              outlined
+            />
           </v-col>
           <v-col cols="12" sm="2">
             <h3 class="mb-1">性別</h3>
@@ -108,7 +119,7 @@
           <v-col cols="12" sm="2">
             <h3 class="mb-1">本項工作經驗</h3>
             <v-text-field type="number" dense single-line outlined>
-              <span slot="append" style="margin-top: 5px;">年</span>
+              <span slot="append" style="margin-top: 5px">年</span>
             </v-text-field>
           </v-col>
           <v-col cols="12" sm="3">
@@ -155,11 +166,23 @@
           </v-col>
           <v-col cols="12" sm="1">
             <h3 class="mb-1">時</h3>
-            <v-text-field class="iwidth" type="number" dense single-line outlined />
+            <v-text-field
+              class="iwidth"
+              type="number"
+              dense
+              single-line
+              outlined
+            />
           </v-col>
           <v-col cols="12" sm="1">
             <h3 class="mb-1">分</h3>
-            <v-text-field class="iwidth" type="number" dense single-line outlined />
+            <v-text-field
+              class="iwidth"
+              type="number"
+              dense
+              single-line
+              outlined
+            />
           </v-col>
           <v-col cols="12" sm="2">
             <h3 class="mb-1">星期</h3>
@@ -232,7 +255,9 @@
           </v-col>
           <v-col cols="12" sm="12">
             <h3 class="mb-1">事故概述</h3>
-            <h4 class="mb-1">請以六何(何人、為何、何時、何處、何事、如何)方式說明(必要時應附詳圖或照片)</h4>
+            <h4 class="mb-1">
+              請以六何(何人、為何、何時、何處、何事、如何)方式說明(必要時應附詳圖或照片)
+            </h4>
             <v-textarea auto-grow outlined rows="4" />
           </v-col>
           <v-col cols="12" sm="12">
@@ -272,11 +297,20 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import {
+  fetchFormOrderList,
+  fetchFormOrderOne,
+  createFormOrder,
+  createFormOrder0,
+} from "@/apis/formManage/serve";
+import { formDepartOptions } from "@/assets/js/departOption";
 
 export default {
   data() {
@@ -321,7 +355,7 @@ export default {
         "火災",
         "不當動作",
         "其他",
-        "無法歸類者"
+        "無法歸類者",
       ],
       educationLevel: [
         "國小",
@@ -335,7 +369,7 @@ export default {
         "大學校院",
         "研究所碩士班",
         "研究所博士班",
-        "自修"
+        "自修",
       ],
       indirectCause: ["不安全行為", "不可抗力", "不安全環境", "其他"],
       AddData: {
@@ -399,34 +433,34 @@ export default {
   },
   components: { Pagination }, // 頁碼
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
-    },
-    created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
+    }),
+  },
+  created() {
+    this.ipt2 = { ...this.defaultIpt };
+    //更新時間
+    var today = new Date();
+    let mStr = today.getMonth() + 1;
+    let dStr = today.getDate();
+    if (mStr < 10) {
+      mStr = "0" + mStr;
+    }
+    if (dStr < 10) {
+      dStr = "0" + dStr;
+    }
+    this.nowTime = today.getFullYear() + "-" + mStr + "-" + dStr;
   },
   methods: {
-    newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
+    newOne() {
+      console.log("newOne23");
+      this.Add = true;
+      console.log("this.Add: " + this.Add);
       this.initInput();
     },
-    ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+    ...mapActions("system", [
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -436,17 +470,17 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow()
+      this.chLoadingShow();
       fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
-        QyName:[
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          { Column: "StartDayVlaue", Value: this._data.z },
+          { Column: "EndDayVlaue", Value: this._data.df },
+          { Column: "DepartCode", Value: this._data.ipt2.depart },
+        ],
+        QyName: [
           // "DISTINCT (RPFlowNo)",
           // // "ID",
           // // "Name",
@@ -458,19 +492,23 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId", "DepartName"
+          "FlowId",
+          "DepartName",
         ],
-      }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        console.log("search final")
-        this.chLoadingShow()
       })
+        .then((res) => {
+          let tbBuffer = JSON.parse(res.data.DT);
+          let aa = unique(tbBuffer);
+          this.tableItems = aa;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("查詢時發生問題，請重新查詢!");
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
     },
     // 存
     save() {},
@@ -478,73 +516,6 @@ export default {
     closeWorkLogModal() {
       this.AddWorkLogModal = false;
     },
-    viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
-        ],
-      }).then(res => {
-        this.initInput();
-        console.log(res.data.DT)
-        let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
-        //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
-      })
-    },//viewPage
   },
 };
 </script>
