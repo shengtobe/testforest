@@ -21,6 +21,24 @@ export function regulCreate(data) { return axios(
     }
 )}
 
+// 更新
+export function updateRegul(data) { return axios(
+    {
+        url: '/sms/safety/regulfile/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 刪除
+export function deleteRegul(data) { return axios(
+    {
+        url: '/sms/safety/regulfile/delete',
+        method: 'delete',
+        data,
+    }
+)}
+
 // -------------------------------------------
 // // 新增
 // export function createNotify(data) { return axios(

@@ -85,11 +85,11 @@
                     </template>
 
                     <template v-slot:item.type="{ item }">
-                        {{ typeOpts.find(ele => ele.value == item.FileType).text }}
+                        {{ (item.FileType)? typeOpts.find(ele => ele.value == item.FileType).text : '' }}
                     </template>
 
                      <template v-slot:item.depart="{ item }">
-                        {{ departOpts.find(ele => ele.value == item.MaintainDesp).text }}
+                        {{ (item.MaintainDesp)? departOpts.find(ele => ele.value == item.MaintainDesp).text : '' }}
                     </template>
 
                     <template v-slot:item.file="{ item }">
@@ -109,7 +109,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item.id)"
+                            @click="del(item.PolicyCode)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -222,7 +222,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { departOptions } from '@/assets/js/departOption'
-import { regulfetchList, regulCreate } from '@/apis/smis/safeFile'
+import { regulfetchList, regulCreate, updateRegul, deleteRegul } from '@/apis/smis/safeFile'
 
 export default {
     data: () => ({
@@ -351,28 +351,47 @@ export default {
                     }
                 }).catch(err => {
                     console.log(err)
-                    this.chMsgbar({ show: true, msg: '伺服器發生問題' })
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                      this.isLoading = this.dialog = false
                 })
 
             } else {
                 // -------- 編輯時 -------
-                updateListOrder({
-                    WorkOrderID: this.id,  // 工單編號
+                updateRegul({
+                    PolicyCode: this.ipt.id,  // 編號
+                    SelectFileType: this.ipt.type,  // 文件類別
+                    MaintainDesp: this.ipt.depart,  // 維護單位
+                    Version: this.ipt.version,  // 版次
+                    Remark: this.ipt.note,  // 備註
+                    FileName: (this.ipt.file)? this.ipt.upload.fileName : null,  // 檔案名稱
+                    FileType: (this.ipt.file)? this.ipt.upload.fileType : null,  // 檔案類型
+                    UnitData: (this.ipt.file)? this.ipt.upload.unitData : null,  // 檔案內容
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        // 待後回覆無問題，再一併寫回 this.tableItems[this.itemIndex] 現有資料中
+                        // 待後回覆無問題，再一併寫回編輯中的該筆資料
+                        this.tableItems[this.itemIndex].MaintainDesp = this.ipt.depart  // 維護單位
+                        this.tableItems[this.itemIndex].FileType = this.ipt.type  // 文件類別
+                        this.tableItems[this.itemIndex].Version = this.ipt.version  // 版次
+                        this.tableItems[this.itemIndex].Remark = this.ipt.note  // 備註
+                        this.tableItems[this.itemIndex].convert_findDate = res.data.convert_findDate  // 最後更新時間
+
+                        // 若有傳檔案，則更新檔案路徑及檔名
+                        if (this.ipt.file) {
+                            this.tableItems[this.itemIndex].FileFullName = this.ipt.upload.fileName  // 檔案名稱
+                            this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
+                        }
+
                         this.chMsgbar({ success: true, msg: '更新成功' })
                     } else {
                         console.log(res.data.Msg)
-                        this.chMsgbar({ success: false, msg: '新增失敗' })
+                        this.chMsgbar({ success: false, msg: '更新失敗' })
                     }
                 }).catch(err => {
                     console.log(err)
-                    this.chMsgbar({ show: true, msg: '伺服器發生問題' })
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.isLoading = this.dialog = false
                 })
@@ -387,7 +406,9 @@ export default {
         // 編輯
         edit (item) {
             this.itemIndex = this.tableItems.indexOf(item)  // 取得索引值
-            this.ipt = {  // 設定表單資料
+
+            // 設定表單資料
+            this.ipt = {
                 id: item.PolicyCode,  // 編號
                 depart: item.MaintainDesp,  // 維護單位
                 type: item.FileType,  // 文件類型
@@ -403,30 +424,44 @@ export default {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                deleteRegul({
+                    PolicyCode: id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.tableItems.splice(this.itemIndex, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '刪除失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 選擇檔案(dialog內)
         select(file) {
             this.ipt.file = file
 
-            let reader = new FileReader()  // blob 用
+            if (file) {
+                let reader = new FileReader()  // blob 用
 
-            // 設定 reader 物件的 result 屬性，為 ArrayBuffer
-            reader.readAsArrayBuffer(file)
+                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
+                reader.readAsArrayBuffer(file)
 
-            // 設定讀取完時的動作
-            reader.onload = () => {
-                // 抓出副檔名
-                let nameArr = file.name.split('.')  // 用小數點拆成陣列
-                let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
-                
-                this.ipt.upload = { fileName: file.name, fileType: type, unitData: Array.from(new Uint8Array(reader.result)) }
+                // 設定讀取完時的動作
+                reader.onload = () => {
+                    // 抓出副檔名
+                    let nameArr = file.name.split('.')  // 用小數點拆成陣列
+                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                    
+                    this.ipt.upload = { fileName: file.name, fileType: type, unitData: Array.from(new Uint8Array(reader.result)) }
+                }
             }
         },
     },
