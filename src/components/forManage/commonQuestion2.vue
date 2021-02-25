@@ -131,6 +131,7 @@
       <slot name="afterExpan" :editItem="value.editableData"></slot>
     </v-expansion-panels>
     <!-- 文字區塊 -->
+    <slot name="beforeTextarea"></slot>
     <v-row v-if="settings.textareas">
       <v-col cols="12" v-for="(textarea,index) in settings.textareas" :key="'TXA_'+index">
         <h3 class="mb-1 indigo--text">
