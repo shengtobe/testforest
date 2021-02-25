@@ -273,7 +273,7 @@ export default {
             {
               width: 4,
               text: "檢查結果",
-              generate: false,
+              generate: true,
             },
             {
               width: 4,
