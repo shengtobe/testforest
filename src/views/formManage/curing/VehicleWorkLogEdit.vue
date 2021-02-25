@@ -23,11 +23,42 @@
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">{{ _typeChangeTitle.man }}人員</h3>
-              <v-text-field solo value v-model="inputData.editable.HandlerID"/>
+              <v-autocomplete
+                :items="orgList"
+                :filter="aFilter"
+                label="輸入人名或單位名稱進行搜尋"
+                solo
+                clearable
+                deletable-chips
+                multiple
+                small-chips
+                v-model="inputData.editableData.HandlerID"
+              />
             </v-col>
           </v-row>
           <v-row no-gutter class="indigo--text">
-            
+            <v-col cols="12" sm="6">
+              <h3 class="mb-1">{{ _typeChangeTitle.memo1 }}</h3>
+              <v-textarea 
+                auto-grow 
+                solo 
+                hide-details 
+                rows="8" 
+                v-model="inputData.editableData.Memo1"
+                >
+              </v-textarea>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <h3 class="mb-1">{{ _typeChangeTitle.memo2 }}</h3>
+              <v-textarea 
+                auto-grow 
+                solo 
+                hide-details 
+                rows="8" 
+                v-model="inputData.editableData.Memo2"
+                >
+              </v-textarea>
+            </v-col>
           </v-row>
         </v-col>
         <!-- END 檢查項目 -->
@@ -97,11 +128,12 @@ export default {
       editableData: {
         CheckDay: "",
         Type: "",
-        HandlerID: "",
+        HandlerID: [],
         Memo1: "",
         Memo2: "",
       },
     },
+    orgList: [],
   }),
   components: {
     dateSelect
@@ -110,7 +142,8 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.inputData.editable.type = this.type
+    this.inputData.editableData.Type = this.type
+    this._getOrg()
   },
   computed: {
     ...mapState("user", {
@@ -137,26 +170,101 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    //抓單位清單
-    _getOrg(){
-      const that = this
-      that.isLoading = true
+    _getOrg() { //抓單位
+      this.orgIsLoading = true
       fetchOrganization({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
-      }).then(res => {
+      }).then(res=>{
         if (res.data.ErrorCode == 0) {
-          this.deptOptions = res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
-        }else {
+          let rtndata = res.data
+          const people = rtndata.user_list_group_4.map(element=>{
+            let rtnObj = {}
+            rtnObj.text = element.UserName
+            rtnObj.value = element.UserName
+            rtnObj.group = element.DepartName 
+            rtnObj.child = ""
+            return rtnObj
+          })
+          let dept1 = rtndata.user_depart_list_group_1.filter(ele=>ele.DepartCode=="ARCO019").map(ele => {
+            let rtnObj1 = {}
+            rtnObj1.header = ele.DepartName
+            rtnObj1.text = ele.DepartName
+            rtnObj1.group = ele.DepartName
+            return rtnObj1
+          })
+          let lv2Names = []
+          let dept2 = rtndata.user_depart_list_group_2.filter(ele=>ele.DepartParentName=="車輛養護科").map(ele => {
+            let rtnObj2 = {}
+            rtnObj2.header = ele.DepartName
+            rtnObj2.text = ele.DepartName
+            rtnObj2.group = ele.DepartParentName
+            lv2Names.push(ele.DepartName)
+            return rtnObj2
+          })
+          const dept3 = rtndata.user_depart_list_group_3.filter(ele=>lv2Names.findIndex(e=>e==ele.DepartParentName)!=-1).map(ele => {
+            let rtnObj3 = {}
+            rtnObj3.header = ele.DepartName
+            rtnObj3.text = ele.DepartName
+            rtnObj3.group = ele.DepartParentName
+            return rtnObj3
+          })
+        
+          const that = this
+          dept1.forEach(ele => {
+            let rtnArrP1 = people.filter(e => {
+              return e.group == ele.group
+            })
+            let rtnArr2 = dept2.filter(element => {
+              return element.group == ele.text
+            })
+            if(rtnArrP1.length > 0 || rtnArr2.length > 0){
+              ele.child = rtnArrP1.map(t=>t.text).toString()
+              that.orgList.push(ele)
+            }
+            that.orgList.push(...rtnArrP1)
+            rtnArr2.forEach(element => {
+              let rtnArrP2 = people.filter(e => {
+                return e.group == element.text
+              })
+              let rtnArr3 = []
+              rtnArr3 = dept3.filter(item => {
+                return item.group == element.text
+              })
+              if(rtnArrP2.length > 0 || rtnArr3.length > 0){
+                element.child = rtnArrP2.map(t=>t.text).toString()
+                that.orgList.push(element)
+              }
+              that.orgList.push(...rtnArrP2)
+              rtnArr3.forEach(items => {
+                let rtnArrP3 = people.filter(e => {
+                  return e.group == items.text
+                })
+                if(rtnArrP3.length > 0){
+                  items.child = rtnArrP3.map(t=>t.text).toString()
+                  that.orgList.push(items)
+                }
+                that.orgList.push(...rtnArrP3)
+              })
+            })
+          })
+        }else{
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-          that.$router.push({ path: '/error' })
+          this.$router.push({ path: '/error' })
         }
       }).catch( err => {
-        this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
+        console.log(err)
+        this.chMsgbar({ success: false, msg: Constrant.query.failed })
       }).finally(() => {
-          that.deptOptions = decodeObject(that.deptOptions)
-          that.isLoading = false
+        this.orgIsLoading = false
       })
+    },
+    aFilter(item, queryText, itemText) { //選人的filter
+      const text = (itemText.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
+      const child = (item.child.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
+      const group = (item.group.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
+
+      return text || group || child
     },
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
@@ -164,6 +272,8 @@ export default {
       this.inputData.ID = this.userData.UserId;
       this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
       this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
+      this.inputData.editableData.HandlerID.push(this.userData.UserName);
+      this.inputData.editableData.Type=this.type
     },
     viewPage(item) {
       const that = this;
@@ -180,11 +290,9 @@ export default {
           "ID",
           "Name",
           "Type",
-          "Category",
-          "CarNo",
-          "UsingCarNo",
-          "Status",
-          "Memo",
+          "HandlerID",
+          "Memo1",
+          "Memo2",
         ],
       })
         .then((res) => {
@@ -198,6 +306,7 @@ export default {
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
+          that.inputData.editableData.HandlerID = that.inputData.editableData.HandlerID.split(",")
         })
         .catch((err) => {
           console.log(err);
@@ -214,12 +323,13 @@ export default {
     save() {
       const that = this;
       let rtnObj = [];
-      that.inputData.editableData.UsingCarNo = (that.inputData.editableData.Status=="0")? that.inputData.editableData.UsingCarNo: ""
+      that.inputData.editableData.HandlerID = that.inputData.editableData.HandlerID.join()
       const keyArr = Object.keys(that.inputData.editableData);
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
+      console.log(rtnObj)
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間

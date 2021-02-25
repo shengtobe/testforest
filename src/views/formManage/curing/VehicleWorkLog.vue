@@ -35,10 +35,25 @@
 
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
-            <v-btn title="編輯" class="mr-2" small dark fab color="info darken-1" @click="Add = true">
+            <v-btn
+              title="詳細資料"
+              class="mr-2"
+              small
+              dark
+              fab
+              color="info darken-1"
+              @click="viewPage(item,'1')"
+            >
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
-            <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
               <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -86,10 +101,25 @@
 
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
-            <v-btn title="編輯" class="mr-2" small dark fab color="info darken-1" @click="Add = true">
+            <v-btn
+              title="詳細資料"
+              class="mr-2"
+              small
+              dark
+              fab
+              color="info darken-1"
+              @click="viewPage(item,'2')"
+            >
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
-            <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
               <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -266,8 +296,8 @@ export default {
         ],
       }).then(res => {
         let tableItems = this.arrGroup(decodeObject(unique(JSON.parse(res.data.DT))),'Type')
-        this.tableItem1 = tableItems[0]
-        this.tableItem2 = tableItems[1]
+        this.tableItem1 = tableItems[1]
+        this.tableItem2 = tableItems[2]
       }).catch(err => {
         console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed });
@@ -280,10 +310,11 @@ export default {
     close() {
       this.editLog.dealogEdit = false
     },
-    viewPage(item) {
+    viewPage(item,newType) {
       console.log(item);
       console.log("RPFlowNo: " + item.RPFlowNo);
       this.editLog.EditDynamicKey += 1;
+      this.editLog.type = newType;
       this.editLog.editType = Actions.edit;
       this.editLog.editItem = item;
       this.editLog.dealogEdit = true;
