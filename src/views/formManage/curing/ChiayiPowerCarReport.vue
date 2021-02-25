@@ -26,12 +26,16 @@
         <v-data-table
           :headers="header"
           :items="tableItem"
+          :options.sync="pageOpt"
           disable-sort
           disable-filtering
           hide-default-footer
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
+          </template>
+          <template v-slot:footer="footer">
+            <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
           </template>
         </v-data-table>
       </v-card>
@@ -41,7 +45,7 @@
         <v-data-table
           :headers="headers"
           :items="tableItems"
-          :options.sync="pageOpt"
+          :options.sync="pageOpts"
           disable-sort
           disable-filtering
           hide-default-footer
@@ -78,7 +82,7 @@
           </template>
           <!-- 頁碼 -->
           <template v-slot:footer="footer">
-            <Pagination :footer="footer" :pageOpt="pageOpt" @chPage="chPage" />
+            <Pagination :footer="footer" :pageOpt="pageOpts" @chPage="chPages" />
           </template>
         </v-data-table>
       </v-card>
@@ -137,6 +141,7 @@ export default {
       newText:"日報表",
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
+      pageOpts: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP084",
       headers: [
@@ -247,6 +252,9 @@ export default {
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
+    },
+    chPages(n) {
+      this.pageOpts.page = n;
     },
     // 搜尋
     search() {

@@ -112,7 +112,6 @@ import {
   encodeObject,
   decodeObject,
 } from "@/assets/js/commonFun";
-import { generateSettings } from "@/assets/js/commonQuestion2Generater";
 import {
   fetchFormOrderOne,
   createFormOrder0,
