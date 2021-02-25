@@ -16,7 +16,7 @@
         <v-icon>mdi-reload</v-icon>清除搜尋內容
       </v-btn>
     </v-col>
-    <v-col cols="12" sm="8" md="3" align-self="end" class="mb-5 text-md-right">
+    <v-col cols="12" sm="4" md="3" align-self="end" class="mb-5 text-md-right">
       <v-btn
         color="indigo"
         elevation="3"
