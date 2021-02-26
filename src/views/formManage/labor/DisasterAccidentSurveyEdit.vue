@@ -204,6 +204,7 @@
               item-text="text"
               item-value="value"
               v-model="inputData.editableData.CheckOption13"
+              :selected="getWeekDay"
               outlined
             />
           </v-col>
@@ -406,11 +407,6 @@
             />
           </v-col>
         </v-row>
-
-        <!-- 送出 -->
-        <!-- <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" color="success">送出表單</v-btn>
-        </v-col> -->
       </v-row>
     </div>
     <v-card-actions class="px-5 pb-5">
@@ -477,12 +473,12 @@ export default {
       (v) => v.length > 0 || "公里數必須大於0",
     ],
     hourRules: [
-      (v) => !!v || "This field is required",
+      (v) => !!v || "必填欄位",
       (v) => (v && v >= 0) || "小時應介於0~23",
       (v) => (v && v <= 23) || "小時應介於0~23",
     ],
     minuteRules: [
-      (v) => !!v || "This field is required",
+      (v) => !!v || "必填欄位",
       (v) => (v && v >= 0) || "分鐘應介於0~60",
       (v) => (v && v <= 60) || "分鐘應介於0~60",
     ],
@@ -618,6 +614,10 @@ export default {
     }),
     mainTitle: function () {
       return this.editType + this.title + "(" + this.typeStr + ")";
+    },
+    getWeekDay: function () {
+      let tmpDate = new Date(this.inputData.editableData.CheckOption12);
+      this.inputData.editableData.CheckOption13 = tmpDate.getDay().toString();
     },
   },
   methods: {
@@ -795,10 +795,10 @@ export default {
   },
   filters: {},
   watch: {
-    "inputData.editableData.CheckOption12": function (value) {
-      let tmpDate = new Date(value);
-      this.inputData.editableData.CheckOption13 = tmpDate.getDay().toString();
-    },
+    // "inputData.editableData.CheckOption12": function (value) {
+    //   let tmpDate = new Date(value);
+    //   this.inputData.editableData.CheckOption13 = tmpDate.getDay().toString();
+    // },
   },
 };
 </script>

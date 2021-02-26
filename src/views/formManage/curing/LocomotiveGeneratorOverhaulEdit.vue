@@ -40,7 +40,7 @@
         </v-col>
         <!-- 累計使用時數 -->
         <v-col cols="8" sm="4">
-          <h3 class="mb-1">累計使用時數</h3>
+          <h3 class="mb-1">累計使用時數(hr)</h3>
           <v-text-field
             v-model="inputData.editableData.Hours"
             :rules="nameRules"
