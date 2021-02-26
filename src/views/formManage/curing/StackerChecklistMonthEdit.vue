@@ -7,7 +7,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-    <commonQuestion v-model="inputData" :settings="setting">
+    <commonQuestion v-model="inputData" :settings="setting" :key="componentKey">
       <template v-slot:moreDetails="item">
         <v-col cols="12" sm="4">
           <h3 class="mb-1">型式</h3>
@@ -75,6 +75,7 @@ export default {
         isLoading: false,
         deptReadonly: true,
       },
+      componentKey: 0,
       inputData: {
         RPFlowNo: "",
         DepartCode: "",
@@ -423,7 +424,7 @@ export default {
           ]
         }
       },
-      setting: {}
+     // setting: {}
     }
   },
   components: {
@@ -435,12 +436,15 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.setting = generateSettings(this.testSettings)
+    //this.setting = generateSettings(this.testSettings)
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    setting:function() {
+      return generateSettings(this.testSettings)
+    }
   },
   methods: {
     ...mapActions("system", [
@@ -453,6 +457,7 @@ export default {
       this.inputData.ID = this.userData.UserId;
       this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
       this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
+      //this.componentKey ++
     },
     viewPage(item) {
       const that = this;

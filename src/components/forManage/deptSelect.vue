@@ -41,11 +41,7 @@ export default {
   
   },
   mounted() {
-    this.dataSet = this.value
-    this.ifIcon = (this.showIcon)?this.showIcon:this.ifIcon
-    this.itemValue = (this.outType)?this.outType:this.itemValue 
-    this.isReadonly = this.readonly?this.readonly:this.isReadonly
-    this._getOrg()
+    this.init()
   },
   computed: {
     ...mapState("user", {
@@ -55,19 +51,23 @@ export default {
     
     // }
   },
-  created: function () {
-  
-  },
   methods: {
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    async init(){
+      await this._getOrg()
+      this.dataSet = this.value
+      this.ifIcon = (this.showIcon)?this.showIcon:this.ifIcon
+      this.itemValue = (this.outType)?this.outType:this.itemValue 
+      this.isReadonly = this.readonly?this.readonly:this.isReadonly
+    },
    //抓單位清單
-    _getOrg(){
+    async _getOrg(){
       const that = this
       that.isLoading = true
-      fetchOrganization({
+      await fetchOrganization({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
