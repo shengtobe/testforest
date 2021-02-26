@@ -75,7 +75,17 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -97,7 +107,6 @@
         :editType="editLog.editType"
         :DB_Table="DB_Table"
         :title="title"
-        :type="editLog.type"
       />
     </v-dialog>    
     <!-- 刪除確認視窗 -->
@@ -138,7 +147,7 @@ export default {
       newText: "紀錄表",
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP081",
+      DB_Table: "RP086",
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -178,7 +187,6 @@ export default {
         dealogEdit: false,
         EditDynamicKey: 0,
         editType: "",
-        type: "",
       },
     };
   },
