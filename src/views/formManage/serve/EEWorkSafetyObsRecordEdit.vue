@@ -8,16 +8,29 @@
       </v-btn>
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="setting">
-      <template v-slot:moreDetails="item">
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">型式</h3>
-          <v-text-field solo value v-model="item.editItem.Type" />
-        </v-col>
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">堆高荷重</h3>
-          <v-text-field solo value v-model="item.editItem.Load" />
-        </v-col>
-      </template>
+        <template v-slot:beforeTextarea>
+            <v-col cols="13" sm="12">
+                <v-toolbar color="teal lighten-2" dark>
+                <v-spacer />
+                <v-toolbar-title>觀察內容：（觀察此人進行工作檢討工作關鍵性安全要點、交談結果）</v-toolbar-title>
+                <v-spacer />
+                </v-toolbar>
+            </v-col>
+        </template>
+        <template v-slot:moreDetails="item">
+            <v-col cols="12" sm="4">
+            <h3 class="mb-1">編號</h3>
+            <v-text-field solo value v-model="item.editItem.EmpID" />
+            </v-col>
+            <!-- <v-col cols="12" sm="4" md="4">
+            <deptSelect
+            label="所屬單位"
+            v-model="item.editItem.EmpDepartName"
+            outType="key"
+            key="department"
+            />
+        </v-col> -->
+        </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
       <v-btn
@@ -75,6 +88,21 @@ export default {
         isLoading: false,
         deptReadonly: true,
       },
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+        default: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        }
+      },
       inputData: {
         RPFlowNo: "",
         DepartCode: "",
@@ -83,8 +111,7 @@ export default {
         Name: "",
         editableData: {
           CheckDay: "",
-          Type: "",
-          Load: "",
+          EmpID: "",
           CheckOption1: "0",
           CheckOption2: "0",
           CheckOption3: "0",
@@ -93,10 +120,14 @@ export default {
           CheckOption6: "0",
           CheckOption7: "0",
           CheckOption8: "0",
-          Analysis: "",
-          Evaluation: "",
-          Ameliorate: "",
-          Review: "",
+          CheckOption9: "",
+          CheckOption10: "",
+          CheckOption11: "",
+          CheckOption12: "",
+          CheckOption13: "",
+          CheckOption14: "",
+          CheckOption15: "",
+          CheckOption16: "",
         },
       },
       /*
@@ -190,191 +221,93 @@ export default {
       */
       testSettings: {
         subtitles: [
-          "1.依職業安全衛生法第23條及職業安全衛生管理辦法第17條規定辦理。",
-          "2.檢查結果請依情況選擇良好、不良。並應做檢查發現危害、分析危害因素，評估危害風險，依檢查風險評估結果採取改善措施、檢討改善措施之合宜性。",
-          "3.評估危害風險。",
-          "4.缺點由使用單位自行改善，不克者委請設備商維護。",
-          "5.本表於月底前完成檢查，經主管核章後，留存於管理單位之系統以保存備查。",
+          "1.本查核紀錄表每月至少觀察2人",
+          "2.本表於月底前完成查核，經主管核章後，留存於管理單位之系統保存備查。",
         ],
         textareas: [
           {
-            label: "檢查發現危害、分析危害因素",
-            model: "Analysis",
+            label: "一、工作步驟是否正確？合乎標準作業程序？",
+            model: "CheckOption9",
           },
           {
-            label: "評估危害風險(嚴重性及可能性分析)",
-            model: "Evaluation",
+            label: "二、工作熟練程度如何？",
+            model: "CheckOption10",
           },
           {
-            label: "評估結果改善措施",
-            model: "Ameliorate",
+            label: "三、不安全動作係由何種原因所致？",
+            model: "CheckOption11",
           },
           {
-            label: "檢討改善措施之合宜性",
-            model: "Review",
+            label: "四、可能發生的意外有哪些？防止措施如何？",
+            model: "CheckOption12",
+          },
+          {
+            label: "五、對工作者說明或糾正要點：",
+            model: "CheckOption13",
+          },
+          {
+            label: "六、提請有關單位協辦事項有哪些？",
+            model: "CheckOption14",
+          },
+          {
+            label: "七、工作者對進行此工作的意見：",
+            model: "CheckOption15",
+          },
+          {
+            label: "八、其他",
+            model: "CheckOption16",
           },
         ],
         questions: {
           panelQuestion: [      //題目
             {
-              panelLabel: "引擎系統",
+              panelLabel: "接受安全觀察之情況",
               questions: [
                 [
-                  "1. 引擎機油",
-                  "抽取探測棒",
-                  "應在標示範圍內",
+                  "1. 計畫安全觀察之員工",
                 ],
                 [
-                  "2. 水箱狀況",
-                  "發動前打開檢查",
-                  "水位正常無漏水",
+                  "2. 常不注意安全肇生事故者",
                 ],
                 [
-                  "3. 電瓶液",
-                  "電瓶液位",
-                  "應在標示範圍內",
+                  "3. 生病或不到工後恢復工作者",
                 ],
                 [
-                  "4. 啟動裝置",
-                  "測試",
-                  "無異常聲音",
+                  "4. 調換工作者",
                 ],
                 [
-                  "5. 離合器機能",
-                  "踏踩",
-                  "功能正常",
+                  "5. 無經驗者",
                 ],
                 [
-                  "6. 排檔桿工能",
-                  "排擋測試",
-                  "順暢",
+                  "6. 身體或心智不能安全工作者",
                 ],
                 [
-                  "7. 剎車機能",
-                  "功能測試",
-                  "功能正常",
+                  "7. 似經情緒擾亂有怪異行動者",
                 ],
                 [
-                  "8. 差速器操作",
-                  "運轉測試",
-                  "功能正常",
+                  "8. 累遭意外者",
                 ],
-              ],
-            },
-            {
-              panelLabel: "儀電功能",
-              questions: [
-                [
-                  "1. 電流表及指示燈",
-                  "目測",
-                  "功能正常",                  
-                ],
-                [
-                  "2. 油壓表及溫度表",
-                  "目測",
-                  "功能正常",                  
-                ],
-                [
-                  "3. 照後鏡、喇叭、燈光、警示燈",
-                  "動作測試及目測",
-                  "功能正常",
-                ],
-              ],
-            },
-            {
-              panelLabel: "裝卸裝置",
-              questions: [
-                [
-                  "1. 貨叉狀況",
-                  "檢視有無變形斷裂固定",
-                  "無變形斷裂固定良好",
-                ],
-                [
-                  "2. 貨背架狀況",
-                  "檢視有無變形斷裂固定",
-                  "無變形斷裂固定良好",
-                ],
-              ],
-            },
-            {
-              panelLabel: "油壓裝置",
-              questions: [
-                [
-                  "1. 循環機油泵",
-                  "運轉測試",
-                  "功能正常",
-                ],
-                [
-                  "2. 各部油封",
-                  "檢查有無洩漏",
-                  "應無洩漏",
-                ],
-                [
-                  "3. 變速箱、差速器",
-                  "檢查有無洩漏",
-                  "應無洩漏",
-                ],
-                [
-                  "4. 升高油壓",
-                  "檢查有無洩漏",
-                  "應無洩漏",
-                ],
-              ],
-            },
-            {
-              panelLabel: "車況",
-              questions: [
-                [
-                  "1. 潤滑狀況",
-                  "目視各軸封",
-                  "充份潤滑",
-                ],
-                [
-                  "2. 螺絲狀況",
-                  "檢視有無鬆脫",
-                  "應無鬆脫",
-                ],
-                [
-                  "3. 輪胎狀況",
-                  "檢查胎壓及外表",
-                  "無過磨損胎壓在5.6-7 kg/cm2",
-                ],
-              ],
-            },
-            {
-              panelLabel: "其他",
-              questions: [
-                [
-                  "1. 安全帶",
-                  "檢查安全帶固定、環扣帶無破裂",
-                  "安全帶固定端及環扣應完整無破裂可使用",
-                ],
-                [
-                  "2. 滅火器",
-                  "檢查滅火器壓力及噴管",
-                  "壓力維持於綠色範圍內，噴管無老化裂痕",
-                ]
               ],
             },
           ],
           questionLabels: [       //標題
             {
-              width: 3,
-              text: "檢查內容",
+              width: 6,
+              text: "被觀察者情況",
               generate: false,
             },
+            // {
+            //   width: 3,
+            //   text: "檢查方法",
+            //   generate: false,
+            // },
+            // {
+            //   width: 3,
+            //   text: "判定基準",
+            //   generate: false,
+            // },
             {
-              width: 3,
-              text: "檢查方法",
-              generate: false,
-            },
-            {
-              width: 3,
-              text: "判定基準",
-              generate: false,
-            },
-            {
-              width: 3,
+              width: 6,
               text: "結果",
               generate: true,
             },
@@ -399,7 +332,7 @@ export default {
           ]
         }
       },
-      setting: {}
+      // setting: {}
     }
   },
   components: {
@@ -411,12 +344,15 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.setting = generateSettings(this.testSettings)
+    // this.setting = generateSettings(this.testSettings)
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    setting:function() {
+      return generateSettings(this.testSettings)
+    }
   },
   methods: {
     ...mapActions("system", [

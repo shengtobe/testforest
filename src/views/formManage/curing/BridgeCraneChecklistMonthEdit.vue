@@ -469,7 +469,7 @@ export default {
           ]
         }
       },
-      setting: {}
+      // setting: {}
     }
   },
   components: {
@@ -481,12 +481,15 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.setting = generateSettings(this.testSettings)
+    // this.setting = generateSettings(this.testSettings)
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    setting:function() {
+      return generateSettings(this.testSettings)
+    }
   },
   methods: {
     ...mapActions("system", [
