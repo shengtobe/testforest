@@ -14,7 +14,7 @@
         <v-row no-gutter class="indigo--text">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">機車編號</h3>
-            <v-text-field solo>
+            <v-text-field solo v-model="inputData.editableData.CarNo">
               <span slot="prepend-inner">DL</span>
             </v-text-field>
           </v-col>
@@ -22,30 +22,31 @@
             <h3 class="mb-1">檢查日期</h3>
             <dateSelect
               key="dateEnd"
-              :showIcon="commonSettings.formIconShow"
+              v-model="inputData.editableData.CheckDay"
+              :showIcon="commonSettings.iconShow"
             />
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">氣候</h3>
-            <v-text-field solo />
+            <v-text-field solo v-model="inputData.editableData.Weather"/>
           </v-col>
         </v-row>
         <v-row no-gutter class="indigo--text">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">本日行駛</h3>
-            <v-text-field solo>
+            <v-text-field solo v-model="inputData.editableData.Km">
               <span slot="append">km</span>
             </v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">累計公里</h3>
-            <v-text-field solo>
+            <v-text-field solo v-model="inputData.editableData.TotalKm">
               <span slot="append">km</span>
             </v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">下次保養</h3>
-            <v-text-field solo>
+            <v-text-field solo v-model="inputData.editableData.NextChkDay">
               <span slot="append">km</span>
             </v-text-field>
           </v-col>
@@ -59,7 +60,7 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎油壓</h3>
-                  <v-text-field solo messages="(參考值1.5-5)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption1" messages="(參考值1.5-5)">
                     <template slot="append">
                       kg/cm²
                     </template>
@@ -67,18 +68,14 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎水溫</h3>
-                  <v-text-field solo messages="(參考值50-100℃)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption2" messages="(參考值50-100℃)">
                     <span slot="append">℃</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">TC油壓</h3>
-                  <v-text-field solo :messages="['TC油壓']">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption3" error-count=2 :messages="['(A:DBS115-2補充油壓2~4;主液壓:7~10)','(B：TDCBN-11-3500補充油壓2~6；主液壓19~22)']">
                     <template slot="append">kg/cm²</template>
-                    <template v-slot:message>
-                      (A:DBS115-2補充油壓2~4;主液壓:7~10)
-                      <br />(B：TDCBN-11-3500補充油壓2~6；主液壓19~22)
-                    </template>
                   </v-text-field>
                 </v-col>
               </v-row>
@@ -91,49 +88,49 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎油壓</h3>
-                  <v-text-field solo messages="(參考值2.1-4.6)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption4" messages="(參考值2.1-4.6)">
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎水溫</h3>
-                  <v-text-field solo messages="(參考值50-100℃)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption5" messages="(參考值50-100℃)">
                     <span slot="append">℃</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎轉速</h3>
-                  <v-text-field solo messages="(參考值1,800)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption6" messages="(參考值1,800)">
                     <span slot="append">rpm</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">頻率</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption7">
                     <span slot="append">Hz</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">電流</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption8">
                     <span slot="append">A</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">電壓</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption9">
                     <span slot="append">A</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">下次保養工時</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption10">
                     <span slot="append">小時</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">累計工時</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption11">
                     <span slot="append">小時</span>
                   </v-text-field>
                 </v-col>
@@ -147,15 +144,15 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">車次</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckOption12" />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">區間</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckOption13" />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">噸數</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckOption14" />
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -176,7 +173,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">調度員核章</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckMan" readonly/>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -188,94 +185,94 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎rpm</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption15">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <span slot="append">轉</span>
                   </v-text-field>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption16">
                     <span slot="prepend-inner" class="text-no-wrap">惰轉</span>
                     <span slot="append">轉</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎油壓</h3>
-                  <v-text-field solo messages="(參考值同上)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption17" messages="(參考值同上)">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
-                  <v-text-field solo messages="(參考值同上)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption18" messages="(參考值同上)">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎水溫</h3>
-                  <v-text-field solo messages="(參考值同上)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption19" messages="(參考值同上)">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <span slot="append">℃</span>
                   </v-text-field>
-                  <v-text-field solo messages="(參考值同上)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption20" messages="(參考值同上)">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <span slot="append">℃</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">TC油壓</h3>
-                  <v-text-field solo messages="(參考值同上)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption21" messages="(參考值同上)">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
-                  <v-text-field solo messages="(參考值同上)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption22" messages="(參考值同上)">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">TC油溫</h3>
-                  <v-text-field solo messages="(參考值80-110℃)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption23" messages="(參考值80-110℃)">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <span slot="append">℃</span>
                   </v-text-field>
-                  <v-text-field solo messages="(參考值80-110℃)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption24" messages="(參考值80-110℃)">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <span slot="append">℃</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">M.R</h3>
-                  <v-text-field solo messages="(參考值6.5-8)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption25" messages="(參考值6.5-8)">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
-                  <v-text-field solo messages="(參考值6.5-8)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption26" messages="(參考值6.5-8)">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">B.P</h3>
-                  <v-text-field solo messages="(參考值3.6-5)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption27" messages="(參考值3.6-5)">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
-                  <v-text-field solo messages="(參考值3.6-5)">
+                  <v-text-field solo v-model="inputData.editableData.CheckOption28" messages="(參考值3.6-5)">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">逆轉機油壓</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption29">
                     <template slot="append">kg/cm²</template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">充電</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption30">
                     <span slot="prepend-inner" class="text-no-wrap">最高</span>
                     <span slot="append">A</span>
                   </v-text-field>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption31">
                     <span slot="prepend-inner" class="text-no-wrap">最低</span>
                     <span slot="append">A</span>
                   </v-text-field>
@@ -290,15 +287,15 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">路基</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckOption32" />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">隧道及橋樑</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckOption33" />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">平交道安全防護設施</h3>
-                  <v-text-field solo />
+                  <v-text-field solo v-model="inputData.editableData.CheckOption34" />
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -310,7 +307,7 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12">
                   <h3 class="mb-1">其他事項</h3>
-                  <v-textarea solo rows="4" />
+                  <v-textarea solo rows="4"  v-model="inputData.editableData.CheckOption35"/>
                 </v-col>
               </v-row>
             </v-expansion-panel-content>
@@ -322,37 +319,37 @@
               <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">柴油</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption36">
                     <span slot="append">公升</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">液體變速機</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption37">
                     <span slot="append">公升</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">機油(10#)</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption38">
                     <span slot="append">公升</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">機油(15W/40)</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption39">
                     <span slot="append">公升</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">機油(85W/90)</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption40">
                     <span slot="append">公升</span>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">液壓油</h3>
-                  <v-text-field solo>
+                  <v-text-field solo v-model="inputData.editableData.CheckOption41">
                     <span slot="append">公升</span>
                   </v-text-field>
                 </v-col>
@@ -408,7 +405,6 @@ export default {
     editType: String,
     DB_Table: String,
     title: String,
-    type: String,
   },
   data: () => ({
     actions: Actions,
@@ -425,12 +421,55 @@ export default {
       DepartName: "",
       ID: "",
       Name: "",
+      CheckMan: "",
       editableData: {
+        CarNo: "",
         CheckDay: "",
-        Type: "",
-        HandlerID: [],
-        Memo1: "",
-        Memo2: "",
+        Weather: "",
+        Km: "",
+        TotalKm: "",
+        NextChkDay: "",
+        CheckOption1: "",
+        CheckOption2: "",
+        CheckOption3: "",
+        CheckOption4: "",
+        CheckOption5: "",
+        CheckOption6: "",
+        CheckOption7: "",
+        CheckOption8: "",
+        CheckOption9: "",
+        CheckOption10: "",
+        CheckOption11: "",
+        CheckOption12: "",
+        CheckOption13: "",
+        CheckOption14: "",
+        CheckOption15: "",
+        CheckOption16: "",
+        CheckOption17: "",
+        CheckOption18: "",
+        CheckOption19: "",
+        CheckOption20: "",
+        CheckOption21: "",
+        CheckOption22: "",
+        CheckOption23: "",
+        CheckOption24: "",
+        CheckOption25: "",
+        CheckOption26: "",
+        CheckOption27: "",
+        CheckOption28: "",
+        CheckOption29: "",
+        CheckOption30: "",
+        CheckOption31: "",
+        CheckOption32: "",
+        CheckOption33: "",
+        CheckOption34: "",
+        CheckOption35: "",
+        CheckOption36: "",
+        CheckOption37: "",
+        CheckOption38: "",
+        CheckOption39: "",
+        CheckOption40: "",
+        CheckOption41: "",
       },
     },
     orgList: [],
@@ -442,27 +481,11 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.inputData.editableData.Type = this.type
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
-    _typeChangeTitle: function() {
-      if(this.type == "1") {
-        return {
-          man: "保養",
-          memo1: "工作項目-上午",
-          memo2: "工作項目-下午"
-        }
-      }else{
-        return {
-          man: "處理",
-          memo1: "無法維護項目",
-          memo2: "處理情形"
-        }
-      }
-    }
   },
   methods: {
     ...mapActions("system", [
@@ -485,19 +508,66 @@ export default {
         KeyName: this.DB_Table, // DB table
         KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
         QyName: [
-          "CheckDay",
+          "CheckMan",
           "DepartCode",
           "DepartName",
           "ID",
           "Name",
-          "Type",
-          "HandlerID",
-          "Memo1",
-          "Memo2",
+          "CarNo",
+          "CheckDay",
+          "Weather",
+          "Km",
+          "TotalKm",
+          "NextChkDay",
+          "CheckOption1",
+          "CheckOption2",
+          "CheckOption3",
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
+          "CheckOption9",
+          "CheckOption10",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "CheckOption15",
+          "CheckOption16",
+          "CheckOption17",
+          "CheckOption18",
+          "CheckOption19",
+          "CheckOption20",
+          "CheckOption21",
+          "CheckOption22",
+          "CheckOption23",
+          "CheckOption24",
+          "CheckOption25",
+          "CheckOption26",
+          "CheckOption27",
+          "CheckOption28",
+          "CheckOption29",
+          "CheckOption30",
+          "CheckOption31",
+          "CheckOption32",
+          "CheckOption33",
+          "CheckOption34",
+          "CheckOption35",
+          "CheckOption36",
+          "CheckOption37",
+          "CheckOption38",
+          "CheckOption39",
+          "CheckOption40",
+          "CheckOption41",
         ],
       })
         .then((res) => {
           let dat = JSON.parse(res.data.DT);
+          for (const [key, value] of Object.entries(dat[0])) {
+            value = value || ""
+            dat[0][`${key}`]= `${value}`;
+          }
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
           this.inputData.DepartCode = dat[0].DepartCode;
@@ -507,7 +577,6 @@ export default {
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
-          that.inputData.editableData.HandlerID = that.inputData.editableData.HandlerID.split(",")
         })
         .catch((err) => {
           console.log(err);
@@ -524,8 +593,9 @@ export default {
     save() {
       const that = this;
       let rtnObj = [];
-      that.inputData.editableData.HandlerID = that.inputData.editableData.HandlerID.join()
+      console.log(that.inputData.editableData)
       const keyArr = Object.keys(that.inputData.editableData);
+      console.log(keyArr)
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
