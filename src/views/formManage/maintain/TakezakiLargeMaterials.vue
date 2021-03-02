@@ -285,7 +285,7 @@ export default {
       //------
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
           { status: "1", note: "" },
@@ -306,7 +306,9 @@ export default {
           { status: "1", note: "" },
         ],
       },
-      items1: [{ qq: "", ww: "", ee: "", rr: "" }],
+      items1:{
+        qq: "", ww: "", ee: "", rr: ""
+      },
       suggest: "", // 改善建議
     };
   },

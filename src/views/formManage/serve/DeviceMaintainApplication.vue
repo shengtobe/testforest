@@ -4,48 +4,20 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="QueryDayStart"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryData.DayStart" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryData.DayStart"
-            @input="QueryDayStart = false"
-            locale="zh-tw"
-          />
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="QueryDayEnd"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryData.DayEnd" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryData.DayEnd"
-            @input="QueryDayEnd = false"
-            locale="zh-tw"
-          />
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
@@ -173,30 +145,12 @@
                     >
                       <v-row no-gutter>
                         <v-col cols="12" sm="3">
-                          <h3>申請日期</h3>
-                          <v-menu
-                            v-model="ApplicationDay"
-                            :close-on-content-click="false"
-                            transition="scale-transition"
-                            max-width="290px"
-                            min-width="290px"
-                          >
-                            <template v-slot:activator="{ on }">
-                              <v-text-field
-                                v-model.trim="CheckDay"
-                                outlined
-                                v-on="on"
-                                dense
-                                single-line
-                              />
-                            </template>
-                            <v-date-picker
-                              color="purple"
-                              v-model="CheckDay"
-                              @input="ApplicationDay = false"
-                              locale="zh-tw"
-                            />
-                          </v-menu>
+                          <dateSelect
+                            label="檢查日期"
+                            v-model="CheckDay"
+                            key="dateStart"
+                            :showIcon="formIconShow"
+                          />
                         </v-col>
                         <v-col cols="12" sm="4">
                           <h3>編號(由車站填寫)</h3>
@@ -406,11 +360,35 @@
 
 <script>
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+  decodeObject,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import {
+  fetchFormOrderList,
+  fetchFormOrderOne,
+  createFormOrder,
+  createFormOrder0,
+  updateFormOrder,
+  deleteFormOrder,
+} from "@/apis/formManage/serve";
+import { formDepartOptions } from "@/assets/js/departOption";
+import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+class Question {
+  constructor(description, method, result, memo) {
+    this.description = description;
+    this.method = method;
+    this.result = result;
+    this.memo = memo;
+  }
+}
 
 export default {
   data() {
@@ -419,6 +397,14 @@ export default {
       newText: "申請書",
       isLoading: false,
       disabled: false,
+      input: {
+        dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
+        dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
+        case: "",
+        eqLoss: "",
+        departName: "",
+      },
+      formIconShow: true,
       QueryDayStart: "",
       QueryDayEnd: "",
       QueryData: {
@@ -517,7 +503,7 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -542,7 +528,7 @@ export default {
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
-      this.CheckDay = this.nowTime;
+      this.CheckDay = getTodayDateString();
       var step;
       
       this.CheckMan = '',
@@ -630,9 +616,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.QueryData.DayStart},
-          {"Column":"EndDayVlaue","Value":this._data.QueryData.DayEnd},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          { Column: "StartDayVlaue", Value: this.input.dateStart },
+          { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "DepartCode", Value: this.input.department },
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",

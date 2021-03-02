@@ -47,49 +47,49 @@ export const FormServeRouter = [
         linkText: '發電機定期檢查表(月)',// 42
         path: '/form-manage/serve/generator-checklist',
         component: () => import('@/views/formManage/serve/GeneratorChecklist.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '鋁梯定期檢查表(半年)',// 49
         path: '/form-manage/serve/aluminum-ladder-checklist',
         component: () => import('@/views/formManage/serve/AluminumLadderChecklist.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '6S 定期檢查表(月)',// 80
         path: '/form-manage/serve/6s-checklist-month',
         component: () => import('@/views/formManage/serve/6SChecklistMonth.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '危險品、易燃品儲存安全定期檢查表(三個月)',// 87
         path: '/form-manage/serve/dangerous-flammable-checklist-season',
         component: () => import('@/views/formManage/serve/DangerousFlammableChecklistSeason.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '一般電氣安全定期檢查表(三個月)',// 88
         path: '/form-manage/serve/general-elec-safety-checklist-season',
         component: () => import('@/views/formManage/serve/GeneralElecSafetyChecklistSeason.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '一般倉儲安全定期檢查表(三個月)',// 89
         path: '/form-manage/serve/general-storage-safety-checklist-season',
         component: () => import('@/views/formManage/serve/GeneralStorageSafetyChecklistSeason.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '員工工作安全觀察表(每月2 次)',// 90
         path: '/form-manage/serve/ee-work-safety-obs-record',
         component: () => import('@/views/formManage/serve/EEWorkSafetyObsRecord.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '各級主管走動管理督檢紀錄暨追蹤表(每月2 次)',//91
         path: '/form-manage/serve/supervisory-tracking-list-month',
         component: () => import('@/views/formManage/serve/SupervisoryTrackingListMonth.vue'),
-        formGroup: ['serve', 'maintain', 'curing']
+        formGroup: ['serve', 'maintain', 'curing', 'labor']
     },
     {
         linkText: '營運異常狀況通報單',// 114

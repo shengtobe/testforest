@@ -4,70 +4,31 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="dataPickerShowControl.startDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateStart"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateStart"
-            @input="dataPickerShowControl.startDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="dataPickerShowControl.endDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateEnd"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateEnd"
-            @input="dataPickerShowControl.endDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select :items="formDepartOptions" v-model="input.department" solo />
+        <deptSelect
+          label="管理單位"
+          v-model="input.department"
+          :showIcon="formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
-      </v-col>
+      <v-col cols="12" sm="3" md="3"></v-col>
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
@@ -81,14 +42,32 @@
         <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
+      </v-col>
+      <v-col cols="12" sm="3" md="6"></v-col>
+      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
+        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
+          <v-icon>mdi-magnify</v-icon>查詢
+        </v-btn>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+        md="3"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
+          class="mr-3 mb-3"
           @click="newOne"
         >
+          <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
@@ -155,7 +134,7 @@
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="close">取消</v-btn>
+          <v-btn @click="dialogDel = false">取消</v-btn>
           <v-btn color="red" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
             >刪除</v-btn
           >
@@ -178,7 +157,7 @@
     <v-dialog v-model="ShowDetailDialog" max-width="900px">
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
-          新增{{ title }}
+          {{ contentType | editStatus }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -197,29 +176,12 @@
             <v-col cols="12">
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="dataPickerShowControl.checkDate"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="CheckDay"
-                        solo
-                        v-on="on"
-                        readonly
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="CheckDay"
-                      @input="dataPickerShowControl.checkDate = false"
-                      locale="zh-tw"
-                    ></v-date-picker>
-                  </v-menu>
+                  <dateSelect
+                    label="檢查日期"
+                    v-model="CheckDay"
+                    key="dateStart"
+                    :showIcon="formIconShow"
+                  />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">管理單位</h3>
@@ -227,7 +189,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field v-model="CheckMan" solo />
+                  <v-text-field v-model="Name" solo readonly />
                 </v-col>
               </v-row>
               <v-row
@@ -247,7 +209,7 @@
                   <h3 class="mb-1">備註</h3>
                 </v-col>
               </v-row>
-              <v-alert
+              <!-- <v-alert
                 dense
                 border="top"
                 colored-border
@@ -296,6 +258,58 @@
                     />
                   </v-col>
                 </v-row>
+              </v-alert> -->
+              <v-alert
+                dense
+                border="top"
+                colored-border
+                color="teal"
+                elevation="4"
+                v-for="n in 10"
+                :key="n"
+                class="mb-6"
+              >
+                <v-row no-gutter>
+                  <v-col cols="12" sm="3">{{
+                    deatilItemDesc["desc" + n]
+                  }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <v-select
+                      :items="[
+                        { text: '動作測試', value: '1' },
+                        { text: '目視點檢', value: '2' },
+                      ]"
+                      v-model="detailItem['CheckMethod' + n]"
+                      solo
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <span class="d-sm-none error--text">檢查結果：</span>
+                    <v-radio-group
+                      dense
+                      row
+                      v-model="detailItem['CheckOption' + n]"
+                      class="pa-0 ma-0"
+                    >
+                      <v-radio color="success" label="良好" value="1"></v-radio>
+                      <v-radio color="red" label="不良" value="2"></v-radio>
+                      <v-radio
+                        color="black"
+                        label="無此項目"
+                        value="3"
+                      ></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col cols="12" sm="3">
+                    <v-textarea
+                      v-model="detailItem['Memo' + n]"
+                      hide-details
+                      auto-grow
+                      outlined
+                      rows="3"
+                    />
+                  </v-col>
+                </v-row>
               </v-alert>
             </v-col>
             <!-- 改善建議、改善追蹤 -->
@@ -312,14 +326,24 @@
         </div>
 
         <v-card-actions class="px-5 pb-5">
+          <v-btn
+            v-if="action != actions.add"
+            class="mr-2 white--text"
+            elevation="4"
+            color="red"
+            @click="dialogDel = true"
+            >刪除</v-btn
+          >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2" elevation="4" @click="ShowDetailDialog = false"
+            >取消</v-btn
+          >
           <v-btn
             color="success"
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -334,6 +358,7 @@ import {
   getNowFullTime,
   getTodayDateString,
   unique,
+  decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import {
@@ -347,7 +372,8 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
-
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -362,20 +388,15 @@ export default {
     return {
       title: "切割機定期檢查表(三個月)",
       action: Actions.add,
+      actions: Actions,
       newText: "檢查表",
       isLoading: false,
       disabled: false,
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
       formDepartOptions: [
         // 通報單位下拉選單
         { text: "", value: "" },
         ...formDepartOptions,
       ],
-      Add: false,
-      dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP022",
@@ -389,10 +410,12 @@ export default {
       },
       ipt2: {},
       defaultIpt: {
-        // 預設的欄位值
-        startDay: "",
-        EndDay: "",
-        depart: "", // 單位
+        dateStart: "", // 通報日期(起)
+        dateEnd: "", // 通報日期(迄)
+        case: "",
+        eqLoss: "",
+        departName: "",
+        department: "",
       },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
@@ -440,12 +463,6 @@ export default {
         },
       ],
       tableItems: [],
-      //------
-      ipt: {
-        department: "",
-        //name: JSON.parse(localStorage.getItem("user")).name,
-        date: new Date().toISOString().substr(0, 10),
-      },
       itemlist: {
         items1: [
           new Question("1. 防護蓋有否裝設", 1, 1, ""),
@@ -466,7 +483,6 @@ export default {
       Name: "",
       DepartName: "",
       CheckDay: "",
-      CheckMan: "",
       Advice: "",
       Measures: "",
 
@@ -476,7 +492,7 @@ export default {
       dialogNull: false,
 
       // controls for date picker
-      dataPickerShowControl: {
+      datePickerShowControl: {
         startDate: false,
         endDate: false,
         checkDate: false,
@@ -490,16 +506,32 @@ export default {
         eqLoss: "",
         departName: "",
       },
+
+      formIconShow: true,
+      detailItem: {},
+      deatilItemDesc: {
+        desc1: "1. 防護蓋有否裝設",
+        desc2: "2. 護目鏡是否配置",
+        desc3: "3. 機台固定裝置是否穩固",
+        desc4: "4. 馬達絕緣電阻",
+        desc5: "5. 電源線有無損傷",
+        desc6: "6. 外殼接地線是否裝設",
+        desc7: "7. 磨輪規格是否正確，有無裂痕",
+        desc8: "8. 磨輪固定情況是否良好",
+        desc9: "9. 試運轉是否平衡，有無異狀",
+        desc10: "10. 是否有「使用時禁戴手套」警語",
+      },
+      contentType: "",
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
   },
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
     this.doMan.id = this.userData.UserId;
@@ -511,7 +543,6 @@ export default {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;
       this.CheckDay = getTodayDateString();
-      this.CheckMan = "";
 
       for (var items in this.itemlist) {
         const element = this.itemlist[items];
@@ -525,14 +556,20 @@ export default {
       this.Measures = "";
     },
     newOne() {
+      this.contentType = "add";
       this.action = Actions.add;
-      this.ShowDetailDialog = true;
+      this.ShowDetailDialog = true; //開啟dialog
       console.log("this.ShowDetailDialog: " + this.ShowDetailDialog);
       this.initInput();
     },
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 清除搜尋內容
+    reset() {
+      this.input = { ...this.defaultIpt };
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -568,7 +605,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           console.log("search final");
@@ -587,7 +624,6 @@ export default {
         KeyName: this.DB_Table, // DB table
         KeyItem: [
           { Column: "CheckDay", Value: this.CheckDay },
-          { Column: "CheckMan", Value: this.CheckMan },
           { Column: "Advice", Value: this.Advice },
           { Column: "Measures", Value: this.Measures },
         ],
@@ -631,23 +667,26 @@ export default {
         updateFormOrder(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.updateFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow();
+            this.search();
           });
       } else {
         // 新增
         createFormOrder0(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.insertFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -721,14 +760,13 @@ export default {
         .then((res) => {
           this.initInput();
           //console.log("Raw response data");
-          //console.log(res.data.DT);
+          // console.log(res.data.DT);
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
           //console.log("Parsed JSON object");
-          //console.log(data);
+          // console.log(data);
 
           this.Name = data.Name;
-          this.CheckMan = data.CheckMan;
           this.CheckDay = data.CheckDay.substr(0, 10);
           this.Advice = data.Advice;
           this.Measures = data.Measures;
@@ -748,10 +786,11 @@ export default {
           }
           this.RPFlowNo = data.RPFlowNo;
           this.ShowDetailDialog = true;
+          this.detailItem = decodeObject(data);
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           this.chLoadingShow();
@@ -769,16 +808,32 @@ export default {
       })
         .then((res) => {
           this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.deleteFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
           this.chLoadingShow();
           this.ShowDetailDialog = false;
           this.search();
         });
+    },
+  },
+  filters: {
+    editStatus: function (value) {
+      let rtnStr = "";
+      if (value == "add") {
+        rtnStr = "新增";
+      } else if (value == "edit") {
+        rtnStr = "編輯";
+      } else if (value == "delete") {
+        rtnStr = "刪除";
+      } else {
+        rtnStr = "";
+      }
+      return rtnStr;
     },
   },
 };
