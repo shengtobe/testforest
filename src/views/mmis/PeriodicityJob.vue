@@ -136,7 +136,6 @@ import Pagination from "@/components/Pagination.vue";
 import { jobQueryList,jobDelete } from '@/apis/materialManage/routine'
 import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
 import PeriodcityEdit from '@/views/mmis/PeriodicityJobEdit'
-import LocomotiveThreeMaintenanceAddVue from '../formManage/curing/LocomotiveThreeMaintenanceAdd.vue';
 export default {
   data: () => ({
     Add: false,
@@ -144,7 +143,6 @@ export default {
     Delete: false,
     pageOpt: { page: 1 },
     expanded: [],
-    name: ["Bill", "Tom", "Mom", "May"],
     singleExpand: true,
     headers: [
       // 控制措施權責部門的表格欄位
