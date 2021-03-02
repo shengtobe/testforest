@@ -284,7 +284,7 @@
             </template>
 
             <template v-slot:item.ViewTicket="{ item }">
-              <v-btn fab small dark color="teal" @click="view(item)">
+              <v-btn fab small dark color="teal" @click="view(item.WorkNumber)">
                 <v-icon>mdi-file-document</v-icon>
               </v-btn>
             </template>
@@ -309,7 +309,7 @@
     </v-row>
 
     <!-- 檢視工單 -->
-    <v-dialog v-model="contentShow" max-width="500px">
+    <v-dialog v-model="contentShow" max-width="700px">
       <v-card>
         <v-card-title class="yellow darken-1 px-4 py-1">
           檢視工單
@@ -445,36 +445,7 @@ export default {
     deptLoading: false,
     selectDept: [],
     tableItems: [
-      {
-        id: "1",
-        WorkNumber: "AA_201011",
-        wbs: "PTT-UCC-NUK-168",
-        Dept: "養護科",
-        Established: "2020-10-10",
-        scheduleDate: "2020-10-12",
-        RepairDate: "2020-10-16",
-        StartWorkDate: "2020-10-20",
-        FinishedDate: "2020-10-25",
-        AcceptanceDate: "2020-10-28",
-        closDate: "2020-10-30",
-        WorkTotalHours: 80,
-        FaultDepict: "螺帽些許鬆動"
-      },
-      {
-        id: "2",
-        WorkNumber: "AA_201012",
-        wbs: "PTT-UCC-NUK-160",
-        Dept: "養護科",
-        Established: "2020-11-10",
-        scheduleDate: "2020-11-12",
-        RepairDate: "2020-11-16",
-        StartWorkDate: "2020-11-20",
-        FinishedDate: "2020-11-25",
-        AcceptanceDate: "2020-11-28",
-        closDate: "2020-11-30",
-        WorkTotalHours: 80,
-        FaultDepict: "螺帽些許鬆動"
-      },
+      
     ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
@@ -531,7 +502,7 @@ export default {
   },
   mounted() {
     this.getOrg()
-    this.search()
+   // this.search()
   }, 
   computed: {
     ...mapState ('user', {
@@ -548,14 +519,14 @@ export default {
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
         this.chLoadingShow()
         const wbs = this.searchIpt.wbs.split('-')
-        workTimeQueryList({
+        const sendData = {
           CreateDTime_Start: this.searchIpt.StartDay,
           CreateDTime_End: this.searchIpt.EndDay,
           DepartName: this.searchIpt.Dept,
-          MaintainCode_System: wbs[0],
-          MaintainCode_Loc: wbs[1],
-          MaintainCode_Eqp: wbs[2],
-          MaintainCode_Seq: wbs[3],
+          MaintainCode_System: wbs[0]||"",
+          MaintainCode_Loc: wbs[1]||"",
+          MaintainCode_Eqp: wbs[2]||"",
+          MaintainCode_Seq: wbs[3]||"",
           ArrivalWorkDTime: this.searchIpt.RepairDate,	
           StartWorkDTime: this.searchIpt.StartWorkDate,
           FinishDTime: this.searchIpt.FinishedDate,
@@ -564,6 +535,10 @@ export default {
           TotalWorkTime: this.searchIpt.Material,
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id
+        }
+        console.log(sendData)
+        workTimeQueryList({
+          ...sendData
         }).then(res => {
           if (res.data.ErrorCode == 0) {
             const dataList = decodeObject(res.data.WorkDataList)
@@ -574,12 +549,14 @@ export default {
               rtnObj.Dept= e.DispatchDepart
               rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
               rtnObj.Established = e.CallWorkDTime
+              return rtnObj
             })
           } else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
             this.$router.push({ path: '/error' })
           }
         }).catch( err => {
+          console.warn(err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
           this.chLoadingShow()
@@ -615,8 +592,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.selectDept = decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName))
-          this.selectDept = ["" , ...this.selectDept]
+          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
@@ -657,6 +633,7 @@ export default {
     // 顯示詳細資訊
     view(woID) {
       this.chLoadingShow()
+      console.log(woID)
       workTimeQuery({
         WorkerOrderID: woID,
         ClientReqTime: getNowFullTime(),  // client 端請求時間

@@ -48,7 +48,12 @@
           />
         </v-menu>
       </v-col>
-
+      <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-contacts</v-icon>科室
+        </h3>
+        <v-select solo hide-details :loading="deptLoading" :items="selectDept" v-model="searchIpt.Dept" />
+      </v-col>
       <v-col cols="12" sm="8" md="6">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>設備標示編號(WBS)
@@ -74,12 +79,7 @@
         </v-card>
       </v-dialog>
 
-      <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-contacts</v-icon>科室
-        </h3>
-        <v-select solo hide-details :loading="deptLoading" :items="selectDept" v-model="searchIpt.Dept" />
-      </v-col>
+      
 
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -229,58 +229,7 @@ export default {
     selectDept: [],
     deptLoading: false,
     //------------------
-    tableItems: [
-      {
-        id: "1",
-        WorkNumber: "AA_201011",
-        Dept: "養護科",
-        wbs: "PTT-UCC-NUK-168",
-        Established: "2010-10-10",
-        FaultDepict: "故障描述故障描述",
-        RepairFees: 100,
-        ClosingTime: "2010-10-20",
-      },
-      {
-        id: "2",
-        WorkNumber: "AA_201012",
-        Dept: "養護科",
-        wbs: "PTT-UCC-NUK-169",
-        Established: "2010-10-10",
-        FaultDepict: "故障描述故障描述",
-        RepairFees: 200,
-        ClosingTime: "2010-10-20",
-      },
-      {
-        id: "3",
-        WorkNumber: "AA_201013",
-        Dept: "養護科",
-        wbs: "PTT-UCC-NUK-170",
-        Established: "2010-10-10",
-        FaultDepict: "故障描述故障描述",
-        RepairFees: 300,
-        ClosingTime: "2010-10-20",
-      },
-      {
-        id: "4",
-        WorkNumber: "AA_201014",
-        Dept: "養護科",
-        wbs: "PTT-UCC-NUK-171",
-        Established: "2010-10-10",
-        FaultDepict: "故障描述故障描述",
-        RepairFees: 300,
-        ClosingTime: "2010-10-20",
-      },
-      {
-        id: "5",
-        WorkNumber: "AA_201015",
-        Dept: "養護科",
-        wbs: "PTT-UCC-NUK-165",
-        Established: "2010-10-10",
-        FaultDepict: "故障描述故障描述",
-        RepairFees: 500,
-        ClosingTime: "2010-10-20",
-      },
-    ], // 表格資料
+    tableItems: [], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
       // 表格顯示的欄位
@@ -355,17 +304,20 @@ export default {
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
         this.chLoadingShow()
         const wbs = this.searchIpt.wbs.split('-')
-        costQueryList({
+        const sendData = {
           CreateDTime_Start: this.searchIpt.StartDay,
           CreateDTime_End: this.searchIpt.EndDay,
           DepartName: this.searchIpt.Dept,
           TotalSpent: this.searchIpt.RepairFees,
-          MaintainCode_System: wbs[0],
-          MaintainCode_Loc: wbs[1],
-          MaintainCode_Eqp: wbs[2],
-          MaintainCode_Seq: wbs[3],
+          MaintainCode_System: wbs[0]||"",
+          MaintainCode_Loc: wbs[1]||"",
+          MaintainCode_Eqp: wbs[2]||"",
+          MaintainCode_Seq: wbs[3]||"",
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id
+        }
+        costQueryList({
+          ...sendData
         }).then(res => {
           if (res.data.ErrorCode == 0) {
             const dataList = decodeObject(res.data.WorkDataList)
@@ -376,12 +328,14 @@ export default {
               rtnObj.Dept= e.DispatchDepart
               rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
               rtnObj.Established = e.CallWorkDTime
+              return rtnObj
             })
           } else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
             this.$router.push({ path: '/error' })
           }
         }).catch( err => {
+          console.log(err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
           this.chLoadingShow()
@@ -453,6 +407,7 @@ export default {
     // 顯示詳細資訊
     view(woID) {
       this.chLoadingShow()
+      this.content = {}
       costQuery({
         WorkerOrderID: woID,
         ClientReqTime: getNowFullTime(),  // client 端請求時間

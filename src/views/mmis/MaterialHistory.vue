@@ -259,34 +259,7 @@ export default {
       toLv: 5,
     },
     componentKey: 0,
-    tableItems: [
-      {
-        id: "1",
-        WorkNumber: "AA_201011",
-        wbs: "PTT-UCC-NUK-168",
-        Dept: "養護科",
-        WorkTotalHours: 30,
-        Material: "鋼材",
-        LackMaterial: "否",
-        Established: "2020-10-10",
-        ClosingTime: "2020-10-20",
-        RepairStatus: "良好，無重大情形",
-        FaultDepict: "些許鬆動，進行調整",
-      },
-      {
-        id: "2",
-        WorkNumber: "AA_201012",
-        wbs: "PTT-UCC-NUK-160",
-        Dept: "養護科",
-        WorkTotalHours: 20,
-        Material: "鋼材",
-        LackMaterial: "否",
-        Established: "2020-10-15",
-        ClosingTime: "2020-10-30",
-        RepairStatus: "良好，無重大情形",
-        FaultDepict: "些許鬆動，進行調整",
-      },
-    ], // 表格資料
+    tableItems: [], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
       // 表格顯示的欄位
@@ -338,7 +311,7 @@ export default {
   }),
   mounted() {
     this.getOrg()
-    this.search()
+    //this.search()
   }, 
   components: { 
     Pagination, // 頁碼
@@ -362,18 +335,21 @@ export default {
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
         this.chLoadingShow()
         const wbs = this.searchIpt.wbs.split('-')
-        materialQueryList({
+        const sendData = {
           CreateDTime_Start: this.searchIpt.StartDay,
           CreateDTime_End: this.searchIpt.EndDay,
           DepartName: this.searchIpt.Dept,
-          MaintainCode_System: wbs[0],
-          MaintainCode_Loc: wbs[1],
-          MaintainCode_Eqp: wbs[2],
-          MaintainCode_Seq: wbs[3],
+          MaintainCode_System: wbs[0]||"",
+          MaintainCode_Loc: wbs[1]||"",
+          MaintainCode_Eqp: wbs[2]||"",
+          MaintainCode_Seq: wbs[3]||""||"",
           MaintainCode_Lv5: this.searchIpt.work,
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id
-        }).then(res => {
+        }
+        materialQueryList({
+          ...sendData
+          }).then(res => {
           if (res.data.ErrorCode == 0) {
             const dataList = decodeObject(res.data.WorkDataList)
             this.tableItems = dataList.map((e,i)=>{
@@ -383,12 +359,14 @@ export default {
               rtnObj.Dept= e.DispatchDepart
               rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq + e.MaintainCode_Lv5
               rtnObj.Established = e.CallWorkDTime
+              return rtnObj
             })
           } else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
             this.$router.push({ path: '/error' })
           }
         }).catch( err => {
+          console.warn(err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
           this.chLoadingShow()
@@ -446,8 +424,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.selectDept = decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName))
-          this.selectDept = ["" , ...this.selectDept]
+          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
@@ -471,11 +448,18 @@ export default {
     // 顯示詳細資訊
     view(woID) {
       this.chLoadingShow()
+      this.content = {}
+      console.log({
+        WorkerOrderID: woID,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      })
       materialQuery({
         WorkerOrderID: woID,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
+        console.log(res.data)
         if (res.data.ErrorCode == 0) {
           const dataList = decodeObject(res.data.WorkDataList[0])
           this.content.WorkNumber = dataList.WorkOrderID
@@ -495,6 +479,7 @@ export default {
           this.$router.push({ path: '/error' })
         }
       }).catch( err => {
+        console.log(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         this.chLoadingShow()
