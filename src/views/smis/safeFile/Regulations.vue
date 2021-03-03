@@ -430,7 +430,8 @@ export default {
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.tableItems.splice(this.itemIndex, 1)
+                        let idx = this.tableItems.findIndex(item => item.id == id)
+                        this.tableItems.splice(idx, 1)
                         this.chMsgbar({ success: true, msg: '刪除成功' })
                     } else {
                         console.log(res.data.Msg)

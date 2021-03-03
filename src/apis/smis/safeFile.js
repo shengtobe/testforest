@@ -39,30 +39,40 @@ export function deleteRegul(data) { return axios(
     }
 )}
 
-// -------------------------------------------
-// // 新增
-// export function createNotify(data) { return axios(
-//     {
-//         url: '/sms/event/create',
-//         method: 'post',
-//         data,
-//     }
-// )}
 
-// // 取得單一筆工單詳細資料
-// export function fetchNotifyOne(data) { return axios(
-//     {
-//         url: '/sms/event/detail',
-//         method: 'post',
-//         data,
-//     }
-// )}
+// ------------------ 安全會議文件 ---------------------
+// 搜尋
+export function meetfetchList(data) { return axios(
+    {
+        url: '/sms/safety/meetingdoc/query',
+        method: 'post',
+        data,
+    }
+)}
 
-// // 危害通報回覆
-// export function replyNotify(data) { return axios(
-//     {
-//         url: '/sms/event/reply',
-//         method: 'post',
-//         data,
-//     }
-// )}
+// 新增
+export function createMeet(data) { return axios(
+    {
+        url: '/sms/safety/meetingdoc/create',
+        method: 'post',
+        data,
+    }
+)}
+
+// 更新
+export function updateMeet(data) { return axios(
+    {
+        url: '/sms/safety/meetingdoc/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 刪除
+export function deleteMeet(data) { return axios(
+    {
+        url: '/sms/safety/meetingdoc/delete',
+        method: 'delete',
+        data,
+    }
+)}

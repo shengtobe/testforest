@@ -119,13 +119,14 @@
                     </template>
 
                     <template v-slot:item.date="{ item }">
-                        {{ `${item.date} ${item.hour}:${item.min}:00` }}
+                        {{ `${item.convert_findDate} ${item.convert_findDateHr}:${item.convert_findDateMin}:00` }}
                     </template>
 
                     <template v-slot:item.download="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            :href="item.download.link"
-                            :download="item.download.fileName"
+                            v-if="item.file_path != ''"
+                            :href="item.file_path"
+                            :download="item.file_name"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -139,7 +140,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item.id)"
+                            @click="del(item.SaftyFlieID)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -259,7 +260,7 @@
                         </v-col>
 
                         <v-col cols="12" v-if="itemIndex > -1" class="mt-n10">
-                            <span class="error--text">目前檔案： {{ ipt.download.fileName }}</span>
+                            <span class="error--text">目前檔案： {{ ipt.nowfile }}</span>
                         </v-col>
                     </v-row>
                 <!-- </v-form> -->
@@ -276,9 +277,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
+import { meetfetchList, createMeet, updateMeet, deleteMeet } from '@/apis/smis/safeFile'
 
 export default {
     data: () => ({
@@ -296,13 +299,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '會議日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '會議主題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件下載', value: 'download', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'SaftyFlieID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '會議日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '會議主題', value: 'MeetingTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '文件下載', value: 'download', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
@@ -323,6 +326,9 @@ export default {
     }),
     components: { Pagination },  // 頁碼
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         dialogTitle () {
             return this.itemIndex === -1 ? '新增資料' : '編輯資料'
         },
@@ -337,42 +343,30 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        date: '2020-05-01',
-                        hour: '09',
-                        min: '30', 
-                        title: '行車安全研討會',
-                        download: { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                        updateTime: '2020-05-01 09:30:00',
-                        note: '',
-                    },
-                    {
-                        id: '222',
-                        date: '2020-04-16',
-                        hour: '15',
-                        min: '20', 
-                        title: '年度保養檢討會',
-                        download: { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                        updateTime: '2020-04-16 15:20:00',
-                        note: '',
-                    },
-                    {
-                        id: '333',
-                        date: '2020-03-21',
-                        hour: '11',
-                        min: '40', 
-                        title: '職業安全研討會',
-                        download: { fileName: '123.docx', link: '/demofile/123.docx' },
-                        updateTime: '2020-03-21 11:40:00',
-                        note: '',
-                    },
-                ]
+            meetfetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_SaftyFileManage',  // DB table
+                KeyItem: [
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.dateStart },  // 會議日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.dateEnd },  // 會議日期(迄)
+                    { tableColumn: 'MeetingTitle', columnValue: this.searchIpt.title },  // 維護單位
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'SaftyFlieID',
+                    'MeetingDate',
+                    'MeetingTitle',
+                    'Remark',
+                    'UpdateDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 清除搜尋內容
         reset() {
@@ -386,17 +380,75 @@ export default {
         save() {
             this.isLoading = true
 
-            setTimeout(() => {
-                let txt = this.itemIndex === -1 ? '新增成功' : '更新成功'
+            if (this.itemIndex === -1) {
+                // -------- 新增時 -------
+                createMeet({
+                    MeetingDate: this.ipt.date,  // 會議日期
+                    MeetingDateHr: this.ipt.hour,  // 會議時間(小時)
+                    MeetingDateMin: this.ipt.min,  // 會議時間(分)
+                    MeetingTitle: this.ipt.title,  // 會議主題
+                    Remark: this.ipt.note,  // 備註
+                    FileName: this.ipt.upload.fileName,  // 檔案名稱
+                    FileType: this.ipt.upload.fileType,  // 檔案類型
+                    UnitData: this.ipt.upload.unitData,  // 檔案內容
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '新增成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '新增失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
+                     this.isLoading = this.dialog = false
+                })
 
-                // 編輯時，待後端回傳檔案資訊，再一併寫回 this.tableItems[this.itemIndex] 中
-                if (this.itemIndex > -1) {
-                    
-                }
-                
-                this.chMsgbar({ success: true, msg: txt })
-                this.isLoading = this.dialog = false
-            }, 1000)
+            } else {
+                // -------- 編輯時 -------
+                updateMeet({
+                    SaftyFlieID: this.ipt.id,  // 編號
+                    MeetingDate: this.ipt.date,  // 會議日期
+                    MeetingDateHr: this.ipt.hour,  // 會議時間(小時)
+                    MeetingDateMin: this.ipt.min,  // 會議時間(分)
+                    MeetingTitle: this.ipt.title,  // 會議主題
+                    Remark: this.ipt.note,  // 備註
+                    FileName: (this.ipt.file)? this.ipt.upload.fileName : null,  // 檔案名稱
+                    FileType: (this.ipt.file)? this.ipt.upload.fileType : null,  // 檔案類型
+                    UnitData: (this.ipt.file)? this.ipt.upload.unitData : null,  // 檔案內容
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        // 待後回覆無問題，再一併寫回編輯中的該筆資料
+                        this.tableItems[this.itemIndex].MeetingTitle = this.ipt.title  // 會議主題
+                        this.tableItems[this.itemIndex].convert_findDate = this.ipt.date  // 會議日期
+                        this.tableItems[this.itemIndex].convert_findDateHr = this.ipt.hour  // 會議時間(時)
+                        this.tableItems[this.itemIndex].convert_findDateMin = this.ipt.min  // 會議時間(分)
+                        this.tableItems[this.itemIndex].Remark = this.ipt.note  // 備註
+                        this.tableItems[this.itemIndex].convert_update = res.data.convert_findDate  // 最後更新時間
+
+                        // 若有傳檔案，則更新檔案路徑及檔名
+                        if (this.ipt.file) {
+                            this.tableItems[this.itemIndex].file_name = this.ipt.upload.fileName  // 檔案名稱
+                            this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
+                        }
+
+                        this.chMsgbar({ success: true, msg: '更新成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '更新失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
+                    this.isLoading = this.dialog = false
+                })
+            }
         },
         // 新增
         add() {
@@ -407,7 +459,18 @@ export default {
         // 編輯
         edit (item) {
             this.itemIndex = this.tableItems.indexOf(item)  // 取得索引值
-            this.ipt = { ...item }  // 設定表單資料
+            
+            // 設定表單資料
+            this.ipt = {
+                id: item.SaftyFlieID,  // 編號
+                date:  item.convert_findDate,  // 會議日期
+                hour: item.convert_findDateHr,  // 會議時間(時)
+                min: item.convert_findDateMin,  // 會議時間(分)
+                title: item.MeetingTitle,  // 會議主題
+                file: null,  // 檔案
+                note: item.Remark,  // 備註
+                nowfile: item.file_name,  // 目前檔案名稱
+            }
             this.dialog = true
         },
         // 刪除
@@ -415,17 +478,46 @@ export default {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                deleteMeet({
+                    SaftyFlieID: id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        let idx = this.tableItems.findIndex(item => item.id == id)
+                        this.tableItems.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '刪除失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 選擇檔案(dialog內)
         select(file) {
             this.ipt.file = file
+
+            if (file) {
+                let reader = new FileReader()  // blob 用
+
+                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
+                reader.readAsArrayBuffer(file)
+
+                // 設定讀取完時的動作
+                reader.onload = () => {
+                    // 抓出副檔名
+                    let nameArr = file.name.split('.')  // 用小數點拆成陣列
+                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                    
+                    this.ipt.upload = { fileName: file.name, fileType: type, unitData: Array.from(new Uint8Array(reader.result)) }
+                }
+            }
         },
     },
     created() {
