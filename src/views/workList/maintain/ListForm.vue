@@ -309,6 +309,7 @@ import { hourOptions } from '@/assets/js/dateTimeOption'
 import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
@@ -488,7 +489,7 @@ export default {
         initFetchData() {
             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
 
-            if (this.$route.params.id != undefined) {
+            if (this.id != undefined) {
                 // -------- 編輯時 -------
                 this.isEdit = true
 
@@ -506,7 +507,7 @@ export default {
             this.chLoadingShow()
 
             fetchWorkOrderOne({
-                WorkOrderID: this.$route.params.id,  // 工單編號
+                WorkOrderID: this.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data

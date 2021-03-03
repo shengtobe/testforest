@@ -94,7 +94,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -116,66 +117,48 @@ export default {
         note: '',  // 備註
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 初始化資料
+        // 初始化資料 (搜尋所有資料)
         initData() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: '123.pdf', 
-                        link: '/demofile/123.pdf',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '222',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: 'ASRC200701.jpg', 
-                        link: '/demofile/demo.jpg',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '333',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: 'ASRC200702.jpg', 
-                        link: '/demofile/demo2.jpg',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '444',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: '123.docx', 
-                        link: '/demofile/123.docx',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '555',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: '456.xlsx', 
-                        link: '/demofile/456.xlsx',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                ]
-
+            regulfetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_RegulFileManage',  // DB table
+                KeyItem: [
+                    { tableColumn: 'MaintainDesp', columnValue: this.searchIpt.depart },  // 維護單位
+                    { tableColumn: 'FileType', columnValue: this.searchIpt.type },  // 文件類型
+                    // { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.fileName },  // 文件名稱
+                    // { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.note },  // 備註
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'PolicyCode',
+                    'FileType',
+                    'FileFullName',
+                    'MaintainDesp',
+                    'Version',
+                    'Remark',
+                    'UpdateDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -185,16 +168,58 @@ export default {
         save() {
             this.isLoading = true
 
-            setTimeout(() => {
-                this.tableItems[this.editIdx].note = this.note
-                this.chMsgbar({ success: true, msg: '更新成功' })
+            updateRegul({
+                PolicyCode: this.ipt.id,  // 編號
+                SelectFileType: this.ipt.type,  // 文件類別
+                MaintainDesp: this.ipt.depart,  // 維護單位
+                Version: this.ipt.version,  // 版次
+                Remark: this.ipt.note,  // 備註
+                FileName: (this.ipt.file)? this.ipt.upload.fileName : null,  // 檔案名稱
+                FileType: (this.ipt.file)? this.ipt.upload.fileType : null,  // 檔案類型
+                UnitData: (this.ipt.file)? this.ipt.upload.unitData : null,  // 檔案內容
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // 待後回覆無問題，再一併寫回編輯中的該筆資料
+                    this.tableItems[this.itemIndex].MaintainDesp = this.ipt.depart  // 維護單位
+                    this.tableItems[this.itemIndex].FileType = this.ipt.type  // 文件類別
+                    this.tableItems[this.itemIndex].Version = this.ipt.version  // 版次
+                    this.tableItems[this.itemIndex].Remark = this.ipt.note  // 備註
+                    this.tableItems[this.itemIndex].convert_findDate = res.data.convert_findDate  // 最後更新時間
+
+                    // 若有傳檔案，則更新檔案路徑及檔名
+                    if (this.ipt.file) {
+                        this.tableItems[this.itemIndex].FileFullName = this.ipt.upload.fileName  // 檔案名稱
+                        this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
+                    }
+
+                    this.chMsgbar({ success: true, msg: '更新成功' })
+                } else {
+                    console.log(res.data.Msg)
+                    this.chMsgbar({ success: false, msg: '更新失敗' })
+                }
+            }).catch(err => {
+                console.log(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+            }).finally(() => {
                 this.isLoading = this.dialog = false
-            }, 1000)
+            })
         },
         // 編輯
         edit (item) {
-            this.editIdx = this.tableItems.indexOf(item)
-            this.note = item.note  // 設定表單資料
+            this.editIdx = this.tableItems.indexOf(item)  // 取得索引值
+
+            // 設定表單資料
+            this.ipt = {
+                id: item.PolicyCode,  // 編號
+                depart: item.MaintainDesp,  // 維護單位
+                type: item.FileType,  // 文件類型
+                version: item.Version,  // 版次
+                file: null,  // 檔案
+                note: item.Remark,  // 備註
+                nowfile: item.FileFullName,  // 目前檔案名稱
+            }
             this.dialog = true
         },
         // 刪除
@@ -202,12 +227,25 @@ export default {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                deleteRegul({
+                    PolicyCode: id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        let idx = this.tableItems.findIndex(item => item.id == id)
+                        this.tableItems.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '刪除失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },

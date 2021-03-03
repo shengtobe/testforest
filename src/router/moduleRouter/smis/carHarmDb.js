@@ -14,12 +14,14 @@ export const CarHarmdbRouter = [
     {
         linkText: '編輯',
         path: '/smis/car-harmdb/harms/:id/edit',
-        component: () => import('@/views/smis/carHarmDatabase/harms/Form.vue')
+        component: () => import('@/views/smis/carHarmDatabase/harms/Form.vue'),
+        props: true,
     },
     {
         linkText: '已立案',
         path: '/smis/car-harmdb/harms/:id/show',
-        component: () => import('@/views/smis/carHarmDatabase/harms/PageRouter.vue')
+        component: () => import('@/views/smis/carHarmDatabase/harms/PageRouter.vue'),
+        props: true,
     },
     // {
     //     linkText: '審核中',  // 審核完備資料
