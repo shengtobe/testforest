@@ -24,8 +24,8 @@
 
                     <template v-slot:item.link="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            :href="item.link"
-                            :download="item.fileName"
+                            :href="item.FileSavePath"
+                            :download="item.FileSaveName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -39,7 +39,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item.id)"
+                            @click="del(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -97,19 +97,20 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
+import { drivingfetchList, updateDriving, deleteDriving } from '@/apis/smis/safeFile'
 
 export default {
     data: () => ({
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '上傳人員', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '上傳日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檔案名稱', value: 'fileName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '下載', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '上傳人員', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '上傳日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '檔案名稱', value: 'FileSaveName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '下載', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'FileDescrip', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
@@ -132,24 +133,20 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            regulfetchList({
+            drivingfetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
-                KeyName: 'SMS_RegulFileManage',  // DB table
-                KeyItem: [
-                    { tableColumn: 'MaintainDesp', columnValue: this.searchIpt.depart },  // 維護單位
-                    { tableColumn: 'FileType', columnValue: this.searchIpt.type },  // 文件類型
-                    // { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.fileName },  // 文件名稱
-                    // { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.note },  // 備註
-                ],
+                KeyName: 'SMS_ReportFile',  // DB table
+                KeyItem: [],
                 QyName: [    // 欲回傳的欄位資料
-                    'PolicyCode',
-                    'FileType',
-                    'FileFullName',
-                    'MaintainDesp',
-                    'Version',
-                    'Remark',
+                    'ModuleItemID',
+                    'FileBelongMod',
+                    'InsertDTime',
+                    'FileSaveName',
+                    'FileSavePath',
+                    'FileDescrip',
                     'UpdateDTime',
+                    'CreatorID',
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
@@ -168,32 +165,16 @@ export default {
         save() {
             this.isLoading = true
 
-            updateRegul({
-                PolicyCode: this.ipt.id,  // 編號
-                SelectFileType: this.ipt.type,  // 文件類別
-                MaintainDesp: this.ipt.depart,  // 維護單位
-                Version: this.ipt.version,  // 版次
-                Remark: this.ipt.note,  // 備註
-                FileName: (this.ipt.file)? this.ipt.upload.fileName : null,  // 檔案名稱
-                FileType: (this.ipt.file)? this.ipt.upload.fileType : null,  // 檔案類型
-                UnitData: (this.ipt.file)? this.ipt.upload.unitData : null,  // 檔案內容
+            updateDriving({
+                AccidentCode: this.tableItems[this.editIdx].ModuleItemID,  // 事故編號
+                FileSaveName: this.tableItems[this.editIdx].FileSaveName,  // 檔案名稱
+                FileDescrip: this.note,  // 檔案說明(備註)
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     // 待後回覆無問題，再一併寫回編輯中的該筆資料
-                    this.tableItems[this.itemIndex].MaintainDesp = this.ipt.depart  // 維護單位
-                    this.tableItems[this.itemIndex].FileType = this.ipt.type  // 文件類別
-                    this.tableItems[this.itemIndex].Version = this.ipt.version  // 版次
-                    this.tableItems[this.itemIndex].Remark = this.ipt.note  // 備註
-                    this.tableItems[this.itemIndex].convert_findDate = res.data.convert_findDate  // 最後更新時間
-
-                    // 若有傳檔案，則更新檔案路徑及檔名
-                    if (this.ipt.file) {
-                        this.tableItems[this.itemIndex].FileFullName = this.ipt.upload.fileName  // 檔案名稱
-                        this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
-                    }
-
+                    this.tableItems[this.editIdx].FileDescrip = this.note  // 檔案說明(備註)
                     this.chMsgbar({ success: true, msg: '更新成功' })
                 } else {
                     console.log(res.data.Msg)
@@ -209,32 +190,24 @@ export default {
         // 編輯
         edit (item) {
             this.editIdx = this.tableItems.indexOf(item)  // 取得索引值
-
-            // 設定表單資料
-            this.ipt = {
-                id: item.PolicyCode,  // 編號
-                depart: item.MaintainDesp,  // 維護單位
-                type: item.FileType,  // 文件類型
-                version: item.Version,  // 版次
-                file: null,  // 檔案
-                note: item.Remark,  // 備註
-                nowfile: item.FileFullName,  // 目前檔案名稱
-            }
+            this.note = item.FileDescrip  // 設定表單資料 (備註)
             this.dialog = true
         },
         // 刪除
-        del(id) {
+        del(item) {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                deleteRegul({
-                    PolicyCode: id,  // 編號
+                this.editIdx = this.tableItems.indexOf(item)  // 取得索引值
+
+                deleteDriving({
+                    AccidentCode: this.tableItems[this.editIdx].ModuleItemID,  // 事故編號
+                    FileSaveName: this.tableItems[this.editIdx].FileSaveName,  // 檔案名稱
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        let idx = this.tableItems.findIndex(item => item.id == id)
-                        this.tableItems.splice(idx, 1)
+                        this.tableItems.splice(this.editIdx, 1)
                         this.chMsgbar({ success: true, msg: '刪除成功' })
                     } else {
                         console.log(res.data.Msg)

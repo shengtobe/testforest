@@ -76,3 +76,33 @@ export function deleteMeet(data) { return axios(
         data,
     }
 )}
+
+
+// ------------------ 行車事故事件附件 ---------------------
+// 搜尋
+export function drivingfetchList(data) { return axios(
+    {
+        url: '/sms/event/file/query',
+        method: 'post',
+        data,
+    }
+)}
+
+
+// 更新
+export function updateDriving(data) { return axios(
+    {
+        url: '/sms/event/file/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 刪除
+export function deleteDriving(data) { return axios(
+    {
+        url: '/sms/event/file/delete',
+        method: 'delete',
+        data,
+    }
+)}
