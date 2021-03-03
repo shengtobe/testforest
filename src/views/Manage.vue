@@ -219,11 +219,11 @@
                                     <strong class="black--text">統計分析</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/mmis/d/a">MTTR 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mttr">MTTR 分析</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/mmis/d/b">MTBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mtbf">MTBF 分析</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/mmis/d/c">MKBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mkbf">MKBF 分析</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 報表管理 -->

@@ -51,21 +51,21 @@ export const MmisRouter = [
     // ------ 統計分析 ------ 
     {
         linkText: 'MTTR 分析',
-        path: '/mmis/d/a',
+        path: '/mmis/analy/mttr',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/MTTR.vue')
     },
     {
         linkText: 'MTBF 分析',
-        path: '/mmis/d/b',
+        path: '/mmis/analy/mtbf',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/MTBF.vue')
     },
     {
         linkText: 'MKBF 分析',
-        path: '/mmis/d/c',
+        path: '/mmis/analy/mkbf',
         component: () =>
-            import ('@/views/mmis/Test.vue')
+            import ('@/views/mmis/MKBF.vue')
     },
 
     // ------ 統計分析 ------ 

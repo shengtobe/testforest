@@ -386,8 +386,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.selectDept = decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName))
-          this.selectDept = ["" , ...this.selectDept]
+          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
