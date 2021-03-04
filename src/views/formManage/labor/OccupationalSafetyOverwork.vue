@@ -123,7 +123,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">填表人員</h3>
-                  <v-text-field solo value />
+                  <v-text-field solo value v-model="doMan.name"/>
                 </v-col>
               </v-row>
               <v-col cols="13" sm="12">
@@ -213,15 +213,15 @@
             </v-col>
             <v-col cols="12" sm="7">
               <span class="d-sm-none error--text">回答：</span>
-              <v-radio-group dense row class="pa-0 ma-0">
+              <v-radio-group dense row class="pa-0 ma-0" v-model="CheckOption16">
                 <v-radio color="success" label="同意" value="1"></v-radio>
                 <v-radio color="red" label="不同意" value="2"></v-radio>
               </v-radio-group>
             </v-col>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <h3 class="mb-1 indigo--text">同意人</h3>
               <v-textarea auto-grow outlined rows="1" v-model.trim="ipt.suggest"></v-textarea>
-            </v-col>
+            </v-col> -->
             <v-col cols="12">
               <p>本職場超時工作(過勞)預防計畫編撰參考資料源自勞動部勞工研究所之過勞工作指引及台北市衛生局職場心理健康</p>
             </v-col>
@@ -232,7 +232,7 @@
                 <v-spacer />
               </v-toolbar>
             </v-col>
-            <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+            <v-expansion-panels :disabled="disabled" multiple>
               <v-expansion-panel>
                 <v-expansion-panel-header color="teal" class="white--text">個人疲勞</v-expansion-panel-header>
                 <v-expansion-panel-content>
@@ -375,11 +375,13 @@ export default {
       ],
       tableItems: [],
       //------
+      CheckOption16: "0",
       ipt: {
         department: "",
-        name: JSON.parse(localStorage.getItem("user")).name,
+        // name: JSON.parse(localStorage.getItem("user")).name,
         date: new Date().toISOString().substr(0, 10),
         items: [
+          { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
@@ -395,13 +397,16 @@ export default {
           { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
+          { status: 1, note: "" },
         ],
         itemSc1: [
           { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
+          { status: 1, note: "" },
         ],
         itemSc2: [
+          { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
           { status: 1, note: "" },
@@ -475,6 +480,7 @@ export default {
     PersonalFatigueTotal() {
       var total = 0;
       for (let index = 0; index < this.ipt.items.length; index++) {
+        console.log("index:" + index)
         total += Number(this.ipt.items[index].status);
       }
 
@@ -527,10 +533,11 @@ export default {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
+      this.CheckOption16 = "0"
       var step;
       for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
+        this.ipt.items[step].status = ""
+        this.ipt.items2[step].status = ""
       }
       this.Advice = "";
       this.Measures = ""
