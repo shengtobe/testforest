@@ -165,7 +165,6 @@ class Question {
     this.possibility = "";
     this.seriousness = "";
     this.riskLevel = 0;
-    this.innerRiskLevel = 0;
     this.controlMechanism = "";
     this.measures = "";
   }
@@ -176,11 +175,11 @@ class Question {
     }
     this.riskLevel = parseInt(this.possibility) * parseInt(this.seriousness);
     if (this.riskLevel <= 2) {
-      return "低度";
+      return "低度風險";
     } else if (this.riskLevel <= 4) {
-      return "中度";
+      return "中度風險";
     } else {
-      return "高度";
+      return "高度風險";
     }
   }
 
@@ -292,6 +291,7 @@ export default {
     dialogDelete,
   },
   created() {
+    this.chLoadingShow();
     if (this.$route.query.editType == 1) {
       this.editType = this.actions.add;
     } else {
