@@ -135,7 +135,14 @@ export default {
           backgroundColor:'blue',
           data: [],
           lineTension: 0
-        }
+        },
+        // {
+        //   label: 'MTTRTest',
+        //   borderColor: 'red',
+        //   backgroundColor: 'red',
+        //   data: [],
+        //   lineTension: 0
+        // }
       ]
     },
     options: {
@@ -152,7 +159,19 @@ export default {
           align: "top",
           anchor: "end",
           color: 'blue',
+          formatter: function(value) {
+              return value.y
+          }
         },
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            min: 0,
+            stepSize: 10,
+            beginAtZero: true
+          }
+        }]
       },
       responsive: true,
       maintainAspectRatio: false,
@@ -230,6 +249,7 @@ export default {
               let eMonth = eArr[1]
               const MTTRFind = MTTRList.find(el=>(parseInt(el.Year)==parseInt(eYear)&&parseInt(el.Month)==parseInt(eMonth)))
               this.chartdata.datasets[0].data.push(MTTRFind?MTTRFind.MTTR:"0")
+              // MTTRFind?this.chartdata.datasets[1].data.push({x:e,y:MTTRFind.MTTR}):""
             })
           } else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

@@ -72,6 +72,7 @@ import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
+    props:['id'],
     data: () => ({
         routeId: '',
         tableItems: [],  // 表格資料
@@ -97,7 +98,7 @@ export default {
         // 初始化資料
         initData() {
             this.chLoadingShow()
-            this.routeId = this.$route.params.id  // 路由參數(id)
+            this.routeId = this.id  // 路由參數(id)
 
             setTimeout(() => {
                 this.name = '王小明'
