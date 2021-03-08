@@ -91,7 +91,7 @@
                         <v-btn fab small color="primary"
                             target="_blank"
                             class="mr-3"
-                            :to="`/smis/car-harmdb/control-measures/${item.id}/edit`"
+                            :to="`/smis/car-harmdb/control-measures/${item.ProcCode}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>

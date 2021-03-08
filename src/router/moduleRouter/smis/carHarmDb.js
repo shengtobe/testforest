@@ -80,6 +80,7 @@ export const CarHarmdbRouter = [
     {
         linkText: '編輯',
         path: '/smis/car-harmdb/control-measures/:id/edit',
-        component: () => import('@/views/smis/carHarmDatabase/controlMeasures/Form.vue')
+        component: () => import('@/views/smis/carHarmDatabase/controlMeasures/Form.vue'),
+        props: true,
     },
 ]
