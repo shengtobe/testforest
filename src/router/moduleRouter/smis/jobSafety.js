@@ -105,21 +105,25 @@ export const JobSafetyRouter = [
     {
         linkText: '個人健檢資料列表',
         path: '/smis/jobsafety/physical/:id/list',
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/List.vue')
     },
     {
         linkText: '個人健檢資料新增',
         path: '/smis/jobsafety/physical/:id/add', 
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/Form.vue')
     },
     {
         linkText: '個人健檢資料詳細內容',
         path: '/smis/jobsafety/physical/:sid/show', 
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/Show.vue')
     },
     {
         linkText: '個人健檢資料編輯',
         path: '/smis/jobsafety/physical/:id/edit/:sid', 
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/Form.vue')
     },
 

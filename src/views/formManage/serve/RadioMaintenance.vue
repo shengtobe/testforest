@@ -2,95 +2,61 @@
   <v-container style="max-width: 1200px">
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
-      <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(起)
-        </h3>
-        <v-menu
-          v-model="dateMenuShow.start"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="ipt.dateStart"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="ipt.dateStart"
-            @input="dateMenuShow.start = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+    <v-row class="px-2 mb-8">
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
-      <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(迄)
-        </h3>
-        <v-menu
-          v-model="dateMenuShow.end"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="ipt.dateEnd"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="ipt.dateEnd"
-            @input="dateMenuShow.end = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>輸入編號(或機號)
         </h3>
-        <v-select :items="MachineID" v-model="ipt.PAID" solo />
+        <v-select :items="MachineID" v-model="input.PAID" solo />
       </v-col>
       <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>檢查單位
-        </h3>
-        <v-select v-model="ipt.case" :items="formDepartOptions" solo />
+        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn
-          color="green"
-          dark
-          large
-          class="col-4 col-md-2 mr-3"
-          @click="search"
-        >
+
+      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
+        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+        md="3"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="col-4 col-md-3 mr-3"
+          class="mr-3 mb-3"
           @click="newOne"
         >
           <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
-      </div>
+      </v-col>
+
       <!-- 手攜無線電保養紀錄 -->
       <v-col cols="12">
         <v-card>
@@ -291,8 +257,10 @@
               </v-col>
             </v-row>
           </div>
+          <!-- 輸出/取消 -->
           <v-card-actions class="px-5 pb-5">
             <v-btn
+              v-if="action != actions.add"
               class="mr-2"
               elevation="4"
               color="red"
@@ -324,6 +292,7 @@ import {
   getNowFullTime,
   getTodayDateString,
   unique,
+  decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import {
@@ -337,17 +306,29 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+class Question {
+  constructor(description, method, result, memo) {
+    this.description = description;
+    this.method = method;
+    this.result = result;
+    this.memo = memo;
+  }
+}
 
 export default {
   data: () => ({
     title: "手攜無線電機檢查紀錄表",
     action: Actions.add,
+    actions: Actions,
     newText: "紀錄表",
     isLoading: false,
     disabled: false,
     PAID: "",
     //---api---
     DB_Table: "RP018",
+    //
     RPFlowNo: "",
     nowTime: "",
     doMan: {
@@ -359,9 +340,11 @@ export default {
     ipt2: {},
     defaultIpt: {
       // 預設的欄位值
-      startDay: "",
-      EndDay: "",
-      depart: "", // 單位
+      dateStart: "", // 通報日期(起)
+      dateEnd: "", // 通報日期(迄)
+      case: "",
+      eqLoss: "",
+      PAID: "",
     },
     headers: [
       // 表格顯示的欄位 DepartCode ID Name
@@ -411,19 +394,19 @@ export default {
     tableItems: [],
     //------
     MachineID: ["", "TRK-ALL-SLP-300", "TRK-ALL-SLP-312", "TRK-ALL-SLP-002"],
-    ipt: {
+    input: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
       case: "",
       eqLoss: "",
       PAID: "",
     },
+    formIconShow: true,
     dateMenuShow: {
       // 日曆是否顯示
       start: false,
       end: false,
     },
-    sdad: false,
     formDepartOptions: [
       // 通報單位下拉選單
       { text: "不限", value: "" },
@@ -465,8 +448,6 @@ export default {
     mainLocation4: "", // 所選的地點
     mainLocation5: "", // 所選的地點
     OLocation: "", // 其他地點
-    Add: false,
-    ShowDetailDialog: false, // model off
     dialogShowEdit: false, // model off
     dialogDel: false, // model off
     dialogm1: "2020-08-01",
@@ -481,14 +462,14 @@ export default {
     dialogDel: false, // model off
     dialogNull: false,
   }),
-  components: { Pagination }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
   },
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     //更新時間
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
@@ -503,12 +484,18 @@ export default {
       this.$emit("chLocation", {});
     },
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 清除搜尋內容
+    reset() {
+      this.input = { ...this.defaultIpt };
+    },
     // 更換頁數
     initInput() {
       console.log("init create window form");
-      this.doMan.name = this.userData.UserName;
+      this.CheckDay = getTodayDateString();
+      this.Name = this.doMan.name;
       // this.zs = this.nowTime;
       this.PAID = "";
       this.mainLocation1 = "";
@@ -536,10 +523,10 @@ export default {
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table, // DB table
         KeyItem: [
-          { Column: "StartDayVlaue", Value: this.ipt.dateStart },
-          { Column: "EndDayVlaue", Value: this.ipt.dateEnd },
-          { Column: "PAID", Value: this.ipt.PAID },
-          { Column: "DepartCode", Value: this.ipt.case },
+          { Column: "StartDayVlaue", Value: this.input.dateStart },
+          { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "PAID", Value: this.input.PAID },
+          { Column: "DepartCode", Value: this.input.case },
         ],
         QyName: [
           // "DISTINCT (RPFlowNo)",
@@ -564,7 +551,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("查詢時發生問題，請重新查詢!");
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           console.log("search final");
@@ -642,10 +629,11 @@ export default {
         updateFormOrder(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.updateFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -655,10 +643,11 @@ export default {
         createFormOrder0(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.insertFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -669,7 +658,6 @@ export default {
     },
     // 關閉 dialog
     close() {
-      this.Add = false;
       this.ShowDetailDialog = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
@@ -732,7 +720,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert("查詢時發生問題，請重新查詢!");
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           this.chLoadingShow();
@@ -750,10 +738,11 @@ export default {
       })
         .then((res) => {
           this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.deleteFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
           this.chLoadingShow();

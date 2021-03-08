@@ -72,7 +72,7 @@ export function encodeObject(unsafeObject) {
         } else if (typeof (unsafeObject[element]) == 'object') {
             safeObject[element] = encodeObject(unsafeObject[element])
         } else {
-            safeObject[element] = unsafeObject[element]
+            safeObject[element] = unsafeObject[element]||""
         }
     })
     if (Array.isArray(unsafeObject)) {
@@ -93,7 +93,7 @@ export function decodeObject(safeObject) {
         } else if (typeof (safeObject[element]) == 'object') {
             unsafeObject[element] = decodeObject(safeObject[element])
         } else {
-            unsafeObject[element] = safeObject[element]
+            unsafeObject[element] = safeObject[element] || ""
         }
     })
     if (Array.isArray(safeObject)) {
@@ -151,4 +151,13 @@ export function unique(list) {
         }
     }
     return arr;
+}
+
+export function isDateObject(input) {
+    if (input == null) {
+        return false;
+    }
+    var pattern = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/g;
+    var tmp = input.match(pattern);
+    return tmp == null || tmp.length > 0 ? true : false;
 }

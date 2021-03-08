@@ -461,9 +461,10 @@ export default {
         },
         // 新增
         add() {
-            this.ipt = { ...this.defaultIpt }  // 初始化表單，避免點編輯按鈕但未更新時資料殘留
-            this.itemIndex = -1  // 初始化索引值
-            this.dialog = true
+            // this.ipt = { ...this.defaultIpt }  // 初始化表單，避免點編輯按鈕但未更新時資料殘留
+            // this.itemIndex = -1  // 初始化索引值
+            // this.dialog = true
+             this.$router.push({ path: `/smis/jobsafety/physical/0/add` })
         },
         // 編輯
         edit (item) {

@@ -16,7 +16,12 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="ipt.dateStart" solo v-on="on" readonly></v-text-field>
+            <v-text-field
+              v-model.trim="ipt.dateStart"
+              solo
+              v-on="on"
+              readonly
+            ></v-text-field>
           </template>
           <v-date-picker
             color="purple"
@@ -31,121 +36,66 @@
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(迄)
         </h3>
         <v-menu
-          v-model="dateMemuShow.end"
+          v-model="dateMenuShow.end"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="ipt.dateEnd" solo v-on="on" readonly></v-text-field>
+            <v-text-field
+              v-model.trim="ipt.dateEnd"
+              solo
+              v-on="on"
+              readonly
+            ></v-text-field>
           </template>
           <v-date-picker
             color="purple"
             v-model="ipt.dateEnd"
-            @input="dateMemuShow.end = false"
+            @input="dateMenuShow.end = false"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
+      <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
+        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
+        <v-btn elevation="2" large class="mb-3" @click="reset">
+          <v-icon>mdi-reload</v-icon>清除搜尋內容
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+        md="3"
+        align-self="end"
+        class="mb-5 text-md-right"
+      >
         <v-btn
           color="indigo"
           elevation="3"
           dark
           large
-          class="col-4 col-md-2 mr-3"
-          @click="dialogShowAdd = true"
+          class="mr-3 mb-3"
+          @click="newOne"
         >
+          <!-- @click="ShowDetailDialog = true" -->
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
-      </div>
-      <!-- 新增保養資料 modal -->
-      <v-dialog v-model="dialogShowAdd" max-width="600px">
+      </v-col>
+      <!-- 新增/修改保養資料 modal -->
+      <v-dialog v-model="ShowDetailDialog" max-width="600px">
         <v-card>
           <v-card-title class="blue white--text px-4 py-1">
-            新增{{ title }}
+            {{ action }}{{ title }}
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
 
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 保養日期 -->
-              <v-col cols="8" sm="4">
-                <v-menu
-                  v-model="dialogDateMenuShow.enter"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field hide-details v-model="addItem.enterDate" v-on="on" label="保養日期"></v-text-field>
-                  </template>
-                  <v-date-picker
-                    color="purple"
-                    v-model="addItem.enterDate"
-                    @input="dialogDateMenuShow.enter = false"
-                    locale="zh-tw"
-                  ></v-date-picker>
-                </v-menu>
-              </v-col>
-              <!-- 公里 -->
-              <v-col cols="8" sm="4">
-                <v-text-field v-model="addItem.Kilometer" :rules="nameRules" label="公里數" required></v-text-field>
-              </v-col>
-              <!-- 保養人 -->
-              <v-col cols="8" sm="4">
-                <v-text-field hide-details v-model="addItem.user" label="保養人"></v-text-field>
-              </v-col>
-              <!-- 保養項目 -->
-              <v-col cols="8" sm="12">
-                <v-subheader style="margin-left: -16px !important; margin-bottom: -25px;">保養項目</v-subheader>
-                <div class="pa-0">
-                  <v-row justify="space-around">
-                    <v-checkbox class="mx-2" v-model="aa" label="機油濾清器" value="A"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="bb" label="柴油濾清器" value="B"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="cc" label="水泵濾清器" value="C"></v-checkbox>
-                  </v-row>
-                </div>
-              </v-col>
-              <!-- 備註 -->
-              <v-col cols="12">
-                <v-textarea
-                  hide-details
-                  label="備註"
-                  auto-grow
-                  outlined
-                  rows="6"
-                  v-model.trim="addItem.content"
-                ></v-textarea>
-              </v-col>
-            </v-row>
-          </div>
-
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <!-- 修改保養資料 modal -->
-      <v-dialog v-model="dialogShowEdit" max-width="600px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            修改{{ newText }}
-            <v-spacer></v-spacer>
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
           <div class="px-6 py-4">
             <v-row>
               <!-- 保養日期 -->
@@ -160,14 +110,14 @@
                   <template v-slot:activator="{ on }">
                     <v-text-field
                       hide-details
-                      v-model="editedItem.enterDate"
+                      v-model="CheckDay"
                       v-on="on"
                       label="保養日期"
                     ></v-text-field>
                   </template>
                   <v-date-picker
                     color="purple"
-                    v-model="editedItem.enterDate"
+                    v-model="CheckDay"
                     @input="dialogDateMenuShow.enter = false"
                     locale="zh-tw"
                   ></v-date-picker>
@@ -176,24 +126,44 @@
               <!-- 公里 -->
               <v-col cols="8" sm="4">
                 <v-text-field
-                  v-model="editedItem.Kilometer"
+                  v-model="Km"
                   :rules="nameRules"
                   label="公里數"
+                  placeholder="0"
                   required
                 ></v-text-field>
               </v-col>
               <!-- 保養人 -->
               <v-col cols="8" sm="4">
-                <v-text-field hide-details v-model="editedItem.user" label="保養人"></v-text-field>
+                <v-text-field
+                  hide-details
+                  v-model="Name"
+                  label="保養人"
+                ></v-text-field>
               </v-col>
               <!-- 保養項目 -->
               <v-col cols="8" sm="12">
+                <v-subheader
+                  style="margin-left: -16px !important; margin-bottom: -25px"
+                  >保養項目</v-subheader
+                >
                 <div class="pa-0">
-                  <v-subheader style="margin-left: -16px !important; margin-bottom: -25px;">保養項目</v-subheader>
                   <v-row justify="space-around">
-                    <v-checkbox class="mx-2" v-model="aa" label="機油濾清器" value="A"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="bb" label="柴油濾清器" value="B"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="cc" label="水泵濾清器" value="C"></v-checkbox>
+                    <v-checkbox
+                      class="mx-2"
+                      v-model="checkbox.機油濾清器"
+                      label="機油濾清器"
+                    ></v-checkbox>
+                    <v-checkbox
+                      class="mx-2"
+                      v-model="checkbox.柴油濾清器"
+                      label="柴油濾清器"
+                    ></v-checkbox>
+                    <v-checkbox
+                      class="mx-2"
+                      v-model="checkbox.水泵濾清器"
+                      label="水泵濾清器"
+                    ></v-checkbox>
                   </v-row>
                 </div>
               </v-col>
@@ -205,30 +175,61 @@
                   auto-grow
                   outlined
                   rows="6"
-                  v-model.trim="editedItem.content"
+                  v-model.trim="Memo"
                 ></v-textarea>
               </v-col>
             </v-row>
           </div>
+
           <v-card-actions class="px-5 pb-5">
+            <v-btn
+              v-if="action != actions.add"
+              class="mr-2"
+              elevation="4"
+              color="red"
+              @click="dialogDel = true"
+              >刪除</v-btn
+            >
             <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+            <v-btn class="mr-2" elevation="4" @click="ShowDetailDialog = false"
+              >取消</v-btn
+            >
+            <v-btn
+              color="success"
+              elevation="4"
+              :loading="isLoading"
+              @click="save"
+              >{{ action }}</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <!--  -->
-      <v-dialog v-model="dialogDel" scrollable max-width="300px">
+      <!-- 刪除確認視窗 -->
+      <v-dialog v-model="dialogDel" persistent max-width="290">
         <v-card>
-          <v-card-title class="error white--text px-4 py-1">確認是否刪除!</v-card-title>
-          <v-divider></v-divider>
-          <v-card-text style="height: 300px;">
-            <v-radio-group v-model="dialogm1" column></v-radio-group>
-          </v-card-text>
-          <v-divider></v-divider>
+          <v-card-title class="red white--text px-4 py-1 headline"
+            >確認是否刪除?</v-card-title
+          >
           <v-card-actions>
-            <v-btn color="darken-1" text @click="close">取消</v-btn>
-            <v-btn color="error darken-1" text @click="dialogDel = false">刪除</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn @click="dialogDel = false">取消</v-btn>
+            <v-btn
+              color="red"
+              @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
+              >刪除</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- 必填欄位空白提醒視窗 -->
+      <v-dialog v-model="dialogNull" persistent max-width="290">
+        <v-card>
+          <v-card-title class="red white--text px-4 py-1 headline"
+            >請填妥必要欄位</v-card-title
+          >
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="success" @click="dialogNull = false">確定</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -266,7 +267,17 @@
               <!-- @click="dialogShowEdit = true" -->
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
-            <v-btn title="刪除" small dark fab color="red" @click="dialogDel = true">
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="
+                dialogDel = true;
+                RPFlowNo = item.RPFlowNo;
+              "
+            >
               <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -284,35 +295,66 @@
 <script>
 import { evtTypes, locationOpts } from "@/assets/js/smisData";
 import Pagination from "@/components/Pagination.vue";
-import { mapState, mapActions } from 'vuex'
-import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from "vuex";
+import {
+  getNowFullTime,
+  getTodayDateString,
+  unique,
+} from "@/assets/js/commonFun";
+import { maintainStatusOpts } from "@/assets/js/workList";
+import {
+  fetchFormOrderList,
+  fetchFormOrderOne,
+  createFormOrder,
+  createFormOrder0,
+  updateFormOrder,
+  deleteFormOrder,
+} from "@/apis/formManage/serve";
+import { formDepartOptions } from "@/assets/js/departOption";
+import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data: () => ({
-    title:"柴油引擎保養",
-    newText:"保養資料",
+    title: "柴油引擎保養",
+    action: Actions.add,
+    actions: Actions,
+    newText: "保養資料",
     isLoading: false,
     disabled: false,
     DB_Table: "RP047",
+    //
+    RPFlowNo: "",
+    nowTime: "",
+    doMan: {
+      id: "",
+      name: "",
+      depart: "",
+      checkManName: "",
+    },
     formDepartOptions: [
-        // 通報單位下拉選單
-        { text: "不限", value: "" },
-        ...formDepartOptions,
-      ],
+      // 通報單位下拉選單
+      { text: "不限", value: "" },
+      ...formDepartOptions,
+    ],
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
-      Km:"",
-      Item:"",
-      Memo:"",
+      Km: "",
+      Item: "",
+      Memo: "",
+    },
+    defaultIpt: {
+      dateStart: "", // 通報日期(起)
+      dateEnd: "", // 通報日期(迄)
+      Km: "",
+      Item: "",
+      Memo: "",
     },
     dateMemuShow: {
       // 日曆是否顯示
       start: false,
-      end: false
+      end: false,
     },
     evtTypeOpts: evtTypes,
     locationOpts: locationOpts,
@@ -320,29 +362,29 @@ export default {
     dialogDateMenuShow: {
       // dialog 日期 menu 是否顯示
       enter: false,
-      out: false
+      out: false,
     },
     editedItem: {
       Kilometer: 12044.3,
       enterDate: "2020-08-10",
       content: "更換引擎機油", // 維修項目
-      user: "王大明"
+      user: "王大明",
     },
     addItem: {
       Kilometer: null,
       enterDate: "",
       content: "", // 維修項目
-      user: ""
+      user: "",
     },
     defaultItem: {
       Kilometer: 0,
       enterDate: "2020-08-10",
       content: "", // 維修項目
-      user: ""
+      user: "",
     },
     nameRules: [
-      v => !!v || "公里數必須填寫",
-      v => v.length > 0 || "公里數必須大於0"
+      (v) => !!v || "公里數必須填寫",
+      (v) => v.length > 0 || "公里數必須大於0",
     ],
     dialogForm: {},
     mainLocation: "", // 所選的地點
@@ -352,296 +394,344 @@ export default {
     dialogDel: false, // model off
     dialogm1: "2020-08-01",
     tableItems: [
-      {
-        date: "2020/08/01",
-        kilometer: "12044.3",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "更換引擎機油"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      },
-      {
-        date: "2020/08/05",
-        kilometer: "43000",
-        engine_oil: "V",
-        diesel_oil: "V",
-        water_pump: "V",
-        name: "王大明",
-        note: "三級保養更換"
-      }
+      // {
+      //   date: "2020/08/01",
+      //   kilometer: "12044.3",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "更換引擎機油"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // },
+      // {
+      //   date: "2020/08/05",
+      //   kilometer: "43000",
+      //   engine_oil: "V",
+      //   diesel_oil: "V",
+      //   water_pump: "V",
+      //   name: "王大明",
+      //   note: "三級保養更換"
+      // }
     ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
       // 表格顯示的欄位
       {
-        text: "保養日期",
-        value: "date",
+        text: "項次",
+        value: "ItemNo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+      {
+        text: "保養日期",
+        value: "CheckDay",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "公里",
-        value: "kilometer",
+        value: "Km",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "機油濾清器",
-        value: "engine_oil",
+        value: "機油濾清器",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "柴油濾清器",
-        value: "diesel_oil",
+        value: "柴油濾清器",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "水泵濾清器",
-        value: "water_pump",
+        value: "水泵濾清器",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "保養人",
-        value: "name",
+        value: "Name",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "備註",
-        value: "note",
+        value: "Memo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
       {
         text: "功能",
-        value: "shop",
+        value: "content",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1"
-      }
-    ]
+        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      },
+    ],
+    dateMenuShow: {
+      // 日曆是否顯示
+      start: false,
+      end: false,
+    },
+    dialogDateMenuShow: {
+      // dialog 日期 menu 是否顯示
+      enter: false,
+      enters: false,
+      out: false,
+    },
+    readonly: false,
+    // controls for dialog
+    ShowDetailDialog: false,
+    dialogDel: false, // model off
+    dialogNull: false,
+    // fields for detail page
+    CheckDay: "",
+    Name: "",
+    Km: null,
+    Memo: "", // 維修項目
+    checkbox: {
+      機油濾清器: false,
+      柴油濾清器: false,
+      水泵濾清器: false,
+    },
   }),
   components: { Pagination }, // 頁碼
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
+    ...mapState("user", {
+      userData: (state) => state.userData, // 使用者基本資料
+    }),
   },
   created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+    this.input = { ...this.defaultIpt };
+    //更新時間
+    this.nowTime = getTodayDateString();
+    this.doMan.name = this.userData.UserName;
+    this.doMan.id = this.userData.UserId;
+    this.doMan.depart = this.userData.DeptList[0].DeptDesc;
+    this.doMan.departId = this.userData.DeptList[0].DeptId;
   },
   methods: {
-    initInput(){
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
-    },
     // 更新資料
     update() {
       this.$emit("chLocation", {});
     },
-    unique(list){
-      var arr = [];
-      let b = false;
-      for (var i = 0; i < list.length; i++) {
-        if (i == 0) arr.push(list[i]);
-        b = false;
-        if (arr.length > 0 && i > 0) {
-          for (var j = 0; j < arr.length; j++) {
-            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
-              b = true;
-              //break;
-            }
-          }
-          if (!b) {
-            arr.push(list[i]);
-          }
-        }
-      }
-      return arr;
+    ...mapActions("system", [
+      "chMsgbar", // messageBar
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
+    // 清除搜尋內容
+    reset() {
+      this.ipt = { ...this.defaultIpt };
     },
-    newOne(){
-      console.log("newOne23")
-      this.Add = true
-      console.log("this.Add: " + this.Add)
+    initInput() {
+      this.Name = this.doMan.name;
+      this.CheckDay = getTodayDateString();
+      this.Km = "";
+      this.Memo = ""; // 維修項目
+      this.checkbox.機油濾清器 = false;
+      this.checkbox.柴油濾清器 = false;
+      this.checkbox.水泵濾清器 = false;
+    },
+    newOne() {
+      this.readonly = false;
+      this.action = this.actions.add;
+      this.ShowDetailDialog = true;
       this.initInput();
     },
-    ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
+    // 解析保養細項
+    parseItem(item) {
+      var res = {
+        機油濾清器: false,
+        柴油濾清器: false,
+        水泵濾清器: false,
+      };
+      var tmp = item.split("/");
+      for (let i = 0; i < tmp.length; i++) {
+        switch (tmp[i]) {
+          case "1":
+            res.機油濾清器 = true;
+            break;
+          case "2":
+            res.柴油濾清器 = true;
+            break;
+          case "3":
+            res.水泵濾清器 = true;
+            break;
+          default:
+            break;
+        }
+      }
+      return res;
+    },
+    // 重組保養細項
+    combineItem(機油濾清器, 柴油濾清器, 水泵濾清器) {
+      var arr = [];
+      if (機油濾清器) {
+        arr = arr.concat("1");
+      }
+      if (柴油濾清器) {
+        arr = arr.concat("2");
+      }
+      if (水泵濾清器) {
+        arr = arr.concat("3");
+      }
+      return arr.join("/");
+    },
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow()
+      this.chLoadingShow();
       fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
-        QyName:[
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          { Column: "StartDayVlaue", Value: this.ipt.dateStart },
+          { Column: "EndDayVlaue", Value: this.ipt.dateEnd },
+        ],
+        QyName: [
           // "DISTINCT (RPFlowNo)",
           // // "ID",
           // // "Name",
@@ -653,72 +743,120 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId", "DepartName"
+          "FlowId",
+          "DepartName",
+          "Km",
+          "Item",
+          "Memo",
+          "CheckMan",
         ],
-      }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        console.log("search final")
-        this.chLoadingShow()
       })
+        .then((res) => {
+          let tbBuffer = JSON.parse(res.data.DT);
+          let aa = unique(tbBuffer);
+
+          aa.forEach((element) => {
+            var items = this.parseItem(element.Item);
+            element.機油濾清器 = items.機油濾清器 ? "V" : "";
+            element.柴油濾清器 = items.柴油濾清器 ? "V" : "";
+            element.水泵濾清器 = items.水泵濾清器 ? "V" : "";
+          });
+          console.log(aa);
+          this.tableItems = aa;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          console.log("search final");
+          this.chLoadingShow();
+        });
     },
     // 存
     save() {
-      console.log('送出click! 0222')
-      this.chLoadingShow()
-        
-      let arr = new Array()
-      let obj = new Object()
+      if (this.CheckDay == "" || this.Km == "") {
+        this.dialogNull = true;
+        return;
+      }
+      console.log("送出click! 0222");
+      this.chLoadingShow();
 
-      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
-      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+      let arr = new Array();
+      let obj = new Object();
 
-      obj = new Object()
-      obj.Column = "CheckDay"
-      obj.Value = this.nowTime
-      arr = arr.concat(obj)      
-      
-      obj = new Object()
-      obj.Column = "Km"
-      obj.Value = this.Km
-      arr = arr.concat(obj)
+      obj = new Object();
+      obj.Column = "CheckDay";
+      obj.Value = this.CheckDay;
+      arr = arr.concat(obj);
 
-      obj = new Object()
-      obj.Column = "Item"
-      obj.Value = this.Item
-      arr = arr.concat(obj)
+      obj = new Object();
+      obj.Column = "Km";
+      obj.Value = this.Km;
+      arr = arr.concat(obj);
 
-      obj = new Object()
-      obj.Column = "Memo"
-      obj.Value = this.Memo
-      arr = arr.concat(obj)
+      obj = new Object();
+      obj.Column = "Item";
+      obj.Value = this.combineItem(
+        this.checkbox.機油濾清器,
+        this.checkbox.柴油濾清器,
+        this.checkbox.水泵濾清器
+      );
+      arr = arr.concat(obj);
 
-      console.log(JSON.stringify(arr))
+      obj = new Object();
+      obj.Column = "Memo";
+      obj.Value = this.Memo;
+      arr = arr.concat(obj);
 
-      createFormOrder0({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+      var data = {
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id this.doMan.name = this.userData.UserName
         // OperatorID: "16713",  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem:arr,
-      }).then(res => {
-        console.log(res.data.DT)
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
-      })
-      this.Add = false;
+        KeyName: this.DB_Table, // DB table
+        KeyItem: arr,
+      };
+
+      // 修改
+      if (this.action == Actions.edit) {
+        // update 要自行增加RPFlowNo欄位
+        data.RPFlowNo = this.RPFlowNo;
+        console.log(data);
+        updateFormOrder(data)
+          .then((res) => {
+            console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
+          })
+          .catch((err) => {
+            console.log(err);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
+          })
+          .finally(() => {
+            this.chLoadingShow();
+            this.search();
+          });
+      } else {
+        // 新增
+        createFormOrder0(data)
+          .then((res) => {
+            console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
+          })
+          .catch((err) => {
+            console.log(err);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
+          })
+          .finally(() => {
+            this.chLoadingShow();
+            this.search();
+          });
+      }
+
+      this.ShowDetailDialog = false;
     },
     // 關閉 dialog
     close() {
-      this.dialogShowAdd = false;
+      this.ShowDetailDialog = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
       setTimeout(() => {
@@ -728,18 +866,19 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
+      this.action = Actions.edit;
+      this.readonly = true;
+      console.log("item: " + item);
+      console.log("RPFlowNo: " + item.RPFlowNo);
+      this.chLoadingShow();
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
+        QyName: [
+          "RPFlowNo",
           "CheckDay",
           "DepartName",
           "Name",
@@ -747,35 +886,60 @@ export default {
           "Km",
           "Item",
           "Memo",
-
         ],
-      }).then(res => {
-        this.initInput();
-        console.log(res.data.DT)
-        let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
-        this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
-        //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        
-        this.Km = dat[0].Km
-        this.Item = dat[0].Item
-        this.Memo = dat[0].Memo
-      }).catch(err => {
-        console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow()
       })
-    },//viewPage
-  }
+        .then((res) => {
+          this.initInput();
+          console.log(res.data.DT);
+          let dat = JSON.parse(res.data.DT);
+          let data = dat[0];
+          //console.log("data name: " + dat[0].Name);
+          //console.log("data time: " + dat[0].CheckDay);
+          this.doMan.name = data.Name;
+          this.CheckDay = data.CheckDay.substr(0, 10);
+
+          this.Km = data.Km;
+          var tmp = this.parseItem(data.Item);
+          this.checkbox.機油濾清器 = tmp.機油濾清器;
+          this.checkbox.柴油濾清器 = tmp.柴油濾清器;
+          this.checkbox.水泵濾清器 = tmp.水泵濾清器;
+          this.Memo = data.Memo;
+
+          this.RPFlowNo = data.RPFlowNo;
+          this.ShowDetailDialog = true;
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("查詢時發生問題，請重新查詢!");
+        })
+        .finally(() => {
+          this.chLoadingShow();
+        });
+    }, //viewPage
+    deleteRecord(UserId, DB_Table, RPFlowNo) {
+      this.action = Actions.delete;
+      this.chLoadingShow();
+      deleteFormOrder({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: UserId, // 操作人id
+        KeyName: DB_Table, // DB table
+        RPFlowNo: RPFlowNo,
+        KeyItem: [{ Column: "RPFlowNo", Value: RPFlowNo }],
+      })
+        .then((res) => {
+          this.dialogDel = false;
+          this.chMsgbar({ success: true, msg: Constrant.delete.success });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.delete.failed });
+        })
+        .finally(() => {
+          this.chLoadingShow();
+          this.ShowDetailDialog = false;
+          this.search();
+        });
+    },
+  },
 };
 </script>

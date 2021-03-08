@@ -487,10 +487,19 @@
       async _returnEqCode() {
         const that = this
         await that.$emit('getEqCode',that.newEqCode)
-        that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + '-'
-        that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + '-'
-        that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + '-'
-        that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).FullShowName
+        console.log(that.toLv >= 1)
+        if(that.toLv >= 1){
+          that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + ((that.toLv == 1)?'':'-')
+        }
+        if(that.toLv >= 2){
+          that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + ((that.toLv == 2)?'':'-')
+        }
+        if(that.toLv >= 3){
+          that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + ((that.toLv == 3)?'':'-')
+        }
+        if(that.toLv >= 4){
+          that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).FullShowName
+        }
         await that.$emit('getEqName',that.newEqName)
       },
       async _returnWorkCode() {

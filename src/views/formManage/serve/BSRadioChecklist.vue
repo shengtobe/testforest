@@ -4,84 +4,32 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="dataPickerShowControl.startDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateStart"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateStart"
-            @input="dataPickerShowControl.startDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          v-model="input.dateStart"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="dataPickerShowControl.endDate"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="input.dateEnd"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="input.dateEnd"
-            @input="dataPickerShowControl.endDate = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          v-model="input.dateEnd"
+          key="dateStart"
+          :showIcon="formIconShow"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select :items="formDepartOptions" v-model="input.department" solo />
-      </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
-      </v-col>
-
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
+        <deptSelect
+          label="管理單位"
+          v-model="input.department"
+          :iconYN="formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -139,16 +87,14 @@
 
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
-      <v-card>
-        <v-card-title class="red white--text px-4 py-1 headline"
-          >確認是否刪除?</v-card-title
-        >
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="dialogDel = false">取消</v-btn>
-          <v-btn color="red" @click="deleteRecord">刪除</v-btn>
-        </v-card-actions>
-      </v-card>
+      <dialogDelete
+        :id="doMan.id"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
     </v-dialog>
     <!-- 必填欄位空白提醒視窗 -->
     <v-dialog v-model="dialogNull" persistent max-width="290">
@@ -211,30 +157,13 @@
                     :readonly="readonly"
                   />
                 </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="dataPickerShowControl.checkDate"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="CheckDay"
-                        solo
-                        v-on="on"
-                        readonly
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="CheckDay"
-                      @input="dataPickerShowControl.checkDate = false"
-                      locale="zh-tw"
-                    ></v-date-picker>
-                  </v-menu>
+                <v-col cols="12" sm="3" md="3">
+                  <dateSelect
+                    label="檢查日期"
+                    v-model="CheckDay"
+                    key="CheckDay"
+                    :showIcon="formIconShow"
+                  />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">使用單位</h3>
@@ -243,6 +172,7 @@
                     required
                     :rules="nameRules"
                     solo
+                    readonly
                   />
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -256,6 +186,7 @@
                     required
                     :rules="nameRules"
                     solo
+                    readonly
                   />
                 </v-col>
                 <!-- <v-col cols="12" sm="4">
@@ -493,7 +424,8 @@
 
         <v-card-actions class="px-5 pb-5">
           <v-btn
-            class="mr-2"
+            v-if="action != actions.add"
+            class="mr-2 white--text"
             elevation="4"
             color="red"
             @click="dialogDel = true"
@@ -508,7 +440,7 @@
             elevation="4"
             :loading="isLoading"
             @click="save"
-            >{{ action }}</v-btn
+            >送出</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -536,6 +468,10 @@ import {
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 class Question {
   constructor(description, status, note, required) {
@@ -551,6 +487,7 @@ export default {
     return {
       title: "車裝台/基地台無線電機檢查紀錄表",
       action: Actions.add,
+      actions: Actions,
       newText: "紀錄表",
       isLoading: false,
       disabled: false,
@@ -572,10 +509,11 @@ export default {
       },
       ipt2: {},
       defaultIpt: {
-        // 預設的欄位值
-        startDay: "",
-        EndDay: "",
-        depart: "", // 單位
+        dateStart: "", // 通報日期(起)
+        dateEnd: "", // 通報日期(迄)
+        case: "",
+        eqLoss: "",
+        departName: "",
       },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
@@ -669,7 +607,7 @@ export default {
       dialogNull: false,
 
       // controls for date picker
-      dataPickerShowControl: {
+      datePickerShowControl: {
         startDate: false,
         endDate: false,
         checkDate: false,
@@ -721,9 +659,10 @@ export default {
         eqLoss: "",
         departName: "",
       },
+      formIconShow: true,
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, ToolBar },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -731,7 +670,7 @@ export default {
   },
   // page init
   created() {
-    this.ipt2 = { ...this.defaultIpt };
+    this.input = { ...this.defaultIpt };
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
     this.doMan.id = this.userData.UserId;
@@ -740,8 +679,13 @@ export default {
   },
   methods: {
     ...mapActions("system", [
+      "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 清除搜尋內容
+    reset() {
+      this.input = { ...this.defaultIpt };
+    },
     initInput() {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;
@@ -801,7 +745,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           console.log("search final");
@@ -854,10 +798,11 @@ export default {
         updateFormOrder(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.updateFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -867,10 +812,11 @@ export default {
         createFormOrder0(data)
           .then((res) => {
             console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
             console.log(err);
-            alert(Constrant.insertFailedString);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
             this.chLoadingShow();
@@ -878,6 +824,10 @@ export default {
           });
       }
       this.ShowDetailDialog = false;
+    },
+    // 關閉刪除確認dialod
+    closeDialogDel() {
+      this.dialogDel = false;
     },
     // 關閉 dialog
     close() {
@@ -934,37 +884,12 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          alert(Constrant.queryFailedString);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
           this.chLoadingShow();
         });
     }, //viewPage
-    deleteRecord() {
-      console.log("Delete click");
-      this.action = Actions.delete;
-      console.log("RPFlowNo: " + this.RPFlowNo);
-      this.chLoadingShow();
-      deleteFormOrder({
-        ClientReqTime: getNowFullTime(), // client 端請求時間
-        OperatorID: this.doMan.id, // 操作人id
-        KeyName: this.DB_Table, // DB table
-        RPFlowNo: this.RPFlowNo,
-        KeyItem: [{ Column: "RPFlowNo", Value: this.RPFlowNo }],
-      })
-        .then((res) => {
-          this.dialogDel = false;
-        })
-        .catch((err) => {
-          console.log(err);
-          alert(Constrant.deleteFailedString);
-        })
-        .finally(() => {
-          this.chLoadingShow();
-          this.ShowDetailDialog = false;
-          this.search();
-        });
-    },
   },
 };
 </script>

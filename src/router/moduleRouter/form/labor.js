@@ -37,12 +37,13 @@ export const FormLaborRouter = [
         component: () => import('@/views/formManage/labor/HAZIDRiskAssessmentAdd.vue'),
         formGroup: []
     },
-    // {
-    //     linkText: '災害事故調查表(本處員工)', // 勞安衛7.
-    //     path: '/form-manage/labor/disaster-accident-survey',
-    //     component: () => import('@/views/formManage/labor/DisasterAccidentSurvey.vue'),
-    //     formGroup: ['labor']
-    // },
+    {
+        linkText: '災害事故調查表(本處員工)', // 勞安衛7.
+        path: '/form-manage/labor/disaster-accident-survey',
+        component: () => import('@/views/formManage/labor/DisasterAccidentSurvey.vue'),
+        formGroup: ['labor'],
+        params: [{ key: "type", value: 1 }]
+    },
     {
         linkText: '災害事故調查表(本處員工)Add', // 勞安衛7.
         path: '/form-manage/labor/disaster-accident-survey-add',
@@ -52,13 +53,14 @@ export const FormLaborRouter = [
     {
         linkText: '災害事故調查表(承攬商)', // 勞安衛8.
         path: '/form-manage/labor/disaster-accident-survey-vendor',
-        component: () => import('@/views/formManage/labor/DisasterAccidentSurveyVendor.vue'),
-        formGroup: ['labor']
+        component: () => import('@/views/formManage/labor/DisasterAccidentSurvey.vue'),
+        formGroup: ['labor'],
+        params: [{ key: "type", value: 2 }]
     },
     {
         linkText: '災害事故調查表(承攬商)Add', // 勞安衛8. 
         path: '/form-manage/labor/disaster-accident-survey-vendor-add',
         component: () => import('@/views/formManage/labor/DisasterAccidentSurveyVendorAdd.vue'),
         formGroup: []
-    },
+    }
 ]
