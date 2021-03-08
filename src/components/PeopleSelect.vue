@@ -2,7 +2,7 @@
   <v-autocomplete
     :items="orgList"
     :filter="aFilter"
-    label="輸入人名或單位名稱進行搜尋"
+    label="輸入人名/員工編號或單位名稱進行搜尋"
     solo
     :multiple="isMuti"
     :deletable-chips="isMuti"
@@ -15,8 +15,13 @@
 </template>
 <script>
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
+/*
+  isMuti: true=>選多人，傳入值必須是string array
+          false=>選單人，傳入值必須是string
+  可以直接綁定原生事件
+*/
 export default {
 	props: ['value','isMuti'],
 	data: () => ({
@@ -34,6 +39,9 @@ export default {
     }),
 	},
 	methods: {
+    ...mapActions('system', [
+      'chMsgbar',  // 改變 messageBar
+    ]),
     _getOrg() { //抓單位
       this.orgIsLoading = true
       fetchOrganization({
