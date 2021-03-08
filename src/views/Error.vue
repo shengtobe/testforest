@@ -13,7 +13,7 @@
                     <p class="mb-5">{{ msg }}</p>
 
                     <v-btn dark class="ma-2"
-                        @click="closeWindow"
+                        @click="closeClick"
                     >關閉視窗</v-btn>
                 </v-alert>
             </v-col>
@@ -34,6 +34,13 @@ export default {
         ...mapActions('system', [
             'closeWindow',  // 關閉視窗
         ]),
+        closeClick() {
+            try{
+                closeWindow()
+            }catch{
+                history.back()
+            }
+        }
     },
     created() {
         if (sessionStorage.getItem('errData') !== null) {
