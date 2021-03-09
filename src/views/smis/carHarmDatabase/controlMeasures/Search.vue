@@ -97,7 +97,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="delControl(item.id)"
+                            @click="delControl(item.ProcCode)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -154,7 +154,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
-import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
+import { fetchList, deleteData } from '@/apis/smis/carHarmDatabase/controlMeasures'
 
 export default {
     data: () => ({
@@ -216,7 +216,6 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log(this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -235,14 +234,23 @@ export default {
         // 刪除控制措施
         delControl(id) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                deleteData({
+                    ProcCode: id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 顯示證據
