@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `危害編輯 (編號：${ routeId })` : '危害新增' }}
+        {{ (this.isEdit)? `危害編輯 (編號：${ id })` : '危害新增' }}
     </h2>
 
     <v-row class="px-2">
@@ -69,7 +69,7 @@
             </h3>
             <v-select
                 v-model="ipt.depart"
-                :items="opts.depart"
+                :items="opts.depart2"
                 solo
             ></v-select>
         </v-col>
@@ -111,11 +111,13 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>關聯子系統
             </h3>
-            <v-select
-                v-model="ipt.wbs"
-                :items="opts.wbs"
+            
+            <v-text-field
+                :value="ipt.wbs"
                 solo
-            ></v-select>
+                readonly
+                @click="eqCodeShow = true"
+            ></v-text-field>
         </v-col>
 
         <!-- 影響、運轉影響情形 -->
@@ -186,7 +188,7 @@
         </v-col>
 
         <!-- 控制措施 -->
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-bank</v-icon>控制措施權責部門
             </h3>
@@ -198,7 +200,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="8" md="3">
+        <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
             </h3>
@@ -209,7 +211,7 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="3" align-self="center">
+        <v-col cols="12" md="3" align-self="center" class="mt-n5 mt-md-0">
             <v-btn color="green" dark large
                 @click="search"
             >
@@ -217,7 +219,7 @@
             </v-btn>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" class="mt-4">
             <v-card>
                 <v-data-table
                     :headers="headers"
@@ -235,16 +237,21 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.depart="{ item }">
+                        {{ opts.depart.find(ele => ele.value == item.DeviceDepart).text }}
+                    </template>
+
                     <template v-slot:item.desc="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                            v-if="item.regul_file_path != ''"
+                            :href="item.regul_file_path"
+                            :download="item.FileFullName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -252,7 +259,8 @@
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
+                            v-if="item.file_path.length > 0"
+                            @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -293,16 +301,21 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
+                    <template v-slot:item.depart="{ item }">
+                        {{ opts.depart.find(ele => ele.value == item.DeviceDepart).text }}
+                    </template>
+
                     <template v-slot:item.desc="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                            v-if="item.regul_file_path != ''"
+                            :href="item.regul_file_path"
+                            :download="item.FileFullName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -310,7 +323,8 @@
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
+                            v-if="item.file_path.length > 0"
+                            @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -318,7 +332,7 @@
 
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="error"
-                            @click="delControl(item.id)"
+                            @click="delControl(item.ProcCode)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -335,7 +349,7 @@
 
             <v-btn dark class="mr-3"
                 v-else
-                :to="`/smis/car-harmdb/harms/${this.routeId}/show`"
+                :to="`/smis/car-harmdb/harms/${this.id}/show`"
             >回上層</v-btn>
             
             <v-btn
@@ -359,12 +373,12 @@
             <v-list-item-group>
                 <template v-for="(item, idx) in evidences">
                     <v-list-item
-                        :key="item.name"
-                        :href="item.link"
-                        :download="item.name"
+                        :key="item"
+                        :href="item"
+                        :download="evidencesName[idx]"
                     >
                         <v-list-item-content>
-                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                            <v-list-item-title class="pa-3">{{ evidencesName[idx] }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
 
@@ -377,6 +391,25 @@
         </v-card>
     </v-dialog>
 
+    <!-- 關聯子系統 dailog -->
+    <v-dialog v-model="eqCodeShow" max-width="900px">
+        <v-card>
+          <v-card-title class="yellow darken-1 px-4 py-1">
+            選擇設備標示編號(WBS)
+            <v-spacer />
+            <v-btn fab small text @click="eqCodeShow = false" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <EquipRepairCode :key="componentKey" :toLv="2" :nowEqCode="ipt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
+          <v-card-actions class="px-5 pb-5">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-2" elevation="4" @click="eqCodeShow = false">取消</v-btn>
+            <v-btn color="success" elevation="4" @click="setWBS">送出</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
     <!-- <v-form
         ref="form"
         v-model="valid"
@@ -388,12 +421,18 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
+import { operateModes, riskSerious, riskFrequency } from '@/assets/js/smisData'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
 import Pagination from '@/components/Pagination.vue'
+import EquipRepairCode from '@/components/EquipRepairCode.vue'
+import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
+import { createData } from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
@@ -405,9 +444,9 @@ export default {
             reason: '',  // 危害直接成因
             indirectReason: '',  // 可能的危害間接原因
             note: '',  // 備註
-            depart: 'd1',// 權責部門
+            depart: 'ARCO001',// 權責部門
             mode: 'm1',  // 營運模式
-            wbs: 'APC2',  // 關聯子系統
+            wbs: '',  // 關聯子系統
             serious: 'S5',  // 風險嚴重性
             frequency: 'P1',  // 風險頻率
             affectTraveler: false,  // 影響旅客
@@ -419,36 +458,14 @@ export default {
             controlChoose: [],  // 已選的控制措施
         },
         opts: {  // 下拉選單
-            depart: [  // 權責部門
+            depart: [  // 部門
                  { text: '不限', value: '' },
                 ...departOptions,
             ],
-            mode: [  // 營運模式
-                { text: '正常', value: 'm1' },
-                { text: '降級', value: 'm2' },
-                { text: '緊急', value: 'm3' },
-                { text: '維修', value: 'm4' },
-            ],
-            wbs: [  // 關聯子系統
-                { text: 'APC2', value: 'APC2' },
-                { text: '平甲6022', value: '平甲6022' },
-                { text: '祝8308', value: '祝8308' },
-                { text: '蓬甲6', value: '蓬甲6' },
-            ],
-            serious: [  // 風險嚴重性
-                { text: '極輕微', value: 'S5' },
-                { text: '稍微', value: 'S4' },
-                { text: '主要', value: 'S3' },
-                { text: '嚴重', value: 'S2' },
-                { text: '災難', value: 'S1' },
-            ],
-            frequency: [  // 風險頻率
-                { text: '經常', value: 'P1' },
-                { text: '很可能', value: 'P2' },
-                { text: '偶爾', value: 'P3' },
-                { text: '很少', value: 'P4' },
-                { text: '幾乎不', value: 'P5' },
-            ],
+            depart2: departOptions,  // 部門(不含不限)
+            mode: operateModes,  // 營運模式
+            serious: riskSerious,  // 風險嚴重性
+            frequency: riskFrequency,  // 風險頻率
         },
         controlSearch: {  // 控制措施搜尋
             depart: '',  // 部門
@@ -457,42 +474,52 @@ export default {
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
         tableItems: [],  // 控制措施權責部門的表格資料
         headers: [  // 控制措施權責部門的表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
         ],
         chooseHeaders: [  // 已選的表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
         ],
-        evidences: [],  // 證據
+        evidences: [],  // 證據路徑
+        evidencesName: [],  // 證據名稱
         dialogShow: false,  // 證據dialog是否顯示
         notify: {  // 危害通報資料
             id: '',  // id
             isNew: false,  // 是否為新登錄
         },
+        searchTemp: {},  // 關聯子系統 dialog 暫存資料用
+        eqCodeShow: false,  // 關聯子系統 dialog 是否顯示
+        componentKey: 0,  // 關聯子系統 dialog 內組件計算增數用
     }),
     components: {
         AccidentCheckbox,
         Pagination,
+        EquipRepairCode,
     },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
+    // watch: {
+    //     // 路由參數變化時，重新向後端取資料
+    //     $route(to, from) {
+    //         // … 
+    //     },
+    // },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -504,79 +531,67 @@ export default {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             // -------------- 編輯時 -------------- 
-            if (this.$route.params.id != undefined) {
+            if (this.id != undefined) {
                 this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
 
                 // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
-                        reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
-                        indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
-                        note: '',  // 備註
-                        depart: 'd2',// 權責部門
-                        mode: 'm2',  // 營運模式
-                        wbs: 'APC2',  // 關聯子系統
-                        serious: 'S4',  // 風險嚴重性
-                        frequency: 'P2',  // 風險頻率
-                        affectTraveler: true,  // 影響旅客
-                        affectStaff: true,  // 影響員工
-                        affectPublic: false,  // 影響大眾
-                        trainLate: false,  // 列車誤點
-                        stopOperation: false,  // 中斷營運
-                        accidents: ['G3', 'G6'],  // 衍生事故
-                        controls: [  // 控制措施
-                            {
-                                id: 123,
-                                subject: '火災處理要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.pdf' },
-                                note: '',
-                                evidences: [
-                                    {
-                                        name: '456.xlsx',
-                                        link: '/demofile/456.xlsx'
-                                    },
-                                    {
-                                        name: '123.pdf',
-                                        link: '/demofile/123.pdf'
-                                    },
-                                ],
-                            },
-                            {
-                                id: 456,
-                                subject: '中暑急救要點',
-                                desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                                depart: '綜合企劃科',
-                                file: { link: '/demofile/123.docx' },
-                                note: '',
-                                evidences: [
-                                    {
-                                        name: '123.pdf',
-                                        link: '/demofile/123.pdf'
-                                    },
-                                ],
-                            },
-                        ],
-                    }
+                // setTimeout(() => {
+                //     let obj = {
+                //         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
+                //         reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
+                //         indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
+                //         note: '',  // 備註
+                //         depart: 'd2',// 權責部門
+                //         mode: 'm2',  // 營運模式
+                //         wbs: 'APC2',  // 關聯子系統
+                //         serious: 'S4',  // 風險嚴重性
+                //         frequency: 'P2',  // 風險頻率
+                //         affectTraveler: true,  // 影響旅客
+                //         affectStaff: true,  // 影響員工
+                //         affectPublic: false,  // 影響大眾
+                //         trainLate: false,  // 列車誤點
+                //         stopOperation: false,  // 中斷營運
+                //         accidents: ['G3', 'G6'],  // 衍生事故
+                //         controls: [  // 控制措施
+                //             {
+                //                 id: 123,
+                //                 subject: '火災處理要點',
+                //                 desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                //                 depart: '綜合企劃科',
+                //                 file: { link: '/demofile/123.pdf' },
+                //                 note: '',
+                //                 evidences: [
+                //                     {
+                //                         name: '456.xlsx',
+                //                         link: '/demofile/456.xlsx'
+                //                     },
+                //                     {
+                //                         name: '123.pdf',
+                //                         link: '/demofile/123.pdf'
+                //                     },
+                //                 ],
+                //             },
+                //             {
+                //                 id: 456,
+                //                 subject: '中暑急救要點',
+                //                 desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
+                //                 depart: '綜合企劃科',
+                //                 file: { link: '/demofile/123.docx' },
+                //                 note: '',
+                //                 evidences: [
+                //                     {
+                //                         name: '123.pdf',
+                //                         link: '/demofile/123.pdf'
+                //                     },
+                //                 ],
+                //             },
+                //         ],
+                //     }
                     
-                    this.setInitDate(obj)
-                    this.chLoadingShow()
-                }, 1000)
-            } else {
-                // 新增時
-                // 若由危害通報新登錄轉至此頁，則指派初始值
-                if (sessionStorage.getItem('notifyItem') !== null) {
-                    let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
-                    
-                    this.notify.id = obj.id,  // 通報id
-                    this.notify.isNew = true  // 是否為危害通報的新登錄
-
-                    sessionStorage.removeItem('notifyItem')  // 清除 sessionStorage
-                }
+                //     this.setInitDate(obj)
+                //     this.chLoadingShow()
+                // }, 1000)
             }
         },
         // 設定資料(編輯時)
@@ -610,75 +625,105 @@ export default {
         save() {
             this.chLoadingShow()
 
-            // 測試用資料
-            setTimeout(() => {
-                let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
-                if (!this.isEdit) this.$router.push({ path: '/smis/car-harmdb/harms' })
-                this.chMsgbar({ success: true, msg: txt })
-                this.chLoadingShow()
-            }, 1000)
+            if (this.isEdit) {
+                // ---------- 編輯時---------- 
+                // updateData({
+                //     ProcCode: this.id,  // 措施編號
+                //     PolicyCode: this.ipt.docId,  // 規章編號
+                //     DeviceTitle: this.ipt.subject,  //措施簡述
+                //     DeviceDesp: this.ipt.desc,  // 措施說明
+                //     DeviceDepart: this.ipt.depart,  // 管控單位
+                //     Remark: this.ipt.note,  // 備註
+                //     ClientReqTime: getNowFullTime(),  // client 端請求時間
+                //     OperatorID: this.userData.UserId,  // 操作人id
+                // }).then(res => {
+                //     if (res.data.ErrorCode == 0) {
+                //         this.chMsgbar({ success: true, msg: '更新成功' })
+                //     } else {
+                //         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                //         this.$router.push({ path: '/error' })
+                //     }
+                // }).catch(err => {
+                //     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                // }).finally(() => {
+                //     this.chLoadingShow()
+                // })
+            } else {
+                // ---------- 新增時---------- 
+                // 組合要傳至後端的已選控制措施資料
+                let chooseControlData = this.ipt.controlChoose.map(item => ({
+                    EndangerCode: '',
+                    ProcCode: item.ProcCode
+                }))
+
+                createData({
+                    EndangerDesp: this.ipt.desc,  // 危害說明
+                    OperationMode: this.ipt.mode,  //營運模式
+                    EndangerReason: this.ipt.reason,  // 危害直接成因
+                    EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
+                    Remark: this.ipt.note,  // 備註
+                    EndangerDepart: this.ipt.depart,  // 危害權責部門
+                    RiskSerious: this.ipt.serious,  // 風險嚴重性
+                    RiskFreq: this.ipt.frequency,  // 風險頻率
+                    RiskLevel: '',  // 風險等級
+                    DeriveAccident: this.ipt.accidents,  // 衍生事故
+                    EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
+                    EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
+                    EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
+                    ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
+                    ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
+                    DeviceDepart: '',  // 控制措施權責部門
+                    ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
+                    ProcCount: chooseControlData,  // 已選控制措施清單
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '新增成功' })
+                        this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+                        this.ipt.controlChoose = [ ...[]]
+                        this.tableItems = [ ...[]]
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
         },
         // 搜尋控制措施
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 123,
-                        subject: '火災處理要點',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '綜合企劃科',
-                        file: { name: '123.pdf', link: '/demofile/123.pdf' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                    {
-                        id: 456,
-                        subject: '中暑急救要點',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '綜合企劃科',
-                        file: { name: '123.docx', link: '/demofile/123.docx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                            {
-                                name: '123.docx',
-                                link: '/demofile/123.docx'
-                            },
-                        ],
-                    },
-                    {
-                        id: 789,
-                        subject: '火車誤點處理措施',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '鐵路服務科',
-                        file: { name: '456.xlsx', link: '/demofile/456.xlsx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                ]
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerProc',  // DB table
+                KeyItem: [
+                    { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'PolicyCode',
+                    'ProcCode',
+                    'DeviceTitle',
+                    'DeviceDesp',
+                    'DeviceDepart',
+                    'UpdateDTime',
+                    'Remark',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 顯示檢視內容
         showContent(txt) {
@@ -686,21 +731,35 @@ export default {
         },
         // 顯示證據
         showEvidences(arr) {
-            this.evidences = [ ...arr ]
+            this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
+            this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
             this.dialogShow = true
         },
         // 增加已選的控制措施
         addControl(item) {
             // 沒找到才新增
-            let arr = this.ipt.controlChoose.find(ele => ele.id == item.id)
+            let arr = this.ipt.controlChoose.find(ele => ele.ProcCode == item.ProcCode)
             if (arr == undefined) {
                 this.ipt.controlChoose.push(item)
             }
         },
         // 刪除已選的控制措施
         delControl(id) {
-            let idx = this.ipt.controlChoose.findIndex(ele => ele.id == id)
+            let idx = this.ipt.controlChoose.findIndex(ele => ele.ProcCode == id)
             this.ipt.controlChoose.splice(idx, 1)
+        },
+        //抓取未確認的設備標示編碼
+        getTempCode(value) {
+            this.searchTemp.wbs = value
+        },
+        //抓取未確認的設備標示編碼中文
+        getTempName(value) {
+            this.searchTemp.wbsShow = value
+        },
+        //確認設備標示編碼，寫入
+        setWBS() {
+            this.ipt.wbs = this.searchTemp.wbs
+            this.eqCodeShow = false
         },
     },
     created() {

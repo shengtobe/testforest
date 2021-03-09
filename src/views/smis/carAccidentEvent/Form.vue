@@ -336,7 +336,7 @@
         <!-- 原因分析 - 三層下拉選單 -->
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>第一層因素
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>第一層因素
             </h3>
             <v-select
                 v-model="ipt.hour"
@@ -347,7 +347,7 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>第二層因素
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>第二層因素
             </h3>
             <v-select
                 v-model="ipt.hour"
@@ -358,7 +358,7 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>第三層因素
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>第三層因素
             </h3>
             <v-select
                 v-model="ipt.hour"
@@ -473,6 +473,7 @@ import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         routeId: '',  // 編號
         isEdit: false,  // 是否為編輯狀態

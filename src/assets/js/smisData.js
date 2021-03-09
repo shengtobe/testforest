@@ -148,6 +148,41 @@ export const locationOpts = [
     { text: '其他', value: 'other' },
 ]
 
+// 危害資料庫 - 營運模式
+export const operateModes = [ 
+    { text: '正常', value: 'm1' },
+    { text: '降級', value: 'm2' },
+    { text: '緊急', value: 'm3' },
+    { text: '維修', value: 'm4' },
+]
+
+// 危害資料庫 - 風險嚴重性
+export const riskSerious = [
+    { text: '極輕微 (S5)', value: 'S5' },
+    { text: '稍微 (S4)', value: 'S4' },
+    { text: '主要 (S3)', value: 'S3' },
+    { text: '嚴重 (S2)', value: 'S2' },
+    { text: '災難 (S1)', value: 'S1' },
+]
+
+// 危害資料庫 - 風險頻率
+export const riskFrequency = [
+    { text: '經常 (P1)', value: 'P1' },
+    { text: '很可能 (P2)', value: 'P2' },
+    { text: '偶爾 (P3)', value: 'P3' },
+    { text: '很少 (P4)', value: 'P4' },
+    { text: '幾乎不 (P5)', value: 'P5' },
+]
+
+// 危害資料庫 - 風險等級
+export const riskLevel = [
+    { text: '非常高度風險 (R1)', value: 'R1' },
+    { text: '中高度風險 (R2)', value: 'R2' },
+    { text: '中度風險 (R3)', value: 'R3' },
+    { text: '可接受，持續控管 (R4)', value: 'R4' },
+]
+
+
 // 職安-傷害部位
 export const injurySiteOpts = [
     { text: '(1) 頭(含眼、耳、鼻、口腔、下顎骨)', value: 1 },
