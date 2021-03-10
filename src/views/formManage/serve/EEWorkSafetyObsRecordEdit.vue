@@ -10,26 +10,47 @@
     <commonQuestion v-model="inputData" :settings="setting">
         <template v-slot:beforeTextarea>
             <v-col cols="13" sm="12">
-                <v-toolbar color="teal lighten-2" dark>
+              <v-toolbar color="teal lighten-2" dark>
                 <v-spacer />
                 <v-toolbar-title>觀察內容：（觀察此人進行工作檢討工作關鍵性安全要點、交談結果）</v-toolbar-title>
                 <v-spacer />
-                </v-toolbar>
+              </v-toolbar>
             </v-col>
         </template>
         <template v-slot:moreDetails="item">
             <v-col cols="12" sm="4">
-            <h3 class="mb-1">編號</h3>
-            <v-text-field solo value v-model="item.editItem.EmpID" />
+              <h3 class="mb-1">編號</h3>
+              <v-text-field solo value v-model="item.editItem.EmpID" />
             </v-col>
-            <!-- <v-col cols="12" sm="4" md="4">
-            <deptSelect
-            label="所屬單位"
-            v-model="item.editItem.EmpDepartName"
-            outType="key"
-            key="department"
-            />
-        </v-col> -->
+            <v-col cols="12" sm="4">
+              <!-- <h3 class="mb-1">所屬單位</h3>
+              
+              <v-text-field solo value v-model="item.editItem.EmpID2" /> -->
+              <deptSelect
+                :label="'所屬單位'"
+                v-model="item.editItem.EmpDepartCode"
+                outType="key"
+                key="EmpDepartCode"
+              />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">職稱</h3>
+              <v-text-field solo value v-model="item.editItem.JobName" />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">員工姓名</h3>
+              <v-text-field solo value v-model="item.editItem.EmpName" />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">任現職年資</h3>
+              <v-text-field solo value v-model="item.editItem.EmployeeYears" />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <h3 class="mb-1">工作名稱</h3>
+              <v-text-field solo value v-model="item.editItem.JobDesp" />
+            </v-col>
+            
+        </v-col>
         </template>
     </commonQuestion>
     <v-card-actions class="px-5 pb-5">
@@ -112,6 +133,11 @@ export default {
         editableData: {
           CheckDay: "",
           EmpID: "",
+          EmpDepartCode: "",
+          JobName: "",
+          EmpName: "",
+          EmployeeYears: "",
+          JobDesp: "",
           CheckOption1: "0",
           CheckOption2: "0",
           CheckOption3: "0",

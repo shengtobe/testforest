@@ -58,10 +58,7 @@
               dark
               fab
               color="info darken-1"
-              :to="
-                '/form-manage/labor/hazid-risk-assessment-add?editType=2&RPFlowNo=' +
-                item.RPFlowNo
-              "
+              @click="viewPage(item.RPFlowNo)"
             >
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
@@ -279,6 +276,13 @@ export default {
       this.dialogDel = true;
       this.DelDynamicKey += 1;
       this.RPFlowNo = RPFlowNo;
+    },
+    viewPage(input) {
+      this.chLoadingShow();
+      this.$router.push(
+        "/form-manage/labor/hazid-risk-assessment-add?editType=2&RPFlowNo=" +
+          input
+      );
     },
   },
 };
