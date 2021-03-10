@@ -11,6 +11,7 @@
     v-model="inputValue"
     :loading="orgIsLoading"
     v-on="$listeners"
+    :disabled="disabled"
     />
 </template>
 <script>
@@ -23,7 +24,7 @@ import { fetchOrganization } from '@/apis/organization'
   可以直接綁定原生事件
 */
 export default {
-	props: ['value','isMuti'],
+	props: ['value','isMuti','disabled'],
 	data: () => ({
     orgList:[],
     orgIsLoading:false,
@@ -144,6 +145,7 @@ export default {
   watch: {
     inputValue: function(value){
       this.$emit('input',value)
+      this.$emit('getName',this.orgList.find(el=>el.value==value).text)
     }
   }
 }
