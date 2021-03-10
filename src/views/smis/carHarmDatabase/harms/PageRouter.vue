@@ -74,35 +74,6 @@ export default {
                 this.$router.push({ path: '/error' })
             }
 
-            // fetchOne({
-            //     EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
-            //     ClientReqTime: getNowFullTime(),  // client 端請求時間
-            // }).then(res => {
-                
-            // }).catch(err => {
-            //     console.log(err)
-            //     alert('伺服器發生問題，資料讀取失敗')
-            // }).finally(() => {
-            //     this.chLoadingShow()
-            // })
-
-            // if (res.data.ErrorCode == 0) {
-            //     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
-            //         this.$router.push({ path: '/404' })
-            //     } else {
-            //         this.status = res.data.EndangerStatus  // 狀態
-            //         console.log(res.data)
-
-            //         console.log(controls)
-
-                    
-            //     }
-            // } else {
-            //     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
-            //     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-            //     this.$router.push({ path: '/error' })
-            // }
-
             // 向後端查詢控制措施的資料
             try {
                 controls = await fetchList({
@@ -140,9 +111,7 @@ export default {
             // 組合衍生事故字串
             let accidentsTxt = '<lu>'
             res.data.DeriveAccident.forEach(item => {
-                accidentsTxt += '<li>'
-                accidentsTxt += evtTypes.find(ele => ele.value == item).text
-                accidentsTxt += '</li>'
+                accidentsTxt += `<li>${evtTypes.find(ele => ele.value == item).text}</li>`
             })
             accidentsTxt += '</lu>'
 

@@ -38,11 +38,11 @@ export function fetchOne(data) { return axios(
 //     }
 // )}
 
-// // 刪除
-// export function deleteData(data) { return axios(
-//     {
-//         url: '/sms/dangerdb/delete',
-//         method: 'delete',
-//         data,
-//     }
-// )}
+// 刪除
+export function deleteData(data) { return axios(
+    {
+        url: '/sms/dangerdb/delete',
+        method: 'delete',
+        data,
+    }
+)}

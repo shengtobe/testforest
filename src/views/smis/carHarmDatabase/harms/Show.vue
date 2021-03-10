@@ -38,9 +38,11 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
+import { deleteData } from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['itemData'],
@@ -61,12 +63,6 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        }
-    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -79,18 +75,30 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
-            console.log(this.tableItems)
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                deleteData({
+                    EndangerCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '作廢失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 申請審核
