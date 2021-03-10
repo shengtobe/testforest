@@ -95,7 +95,7 @@ export default {
             this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
             this.dialogShow = true
         },
-        // 關閉視窗
+        // 關閉證據dialog
         closeDialog() {
             this.dialogShow = false
         }

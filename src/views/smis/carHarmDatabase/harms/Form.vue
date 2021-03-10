@@ -359,37 +359,13 @@
         </v-col>
     </v-row>
 
-    <!-- 證據 -->
-    <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
-                <v-toolbar-title>證據</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-
-            <v-list-item-group>
-                <template v-for="(item, idx) in evidences">
-                    <v-list-item
-                        :key="item"
-                        :href="item"
-                        :download="evidencesName[idx]"
-                    >
-                        <v-list-item-content>
-                            <v-list-item-title class="pa-3">{{ evidencesName[idx] }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider
-                        v-if="idx + 1 < evidences.length"
-                        :key="idx"
-                    ></v-divider>
-                </template>
-            </v-list-item-group>
-        </v-card>
-    </v-dialog>
+    <!-- 證據 dialog -->
+    <EvidencesDialog
+        :show="dialogShow"
+        :fileNameArr="evidencesName"
+        :filePathArr="evidences"
+        @closeDialog="closeDialog"
+    />
 
     <!-- 關聯子系統 dailog -->
     <v-dialog v-model="eqCodeShow" max-width="900px">
@@ -428,6 +404,7 @@ import { operateModes, riskSerious, riskFrequency } from '@/assets/js/smisData'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
 import Pagination from '@/components/Pagination.vue'
 import EquipRepairCode from '@/components/EquipRepairCode.vue'
+import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
 import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
 import { createData } from '@/apis/smis/carHarmDatabase/harms'
 
@@ -508,6 +485,7 @@ export default {
         AccidentCheckbox,
         Pagination,
         EquipRepairCode,
+        EvidencesDialog,
     },
     computed: {
         ...mapState ('user', {
@@ -729,11 +707,14 @@ export default {
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
-        // 顯示證據
-        showEvidences(arr) {
+        showEvidences(item) {
             this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
             this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
             this.dialogShow = true
+        },
+        // 關閉證據dialog
+        closeDialog() {
+            this.dialogShow = false
         },
         // 增加已選的控制措施
         addControl(item) {

@@ -1,5 +1,5 @@
 <template>
-<v-dialog v-model="show" max-width="400px" persistent>
+<v-dialog v-model="show" max-width="400px" @click:outside="close">
     <v-card>
         <v-toolbar flat dense dark color="purple lighten-2">
             <v-toolbar-title>證據</v-toolbar-title>

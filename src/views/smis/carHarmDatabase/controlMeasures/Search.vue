@@ -115,37 +115,13 @@
         </v-col>
     </v-row>
 
-    <!-- 證據 -->
-    <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
-                <v-toolbar-title>證據</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-
-            <v-list-item-group>
-                <template v-for="(item, idx) in evidences">
-                    <v-list-item
-                        :key="item"
-                        :href="item"
-                        :download="evidencesName[idx]"
-                    >
-                        <v-list-item-content>
-                            <v-list-item-title class="pa-3">{{ evidencesName[idx] }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider
-                        v-if="idx + 1 < evidences.length"
-                        :key="idx"
-                    ></v-divider>
-                </template>
-            </v-list-item-group>
-        </v-card>
-    </v-dialog>
+    <!-- 證據 dialog -->
+    <EvidencesDialog
+        :show="dialogShow"
+        :fileNameArr="evidencesName"
+        :filePathArr="evidences"
+        @closeDialog="closeDialog"
+    />
 </v-container>
 </template>
 
@@ -154,6 +130,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
+import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
 import { fetchList, deleteData } from '@/apis/smis/carHarmDatabase/controlMeasures'
 
 export default {
@@ -180,7 +157,10 @@ export default {
         evidencesName: [],  // 證據名稱
         dialogShow: false,  // 證據dialog是否顯示
     }),
-    components: { Pagination },
+    components: { 
+        Pagination,
+        EvidencesDialog,
+    },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -216,7 +196,6 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log(this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -259,6 +238,10 @@ export default {
             this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
             this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
             this.dialogShow = true
+        },
+        // 關閉證據dialog
+        closeDialog() {
+            this.dialogShow = false
         },
     }
 }
