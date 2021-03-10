@@ -5,7 +5,7 @@
     <v-row class="px-2 mb-8">
         <v-col cols="12">
             <v-btn dark large class="my-2 mr-2"
-                to="/smis/jobsafety/physical"
+                @click="close"
             >回搜尋頁</v-btn>
 
             <v-btn color="indigo" dark large class="ma-2"
@@ -34,18 +34,14 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.depart="{ item }">
-                        {{ transferDepartTxt(item.depart) }}
-                    </template>
-
-                    <template v-slot:item.competence="{ item }">
-                        {{ (item.competence == 'y')? '合格' : '不合格' }}
+                    <template v-slot:item.Competence="{ item }">
+                        {{ (item.Competence == 'T')? '適任' : '不適任' }}
                     </template>
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             target="_blank"
-                            :to="`/smis/jobsafety/physical/${item.id}/show`"
+                            :to="`/smis/jobsafety/physical/${id}/show/${item.FlowID}`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -67,8 +63,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { departOptions } from '@/assets/js/departOption'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { healthCdList } from '@/apis/smis/health'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -78,11 +75,11 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '健檢日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '部門', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '健檢評級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '適任性', value: 'competence', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '健檢日期', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '部門', value: 'DepartName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '適任性', value: 'Competence', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         dialog: false,  // dialog 是否顯示
@@ -91,55 +88,67 @@ export default {
         note: '',  // 備註
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chMsgbar',
         ]),
         // 初始化資料
         initData() {
             this.chLoadingShow()
             this.routeId = this.id  // 路由參數(id)
-
-            setTimeout(() => {
-                this.name = '王小明'
-                this.tableItems = [
-                    {
-                        id: '789',
-                        depart: 'd2', 
-                        name: '王小明',
-                        date: '2020-05-01',
-                        level: '1級',
-                        competence: 'y',
-                    },
-                    {
-                        id: '658',
-                        depart: 'd2', 
-                        name: '王小明',
-                        date: '2019-04-20',
-                        level: '2級',
-                        competence: 'y',
-                    },
-                ]
-
+            console.log({
+                ID: this.id,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            })
+            healthCdList({
+                ID: this.id,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res=>{
+                if (res.data.ErrorCode == 0) {
+                    console.log(res.data)
+                    if(res.data.HealthDataList.length > 0){
+                        this.tableItems = res.data.HealthDataList.map(element=>({
+                            FlowID: element.FlowID,
+                            DepartName: element.Depart,
+                            Name: element.Name,
+                            HealthCheckDate: element.HealthCheckDate,
+                            HealthResultLevel: element.HealthResultLevel,
+                            Competence: element.Competence
+                        }))
+                    }
+                }else{
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 轉換部門文字
-        transferDepartTxt(val) {
-            return departOptions.find(item => item.value == val).text
-        },
         // 新增
         add() {
-            // 將資料存至 sessionStorage
-            sessionStorage.setItem('pdataItem', JSON.stringify({
-                id: this.routeId,
-                name: this.name,
-            }))
-            this.$router.push({ path: `/smis/jobsafety/physical/${this.routeId}/add` })
+            this.$router.push({ path: `/smis/jobsafety/physical/${this.routeId}/form` })
+        },
+        close() {
+            if(window.opener!= null){
+                window.close()
+            }else{
+                this.$router.push({ path: `/smis/jobsafety/physical` })
+            }
         }
     },
     created() {

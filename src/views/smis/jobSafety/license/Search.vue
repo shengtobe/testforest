@@ -47,16 +47,16 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.note="{ item }">
+                    <template v-slot:item.Memo="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.note)"
+                            @click="showContent(item.Memo)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.link="{ item }">
                         <v-btn small dark fab color="purple"
                             target="_blank"
-                            :to="`/smis/jobsafety/license/${item.id}/list`"
+                            :to="`/smis/jobsafety/license/${item.FlowID}/list`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -71,7 +71,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item.id)"
+                            @click="del(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -91,88 +91,17 @@
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
-        <v-card>
-            <v-card-title class="light-blue darken-1 white--text px-4 py-1">
-                {{ dialogTitle }}
-                <v-spacer></v-spacer>
-                <v-btn dark fab small text @click="dialog = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-card-text class="px-6 py-4">
-                <v-row>
-                    <v-col cols="12" sm="4">
-                        <h3 class="mb-1">
-                            <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>證照名稱
-                        </h3>
-                        <v-text-field
-                            v-model.trim="ipt.name"
-                            solo
-                            placeholder="請輸入證照名稱"
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="4">
-                        <h3 class="mb-1">
-                            <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>初訓時間(小時)
-                        </h3>
-                        <v-text-field
-                            v-model.trim="ipt.firstTrain"
-                            solo
-                            placeholder="請輸入初訓時間"
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="4">
-                        <h3 class="mb-1">
-                            <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>回訓時間(小時)
-                        </h3>
-                        <v-text-field
-                            v-model.trim="ipt.backTrain"
-                            solo
-                            placeholder="請輸入回訓時間"
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" sm="4">
-                        <h3 class="mb-1">
-                            <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>有效時間(年)
-                        </h3>
-                        <v-text-field
-                            v-model.trim="ipt.effective"
-                            solo
-                            placeholder="請輸入有效時間"
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12">
-                        <h3 class="mb-1">
-                            <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註
-                        </h3>
-                        <v-text-field
-                            v-model.trim="ipt.note"
-                            solo
-                            placeholder="請輸入備註"
-                            hide-details
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-            
-            <v-card-actions class="px-5 pb-5">
-                <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
-            </v-card-actions>
-        </v-card>
+        <LicenseEdit :key="componentKey" @cancel="cancel" :license="ipt"/> 
     </v-dialog>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { licenseRcdQuery, licenseRcdOption } from '@/apis/smis/license'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import LicenseEdit from '@/views/smis/jobSafety/license/LicenseEdit.vue'
 
 export default {
     data: () => ({
@@ -180,12 +109,12 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證照名稱', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '初訓時間(小時)', value: 'firstTrain', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '回訓時間(小時)', value: 'backTrain', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '有效時間(年)', value: 'effective', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            // { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證照名稱', value: 'License', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '初訓時間(小時)', value: 'InitTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '回訓時間(小時)', value: 'ReTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '有效時間(年)', value: 'ValidityPeriod', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
             { text: '人員資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
         ],
@@ -193,16 +122,17 @@ export default {
         isLoading: false,  // 是否讀取中
         itemIndex: -1,  // 作用中的物件索引值 (小於0為新增的情況)
         ipt: {},  // dialog 欄位
-        defaultIpt: {  // dialog 欄位預設值
-            name: '',  // 證照名稱
-            firstTrain: '',  // 初訓時間(小時)
-            backTrain: '',  // 回訓時間(小時)
-            effective: '',  // 有效時間(年)
-            note: '',  // 備註
-        },
+        componentKey: 0,
+
     }),
-    components: { Pagination },
+    components: { 
+        Pagination,
+        LicenseEdit 
+    },
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         dialogTitle () {
             return this.itemIndex === -1 ? '新增資料' : '編輯資料'
         },
@@ -217,21 +147,40 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-
-            // 測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 1111,  // 編號
-                        name: '堆高機乙級證照',  // 證照名稱
-                        firstTrain: 36,  // 初訓時間(小時)
-                        backTrain: 24,  // 回訓時間(小時)
-                        effective: 10,  // 有效時間(年)
-                        note: '文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容文字內容',  // 備註
-                    },
-                ]
+            console.log({
+                License: this.licenseName,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            })
+            licenseRcdQuery({
+                License: this.licenseName,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res=>{
+                console.log(res.data)
+                if (res.data.ErrorCode == 0) {
+                    if(res.data.DataList){
+                        this.tableItems = res.data.DataList
+                        // .map(element=>({
+                        //     License: element.License,
+                        //     InitTrainingTime: element.InitTrainingTime,
+                        //     ReTrainingTime: element.ReTrainingTime,
+                        //     ValidityPeriod: element.ValidityPeriod,
+                        //     Memo: element.Memo,
+                        // }))
+                    }else{
+                        this.chMsgbar({ success: false, msg: '查無資料' })
+                    }
+                }else{
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -241,55 +190,46 @@ export default {
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
-        // 送出
-        save() {
-            this.isLoading = true
-
-            setTimeout(() => {
-                let txt = this.itemIndex === -1 ? '新增成功' : '更新成功'
-
-                // 編輯時，待後端回傳檔案資訊，再一併寫回 this.tableItems[this.itemIndex] 中
-                // 新增時則不處理 (因為當前搜尋條件不一定符合新增的記錄)
-                if (this.itemIndex > -1) {
-                    Object.assign(this.tableItems[this.itemIndex], this.ipt)
-                }
-                
-                this.chMsgbar({ success: true, msg: txt })
-                this.isLoading = this.dialog = false
-            }, 1000)
-        },
         // 新增
         add() {
-            this.ipt = { ...this.defaultIpt }  // 初始化表單，避免點編輯按鈕但未更新時資料殘留
-            this.itemIndex = -1  // 初始化索引值
+            this.ipt = undefined
             this.dialog = true
+            this.componentKey ++
         },
         // 編輯
         edit (item) {
-            this.itemIndex = this.tableItems.indexOf(item)  // 取得索引值
-            this.ipt = { ...item }  // 設定表單資料
+            this.ipt = item
             this.dialog = true
+            this.componentKey ++
+        },
+        cancel() {
+            this.dialog = false
         },
         // 刪除
-        del(id) {
+        del(item) {
             if (confirm('會連同所有人員資料一併刪除，你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                licenseRcdOption({
+                    ...item,
+                    Option: '3',
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res=>{
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: false, msg: '資料刪除成功' })
+                    }else{
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
-        // 轉換部門文字
-        transferDepartTxt(val) {
-            return departOptions.find(item => item.value == val).text
-        },
     },
-    created() {
-        this.ipt = { ...this.defaultIpt }  // 初始化表單
-    }
 }
 </script>

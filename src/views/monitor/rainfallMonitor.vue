@@ -9,10 +9,15 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                     <v-select :items="[
-                    { text: '總計', value: 'A' }, 
-                    { text: '阿里山', value: 'B' }, 
-                    { text: '奮起湖', value: 'C' }, 
-                    { text: '獨立山', value: 'D' }
+                    { value: '', text: '全部' },
+                    { value: '467480', text: '嘉義' },
+                    { value: 'C1M620', text: '瑞里' },
+                    { value: 'C0M700', text: '竹崎' },
+                    { value: 'C1M640', text: '十字' },
+                    { value: 'C1M610', text: '石磐龍' },
+                    { value: 'C1M480', text: '獨立山' },
+                    { value: 'C0M530', text: '奮起湖' },
+                    { value: '467530', text: '阿里山' },
                     ]" solo />
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -33,10 +38,15 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                     <v-select :items="[
-                    { text: '總計', value: 'A' }, 
-                    { text: '阿里山', value: 'B' }, 
-                    { text: '奮起湖', value: 'C' }, 
-                    { text: '獨立山', value: 'D' }
+                    { value: '', text: '全部' },
+                    { value: '467480', text: '嘉義' },
+                    { value: 'C1M620', text: '瑞里' },
+                    { value: 'C0M700', text: '竹崎' },
+                    { value: 'C1M640', text: '十字' },
+                    { value: 'C1M610', text: '石磐龍' },
+                    { value: 'C1M480', text: '獨立山' },
+                    { value: 'C0M530', text: '奮起湖' },
+                    { value: '467530', text: '阿里山' },
                     ]" solo />
                 </v-col>
                 <v-col cols="12" sm="4" >
