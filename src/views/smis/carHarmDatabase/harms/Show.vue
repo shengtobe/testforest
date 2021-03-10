@@ -9,48 +9,8 @@
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
-        <!-- 控制措施 -->
-        <v-col cols="12" class="mt-8">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
-            </h3>
-            <v-card>
-                <v-data-table
-                    :headers="headers"
-                    :items="tableItems"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
-                >
-                    <template v-slot:no-data>
-                        <span class="red--text subtitle-1">沒有資料</span>
-                    </template>
-
-                    <template v-slot:item.desc="{ item }">
-                        <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
-                        >檢視</v-btn>
-                    </template>
-
-                    <template v-slot:item.file="{ item }">
-                        <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
-                        >
-                            <v-icon>mdi-file-document</v-icon>
-                        </v-btn>
-                    </template>
-
-                    <template v-slot:item.evidences="{ item }">
-                        <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
-                        >
-                            <v-icon>mdi-file-document</v-icon>
-                        </v-btn>
-                    </template>
-                </v-data-table>
-            </v-card>
-        </v-col>
+        <!-- 已選的控制措施 -->
+        <ShowControlsTable :tableItems="tableItems" />
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
@@ -73,38 +33,6 @@
             </template>
         </v-col>
     </v-row>
-
-    <!-- 證據 -->
-    <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
-                <v-toolbar-title>證據</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-
-            <v-list-item-group>
-                <template v-for="(item, idx) in evidences">
-                    <v-list-item
-                        :key="item.name"
-                        :href="item.link"
-                        :download="item.name"
-                    >
-                        <v-list-item-content>
-                            <v-list-item-title>{{ item.name }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider
-                        v-if="idx + 1 < evidences.length"
-                        :key="idx"
-                    ></v-divider>
-                </template>
-            </v-list-item-group>
-        </v-card>
-    </v-dialog>
 </v-container>
 </template>
 
@@ -112,6 +40,7 @@
 import { mapState, mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
 
 export default {
     props: ['itemData'],
@@ -121,21 +50,11 @@ export default {
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         tableItems: [],  // 表格資料 (控制措施)
-        headers: [  // 表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        ],
-        evidences: [],  // 證據
-        dialogShow: false,  // 證據dialog是否顯示
     }),
     components: {
         TopBasicTable,
         BottomTable,
+        ShowControlsTable,
     },
     computed: {
         ...mapState ('user', {
@@ -152,15 +71,15 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
-            'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
+            this.id = obj.EndangerCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
+            console.log(this.tableItems)
         },
         // 作廢
         del() {
@@ -185,15 +104,6 @@ export default {
                     this.chLoadingShow()
                 }, 1000)
             }
-        },
-        // 顯示檢視內容
-        showContent(txt) {
-            this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
-        },
-        // 顯示證據
-        showEvidences(arr) {
-            this.evidences = [ ...arr ]
-            this.dialogShow = true
         },
     },
     created() {

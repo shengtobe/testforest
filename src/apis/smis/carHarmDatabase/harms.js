@@ -2,7 +2,7 @@
 
 import axios from '@/apis/axiosSetting'
 
-// 搜尋多筆 & 取得單一筆詳細資料
+// 搜尋多筆
 export function fetchList(data) { return axios(
     {
         url: '/sms/dangerdb/queryarray',
@@ -15,6 +15,15 @@ export function fetchList(data) { return axios(
 export function createData(data) { return axios(
     {
         url: '/sms/dangerdb/create',
+        method: 'post',
+        data,
+    }
+)}
+
+// 取得單一筆工單詳細資料
+export function fetchOne(data) { return axios(
+    {
+        url: '/sms/dangerdb/detail',
         method: 'post',
         data,
     }

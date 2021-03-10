@@ -787,8 +787,8 @@ export default {
                         Type: this.ipt.type,  // 工單性質
                         OderTypeCode: this.ipt.typeNumber,  // 工單性質編號
                         MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
-                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
-                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}/${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}/${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
                         MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
                         Malfunction: this.ipt.noticeLocation,  // 通報維修地點及事項
                         WorkSubject: '',  // 故障主旨(目前是備用的欄位)

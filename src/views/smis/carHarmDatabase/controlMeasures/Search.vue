@@ -72,7 +72,7 @@
                         <v-btn fab small dark color="brown"
                             v-if="item.regul_file_path != ''"
                             :href="item.regul_file_path"
-                            :download="item.FileFullName"
+                            :download="item.regul_file_path_name"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -216,6 +216,7 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log(this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
