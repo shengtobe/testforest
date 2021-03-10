@@ -510,51 +510,31 @@ export default {
             
             // -------------- 編輯時 -------------- 
             if (this.id != undefined) {
-                let res = {}  // 危害資料
-                let controls = {}  // 控制措施資料
                 this.isEdit = true
                 this.chLoadingShow()
                 
-                // 向後端查詢危害資料
-                try {
-                    res = await fetchOne({
-                        EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
-                        ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    })
-                } catch (err) {
-                    alert('查詢危害資料時發生問題')
-                }
-                
-                // 向後端查詢控制措施的資料
-                try {
-                    if (res.data.ProcCount.length > 0) {
-                        controls = await fetchList({
-                            ClientReqTime: getNowFullTime(),  // client 端請求時間
-                            OperatorID: this.userData.UserId,  // 操作人id
-                            KeyName: 'SMS_EndangerProc',  // DB table
-                            KeyItem: [
-                                { tableColumn: 'ProcCode', columnValue: res.data.ProcCount[0].ProcCode },  // 控制措施編號
-                            ],
-                            QyName: [    // 欲回傳的欄位資料
-                                'PolicyCode',
-                                'ProcCode',
-                                'DeviceTitle',
-                                'DeviceDesp',
-                                'DeviceDepart',
-                                'UpdateDTime',
-                                'Remark',
-                            ],
-                        }) 
-                        res.data.controls = JSON.parse(controls.data.order_list)  // 加到資料內
+                fetchOne({
+                    EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
+                            this.$router.push({ path: '/404' })
+                        } else {
+                            res.data.controls = JSON.parse(res.data.order_list)  // 已選控制措施
+                            this.setInitDate(res.data)
+                        }
                     } else {
-                        res.data.controls = []
+                        // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
-                } catch (err) {
-                    alert('查詢控制措施資料時發生問題')
-                }
-
-                this.setInitDate(res.data)  // 設定資料
-                this.chLoadingShow()
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，資料讀取失敗')
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
             }
         },
         // 設定資料(編輯時)
@@ -574,7 +554,7 @@ export default {
             this.ipt.trainLate = (obj.ServiceCarError == 'T')? true : false  // 列車誤點
             this.ipt.stopOperation = (obj.ServiceStopError == 'T')? true : false  // 中斷營運
             this.ipt.accidents = [ ...obj.DeriveAccident ]  // 衍生事故
-            // this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施
+            this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施
         },
         // 設定勾選的衍生事故
         setAccident(arr) {
