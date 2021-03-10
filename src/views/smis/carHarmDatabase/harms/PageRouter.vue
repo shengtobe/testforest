@@ -76,24 +76,29 @@ export default {
 
             // 向後端查詢控制措施的資料
             try {
-                controls = await fetchList({
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                    KeyName: 'SMS_EndangerProc',  // DB table
-                    KeyItem: [
-                        { tableColumn: 'ProcCode', columnValue: res.data.ProcCount[0].ProcCode },  // 控制措施編號
-                    ],
-                    QyName: [    // 欲回傳的欄位資料
-                        'PolicyCode',
-                        'ProcCode',
-                        'DeviceTitle',
-                        'DeviceDesp',
-                        'DeviceDepart',
-                        'UpdateDTime',
-                        'Remark',
-                    ],
-                }) 
-                controls = JSON.parse(controls.data.order_list)
+                if (res.data.ProcCount.length > 0) {
+                    controls = await fetchList({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerProc',  // DB table
+                        KeyItem: [
+                            { tableColumn: 'ProcCode', columnValue: res.data.ProcCount[0].ProcCode },  // 控制措施編號
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'PolicyCode',
+                            'ProcCode',
+                            'DeviceTitle',
+                            'DeviceDesp',
+                            'DeviceDepart',
+                            'UpdateDTime',
+                            'Remark',
+                        ],
+                    }) 
+                    controls = JSON.parse(controls.data.order_list)
+                } else {
+                    controls = []
+                }
+                
             } catch (err) {
                 alert('查詢控制措施資料時發生問題')
             }

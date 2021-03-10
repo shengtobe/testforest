@@ -406,7 +406,7 @@ import Pagination from '@/components/Pagination.vue'
 import EquipRepairCode from '@/components/EquipRepairCode.vue'
 import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
 import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
-import { createData } from '@/apis/smis/carHarmDatabase/harms'
+import { createData, fetchOne, updateData } from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['id'],  //路由參數
@@ -505,93 +505,78 @@ export default {
             'chViewDialog',  // 檢視內容 dialog
         ]),
         // 初始化資料
-        initData() {
+        async initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
-
+            
             // -------------- 編輯時 -------------- 
             if (this.id != undefined) {
-                this.chLoadingShow()
+                let res = {}  // 危害資料
+                let controls = {}  // 控制措施資料
                 this.isEdit = true
+                this.chLoadingShow()
+                
+                // 向後端查詢危害資料
+                try {
+                    res = await fetchOne({
+                        EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    })
+                } catch (err) {
+                    alert('查詢危害資料時發生問題')
+                }
+                
+                // 向後端查詢控制措施的資料
+                try {
+                    if (res.data.ProcCount.length > 0) {
+                        controls = await fetchList({
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                            KeyName: 'SMS_EndangerProc',  // DB table
+                            KeyItem: [
+                                { tableColumn: 'ProcCode', columnValue: res.data.ProcCount[0].ProcCode },  // 控制措施編號
+                            ],
+                            QyName: [    // 欲回傳的欄位資料
+                                'PolicyCode',
+                                'ProcCode',
+                                'DeviceTitle',
+                                'DeviceDesp',
+                                'DeviceDepart',
+                                'UpdateDTime',
+                                'Remark',
+                            ],
+                        }) 
+                        res.data.controls = JSON.parse(controls.data.order_list)  // 加到資料內
+                    } else {
+                        res.data.controls = []
+                    }
+                } catch (err) {
+                    alert('查詢控制措施資料時發生問題')
+                }
 
-                // 範例效果
-                // setTimeout(() => {
-                //     let obj = {
-                //         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
-                //         reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
-                //         indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
-                //         note: '',  // 備註
-                //         depart: 'd2',// 權責部門
-                //         mode: 'm2',  // 營運模式
-                //         wbs: 'APC2',  // 關聯子系統
-                //         serious: 'S4',  // 風險嚴重性
-                //         frequency: 'P2',  // 風險頻率
-                //         affectTraveler: true,  // 影響旅客
-                //         affectStaff: true,  // 影響員工
-                //         affectPublic: false,  // 影響大眾
-                //         trainLate: false,  // 列車誤點
-                //         stopOperation: false,  // 中斷營運
-                //         accidents: ['G3', 'G6'],  // 衍生事故
-                //         controls: [  // 控制措施
-                //             {
-                //                 id: 123,
-                //                 subject: '火災處理要點',
-                //                 desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                //                 depart: '綜合企劃科',
-                //                 file: { link: '/demofile/123.pdf' },
-                //                 note: '',
-                //                 evidences: [
-                //                     {
-                //                         name: '456.xlsx',
-                //                         link: '/demofile/456.xlsx'
-                //                     },
-                //                     {
-                //                         name: '123.pdf',
-                //                         link: '/demofile/123.pdf'
-                //                     },
-                //                 ],
-                //             },
-                //             {
-                //                 id: 456,
-                //                 subject: '中暑急救要點',
-                //                 desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                //                 depart: '綜合企劃科',
-                //                 file: { link: '/demofile/123.docx' },
-                //                 note: '',
-                //                 evidences: [
-                //                     {
-                //                         name: '123.pdf',
-                //                         link: '/demofile/123.pdf'
-                //                     },
-                //                 ],
-                //             },
-                //         ],
-                //     }
-                    
-                //     this.setInitDate(obj)
-                //     this.chLoadingShow()
-                // }, 1000)
+                this.setInitDate(res.data)  // 設定資料
+                this.chLoadingShow()
             }
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            this.ipt.desc = obj.desc // 危害說明
-            this.ipt.reason = obj.reason  // 危害直接成因
-            this.ipt.indirectReason = obj.indirectReason  // 可能的危害間接原因
-            this.ipt.note = obj.note  // 備註
-            this.ipt.depart = obj.depart  // 權責部門
-            this.ipt.mode = obj.mode  // 營運模式
-            this.ipt.wbs = obj.wbs  // 關聯子系統
-            this.ipt.serious = obj.serious  // 風險嚴重性
-            this.ipt.frequency = obj.frequency  // 風險頻率
-            this.ipt.affectTraveler = obj.affectTraveler  // 影響旅客
-            this.ipt.affectStaff = obj.affectStaff  // 影響員工
-            this.ipt.affectPublic = obj.affectPublic  // 影響大眾
-            this.ipt.trainLate = obj.trainLate  // 列車誤點
-            this.ipt.stopOperation = obj.stopOperation  // 中斷營運
-            this.ipt.accidents = [ ...obj.accidents ]  // 衍生事故
-            this.ipt.controlChoose = [ ...obj.controls ]   // 已選控制錯施
+            this.ipt.desc = obj.EndangerDesp // 危害說明
+            this.ipt.reason = obj.EndangerReason  // 危害直接成因
+            this.ipt.indirectReason = obj.EndangerIndirect  // 可能的危害間接原因
+            this.ipt.note = obj.Remark  // 備註
+            this.ipt.depart = obj.EndangerDepart  // 權責部門
+            this.ipt.mode = obj.OperationMode  // 營運模式
+            this.ipt.wbs = obj.ConnectWBS  // 關聯子系統
+            this.ipt.serious = obj.RiskSerious  // 風險嚴重性
+            this.ipt.frequency = obj.RiskFreq  // 風險頻率
+            this.ipt.affectTraveler = (obj.EffectTraveler == 'T')? true : false  // 影響旅客
+            this.ipt.affectStaff = (obj.EffectEmploy == 'T')? true : false  // 影響員工
+            this.ipt.affectPublic = (obj.EffectPeople == 'T')? true : false  // 影響大眾
+            this.ipt.trainLate = (obj.ServiceCarError == 'T')? true : false  // 列車誤點
+            this.ipt.stopOperation = (obj.ServiceStopError == 'T')? true : false  // 中斷營運
+            this.ipt.accidents = [ ...obj.DeriveAccident ]  // 衍生事故
+            // this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施
         },
-        // 設定勾選的延申事故
+        // 設定勾選的衍生事故
         setAccident(arr) {
             this.ipt.accidents = [ ...arr ]
         },
@@ -603,37 +588,50 @@ export default {
         save() {
             this.chLoadingShow()
 
+            // 組合要傳至後端的已選控制措施資料
+            let chooseControlData = this.ipt.controlChoose.map(item => ({
+                EndangerCode: '',
+                ProcCode: item.ProcCode
+            }))
+
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
-                // updateData({
-                //     ProcCode: this.id,  // 措施編號
-                //     PolicyCode: this.ipt.docId,  // 規章編號
-                //     DeviceTitle: this.ipt.subject,  //措施簡述
-                //     DeviceDesp: this.ipt.desc,  // 措施說明
-                //     DeviceDepart: this.ipt.depart,  // 管控單位
-                //     Remark: this.ipt.note,  // 備註
-                //     ClientReqTime: getNowFullTime(),  // client 端請求時間
-                //     OperatorID: this.userData.UserId,  // 操作人id
-                // }).then(res => {
-                //     if (res.data.ErrorCode == 0) {
-                //         this.chMsgbar({ success: true, msg: '更新成功' })
-                //     } else {
-                //         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                //         this.$router.push({ path: '/error' })
-                //     }
-                // }).catch(err => {
-                //     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
-                // }).finally(() => {
-                //     this.chLoadingShow()
-                // })
+                updateData({
+                    EndangerCode: this.id,  // 危害編號
+                    EndangerDesp: this.ipt.desc,  // 危害說明
+                    OperationMode: this.ipt.mode,  //營運模式
+                    EndangerReason: this.ipt.reason,  // 危害直接成因
+                    EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
+                    Remark: this.ipt.note,  // 備註
+                    EndangerDepart: this.ipt.depart,  // 危害權責部門
+                    RiskSerious: this.ipt.serious,  // 風險嚴重性
+                    RiskFreq: this.ipt.frequency,  // 風險頻率
+                    RiskLevel: '',  // 風險等級
+                    DeriveAccident: this.ipt.accidents,  // 衍生事故
+                    EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
+                    EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
+                    EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
+                    ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
+                    ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
+                    DeviceDepart: '',  // 控制措施權責部門
+                    ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
+                    ProcCount: chooseControlData,  // 已選控制措施清單
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '更新成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
             } else {
                 // ---------- 新增時---------- 
-                // 組合要傳至後端的已選控制措施資料
-                let chooseControlData = this.ipt.controlChoose.map(item => ({
-                    EndangerCode: '',
-                    ProcCode: item.ProcCode
-                }))
-
                 createData({
                     EndangerDesp: this.ipt.desc,  // 危害說明
                     OperationMode: this.ipt.mode,  //營運模式

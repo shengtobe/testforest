@@ -29,14 +29,14 @@ export function fetchOne(data) { return axios(
     }
 )}
 
-// // 更新
-// export function updateData(data) { return axios(
-//     {
-//         url: '/sms/dangerdb/update',
-//         method: 'post',
-//         data,
-//     }
-// )}
+// 更新
+export function updateData(data) { return axios(
+    {
+        url: '/sms/dangerdb/update',
+        method: 'post',
+        data,
+    }
+)}
 
 // 刪除
 export function deleteData(data) { return axios(
