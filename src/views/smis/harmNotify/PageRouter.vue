@@ -17,6 +17,7 @@ import Show from '@/views/smis/harmNotify/Show.vue'
 import ReviewComplated from '@/views/smis/harmNotify/ReviewComplated.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         itemData: {},  // 工單資料
         status: '',  // 狀態
@@ -40,7 +41,7 @@ export default {
             this.chLoadingShow()
 
             fetchNotifyOne({
-                EndangerID: this.$route.params.id,  // 危害通報編號 (從路由參數抓取)
+                EndangerID: this.id,  // 危害通報編號 (從路由參數抓取)
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
@@ -69,9 +70,9 @@ export default {
                         }
 
                         let bottomItems = [
-                            { oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
-                            { oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
-                            { oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
+                            { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
+                            { dataType: 'text', oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
                         ]
 
                         // if (this.status > 1) {

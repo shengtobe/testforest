@@ -105,21 +105,31 @@ export const JobSafetyRouter = [
     {
         linkText: '個人健檢資料列表',
         path: '/smis/jobsafety/physical/:id/list',
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/List.vue')
     },
     {
         linkText: '個人健檢資料新增',
-        path: '/smis/jobsafety/physical/:id/add', 
+        path: '/smis/jobsafety/physical/:id/form', 
+        props: true,
+        component: () => import('@/views/smis/jobSafety/physical/Form.vue')
+    },
+    {
+        linkText: '個人健檢資料新增',
+        path: '/smis/jobsafety/physical/form', 
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/Form.vue')
     },
     {
         linkText: '個人健檢資料詳細內容',
-        path: '/smis/jobsafety/physical/:sid/show', 
+        path: '/smis/jobsafety/physical/:id/show/:sid', 
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/Show.vue')
     },
     {
         linkText: '個人健檢資料編輯',
-        path: '/smis/jobsafety/physical/:id/edit/:sid', 
+        path: '/smis/jobsafety/physical/:id/form/:sid', 
+        props: true,
         component: () => import('@/views/smis/jobSafety/physical/Form.vue')
     },
 
@@ -131,6 +141,7 @@ export const JobSafetyRouter = [
     },
     {
         linkText: '證照人員列表',
+        props: true,
         path: '/smis/jobsafety/license/:id/list',
         component: () => import('@/views/smis/jobSafety/license/List.vue')
     },

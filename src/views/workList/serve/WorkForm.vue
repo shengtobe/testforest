@@ -215,6 +215,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchWorkOrderOne, dispatchOrder } from '@/apis/workList/serve'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         id: '',  // 工單編號
         done: false,  // 是否完成頁面操作
@@ -275,7 +276,7 @@ export default {
 
             // 因為要檢查是否有權限編輯，向後端請求資料
             fetchWorkOrderOne({
-                WorkOrderID: this.$route.params.id,  // 工單編號
+                WorkOrderID: this.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 // 檢查是否有權限編輯

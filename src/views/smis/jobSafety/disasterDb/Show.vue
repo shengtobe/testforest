@@ -3,7 +3,7 @@
     <h2 class="mb-4">職災危害編號：{{ code1 }}-{{ code2 }}-{{ code3 }}</h2>
 
     <v-row no-gutters class="mt-8">
-        <BottomTableNoIcon :items="bottomItems" />
+        <BottomTable :items="bottomItems" />
 
 
         <v-col cols="12" class="text-center mt-12 mb-8">
@@ -29,7 +29,7 @@
 <script>
 import { mapActions } from 'vuex'
 import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts } from '@/assets/js/smisData'
-import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
+import BottomTable from '@/components/BottomTable.vue'
 
 export default {
     data: () => ({
@@ -46,7 +46,7 @@ export default {
             // … 
         }
     },
-    components: { BottomTableNoIcon },
+    components: { BottomTable },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -97,25 +97,25 @@ export default {
             this.code3 = obj.code3 // 編號-第3段
 
             this.bottomItems = [
-                { oneline: true, title: '作業名稱', text: obj.name },
-                { oneline: true, title: '操作工作內容', text: obj.workContent },
-                { oneline: true, title: '作業週期', text: obj.cycle },
-                { oneline: true, title: '作業環境', text: obj.env },
-                { oneline: true, title: '機械/設備/工具', text: obj.eqs },
-                { oneline: true, title: '能源/化學物質', text: obj.energy },
-                { oneline: true, title: '危害類型', text: obj.harmType },
-                { oneline: true, title: '作業資格', text: obj.qualify },
-                { oneline: false, title: '危害可能造成後果', text: obj.result.replace(/\n/g, '<br>') },
-                { oneline: true, title: '工程控制', text: obj.engineeringControl },
-                { oneline: true, title: '管理控制', text: obj.manageControl },
-                { oneline: true, title: '防護具', text: obj.protectEqs },
-                { oneline: true, title: '風險嚴重性', text: jobSeriousOpts.find(item => item.value == obj.serious).text },
-                { oneline: true, title: '風險可能性', text: jobPossibilityOpts.find(item => item.value == obj.possibility).text },
-                { oneline: true, title: '控制後風險嚴重性', text: jobSeriousOpts.find(item => item.value == obj.serious2).text },
-                { oneline: true, title: '控制後風險可能性', text: jobPossibilityOpts.find(item => item.value == obj.possibility2).text },
-                { oneline: false, title: '降低風險所採取之控制措施', text: obj.controlMeasures.replace(/\n/g, '<br>') },
-                { oneline: true, title: '風險等級', text: jobLevelOpts.find(item => item.value == obj.level).text },
-                { oneline: true, title: '控制後風險等級', text: jobLevelOpts.find(item => item.value == obj.level2).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '作業名稱', text: obj.name },
+                { dataType: 'text', oneline: true, icon: 'none', title: '操作工作內容', text: obj.workContent },
+                { dataType: 'text', oneline: true, icon: 'none', title: '作業週期', text: obj.cycle },
+                { dataType: 'text', oneline: true, icon: 'none', title: '作業環境', text: obj.env },
+                { dataType: 'text', oneline: true, icon: 'none', title: '機械/設備/工具', text: obj.eqs },
+                { dataType: 'text', oneline: true, icon: 'none', title: '能源/化學物質', text: obj.energy },
+                { dataType: 'text', oneline: true, icon: 'none', title: '危害類型', text: obj.harmType },
+                { dataType: 'text', oneline: true, icon: 'none', title: '作業資格', text: obj.qualify },
+                { dataType: 'text', oneline: false, icon: 'none', title: '危害可能造成後果', text: obj.result.replace(/\n/g, '<br>') },
+                { dataType: 'text', oneline: true, icon: 'none', title: '工程控制', text: obj.engineeringControl },
+                { dataType: 'text', oneline: true, icon: 'none', title: '管理控制', text: obj.manageControl },
+                { dataType: 'text', oneline: true, icon: 'none', title: '防護具', text: obj.protectEqs },
+                { dataType: 'text', oneline: true, icon: 'none', title: '風險嚴重性', text: jobSeriousOpts.find(item => item.value == obj.serious).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '風險可能性', text: jobPossibilityOpts.find(item => item.value == obj.possibility).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '控制後風險嚴重性', text: jobSeriousOpts.find(item => item.value == obj.serious2).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '控制後風險可能性', text: jobPossibilityOpts.find(item => item.value == obj.possibility2).text },
+                { dataType: 'text', oneline: false, icon: 'none', title: '降低風險所採取之控制措施', text: obj.controlMeasures.replace(/\n/g, '<br>') },
+                { dataType: 'text', oneline: true, icon: 'none', title: '風險等級', text: jobLevelOpts.find(item => item.value == obj.level).text },
+                { dataType: 'text', oneline: true, icon: 'none', title: '控制後風險等級', text: jobLevelOpts.find(item => item.value == obj.level2).text },
             ]
         },
         // 刪除

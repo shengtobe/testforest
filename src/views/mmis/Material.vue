@@ -183,11 +183,11 @@
       </v-dialog>
       <!-- 新增料件 modal -->
       <v-dialog v-model="Add" max-width="900px">
-        <CmaterialEdit @close="close" :materCode="nowMaterial" :key="componentKey" @save="save"></CmaterialEdit>
+        <CmaterialEdit @close="close" :materCode="nowMaterial" DType="add" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <CmaterialEdit @close="close" :materCode="nowMaterial" :key="componentKey" @save="save"></CmaterialEdit>
+        <CmaterialEdit @close="close" :materCode="nowMaterial" DType="edit" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -201,72 +201,9 @@
         </v-card>
       </v-dialog>
       <!-- 移存申請單 modal -->
+      
       <v-dialog v-model="Del" max-width="500px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
-            移存申請單
-            <v-spacer />
-            <v-btn dark fab small text @click="close" class="mr-n2">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </v-card-title>
-
-          <div class="px-6 py-4">
-            <v-row>
-              <!-- 檢查項目 -->
-              <v-col cols="12">
-                <v-row no-gutter class="indigo--text">
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">移出單位</h3>
-                    <v-select solo hide-details />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">呈核人</h3>
-                    <v-select solo hide-details />
-                  </v-col>
-                  <v-col cols="12">
-                    <h3 class="mb-1">
-                      <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>料件名稱
-                    </h3>
-                    <v-row>
-                      <v-col cols="12" sm="3">
-                        <v-text-field hide-details solo />
-                      </v-col>
-
-                      <v-col cols="12" sm="3">
-                        <v-text-field hide-details solo />
-                      </v-col>
-
-                      <v-col cols="12" sm="3">
-                        <v-text-field hide-details solo />
-                      </v-col>
-
-                      <v-col cols="12" sm="3">
-                        <v-text-field hide-details solo />
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                  
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">申請單位</h3>
-                    <v-text-field solo />
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <h3 class="mb-1">申請人</h3>
-                    <v-text-field solo />
-                  </v-col>
-                </v-row>
-              </v-col>
-              <!-- END 檢查項目 -->
-            </v-row>
-          </div>
-
-          <v-card-actions class="px-5 pb-5">
-            <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" @click="save">送出</v-btn>
-          </v-card-actions>
-        </v-card>
+        <MaterialRequistision @onclose="close"></MaterialRequistision>
       </v-dialog>
     </v-row>
   </v-container>
@@ -278,6 +215,7 @@ import Pagination from "@/components/Pagination.vue";
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { materialQueryList,materialQuery,materialDelete,materialEdit } from '@/apis/materialManage/material'
 import CmaterialEdit from '@/views/mmis/MaterialEdit'
+import MaterialRequistision from '@/views/mmis/MaterialRequistision'
 export default {
   data() {
     return {
@@ -380,6 +318,7 @@ export default {
   components: {
     Pagination,
     CmaterialEdit,
+    MaterialRequistision,
   },
   computed: {
     ...mapState ('user', {
@@ -495,7 +434,7 @@ export default {
         if(res.data.ErrorCode == 0){
           that.chMsgbar({success:true, msg:'資料編輯成功！'})
         }else{
-          that.chMsgbar({ success: false, msg: '伺服器發生問題，資料編輯失敗' })
+          that.chMsgbar({ success: false, msg: '資料發生問題，資料編輯失敗' })
         }
       }).catch( err => {
         that.chMsgbar({ success: false, msg: '伺服器發生問題，資料編輯失敗' })

@@ -105,7 +105,7 @@ export default {
                             let nameArr = ele.name.split('.')  // 用小數點拆成陣列
                             let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
                             
-                            this.$emit('joinFile', { FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }, true)
+                            this.$emit('joinFile', { FileName: ele.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }, true)
                         }
                         
                         // --------- 縮圖資料處理 -------------

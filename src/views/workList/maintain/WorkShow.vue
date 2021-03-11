@@ -300,9 +300,16 @@
             <!-- 插入 action 欄位編輯 -->
             <template v-slot:item.action="{ item }">
                 <v-btn small dark fab color="info darken-1"
+                    class="mr-3"
                     @click="setJobHour(true, item)"
                 >
                     <v-icon dark>mdi-pen</v-icon>
+                </v-btn>
+
+                <v-btn fab small color="error"
+                    @click="del(item)"
+                >
+                    <v-icon>mdi-delete</v-icon>
                 </v-btn>
             </template>
         </v-data-table>
@@ -573,6 +580,11 @@ export default {
             }
             this.jobHour.dialogShow = true
         },
+        // 刪除工作項
+        del(item) {
+            let idx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
+            this.jobHour.items.splice(idx, 1)
+        },
         // 儲存工作表單
         saveJob() {
             // 反查工作項名稱
@@ -583,6 +595,7 @@ export default {
                 this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
                 // 新增時 (照林鐵人員要求，新增後不關閉視窗)
                 this.jobHour.items.push(this.jobForm)
+                this.jobForm = { ...this.defaultJobForm }
             } else {
                 // 編輯時
                 Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)

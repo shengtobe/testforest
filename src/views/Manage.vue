@@ -46,8 +46,8 @@
                         <p class="text-h5 font-weight-black">常用功能</p>
 
                         <v-card outlined tile>
-                            <v-list-item :class="titleColor" disabled>
-                                <strong class="white--text">功能列表</strong>
+                            <v-list-item :class="titleColor1" disabled>
+                                <strong class="black--text">功能列表</strong>
                             </v-list-item>
                             <v-divider></v-divider>
 
@@ -58,8 +58,8 @@
                                 <v-divider></v-divider>
 
                                 <!-- 故障、保養工單 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">故障、保養工單</strong>
+                                <v-list-item :class="titleColor1" disabled>
+                                    <strong class="black--text">故障、保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/maintain">維修養護科類工單</v-list-item>
@@ -68,8 +68,8 @@
                                 <v-divider></v-divider>
 
                                 <!-- 監控系統 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">監控系統</strong>
+                                <v-list-item :class="titleColor1" disabled>
+                                    <strong class="black--text">監控系統</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/monitor/slope-monitor">邊坡監控</v-list-item>
@@ -86,8 +86,8 @@
                         <v-card outlined tile>
                             <v-list class="pa-0">
                                 <!-- 危害通報管理 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">危害通報管理</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">危害通報管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
@@ -96,16 +96,16 @@
                                 <v-divider></v-divider>
 
                                 <!-- 行車事故事件 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">行車事故事件</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">行車事故事件</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/car-accident-event">行車事故事件</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 行車危害資料庫 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">行車危害資料庫</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">行車危害資料庫</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/car-harmdb/harms">行車危害</v-list-item>
@@ -120,8 +120,8 @@
                         <v-card outlined tile class="mt-sm-12">
                             <v-list class="pa-0">
                                 <!-- 行車安全資訊 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">行車安全資訊</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">行車安全資訊</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/car-safeinfo/info">安全資訊</v-list-item>
@@ -130,8 +130,8 @@
                                 <v-divider></v-divider>
 
                                 <!-- 安全文件 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">安全文件</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">安全文件</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/safefile/meeting">安全會議文件</v-list-item>
@@ -142,8 +142,8 @@
                                 <v-divider></v-divider>
 
                                 <!-- 行車安全績效 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">行車安全績效</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">行車安全績效</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/car-safe-performance">行車安全績效</v-list-item>
@@ -155,8 +155,8 @@
                         <v-card outlined tile class="mt-sm-12">
                             <v-list class="pa-0">
                                 <!-- 職安管理 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">職安管理</strong>
+                                <v-list-item :class="titleColor2" disabled>
+                                    <strong class="black--text">職安管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
@@ -180,8 +180,8 @@
                         <v-card outlined tile>
                             <v-list class="pa-0">
                                 <!-- 設備資料管理 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">設備資料管理</strong>
+                                <v-list-item :class="titleColor3" disabled>
+                                    <strong class="black--text">設備資料管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/mmis/train-track-lane">列車、軌道、車道設備</v-list-item>
@@ -192,8 +192,8 @@
                                 <v-divider></v-divider>
 
                                 <!-- 設備維修管理 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">設備維修管理</strong>
+                                <v-list-item :class="titleColor3" disabled>
+                                    <strong class="black--text">設備維修管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/mmis/periodicity-job">週期性工作提醒</v-list-item>
@@ -202,8 +202,8 @@
                                 <v-divider></v-divider>
 
                                 <!-- 維修外包管理 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">維修外包管理</strong>
+                                <v-list-item :class="titleColor3" disabled>
+                                    <strong class="black--text">維修外包管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/mmis/outsourc-data">維修外包管理</v-list-item>
@@ -215,20 +215,20 @@
                         <v-card outlined tile class="mt-sm-12">
                             <v-list class="pa-0">
                                 <!-- 統計分析 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">統計分析</strong>
+                                <v-list-item :class="titleColor3" disabled>
+                                    <strong class="black--text">統計分析</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/mmis/d/a">MTTR 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mttr">MTTR 分析</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/mmis/d/b">MTBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mtbf">MTBF 分析</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/mmis/d/c">MKBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mkbf">MKBF 分析</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 報表管理 -->
-                                <v-list-item :class="titleColor" disabled>
-                                    <strong class="white--text">報表管理</strong>
+                                <v-list-item :class="titleColor3" disabled>
+                                    <strong class="black--text">報表管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/mmis/repair-time-history">維修工時履歷</v-list-item>
@@ -264,7 +264,9 @@ export default {
     data: () => ({
         mainColor: 'light-blue darken-1',
         showNav: false,  // 導覽列是否顯示
-        titleColor: 'brown lighten-1',
+        titleColor1: 'blue lighten-4',
+        titleColor2: 'amber lighten-4',
+        titleColor3: 'red lighten-4',
     }),
     computed: {
         ...mapState ('user', {

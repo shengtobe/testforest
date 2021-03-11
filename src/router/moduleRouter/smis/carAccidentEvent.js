@@ -13,22 +13,26 @@ export const CarAccidentEventRouter = [
     {
         linkText: '事故事件詳細內容',  // 已立案
         path: '/smis/car-accident-event/:id/show', 
-        component: () => import('@/views/smis/carAccidentEvent/PageRouter.vue')
+        component: () => import('@/views/smis/carAccidentEvent/PageRouter.vue'),
+        props: true,
     },
     {
         linkText: '編輯事故事件',
         path: '/smis/car-accident-event/:id/edit', 
-        component: () => import('@/views/smis/carAccidentEvent/Form.vue')
+        component: () => import('@/views/smis/carAccidentEvent/Form.vue'),
+        props: true,
     },
     {
         linkText: '人員傷亡名單',
         path: '/smis/car-accident-event/:id/person-casualty',
-        component: () => import('@/views/smis/carAccidentEvent/PersonCasualty.vue')
+        component: () => import('@/views/smis/carAccidentEvent/PersonCasualty.vue'),
+        props: true,
     },
     {
         linkText: '行安改善措施',
         path: '/smis/car-accident-event/:id/driving-improve',
-        component: () => import('@/views/smis/carAccidentEvent/DrivingImprove.vue')
+        component: () => import('@/views/smis/carAccidentEvent/DrivingImprove.vue'),
+        props: true,
     },
     {
         linkText: '審核中',  // 審核中 (審核完備資料)

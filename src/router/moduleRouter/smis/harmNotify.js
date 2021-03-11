@@ -14,20 +14,9 @@ export const HarmnotifyRouter = [
     {
         linkText: '通報詳細內容',
         path: '/smis/harmnotify/:id/show', 
-        component: () => import('@/views/smis/harmNotify/PageRouter.vue')
+        component: () => import('@/views/smis/harmNotify/PageRouter.vue'),
+        props: true,
     },
-    // {
-    //     linkText: '審核中',
-    //     path: '/smis/harmnotify/:id/review',
-    //     component: () => import('@/views/smis/harmNotify/ReviewComplated.vue'),
-    //     props: { closeStatus: '審核中' }
-    // },
-    // {
-    //     linkText: '已立案',
-    //     path: '/smis/harmnotify/:id/complated',
-    //     component: () => import('@/views/smis/harmNotify/ReviewComplated.vue'),
-    //     props: { closeStatus: '已立案' }
-    // },
     {
         linkText: '立案類型統計圖',
         path: '/smis/harmnotify/case-type', 

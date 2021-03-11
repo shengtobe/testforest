@@ -5,6 +5,18 @@
     </h2>
 
     <v-row class="px-2">
+        <v-col cols="12" md="8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-tags</v-icon>事故摘要
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.subject"
+                solo
+            ></v-text-field>
+        </v-col>
+    </v-row>
+
+    <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發現日期
@@ -57,6 +69,16 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-cloud-outline</v-icon>天候
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.climate"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
             </h3>
             <v-select
@@ -75,6 +97,136 @@
         :locationM="ipt.locationM"
         :locationOther="ipt.locationOther"
     />
+
+    <v-row class="px-2">
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-stairs</v-icon>路線坡度
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.climate"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-image-filter-tilt-shift</v-icon>曲線半徑
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.climate"
+                solo
+            ></v-text-field>
+        </v-col>
+    </v-row>
+
+    <!-- 路段型態 -->
+    <h3 class="mb-1 ml-2">
+        <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>路段型態
+    </h3>
+
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3">
+        <v-row>
+            <v-col cols="12" sm="2" md="1" v-for="item in opts.loadType" :key="item">
+                <v-checkbox
+                    v-model="ipt.loadType"
+                    :label="item"
+                    color="indigo"
+                    :value="item"
+                    hide-details
+                ></v-checkbox>
+            </v-col>
+
+            <v-col cols="12" md="4" align-self="center" class="mt-2">
+                <v-text-field
+                    v-model.trim="ipt.loadTypeOther"
+                    solo
+                    placeholder="請輸入其他的內容"
+                    hide-details
+                ></v-text-field>
+            </v-col>
+        </v-row>
+    </v-sheet>
+
+    <!-- 周邊環境 -->
+    <h3 class="mb-1 ml-2">
+        <v-icon class="mr-1 mb-1">mdi-terrain</v-icon>周邊環境
+    </h3>
+
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3">
+        <v-row>
+            <v-col cols="12" sm="4" md="2" v-for="item in opts.aroundEnv" :key="item">
+                <v-checkbox
+                    v-model="ipt.aroundEnv"
+                    :label="item"
+                    color="indigo"
+                    :value="item"
+                    hide-details
+                ></v-checkbox>
+            </v-col>
+
+            <v-col cols="12" md="4" align-self="center" class="mt-2">
+                <v-text-field
+                    v-model.trim="ipt.aroundEnvOther"
+                    solo
+                    placeholder="請輸入其他的內容"
+                    hide-details
+                ></v-text-field>
+            </v-col>
+        </v-row>
+    </v-sheet>
+
+    <!-- 鐵路設施設備及圍籬之設置 -->
+    <h3 class="mb-1 ml-2">
+        <v-icon class="mr-1 mb-1">mdi-tower-fire</v-icon>鐵路設施設備及圍籬之設置
+    </h3>
+
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3">
+        <v-row>
+            <v-col cols="12" sm="4" md="2">
+                <v-checkbox v-model="ipt.fenceEq" label="圍籬" color="indigo" hide-details></v-checkbox>
+            </v-col>
+
+            <v-col cols="12" sm="4" md="2">
+                <v-checkbox v-model="ipt.monitorEq" label="監視設備" color="indigo" hide-details></v-checkbox>
+            </v-col>
+
+            <v-col cols="12" sm="4" md="2">
+                <v-checkbox v-model="ipt.railwayOther" label="其他" color="indigo" hide-details></v-checkbox>
+            </v-col>
+
+            <v-col cols="12" md="4" align-self="center" class="mt-2">
+                <v-text-field
+                    v-model.trim="ipt.railwayOtherText"
+                    solo
+                    placeholder="請輸入其他的內容"
+                    hide-details
+                ></v-text-field>
+            </v-col>
+        </v-row>
+    </v-sheet>
+
+    <v-row class="px-2">
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-alert</v-icon>事發速限
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.speedLimit"
+                solo
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-speedometer</v-icon>事發車速
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.carSpeed"
+                solo
+            ></v-text-field>
+        </v-col>
+    </v-row>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="6">
@@ -99,13 +251,131 @@
 
         <v-col cols="12">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>處置過程
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>列車運行計劃及運轉情形
             </h3>
             <v-textarea
                 auto-grow
                 solo
                 rows="6"
-                v-model.trim="ipt.handle"
+                v-model.trim="ipt.runPlan"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>關係者之職務、資歷、操作情形及訪談紀要
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.relatedPerson"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>現場作業規定與落實情形
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.fieldRegulations"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故設施設備或車輛之型式、功能運作、檢修養護及後續檢測情形
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.accidentEq"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>現場相關量測
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.fieldMeasure"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>天然災害偵測資訊
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.naturalDisaster"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>民眾或旅客行為說明
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.behaviorDesc"
+            ></v-textarea>
+        </v-col>
+
+        <!-- 原因分析 - 三層下拉選單 -->
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>第一層因素
+            </h3>
+            <v-select
+                v-model="ipt.hour"
+                :items="opts.hour"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>第二層因素
+            </h3>
+            <v-select
+                v-model="ipt.hour"
+                :items="opts.hour"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>第三層因素
+            </h3>
+            <v-select
+                v-model="ipt.hour"
+                :items="opts.hour"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>原因分析
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.reason"
             ></v-textarea>
         </v-col>
 
@@ -118,18 +388,6 @@
                 solo
                 rows="6"
                 v-model.trim="ipt.review"
-            ></v-textarea>
-        </v-col>
-
-        <v-col cols="12">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>原因分析
-            </h3>
-            <v-textarea
-                auto-grow
-                solo
-                rows="6"
-                v-model.trim="ipt.reason"
             ></v-textarea>
         </v-col>
 
@@ -215,6 +473,7 @@ import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         routeId: '',  // 編號
         isEdit: false,  // 是否為編輯狀態
@@ -225,26 +484,46 @@ export default {
             locationOther: '',　// 其他地點
         },
         defaultIpt: {
+            subject: '',  // 事故摘要
             date: new Date().toISOString().substr(0, 10),  // 發現日期
             hour: '00',  // 發現時間(小時)
             min: '00',  // 發現時間(分)
+            climate: '',  // 天候
             location: 'l1',  // 發現地點
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
             evtType: 'M1', // 事故類型
-            eqLoss: '',// 設備受損情形
+            loadType: [],  // 路段型態
+            loadTypeOther: '',  // 路段型態其他內容
+            aroundEnv: [],  // 周邊環境
+            aroundEnvOther: '',  // 周邊環境其他內容
+            fenceEq: false,  // 圍籬
+            monitorEq: false,  // 監視設備
+            railwayOther: false,  // 鐵路設施設備及圍籬之設置-其他
+            railwayOtherText: '',  // 鐵路設施設備及圍籬之設置-其他的內容
+            speedLimit: '',  // 事發速限
+            carSpeed: '',  // 事發車速
+            runPlan: '',  // 列車運行計劃及運轉情形
+            relatedPerson: '',  // 關係者之職務、資歷、操作情形及訪談紀要
+            fieldRegulations: '',  // 現場作業規定與落實情形
+            accidentEq: '',  // 事故設施設備或車輛之型式、功能運作、檢修養護及後續檢測情形
+            fieldMeasure: '',  // 現場相關量測
+            naturalDisaster: '',  // 天然災害偵測資訊
+            behaviorDesc: '',  // 民眾或旅客行為說明
+            eqLoss: '',  // 設備受損情形
             serviceShock: '', // 運轉影響情形
-            handle: '', // 處置過程
             review: '', // 檢討過程
             reason: '', // 原因分析
             note: '', // 備註說明
             files: [],  // 附件檔案
         },
         dateMenuShow: false,  // 日曆是否顯示
-        opts: {  // 下拉選單
+        opts: {  // 選項
             hour: hourOptions,  // 小時
             min: minOptions,  // 分
+            loadType: ['高架', '隧道', '平面', '地下', '其他' ],  // 路段型態
+            aroundEnv: ['平交道', '車站', '遂路或便道', '民宅', '河川', '隧道', '橋梁', '邊坡', '逃生出口', '其他' ],  // 周邊環境
         },
         evtTypeOpts: evtTypes,  // 事故類型下拉選單
         isExtendAnnex: false,  // 是否延用通報附件
@@ -293,7 +572,6 @@ export default {
                         evtType: 'M2',  // 事故類型
                         eqLoss: 'APC3 車廂轉向架受損',  // 設備受損情形
                         serviceShock: '影響列車計2列次',  // 運轉影響情形
-                        handle: "1430 312次由奮起湖車站開出。\n1556 312次行駛至嘉義線 20K+445M 出軌，列車於嘉義線 19K+700M停止 司機員及列車員立即通報嘉義車庫及竹崎車站請求救援。\n1633 接駁列車511 次自北門站開出至事故現場接駁 6 次旅客。\n1658 312次將第 1 車廂重新編組載運 29 位旅客離開事故現場。\n1703 搶修列車521 次自北門車站開出辦理搶修作業。\n1734 接駁列車511 次抵達事故現場。\n1803 312次將第 1 車廂重新編組載運 29 位旅客抵達嘉義車站。\n1816 接駁列車511 次自事故現場開出。\n1915 接駁列車511 次抵達嘉義車站。\n1919 復軌完成。\n2000 路線測試完成恢復正常。\n2139 搶修列車521 次返回北門車站。",  // 處置過程
                         review: '新增行車事故事件本事故事發後，鐵道局於107年3月5日啟動專案調查，並於同月8、9日辦理本事故專案調查簡報討論、文件檢視及現場勘查 。同年5月3日召開本事故專案調查工作會議。最終於同年8月15日召開交通部鐵路行車事故調查小組第24次會議，確認本事故專案調查結果。',  // 檢討過程
                         reason: "<直接原因>\n事故路段因氣候易潮濕，加上路基排水狀況不佳 造成該路段有多處噴泥現象， 當鋼軌受列車重壓下沉致軌枕沉 陷、鋼軌產生前後高低不整之現象，在 列車於動態行駛下易致鋼軌單邊下沉產生平面性扭曲，使車輪浮動爬上出軌。\n<間接原因>\n部分路段道碴存有厚度不足加上列車反覆作用下，致使路基土壤細粒料因壓力而循道碴間隙上升， 使路基出現鬆動現象。\n<其他因素>\n有關天候、車輛、人員及運轉等部分，經檢討尚無涉事故原因。",  // 原因分析
                         note: '本事故由鐵道局( 鐵路營運監理小組) 及 5位具軌道、力學、車輛及營運等專業之外聘專案委員組成團隊進行專案調查，並由本部鐵路行車事故調查小組 定期委員開會確認調查結果。', // 備註說明
@@ -340,7 +618,6 @@ export default {
                 this.ipt.evtType = 'M2'  // 事故類型
                 this.ipt.eqLoss = 'APC3 車廂轉向架受損'  // 設備受損情形
                 this.ipt.serviceShock = '影響列車計2列次'  // 運轉影響情形
-                this.ipt.handle = "1430 312次由奮起湖車站開出。\n1556 312次行駛至嘉義線 20K+445M 出軌，列車於嘉義線 19K+700M停止 司機員及列車員立即通報嘉義車庫及竹崎車站請求救援。\n1633 接駁列車511 次自北門站開出至事故現場接駁 6 次旅客。\n1658 312次將第 1 車廂重新編組載運 29 位旅客離開事故現場。\n1703 搶修列車521 次自北門車站開出辦理搶修作業。\n1734 接駁列車511 次抵達事故現場。\n1803 312次將第 1 車廂重新編組載運 29 位旅客抵達嘉義車站。\n1816 接駁列車511 次自事故現場開出。\n1915 接駁列車511 次抵達嘉義車站。\n1919 復軌完成。\n2000 路線測試完成恢復正常。\n2139 搶修列車521 次返回北門車站。"  // 處置過程
                 this.ipt.review = '新增行車事故事件本事故事發後，鐵道局於107年3月5日啟動專案調查，並於同月8、9日辦理本事故專案調查簡報討論、文件檢視及現場勘查 。同年5月3日召開本事故專案調查工作會議。最終於同年8月15日召開交通部鐵路行車事故調查小組第24次會議，確認本事故專案調查結果。'  // 檢討過程
                 this.ipt.reason = "<直接原因>\n事故路段因氣候易潮濕，加上路基排水狀況不佳 造成該路段有多處噴泥現象， 當鋼軌受列車重壓下沉致軌枕沉 陷、鋼軌產生前後高低不整之現象，在 列車於動態行駛下易致鋼軌單邊下沉產生平面性扭曲，使車輪浮動爬上出軌。\n<間接原因>\n部分路段道碴存有厚度不足加上列車反覆作用下，致使路基土壤細粒料因壓力而循道碴間隙上升， 使路基出現鬆動現象。\n<其他因素>\n有關天候、車輛、人員及運轉等部分，經檢討尚無涉事故原因。"  // 原因分析
                 this.ipt.note = '本事故由鐵道局( 鐵路營運監理小組) 及 5位具軌道、力學、車輛及營運等專業之外聘專案委員組成團隊進行專案調查，並由本部鐵路行車事故調查小組 定期委員開會確認調查結果。' // 備註說明
@@ -365,7 +642,6 @@ export default {
             this.ipt.evtType = obj.evtType  // 事故類型
             this.ipt.eqLoss = obj.eqLoss  // 設備受損情形
             this.ipt.serviceShock = obj.serviceShock  // 運轉影響情形
-            this.ipt.handle = obj.handle  // 處置過程
             this.ipt.review = obj.review  // 檢討過程
             this.ipt.reason = obj.reason  // 原因分析
             this.ipt.note = obj.note // 備註說明

@@ -25,6 +25,7 @@ import AcceptingShow from '@/views/workList/maintain/AcceptingShow.vue'
 import ClosedComplated from '@/views/workList/maintain/ClosedComplated.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         itemData: {},  // 工單資料
         status: '',  // 狀態
@@ -35,12 +36,6 @@ export default {
         AcceptingShow,
         ClosedComplated,
     },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
-    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -50,7 +45,7 @@ export default {
             this.chLoadingShow()
 
             fetchWorkOrderOne({
-                WorkOrderID: this.$route.params.id,  // 工單編號 (從路由參數抓取)
+                WorkOrderID: this.id,  // 工單編號 (從路由參數抓取)
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
@@ -73,8 +68,8 @@ export default {
 
                         // 設定下面的欄位資料
                         let bottomItems = [
-                            { oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: res.data.WorkSubject },
-                            { oneline: false, icon: 'mdi-pen', title: '故障描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: res.data.WorkSubject },
+                            { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '故障描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
                         ]
 
                         if (this.status > 1) {
@@ -85,10 +80,10 @@ export default {
                             topItems.push({ icon: 'mdi-map-marker', title: '工作地點', text: res.data.WorkPlace })
                             topItems.push({ icon: 'mdi-account-multiple', title: '實際人數', text: res.data.RealWorkerCount })
 
-                            bottomItems.push({ oneline: false, icon: 'mdi-note', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
-                            bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: res.data.PeopleLicense.map(ele => ele.PeopleName).join('、') })
-                            bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: res.data.PeopleNoLicense.map(ele => ele.PeopleName).join('、') })
-                            bottomItems.push({ oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
+                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-note', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') })
+                            bottomItems.push({ dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '需證照人員', text: res.data.PeopleLicense.map(ele => ele.PeopleName).join('、') })
+                            bottomItems.push({ dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '作業人員', text: res.data.PeopleNoLicense.map(ele => ele.PeopleName).join('、') })
+                            bottomItems.push({ dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '外包廠商', text: res.data.OutSourceCount.map(item => `${ item.VendorName } (${ item.PeopleCount }人)`).join('、') })
                         }
 
                         if (this.status > 2) {
@@ -96,8 +91,8 @@ export default {
                             topItems.push({ icon: 'mdi-calendar-text', title: '動工日期', text: res.data.StartWorkDDate })
                             topItems.push({ icon: 'mdi-calendar-text', title: '完工日期', text: res.data.FinishDDate })
 
-                            bottomItems.push({ oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
-                            bottomItems.push({ oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
+                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-wrench', title: '維修情況', text: res.data.MaintainStatus.replace(/\n/g, '<br>') })
+                            bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
                         }
 
                         this.itemData = { ...res.data, topItems, bottomItems }

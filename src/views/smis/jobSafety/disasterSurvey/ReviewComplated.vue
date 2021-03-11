@@ -7,7 +7,7 @@
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
-        <BottomTableNoIcon :items="bottomItems" />
+        <BottomTable :items="bottomItems" />
 
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
@@ -163,7 +163,7 @@
 import { mapActions } from 'vuex'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
-import BottomTableNoIcon from '@/components/BottomTableNoIcon.vue'
+import BottomTable from '@/components/BottomTable.vue'
 
 export default {
     props: ['itemData'],
@@ -183,7 +183,7 @@ export default {
     }),
     components: {
         TopBasicTable,
-        BottomTableNoIcon,
+        BottomTable,
         UploadFileAdd,
     },
     methods: {

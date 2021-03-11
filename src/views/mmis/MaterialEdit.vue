@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="blue white--text px-4 py-1">
-      新增料件
+      {{DType|getType}}料件
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
         <v-icon>mdi-close</v-icon>
@@ -23,7 +23,7 @@
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1">材料編號</h3>
-              <v-text-field solo v-model="LMaterialCode"  @focus="dialogShow = true"/>
+              <v-text-field solo v-model="materDetail.Material"  @focus="dialogShow = true" :disabled="DType=='edit'"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1">材料名稱</h3>
@@ -87,6 +87,8 @@
           :toLv="dialogToLv" 
           @getEqCode="_getEqCode" 
           @getWorkCode="_getWorkCode"
+          @getEqName="_getEqName"
+          @getWorkName="_getWorkName"
           :key="componentKey">
         </equipRepairObject>
         <v-card-actions class="px-5 pb-5">
@@ -110,7 +112,8 @@ import { materialQuery } from '@/apis/materialManage/material'
 import equipRepairObject from '@/components/EquipRepairCode'
 export default {
   props: {
-    materCode:''
+    materCode: String,
+    DType: String,
   }
   ,
   data: () => ({
@@ -122,10 +125,14 @@ export default {
     DMaterialCode: {
       equipCode: '',
       workCode: '',
+      equipName: '',
+      workName: ''
     },
     tempMaterialCode: {
       equipCode: '',
       workCode: '',
+      equipName: '',
+      workName: ''
     },
     componentKey: 0,
   }),
@@ -142,7 +149,7 @@ export default {
     LMaterialCode: {
       get () {
         // console.log('LMaterialCode getter')
-        this.materDetail.Material = this.DMaterialCode.equipCode + '-' + this.DMaterialCode.workCode
+        //this.materDetail.Material = this.DMaterialCode.equipCode + '-' + this.DMaterialCode.workCode
         return this.DMaterialCode.equipCode + '-' + this.DMaterialCode.workCode
 
       },
@@ -204,7 +211,8 @@ export default {
           if (res.data.ErrorCode == 0) {
             that.materDetail.Position = res.data.Supervision
             that.materDetail.Group = res.data.ClassGroup
-            that.materDetail.Material = that.LMaterialCode = res.data.MaterialCode
+            that.materDetail.Material = res.data.MaterialCodeName
+            that.LMaterialCode = res.data.MaterialCode
             that.materDetail.Specification = res.data.Specification
             that.materDetail.MaterialName = res.data.MaterialName
             that.materDetail.Dept = res.data.Unit
@@ -252,6 +260,12 @@ export default {
     _getWorkCode(work) {
       this.tempMaterialCode.workCode = work
     },
+    _getEqName(eq) {
+      this.tempMaterialCode.equipName = eq
+    },
+    _getWorkName(work) {
+      this.tempMaterialCode.workName = work
+    },
     _resetMaterialCode() {
       this.dialogShow = false
       this.componentKey += 1
@@ -259,6 +273,9 @@ export default {
     _setMaterialCode() {
       this.LCEquipCode = this.tempMaterialCode.equipCode
       this.LCWorkCode = this.tempMaterialCode.workCode
+      this.DMaterialCode.equipName = this.tempMaterialCode.equipName
+      this.DMaterialCode.workName = this.tempMaterialCode.workName
+      this.materDetail.Material = this.tempMaterialCode.equipName + '-' + this.tempMaterialCode.workName
       this.dialogShow = false
       this.componentKey += 1
     },
@@ -270,7 +287,8 @@ export default {
       const that = this
       rtnObj.Supervision = that.materDetail.Position
       rtnObj.ClassGroup = that.materDetail.Group
-      rtnObj.MaterialCode = that.materDetail.Material
+      rtnObj.MaterialCode = that.LMaterialCode
+      rtnObj.MaterialCodeName = that.materDetail.Material
       rtnObj.Specification = that.materDetail.Specification
       rtnObj.MaterialName = that.materDetail.MaterialName
       rtnObj.Unit = that.materDetail.Dept
@@ -281,12 +299,15 @@ export default {
       rtnObj.SaftyAmount = that.materDetail.Stock
       rtnObj.Price = that.materDetail.UnitPrice
       rtnObj.Memo = that.materDetail.Remarks
+      console.log(rtnObj)
       this.$emit('save',rtnObj)
       this.$emit('close')
     }
   },
   filters: {
-    
+    getType: function(value){
+      return value=='edit'?'編輯':'新增'
+    }
   },
   watch: {
     materCode: function() {

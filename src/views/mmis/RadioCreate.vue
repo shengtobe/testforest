@@ -25,7 +25,7 @@
           <v-row no-gutter class="indigo--text">
             <v-col cols="12" sm="4">
               <h3 class="mb-1">單位名稱</h3>
-              <v-select :items="deptData" v-model="detailItem.DepartParentCode" item-text="value" item-value="key" label="單位" solo />
+              <v-select :items="departList" v-model="detailItem.DepartParentCode" item-text="value" item-value="key" label="單位" solo />
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">車站</h3>
@@ -62,6 +62,7 @@
   import { mapState, mapActions } from 'vuex'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { radioDetail,radioUpdate } from '@/apis/materialManage/radioManage'
+  import { fetchOrganization } from '@/apis/organization'
   export default {
     props: {
       nowFlowId: Number,
@@ -91,10 +92,12 @@
           value: '維護科'
         }
       ],
-      detailItem: {}
+      detailItem: {},
+      departList: []
     }),
     mounted: function() {
       this._getDetailData()
+      this._getOrg()
     },
     components: {
 
@@ -115,6 +118,22 @@
       //觸發上層的關閉事件
       closeAct() {
         this.$emit('closeAct')
+      },
+      //抓單位清單
+      _getOrg(){
+        const that = this
+        fetchOrganization().then(res => {
+          if (res.data.ErrorCode == 0) {
+            that.departList = res.data.user_depart_list_group_1.map((item) => {
+              return {key:item.DepartCode,value:item.DepartName}
+            })
+          }else {
+            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+            that.$router.push({ path: '/error' })
+          }
+        }).catch( err => {
+          this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
+        })
       },
       _getDetailData(){
         const that = this

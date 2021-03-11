@@ -141,6 +141,7 @@ export default {
     watch: {
         // 下拉選單第1層
         'select.lv1': function(val) {
+            console.log(val)
             let choseItem = this.all.depart1.find(item => item.DepartCode == val)  // 找出該筆資料
 
             // 清空下二層下拉選單及姓名資料
@@ -148,7 +149,10 @@ export default {
             this.disable.lv2 = this.disable.lv3 = true
             this.users.length = 0
             
-            // 若有子類別則指派下層拉下選單，反之列出姓名
+            // 列出本層人員
+            this.users = this.all.users.filter(item => item.DepartCode == choseItem.DepartCode)
+
+            // 若有子類別則指派下層拉下選單
             let subDepart = this.all.depart2.filter(item => item.DepartParentName == choseItem.DepartName)
 
             if(subDepart.length > 0) {
@@ -159,8 +163,6 @@ export default {
                     }
                 })
                 this.disable.lv2 = false
-            } else {
-                this.users = this.all.users.filter(item => item.DepartCode == choseItem.DepartCode)
             }
         },
         // 下拉選單第2層
@@ -172,8 +174,11 @@ export default {
                 this.select.lv3 = ''
                 this.disable.lv3 = true
                 this.users.length = 0
+
+                // 列出本層人員
+                this.users = this.all.users.filter(item => item.DepartCode == choseItem.DepartCode)
                 
-                // 若有子類別則指派下層拉下選單，反之列出姓名
+                // 若有子類別則指派下層拉下選單
                 let subDepart = this.all.depart3.filter(item => item.DepartParentName == choseItem.DepartName)
 
                 if(subDepart.length > 0) {
@@ -184,8 +189,6 @@ export default {
                         }
                     })
                     this.disable.lv3 = false
-                } else {
-                    this.users = this.all.users.filter(item => item.DepartCode == choseItem.DepartCode)
                 }
             }
         },

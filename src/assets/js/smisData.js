@@ -2,6 +2,7 @@
 
 // 行車事故事件狀態
 export const carAccidentEventStatus = [
+    { text: '不限', value: '' },
     { text: '已立案', value: '1' },
     { text: '審核中', value: '2' },
     { text: '已完備資料', value: '3' },
@@ -46,53 +47,6 @@ export const harmNotifyStatus = [
     { text: '審核中', value: '4' },
 ]
 
-// 事故主類
-// export const MainEvt = [
-//     { text: '重大事故', value: 'major' },
-//     { text: '一般事故', value: 'general' },
-//     { text: '異常事件', value: 'abnormal' },
-// ]
-
-// // 事故子類
-// export const SubEvt = {
-//     // 重大事故
-//     major: [
-//         { text: '正線衝撞事故', value: 'M1' },
-//         { text: '正線出軌事故', value: 'M2' },
-//         { text: '正線火災事故', value: 'M3' },
-//     ],
-//     // 一般事故
-//     general: [
-//         { text: '側線衝撞事故', value: 'G1' },
-//         { text: '側線出軌事故', value: 'G2' },
-//         { text: '側線火災事故', value: 'G3' },
-//         { text: '平交道事故', value: 'G4' },
-//         { text: '人員死傷事故', value: 'G5' },
-//         { text: '設備損害事故', value: 'G6' },
-//         { text: '運轉中斷事故', value: 'G7' },
-//     ],
-//     // 異常事件
-//     abnormal: [
-//         { text: '列車或車輛分離', value: 'A1' },
-//         { text: '進入錯線', value: 'A2' },
-//         { text: '冒進號誌', value: 'A3' },
-//         { text: '列車或車輛溜逸', value: 'A4' },
-//         { text: '違反閉塞運轉', value: 'A5' },
-//         { text: '違反號誌運轉', value: 'A6' },
-//         { text: '號誌處理錯誤', value: 'A7' },
-//         { text: '車輛故障', value: 'A8' },
-//         { text: '路線障礙', value: 'A9' },
-//         { text: '電子設備故障', value: 'A10' },
-//         { text: '運轉保安裝置故障', value: 'A11' },
-//         { text: '外物入侵', value: 'A12' },
-//         { text: '危險品洩漏', value: 'A13' },
-//         { text: '駕駛失能', value: 'A14' },
-//         { text: '天然災變', value: 'A15' },
-//         { text: '列車取消', value: 'A16' },
-//         { text: '其他事件', value: 'A17' },
-//     ],
-// }
-
 // 事故類型
 export const evtTypes = [
     { text: '重大事故-正線衝撞', value: 'M1' },
@@ -125,40 +79,6 @@ export const evtTypes = [
     { text: '異常事件-列車取消', value: 'A16' },
     { text: '異常事件-其他事件', value: 'A17' },
 ]
-// export const evtTypes = [
-//     { text: '* 重大事故', disabled: true },
-//     { text: '正線衝撞事故', value: 'M1' },
-//     { text: '正線出軌事故', value: 'M2' },
-//     { text: '正線火災事故', value: 'M3' },
-//     { divider: true },
-//     { text: '* 一般事故', disabled: true },
-//     { text: '側線衝撞事故', value: 'G1' },
-//     { text: '側線出軌事故', value: 'G2' },
-//     { text: '側線火災事故', value: 'G3' },
-//     { text: '平交道事故', value: 'G4' },
-//     { text: '人員死傷事故', value: 'G5' },
-//     { text: '設備損害事故', value: 'G6' },
-//     { text: '運轉中斷事故', value: 'G7' },
-//     { divider: true },
-//     { text: '* 異常事件', disabled: true },
-//     { text: '列車或車輛分離', value: 'A1' },
-//     { text: '進入錯線', value: 'A2' },
-//     { text: '冒進號誌', value: 'A3' },
-//     { text: '列車或車輛溜逸', value: 'A4' },
-//     { text: '違反閉塞運轉', value: 'A5' },
-//     { text: '違反號誌運轉', value: 'A6' },
-//     { text: '號誌處理錯誤', value: 'A7' },
-//     { text: '車輛故障', value: 'A8' },
-//     { text: '路線障礙', value: 'A9' },
-//     { text: '電子設備故障', value: 'A10' },
-//     { text: '運轉保安裝置故障', value: 'A11' },
-//     { text: '外物入侵', value: 'A12' },
-//     { text: '危險品洩漏', value: 'A13' },
-//     { text: '駕駛失能', value: 'A14' },
-//     { text: '天然災變', value: 'A15' },
-//     { text: '列車取消', value: 'A16' },
-//     { text: '其他事件', value: 'A17' },
-// ]
 
 // 職災危害類型
 export const jobHarmType = [
@@ -227,6 +147,41 @@ export const locationOpts = [
     { text: '修理工廠', value: 'factory' },
     { text: '其他', value: 'other' },
 ]
+
+// 危害資料庫 - 營運模式
+export const operateModes = [ 
+    { text: '正常', value: 'm1' },
+    { text: '降級', value: 'm2' },
+    { text: '緊急', value: 'm3' },
+    { text: '維修', value: 'm4' },
+]
+
+// 危害資料庫 - 風險嚴重性
+export const riskSerious = [
+    { text: '極輕微 (S5)', value: 'S5' },
+    { text: '稍微 (S4)', value: 'S4' },
+    { text: '主要 (S3)', value: 'S3' },
+    { text: '嚴重 (S2)', value: 'S2' },
+    { text: '災難 (S1)', value: 'S1' },
+]
+
+// 危害資料庫 - 風險頻率
+export const riskFrequency = [
+    { text: '經常 (P1)', value: 'P1' },
+    { text: '很可能 (P2)', value: 'P2' },
+    { text: '偶爾 (P3)', value: 'P3' },
+    { text: '很少 (P4)', value: 'P4' },
+    { text: '幾乎不 (P5)', value: 'P5' },
+]
+
+// 危害資料庫 - 風險等級
+export const riskLevel = [
+    { text: '非常高度風險 (R1)', value: 'R1' },
+    { text: '中高度風險 (R2)', value: 'R2' },
+    { text: '中度風險 (R3)', value: 'R3' },
+    { text: '可接受，持續控管 (R4)', value: 'R4' },
+]
+
 
 // 職安-傷害部位
 export const injurySiteOpts = [

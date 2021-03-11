@@ -6,10 +6,10 @@
       <!-- 查詢時間(起訖) -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢時間(起)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>派工時間(起)
         </h3>
         <v-menu
-          v-model="RepaStartDayirDay"
+          v-model="dateSelect.StartDay"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -21,7 +21,7 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.StartDay"
-            @input="StartDay = false"
+            @input="dateSelect.StartDay = false"
             locale="zh-tw"
           />
         </v-menu>
@@ -29,10 +29,10 @@
 
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢時間(迄)
+          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>派工時間(迄)
         </h3>
         <v-menu
-          v-model="EndDay"
+          v-model="dateSelect.EndDay"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -44,18 +44,10 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.EndDay"
-            @input="EndDay = false"
+            @input="dateSelect.EndDay = false"
             locale="zh-tw"
           />
         </v-menu>
-      </v-col>
-
-      <!-- WBS -->
-      <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>設備標示編號(WBS)
-        </h3>
-        <v-text-field v-model.trim="searchIpt.wbs" solo />
       </v-col>
 
       <!-- 科室 -->
@@ -63,11 +55,35 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-contacts</v-icon>科室
         </h3>
-        <v-text-field v-model.trim="searchIpt.Dept" solo />
+        <v-select solo hide-details :loading="deptLoading" :items="selectDept" v-model="searchIpt.Dept" />
       </v-col>
-
+      
+      <!-- WBS -->
+      <v-col cols="12" sm="12" md="9">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>設備標示編號(WBS)
+        </h3>
+        <v-text-field v-model.trim="searchIpt.wbsShow" readonly solo @click="goEq"  />
+      </v-col>
+      <v-dialog v-model="eqCodeShow" max-width="900px">
+        <v-card>
+          <v-card-title class="yellow darken-1 px-4 py-1">
+            選擇設備標示編號(WBS)
+            <v-spacer />
+            <v-btn fab small text @click="cancel" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
+          <v-card-actions class="px-5 pb-5">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-2" elevation="4" @click="cancel">取消</v-btn>
+            <v-btn color="success" elevation="4" @click="setWBS">送出</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <!-- 立單日期 -->
-      <v-col cols="12" sm="4" md="3">
+      <!-- <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>立單日期
         </h3>
@@ -88,13 +104,13 @@
             locale="zh-tw"
           />
         </v-menu>
-      </v-col>
+      </v-col> -->
 
       <v-col cols="12">
         <v-divider class="mt-2 mb-3" />
       </v-col>
       <!-- 派工時間 -->
-      <v-col cols="12" sm="4" md="3">
+      <!-- <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-av-timer</v-icon>派工時間
         </h3>
@@ -115,14 +131,14 @@
             locale="zh-tw"
           />
         </v-menu>
-      </v-col>
+      </v-col> -->
       <!-- 到修時間 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-av-timer</v-icon>到修時間
         </h3>
         <v-menu
-          v-model="RepairDate"
+          v-model="dateSelect.RepairDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -134,7 +150,7 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.RepairDate"
-            @input="RepairDate = false"
+            @input="dateSelect.RepairDate = false"
             locale="zh-tw"
           />
         </v-menu>
@@ -145,7 +161,7 @@
           <v-icon class="mr-1 mb-1">mdi-av-timer</v-icon>動工時間
         </h3>
         <v-menu
-          v-model="StartWorkDate"
+          v-model="dateSelect.StartWorkDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -157,7 +173,7 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.StartWorkDate"
-            @input="StartWorkDate = false"
+            @input="dateSelect.StartWorkDate = false"
             locale="zh-tw"
           />
         </v-menu>
@@ -168,7 +184,7 @@
           <v-icon class="mr-1 mb-1">mdi-av-timer</v-icon>完工時間
         </h3>
         <v-menu
-          v-model="FinishedDate"
+          v-model="dateSelect.FinishedDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -180,7 +196,7 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.FinishedDate"
-            @input="FinishedDate = false"
+            @input="dateSelect.FinishedDate = false"
             locale="zh-tw"
           />
         </v-menu>
@@ -191,7 +207,7 @@
           <v-icon class="mr-1 mb-1">mdi-av-timer</v-icon>驗收時間
         </h3>
         <v-menu
-          v-model="AcceptanceDate"
+          v-model="dateSelect.AcceptanceDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -203,7 +219,7 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.AcceptanceDate"
-            @input="AcceptanceDate = false"
+            @input="dateSelect.AcceptanceDate = false"
             locale="zh-tw"
           />
         </v-menu>
@@ -214,7 +230,7 @@
           <v-icon class="mr-1 mb-1">mdi-av-timer</v-icon>結案時間
         </h3>
         <v-menu
-          v-model="closDate"
+          v-model="dateSelect.closDate"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -226,7 +242,7 @@
           <v-date-picker
             color="purple"
             v-model="searchIpt.closDate"
-            @input="closDate = false"
+            @input="dateSelect.closDate = false"
             locale="zh-tw"
           />
         </v-menu>
@@ -268,7 +284,7 @@
             </template>
 
             <template v-slot:item.ViewTicket="{ item }">
-              <v-btn fab small dark color="teal" @click="view(item)">
+              <v-btn fab small dark color="teal" @click="view(item.WorkNumber)">
                 <v-icon>mdi-file-document</v-icon>
               </v-btn>
             </template>
@@ -293,7 +309,7 @@
     </v-row>
 
     <!-- 檢視工單 -->
-    <v-dialog v-model="contentShow" max-width="500px">
+    <v-dialog v-model="contentShow" max-width="700px">
       <v-card>
         <v-card-title class="yellow darken-1 px-4 py-1">
           檢視工單
@@ -382,7 +398,12 @@
 </template>
 
 <script>
-import Pagination from "@/components/Pagination.vue";
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
+import Pagination from "@/components/Pagination";
+import EquipRepairCode from '@/components/EquipRepairCode'
+import { fetchOrganization } from '@/apis/organization'
+import { workTimeQueryList,workTimeQuery } from '@/apis/materialManage/rpresume'
 
 export default {
   data: () => ({
@@ -391,6 +412,7 @@ export default {
       EndDay: "",
       StartDay: "",
       wbs: "",
+      wbsShow: "",
       Dept: "",
       Material: "",
       schedulehour: "",
@@ -402,37 +424,28 @@ export default {
       AcceptanceDate: "",
       closDate: "",
     },
+    dateSelect: {
+      StartDay: false,
+      EndDay: false,
+      RepairDate: false,
+      StartWorkDate: false,
+      FinishedDate: false,
+      AcceptanceDate: false,
+      closDate: false
+    },
+    searchTemp: {
+      wbs: "",
+      wbsShow: "",
+    },
+    componentKey: 0,
+    dataForEqCode: {
+      toLv: 4,
+    },
+    eqCodeShow: false,
+    deptLoading: false,
+    selectDept: [],
     tableItems: [
-      {
-        id: "1",
-        WorkNumber: "AA_201011",
-        wbs: "PTT-UCC-NUK-168",
-        Dept: "養護科",
-        Established: "2020-10-10",
-        scheduleDate: "2020-10-12",
-        RepairDate: "2020-10-16",
-        StartWorkDate: "2020-10-20",
-        FinishedDate: "2020-10-25",
-        AcceptanceDate: "2020-10-28",
-        closDate: "2020-10-30",
-        WorkTotalHours: 80,
-        FaultDepict: "螺帽些許鬆動"
-      },
-      {
-        id: "2",
-        WorkNumber: "AA_201012",
-        wbs: "PTT-UCC-NUK-160",
-        Dept: "養護科",
-        Established: "2020-11-10",
-        scheduleDate: "2020-11-12",
-        RepairDate: "2020-11-16",
-        StartWorkDate: "2020-11-20",
-        FinishedDate: "2020-11-25",
-        AcceptanceDate: "2020-11-28",
-        closDate: "2020-11-30",
-        WorkTotalHours: 80,
-        FaultDepict: "螺帽些許鬆動"
-      },
+      
     ], // 表格資料
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
@@ -483,30 +496,172 @@ export default {
     contentShow: false, // 詳細內容 dialog 是否顯示
     content: {}, // 詳細內容欄位
   }),
-  components: { Pagination }, // 頁碼
-  computed: {},
+  components: { 
+    Pagination, // 頁碼
+    EquipRepairCode,
+  },
+  mounted() {
+    this.getOrg()
+   // this.search()
+  }, 
+  computed: {
+    ...mapState ('user', {
+      userData: state => state.userData,  // 使用者基本資料
+    }),
+  },
   methods: {
+    ...mapActions('system', [
+      'chMsgbar',  // messageBar
+      'chLoadingShow'  // 切換 loading 圖顯示
+    ]),
     // 搜尋
-    search() {},
+    search() {
+      if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
+        this.chLoadingShow()
+        const wbs = this.searchIpt.wbs.split('-')
+        const sendData = {
+          CreateDTime_Start: this.searchIpt.StartDay,
+          CreateDTime_End: this.searchIpt.EndDay,
+          DepartName: this.searchIpt.Dept,
+          MaintainCode_System: wbs[0]||"",
+          MaintainCode_Loc: wbs[1]||"",
+          MaintainCode_Eqp: wbs[2]||"",
+          MaintainCode_Seq: wbs[3]||"",
+          ArrivalWorkDTime: this.searchIpt.RepairDate,	
+          StartWorkDTime: this.searchIpt.StartWorkDate,
+          FinishDTime: this.searchIpt.FinishedDate,
+          AcceptDTime: this.searchIpt.AcceptanceDate,
+          CloseDTime: this.searchIpt.closDate,
+          TotalWorkTime: this.searchIpt.Material,
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id
+        }
+        console.log(sendData)
+        workTimeQueryList({
+          ...sendData
+        }).then(res => {
+          if (res.data.ErrorCode == 0) {
+            const dataList = decodeObject(res.data.WorkDataList)
+            this.tableItems = dataList.map((e,i)=>{
+              let rtnObj = {}
+              rtnObj.id=i+1
+              rtnObj.WorkNumber = e.WorkOrderID
+              rtnObj.Dept= e.DispatchDepart
+              rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
+              rtnObj.Established = e.CallWorkDTime
+              return rtnObj
+            })
+          } else {
+            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+            this.$router.push({ path: '/error' })
+          }
+        }).catch( err => {
+          console.warn(err)
+          this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+        }).finally(() => {
+          this.chLoadingShow()
+        })
+      }else{
+        this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })
+      }
+    },
     // 清除搜尋內容
     reset() {
-      this.searchIpt.EndDay = "";
-      this.searchIpt.StartDay = "";
-      this.searchIpt.wbs = "";
-      this.searchIpt.Dept = "";
-      this.searchIpt.Material = "";
+      this.searchIpt = {
+        // 搜尋欄位
+        EndDay: "",
+        StartDay: "",
+        wbs: "",
+        wbsShow: "",
+        Dept: "",
+        Material: "",
+        schedulehour: "",
+        schedulemin: "",
+        scheduleDate: "",
+        RepairDate: "",
+        StartWorkDate: "",
+        FinishedDate: "",
+        AcceptanceDate: "",
+        closDate: "",
+      }
+    },
+    getOrg() {
+      this.deptLoading = true
+      fetchOrganization({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.deptLoading = false
+      })
+    },
+    //打開設備標示編碼搜尋框
+    goEq() {
+      this.componentKey += 1
+      this.eqCodeShow = true
+    },
+    //關閉設備標示編碼搜尋框
+    cancel() {
+      this.eqCodeShow = false
+    },
+    //抓取未確認的設備標示編碼
+    getTempCode(value) {
+      this.searchTemp.wbs = value
+    },
+    //抓取未確認的設備標示編碼中文
+    getTempName(value) {
+      this.searchTemp.wbsShow = value
+    },
+    setWBS() { //確認設備標示編碼，寫入
+      this.searchIpt.wbs = this.searchTemp.wbs
+      this.searchIpt.wbsShow = this.searchTemp.wbsShow
+      this.cancel()
     },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
     },
-    // 送出
-    save() {},
-    close() {},
     // 顯示詳細資訊
-    view(item) {
-      this.contentShow = true;
-      this.content = { ...item };
+    // 顯示詳細資訊
+    view(woID) {
+      this.chLoadingShow()
+      console.log(woID)
+      workTimeQuery({
+        WorkerOrderID: woID,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          const dataList = decodeObject(res.data.WorkDataList[0])
+          this.content.WorkNumber = dataList.WorkOrderID
+          this.content.Dept= dataList.DispatchDepart
+          this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
+          this.content.Established = dataList.CallWorkDTime
+          this.content.RepairDate = dataList.ArrivalWorkDTime
+          this.content.StartWorkDate = dataList.StartWorkDTime
+          this.content.FinishedDate = dataList.FinishDTime
+          this.content.AcceptanceDate = dataList.AcceptDTime
+          this.content.closDate = dataList.CloseDTime
+          this.content.WorkTotalHours = dataList.TotalWorkTime
+          this.content.FaultDepict = dataList.Malfunctiont
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.chLoadingShow()
+        this.contentShow = true
+      })
     },
   },
 };

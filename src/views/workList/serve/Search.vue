@@ -198,28 +198,6 @@ export default {
                 this.chLoadingShow()
             })
         },
-        // 轉換狀態文字
-        // transferStatusText(status) {
-        //     switch(status) {
-        //         case 1:
-        //             return '待派工'
-        //             break
-        //         case 2:
-        //             return '已派工待維修'
-        //             break
-        //         case 3:
-        //             return '已維修待驗收'
-        //             break
-        //         case 4:
-        //             return '已驗收待結案'
-        //             break
-        //         case 5:
-        //             return '已結案'
-        //             break
-        //         default:
-        //             break
-        //     }
-        // },
         // 檢視內容
         redirect(item) {
             let routeData = this.$router.resolve({ path: `/worklist/serve/${item.WorkOrderID}/show` })
