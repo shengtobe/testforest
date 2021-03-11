@@ -383,10 +383,10 @@ export const jobLevelOpts = [
 
 // 職安-尿蛋白、尿潛血
 export const jobUrineOpts = [
-    { text: '-', value: 1 },
-    { text: '+/-', value: 2 },
-    { text: '+', value: 3 },
-    { text: '++', value: 4 },
-    { text: '+++', value: 5 },
-    { text: '++++', value: 6 },
+    { text: '-', value: "1" },
+    { text: '+/-', value: "2" },
+    { text: '+', value: "3" },
+    { text: '++', value: "4" },
+    { text: '+++', value: "5" },
+    { text: '++++', value: "6" },
 ]
