@@ -155,7 +155,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import { dapartOptsForMember } from '@/assets/js/departOption'
 
 export default {

@@ -43,7 +43,7 @@
             </h3>
             <v-select
                 v-model="ipt.normal"
-                :items="[18, 20, 22, 25, 28, 30, 40, 45]"
+                :items="['18', '20', '22', '25', '28', '30', '40', '45']"
                 solo
             ></v-select>
         </v-col>
@@ -119,7 +119,8 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
             </h3>
-            <v-row>
+            <PeopleSelect v-model="ipt.recipients" :isMuti="true" /> 
+            <!-- <v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select
                         hide-details
@@ -188,7 +189,7 @@
                         @click="delMember(idx)"
                     >mdi-close-circle</v-icon>
                 </v-chip>
-            </div>
+            </div> -->
         </v-col>
 
         <v-col cols="12" class="text-center my-8">
@@ -228,8 +229,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import { dapartOptsForMember } from '@/assets/js/departOption'
+import PeopleSelect from '@/components/PeopleSelect'
+import { CreateCarSafelnfo } from '@/apis/smis/carSafeInfo'
 
 export default {
     data: () => ({
@@ -238,7 +242,7 @@ export default {
             line: '本線',  // 通報路線
             pointStart: '',  // 速限起點
             pointEnd: '',  // 速限終點
-            normal: 18,  // 常態速限
+            normal: '',  // 常態速限
             slow: '',  // 慢行速限
             dateStart: new Date().toISOString().substr(0, 10),  // 限制日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
@@ -278,6 +282,14 @@ export default {
             { station: '阿里山 ~ 水山神木', straight: 20, curve: 18},
         ],
     }),
+    components: {
+        PeopleSelect     
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -326,13 +338,52 @@ export default {
         // 送出
         save() {
             this.chLoadingShow()
-
+            let arr = this.ipt.recipients.map(item => ({
+                PeopleId: item
+            }))
+            CreateCarSafelnfo({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    ReportLine: this.ipt.line,  //通報路線
+                    LimitStart: this.ipt.pointStart,  //速限起點
+                    LimitEnd: this.ipt.pointEnd,  //速限終點
+                    NormalLimit: this.ipt.normal,  //常態速限
+                    SlowLimit: this.ipt.slow,  //慢行速限
+                    LimitStartDate: this.ipt.dateStart,  //限制日期(起)
+                    LimitEndDate: this.ipt.dateEnd,  //限制日期(迄)
+                    RecPeople: arr
+            
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '回覆成功'})
+                        this.status = '2'  // 狀態改為已回覆
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                     this.chMsgbar({ success: false, msg: '回覆成功'})
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+                // console.log(this.ipt.line)
+                // console.log(this.ipt.pointStart)
+                // console.log(this.ipt.pointEnd)
+                 //console.log(this.ipt.normal)
+                // console.log(this.ipt.slow)
+                // console.log(this.ipt.dateStart)
+                // console.log(this.ipt.dateEnd)
+            // console.log(this.ipt.recipients)
+            // let arr = this.ipt.recipients.map(item => ({
+            //     PeopleId: item
+            // }))
+            // console.log(arr)
             // 測試用資料
-            setTimeout(() => {
-                this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
-                this.chMsgbar({ success: true, msg: '資料新增成功'})
-                this.chLoadingShow()
-            }, 1000)
+            // setTimeout(() => {
+            //     this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
+            //     this.chMsgbar({ success: true, msg: '資料新增成功'})
+            //     this.chLoadingShow()
+            // }, 1000)
         },
     },
 }
