@@ -153,19 +153,19 @@ export default {
                 this.tableItems.personal = [
                     {
                         id: '789',
-                        depart: 'd2', 
+                        depart: 'ARCO001', 
                         title: '資訊安全相關注意事項',
                         date: '2020-05-01',
                     },
                     {
                         id: '658',
-                        depart: 'd5', 
+                        depart: 'ARCO015', 
                         title: '補休作業調整',
                         date: '2020-04-21',
                     },
                     {
                         id: '447',
-                        depart: 'd3', 
+                        depart: 'ARCO026', 
                         title: '慢行通報',
                         date: '2020-03-11',
                     },
