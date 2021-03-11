@@ -519,7 +519,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
           {"Column":"EndDayVlaue","Value":this._data.df},
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
                 ],
