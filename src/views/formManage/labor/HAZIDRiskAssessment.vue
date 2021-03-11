@@ -219,10 +219,13 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      console.log("newOne23");
+      this.chLoadingShow();
       this.$router.push(
         "/form-manage/labor/hazid-risk-assessment-add?editType=1"
       );
+      setTimeout(() => {
+        this.chLoadingShow();
+      }, 300);
     },
     reset() {
       this.formData.searchItem.dateStart = "";
@@ -249,7 +252,15 @@ export default {
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "DepartCode", Value: this.formData.searchItem.department },
         ],
-        QyName: ["RPFlowNo", "ID", "Name", "CheckDay", "CheckStatus", "FlowId"],
+        QyName: [
+          "RPFlowNo",
+          "ID",
+          "Name",
+          "CheckDay",
+          "CheckStatus",
+          "FlowId",
+          "DepartName",
+        ],
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
@@ -283,6 +294,9 @@ export default {
         "/form-manage/labor/hazid-risk-assessment-add?editType=2&RPFlowNo=" +
           input
       );
+      setTimeout(() => {
+        this.chLoadingShow();
+      }, 300);
     },
   },
 };
