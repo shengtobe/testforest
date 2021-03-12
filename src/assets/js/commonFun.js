@@ -161,3 +161,12 @@ export function isDateObject(input) {
     var tmp = input.match(pattern);
     return tmp == null || tmp.length > 0 ? true : false;
 }
+//用object裡面的 key來把array裡面的object分組
+export function groupBy(input,prop) {
+    return input.reduce(function(groups, item) {
+      const val = item[prop]
+      groups[val] = groups[val] || []
+      groups[val].push(item)
+      return groups
+    }, {})
+}
