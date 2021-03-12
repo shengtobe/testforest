@@ -9,7 +9,7 @@
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢地點
+          <v-icon class="mr-1 mb-1">mdi-city-variant-outline</v-icon>查詢地點
         </h3>
         <v-select 
           multiple
@@ -34,13 +34,13 @@
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>時雨量門檻
+          <v-icon class="mr-1 mb-1">mdi-alert</v-icon>時雨量門檻
         </h3>
         <v-text-field solo type="number" min=0 v-model="ipt.alarmHour" suffix="mm"/>
       </v-col>
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日雨量門檻
+          <v-icon class="mr-1 mb-1">mdi-alert</v-icon>日雨量門檻
         </h3>
         <v-text-field solo type="number" min=0 v-model="ipt.alarmDay" suffix="mm"/>
       </v-col>
