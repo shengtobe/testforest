@@ -47,11 +47,11 @@ export function updateFile(data) { return axios(
     }
 )}
 
-// 檔案更新
+// 檔案刪除
 export function deleteFile(data) { return axios(
     {
         url: '/sms/danger/proc/file/delete',
-        method: 'post',
+        method: 'delete',
         data,
     }
 )}

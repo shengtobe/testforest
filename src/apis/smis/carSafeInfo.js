@@ -12,6 +12,15 @@ export function fetchList(data) { return axios(
     }
 )}
 
+// 詳細資料
+export function detail(data) { return axios(
+    {
+        url: '/sms/slowspeed/detail',
+        method: 'post',
+        data,
+    }
+)}
+
 //新增
 export function CreateCarSafelnfo(data) { return axios(
     {

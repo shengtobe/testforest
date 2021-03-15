@@ -59,7 +59,8 @@ export const CarSafeInfoRouter = [
     {
         linkText: '慢行通報編輯',
         path: '/smis/car-safeinfo/crawl-notify/:id/edit',
-        component: () => import('@/views/smis/carSafeInfo/crawlNotify/Edit.vue')
+        component: () => import('@/views/smis/carSafeInfo/crawlNotify/Edit.vue'),
+        props: true,
     },
     {
         linkText: '慢行通報讀取追蹤',

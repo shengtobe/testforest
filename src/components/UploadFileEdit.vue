@@ -48,12 +48,12 @@
                         :href="item.link"
                         :download="item.fileName"
                         class="mr-3"
-                    >查看</v-btn>
+                    >下載</v-btn>
 
                     <v-btn
                         small
                         color="error"
-                        @click="delFile(item.id, i)"
+                        @click="delFile(i)"
                     >刪除</v-btn>
                 </v-col>
             </v-row>
@@ -81,8 +81,8 @@ export default {
             }
         },
         // 刪除檔案
-        delFile(id, idx) {
-            this.$emit('deleteFile', id, idx)
+        delFile(idx) {
+            this.$emit('deleteFile', idx)
         },
     }
 }

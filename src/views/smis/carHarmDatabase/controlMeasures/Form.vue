@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `控制措施編輯 (編號：${ routeId })` : '控制措施新增' }}
+        {{ (this.isEdit)? `控制措施編輯 (編號：${ id })` : '控制措施新增' }}
     </h2>
 
     <v-row class="px-2">
@@ -55,7 +55,7 @@
 
         <v-col cols="12" class="mb-5">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>安全文件
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>規章文件
                 <span class="red--text">*</span>
             </h3>
             <v-card>
@@ -177,9 +177,10 @@ import Pagination from '@/components/Pagination.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import { regulfetchList } from '@/apis/smis/safeFile'
-import { createData } from '@/apis/smis/carHarmDatabase/controlMeasures'
+import { createData, fetchList, updateData, updateFile, deleteFile } from '@/apis/smis/carHarmDatabase/controlMeasures'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
@@ -197,13 +198,13 @@ export default {
         tableItems: [],  // 資料
         headers: [  // 欄位
             { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
-            { text: '編號', value: 'PolicyCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '版本', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'PolicyCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '文件', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '版本', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
+            { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
         ],
         typeOpts: [  // 文件類型
             { text: '品質文件', value: '1' },
@@ -266,12 +267,34 @@ export default {
                 alert('規章文件讀取失敗')
             }
 
-            if (this.$route.params.id != undefined) {
+            if (this.id != undefined) {
                 // -------- 編輯時，向後端請求資料 -------
-                this.routeId = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
                 
-                this.chLoadingShow()
+                fetchList({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    KeyName: 'SMS_EndangerProc',  // DB table
+                    KeyItem: [
+                        { tableColumn: 'ProcCode', columnValue: this.id },  // 編號
+                    ],
+                    QyName: [    // 欲回傳的欄位資料
+                        'PolicyCode',
+                        'ProcCode',
+                        'DeviceTitle',
+                        'DeviceDesp',
+                        'DeviceDepart',
+                        'UpdateDTime',
+                        'Remark',
+                    ],
+                }).then(res => {
+                    this.setInitDate(JSON.parse(res.data.order_list)[0])
+                }).catch(err => {
+                    console.log(err)
+                    alert('查詢時發生問題，請重新查詢!')
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
             } else {
                 // ------- 新增時 ---------
                 this.chLoadingShow()
@@ -279,12 +302,15 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            this.ipt.depart = obj.depart // 管控單位
-            this.ipt.subject = obj.subject // 措施簡述
-            this.ipt.desc = obj.desc // 措施說明
-            this.ipt.note = obj.note // 備註
-            this.ipt.docId = obj.docId // 連結的安全文件id
-            this.ipt.files = [ ...obj.files ]  // 檔案 (證據)
+            this.ipt.depart = obj.DeviceDepart // 管控單位
+            this.ipt.subject = obj.DeviceTitle // 措施簡述
+            this.ipt.desc = obj.DeviceDesp // 措施說明
+            this.ipt.note = obj.Remark // 備註
+            this.ipt.docId = obj.PolicyCode // 連結的安全文件id
+            this.ipt.files = obj.file_path_name.map((item, idx) => ({
+                fileName: item,
+                link: obj.file_path[idx]
+            }))
         },
         // 更換頁數
         chPage(n) {
@@ -302,7 +328,27 @@ export default {
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
                 if (confirm('修改內容後，有用到此措施的行車危害全部要重新審核，你確定要存檔嗎?')) {
-                    this.chMsgbar({ success: true, msg: '資料更新成功'})
+                    updateData({
+                        ProcCode: this.id,  // 措施編號
+                        PolicyCode: this.ipt.docId,  // 規章編號
+                        DeviceTitle: this.ipt.subject,  //措施簡述
+                        DeviceDesp: this.ipt.desc,  // 措施說明
+                        DeviceDepart: this.ipt.depart,  // 管控單位
+                        Remark: this.ipt.note,  // 備註
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '更新成功' })
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
                 }
             } else {
                 // ---------- 新增時---------- 
@@ -350,24 +396,68 @@ export default {
         uploadFile(file) {
             this.chLoadingShow()
 
-            setTimeout(() => {
-                // 後端請求後，回傳檔案資料 (id、filename、link)
-                // this.ipt.files.push(fileData)
-                this.chMsgbar({ success: true, msg: '檔案新增成功'})
-                this.chLoadingShow()
-            }, 1000)
+            if (file) {
+                let reader = new FileReader()  // blob 用
+
+                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
+                reader.readAsArrayBuffer(file)
+
+                // 設定讀取完時的動作
+                reader.onload = () => {
+                    // 抓出副檔名
+                    let nameArr = file.name.split('.')  // 用小數點拆成陣列
+                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                    
+                    let fileArr = [{ FileName: file.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }]
+                    
+                    updateFile({
+                        ProcCode: this.id,  // 措施編號
+                        FileCount: fileArr,  // 新檔案
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '上傳成功' })
+                            // 把檔案資料寫入畫面中
+                            this.ipt.files = [ ...res.data.FileCount.map(item => ({
+                                fileName: item.FileName,
+                                link: item.FilePath,
+                            }))]
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
+            }
         },
         // 刪除檔案 (編輯時)
-        deleteFile(id, idx) {
+        deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    // 後端請求後，移除檔案列表
-                    // this.ipt.files.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                deleteFile({
+                    ProcCode: this.id,  // 編號
+                    FileName: this.ipt.files[idx].fileName,  // 檔案名稱
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt.files.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },

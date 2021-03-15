@@ -74,6 +74,7 @@
                 :loading="orgIsLoading"
                 v-model="queryItem.PeopleList"
               />
+              <!-- <PeopleSelect v-model="queryItem.PeopleList" :isMuti="true" /> -->
             </v-col>
             <v-col cols="12" sm="6">
               <h3 class="mb-1">工作提醒事項</h3>
@@ -96,6 +97,7 @@
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { fetchOrganization } from '@/apis/organization'
   import { jobQuery,jobInsert,jobUpdate } from '@/apis/materialManage/routine'
+  import PeopleSelect from '@/components/PeopleSelect'
   export default {
     props: {
       flowId: String,
@@ -125,7 +127,7 @@
       this.componentInit()
     },
     components: {
-
+      PeopleSelect
     },
     computed: {
       ...mapState ('user', {
@@ -190,6 +192,7 @@
               })
               if(rtnArrP1.length > 0 || rtnArr2.length > 0){
                 ele.child = rtnArrP1.map(t=>t.text).toString()
+                ele.value = rtnArrP1.map(t=>t.value).toString()
                 that.orgList.push(ele)
               }
               that.orgList.push(...rtnArrP1)
@@ -203,6 +206,7 @@
                 })
                 if(rtnArrP2.length > 0 || rtnArr3.length > 0){
                   element.child = rtnArrP2.map(t=>t.text).toString()
+                  element.value = rtnArrP2.map(t=>t.value).toString()
                   that.orgList.push(element)
                 }
                 that.orgList.push(...rtnArrP2)
@@ -212,6 +216,7 @@
                   })
                   if(rtnArrP3.length > 0){
                     items.child = rtnArrP3.map(t=>t.text).toString()
+                    items.value = rtnArrP3.map(t=>t.value).toString()
                     that.orgList.push(items)
                   }
                   that.orgList.push(...rtnArrP3)
@@ -232,8 +237,9 @@
         const text = (itemText.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
         const child = (item.child.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
         const group = (item.group.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
-
-        return text || group || child
+        const value = (item.value.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
+        // console.log(item)
+        return text || group || child || value
       },
       componentInit() {
         this._getOrg()

@@ -162,9 +162,9 @@
                     </v-col>
                 </v-row>
             </v-sheet>
-        </v-col>
+         </v-col>
 
-        <v-col cols="12">
+         <v-col cols="12">
             <h4 class="mb-1">
                 <v-icon class="mr-1 mb-2">mdi-lightbulb-on</v-icon>已加入的收件人：
                 <v-btn
@@ -341,7 +341,7 @@ export default {
             let arr = this.ipt.recipients.map(item => ({
                 PeopleId: item
             }))
-            CreateCarSafelnfo({
+                CreateCarSafelnfo({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                     ReportLine: this.ipt.line,  //通報路線

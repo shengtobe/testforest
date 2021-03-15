@@ -3,95 +3,39 @@
     <h2 class="mb-4 px-2">{{ title }}</h2>
     <!-- 第一排選項 -->
     <v-row class="px-2">
-      <!-- 檢查日期起 -->
-      <v-col cols="12" sm="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="QueryDayStart"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryData.CheckDayStart" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryData.CheckDayStart"
-            @input="QueryDay = false"
-            locale="zh-tw"
-          />
-        </v-menu>
-      </v-col>
-      <!-- 檢查日期迄 -->
-      <v-col cols="12" sm="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="QueryDayEnd"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryData.CheckDayEnd" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryData.CheckDayEnd"
-            @input="QueryDayEnd = false"
-            locale="zh-tw"
-          />
-        </v-menu>
-      </v-col>
-      <!-- 管理單位 -->
-      <v-col cols="12" sm="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>管理單位
-        </h3>
-        <v-select
-          :items="formDepartOptions" v-model="ipt2.depart"
-          solo
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
         />
       </v-col>
-      <!-- 查詢 -->
-      <v-col cols="12" sm="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <deptSelect
+          label="管理單位"
+          v-model="formData.searchItem.department"
+          :showIcon="formData.settings.formIconShow"
+          outType="key"
+          key="department"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3"></v-col>
 
-      <!-- 檔案上傳 -->
-      <v-col cols="12" sm="3">
-        <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
-        </v-form>
+      <v-col cols="12" sm="3" md="3">
       </v-col>
-      <v-col cols="12" sm="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
-        </v-btn>
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>
-          新增{{ newText }}
-        </v-btn>
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
       </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -122,7 +66,17 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -133,6 +87,30 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
+    <!-- 必填欄位空白提醒視窗 -->
+    <v-dialog v-model="dialogNull" persistent max-width="290">
+      <v-card>
+        <v-card-title class="red white--text px-4 py-1 headline"
+          >請填妥必要欄位: 車種</v-card-title
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" @click="dialogNull = false">確定</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <!-- 新增機動道班台車使用申請書 modal -->
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
@@ -172,7 +150,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">車種</h3>
-                  <v-radio-group dense row class="pa-0 ma-0 mt-3" v-model="AddData.Vehicles">
+                  <v-radio-group dense row class="pa-0 ma-0 mt-3" :rules="nameRules" v-model="AddData.Vehicles">
                     <v-radio color="success" label="機動道班台車" value="1" />
                     <v-radio color="red" label="手推車" value="2" />
                   </v-radio-group>
@@ -181,16 +159,23 @@
               <!-- 單位、職稱、申請人 -->
               <v-row no-gutter class="indigo--text">
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">單位</h3>
-                  <v-text-field solo v-model="DepartName" />
+                  <!-- <h3 class="mb-1">單位</h3>
+                  <v-text-field solo v-model="DepartName" /> -->
+                  <deptSelect
+                    label="管理單位"
+                    v-model="doMan.depart"
+                    outType="key" 
+                    :readonly="true"
+                    key="depart"
+                  />
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">職稱</h3>
-                  <v-text-field solo v-model="JobName" />
+                  <v-text-field solo v-model="doMan.jobname" readonly/>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">申請人</h3>
-                  <v-text-field solo v-model="Name" />
+                  <v-text-field solo v-model="doMan.name" />
                 </v-col>
               </v-row>
               <!-- 使用區間地點 -->
@@ -201,15 +186,17 @@
                     <h3 class="mb-1">使用區間地點-站內</h3>
                   </v-col>
                   <v-col cols="12" class="fkj">
-                    <v-col cols="12" sm="3" style="display: flex;">
+                    <v-col cols="12" sm="4" style="display: flex;">
                       <span class="mt-3 mr-2">自</span>
-                      <v-text-field solo v-model="BgStation" />
-                      <span class="mt-3 ml-2">站</span>
+                      <!-- <v-text-field solo v-model="BgStation" /> -->
+                      <v-select dense single-line :items="apm" v-model="BgStation" outlined />
+                      <span class="mt-3 ml-2 mr-2">站 </span>
                     </v-col>
-                    <v-col cols="12" sm="5" style="display: flex;">
+                    <v-col cols="12" sm="4" style="display: flex;">
                       <span class="mt-3 mr-2">至</span>
-                      <v-text-field solo v-model="EndStation" />
-                      <span class="mt-3 ml-2">站間</span>
+                      <!-- <v-text-field solo v-model="EndStation" /> -->
+                      <v-select dense single-line :items="apm" v-model="EndStation" outlined />
+                      <span class="mt-3 ml-1" style="white-space: nowrap">站間</span>
                     </v-col>
                     <v-col cols="12" sm="4" style="display: flex;">
                       <v-text-field solo v-model="Km" />
@@ -350,9 +337,22 @@
         </div>
 
         <v-card-actions class="px-5 pb-5">
+          <v-btn
+            v-if="action != actions.add"
+            elevation="4"
+            color="red"
+            class="mr-2 white--text"
+            @click="deleteRecord(RPFlowNo)"
+            >刪除</v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" @click="save">送出</v-btn>
+          <v-btn
+            color="success"
+            elevation="4"
+            @click="save"
+            >送出</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -364,18 +364,26 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
     return {
       title: "機動道班台車使用申請書",
       newText: "申請書",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
       QueryDayStart: "",
       QueryDayEnd: "",
+      apm: ["嘉義", "北門", "鹿麻產", "竹崎", "木履寮", "樟腦寮", "獨立山", "梨園寮", "交力坪", "水社寮", "奮起湖", "多林", "十字路", "屏遮那", "第一分道", "二萬平", "神木", "阿里山", "沼平", "對高岳", "祝山"],
       formDepartOptions: [
       // 通報單位下拉選單
       { text: "不限", value: "" },
@@ -421,22 +429,46 @@ export default {
         Note: "",
       },
       Add: false,
+      ShowDetailDialog: false,
+      dialogDel: false, // model off
+      dialogNull: false,
+      Add: false,
+      dialog3: false,
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
+      editType: "",
+      editItem: {},
+      DynamicKey: 0,
+      DelDynamicKey: 0,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP035",
+      RPFlowNo: "",
       nowTime: "",
       doMan:{
         id: '',
         name: '',
         depart: '',
+        jobname: '',
         checkManName: ''
       },
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
+        startDay: '',
+        EndDay: '',
+        depart: '',  // 單位
+      },
+      nameRules: [
+        (v) => !!v || "請選擇",
+      ],
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
@@ -448,9 +480,36 @@ export default {
       ],
       tableItems: [],
       //------
+      CarType: "",
+      BgStation: "",
+      EndStation: "",
+      Km: "",
+      Road: "",
+      Way: "",
+      BgTrainNo: "",
+      EndTrainNo: "",
+      Day: "",
+      AM_To_HH: "",
+      AM_To_mm: "",
+      AM_Back_HH: "",
+      AM_Back_mm: "",
+      PM_To_HH: "",
+      PM_To_mm: "",
+      PM_Back_HH: "",
+      PM_Back_mm: "",
+      Purpose: "",
+      AmountCar: "",
+      Memo: "",
+
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+  },
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -475,17 +534,54 @@ export default {
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+    reset() {
+      this.formData.searchItem.dateStart = "";
+      this.formData.searchItem.dateEnd = "";
+      this.formData.searchItem.department = "";
+    },
     // 更換頁數
     initInput(){
-      // this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
+      this.doMan.name = this.userData.UserName;
+      this.doMan.jobname = this.userData.JobName;
+      this.doMan.depart = this.userData.DeptList[0].DeptId;
+      this.AddData.ApplicationDay = this.nowTime;
+      this.AddData.Vehicles = "0",
+      this.BgStation = "",
+      this.EndStation = "",
+      this.Km = "",
+      this.Road = "",
+      this.Way = "",
+      this.BgTrainNo = "",
+      this.EndTrainNo = "",
+      this.Day = "",
+      this.AM_To_HH = "",
+      this.AM_To_mm = "",
+      this.AM_Back_HH = "",
+      this.AM_Back_mm = "",
+      this.PM_To_HH = "",
+      this.PM_To_mm = "",
+      this.PM_Back_HH = "",
+      this.PM_Back_mm = "",
+      this.Purpose = "",
+      this.AmountCar = "",
+      this.Memo = "",
+      this.AddData.Outer.Road = "",
+      this.AddData.Outer.UpDown = "",
+      this.AddData.UsageTime.Train1 = "",
+      this.AddData.UsageTime.Train2 = "",
+      this.AddData.UsageTime.TimeDay = "",
+      this.AddData.UsageTime.MrningGoT = "",
+      this.AddData.UsageTime.MrningGoM = "",
+      this.AddData.UsageTime.MrningReturnT = "",
+      this.AddData.UsageTime.MrningReturnM = "",
+      this.AddData.UsageTime.AfternoonGoT = "",
+      this.AddData.UsageTime.AfternoonGoM = "",
+      this.AddData.UsageTime.AfternoonReturnT = "",
+      this.AddData.UsageTime.AfternoonReturnM = "",
+      this.AddData.Purpose = "",
+      this.AddData.VehiclesNumber = 0,
+      this.AddData.Note = ""
+
     },
     unique(list){
       var arr = [];
@@ -510,6 +606,7 @@ export default {
     newOne(){
       console.log("newOne23")
       this.Add = true
+      this.action = Actions.add
       console.log("this.Add: " + this.Add)
       this.initInput();
     },
@@ -556,14 +653,133 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      if (this.AddData.Vehicles != "1" && this.AddData.Vehicles != "2") {
+        this.dialogNull = true;
+        return;
+      }
+      console.log("送出!!")
+      this.chLoadingShow()
+      console.log(this.AddData.UsageTime.TimeDay.length)
+      if(this.AddData.UsageTime.TimeDay.length > 10){
+        this.AddData.UsageTime.TimeDay = this.AddData.UsageTime.TimeDay.substring(0, 9)
+      }
+      if(this.AddData.UsageTime.TimeDay.length == 0){
+        this.AddData.UsageTime.TimeDay = this.nowTime
+      }
+      console.log(this.AddData.UsageTime.TimeDay.length)
+      console.log("this.action == " + this.action == Actions.add)
+      if (this.action == Actions.add){
+        //-----新增-----
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem: [ 
+            {"Column":'CheckDay',"Value":this.AddData.ApplicationDay},
+            {"Column":"CarType","Value":this.AddData.Vehicles},
+            {"Column":"JobName","Value":this.doMan.jobname},
+            {"Column":"BgStation","Value":this.BgStation},
+            {"Column":"EndStation","Value":this.EndStation},
+            {"Column":"Km","Value":this.Km},
+            {"Column":"Road","Value":this.AddData.Outer.Road},
+            {"Column":"Way","Value":this.AddData.Outer.UpDown},
+            {"Column":"BgTrainNo","Value":this.AddData.UsageTime.Train1},
+            {"Column":"EndTrainNo","Value":this.AddData.UsageTime.Train2},
+            {"Column":"Day","Value":this.AddData.UsageTime.TimeDay},
+            {"Column":"AM_To_HH","Value":this.AddData.UsageTime.MrningGoT},
+            {"Column":"AM_To_mm","Value":this.AddData.UsageTime.MrningGoM},
+            {"Column":"AM_Back_HH","Value":this.AddData.UsageTime.MrningReturnT},
+            {"Column":"AM_Back_mm","Value":this.AddData.UsageTime.MrningReturnM},
+            {"Column":"PM_To_HH","Value":this.AddData.UsageTime.AfternoonGoT},
+            {"Column":"PM_To_mm","Value":this.AddData.UsageTime.AfternoonGoM},
+            {"Column":"PM_Back_HH","Value":this.AddData.UsageTime.AfternoonReturnT},
+            {"Column":"PM_Back_mm","Value":this.AddData.UsageTime.AfternoonReturnM},
+            {"Column":"Purpose","Value":this.AddData.Purpose},
+            {"Column":"AmountCar","Value":this.AddData.VehiclesNumber},
+            {"Column":"Memo","Value":this.AddData.Note}
+          ]
+        }).then(res => {
+          console.log(res.data.DT)
+        }).catch(err => {
+          console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow()
+        })
+      }
+      else{
+        //-----編輯-----
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(), // client 端請求時間
+          OperatorID: this.userData.UserId, // 操作人id
+          RPFlowNo: this.RPFlowNo,
+          // FunCode: "U",
+          KeyName: this.DB_Table, // DB table
+          KeyItem: [ 
+            {"Column":'CheckDay',Value:this.AddData.ApplicationDay},
+            {"Column":"CarType","Value":this.AddData.Vehicles},
+            {"Column":"JobName","Value":this.doMan.jobname},
+            {"Column":"BgStation","Value":this.BgStation},
+            {"Column":"EndStation","Value":this.EndStation},
+            {"Column":"Km","Value":this.Km},
+            {"Column":"Road","Value":this.AddData.Outer.Road},
+            {"Column":"Way","Value":this.AddData.Outer.UpDown},
+            {"Column":"BgTrainNo","Value":this.AddData.UsageTime.Train1},
+            {"Column":"EndTrainNo","Value":this.AddData.UsageTime.Train2},
+            {"Column":"Day","Value":this.AddData.UsageTime.TimeDay},
+            {"Column":"AM_To_HH","Value":this.AddData.UsageTime.MrningGoT},
+            {"Column":"AM_To_mm","Value":this.AddData.UsageTime.MrningGoM},
+            {"Column":"AM_Back_HH","Value":this.AddData.UsageTime.MrningReturnT},
+            {"Column":"AM_Back_mm","Value":this.AddData.UsageTime.MrningReturnM},
+            {"Column":"PM_To_HH","Value":this.AddData.UsageTime.AfternoonGoT},
+            {"Column":"PM_To_mm","Value":this.AddData.UsageTime.AfternoonGoM},
+            {"Column":"PM_Back_HH","Value":this.AddData.UsageTime.AfternoonReturnT},
+            {"Column":"PM_Back_mm","Value":this.AddData.UsageTime.AfternoonReturnM},
+            {"Column":"Purpose","Value":this.AddData.Purpose},
+            {"Column":"AmountCar","Value":this.AddData.VehiclesNumber},
+            {"Column":"Memo","Value":this.AddData.Note}
+          ]
+        })
+          .then((res) => {
+            console.log(res.data.DT)
+          })
+          .catch((err) => {
+            console.log(err);
+            // this.chMsgbar({ success: false, msg: Constrant.update.failed });
+            alert('查詢時發生問題，請重新查詢!')
+          })
+          .finally(() => {
+            this.chLoadingShow()
+          });
+      }
+      this.Add = false;
+    },
+    // 關閉刪除確認dialod
+    closeDialogDel() {
+      this.dialogDel = false;
+      console.log("刪除確認是窗關閉, RPFlowNo:")
+      console.log(RPFlowNo)
+    },
     // 關閉 dialog
     close() {
+      console.log(this.userData)
       this.Add = false;
+      this.dialog3 = false;
+      this.dialogShowEdit = false;
+      this.dialogDel = false;
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.addItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      }, 300);
     },
     viewPage(item) {
       console.log("item: " + item)
+      this.RPFlowNo = item.RPFlowNo
       console.log("RPFlowNo: " + item.RPFlowNo)
+      this.action = Actions.edit
       this.chLoadingShow()
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
@@ -574,19 +790,31 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckDay",//0
+          "DepartName",//1
+          "Name",//2
+          "CheckMan",//3
+          "CarType",//4
+          "JobName",//5
+          "BgStation",//6
+          "EndStation",//7
+          "Km",//8
+          "Road",//9
+          "Way",//10
+          "BgTrainNo",//11
+          "EndTrainNo",//12
+          "Day",//13
+          "AM_To_HH",//14
+          "AM_To_mm",//15
+          "AM_Back_HH",//16
+          "AM_Back_mm",//17
+          "PM_To_HH",//18
+          "PM_To_mm",//19
+          "PM_Back_HH",//20
+          "PM_Back_mm",//21
+          "Purpose",//22
+          "AmountCar",//23
+          "Memo",//24
         ],
       }).then(res => {
         this.initInput();
@@ -604,21 +832,33 @@ export default {
         //123資料
         let ad = Object.keys(dat[0])
         console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        var step;
+        for (step = 0; step < 11; step++) {
+          this.doMan.name = dat[0].Name
+          this.AddData.Vehicles = dat[0].CarType
+          this.doMan.jobname = dat[0].JobName
+          this.BgStation = dat[0].BgStation
+          this.EndStation = dat[0].EndStation
+          this.Km = dat[0].Km
+          this.AddData.Outer.Road = dat[0].Road
+          this.AddData.Outer.UpDown = dat[0].Way
+          this.AddData.UsageTime.Train1 = dat[0].BgTrainNo
+          this.AddData.UsageTime.Train2 = dat[0].EndTrainNo
+          this.AddData.UsageTime.TimeDay  = dat[0].Day
+          this.AddData.UsageTime.MrningGoT = dat[0].AM_To_HH
+          this.AddData.UsageTime.MrningGoM = dat[0].AM_To_mm
+          this.AddData.UsageTime.MrningReturnT = dat[0].AM_Back_HH
+          this.AddData.UsageTime.MrningReturnM = dat[0].AM_Back_mm
+          this.AddData.UsageTime.AfternoonGoT = dat[0].PM_To_HH
+          this.AddData.UsageTime.MrningReturnM = dat[0].AM_Back_mm
+          this.AddData.UsageTime.AfternoonGoT = dat[0].PM_To_HH
+          this.AddData.UsageTime.AfternoonGoM = dat[0].PM_To_mm
+          this.AddData.UsageTime.AfternoonReturnT = dat[0].PM_Back_HH
+          this.AddData.UsageTime.AfternoonReturnM = dat[0].PM_Back_mm
+          this.AddData.Purpose = dat[0].Purpose
+          this.AddData.VehiclesNumber = dat[0].AmountCar
+          this.AddData.Note = dat[0].Memo
+        }
 
         
       }).catch(err => {
@@ -628,6 +868,14 @@ export default {
         this.chLoadingShow()
       })
     },//viewPage
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
+      console.log("刪除確認視窗開啟, RPFlowNo:")
+      console.log(RPFlowNo)
+      console.log(this.RPFlowNo)
+    },
   },
 };
 </script>
