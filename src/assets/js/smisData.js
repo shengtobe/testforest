@@ -148,6 +148,44 @@ export const locationOpts = [
     { text: '其他', value: 'other' },
 ]
 
+// 行車事故 - 第一層因素
+export const AccidentFactors1 = [ 
+    { text: '內部因素', value: '1' },
+    { text: '外部因素', value: '2' },
+]
+
+// 行車事故 - 第二層因素
+export const AccidentFactors2 = [ 
+    { parent: '1', text: '人為因素', value: '1' },
+    { parent: '1', text: '車輛', value: '2' },
+    { parent: '1', text: '路線設施', value: '3' },
+    { parent: '1', text: '使用者', value: '4' },
+    { parent: '2', text: '第三方', value: '5' },
+    { parent: '2', text: '天氣與環境', value: '6' },
+]
+
+// 行車事故 - 第三層因素
+export const AccidentFactors3 = [ 
+    { parent: '1', text: '維修人員', value: '1' },
+    { parent: '1', text: '調度員及號誌員', value: '2' },
+    { parent: '1', text: '司機員', value: '3' },
+    { parent: '1', text: '其他人為因素', value: '4' },
+    { parent: '2', text: '車輪', value: '5' },
+    { parent: '2', text: '其他車輛因素', value: '6' },
+    { parent: '3', text: '軌道與相關構造', value: '7' },
+    { parent: '3', text: '電力系統', value: '8' },
+    { parent: '3', text: '其他路線因素', value: '9' },
+    { parent: '4', text: '乘客', value: '10' },
+    { parent: '4', text: '其他使用者因素', value: '11' },
+    { parent: '5', text: '入侵路線', value: '12' },
+    { parent: '5', text: '車輛入侵平交道', value: '13' },
+    { parent: '5', text: '人員入侵平交道', value: '14' },
+    { parent: '5', text: '人員在公共區域', value: '15' },
+    { parent: '5', text: '其他第三方因素', value: '16' },
+    { parent: '6', text: '環境', value: '17' },
+    { parent: '6', text: '天氣', value: '18' },
+]
+
 // 危害資料庫 - 營運模式
 export const operateModes = [ 
     { text: '正常', value: 'm1' },

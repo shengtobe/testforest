@@ -198,6 +198,24 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.location="{ item }">
+                        {{ locationOpts.find(ele => ele.value == item.FindLine).text }}
+                        {{ (item.FindLine == 'other')? `(${item.FindLineOther})` : '' }}
+                        {{ (['l1', 'l2', 'l3', 'l4'].includes(item.FindLine))? `(${item.LineK}K+${item.LineM}M)` : '' }}
+                    </template>
+                    
+                    <template v-slot:item.type="{ item }">
+                        {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}
+                    </template>
+
+                    <template v-slot:item.hurtPeople="{ item }">
+                        {{ (item.HurtPeopleCount == 'F')? '未填寫' : item.HurtPeopleCount }}
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        {{ accidentEventStatus.find(ele => ele.value == item.AccidentStatus).text }}
+                    </template>
+
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             :loading="isLoading"
@@ -205,10 +223,6 @@
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                    </template>
-
-                   <template v-slot:item.Status="{ item }">
-                        {{ accidentEventStatus.find(ele => ele.value == item.Status).text }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -297,10 +311,10 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'AccidentFindDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '傷亡人數', value: 'HurtPeopleCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -348,8 +362,7 @@ export default {
                     'CancelStatus',
                 ],
             }).then(res => {
-                // this.tableItems = JSON.parse(res.data.order_list)
-                console.log(res.data)
+                this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')

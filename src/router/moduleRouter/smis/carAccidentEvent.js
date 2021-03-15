@@ -34,30 +34,30 @@ export const CarAccidentEventRouter = [
         component: () => import('@/views/smis/carAccidentEvent/DrivingImprove.vue'),
         props: true,
     },
-    {
-        linkText: '審核中',  // 審核中 (審核完備資料)
-        path: '/smis/car-accident-event/:id/review',
-        component: () => import('@/views/smis/carAccidentEvent/ReviewComplated.vue'),
-        props: { closeStatus: 2 }
-    },
-    {
-        linkText: '已完備資料',
-        path: '/smis/car-accident-event/:id/complated',
-        component: () => import('@/views/smis/carAccidentEvent/ReviewComplated.vue'),
-        props: { closeStatus: 3 }
-    },
-    {
-        linkText: '審核中',  // 審核中 (審核措施落實)
-        path: '/smis/car-accident-event/:id/fulfill-review',
-        component: () => import('@/views/smis/carAccidentEvent/Fulfill.vue'),
-        props: { closeStatus: 4 }
-    },
-    {
-        linkText: '改善措施已落實',
-        path: '/smis/car-accident-event/:id/fulfill-complated',
-        component: () => import('@/views/smis/carAccidentEvent/Fulfill.vue'),
-        props: { closeStatus: 5 }
-    },
+    // {
+    //     linkText: '審核中',  // 審核中 (審核完備資料)
+    //     path: '/smis/car-accident-event/:id/review',
+    //     component: () => import('@/views/smis/carAccidentEvent/ReviewComplated.vue'),
+    //     props: { closeStatus: 2 }
+    // },
+    // {
+    //     linkText: '已完備資料',
+    //     path: '/smis/car-accident-event/:id/complated',
+    //     component: () => import('@/views/smis/carAccidentEvent/ReviewComplated.vue'),
+    //     props: { closeStatus: 3 }
+    // },
+    // {
+    //     linkText: '審核中',  // 審核中 (審核措施落實)
+    //     path: '/smis/car-accident-event/:id/fulfill-review',
+    //     component: () => import('@/views/smis/carAccidentEvent/Fulfill.vue'),
+    //     props: { closeStatus: 4 }
+    // },
+    // {
+    //     linkText: '改善措施已落實',
+    //     path: '/smis/car-accident-event/:id/fulfill-complated',
+    //     component: () => import('@/views/smis/carAccidentEvent/Fulfill.vue'),
+    //     props: { closeStatus: 5 }
+    // },
     {
         linkText: '刪除回復',
         path: '/smis/car-accident-event/del-recovery',

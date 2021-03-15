@@ -11,29 +11,38 @@ export function fetchList(data) { return axios(
     }
 )}
 
-// // 新增
-// export function createNotify(data) { return axios(
-//     {
-//         url: '/sms/event/create',
-//         method: 'post',
-//         data,
-//     }
-// )}
+// 新增
+export function createData(data) { return axios(
+    {
+        url: '/sms/event/create',
+        method: 'post',
+        data,
+    }
+)}
 
-// // 取得單一筆工單詳細資料
-// export function fetchNotifyOne(data) { return axios(
-//     {
-//         url: '/sms/event/detail',
-//         method: 'post',
-//         data,
-//     }
-// )}
+// 取得單一筆詳細資料
+export function fetchOne(data) { return axios(
+    {
+        url: '/sms/event/detail',
+        method: 'post',
+        data,
+    }
+)}
 
-// // 危害通報回覆
-// export function replyNotify(data) { return axios(
-//     {
-//         url: '/sms/event/reply',
-//         method: 'post',
-//         data,
-//     }
-// )}
+// 更新
+export function updateData(data) { return axios(
+    {
+        url: '/sms/event/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 刪除
+export function deleteData(data) { return axios(
+    {
+        url: '/sms/event/delete',
+        method: 'delete',
+        data,
+    }
+)}
