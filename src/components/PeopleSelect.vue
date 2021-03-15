@@ -161,8 +161,5 @@ export default {
       this.$emit('getName',this.selectName)
     }
   },
-  created(){
-    this._getOrg()
-  }
 }
 </script>
