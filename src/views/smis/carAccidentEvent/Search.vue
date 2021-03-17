@@ -209,7 +209,7 @@
                     </template>
 
                     <template v-slot:item.hurtPeople="{ item }">
-                        {{ (item.HurtPeopleCount == 'F')? '未填寫' : item.HurtPeopleCount }}
+                        {{ (item.HurtPeopleCount == 'F')? '未填寫' : item.hurt_people_count }}
                     </template>
 
                     <template v-slot:item.status="{ item }">
@@ -310,13 +310,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 160 },
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 220 },
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 140 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
         ],
         accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         isLoading: false,  // 是否讀取中
@@ -376,7 +376,7 @@ export default {
         },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
-            let routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
+            let routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.AccidentCode}/show` })
             window.open(routeData.href, '_blank')
         },
     },

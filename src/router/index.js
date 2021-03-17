@@ -54,7 +54,7 @@ const routes = [
 
       // ------ 各科室表單 ------ 
       ...FormCuringRouter,  // 車輛養護科
-      ...FormLaborRouter,  // 勞安
+      ...FormLaborRouter,  // 職安
       ...FormMaintainRouter,  // 鐵路維護科
       ...FormServeRouter,  // 服務科
 

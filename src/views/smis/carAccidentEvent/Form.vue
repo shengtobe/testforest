@@ -7,7 +7,7 @@
     <v-row class="px-2">
         <v-col cols="12" md="8">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-tags</v-icon>事故摘要
+                <v-icon class="mr-1 mb-1">mdi-tag</v-icon>事故摘要
             </h3>
             <v-text-field
                 v-model.trim="ipt.subject"
@@ -682,7 +682,7 @@ export default {
                     PeopleMemo: this.ipt.behaviorDesc,  // 民眾或旅客行為說明
                     DeviceLost: this.ipt.eqLoss,  // 設備損失
                     OperationLost: this.ipt.serviceShock,  // 運轉影響情形
-                    FixProcess: '',  // 處置過程
+                    FixProcess: '',  // 處置過程(預留的欄位，目前用不到)
                     ReviewProcess: this.ipt.review,  // 檢討過程
                     CauseAnaly: this.ipt.reason,  // 原因分析
                     RemarkDesp: this.ipt.note,  // 備註說明

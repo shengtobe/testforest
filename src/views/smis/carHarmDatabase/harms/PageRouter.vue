@@ -15,11 +15,10 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { fetchOne } from '@/apis/smis/carHarmDatabase/harms'
-import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency } from '@/assets/js/smisData'
+import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import { departOptions } from '@/assets/js/departOption'
 import Show from '@/views/smis/carHarmDatabase/harms/Show.vue'
 import ReviewComplated from '@/views/smis/carHarmDatabase/harms/ReviewComplated.vue'
@@ -37,11 +36,6 @@ export default {
         ReviewComplated,
         Fulfill,
         UpdateReview,
-    },
-    computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
     },
     methods: {
         ...mapActions('system', [
@@ -85,7 +79,7 @@ export default {
                             { icon: 'mdi-source-branch', title: '關聯子系統', text: res.data.ConnectWBS },
                             { icon: 'mdi-format-line-spacing', title: '風險嚴重性', text: riskSerious.find(ele => ele.value == res.data.RiskSerious).text },
                             { icon: 'mdi-signal-variant', title: '風險頻率', text: riskFrequency.find(ele => ele.value == res.data.RiskFreq).text },
-                            { icon: 'mdi-elevation-rise', title: '風險等級', text: res.data.RiskLevel },
+                            { icon: 'mdi-elevation-rise', title: '風險等級', text: riskLevel.find(ele => ele.value == res.data.RiskLevel).text },
                         ]
 
                         // 設定下面的欄位資料

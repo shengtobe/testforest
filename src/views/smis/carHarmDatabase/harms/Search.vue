@@ -173,6 +173,10 @@
                         <span>{{ opts.frequency.find(ele => ele.value == item.RiskFreq).text }}</span>
                     </template>
 
+                    <template v-slot:item.level="{ item }">
+                        <span>{{ opts.riskLevel.find(ele => ele.value == item.RiskLevel).text }}</span>
+                    </template>
+                    
                     <template v-slot:item.status="{ item }">
                         <span>{{ opts.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
                     </template>
@@ -204,7 +208,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { carHarmDbStatus, operateModes, riskSerious, riskFrequency } from '@/assets/js/smisData'
+import { carHarmDbStatus, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
 import { carHarmDBHarms } from '@/assets/js/smisTestData'
 import { fetchList } from '@/apis/smis/carHarmDatabase/harms'
@@ -217,9 +221,9 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
@@ -230,6 +234,7 @@ export default {
             mode: operateModes, // 營運模式
             serious: riskSerious, // 風險嚴重性
             frequency: riskFrequency, // 風險頻率
+            riskLevel: riskLevel,  // 風險等級
         },
     }),
     components: { Pagination },
