@@ -5,6 +5,45 @@ export const CarSafePerformanceRouter = [
         path: '/smis/car-safe-performance',
         component: () => import('@/views/smis/carSafePerformance/Index.vue')
     },
+    //-------- 第一、二層 -------
+    {
+        linkText: '趨勢圖',
+        path: '/smis/car-safe-performance/:acdname/accident-trend',
+        props: true,
+        component: () => import('@/views/smis/carSafePerformance/AccidentTrend.vue')
+    },
+    {
+        linkText: '趨勢分析',
+        path: '/smis/car-safe-performance/:acdname/accident-analysis',
+        props: true,
+        component: () => import('@/views/smis/carSafePerformance/AccidentReasonAnaly.vue')
+    },
+    {
+        linkText: '年分析',
+        path: '/smis/car-safe-performance/:acdname/year-analysis',
+        props: true,
+        component: () => import('@/views/smis/carSafePerformance/AccidentYearAnaly.vue')
+    },
+    //----- 第三層 -----
+    {
+        linkText: '安全關鍵設備可靠度',
+        path: '/smis/car-safe-performance/:acdname/key-equip',
+        props: true,
+        component: () => import('@/views/smis/carSafePerformance/KeyEquip.vue')
+    },
+    {
+        linkText: '安全關鍵設備可靠度趨勢分析',
+        path: '/smis/car-safe-performance/:acdname/key-equip/:eqname/key-analysis',
+        props: true,
+        component: () => import('@/views/smis/carSafePerformance/KeyEquipAnaly.vue')
+    },
+    //----- 第四層 -----
+    {
+        linkText: '執行成效',
+        path: '/smis/car-safe-performance/:acdname/work-effectiveness',
+        props: true,
+        component: () => import('@/views/smis/carSafePerformance/WorkEffectiveness.vue')
+    },
     // ------- 機車行駛公里及發電機工時 ------- 
     {
         linkText: '機車行駛公里及發電機工時',
