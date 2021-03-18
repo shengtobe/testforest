@@ -389,7 +389,6 @@ export default {
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
                     if(res.data.HealthDataList.length > 0){
-                        console.log(res.data.HealthDataList)
                         this.tableItems = res.data.HealthDataList
                     }else{
                         this.chMsgbar({ success: false, msg: '查無資料' })
