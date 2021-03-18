@@ -3,7 +3,7 @@
   
   <v-row>
     <v-col cols="12" md="2">
-      <v-btn color="secondary" large :to="`/smis/car-safe-performance`">
+      <v-btn color="secondary" large :to="`/smis/car-safe-performance/analysis`">
         回上一頁
       </v-btn>
     </v-col>
