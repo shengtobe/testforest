@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">人員資料 ({{ licenseName }})</h2>
+    <h2 class="mb-4">人員資料 ({{ decodeURIComponent(name) }})</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12">
@@ -61,7 +61,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item.id)"
+                            @click="godel(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -81,7 +81,20 @@
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
-        <LicenseManEdit @close="close"/>
+        <LicenseManEdit @close="close" :data="ipt" :name="name" :key="componentKey"/>
+    </v-dialog>
+    <!-- 刪除 -->
+    <v-dialog v-model="delDialog" max-width="350px">
+        <v-card>
+            <v-card-title class="red white--text px-4 py-1 headline"
+            >確認是否刪除?</v-card-title
+            >
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="delDialog=false">取消</v-btn>
+            <v-btn color="red" class="white--text" @click="del(delItem)">刪除</v-btn>
+            </v-card-actions>
+        </v-card>
     </v-dialog>
 </v-container>
 </template>
@@ -90,10 +103,10 @@
 import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { licenseRcdQuery, licenseOption } from '@/apis/smis/license'
+import { licenseQuery, licenseOption } from '@/apis/smis/license'
 import LicenseManEdit from '@/views/smis/jobSafety/license/LicenseManEdit.vue'
 export default {
-    props: ['id'],
+    props: ['id','name'],
     data: () => ({
         licenseName: '',  // 證照名稱
         opts: {  // 下拉選單
@@ -123,6 +136,9 @@ export default {
         ],
         dialog: false,  // dialog 是否顯示
         componentKey: 0,
+        ipt: {},
+        delDialog:false,
+        delItem:{}
     }),
     components: { 
         Pagination,
@@ -144,17 +160,25 @@ export default {
         ]),
         // 初始化資料
         initData() {
-            console.log(this.id)
             this.chLoadingShow()
-            this.licenseName = this.id  // 證照名稱
-            licenseRcdQuery({
-                License: this.id,
+            console.log({
+                FlowID: this.id,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            })
+            licenseQuery({
+                FlowID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
                     if(res.data.DataList){
-                        this.tableItems = res.data.DataList[0].PeopleList
+                        this.tableItems = res.data.DataList
+                        this.tableItems.forEach(e=>{
+                            e.EffectiveDate = e.EffectiveDate.split(' ')[0]
+                            e.ExpDTime = e.ExpDTime.split(' ')[0]
+                            e.ReTrainingTime = e.ReTrainingTime.split(' ')[0]
+                        })
                     }else{
                         this.chMsgbar({ success: false, msg: '查無資料' })
                     }
@@ -185,40 +209,46 @@ export default {
         },
         // 編輯
         edit (item) {
+            console.log(item)
             this.ipt = item
             this.dialog = true
             this.componentKey++
         },
         close(){
             this.dialog = false
+            this.initData()
+        },
+        godel(item) {
+            this.delItem = item
+            this.delDialog = true
         },
         // 刪除
         del(item) {
-            if (confirm('你確定要刪除嗎?')) {
+            this.chLoadingShow()
+            licenseOption({
+                ...item,
+                Option: '3',
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res=>{
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '資料刪除成功' })
+                }else{
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-                licenseOption({
-                    ...item,
-                    Option: '3',
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res=>{
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: false, msg: '資料刪除成功' })
-                    }else{
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch( err => {
-                    console.warn(err)
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
-                }).finally(() => {
-                    this.chLoadingShow()
-                })
-            }
+                this.initData()
+                this.delDialog = false
+            })
         },
 
     },
-    created() {
+    mounted() {
         this.initData()
     }
 }

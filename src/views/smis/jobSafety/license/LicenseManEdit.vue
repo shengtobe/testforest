@@ -3,7 +3,7 @@
     <v-card-title class="light-blue darken-1 white--text px-4 py-1">
       {{ dialogTitle }}
       <v-spacer></v-spacer>
-      <v-btn dark fab small text @click="dialog = false" class="mr-n2">
+      <v-btn dark fab small text @click="cancel" class="mr-n2">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
@@ -101,7 +101,7 @@
     
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
+      <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="cancel">取消</v-btn>
       <v-btn color="success" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
     </v-card-actions>
   </v-card>
@@ -113,9 +113,11 @@ import PeopleSelect from '@/components/PeopleSelect.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { licenseOption } from '@/apis/smis/license'
 export default {
-  props: ['data'],
+  props: ['data','name'],
   data: () => ({
     ipt: {
+      FlowID: '',
+      License: '',
       ID: '',
       Name: '',
       JobName: '',
@@ -150,34 +152,52 @@ export default {
     ]),
     // 初始化資料
     initData() {
-      if(this.license){
-        this.ipt = this.data  
+      if(this.data){
+        this.ipt = {...this.data}
       }
+      this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/\//g,"-")
+      this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/\//g,"-")
+      this.ipt.License = this.name
     },
     // 送出
     save() {
       this.isLoading = true
+      this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/-/g,"\/")
+      this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/-/g,"\/")
+      console.log({
+        ...this.ipt,
+        Option: (this.data)?'2':'1',
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      })
       licenseOption({
-        ...ipt,
+        ...this.ipt,
         Option: (this.data)?'2':'1',
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
+        console.warn(res.data)
         if (res.data.ErrorCode == 0) {
-          this.chMsgbar({ success: false, msg: '資料' + (this.data)?'修改':'新增' + '成功' })
+          const msg = '資料' + ((this.data)?'修改':'新增') + '成功'
+          this.chMsgbar({ success: true, msg: msg })
         }else{
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
         }
       }).catch( err => {
         console.warn(err)
-        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料' + (this.data)?'修改':'新增' + '失敗' })
+        const msg = '伺服器發生問題，資料' + ((this.data)?'修改':'新增') + '失敗'
+        this.chMsgbar({ success: false, msg: msg })
       }).finally(() => {
         this.isLoading = false
+        this.cancel()
       })
     },
     afterSelect(name) {
       this.ipt.Name = name
+    },
+    cancel() {
+      this.$emit('close')
     }
   },
   created() {

@@ -56,7 +56,7 @@
                     <template v-slot:item.link="{ item }">
                         <v-btn small dark fab color="purple"
                             target="_blank"
-                            :to="`/smis/jobsafety/license/${item.FlowID}/list`"
+                            :to="`/smis/jobsafety/license/${item.FlowID}/list/${encodeURIComponent(item.License)}`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -230,6 +230,9 @@ export default {
                 })
             }
         },
+        goList(LicenseName) {
+            this.$router.push({ path: '/smis/jobsafety/license/' + encodeURIComponent(LicenseName) + '/list' })
+        }
     },
 }
 </script>

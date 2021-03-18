@@ -28,3 +28,12 @@ export function licenseOption(data) { return axios(
       data,
   }
 )}
+
+// 搜尋 - 依證照
+export function licenseQuery(data) { return axios(
+    {
+        url: '/sms/license/licensequery',
+        method: 'post',
+        data,
+    }
+)}
