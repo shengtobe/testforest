@@ -150,12 +150,8 @@ export default {
       const child = (item.child.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
       const group = (item.group.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
       const value = (item.value.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
-      // console.log(item)
       return text || group || child || value
     },
-    changeValue(){
-      console.log(this.selectName)
-    }
 	},
   watch: {
     inputValue: function(value){

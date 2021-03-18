@@ -161,11 +161,6 @@ export default {
         // 初始化資料
         initData() {
             this.chLoadingShow()
-            console.log({
-                FlowID: this.id,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             licenseQuery({
                 FlowID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -209,7 +204,6 @@ export default {
         },
         // 編輯
         edit (item) {
-            console.log(item)
             this.ipt = item
             this.dialog = true
             this.componentKey++

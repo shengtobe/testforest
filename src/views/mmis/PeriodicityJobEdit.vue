@@ -238,7 +238,6 @@
         const child = (item.child.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
         const group = (item.group.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
         const value = (item.value.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
-        // console.log(item)
         return text || group || child || value
       },
       componentInit() {
@@ -252,7 +251,6 @@
             OperatorID: this.userData.UserId,  // 操作人id
           }).then(res => {
             if (res.data.ErrorCode == 0) {
-              console.log(res.data)
               this.queryItem.DepartName = res.data.DepartName
               this.queryItem.Memo = res.data.Memo
               this.queryItem.AlarmDTime = res.data.AlarmDTime.split(' ')[0].replace(/\//g, "-")
@@ -283,7 +281,6 @@
           rtnObj.PeopleName = that.people.find(ele => ele.value == e).text
           return rtnObj
         })
-        console.log(this.queryItem)
         if(this.inType == 'edit') {
           jobUpdate({
             ...encodeObject(this.queryItem),

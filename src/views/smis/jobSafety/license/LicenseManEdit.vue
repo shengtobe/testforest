@@ -164,12 +164,6 @@ export default {
       this.isLoading = true
       this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/-/g,"\/")
       this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/-/g,"\/")
-      console.log({
-        ...this.ipt,
-        Option: (this.data)?'2':'1',
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-      })
       licenseOption({
         ...this.ipt,
         Option: (this.data)?'2':'1',

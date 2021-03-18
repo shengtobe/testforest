@@ -89,19 +89,12 @@ export default {
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow()
-            console.log({
-                ID: this.id,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             healthCdList({
                 ID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
-                console.log(res.data)
                 if (res.data.ErrorCode == 0) {
-                    console.log(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                    const Fdata = decodeObject(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                    this.topItems = {
                         depart: { icon: 'mdi-bank', title: '部門', text: Fdata.Depart },
@@ -115,8 +108,6 @@ export default {
                         physicalDate: { icon: 'mdi-calendar-text', title: '檢查日期', text: Fdata.HealthCheckDate },
                         level: { icon: 'mdi-elevation-rise', title: '健檢評級', text: Fdata.HealthResultLevel+'級' },
                     }
-                    console.log(Fdata)
-                    console.log(Fdata.UrineProtein)
                     this.bottomItems = [
                         { dataType: 'text', oneline: true, icon: 'none', title: '身高(cm)', text: Fdata.PeopleHeight + ' cm' },
                         { dataType: 'text', oneline: true, icon: 'none', title: '體重(kg)', text: Fdata.PeopleWeight + ' kg' },

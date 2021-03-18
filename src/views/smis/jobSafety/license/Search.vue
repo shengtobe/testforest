@@ -161,17 +161,11 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log({
-                License: this.licenseName,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             licenseRcdQuery({
                 License: this.licenseName,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
-                console.log(res.data)
                 if (res.data.ErrorCode == 0) {
                     if(res.data.DataList){
                         this.tableItems = res.data.DataList

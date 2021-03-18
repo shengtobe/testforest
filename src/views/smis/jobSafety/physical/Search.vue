@@ -377,11 +377,6 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log({
-                ...this.searchIpt,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             healthList({
                 ...this.searchIpt,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -436,7 +431,6 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }
-            console.log(sendData)
             healthUpdateStatus({
                 ...sendData
             }).then(res=>{

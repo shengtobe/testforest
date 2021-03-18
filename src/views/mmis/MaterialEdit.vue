@@ -148,13 +148,11 @@ export default {
     }),
     LMaterialCode: {
       get () {
-        // console.log('LMaterialCode getter')
         //this.materDetail.Material = this.DMaterialCode.equipCode + '-' + this.DMaterialCode.workCode
         return this.DMaterialCode.equipCode + '-' + this.DMaterialCode.workCode
 
       },
       set (value) {
-        // console.log('LMaterialCode setter')
         let valArr = value.split('-')
         this.DMaterialCode.equipCode = valArr[0] +'-' + valArr[1] +'-' + valArr[2] +'-' + valArr[3]
         this.DMaterialCode.workCode = valArr[4]
@@ -162,7 +160,6 @@ export default {
     },
     LCEquipCode: {
       get () {
-        // console.log('LCEquipCode getter')
         let valArr = this.LMaterialCode.split('-')
         if(valArr.length == 5){
           this.DMaterialCode.equipCode = valArr[0] +'-' + valArr[1] +'-' + valArr[2] +'-' + valArr[3]
@@ -172,13 +169,11 @@ export default {
         }
       },
       set (value) {
-        // console.log('LCEquipCode setter')
         this.LMaterialCode = value + '-' + this.DMaterialCode.workCode
       }
     },
     LCWorkCode: {
       get () {
-        // console.log('LCEquipCode getter')
         let valArr = this.LMaterialCode.split('-')
         if(valArr.length == 5){
           this.DMaterialCode.workCode = valArr[4]
@@ -188,7 +183,6 @@ export default {
         }
       },
       set (value) {
-        // console.log('LCEquipCode setter')
         this.LMaterialCode = this.DMaterialCode.equipCode + '-' + value
       }
     }
@@ -299,7 +293,6 @@ export default {
       rtnObj.SaftyAmount = that.materDetail.Stock
       rtnObj.Price = that.materDetail.UnitPrice
       rtnObj.Memo = that.materDetail.Remarks
-      console.log(rtnObj)
       this.$emit('save',rtnObj)
       this.$emit('close')
     }

@@ -193,16 +193,6 @@ export default {
     },
     goSearch(){
       this.chLoadingShow()
-      console.log({
-        CreateDTime_Start:this.q_datestart,
-        CreateDTime_End: this.q_dateend,
-        Option: '2',
-        LocationList:[
-          {LocID:this.Location},
-        ],
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-      })
       fetchList({
         CreateDTime_Start:this.q_datestart,
         CreateDTime_End: this.q_dateend,
@@ -213,7 +203,6 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        console.log(res.data)
         this.tableItems = res.data.LocationList
       }).catch( err => {
         console.warn(err)

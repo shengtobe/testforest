@@ -353,7 +353,6 @@ export default {
 	},
 	methods: {
 		rowclick(itemId,itemCol) {
-      console.log(!this.methodList.find(e=>e.methodId===itemId)[itemCol])
       this.methodList.find(e=>e.methodId===itemId)[itemCol] = !this.methodList.find(e=>e.methodId===itemId)[itemCol]
 		}
 	}

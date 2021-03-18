@@ -473,7 +473,6 @@ export default {
       })
     },
     close() {
-      //console.log("Dialog closed");
       this.nowMaterial = undefined
       this.nowMaterial = ''
       this.Add = false;

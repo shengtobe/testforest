@@ -335,7 +335,7 @@ export default {
             this.$router.push({ path: '/error' })
           }
         }).catch( err => {
-          console.log(err)
+          console.warn(err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
           this.chLoadingShow()

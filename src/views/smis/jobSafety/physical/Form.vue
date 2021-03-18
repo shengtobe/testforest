@@ -634,19 +634,12 @@ export default {
             this.chLoadingShow()
             this.isEdit = true
             this.ipt.ID = this.id
-            console.log({
-                FlowId: this.sid,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             healthCdList({
                 ID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
-                console.log(res.data)
             if (res.data.ErrorCode == 0) {
-                console.log(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                 this.ipt = decodeObject(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
             }else{
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -676,7 +669,6 @@ export default {
           login({
             ...sendData
           }).then(res => {
-              console.log('people data',res.data)
             if (res.data.ErrorCode == 0) {
               this.ipt.Name = res.data.UserData.UserName
               this.ipt.Depart = res.data.UserData.DeptList[0].DeptId
@@ -705,11 +697,9 @@ export default {
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id
         }
-        console.log(sendData)
         healthUpdate({
           ...sendData
         }).then(res=>{
-            console.log(res.data)
           if (res.data.ErrorCode == 0) {
             const msg = '資料' + ((this.isEdit)?'更新':'新增') + '成功'
             this.chMsgbar({ success: true, msg: msg })

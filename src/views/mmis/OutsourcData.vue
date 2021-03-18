@@ -187,7 +187,6 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          console.log(res.data)
           this.tableItems = decodeObject(res.data.VendorList)
           this.tableItems.forEach((e,i)=>{
             e.id=i+1
