@@ -35,6 +35,9 @@
       </v-row>
     </v-col>
     <v-col cols="12">
+      <ChartLine :chartdata="MixChart.chartdata" :options="MixChart.options" :key="MixChart.componentKey" />
+    </v-col>
+    <v-col cols="12">
       <v-row>
         <v-col cols="6" md="3">
           <v-select
@@ -103,16 +106,17 @@ export default {
         labels:[],
         datasets: [
           {
+            radius: 0,
             borderWidth: '1',
             borderColor: 'red',
             data: [],
-            lineTension: 0
+            lineTension: 0.2
           }
         ]
       },
       options: {  
         tooltips:{
-          enabled:true
+          enabled:false
         }, 
         legend:{
           display:false,
@@ -121,12 +125,12 @@ export default {
           datalabels: {
             align: "top",
             anchor: "end",
-            clamp :true,
+            clamp :false,
             color: function(context) {
               return context.dataset.borderColor
             },
             formatter: function(value, context) {
-              return (context.dataset.type=="line")?'':context.dataset.label;
+              return '';
             }
           },
         },
@@ -138,7 +142,6 @@ export default {
             },
             ticks: {
               suggestedMin: 0,
-              suggestedMax: 100,
             }
           }],
           xAxes: [{
@@ -161,9 +164,6 @@ export default {
             borderWidth: 1,
           },
         },
-        chartArea: {
-					backgroundColor: 'rgba(251, 85, 85, 0.4)'
-				}
       },
     },
     BarChart:{
@@ -206,7 +206,6 @@ export default {
             },
             ticks: {
               suggestedMin: 0,
-              suggestedMax: 10000,
             }
           }],
           xAxes: [{
@@ -230,6 +229,100 @@ export default {
         chartArea: {
 					backgroundColor: 'rgba(251, 85, 85, 0.4)'
 				}
+      },
+    },
+    MixChart:{
+      componentKey: 1,
+      chartdata: {
+        datasets: [
+          {
+            borderWidth: '1',
+            borderColor: 'red',
+            data: [],
+            lineTension: 0.2,
+            xAxisID: "1"
+          },
+          {
+            borderWidth: '1',
+            barPercentage: 1,
+            data: [],
+            xAxisID: "2",
+            type:"bar"
+          }
+        ]
+      },
+      options: {  
+        tooltips:{
+          enabled:false
+        }, 
+        legend:{
+          display:false,
+        },    
+        plugins: {
+          datalabels: {
+            align: "top",
+            anchor: "end",
+            clamp :false,
+            color: function(context) {
+              return context.dataset.borderColor
+            },
+            formatter: function(value, context) {
+              return '';
+            }
+          },
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel:{
+              display: true,
+              labelString: 'MKBF',
+            },
+            ticks: {
+              suggestedMin: 0,
+            }
+          }],
+          xAxes: [
+            {
+              id: "1",
+              labels:[],
+              scaleLabel:{
+                display: false,
+                labelString: '歷史績效值',
+              },
+              ticks: {
+              }
+            },
+            {
+              id: "2",
+              labels:[],
+              scaleLabel:{
+                display: false,
+                labelString: '歷史績效值',
+              },
+            }
+          ]
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        elements:{
+          line:{
+            fill:false,
+            borderWidth: 1,
+          },
+          point:{
+            radius: 0,
+            pointRadius:0,
+            pointHoverRadius:0,
+            pointBorderColor:'rgba(0, 0, 0, 0)',
+            pointBackgroundColor:'rgba(0, 0, 0, 0)',
+            pointHoverBackgroundColor:'rgba(0, 0, 0, 0)',
+            pointHoverBorderColor:'rgba(0, 0, 0, 0)',
+            pointHoverBorderWidth:0,
+            pointBorderWidth:0,
+            pointHitRadius:0,
+            pointStyle:'line'
+          },
+        },
       },
     },
     workOrderTable:{
@@ -268,6 +361,7 @@ export default {
       this.createDemoData()
       this.BarChart.componentKey ++
       this.LineChart.componentKey ++
+      this.MixChart.componentKey ++
     },
     getPast3YearPer3Month() {
       const today = new Date
@@ -285,21 +379,39 @@ export default {
           yearMonth2 = thisYear.toString()+((getMonth)>=10?'':'0')+(getMonth).toString()
         }
         this.BarChart.chartdata.labels.push(yearMonth1+'~'+yearMonth2)
-        this.LineChart.chartdata.labels.push(yearMonth1+'~'+yearMonth2)
+        this.MixChart.options.scales.xAxes[1].labels.push(yearMonth1+'~'+yearMonth2)
+      }
+      thisYear = today.getFullYear() - 3  //先抓三年前
+      for(let j = 36; j >= 1 ; j--){
+        let getMonth =((thisMonth - j)<=0)?12 - Math.abs(thisMonth - j)%12:j
+        if(getMonth > 12){
+          thisYear+=1
+        }
+        yearMonth1 = thisYear.toString()+((getMonth)>10?'':'0')+getMonth.toString()
+        this.LineChart.chartdata.labels.push(yearMonth1)
+        this.MixChart.options.scales.xAxes[0].labels.push(yearMonth1)
       }
     },
     createDemoData() {
       const today = new Date
       let thisYear = today.getFullYear() - 3  //先抓三年前
-      const thisMonth = today.getMonth() + 1    //月份要加一
+      let thisMonth = today.getMonth() + 1    //月份要加一
+      if(thisMonth -2 <= 0){
+        thisYear --
+        thisMonth = 12+(thisMonth-2)
+      }else{
+        thisMonth = thisMonth - 2
+      }
       let yearMonth = ''
       let count = 1
       let tempKm = 0
       let tempCount = 0
-      for(let i = 36; i >= 1 ; i--){
-        let getMonth = 12 - Math.abs(thisMonth - i)%12
+      let tempTotKm = 0
+      let tempTotCount = 0
+      for(let i = 0; i < 38 ; i++){
+        let getMonth = Math.abs(thisMonth + i)%12 || 12
         let thisKm,thisCount
-        yearMonth = thisYear.toString()+((getMonth)>10?'':'0')+getMonth.toString()
+        yearMonth = thisYear.toString()+((getMonth)>=10?'':'0')+getMonth.toString()
         thisKm = Math.floor(Math.random() * Math.floor(100000))
         thisCount = Math.floor(Math.random() * Math.floor(10))
         this.demoData.push({
@@ -307,16 +419,27 @@ export default {
           km: thisKm,
           count: thisCount
         })
-        tempKm += thisKm
-        tempCount += thisCount
-        if(count == 3){
-          this.BarChart.chartdata.datasets[0].data.push((tempKm/tempCount).toFixed(2))
-          this.LineChart.chartdata.datasets[0].data.push((Math.random() * Math.floor(100000)).toFixed(2))
-          tempKm = 0
-          tempCount = 0
-          count = 1
-        }else{
-          count++
+        if(i >=2){
+          tempKm += thisKm
+          tempCount += thisCount
+          if(count == 3){
+            this.BarChart.chartdata.datasets[0].data.push((tempKm/tempCount).toFixed(2))
+            this.MixChart.chartdata.datasets[1].data.push({x:this.MixChart.options.scales.xAxes[1].labels[Math.floor((i-2)/3)],y:(tempKm/tempCount).toFixed(2)})
+            tempKm = 0
+            tempCount = 0
+            count = 1
+          }else{
+            count++
+          }
+        }
+        tempTotKm = tempTotKm + thisKm - (this.demoData[i-2]?.km || 0)
+        tempTotCount = tempTotCount + thisCount - (this.demoData[i-2]?.count || 0)
+        if(i>=2){
+          this.LineChart.chartdata.datasets[0].data.push((tempTotKm/tempTotCount).toFixed(2))
+          this.MixChart.chartdata.datasets[0].data.push((tempTotKm/tempTotCount).toFixed(2))
+        }
+        if(getMonth == 12){
+          thisYear ++
         }
       }
     },
