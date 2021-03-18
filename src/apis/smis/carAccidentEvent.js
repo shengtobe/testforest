@@ -2,7 +2,8 @@
 
 import axios from '@/apis/axiosSetting'
 
-// 搜尋
+// -------------- 行車事故事件 -------------
+// 搜尋列表
 export function fetchList(data) { return axios(
     {
         url: '/sms/event/queryarray',
@@ -60,6 +61,44 @@ export function updateFile(data) { return axios(
 export function deleteFile(data) { return axios(
     {
         url: '/sms/event/file/delete',
+        method: 'delete',
+        data,
+    }
+)}
+
+
+// -------------- 人員傷亡名單 -------------
+// 搜尋列表
+export function hurtFetchList(data) { return axios(
+    {
+        url: '/sms/event/hurt_people/query',
+        method: 'post',
+        data,
+    }
+)}
+
+// 新增
+export function hurtCreateData(data) { return axios(
+    {
+        url: '/sms/event/hurt_people/create',
+        method: 'post',
+        data,
+    }
+)}
+
+// 更新
+export function hurtUpdateData(data) { return axios(
+    {
+        url: '/sms/event/hurt_people/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 刪除
+export function hurtDeleteData(data) { return axios(
+    {
+        url: '/sms/event/hurt_people/delete',
         method: 'delete',
         data,
     }

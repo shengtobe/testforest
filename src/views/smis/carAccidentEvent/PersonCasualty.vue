@@ -2,7 +2,7 @@
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
         人員傷亡名單
-        <span class="mx-3">(事故事件編號：{{ routeId }})</span>
+        <span class="mx-3">(事故事件編號：{{ id }})</span>
 
         <v-btn small dark fab color="indigo darken-3" class="mb-1"
             @click="dialogShow = true"
@@ -184,9 +184,26 @@
                         </v-dialog>
                     </template>
 
+                    <template v-slot:item.info="{ item }">
+                        <v-btn fab small dark color="teal"
+                            @click="view(item)"
+                        >
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.action="{ item }">
-                        <a href="javascript:;" @click="editItem(item)">編輯</a><br>
-                        <a href="javascript:;" @click="deleteItem(item)">刪除</a>
+                        <v-btn fab small color="primary" class="mr-2"
+                            @click="editItem(item)"
+                        >
+                            <v-icon>mdi-pen</v-icon>
+                        </v-btn>
+
+                        <v-btn fab small color="error"
+                            @click="deleteItem(item)"
+                        >
+                            <v-icon>mdi-delete</v-icon>
+                        </v-btn>
                     </template>
 
                     <template v-slot:footer="footer">
@@ -202,7 +219,7 @@
 
         <v-col cols="12" class="mt-5 text-center">
             <v-btn dark class="mr-3"
-                :to="`/smis/car-accident-event/${routeId}/show`"
+                :to="`/smis/car-accident-event/${id}/show`"
             >回上層</v-btn>
 
             <v-btn dark color="success"
@@ -210,33 +227,81 @@
             >設為無人傷亡</v-btn>
         </v-col>
     </v-row>
+
+    <!-- 個人資料 dialog -->
+    <v-dialog v-model="infoShow" max-width="500px">
+        <v-card>
+            <v-card-title class="yellow darken-1 px-4 py-1">
+                詳細資料
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="infoShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+
+            <div class="px-4 py-3">
+                <v-row no-gutters>
+                    <v-col cols="12">
+                        <v-icon class="mr-1 mb-1">mdi-human-male-female</v-icon>
+                        姓別： {{ info.PeopleSex }}
+                    </v-col>
+                
+                    <v-col cols="12">
+                        <v-divider class="mt-2 mb-3"></v-divider>
+                    </v-col>
+
+                    <v-col cols="12">
+                        <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>
+                        生日： {{ info.convert_birthDate }}
+                    </v-col>
+
+                    <v-col cols="12">
+                        <v-divider class="mt-2 mb-3"></v-divider>
+                    </v-col>
+
+                    <v-col cols="12">
+                        <v-icon class="mr-1 mb-1">mdi-phone-classic</v-icon>
+                        電話： {{ info.PeoplePhone }}
+                    </v-col>
+                    
+                    <v-col cols="12">
+                        <v-divider class="mt-2 mb-3"></v-divider>
+                    </v-col>
+
+                    <v-col cols="12">
+                        <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>
+                        地址： {{ info.PeopleAddress }}
+                    </v-col>
+                </v-row>
+            </div>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { hurtFetchList, hurtCreateData, hurtUpdateData, hurtDeleteData } from '@/apis/smis/carAccidentEvent'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
-        routeId: '',
         valid: true,  // dialog 表單是否驗證
         dialogShow: false,
         isDialogLoading: false,  // dialog 是否讀取中
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '75px' },
-            { text: '性別', value: 'sex', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '75px' },
-            { text: '生日', value: 'birthday', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110px' },
-            { text: '住址', value: 'addr', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150px' },
-            { text: '電話', value: 'phone', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110px' },
-            { text: '傷亡種類', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
-            { text: '收治醫院', value: 'hospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80px' },
-            { text: '賠償金額', value: 'money', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
-            { text: '保險註記', value: 'insurance', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110px' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
-            { text: '編輯刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70px' },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 75 },
+            { text: '個人資料', value: 'info', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '傷亡種類', value: 'HurtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '收治醫院', value: 'SetHospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '賠償金額', value: 'Reparation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '保險註記', value: 'SafeRemark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
         ],
         editedIndex: -1,
         editedItem: {},
@@ -253,19 +318,20 @@ export default {
             note: '',
         },
         dateMenuShow: false,  // 日期選單是否顯示
+        infoShow: false,  // 個人資料 dialog 是否顯示
+        info: {},  // 個人資料
     }),
     components: { Pagination },
     watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
         // dialogShow 是否顯示
         dialogShow (val) {
             val || this.close()
         },
     },
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         formTitle () {
             return (this.editedIndex == -1) ? '新增資料' : '編輯資料'
         },
@@ -277,30 +343,44 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
-            this.routeId = this.$route.params.id
             this.editedItem = { ...this.defaultItem }
+            this.pageOpt.page = 1  // 頁碼初始化
+            this.fetchList()
+        },
+        // 向後端查詢資料
+        fetchList() {
+            this.chLoadingShow()
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 1,
-                        name: '王小明',
-                        sex: '男',
-                        birthday: '1962-03-11',
-                        addr: '高雄市三民區中正路180巷9號3樓-3',
-                        phone: '0987654321',
-                        type: '輕傷',
-                        hospital: '高雄長庚醫院',
-                        money: 50000,
-                        insurance: '由勞工保險理賠',
-                        note: '住院3天',
-                    },
-                ]
-
+            hurtFetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_HurtPeopleList',  // DB table
+                KeyItem: [
+                    { tableColumn: 'AccidentCode', columnValue: this.id },  // 行車事故事件編號
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'AccidentCode',
+                    'FlowId',
+                    'PeopleName',
+                    'PeopleSex',
+                    'PeopleDate',
+                    'PeopleAddress',
+                    'PeoplePhone',
+                    'HurtType',
+                    'SetHospital',
+                    'Reparation',
+                    'SafeRemark',
+                    'Remark',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                // console.log(JSON.parse(res.data.order_list))
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -318,11 +398,23 @@ export default {
             if (confirm(`你確定要刪除「${item.name}」嗎?`)) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.tableItems.splice(index, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                hurtDeleteData({
+                    AccidentCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt.files.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // dialog 關閉
@@ -340,13 +432,65 @@ export default {
 
                 setTimeout(() => {
                     if (this.editedIndex > -1) {
-                        // 向後端編輯
-                        Object.assign(this.tableItems[this.editedIndex], this.editedItem)
-                        this.chMsgbar({ success: true, msg: '編輯成功'})
+                        // ----------------- 編輯 ----------------- 
+                        // Object.assign(this.tableItems[this.editedIndex], this.editedItem)
+                        // this.chMsgbar({ success: true, msg: '編輯成功'})
+
+                        hurtUpdateData({
+                            AccidentCode: this.id,  // 行車事故事件編號
+                            FindDDay: this.ipt.date,  // 發現日期
+                            FindDHour: this.ipt.hour,  //發現時間 (小時)
+                            FindDMin: this.ipt.min,  // 發現時間 (分)
+                            FindLine: this.ipt.location,  // 發現地點
+                            FindKLine: this.ipt.locationK,  // 發現地點K路段
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                        }).then(res => {
+                            if (res.data.ErrorCode == 0) {
+                                this.chMsgbar({ success: true, msg: '更新成功' })
+                            } else {
+                                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                                this.$router.push({ path: '/error' })
+                            }
+                        }).catch(err => {
+                            this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                        }).finally(() => {
+                            this.isDialogLoading = this.dateMenuShow = false
+                        })
                     } else {
-                        // 向後端新增
-                        this.tableItems.push(this.editedItem)
-                        this.chMsgbar({ success: true, msg: '新增成功'})
+                        // ----------------- 新增 ----------------- 
+                        // this.tableItems.push(this.editedItem)
+                        // this.chMsgbar({ success: true, msg: '新增成功'})
+
+                        hurtCreateData({
+                            AccidentCode: this.id,  // 事故事件編號
+                            PeopleName: this.editedItem.name,  // 姓名
+                            PeopleSex: this.editedItem.sex,  // 性別
+                            PeopleDate: this.editedItem.birthday,  // 生日
+                            PeopleAddress: this.editedItem.addr,  // 住址
+                            PeoplePhone: this.editedItem.phone,  // 電話
+                            HurtType: this.editedItem.type,  // 傷亡種類
+                            SetHospital: this.editedItem.hospital,  // 收治醫院
+                            Reparation: this.editedItem.money,  // 賠償金額
+                            SafeRemark: this.editedItem.insurance,  // 保險註記
+                            Remark: this.editedItem.note,  // 備註
+                            NoHurtPeople: 'F',  // 是否無傷亡
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                        }).then(res => {
+                            if (res.data.ErrorCode == 0) {
+                                this.fetchList()  // 重新查詢資料
+                                this.chMsgbar({ success: true, msg: '新增成功' })
+                                this.editedItem = { ...this.defaultItem }
+                            } else {
+                                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                                this.$router.push({ path: '/error' })
+                            }
+                        }).catch(err => {
+                            this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
+                        }).finally(() => {
+                            this.isDialogLoading = this.dateMenuShow = false
+                        })
                     }
                     this.close()
                     this.isDialogLoading = false
@@ -366,6 +510,11 @@ export default {
                     this.chLoadingShow()
                 }, 1000)
             }
+        },
+        // 顯示個人資料
+        view(item) {
+            this.infoShow = true
+            this.info = { ...item }
         },
     },
     created() {
