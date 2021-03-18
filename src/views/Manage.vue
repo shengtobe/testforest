@@ -76,6 +76,14 @@
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/monitor/rainfall-monitor">雨量監測</v-list-item>
                                 <v-divider></v-divider>
+
+                                <!-- 管理系統 -->
+                                <v-list-item :class="titleColor1" disabled>
+                                    <strong class="black--text">管理系統</strong>
+                                </v-list-item>
+                                <v-divider></v-divider>
+                                <v-list-item @click="showNav = false" to="/access">功能清單權限管理</v-list-item>
+                                <v-divider></v-divider>
                             </v-list>
                         </v-card>
                     </v-col>

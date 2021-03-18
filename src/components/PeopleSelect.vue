@@ -40,11 +40,13 @@ export default {
       userData: state => state.userData,  // 使用者基本資料
     }),
     selectName:function() {
-      console.log(1111)
-      this.inputName = this.inputValue.map(element=>{
-        console.log(this.people.find(el=>el.value==element))
-        return this.people.find(el=>el.value==element)?.text||""
-      })
+      if(Array.isArray(this.inputValue)){
+          this.inputName = this.inputValue.map(element=>{
+          return this.people.find(el=>el.value==element)?.text||""
+        })
+      }else{
+         this.inputName = this.people.find(el=>el.value==this.inputValue)?.text||""
+      }
       return this.inputName
     }
 	},
