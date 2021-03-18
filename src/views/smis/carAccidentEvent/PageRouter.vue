@@ -51,7 +51,12 @@ export default {
                         
                         // 組合發現地點文字
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
-                        findLocationText += (res.data.FindLine == 'other')? ` (${res.data.FindLineOther})` : ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`
+                        
+                        if (['l1', 'l2', 'l3', 'l4'].includes(res.data.FindLine)) {
+                            findLocationText += ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`  // 本線、祝山線、眠月線、水山線
+                        } else if(res.data.FindLine == 'other') {
+                            findLocationText += ` (${res.data.FindLineOther})`  // 其他地點
+                        }
 
                         // 組合路段型態文字
                         let loadTypeArr = res.data.RoadType

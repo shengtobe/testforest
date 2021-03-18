@@ -90,13 +90,109 @@
     </v-row>
 
     <!-- 發現地點 -->
-    <LocationSelect
-        @chLocation="setLocation"
-        :location="ipt.location"
-        :locationK="ipt.locationK"
-        :locationM="ipt.locationM"
-        :locationOther="ipt.locationOther"
-    />
+    <h3 class="mb-1 ml-2">
+        <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發現地點
+    </h3>
+
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3">
+        <!-- 路線 -->
+        <h3 class="mb-1 pt-2">路線</h3>
+        <v-row no-gutters>
+            <v-col cols="12" md="5">
+                <v-radio-group row v-model="ipt.location" class="pa-0">
+                    <v-radio label="本線" color="success" value="l1" class="mb-2"></v-radio>
+                    <v-radio label="祝山線" color="success" value="l2" class="mb-2"></v-radio>
+                    <v-radio label="眠月線" color="success" value="l3" class="mb-2"></v-radio>
+                    <v-radio label="水山線" color="success" value="l4" class="mb-2"></v-radio>
+                </v-radio-group>
+            </v-col>
+
+            <v-col cols="12" md="6">
+                <v-row no-gutters align="center">
+                    <v-col cols="4" sm="3">
+                        <v-text-field
+                            v-model.trim="ipt.locationK"
+                            solo
+                            placeholder="ex：12"
+                            hide-details
+                        ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="2" sm="1" class="text-center font-weight-bold">K+</v-col>
+
+                     <v-col cols="4" sm="3">
+                        <v-text-field
+                            v-model.trim="ipt.locationM"
+                            solo
+                            placeholder="ex：345"
+                            hide-details
+                        ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="2" sm="1" class="text-center font-weight-bold">M</v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+
+        <!-- 車站 -->
+        <h3 class="mb-1 pt-2">車站</h3>
+
+        <v-radio-group row v-model="ipt.location" class="pa-0">
+            <v-radio label="嘉義" color="success" value="t1" class="mb-2"></v-radio>
+            <v-radio label="北門" color="success" value="t2" class="mb-2"></v-radio>
+            <v-radio label="鹿滿" color="success" value="t3" class="mb-2"></v-radio>
+            <v-radio label="竹崎" color="success" value="t4" class="mb-2"></v-radio>
+            <v-radio label="木屐寮" color="success" value="t4-2" class="mb-2"></v-radio>
+            <v-radio label="樟腦寮" color="success" value="t5" class="mb-2"></v-radio>
+            <v-radio label="獨立山" color="success" value="t6" class="mb-2"></v-radio>
+            <v-radio label="梨園寮" color="success" value="t7" class="mb-2"></v-radio>
+            <v-radio label="交力坪" color="success" value="t8" class="mb-2"></v-radio>
+            <v-radio label="水社寮" color="success" value="t9" class="mb-2"></v-radio>
+            <v-radio label="奮起湖" color="success" value="t10" class="mb-2"></v-radio>
+            <v-radio label="多林" color="success" value="t11" class="mb-2"></v-radio>
+            <v-radio label="十字路" color="success" value="t12" class="mb-2"></v-radio>
+            <v-radio label="屏遮那" color="success" value="t13" class="mb-2"></v-radio>
+            <v-radio label="第一分道" color="success" value="t14" class="mb-2"></v-radio>
+            <v-radio label="二萬平" color="success" value="t15" class="mb-2"></v-radio>
+            <v-radio label="神木" color="success" value="t16" class="mb-2"></v-radio>
+            <v-radio label="阿里山" color="success" value="t17" class="mb-2"></v-radio>
+            <v-radio label="沼平" color="success" value="t18" class="mb-2"></v-radio>
+            <v-radio label="十字分道" color="success" value="t19" class="mb-2"></v-radio>
+            <v-radio label="對高岳" color="success" value="t20" class="mb-2"></v-radio>
+            <v-radio label="祝山" color="success" value="t21" class="mb-2"></v-radio>
+            <v-radio label="塔山" color="success" value="t22" class="mb-2"></v-radio>
+            <v-radio label="眠月" color="success" value="t23" class="mb-2"></v-radio>
+            <v-radio label="石猴" color="success" value="t24" class="mb-2"></v-radio>
+            <v-radio label="水山" color="success" value="t25" class="mb-2"></v-radio>
+        </v-radio-group>
+
+        <!-- 廠庫 -->
+        <h3 class="mt-2">廠庫</h3>
+
+        <v-radio-group row v-model="ipt.location" class="pa-0">
+            <v-radio label="嘉義車庫" color="success" value="g1" class="mb-2"></v-radio>
+            <v-radio label="阿里山車庫" color="success" value="g2" class="mb-2"></v-radio>
+            <v-radio label="修理工廠" color="success" value="factory" class="mb-2"></v-radio>
+        </v-radio-group>
+
+        <!-- 其他 -->
+        <h3 class="mt-2">其他</h3>
+        <v-row no-gutters class="d-flex">
+            <v-col cols="12" sm="2">
+                <v-radio-group row v-model="ipt.location" class="pa-0">
+                    <v-radio label="其他" color="success" value="other" class="mb-2"></v-radio>
+                </v-radio-group>
+            </v-col>
+
+            <v-col cols="12" sm="5" class="ml-md-n12">
+                <v-text-field
+                    v-model.trim="ipt.locationOther"
+                    solo
+                    placeholder="請輸入地點"
+                ></v-text-field>
+            </v-col>
+        </v-row>
+    </v-sheet>
 
     <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
@@ -452,22 +548,16 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { evtTypes, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '@/assets/js/smisData'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
-import LocationSelect from '@/components/smis/LocationSelect.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import { createData, fetchOne, updateData } from '@/apis/smis/carAccidentEvent'
+import { createData, fetchOne, updateData, updateFile, deleteFile } from '@/apis/smis/carAccidentEvent'
 
 export default {
     props: ['id'],  //路由參數
     data: () => ({
         routeId: '',  // 編號
         isEdit: false,  // 是否為編輯狀態
-        ipt: {  // 給地點組件的預設值要先設
-            location: 'l1',  // 發現地點
-            locationK: '',  // 路線k
-            locationM: '',　// 路線m
-            locationOther: '',　// 其他地點
-        },
+        ipt: {},
         defaultIpt: {
             subject: '',  // 事故摘要
             date: new Date().toISOString().substr(0, 10),  // 發現日期
@@ -519,7 +609,6 @@ export default {
         showFiles: [],  // 要顯示的縮圖
     }),
     components: {
-        LocationSelect,
         UploadFileAdd,
         UploadFileEdit,
     },
@@ -558,57 +647,73 @@ export default {
                 this.chLoadingShow()
                 this.isEdit = true
 
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        date: '2017-01-25',  // 發現日期
-                        hour: '15',  // 發現時間(小時)
-                        min: '56',  // 發現時間(分)
-                        location: 'l1',  // 發現地點
-                        locationK: 20,  // 路線k
-                        locationM: 445,　// 路線m
-                        locationOther: '',　// 其他地點
-                        evtType: 'M2',  // 事故類型
-                        eqLoss: 'APC3 車廂轉向架受損',  // 設備受損情形
-                        serviceShock: '影響列車計2列次',  // 運轉影響情形
-                        review: '新增行車事故事件本事故事發後，鐵道局於107年3月5日啟動專案調查，並於同月8、9日辦理本事故專案調查簡報討論、文件檢視及現場勘查 。同年5月3日召開本事故專案調查工作會議。最終於同年8月15日召開交通部鐵路行車事故調查小組第24次會議，確認本事故專案調查結果。',  // 檢討過程
-                        reason: "<直接原因>\n事故路段因氣候易潮濕，加上路基排水狀況不佳 造成該路段有多處噴泥現象， 當鋼軌受列車重壓下沉致軌枕沉 陷、鋼軌產生前後高低不整之現象，在 列車於動態行駛下易致鋼軌單邊下沉產生平面性扭曲，使車輪浮動爬上出軌。\n<間接原因>\n部分路段道碴存有厚度不足加上列車反覆作用下，致使路基土壤細粒料因壓力而循道碴間隙上升， 使路基出現鬆動現象。\n<其他因素>\n有關天候、車輛、人員及運轉等部分，經檢討尚無涉事故原因。",  // 原因分析
-                        note: '本事故由鐵道局( 鐵路營運監理小組) 及 5位具軌道、力學、車輛及營運等專業之外聘專案委員組成團隊進行專案調查，並由本部鐵路行車事故調查小組 定期委員開會確認調查結果。', // 備註說明
-                        files: [
-                            { id: 11, fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                            { id: 22, fileName: '123.docx', link: '/demofile/123.docx' },
-                        ],
+                fetchOne({
+                    AccidentCode: this.id,  // 事故事件編號 (從路由參數抓取)
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
+                            this.$router.push({ path: '/404' })
+                        } else {
+                            this.setInitDate(res.data)
+                        }
+                    } else {
+                        // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
-                    
-                    this.setInitDate(obj)
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，資料讀取失敗')
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
-            
+                })
             } 
-        },
-        // 設定發現地點
-        setLocation(payload) {
-            this.ipt.location = payload.location
-            this.ipt.locationK = payload.locationK
-            this.ipt.locationM = payload.locationM
-            this.ipt.locationOther = payload.locationOther
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            this.ipt.date = obj.date  // 發現日期
-            this.ipt.hour = obj.hour  // 發現時間(小時)
-            this.ipt.min = obj.min  // 發現時間(分)
-            this.ipt.location = obj.location  // 發現地點
-            this.ipt.locationK = obj.locationK  // 路線k
-            this.ipt.locationM = obj.locationM　// 路線m
-            this.ipt.locationOther = obj.locationOther　// 其他地點
-            this.ipt.evtType = obj.evtType  // 事故類型
-            this.ipt.eqLoss = obj.eqLoss  // 設備受損情形
-            this.ipt.serviceShock = obj.serviceShock  // 運轉影響情形
-            this.ipt.review = obj.review  // 檢討過程
-            this.ipt.reason = obj.reason  // 原因分析
-            this.ipt.note = obj.note // 備註說明
-            this.ipt.files = [ ...obj.files ]  // 附件檔案
+            this.ipt.subject = obj.ReportTitle  // 事故摘要
+            this.ipt.date = obj.FindDDay  // 發現日期
+            this.ipt.hour = obj.FindDHour  // 發現時間(小時)
+            this.ipt.min = obj.FindDMin  // 發現時間(分)
+            this.ipt.climate = obj.EventWeather  // 天候
+            this.ipt.evtType = obj.AccidentType // 事故類型
+            this.ipt.location = obj.FindLine // 發現地點
+            this.ipt.locationK = obj.FindKLine // 路線k
+            this.ipt.locationM = obj.FindMLine // 路線m
+            this.ipt.locationOther = obj.FindLineOther // 其他地點
+            this.ipt.slope = obj.RoadSlope  // 路線坡度
+            this.ipt.curve = obj.CurveRadius  // 曲線半徑
+            this.ipt.loadType = [ ...obj.RoadType ]  // 路段型態
+            this.ipt.loadTypeOther = obj.RoadTypeElse  // 路段型態其他內容
+            this.ipt.aroundEnv = [ ...obj.Surround ]  // 周邊環境
+            this.ipt.aroundEnvOther = obj.SurroundElse  // 周邊環境其他內容
+            this.ipt.fenceEq = [ ...obj.RailwayDevice ]  // 鐵路設施設備及圍籬之設置
+            this.ipt.fenceEqOther = obj.RailwayDeviceElse  // 鐵路設施設備及圍籬之設置-其他的內容
+            this.ipt.speedLimit = obj.IncidentLimit  // 事發速限
+            this.ipt.carSpeed = obj.IncidentSpeed  // 事發車速
+            this.ipt.runPlan = obj.CarOperation  // 列車運行計劃及運轉情形
+            this.ipt.relatedPerson = obj.TalkSituation  // 關係者之職務、資歷、操作情形及訪談紀要
+            this.ipt.fieldRegulations = obj.OnsiteSituation  // 現場作業規定與落實情形
+            this.ipt.accidentEq = obj.CarFollowUp  // 事故設施設備或車輛之型式、功能運作、檢修養護及後續檢測情形
+            this.ipt.fieldMeasure = obj.OnsiteMeasure  // 現場相關量測
+            this.ipt.naturalDisaster = obj.NaturalInfo  // 天然災害偵測資訊
+            this.ipt.behaviorDesc = obj.PeopleMemo  // 民眾或旅客行為說明
+            this.ipt.eqLoss = obj.DeviceLost  // 設備受損情形
+            this.ipt.serviceShock = obj.OperationLost // 運轉影響情形
+            this.ipt.review = obj.ReviewProcess // 檢討過程
+            this.ipt.reason = obj.CauseAnaly // 原因分析
+            this.ipt.note = obj.RemarkDesp // 備註說明
+            this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
+            this.ipt.accidentFactors1 = obj.SaftyCodeLv1  // 第一層因素
+            // 因為二、三層有 watch 動作，所以加上延遲避過 watch
+            setTimeout(() => {
+                this.ipt.accidentFactors2 = obj.SaftyCodeLv2  // 第二層因素
+            }, 300)
+            setTimeout(() => {
+                this.ipt.accidentFactors3 = obj.SaftyCodeLv3  // 第三層因素
+            }, 300)
+            
         },
         // 送出
         save() {
@@ -616,40 +721,58 @@ export default {
 
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
-                // updateData({
-                //     EndangerCode: this.id,  // 危害編號
-                //     EndangerDesp: this.ipt.desc,  // 危害說明
-                //     OperationMode: this.ipt.mode,  //營運模式
-                //     EndangerReason: this.ipt.reason,  // 危害直接成因
-                //     EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
-                //     Remark: this.ipt.note,  // 備註
-                //     EndangerDepart: this.ipt.depart,  // 危害權責部門
-                //     RiskSerious: this.ipt.serious,  // 風險嚴重性
-                //     RiskFreq: this.ipt.frequency,  // 風險頻率
-                //     RiskLevel: '',  // 風險等級
-                //     DeriveAccident: this.ipt.accidents,  // 衍生事故
-                //     EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
-                //     EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
-                //     EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
-                //     ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
-                //     ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
-                //     DeviceDepart: '',  // 控制措施權責部門
-                //     ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
-                //     ProcCount: chooseControlData,  // 已選控制措施清單
-                //     ClientReqTime: getNowFullTime(),  // client 端請求時間
-                //     OperatorID: this.userData.UserId,  // 操作人id
-                // }).then(res => {
-                //     if (res.data.ErrorCode == 0) {
-                //         this.chMsgbar({ success: true, msg: '更新成功' })
-                //     } else {
-                //         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                //         this.$router.push({ path: '/error' })
-                //     }
-                // }).catch(err => {
-                //     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
-                // }).finally(() => {
-                //     this.chLoadingShow()
-                // })
+                updateData({
+                    AccidentCode: this.id,  // 行車事故事件編號
+                    FindDDay: this.ipt.date,  // 發現日期
+                    FindDHour: this.ipt.hour,  //發現時間 (小時)
+                    FindDMin: this.ipt.min,  // 發現時間 (分)
+                    FindLine: this.ipt.location,  // 發現地點
+                    FindKLine: this.ipt.locationK,  // 發現地點K路段
+                    FindMLine: this.ipt.locationM,  // 發現地點M路段
+                    FindLineOther: this.ipt.locationOther,  // 發現地點其他路段
+                    ReportTitle: this.ipt.subject,  // 事故摘要
+                    AccidentType: this.ipt.evtType,  // 事故類型
+                    EventWeather: this.ipt.climate,  // 氣候
+                    RoadSlope: this.ipt.slope,  // 路線坡度
+                    CurveRadius: this.ipt.curve,  // 曲線半徑
+                    RoadType: this.ipt.loadType,  // 路段型態
+                    RoadTypeElse: this.ipt.loadTypeOther,  // 路段型態(其他)
+                    Surround: this.ipt.aroundEnv,  // 周邊環境
+                    SurroundElse: this.ipt.aroundEnvOther,  // 周邊環境(其他)
+                    RailwayDevice: this.ipt.fenceEq,  // 鐵路設施設備及圍籬之設置
+                    RailwayDeviceElse: this.ipt.fenceEqOther,  // 鐵路設施設備及圍籬之設置(其他)
+                    IncidentLimit: this.ipt.speedLimit,  // 事發速限
+                    IncidentSpeed: this.ipt.carSpeed,  // 事發車速
+                    CarOperation: this.ipt.runPlan,  // 列車運行計劃及運轉情形
+                    TalkSituation: this.ipt.relatedPerson,  // 關係者之職務、資歷、操作情形及訪談紀要
+                    OnsiteSituation: this.ipt.fieldRegulations,  // 現場作業規定與落實情形
+                    CarFollowUp: this.ipt.accidentEq,  // 事故設施設備或車輛之型式、功能運作、檢修養護及後續檢測情形
+                    OnsiteMeasure: this.ipt.fieldMeasure,  // 現場相關量測
+                    NaturalInfo: this.ipt.naturalDisaster,  // 天然災害偵測資訊
+                    PeopleMemo: this.ipt.behaviorDesc,  // 民眾或旅客行為說明
+                    DeviceLost: this.ipt.eqLoss,  // 設備損失
+                    OperationLost: this.ipt.serviceShock,  // 運轉影響情形
+                    FixProcess: '',  // 處置過程(預留的欄位，目前用不到)
+                    ReviewProcess: this.ipt.review,  // 檢討過程
+                    CauseAnaly: this.ipt.reason,  // 原因分析
+                    RemarkDesp: this.ipt.note,  // 備註說明
+                    SaftyCodeLv1: this.ipt.accidentFactors1,  // 安全績效指標第一層代碼
+                    SaftyCodeLv2: this.ipt.accidentFactors2,  // 安全績效指標第二層代碼
+                    SaftyCodeLv3: this.ipt.accidentFactors3,  // 安全績效指標第三層代碼
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '更新成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
             } else {
                 // ---------- 新增時---------- 
                 createData({
@@ -742,7 +865,7 @@ export default {
                     let fileArr = [{ FileName: file.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }]
                     
                     updateFile({
-                        ProcCode: this.id,  // 措施編號
+                        AccidentCode: this.id,  // 措施編號
                         FileCount: fileArr,  // 新檔案
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
@@ -751,7 +874,7 @@ export default {
                             this.chMsgbar({ success: true, msg: '上傳成功' })
                             // 把檔案資料寫入畫面中
                             this.ipt.files = [ ...res.data.FileCount.map(item => ({
-                                fileName: item.FileName,
+                                FileName: item.FileName,
                                 link: item.FilePath,
                             }))]
                         } else {
@@ -770,10 +893,10 @@ export default {
         deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
-
+                
                 deleteFile({
-                    ProcCode: this.id,  // 編號
-                    FileName: this.ipt.files[idx].fileName,  // 檔案名稱
+                    AccidentCode: this.id,  // 編號
+                    FileSaveName: this.ipt.files[idx].FileName,  // 檔案名稱
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {

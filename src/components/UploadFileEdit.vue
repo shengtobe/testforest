@@ -32,12 +32,12 @@
             cols="12"
             sm="6"
             v-for="(item, i) in fileList"
-            :key="item.fileName"
+            :key="(item.fileName == undefined)? item.FileName : item.fileName"
         >
             <v-row class="mx-2 elevation-4">
                 <v-col cols="12" md="8" class="white">
                     <v-icon>mdi-file-document</v-icon>
-                    {{ item.fileName }}
+                    {{ (item.fileName == undefined)? item.FileName : item.fileName }}
                 </v-col>
 
                 <v-col cols="12" md="4" class="white text-right">
@@ -45,8 +45,8 @@
                         dark
                         small
                         color="teal"
-                        :href="item.link"
-                        :download="item.fileName"
+                        :href="(item.link == undefined)? item.FileFullPath : item.link"
+                        :download="(item.fileName == undefined)? item.FileName : item.fileName"
                         class="mr-3"
                     >下載</v-btn>
 

@@ -46,3 +46,21 @@ export function deleteData(data) { return axios(
         data,
     }
 )}
+
+// 檔案更新(上傳)
+export function updateFile(data) { return axios(
+    {
+        url: '/sms/event/file/create',
+        method: 'post',
+        data,
+    }
+)}
+
+// 檔案刪除
+export function deleteFile(data) { return axios(
+    {
+        url: '/sms/event/file/delete',
+        method: 'delete',
+        data,
+    }
+)}

@@ -119,12 +119,6 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        }
-    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -133,7 +127,6 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log(obj)
             this.id = obj.AccidentCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
