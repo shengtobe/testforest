@@ -222,7 +222,7 @@
                 :to="`/smis/car-accident-event/${id}/show`"
             >回上層</v-btn>
 
-            <v-btn dark color="success"
+            <v-btn dark color="brown"
                 @click="noDeath"
             >設為無人傷亡</v-btn>
         </v-col>
@@ -406,16 +406,17 @@ export default {
         // 刪除記錄
         deleteItem (item) {
             let index = this.tableItems.indexOf(item)
-            if (confirm(`你確定要刪除「${item.name}」嗎?`)) {
+            if (confirm(`你確定要刪除此筆資料嗎?`)) {
                 this.chLoadingShow()
 
                 hurtDeleteData({
-                    AccidentCode: this.id,  // 編號
+                    AccidentCode: this.id,  // 行車事故事件編號
+                    FlowId: item.FlowId,  // 編輯中的資料的編號
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.ipt.files.splice(idx, 1)
+                        this.tableItems.splice(index, 1)
                         this.chMsgbar({ success: true, msg: '刪除成功' })
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -522,14 +523,28 @@ export default {
         },
         // 設為無人傷亡
         noDeath() {
-            if (confirm(`你確定無人傷亡嗎?  (確定後會一併刪除現有的傷亡資料)`)) {
+            if (confirm(`你確定要設為無人傷亡嗎?  (確定後會刪除所有人員傷亡資料)`)) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.tableItems = [ ...[] ]
-                    this.chMsgbar({ success: true, msg: '已設為無人傷亡'})
+                hurtCreateData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    NoHurtPeople: 'T',  // 是否無傷亡
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.tableItems = [ ...[]]
+                        this.chMsgbar({ success: true, msg: '設定成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，設定失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                    this.close()
+                })
             }
         },
         // 顯示個人資料
