@@ -21,10 +21,11 @@ import { fetchOrganization } from '@/apis/organization'
 /*
   isMuti: true=>選多人，傳入值必須是string array
           false=>選單人，傳入值必須是string
+  outdata: 直接從commonFun裡面的getOrg拉資料進來，避免同一頁連續讀取重複資料的問題
   可以直接綁定原生事件
 */
 export default {
-	props: ['value','isMuti','disabled'],
+	props: ['value','isMuti','disabled','outdata'],
 	data: () => ({
     orgList:[],
     orgIsLoading:false,
@@ -33,7 +34,13 @@ export default {
     inputName:'',
 	}),
 	mounted() {
-    this._getOrg()
+    if(outData){
+      this.orgList = this.outdata.orgList
+      this.people = this.outdata.people
+      this.inputValue = this.value
+    }else{
+      this._getOrg()
+    }
 	},
 	computed: {
 		...mapState ('user', {
