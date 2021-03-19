@@ -240,13 +240,16 @@ export default {
             borderColor: 'red',
             data: [],
             lineTension: 0.2,
-            xAxisID: "1"
+            xAxisID: "1",
+            yAxesGroup:"1",
+            type:"line"
           },
           {
             borderWidth: '1',
             barPercentage: 1,
             data: [],
             xAxisID: "2",
+            yAxesGroup:"2",
             type:"bar"
           }
         ]
@@ -267,23 +270,27 @@ export default {
               return context.dataset.borderColor
             },
             formatter: function(value, context) {
-              return '';
+              return (context.dataset.type=="line")?'':value;
             }
           },
         },
         scales: {
-          yAxes: [{
-            scaleLabel:{
-              display: true,
-              labelString: 'MKBF',
-            },
-            ticks: {
-              suggestedMin: 0,
+          yAxes: [
+            {
+              scaleLabel:{
+                display: true,
+                labelString: 'MKBF',
+              },
+              ticks: {
+                suggestedMin: 0,
+              }
             }
-          }],
+          ],
           xAxes: [
             {
+              position: 'top',
               id: "1",
+              name:"1",
               labels:[],
               scaleLabel:{
                 display: false,
@@ -293,7 +300,10 @@ export default {
               }
             },
             {
+              
+              display: true,
               id: "2",
+              name:"2",
               labels:[],
               scaleLabel:{
                 display: false,
@@ -383,7 +393,7 @@ export default {
       }
       thisYear = today.getFullYear() - 3  //先抓三年前
       for(let j = 36; j >= 1 ; j--){
-        let getMonth =((thisMonth - j)<=0)?12 - Math.abs(thisMonth - j)%12:j
+        let getMonth =((thisMonth - j)<=0)?12 - Math.abs(thisMonth - j)%12:thisMonth - j
         if(getMonth > 12){
           thisYear+=1
         }
@@ -424,7 +434,7 @@ export default {
           tempCount += thisCount
           if(count == 3){
             this.BarChart.chartdata.datasets[0].data.push((tempKm/tempCount).toFixed(2))
-            this.MixChart.chartdata.datasets[1].data.push({x:this.MixChart.options.scales.xAxes[1].labels[Math.floor((i-2)/3)],y:(tempKm/tempCount).toFixed(2)})
+            this.MixChart.chartdata.datasets[1].data.push((tempKm/tempCount).toFixed(2))
             tempKm = 0
             tempCount = 0
             count = 1
