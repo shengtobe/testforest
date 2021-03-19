@@ -93,7 +93,7 @@
                                                     </template>
                                                     <v-date-picker
                                                         color="purple"
-                                                        v-model="editedItem.date"
+                                                        v-model="editedItem.birthday"
                                                         @input="dateMenuShow = false"
                                                         locale="zh-tw"
                                                     ></v-date-picker>
@@ -294,7 +294,7 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 75 },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
             { text: '個人資料', value: 'info', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
             { text: '傷亡種類', value: 'HurtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
             { text: '收治醫院', value: 'SetHospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
@@ -374,7 +374,6 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                // console.log(JSON.parse(res.data.order_list))
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -389,7 +388,19 @@ export default {
         // 編輯記錄
         editItem (item) {
             this.editedIndex = this.tableItems.indexOf(item)
-            this.editedItem = Object.assign({}, item)
+            // 指派欄位的值
+            this.editedItem.id = item.FlowId
+            this.editedItem.name = item.PeopleName
+            this.editedItem.sex = item.PeopleSex
+            this.editedItem.birthday = item.convert_birthDate
+            this.editedItem.addr = item.PeopleAddress
+            this.editedItem.phone = item.PeoplePhone
+            this.editedItem.type = item.HurtType
+            this.editedItem.hospital = item.SetHospital
+            this.editedItem.money = item.Reparation
+            this.editedItem.insurance = item.SafeRemark
+            this.editedItem.note = item.Remark
+
             this.dialogShow = true
         },
         // 刪除記錄
@@ -430,71 +441,81 @@ export default {
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.isDialogLoading = true
 
-                setTimeout(() => {
-                    if (this.editedIndex > -1) {
-                        // ----------------- 編輯 ----------------- 
-                        // Object.assign(this.tableItems[this.editedIndex], this.editedItem)
-                        // this.chMsgbar({ success: true, msg: '編輯成功'})
-
-                        hurtUpdateData({
-                            AccidentCode: this.id,  // 行車事故事件編號
-                            FindDDay: this.ipt.date,  // 發現日期
-                            FindDHour: this.ipt.hour,  //發現時間 (小時)
-                            FindDMin: this.ipt.min,  // 發現時間 (分)
-                            FindLine: this.ipt.location,  // 發現地點
-                            FindKLine: this.ipt.locationK,  // 發現地點K路段
-                            ClientReqTime: getNowFullTime(),  // client 端請求時間
-                            OperatorID: this.userData.UserId,  // 操作人id
-                        }).then(res => {
-                            if (res.data.ErrorCode == 0) {
-                                this.chMsgbar({ success: true, msg: '更新成功' })
-                            } else {
-                                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                                this.$router.push({ path: '/error' })
-                            }
-                        }).catch(err => {
-                            this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
-                        }).finally(() => {
-                            this.isDialogLoading = this.dateMenuShow = false
-                        })
-                    } else {
-                        // ----------------- 新增 ----------------- 
-                        // this.tableItems.push(this.editedItem)
-                        // this.chMsgbar({ success: true, msg: '新增成功'})
-
-                        hurtCreateData({
-                            AccidentCode: this.id,  // 事故事件編號
-                            PeopleName: this.editedItem.name,  // 姓名
-                            PeopleSex: this.editedItem.sex,  // 性別
-                            PeopleDate: this.editedItem.birthday,  // 生日
-                            PeopleAddress: this.editedItem.addr,  // 住址
-                            PeoplePhone: this.editedItem.phone,  // 電話
-                            HurtType: this.editedItem.type,  // 傷亡種類
-                            SetHospital: this.editedItem.hospital,  // 收治醫院
-                            Reparation: this.editedItem.money,  // 賠償金額
-                            SafeRemark: this.editedItem.insurance,  // 保險註記
-                            Remark: this.editedItem.note,  // 備註
-                            NoHurtPeople: 'F',  // 是否無傷亡
-                            ClientReqTime: getNowFullTime(),  // client 端請求時間
-                            OperatorID: this.userData.UserId,  // 操作人id
-                        }).then(res => {
-                            if (res.data.ErrorCode == 0) {
-                                this.fetchList()  // 重新查詢資料
-                                this.chMsgbar({ success: true, msg: '新增成功' })
-                                this.editedItem = { ...this.defaultItem }
-                            } else {
-                                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                                this.$router.push({ path: '/error' })
-                            }
-                        }).catch(err => {
-                            this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
-                        }).finally(() => {
-                            this.isDialogLoading = this.dateMenuShow = false
-                        })
-                    }
-                    this.close()
-                    this.isDialogLoading = false
-                }, 1000)
+                if (this.editedIndex > -1) {
+                    // ----------------- 編輯 ----------------- 
+                    hurtUpdateData({
+                        FlowId: this.editedItem.id,  // 編輯中的資料的編號
+                        AccidentCode: this.id,  // 事故事件編號
+                        PeopleName: this.editedItem.name,  // 姓名
+                        PeopleSex: this.editedItem.sex,  // 性別
+                        PeopleDate: this.editedItem.birthday,  // 生日
+                        PeopleAddress: this.editedItem.addr,  // 住址
+                        PeoplePhone: this.editedItem.phone,  // 電話
+                        HurtType: this.editedItem.type,  // 傷亡種類
+                        SetHospital: this.editedItem.hospital,  // 收治醫院
+                        Reparation: this.editedItem.money,  // 賠償金額
+                        SafeRemark: this.editedItem.insurance,  // 保險註記
+                        Remark: this.editedItem.note,  // 備註
+                        NoHurtPeople: 'F',  // 是否無傷亡
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            // 將編輯後的資料更改回表格內
+                            this.tableItems[this.editedIndex].PeopleName = this.editedItem.name
+                            this.tableItems[this.editedIndex].PeopleSex = this.editedItem.sex
+                            this.tableItems[this.editedIndex].convert_birthDate = this.editedItem.birthday
+                            this.tableItems[this.editedIndex].PeopleAddress = this.editedItem.addr
+                            this.tableItems[this.editedIndex].PeoplePhone = this.editedItem.phone
+                            this.tableItems[this.editedIndex].HurtType = this.editedItem.type
+                            this.tableItems[this.editedIndex].SetHospital = this.editedItem.hospital
+                            this.tableItems[this.editedIndex].Reparation = this.editedItem.money
+                            this.tableItems[this.editedIndex].SafeRemark = this.editedItem.insurance
+                            this.tableItems[this.editedIndex].Remark = this.editedItem.note
+                            this.chMsgbar({ success: true, msg: '更新成功' })
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                    }).finally(() => {
+                        this.isDialogLoading = false
+                        this.close()
+                    })
+                } else {
+                    // ----------------- 新增 -----------------
+                    hurtCreateData({
+                        AccidentCode: this.id,  // 事故事件編號
+                        PeopleName: this.editedItem.name,  // 姓名
+                        PeopleSex: this.editedItem.sex,  // 性別
+                        PeopleDate: this.editedItem.birthday,  // 生日
+                        PeopleAddress: this.editedItem.addr,  // 住址
+                        PeoplePhone: this.editedItem.phone,  // 電話
+                        HurtType: this.editedItem.type,  // 傷亡種類
+                        SetHospital: this.editedItem.hospital,  // 收治醫院
+                        Reparation: this.editedItem.money,  // 賠償金額
+                        SafeRemark: this.editedItem.insurance,  // 保險註記
+                        Remark: this.editedItem.note,  // 備註
+                        NoHurtPeople: 'F',  // 是否無傷亡
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.fetchList()  // 重新查詢資料
+                            this.chMsgbar({ success: true, msg: '新增成功' })
+                            this.editedItem = { ...this.defaultItem }
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
+                    }).finally(() => {
+                        this.isDialogLoading = false
+                        this.close()
+                    })
+                }
             } else {
                 alert('有欄位未正確填寫!')
             }
