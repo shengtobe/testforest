@@ -19,11 +19,11 @@
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on }">
-                    <v-text-field v-model.trim="AddData.MaintenanceDay" outlined v-on="on" dense single-line />
+                    <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
                   </template>
                   <v-date-picker
                     color="purple"
-                    v-model="AddData.MaintenanceDay"
+                    v-model="zs"
                     @input="MaintenanceDay = false"
                     locale="zh-tw"
                   />
@@ -32,16 +32,16 @@
               <v-col cols="12" sm="3">
                 <h3 class="mb-1">橋梁編號</h3>
                 <v-select solo style="width:180px;" placeholder="橋梁編號" return-object dense single-line 
-                  :items="sbjNum" outlined @change="s01Change"/>
+                  :items="sbjNum" outlined @change="s01Change" v-model="bridgeNum"/>
               </v-col>
               <v-col cols="12" sm="3">
                 <h3 class="mb-1">路線</h3>
                 <v-select solo style="width:180px;" placeholder="直/曲" return-object dense single-line 
-                  :items="pathType" outlined/>
+                  :items="pathType" outlined v-model="LineType"/>
               </v-col>
               <v-col cols="12" sm="2">
                 <h3 class="mb-1">長度</h3>
-                <v-text-field dense single-line outlined readonly v-model="v3"><span slot="append">m</span></v-text-field>
+                <v-text-field dense v-on:click="showlog" single-line outlined readonly v-model="v3"><span slot="append">m</span></v-text-field>
               </v-col>
             </v-row>
             <!-- row2 -->
@@ -366,21 +366,21 @@
         <v-row class="indigo--text">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">工程員</h3>
-            <v-text-field dense single-line outlined readonly v-model="sirName1"></v-text-field>
+            <v-text-field dense single-line outlined v-model="sirName1"></v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">工務長</h3>
-            <v-text-field dense single-line outlined readonly v-model="sirName2"></v-text-field>
+            <v-text-field dense single-line outlined v-model="sirName2"></v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">監工長</h3>
-            <v-text-field dense single-line outlined readonly v-model="sirName3"></v-text-field>
+            <v-text-field dense single-line outlined v-model="sirName3"></v-text-field>
           </v-col>
         </v-row>
         
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" color="success">送出表單</v-btn>
+          <v-btn large block class="mt-n8 mb-4" color="success" @click="save">送出表單</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -392,17 +392,42 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
     return {
+      props: ['id'],  //路由參數
       // 自定義變數
+      bridgeNum: "",
+      zs: "",
       title: "橋梁目視安全檢查表",
       newText: "檢查表",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
+      DB_Table: "RP038",
+      RPFlowNo: "",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       formDepartOptions: [
         // 通報單位下拉選單
         { text: "不限", value: "" },
@@ -423,6 +448,7 @@ export default {
         "brgImg1_2.jpg"
       ],
       pathType: ["直線", "曲線"],
+      LineType: "",
       val1_1: "",
       idx: -1,
       val1_2: "",
@@ -709,6 +735,9 @@ export default {
   components: { Pagination }, // 頁碼
   
   computed:{
+    ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     aa:function() {
       // if (data = 1) {
       // }else{
@@ -718,12 +747,131 @@ export default {
     }
   },
   created:function(){
+    console.log("created start~~")
+    this.nowTime = getTodayDateString();
+    this.doMan.name = this.userData.UserName;
+    
     var i = 1;
     for(i; i <= 26; i++ ){
       this.sbjNum.push("編號" + i);
     }
+    //判斷新增還是編輯
+    if(this.$route.params.id.substr(0, 2) == "編號"){
+      this.zs = this.nowTime;
+      console.log("詳細頁面:新增 初始化")
+      this.bridgeNum = this.$route.params.id;
+      this.s01Change();
+      console.log("新增 zs: "  + this.zs)
+    }
+    else{
+      console.log("詳細頁面:編輯 初始化")
+      let aa = []
+      aa = this.$route.params.id.split(',')
+      this.bridgeNum = "編號" + String.fromCharCode(aa[1]);
+      console.log("bridgeNum: " + this.bridgeNum)
+      this.s01Change();
+      //處理日期解碼
+      console.log("=====處理日期解碼=====")
+      let bb = aa[0].split("_")
+      let cc = []
+      bb.forEach(element => 
+        cc.push(String.fromCharCode(element))
+      );
+      console.log(cc)
+      this.zs = cc.join('')
+      console.log("編輯 zs: "  + this.zs)
+      //LineType 路線
+      console.log("=====處理LineType 路線解碼=====")
+      bb = aa[5].split("_")
+      cc = []
+      bb.forEach(element => 
+        cc.push(String.fromCharCode(element))
+      );
+      console.log(cc)
+      this.LineType = cc.join('')
+      //CheckOption
+      console.log("=====處理CheckOption解碼=====")
+      this.ipt.items1[0].result = String.fromCharCode(aa[6])
+      this.ipt.items1[0].damLv = String.fromCharCode(aa[7])
+      this.ipt.items1[1].result = String.fromCharCode(aa[8])
+      this.ipt.items1[1].damLv = String.fromCharCode(aa[9])
+      this.ipt.items1[2].result = String.fromCharCode(aa[10])
+      this.ipt.items1[2].damLv = String.fromCharCode(aa[11])
+      this.ipt.items2[0].result = String.fromCharCode(aa[12])
+      this.ipt.items2[0].damLv = String.fromCharCode(aa[13])
+      this.ipt.items2[1].result = String.fromCharCode(aa[14])
+      this.ipt.items2[1].damLv = String.fromCharCode(aa[15])
+      this.ipt.items2[2].result = String.fromCharCode(aa[16])
+      this.ipt.items2[2].damLv = String.fromCharCode(aa[17])
+      this.ipt.items2[3].result = String.fromCharCode(aa[18])
+      this.ipt.items2[3].damLv = String.fromCharCode(aa[19])
+      this.ipt.items3[0].result = String.fromCharCode(aa[20])
+      this.ipt.items4[0].result = String.fromCharCode(aa[21])
+      this.ipt.items4[0].damLv = String.fromCharCode(aa[22])
+      this.ipt.items5[0].result = String.fromCharCode(aa[23])
+      this.ipt.items5[1].result = String.fromCharCode(aa[24])
+      this.ipt.items5[2].result = String.fromCharCode(aa[25])
+      this.ipt.items5[3].result = String.fromCharCode(aa[26])
+      this.ipt.items5[4].result = String.fromCharCode(aa[27])
+      this.ipt.items5[5].result = String.fromCharCode(aa[28])
+      this.ipt.items5[6].result = String.fromCharCode(aa[29])
+      this.ipt.items5[7].result = String.fromCharCode(aa[30])
+      this.ipt.items5[8].result = String.fromCharCode(aa[31])
+      //Memo
+      console.log("=====處理Memo解碼=====")
+      bb = aa[32].split("_")
+      cc = []
+      bb.forEach(element => 
+        cc.push(String.fromCharCode(element))
+      );
+      console.log(cc)
+      this.note = cc.join('')
+      //三人名
+      console.log("=====處理三人名解碼=====")
+      bb = aa[2].split("_")
+      cc = []
+      bb.forEach(element => 
+        cc.push(String.fromCharCode(element))
+      );
+      this.sirName1 = cc.join('')
+      bb = aa[3].split("_")
+      cc = []
+      bb.forEach(element => 
+        cc.push(String.fromCharCode(element))
+      );
+      this.sirName2 = cc.join('')
+      bb = aa[4].split("_")
+      cc = []
+      bb.forEach(element => 
+        cc.push(String.fromCharCode(element))
+      );
+      this.sirName3 = cc.join('')
+    }
+    
+    console.log("created end~~")
   },
   methods: {
+    initInput(){
+      this.doMan.name = this.userData.UserName;
+      this.zs = this.nowTime;
+      var step;
+      // for (step = 0; step < 7; step++) {
+      //   this.ipt.items[step].status = ""
+      //   this.ipt.items2[step].status = ""
+      // }
+      // this.Advice = "";
+      // this.Measures = ""
+    },
+    ...mapActions('system', [
+            'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+    showlog(){
+      console.log("click 長度")
+      // console.log(this.bridgeNum)
+      // this.bridgeNum = "編號3"
+      // console.log(this.bridgeNum)
+      // this.s01Change();
+    },
     newOne(){
       console.log("newOne23")
       this.Add = true
@@ -736,14 +884,24 @@ export default {
     },
     
     s01Change(selectObj){
+      console.log("changing~~~~~")
       this.showImg = true;
+      console.log(selectObj == undefined)
+      if(selectObj == undefined){
+        console.log(this.bridgeNum)
+        selectObj = this.bridgeNum
+      }
       console.log("select is changed >> " + selectObj);
       var i = -1;
       console.log("substring >> " + selectObj.substr(2));
       i = Number(selectObj.substr(2)) - 1;
       this.i_num = i;
+      console.log("i_num >> " + this.i_num);
       console.log("i >> " + i);
       if(i > -1){
+        console.log("======== ");
+        console.log("v1 >> " + this.v1);
+        console.log("vn[i].start >> " + this.vn[i].start);
         this.v1 = this.vn[i].start;
         this.v2 = this.vn[i].end;
         this.v3 = this.vn[i].len;
@@ -814,7 +972,158 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!2")
+      this.chLoadingShow()
+
+      console.log(this.action)
+      if (this.action == Actions.add){
+        //-----新增-----
+        console.log("-----新增-----")
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            {Column:"CheckDay", Value: this.zs },
+            {Column:"BridgeID", Value: this.bridgeNum.substr(2) },
+            {Column:"LineType",Value:this.LineType},
+            {Column:"Len",Value:this.v3},
+            {Column:"Start",Value:this.v1},
+            {Column:"Finish",Value:this.v2},
+            {Column:"Type",Value:this.v7},
+            {Column:"Slope",Value:this.v5},
+            {Column:"Height",Value:this.v6},
+            {Column:"CurveRadius",Value:this.v4},
+            {Column:"Holes",Value:this.v8},
+            {Column:"H_Chiayi",Value:this.v9},
+            {Column:"H_Alishan",Value:this.v10},
+            {Column:"Engineer",Value:this.sirName1},
+            {Column:"WorksChief",Value:this.sirName2},
+            {Column:"Supervisor",Value:this.sirName3},
+            {Column:"BridgeHeight_1",Value:this.val1_1},
+            {Column:"BridgeHeight_2",Value:this.val1_2},
+            {Column:"BridgeHeight_3",Value:this.val1_3},
+            {Column:"BridgeHeight_4",Value:this.val1_4},
+            {Column:"BridgeHeight_5",Value:this.val1_5},
+            {Column:"BridgeHeight_6",Value:this.val1_6},
+            {Column:"BridgeHeight_7",Value:this.val1_7},
+            {Column:"BeamLength_1",Value:this.val2_1},
+            {Column:"BeamLength_2",Value:this.val2_2},
+            {Column:"BeamLength_3",Value:this.val2_3},
+            {Column:"BeamLength_4",Value:this.val2_4},
+            {Column:"BeamLength_5",Value:this.val2_5},
+            {Column:"BeamLength_6",Value:this.val2_6},
+            {Column:"BeamLength_7",Value:this.val2_7},
+            {Column:"CheckOption1",Value:this.ipt.items1[0].result},
+            {Column:"CheckOption1HazLv",Value:this.ipt.items1[0].damLv},
+            {Column:"CheckOption2",Value:this.ipt.items1[1].result},
+            {Column:"CheckOption2HazLv",Value:this.ipt.items1[1].damLv},
+            {Column:"CheckOption3",Value:this.ipt.items1[2].result},
+            {Column:"CheckOption3HazLv",Value:this.ipt.items1[2].damLv},
+            {Column:"CheckOption4",Value:this.ipt.items2[0].result},
+            {Column:"CheckOption4HazLv",Value:this.ipt.items2[0].damLv},
+            {Column:"CheckOption5",Value:this.ipt.items2[1].result},
+            {Column:"CheckOption5HazLv",Value:this.ipt.items2[1].damLv},
+            {Column:"CheckOption6",Value:this.ipt.items2[2].result},
+            {Column:"CheckOption6HazLv",Value:this.ipt.items2[2].damLv},
+            {Column:"CheckOption7",Value:this.ipt.items2[3].result},
+            {Column:"CheckOption7HazLv",Value:this.ipt.items2[3].damLv},
+            {Column:"CheckOption8",Value:this.ipt.items3[0].result},
+            {Column:"CheckOption9",Value:this.ipt.items4[0].result},
+            {Column:"CheckOption9HazLv",Value:this.ipt.items4[0].damLv},
+            {Column:"CheckOption10",Value:this.ipt.items5[0].result},
+            {Column:"CheckOption11",Value:this.ipt.items5[1].result},
+            {Column:"CheckOption12",Value:this.ipt.items5[2].result},
+            {Column:"CheckOption13",Value:this.ipt.items5[3].result},
+            {Column:"CheckOption14",Value:this.ipt.items5[4].result},
+            {Column:"CheckOption15",Value:this.ipt.items5[5].result},
+            {Column:"CheckOption16",Value:this.ipt.items5[6].result},
+            {Column:"CheckOption17",Value:this.ipt.items5[7].result},
+            {Column:"CheckOption18",Value:this.ipt.items5[8].result},
+            {Column:"Memo",Value:this.note},
+          ]
+        }).then(res => {
+          console.log(res.data.DT)
+        }).catch(err => {
+          console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow()
+        })
+      }
+      else{
+        //-----編輯-----
+        console.log("-----編輯-----")
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(), // client 端請求時間
+          OperatorID: this.userData.UserId, // 操作人id
+          RPFlowNo: this.RPFlowNo,
+          // FunCode: "U",
+          KeyName: this.DB_Table, // DB table
+          KeyItem:[
+            {Column:"CheckDay", Value: this.zs },
+            {Column:"LineType",Value:this.LineType},
+            {Column:"Len",Value:this.v3},
+            {Column:"Start",Value:this.v1},
+            {Column:"Finish",Value:this.v2},
+            {Column:"Type",Value:this.v7},
+            {Column:"Slope",Value:this.v5},
+            {Column:"Height",Value:this.v6},
+            {Column:"CurveRadius",Value:this.v4},
+            {Column:"Holes",Value:this.v8},
+            {Column:"H_Chiayi",Value:this.v9},
+            {Column:"H_Alishan",Value:this.v10},
+            {Column:"BridgeHeight_1",Value:this.val1_1},
+            {Column:"BridgeHeight_2",Value:this.val1_2},
+            {Column:"BridgeHeight_3",Value:this.val1_3},
+            {Column:"BridgeHeight_4",Value:this.val1_4},
+            {Column:"BridgeHeight_5",Value:this.val1_5},
+            {Column:"BridgeHeight_6",Value:this.val1_6},
+            {Column:"BridgeHeight_7",Value:this.val1_7},
+            {Column:"BeamLength_1",Value:this.val2_1},
+            {Column:"BeamLength_2",Value:this.val2_2},
+            {Column:"BeamLength_3",Value:this.val2_3},
+            {Column:"BeamLength_4",Value:this.val2_4},
+            {Column:"BeamLength_5",Value:this.val2_5},
+            {Column:"BeamLength_6",Value:this.val2_6},
+            {Column:"BeamLength_7",Value:this.val2_7},
+            {Column:"CheckOption1",Value:this.ipt.items1[0].result},
+            {Column:"CheckOption2",Value:this.ipt.items1[1].result},
+            {Column:"CheckOption3",Value:this.ipt.items1[2].result},
+            {Column:"CheckOption4",Value:this.ipt.items2[0].result},
+            {Column:"CheckOption5",Value:this.ipt.items2[1].result},
+            {Column:"CheckOption6",Value:this.ipt.items2[2].result},
+            {Column:"CheckOption7",Value:this.ipt.items2[3].result},
+            {Column:"CheckOption8",Value:this.ipt.items3[0].result},
+            {Column:"CheckOption9",Value:this.ipt.items4[0].result},
+            {Column:"CheckOption10",Value:this.ipt.items5[0].result},
+            {Column:"CheckOption11",Value:this.ipt.items5[1].result},
+            {Column:"CheckOption12",Value:this.ipt.items5[2].result},
+            {Column:"CheckOption13",Value:this.ipt.items5[3].result},
+            {Column:"CheckOption14",Value:this.ipt.items5[4].result},
+            {Column:"CheckOption15",Value:this.ipt.items5[5].result},
+            {Column:"CheckOption16",Value:this.ipt.items5[6].result},
+            {Column:"CheckOption17",Value:this.ipt.items5[7].result},
+            {Column:"CheckOption18",Value:this.ipt.items5[8].result},
+            {Column:"Memo",Value:this.note},
+          ]
+        })
+          .then((res) => {
+            console.log(res.data.DT)
+          })
+          .catch((err) => {
+            console.log(err);
+            // this.chMsgbar({ success: false, msg: Constrant.update.failed });
+            alert('查詢時發生問題，請重新查詢!')
+          })
+          .finally(() => {
+            this.chLoadingShow()
+          });
+      }
+      this.$router.push({ path: "/form-manage/maintain/bridge-visual-safety-checklist" });
+    },
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;

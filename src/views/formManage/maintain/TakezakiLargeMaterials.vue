@@ -4,67 +4,38 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(起)
-        </h3>
-        <v-menu
-          v-model="a"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>查詢日期(迄)
-        </h3>
-        <v-menu
-          v-model="q"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>材料編號
-        </h3>
-        <v-text-field solo value="" />
+        <deptSelect
+          label="管理單位"
+          v-model="formData.searchItem.department"
+          :showIcon="formData.settings.formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
+      <v-col cols="12" sm="3" md="3"></v-col>
+
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>材料名稱
-        </h3>
-        <v-text-field solo value="" />
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
-          <v-icon class="mr-1">mdi-magnify</v-icon>查詢
-        </v-btn>
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
-      </div>
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
+      </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -95,7 +66,17 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -106,6 +87,18 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
     <!-- 新增竹崎監工區大型物料存放位置表 modal -->
     <v-dialog v-model="Add" max-width="900px">
       <v-card>
@@ -134,28 +127,28 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="z" solo v-on="on" />
+                      <v-text-field v-model.trim="zs" solo v-on="on" />
                     </template>
-                    <v-date-picker color="purple" v-model="z" @input="add = false" locale="zh-tw" />
+                    <v-date-picker color="purple" v-model="zs" @input="add = false" locale="zh-tw" />
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>料管人員
                   </h3>
-                  <v-text-field solo value="王大明" />
+                  <v-text-field solo v-model="doMan.name" />
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>材料編號
                   </h3>
-                  <v-text-field solo value="001" />
+                  <v-text-field solo v-model="MaterialNo"/>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>材料名稱
                   </h3>
-                  <v-text-field solo value="新枕木" />
+                  <v-text-field solo v-model="MaterialName" />
                 </v-col>
               </v-row>
 
@@ -169,19 +162,19 @@
                     >
                       <v-col cols="12" sm="3">
                         <h3 class="mb-1">新枕木</h3>
-                        <v-text-field solo v-model="items1.qq" />
+                        <v-text-field solo v-model="AmountNewSleeper" />
                       </v-col>
                       <v-col cols="12" sm="3">
                         <h3 class="mb-1">舊枕木</h3>
-                        <v-text-field solo v-model="items1.ww" />
+                        <v-text-field solo v-model="AmountOldSleeper" />
                       </v-col>
                        <v-col cols="12" sm="3">
                         <h3 class="mb-1">新鋼軌</h3>
-                        <v-text-field solo v-model="items1.ee" />
+                        <v-text-field solo v-model="AmountNewRail" />
                       </v-col>
                        <v-col cols="12" sm="3">
                         <h3 class="mb-1">舊鋼軌</h3>
-                        <v-text-field solo v-model="items1.rr" />
+                        <v-text-field solo v-model="AmountOldRail" />
                       </v-col>
                     </v-row>
                   </v-expansion-panel-content>
@@ -192,23 +185,35 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">規範</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="Specific"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">存放地點</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="Location"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1 indigo--text">備註</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="Memo"/>
             </v-col>
           </v-row>
         </div>
-
         <v-card-actions class="px-5 pb-5">
+          <v-btn
+            v-if="action != actions.add"
+            elevation="4"
+            color="red"
+            class="mr-2 white--text"
+            @click="deleteRecord(RPFlowNo)"
+            >刪除</v-btn
+          >
           <v-spacer></v-spacer>
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn
+            color="success"
+            elevation="4"
+            @click="save"
+            >送出</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -220,18 +225,24 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
     return {
       title: "竹崎監工區大型物料存放位置表",
       newText: "表單",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
       panel: [0, 1, 2],
-      disabled: false,
       formDepartOptions: [
       // 通報單位下拉選單
       { text: "不限", value: "" },
@@ -254,11 +265,39 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      MaterialNo: "",
+      MaterialName: "",
+      AmountNewSleeper: "",
+      AmountOldSleeper: "",
+      AmountNewRail: "",
+      AmountOldRail: "",
+      Specific: "",
+      Location: "",
+      Memo: "",
       Add: false,
       dialog3: false,
+      ShowDetailDialog: false,
+      dialogDel: false, // model off
+      Add: false,
+      dialog3: false,
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
+      editType: "",
+      editItem: {},
+      DynamicKey: 0,
+      DelDynamicKey: 0,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP028",
+      RPFlowNo: "",
       nowTime: "",
       doMan:{
         id: '',
@@ -312,7 +351,13 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+  },
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -331,23 +376,31 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+      this.zs = this.df = this.nowTime
   },
   methods: {
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+    reset() {
+      this.formData.searchItem.dateStart = "";
+      this.formData.searchItem.dateEnd = "";
+      this.formData.searchItem.department = "";
+    },
     // 更換頁數
     initInput(){
+      console.log("init")
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
+      this.MaterialNo = "";
+      this.MaterialName = "";
+      this.AmountNewSleeper = "";
+      this.AmountOldSleeper = "";
+      this.AmountNewRail = "";
+      this.AmountOldRail = "";
+      this.Specific = "";
+      this.Location = "";
+      this.Memo = "";
     },
     unique(list){
       var arr = [];
@@ -372,6 +425,7 @@ export default {
     newOne(){
       console.log("newOne23")
       this.Add = true
+      this.action = Actions.add
       console.log("this.Add: " + this.Add)
       this.initInput();
     },
@@ -387,9 +441,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
+          {"Column":"DepartCode","Value":this.formData.searchItem.department},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -418,7 +472,81 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      
+
+      console.log("this.action == " + this.action == Actions.add)
+      if (this.action == Actions.add){
+        //-----新增-----
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            {Column:"CheckDay", Value: this.zs },
+            {Column:"MaterialNo",Value:this.MaterialNo  },
+            {Column:"MaterialName",Value:this.MaterialName  },
+            {Column:"AmountNewSleeper",Value:this.AmountNewSleeper  },
+            {Column:"AmountOldSleeper",Value:this.AmountOldSleeper  },
+            {Column:"AmountNewRail",Value:this.AmountNewRail  },
+            {Column:"AmountOldRail",Value:this.AmountOldRail  },
+            {Column:"Specific",Value:this.Specific  },
+            {Column:"Location",Value:this.Location  },
+            {Column:"Memo",Value:this.Memo },
+          ]
+        }).then(res => {
+          console.log(res.data.DT)
+        }).catch(err => {
+          console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow()
+        })
+      }
+      else{
+        //-----編輯-----
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(), // client 端請求時間
+          OperatorID: this.userData.UserId, // 操作人id
+          RPFlowNo: this.RPFlowNo,
+          // FunCode: "U",
+          KeyName: this.DB_Table, // DB table
+          KeyItem:[
+            {Column:"CheckDay", Value: this.zs },
+            {Column:"MaterialNo",Value:this.MaterialNo  },
+            {Column:"MaterialName",Value:this.MaterialName  },
+            {Column:"AmountNewSleeper",Value:this.AmountNewSleeper  },
+            {Column:"AmountOldSleeper",Value:this.AmountOldSleeper  },
+            {Column:"AmountNewRail",Value:this.AmountNewRail  },
+            {Column:"AmountOldRail",Value:this.AmountOldRail  },
+            {Column:"Specific",Value:this.Specific  },
+            {Column:"Location",Value:this.Location  },
+            {Column:"Memo",Value:this.Memo },
+          ]
+        })
+          .then((res) => {
+            console.log(res.data.DT)
+          })
+          .catch((err) => {
+            console.log(err);
+            // this.chMsgbar({ success: false, msg: Constrant.update.failed });
+            alert('查詢時發生問題，請重新查詢!')
+          })
+          .finally(() => {
+            this.chLoadingShow()
+          });
+      }
+      this.Add = false;
+    },
+    closeDialogDel() {
+      this.dialogDel = false;
+      console.log("刪除確認是窗關閉, RPFlowNo:")
+      console.log(RPFlowNo)
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -433,7 +561,9 @@ export default {
     },
     viewPage(item) {
       console.log("item: " + item)
+      this.RPFlowNo = item.RPFlowNo
       console.log("RPFlowNo: " + item.RPFlowNo)
+      this.action = Actions.edit
       this.chLoadingShow()
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
@@ -444,19 +574,19 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckDay",//0
+          "DepartName",//1
+          "Name",//2
+          "CheckMan",//3
+          "MaterialNo",//4
+          "MaterialName",//5
+          "AmountNewSleeper",//6
+          "AmountOldSleeper",//7
+          "AmountNewRail",//8
+          "AmountOldRail",//9
+          "Specific",//10
+          "Location",//11
+          "Memo",//12
         ],
       }).then(res => {
         this.initInput();
@@ -472,25 +602,17 @@ export default {
         this.zs = time1
         console.log("doMan name: " + this.doMan.name)
         //123資料
-        let ad = Object.keys(dat[0])
-        console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        this.zs = dat[0].CheckDay
+        this.MaterialNo = dat[0].MaterialNo
+        this.MaterialName = dat[0].MaterialName
+        this.AmountNewSleeper = dat[0].AmountNewSleeper
+        this.AmountOldSleeper = dat[0].AmountOldSleeper
+        this.AmountNewRail = dat[0].AmountNewRail
+        this.AmountOldRail = dat[0].AmountOldRail
+        this.Specific = dat[0].Specific
+        this.Location = dat[0].Location
+        this.Memo = dat[0].Memo
 
-        
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
@@ -498,6 +620,14 @@ export default {
         this.chLoadingShow()
       })
     },//viewPage
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
+      console.log("刪除確認視窗開啟, RPFlowNo:")
+      console.log(RPFlowNo)
+      console.log(this.RPFlowNo)
+    },
   },
 };
 </script>

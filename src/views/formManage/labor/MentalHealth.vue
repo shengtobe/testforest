@@ -466,10 +466,14 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 19; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
+      this.CheckOption1=""
+      this.CheckOption2=""
+      this.CheckOption3=""
+      this.CheckOption4=""
+      this.CheckOption5=""
+      this.CheckOption6=""
+      this.CheckOption7=""
+      this.CheckOption8=""
     },
     unique(list){
       var arr = [];

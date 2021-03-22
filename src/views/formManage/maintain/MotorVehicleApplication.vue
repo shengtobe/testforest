@@ -666,6 +666,7 @@ export default {
       }
       if(this.AddData.UsageTime.TimeDay.length == 0){
         this.AddData.UsageTime.TimeDay = this.nowTime
+        console.log(this.AddData.UsageTime.TimeDay)
       }
       console.log(this.AddData.UsageTime.TimeDay.length)
       console.log("this.action == " + this.action == Actions.add)
@@ -844,7 +845,7 @@ export default {
           this.AddData.Outer.UpDown = dat[0].Way
           this.AddData.UsageTime.Train1 = dat[0].BgTrainNo
           this.AddData.UsageTime.Train2 = dat[0].EndTrainNo
-          this.AddData.UsageTime.TimeDay  = dat[0].Day
+          this.AddData.UsageTime.TimeDay  = dat[0].Day.substr(0, 10)
           this.AddData.UsageTime.MrningGoT = dat[0].AM_To_HH
           this.AddData.UsageTime.MrningGoM = dat[0].AM_To_mm
           this.AddData.UsageTime.MrningReturnT = dat[0].AM_Back_HH

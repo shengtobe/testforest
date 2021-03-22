@@ -291,7 +291,6 @@ export default {
     dialogDelete,
   },
   created() {
-    this.chLoadingShow();
     if (this.$route.query.editType == 1) {
       this.editType = this.actions.add;
     } else {
