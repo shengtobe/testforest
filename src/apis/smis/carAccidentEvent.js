@@ -103,3 +103,14 @@ export function hurtDeleteData(data) { return axios(
         data,
     }
 )}
+
+
+// -------------- 改善措施 -------------
+// 更新
+export function procUpdateData(data) { return axios(
+    {
+        url: '/sms/event/proc/update',
+        method: 'post',
+        data,
+    }
+)}
