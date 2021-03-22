@@ -21,23 +21,41 @@ import { fetchOrganization } from '@/apis/organization'
 /*
   isMuti: true=>選多人，傳入值必須是string array
           false=>選單人，傳入值必須是string
+  outdata: 直接從commonFun裡面的getOrg拉資料進來，避免同一頁連續讀取重複資料的問題
   可以直接綁定原生事件
 */
 export default {
-	props: ['value','isMuti','disabled'],
+	props: ['value','isMuti','disabled','outdata'],
 	data: () => ({
     orgList:[],
     orgIsLoading:false,
-    inputValue:''
+    people:[],
+    inputValue:'',
+    inputName:'',
 	}),
 	mounted() {
-    this.inputValue = this.value
-    this._getOrg()
+    if(outData){
+      this.orgList = this.outdata.orgList
+      this.people = this.outdata.people
+      this.inputValue = this.value
+    }else{
+      this._getOrg()
+    }
 	},
 	computed: {
 		...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    selectName:function() {
+      if(Array.isArray(this.inputValue)){
+          this.inputName = this.inputValue.map(element=>{
+          return this.people.find(el=>el.value==element)?.text||""
+        })
+      }else{
+         this.inputName = this.people.find(el=>el.value==this.inputValue)?.text||""
+      }
+      return this.inputName
+    }
 	},
 	methods: {
     ...mapActions('system', [
@@ -131,6 +149,7 @@ export default {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         this.orgIsLoading = false
+        this.inputValue = this.value
       })
     },
     aFilter(item, queryText, itemText) { //選人的filter
@@ -138,15 +157,14 @@ export default {
       const child = (item.child.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
       const group = (item.group.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
       const value = (item.value.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
-      // console.log(item)
       return text || group || child || value
     },
 	},
   watch: {
     inputValue: function(value){
       this.$emit('input',value)
-      this.$emit('getName',this.orgList.find(el=>el.value==value).text)
+      this.$emit('getName',this.selectName)
     }
-  }
+  },
 }
 </script>

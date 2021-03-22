@@ -114,12 +114,6 @@ export default {
       ]),
       // 送出
       save() {
-        console.log({
-          Option: ((this.license)?'2':'1'),
-          ClientReqTime: getNowFullTime(),  // client 端請求時間
-          OperatorID: this.userData.UserId,  // 操作人id
-          ...this.ipt
-        })
         this.isLoading = true
         licenseRcdOption({
           Option: ((this.license)?'2':'1'),
@@ -127,10 +121,8 @@ export default {
           OperatorID: this.userData.UserId,  // 操作人id
           ...this.ipt
         }).then(res=>{
-          console.log(res.data)
           if (res.data.ErrorCode == 0) {
             const msg = '資料' + ((this.license)?'修改':'新增') + '成功'
-            console.log(msg)
             this.chMsgbar({ success: true, msg: msg })
           }else{
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

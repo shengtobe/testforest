@@ -221,7 +221,6 @@ export default {
     deptSelect,
   },
   mounted() {
-    console.log(this.defaultSettings.options.method);
     this.methodOptions = this.settings.options
       ? this.settings.options.method
       : this.defaultSettings.options.method;

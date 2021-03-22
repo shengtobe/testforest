@@ -344,7 +344,6 @@ export default {
       that.updateData = {...encodeObject(that.detailItems)}
       that.updateData.ClientReqTime=getNowFullTime()  // client 端請求時間
       that.updateData.OperatorID=that.userData.UserId  // 操作人id
-      //console.log(encodeObject(that.detailItems))
       largeQueryEdit(that.updateData).then(res => {
         if (res.data.ErrorCode == 0) {
           that.chMsgbar({ success: true, msg: '編輯成功' })
@@ -382,7 +381,6 @@ export default {
         }
       }).catch(err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
-        // console.log(err)
       }).finally(() => {
         that.chLoadingShow()
       })

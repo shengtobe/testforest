@@ -138,7 +138,6 @@
       goSave() {
         this.isLoading = true
         this.queryItem = encodeObject(this.queryItem)
-        console.log(this.queryItem)
         if(this.inType == 'edit') {
           classUpdate({
             FlowID: this.flowId,

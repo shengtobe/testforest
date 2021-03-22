@@ -142,7 +142,7 @@ export const JobSafetyRouter = [
     {
         linkText: '證照人員列表',
         props: true,
-        path: '/smis/jobsafety/license/:id/list',
+        path: '/smis/jobsafety/license/:id/list/:name',
         component: () => import('@/views/smis/jobSafety/license/List.vue')
     },
 ]

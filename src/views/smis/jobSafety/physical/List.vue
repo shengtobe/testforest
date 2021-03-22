@@ -102,18 +102,12 @@ export default {
         initData() {
             this.chLoadingShow()
             this.routeId = this.id  // 路由參數(id)
-            console.log({
-                ID: this.id,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             healthCdList({
                 ID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
-                    console.log(res.data)
                     if(res.data.HealthDataList.length > 0){
                         this.tableItems = res.data.HealthDataList.map(element=>({
                             FlowID: element.FlowID,

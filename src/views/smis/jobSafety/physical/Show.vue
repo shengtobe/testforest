@@ -22,10 +22,23 @@
             >編輯</v-btn>
 
             <v-btn dark  class="ma-2" color="error"
-                @click="del"
+                @click="delDialog=true"
             >作廢</v-btn>
         </v-col>
     </v-row>
+    <!-- 刪除 -->
+    <v-dialog v-model="delDialog" max-width="350px">
+        <v-card>
+            <v-card-title class="red white--text px-4 py-1 headline"
+            >確認是否作廢?</v-card-title
+            >
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="delDialog=false">取消</v-btn>
+            <v-btn color="red" class="white--text" @click="del()">刪除</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -49,7 +62,9 @@ export default {
             urineBlood: jobUrineOpts,
         },
         jobs: [{text:'駕駛員',value:'1'}, {text:'車長',value:'2'}, {text:'一般員工',value:'3'}],
-        sex: [{text:'男',value:'1'}, {text:'女',value:'2'}, {text:'其他',value:'3'}],
+        sex: [{text:'男',value:'M'}, {text:'女',value:'F'}, {text:'其他',value:'X'}],
+        InspectionType: [{ text: '受雇', value: '1' },{ text: '定期', value: '2' }],
+        delDialog: false
     }),
     components: {
         TopBasicTable,
@@ -74,19 +89,12 @@ export default {
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow()
-            console.log({
-                ID: this.id,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             healthCdList({
                 ID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
-                console.log(res.data)
                 if (res.data.ErrorCode == 0) {
-                    console.log(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                    const Fdata = decodeObject(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                    this.topItems = {
                         depart: { icon: 'mdi-bank', title: '部門', text: Fdata.Depart },
@@ -96,12 +104,10 @@ export default {
                         sex: { icon: 'mdi-human-male-female', title: '性別', text: this.sex.find(e=>e.value == Fdata.PeopleSex).text },
                         // workName: { icon: 'mdi-tag', title: '從事作業名稱', text: Fdata.JobNowName },
                         jobStartDate: { icon: 'mdi-calendar-text', title: '受雇日期', text: Fdata.EmployDate },
-                        physicalPeriod: { icon: 'mdi-clipboard-account', title: '檢查時期', text: Fdata.InspectionType },
+                        physicalPeriod: { icon: 'mdi-clipboard-account', title: '檢查時期', text: this.InspectionType.find(e=>e.value == Fdata.InspectionType).text },
                         physicalDate: { icon: 'mdi-calendar-text', title: '檢查日期', text: Fdata.HealthCheckDate },
                         level: { icon: 'mdi-elevation-rise', title: '健檢評級', text: Fdata.HealthResultLevel+'級' },
                     }
-                    console.log(Fdata)
-                    console.log(Fdata.UrineProtein)
                     this.bottomItems = [
                         { dataType: 'text', oneline: true, icon: 'none', title: '身高(cm)', text: Fdata.PeopleHeight + ' cm' },
                         { dataType: 'text', oneline: true, icon: 'none', title: '體重(kg)', text: Fdata.PeopleWeight + ' kg' },
@@ -147,30 +153,28 @@ export default {
         },
         // 作廢
         del() {
-            if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
-                let sendData = {
-                    Option: '3',
-                    FlowID: this.sid,
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }
-                healthUpdate({
-                    ...sendData
-                }).then(res=>{
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '資料作廢成功' })
-                    }else{
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch( err => {
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料作廢失敗' })
-                }).finally(() => {
-                    this.chLoadingShow()
-                    this.$router.push({ path: `/smis/jobsafety/physical/${this.id}/list` })
-                })
+            this.chLoadingShow()
+            let sendData = {
+                Option: '3',
+                FlowID: this.sid,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
             }
+            healthUpdate({
+                ...sendData
+            }).then(res=>{
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '資料作廢成功' })
+                }else{
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料作廢失敗' })
+            }).finally(() => {
+                this.chLoadingShow()
+                this.$router.push({ path: `/smis/jobsafety/physical/${this.id}/list` })
+            })
         },
     },
     created() {

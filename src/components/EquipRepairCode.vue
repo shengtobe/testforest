@@ -487,7 +487,6 @@
       async _returnEqCode() {
         const that = this
         await that.$emit('getEqCode',that.newEqCode)
-        // console.log(that.toLv >= 1)
         if(that.toLv >= 1){
           that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + ((that.toLv == 1)?'':'-')
         }

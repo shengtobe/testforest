@@ -1,13 +1,14 @@
 <template>
   <v-container style="max-width: 1200px">
     <v-row>
-        <v-col cols="12" sm="3" class="indigo--text" >
+        <v-col cols="12" sm="2" class="indigo--text" >
             <h2 align="center"> 即時資料</h2>
         </v-col>
-        <v-col cols="12" sm="9" >
+        <v-col cols="12" sm="10" >
             <v-spacer />
             <v-simple-table
               dense
+              v-if="toptable.LocationList"
               >
               <template v-slot:default>
                 <tbody>
@@ -17,33 +18,33 @@
                   </tr>
                   <tr>
                     <th>監控位置</th>
-                    <td class="text-center">62K+600(1)</td>
-                    <td class="text-center">62K+600(2)</td>
+                    <td class="text-center">{{ `${toptable.LocationList[0].LocName}(${toptable.LocationList[0].LocID})` }}</td>
+                    <td class="text-center">{{ `${toptable.LocationList[1].LocName}(${toptable.LocationList[1].LocID})` }}</td>
                   </tr>
                   <tr>
                     <th>更新時間</th>
-                    <td>{{ convertDate(new Date()) }}</td>
-                    <td>{{ convertDate(new Date()) }}</td>
+                    <td>{{ toptable.LocationList[0].DataDTime }}</td>
+                    <td>{{ toptable.LocationList[1].DataDTime }}</td>
                   </tr>
                   <tr>
                     <th>座標位置</th>
-                    <td>(229208.441,2602093.148)</td>
-                    <td>(229208.441,2602093.148)</td>
+                    <td>{{`(${toptable.LocationList[0].GPSValue_X},${toptable.LocationList[0].GPSValue_Y})`}}</td>
+                    <td>{{`(${toptable.LocationList[1].GPSValue_X},${toptable.LocationList[1].GPSValue_Y})`}}</td>
                   </tr>
                   <tr>
                     <th>初始值</th>
-                    <td>1.002</td>
-                    <td>1.002</td>
+                    <td>{{ toptable.LocationList[0].InitValue }}</td>
+                    <td>{{ toptable.LocationList[1].InitValue }}</td>
                   </tr>
                   <tr>
                     <th>監測值</th>
-                    <td>1.1</td>
-                    <td>1.1</td>
+                    <td>{{ toptable.LocationList[0].Value }}</td>
+                    <td>{{ toptable.LocationList[1].Value }}</td>
                   </tr>
                   <tr>
                     <th>變異值</th>
-                    <td>1.5</td>
-                    <td>1.5</td>
+                    <td>{{ toptable.LocationList[0].DiffValue }}</td>
+                    <td>{{ toptable.LocationList[1].DiffValue }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -56,26 +57,36 @@
 
     <v-row style="margin-top:-2%">
       <!-- 控制措施 -->
-      <v-col cols="12" sm="3" class="indigo--text">
+      <v-col cols="12" sm="2" class="indigo--text">
             <h2 align="center"> 歷史資料</h2>
         </v-col>
-      <v-col cols="12" sm="4" md="3">
+      <v-col cols="12" sm="3">
         <DateSelect label="查詢日期(起)" v-model="q_datestart" key="dateStart" :showIcon="true"/>
       </v-col>
-      <v-col cols="12" sm="4" md="3">
+      <v-col cols="12" sm="3">
         <DateSelect label="查詢日期(迄)" v-model="q_dateend" key="dateStart" :showIcon="true"/>
       </v-col>
-      <v-col cols="12" md="2" align-self="center">
-        <v-btn color="green" dark large>
+      <v-col cols="12" md="2">
+        <h3 class="mb-1"><v-icon class="mr-1">mdi-city-variant-outline</v-icon>監控位置</h3>
+        <v-select 
+          :items="[
+            {text:'測試地點',value:'65K_600_A'},
+            {text:'測試地點1',value:'65K_600_B'}
+          ]" 
+          v-model="Location"
+          solo />
+      </v-col>
+      <v-col cols="12" md="2" align-self="center" >
+        <v-btn color="green" dark large @click="goSearch">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
-      <v-col cols="12" sm="1"></v-col>
+      <v-col cols="0" sm="1"></v-col>
     </v-row>
     <v-row>
-        <v-col cols="12" sm="3" class="indigo--text" style="margin-left:-5px">
+        <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px">
         </v-col>
-        <v-col cols="12" sm="9">
+        <v-col cols="12" sm="10">
             <v-spacer/>
             <v-card>
                 <v-data-table
@@ -94,6 +105,14 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.LocID="{item}">
+                      {{'二萬坪主站-第一分道'}}
+                    </template>
+
+                    <template v-slot:item.LocName="{item}">
+                      {{ `${item.LocName}(${item.LocID})` }}
+                    </template>
+
                     <template v-slot:footer="footer">
                         <Pagination
                             :footer="footer"
@@ -109,7 +128,8 @@
   </v-container>
 </template>
 
-<script>import { mapState, mapActions } from 'vuex'
+<script>
+import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchList } from '@/apis/monitor/slope'
 import DateSelect from '@/components/forManage/dateSelect'
@@ -117,9 +137,10 @@ import Pagination from '@/components/Pagination'
 export default {
   data: () => ({
     imgUrl1: require("../../assets/images/slope1.jpg"),
-    imgUrl2: require("../../assets/images/slope2.jpg"),
+    toptable:{},
     q_datestart:'',
     q_dateend:'',
+    Location:'',
     pageOpt: {page:1},
     tableItems:[],
     headers: [
@@ -147,32 +168,22 @@ export default {
       'chMsgbar',  // 改變 messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
-    convertDate(date) {
-      var mm = date.getMonth() + 1
-      var dd = date.getDate()
-      var hour = date.getHours()
-      var min = date.getMinutes()
-      var sec = date.getSeconds()
-      return [date.getFullYear(),
-              (mm>9 ? '' : '0') + mm,
-              (dd>9 ? '' : '0') + dd
-            ].join('/')+' '+[
-              (hour>9 ? '' : '0') + hour,
-              (min>9 ? '' : '0') + min,
-              (sec>9 ? '' : '0') + sec,
-            ].join(':')
-    },
     callback() {
       const that = this
       fetchList({
         CreateDTime_Start:'',
         CreateDTime_End: '',
         Option: '1',
+        LocationList:[
+          {LocID:'65K_600_A'},
+          {LocID:'65K_600_B'},
+        ],
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        console.log(res)
+        this.toptable = res.data
       }).catch( err => {
+        console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         setTimeout(function() {
@@ -181,20 +192,23 @@ export default {
       })
     },
     goSearch(){
+      this.chLoadingShow()
       fetchList({
         CreateDTime_Start:this.q_datestart,
         CreateDTime_End: this.q_dateend,
         Option: '2',
+        LocationList:[
+          {LocID:this.Location},
+        ],
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        console.log(res)
+        this.tableItems = res.data.LocationList
       }).catch( err => {
+        console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
-        setTimeout(function() {
-          that.callback()
-        }, 300000)
+        this.chLoadingShow()
       })
     },
     // 更換頁數

@@ -56,7 +56,7 @@
                     <template v-slot:item.link="{ item }">
                         <v-btn small dark fab color="purple"
                             target="_blank"
-                            :to="`/smis/jobsafety/license/${item.FlowID}/list`"
+                            :to="`/smis/jobsafety/license/${item.FlowID}/list/${encodeURIComponent(item.License)}`"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -71,7 +71,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item)"
+                            @click="godel(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -92,6 +92,19 @@
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
         <LicenseEdit :key="componentKey" @cancel="cancel" :license="ipt"/> 
+    </v-dialog>
+    <!-- 刪除 -->
+    <v-dialog v-model="delDialog" max-width="350px">
+        <v-card>
+            <v-card-title class="red white--text px-4 py-1 headline"
+            >會連同所有人員資料一併刪除，你確定要刪除嗎?</v-card-title
+            >
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="delDialog=false">取消</v-btn>
+            <v-btn color="red" class="white--text" @click="del(delItem)">刪除</v-btn>
+            </v-card-actions>
+        </v-card>
     </v-dialog>
 </v-container>
 </template>
@@ -123,7 +136,8 @@ export default {
         itemIndex: -1,  // 作用中的物件索引值 (小於0為新增的情況)
         ipt: {},  // dialog 欄位
         componentKey: 0,
-
+        delItem:{},
+        delDialog: false,
     }),
     components: { 
         Pagination,
@@ -147,17 +161,11 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log({
-                License: this.licenseName,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             licenseRcdQuery({
                 License: this.licenseName,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
-                console.log(res.data)
                 if (res.data.ErrorCode == 0) {
                     if(res.data.DataList){
                         this.tableItems = res.data.DataList
@@ -205,31 +213,37 @@ export default {
         cancel() {
             this.dialog = false
         },
+        godel(item) {
+            this.delItem = item
+            this.delDialog = true
+        },
         // 刪除
         del(item) {
-            if (confirm('會連同所有人員資料一併刪除，你確定要刪除嗎?')) {
+            this.chLoadingShow()
+            licenseRcdOption({
+                ...item,
+                Option: '3',
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res=>{
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: false, msg: '資料刪除成功' })
+                }else{
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-
-                licenseRcdOption({
-                    ...item,
-                    Option: '3',
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res=>{
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: false, msg: '資料刪除成功' })
-                    }else{
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch( err => {
-                    console.warn(err)
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
-                }).finally(() => {
-                    this.chLoadingShow()
-                })
-            }
+                this.delDialog = false
+                this.search()
+            })
         },
+        goList(LicenseName) {
+            this.$router.push({ path: '/smis/jobsafety/license/' + encodeURIComponent(LicenseName) + '/list' })
+        }
     },
 }
 </script>

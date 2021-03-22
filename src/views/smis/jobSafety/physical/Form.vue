@@ -50,7 +50,19 @@
             <v-select
                 readonly
                 v-model="ipt.PeopleSex"
-                :items="[{text:'男',value:'1'}, {text:'女',value:'2'}, {text:'其他',value:'3'}]"
+                :items="[{text:'男性',value:'M'}, {text:'女性',value:'F'}, {text:'第三性別',value:'X'}]"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-human-male-female</v-icon>健檢分級性別
+            </h3>
+            <v-select
+                readonly
+                v-model="ipt.HealthLvSex"
+                :items="[{text:'男性',value:'M'}, {text:'女性',value:'F'}]"
                 solo
             ></v-select>
         </v-col>
@@ -531,10 +543,11 @@ export default {
         ID:'',
         Name:'',
         PeopleIDCode: '',  // 身份證號
+        HealthLvSex: 'M',
         DepartCode: '', //單位代碼
         Depart: '', //單位名稱
         PeopleBirth: new Date().toISOString().substr(0, 10),  // 生日
-        PeopleSex: '3',  // 性別
+        PeopleSex: 'X',  // 性別
         JobName: '3',    //職務
         JobNowName: '',  // 從事作業之名稱
         EmployDate: new Date().toISOString().substr(0, 10),  // 受雇日期
@@ -587,6 +600,11 @@ export default {
       orgList: [],
       people: [],
       orgIsLoading: false,
+      sex:[
+        {from:'1',to:'M'},
+        {from:'2',to:'F'},
+        {from:'3',to:'X'}
+      ]
     }),
     components:{
       PeopleSelect
@@ -616,19 +634,12 @@ export default {
             this.chLoadingShow()
             this.isEdit = true
             this.ipt.ID = this.id
-            console.log({
-                FlowId: this.sid,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            })
             healthCdList({
                 ID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
-                console.log(res.data)
             if (res.data.ErrorCode == 0) {
-                console.log(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                 this.ipt = decodeObject(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
             }else{
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -663,7 +674,7 @@ export default {
               this.ipt.Depart = res.data.UserData.DeptList[0].DeptId
               this.ipt.DepartName = res.data.UserData.DeptList[0].DeptDesc
               this.ipt.PeopleBirth = res.data.UserData.PeopleBirthday.split(" ")[0].split("/").map(e=>e.length<2?'0'+e:e).join('-')
-              this.ipt.PeopleSex = res.data.UserData.PeopleSex
+              this.ipt.PeopleSex = this.sex.find(e=>e.from == res.data.UserData.PeopleSex)?.to || "X"
             //   this.ipt.JobName = res.data.UserData.JobName
             } else {
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

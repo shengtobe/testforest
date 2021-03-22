@@ -1,5 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
+<v-container style="max-width: 1200px;">
+    <h2 class="mb-4">行車安全績效</h2>
     <v-row class="px-2 mb-8">
         <!-- 表單填報 -->
         <v-col cols="12" md="6" class="mb-8">
@@ -42,7 +43,11 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
-                    <v-list-item to="/smis/car-accident-event/maintype-chart">
+                    <v-list-item to="/smis/car-safe-performance/analysis">
+                        <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
+                        行車安全績效趨勢
+                    </v-list-item>
+                    <!-- <v-list-item to="/smis/car-accident-event/maintype-chart">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         MTBF
                     </v-list-item>
@@ -70,7 +75,7 @@
                     <v-list-item to="/smis/car-safe-performance/crawl-notify">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         慢行通報紀錄
-                    </v-list-item>
+                    </v-list-item> -->
                 </v-list>
             </v-card>
         </v-col>

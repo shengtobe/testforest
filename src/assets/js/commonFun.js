@@ -161,3 +161,104 @@ export function isDateObject(input) {
     var tmp = input.match(pattern);
     return tmp == null || tmp.length > 0 ? true : false;
 }
+//用object裡面的 key來把array裡面的object分組
+export function groupBy(input,prop) {
+    return input.reduce(function(groups, item) {
+      const val = item[prop]
+      groups[val] = groups[val] || []
+      groups[val].push(item)
+      return groups
+    }, {})
+}
+
+//用來抓peopleSelect的外部資料用的
+export function getOrg(userId) { //抓單位
+    this.orgIsLoading = true
+    let people = []
+    let orgList = []
+    fetchOrganization({
+      ClientReqTime: getNowFullTime(),  // client 端請求時間
+      OperatorID: userId,  // 操作人id
+    }).then(res=>{
+      if (res.data.ErrorCode == 0) {
+        let rtndata = res.data
+        people = rtndata.user_list_group_4.map(element=>{
+          let rtnObj = {}
+          rtnObj.text = element.UserName
+          rtnObj.value = element.UserId
+          rtnObj.group = element.DepartName 
+          rtnObj.child = ""
+          return rtnObj
+        })
+        const dept3 = rtndata.user_depart_list_group_3.map(ele => {
+          let rtnObj3 = {}
+          rtnObj3.header = ele.DepartName
+          rtnObj3.text = ele.DepartName
+          rtnObj3.group = ele.DepartParentName
+          return rtnObj3
+        })
+        let dept2 = rtndata.user_depart_list_group_2.map(ele => {
+          let rtnObj2 = {}
+          rtnObj2.header = ele.DepartName
+          rtnObj2.text = ele.DepartName
+          rtnObj2.group = ele.DepartParentName
+          return rtnObj2
+        })
+        let dept1 = rtndata.user_depart_list_group_1.map(ele => {
+          let rtnObj1 = {}
+          rtnObj1.header = ele.DepartName
+          rtnObj1.text = ele.DepartName
+          rtnObj1.group = ele.DepartName
+          return rtnObj1
+        })
+        
+        dept1.forEach(ele => {
+          let rtnArrP1 = people.filter(e => {
+            return e.group == ele.group
+          })
+          let rtnArr2 = dept2.filter(element => {
+            return element.group == ele.text
+          })
+          if(rtnArrP1.length > 0 || rtnArr2.length > 0){
+            ele.child = rtnArrP1.map(t=>t.text).toString()
+            ele.value = rtnArrP1.map(t=>t.value).toString()
+            orgList.push(ele)
+          }
+          orgList.push(...rtnArrP1)
+          rtnArr2.forEach(element => {
+            let rtnArrP2 = people.filter(e => {
+              return e.group == element.text
+            })
+            let rtnArr3 = []
+            rtnArr3 = dept3.filter(item => {
+              return item.group == element.text
+            })
+            if(rtnArrP2.length > 0 || rtnArr3.length > 0){
+              element.child = rtnArrP2.map(t=>t.text).toString()
+              element.value = rtnArrP2.map(t=>t.value).toString()
+              orgList.push(element)
+            }
+            orgList.push(...rtnArrP2)
+            rtnArr3.forEach(items => {
+              let rtnArrP3 = people.filter(e => {
+                return e.group == items.text
+              })
+              if(rtnArrP3.length > 0){
+                items.child = rtnArrP3.map(t=>t.text).toString()
+                items.value = rtnArrP3.map(t=>t.value).toString()
+                orgList.push(items)
+              }
+              orgList.push(...rtnArrP3)
+            })
+          })
+        })
+      }else{
+        return {rtn: "error"}
+      }
+    }).catch( err => {
+        console.warn(err)
+      this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+    }).finally(() => {
+        return {orgList:orgList,people:people}
+    })
+  }

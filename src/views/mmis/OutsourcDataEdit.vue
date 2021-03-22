@@ -118,7 +118,6 @@
             OperatorID: this.userData.UserId,  // 操作人id
           }).then(res => {
             if (res.data.ErrorCode == 0) {
-              console.log(res.data)
               this.queryItem.DepartName = res.data.DepartName
               this.queryItem.VendorName = res.data.VendorList[0].VendorName
               this.queryItem.Name = res.data.VendorList[0].Name

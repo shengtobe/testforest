@@ -449,17 +449,11 @@ export default {
     view(woID) {
       this.chLoadingShow()
       this.content = {}
-      console.log({
-        WorkerOrderID: woID,
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-      })
       materialQuery({
         WorkerOrderID: woID,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
-        console.log(res.data)
         if (res.data.ErrorCode == 0) {
           const dataList = decodeObject(res.data.WorkDataList[0])
           this.content.WorkNumber = dataList.WorkOrderID
@@ -479,7 +473,7 @@ export default {
           this.$router.push({ path: '/error' })
         }
       }).catch( err => {
-        console.log(err)
+        console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         this.chLoadingShow()
