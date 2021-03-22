@@ -39,7 +39,7 @@ export function updateData(data) { return axios(
     }
 )}
 
-// 刪除
+// 刪除 (作廢)
 export function deleteData(data) { return axios(
     {
         url: '/sms/event/delete',
@@ -62,6 +62,24 @@ export function deleteFile(data) { return axios(
     {
         url: '/sms/event/file/delete',
         method: 'delete',
+        data,
+    }
+)}
+
+// 申請審核
+export function applyData(data) { return axios(
+    {
+        url: '/sms/event/apply/check',
+        method: 'post',
+        data,
+    }
+)}
+
+// 長官審核通過
+export function passData(data) { return axios(
+    {
+        url: '/sms/event/check/pass',
+        method: 'post',
         data,
     }
 )}

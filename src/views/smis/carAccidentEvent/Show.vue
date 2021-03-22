@@ -90,10 +90,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import OtherInfoShow from '@/views/smis/carAccidentEvent/OtherInfoShow.vue'
+import { applyData, deleteData } from '@/apis/smis/carAccidentEvent'
 
 export default {
     props: ['itemData'],
@@ -163,12 +165,25 @@ export default {
         del() {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                
+                deleteData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，作廢失敗')
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 申請措施審核
@@ -178,13 +193,28 @@ export default {
             if (!this.finishImprove) errArr.push('改善措施檢討')
 
             if (this.finishDeath && this.finishImprove) {  // 都有填寫
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請措施審核成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                if (confirm('你確定要申請措施審核嗎?')) {
                     this.chLoadingShow()
-                }, 1000)
+                    
+                    applyData({
+                        AccidentCode: this.id,  // 事故事件編號
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '申請成功' })
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        alert('伺服器發生問題，申請失敗')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
             } else {
                 let errLog = '你還未填寫「'+ errArr.join('、') + '」'
                 alert(errLog)
