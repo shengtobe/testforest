@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `職災事故事件編輯 (編號：${ routeId })` : '職業災害事故調查表' }}
+        {{ (this.isEdit)? `職災事故事件編輯 (編號：${ id })` : '職業災害事故調查表' }}
     </h2>
 
     <v-row class="px-2">
@@ -482,7 +482,7 @@
         <v-col cols="12" class="text-center mb-8">
             <v-btn dark class="mr-4"
                 v-if="isEdit"
-                :to="`/smis/jobsafety/disaster-survey/${this.routeId}/show`"
+                :to="`/smis/jobsafety/disaster-survey/${this.id}/show`"
             >回上層</v-btn>
 
             <v-btn
@@ -524,10 +524,11 @@ import { dapartOptsBrief } from '@/assets/js/departOption'
 import { injurySiteOpts, disasterTypeOpts, vehicleOpts } from '@/assets/js/smisData'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
+import { createData, detailOne, updateData } from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
-        routeId: '',
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否編輯中
         ipt: {},
@@ -652,10 +653,10 @@ export default {
             this.opts.vehicleLv1 = Object.keys(vehicleOpts)
             this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]
 
-            if (this.$route.params.id != undefined) {
+            if (this.id != undefined) {
                 // -------------- 編輯時 -------------- 
                 this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
+                // this.id = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
 
                 // 範例效果
@@ -767,15 +768,90 @@ export default {
                 this.chLoadingShow()
 
                 // 新增測試用資料
-                setTimeout(() => {
-                    if (this.isEdit) {
-                        this.chMsgbar({ success: true, msg: '資料更新成功' })
+                // setTimeout(() => {
+                //     if (this.isEdit) {
+                //         this.chMsgbar({ success: true, msg: '資料更新成功' })
+                //     } else {
+                //         this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                //         this.chMsgbar({ success: true, msg: '資料新增成功' })
+                //     }
+                //     this.chLoadingShow()
+                // }, 1000)
+                if (this.isEdit) {
+                // ---------- 編輯時---------- 
+                detailData({
+                    EndangerCode: this.id,  // 危害編號
+                    EndangerDesp: this.ipt.desc,  // 危害說明
+                    OperationMode: this.ipt.mode,  //營運模式
+                    EndangerReason: this.ipt.reason,  // 危害直接成因
+                    EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
+                    Remark: this.ipt.note,  // 備註
+                    EndangerDepart: this.ipt.depart,  // 危害權責部門
+                    RiskSerious: this.ipt.serious,  // 風險嚴重性
+                    RiskFreq: this.ipt.frequency,  // 風險頻率
+                    RiskLevel: '',  // 風險等級
+                    DeriveAccident: this.ipt.accidents,  // 衍生事故
+                    EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
+                    EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
+                    EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
+                    ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
+                    ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
+                    DeviceDepart: '',  // 控制措施權責部門
+                    ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
+                    ProcCount: chooseControlData,  // 已選控制措施清單
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '更新成功' })
                     } else {
-                        this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-                        this.chMsgbar({ success: true, msg: '資料新增成功' })
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
+            } else {
+                // ---------- 新增時---------- 
+                createData({
+                    EndangerDesp: this.ipt.desc,  // 危害說明
+                    OperationMode: this.ipt.mode,  //營運模式
+                    EndangerReason: this.ipt.reason,  // 危害直接成因
+                    EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
+                    Remark: this.ipt.note,  // 備註
+                    EndangerDepart: this.ipt.depart,  // 危害權責部門
+                    RiskSerious: this.ipt.serious,  // 風險嚴重性
+                    RiskFreq: this.ipt.frequency,  // 風險頻率
+                    RiskLevel: '',  // 風險等級
+                    DeriveAccident: this.ipt.accidents,  // 衍生事故
+                    EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
+                    EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
+                    EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
+                    ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
+                    ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
+                    DeviceDepart: '',  // 控制措施權責部門
+                    ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
+                    ProcCount: chooseControlData,  // 已選控制措施清單
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '新增成功' })
+                        this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+                        this.ipt.controlChoose = [ ...[]]
+                        this.tableItems = [ ...[]]
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
             }
         },
         // 加入要上傳的檔案 (新增時)

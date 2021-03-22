@@ -25,7 +25,8 @@ export const JobSafetyRouter = [
     {
         linkText: '編輯事故事件',
         path: '/smis/jobsafety/disaster-survey/:id/edit', 
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue')
+        component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue'),
+        props: true,
     },
     {
         linkText: '改善措施',
