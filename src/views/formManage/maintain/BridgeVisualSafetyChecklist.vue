@@ -6,53 +6,24 @@
     <v-row class="px-2">
       <!-- 日期-起 -->
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="CheckdayOn"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryCheckdayOn" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryCheckdayOn"
-            @input="CheckdayOn = false"
-            locale="zh-tw"
-          />
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
+        />
       </v-col>
-      <!-- 日期-迄 -->
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="CheckdayOff"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryCheckdayOff" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryCheckdayOff"
-            @input="CheckdayOff = false"
-            locale="zh-tw"
-          />
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
       <!-- 功能 -->
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -99,10 +70,19 @@
               dark
               fab
               color="info darken-1"
-              to="/form-manage/curing/railway-worklog-add"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -121,8 +101,13 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
@@ -137,6 +122,16 @@ export default {
         { text: "不限", value: "" },
         ...formDepartOptions,
       ],
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
       n01: "0",
       CheckdayOn: "",
       QueryCheckdayOn: "",
@@ -152,7 +147,7 @@ export default {
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP038",
       nowTime: "",
       doMan:{
         id: '',
@@ -179,7 +174,13 @@ export default {
       //------
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+  },
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -253,12 +254,14 @@ export default {
     },
     s01Change(selectObj){
       console.log("select is changed >> " + selectObj);
-      this.n01 = selectObj.substr(2);
+      this.n01 = selectObj;
+      // this.n01 = selectObj.substr(2);
     },
     btnNew(){
       console.log("Add new form btn is pressed");
       if(this.n01 != "0"){
-        this.$router.push('/form-manage/maintain/bridge-visual-safety-checklist-add')
+        console.log("n01: " + this.n01)
+        this.$router.push(`/form-manage/maintain/bridge-visual-safety-checklist-add/${this.n01}/newone`)
       }
       else{
         window.alert("請選擇橋梁編號");
@@ -275,9 +278,8 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -324,29 +326,48 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckDay",//0
+          "BridgeID",//1
+          "Engineer",//2
+          "WorksChief",//3
+          "Supervisor",//4
+          "LineType",//5
+          "CheckOption1",//6
+          "CheckOption1HazLv",//7
+          "CheckOption2",//8
+          "CheckOption2HazLv",//9
+          "CheckOption3",//10
+          "CheckOption3HazLv",//11
+          "CheckOption4",//12
+          "CheckOption4HazLv",//13
+          "CheckOption5",//14
+          "CheckOption5HazLv",//15
+          "CheckOption6",//16
+          "CheckOption6HazLv",//17
+          "CheckOption7",//18
+          "CheckOption7HazLv",//19
+          "CheckOption8",//20
+          "CheckOption9",//21
+          "CheckOption9HazLv",//22
+          "CheckOption10",//23
+          "CheckOption11",//24
+          "CheckOption12",//25
+          "CheckOption13",//26
+          "CheckOption14",//27
+          "CheckOption15",//28
+          "CheckOption16",//29
+          "CheckOption17",//30
+          "CheckOption18",//31
+          "Memo",//32
         ],
       }).then(res => {
-        this.initInput();
+        console.log("viewPage start!!!!!!")
+        // this.initInput();
         console.log(res.data.DT)
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
         console.log("data time: " + dat[0].CheckDay)
-        this.Add = true
+        // this.Add = true
         // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
         console.log("data time1: " + time1)
         this.zs = time1
@@ -354,21 +375,34 @@ export default {
         //123資料
         let ad = Object.keys(dat[0])
         console.log(ad)
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
+        let dataArr = []
+        var i = 0;
+        for(let key of Object.keys(dat[0])){
+          console.log("key: " + key)
+          console.log("(dat[0])[key]: " + (dat[0])[key])
+          let vv = ((dat[0])[key] == null)?' ':(dat[0])[key];
+          let asciiCode = ""
+          if(vv.length > 1){
+            let charArr = []
+            for (var i = 0; i < vv.length; i++) {
+              charArr.push(vv[i].charCodeAt(0))
             }
-            i++
+            asciiCode = charArr.join('_')
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+          else{
+            asciiCode = vv.charCodeAt(0)
+          }
+          
+          console.log("asciiCode: " + asciiCode)
+          dataArr.push(asciiCode);
+          i++
+        }
+        console.log("dataArr: ")
+        console.log(dataArr)
+        let StrForNextPage = "";
+        StrForNextPage = dataArr.join();
+        console.log("StrForNextPage: " + StrForNextPage);
+        this.$router.push(`/form-manage/maintain/bridge-visual-safety-checklist-add/${StrForNextPage}/newone`)
 
         
       }).catch(err => {
