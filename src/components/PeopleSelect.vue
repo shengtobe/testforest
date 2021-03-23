@@ -34,7 +34,7 @@ export default {
     inputName:'',
 	}),
 	mounted() {
-    if(outData){
+    if(this.outData){
       this.orgList = this.outdata.orgList
       this.people = this.outdata.people
       this.inputValue = this.value
