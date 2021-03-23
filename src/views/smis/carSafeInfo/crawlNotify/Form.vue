@@ -351,8 +351,7 @@ export default {
                     SlowLimit: this.ipt.slow,  //慢行速限
                     LimitStartDate: this.ipt.dateStart,  //限制日期(起)
                     LimitEndDate: this.ipt.dateEnd,  //限制日期(迄)
-                    RecPeople: arr
-            
+                    RecPeople: arr,           
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '回覆成功'})

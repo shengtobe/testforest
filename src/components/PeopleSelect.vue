@@ -28,16 +28,25 @@ export default {
 	data: () => ({
     orgList:[],
     orgIsLoading:false,
-    inputValue:''
+    people:[],
+    inputValue:'',
+    inputName:'',
 	}),
 	mounted() {
-    this.inputValue = this.value
     this._getOrg()
 	},
 	computed: {
 		...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    selectName:function() {
+      console.log(1111)
+      this.inputName = this.inputValue.map(element=>{
+        console.log(this.people.find(el=>el.value==element))
+        return this.people.find(el=>el.value==element)?.text||""
+      })
+      return this.inputName
+    }
 	},
 	methods: {
     ...mapActions('system', [
@@ -131,6 +140,7 @@ export default {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         this.orgIsLoading = false
+        this.inputValue = this.value
       })
     },
     aFilter(item, queryText, itemText) { //選人的filter
@@ -141,12 +151,18 @@ export default {
       // console.log(item)
       return text || group || child || value
     },
+    changeValue(){
+      console.log(this.selectName)
+    }
 	},
   watch: {
     inputValue: function(value){
       this.$emit('input',value)
-      this.$emit('getName',this.orgList.find(el=>el.value==value).text)
+      this.$emit('getName',this.selectName)
     }
-  }
+  },
+  // created(){
+  //   this._getOrg()
+  // }
 }
 </script>
