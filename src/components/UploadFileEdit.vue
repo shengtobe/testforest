@@ -30,7 +30,7 @@
         <!-- 檔案 -->
         <v-col
             cols="12"
-            sm="6"
+            class="mb-n4"
             v-for="(item, i) in fileList"
             :key="(item.fileName == undefined)? item.FileName : item.fileName"
         >
@@ -76,8 +76,6 @@ export default {
         // 上傳檔案
         upload() {
             if (this.choseFile != null) {
-                // this.$emit('uploadFile', this.choseFile)
-                // this.choseFile = null
                 let reader = new FileReader()  // blob 用
 
                 // 設定 reader 物件的 result 屬性，為 ArrayBuffer
