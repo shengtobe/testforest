@@ -1,5 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
+    <h2 class="mb-4">邊坡監測</h2>
     <v-row>
         <v-col cols="12" sm="2" class="indigo--text" >
             <h2 align="center"> 即時資料</h2>

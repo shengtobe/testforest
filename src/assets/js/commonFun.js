@@ -172,8 +172,8 @@ export function groupBy(input,prop) {
 }
 
 //用來抓peopleSelect的外部資料用的
+import { fetchOrganization } from '@/apis/organization'
 export function getOrg(userId) { //抓單位
-    this.orgIsLoading = true
     let people = []
     let orgList = []
     fetchOrganization({

@@ -60,7 +60,6 @@
                 <v-icon class="mr-1 mb-1">mdi-human-male-female</v-icon>健檢分級性別
             </h3>
             <v-select
-                readonly
                 v-model="ipt.HealthLvSex"
                 :items="[{text:'男性',value:'M'}, {text:'女性',value:'F'}]"
                 solo

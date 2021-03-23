@@ -30,7 +30,7 @@
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn color="indigo" dark large class="ml-2" @click="add">
-          <v-icon class="mr-1">mdi-plus</v-icon>新增
+          <v-icon class="mr-1">mdi-plus</v-icon>編輯
         </v-btn>
         <v-btn color="red" dark large class="ml-2" to="/mmis/edit-eqcode">
           <v-icon class="mr-1">mdi-data-matrix-edit</v-icon>編輯設備標示編號
