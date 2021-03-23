@@ -133,7 +133,7 @@
 
                                             <v-col cols="12" sm="4" md="3">
                                                 <h3 class="mb-1">
-                                                    <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>收治醫院
+                                                    <v-icon class="mr-1 mb-1">mdi-hospital-building</v-icon>收治醫院
                                                 </h3>
                                                 <v-text-field
                                                     v-model.trim="editedItem.hospital"
@@ -143,7 +143,7 @@
 
                                             <v-col cols="12" sm="4" md="3">
                                                 <h3 class="mb-1">
-                                                    <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>賠償金額
+                                                    <v-icon class="mr-1 mb-1">mdi-currency-usd</v-icon>賠償金額
                                                 </h3>
                                                 <v-text-field
                                                     v-model.trim.number="editedItem.money"
@@ -154,7 +154,7 @@
 
                                             <v-col cols="12" sm="6" md="4">
                                                 <h3 class="mb-1">
-                                                    <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>保險註記
+                                                    <v-icon class="mr-1 mb-1">mdi-tag</v-icon>保險註記
                                                 </h3>
                                                 <v-text-field
                                                     v-model.trim="editedItem.insurance"
@@ -164,7 +164,7 @@
 
                                             <v-col cols="12" sm="6" md="5">
                                                 <h3 class="mb-1">
-                                                    <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>備註
+                                                    <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
                                                 </h3>
                                                 <v-text-field
                                                     v-model.trim="editedItem.note"

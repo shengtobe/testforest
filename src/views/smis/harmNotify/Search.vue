@@ -134,7 +134,7 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
-                    <v-list-item to="/smis/harmnotify/status-type">
+                    <v-list-item to="/smis/harmnotify/case-type">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         立案類型統計圖
                     </v-list-item>

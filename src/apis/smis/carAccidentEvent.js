@@ -84,6 +84,33 @@ export function passData(data) { return axios(
     }
 )}
 
+// 申請結案
+export function closeData(data) { return axios(
+    {
+        url: '/sms/event/apply/close',
+        method: 'post',
+        data,
+    }
+)}
+
+// 退回
+export function withdrawData(data) { return axios(
+    {
+        url: '/sms/event/check/return',
+        method: 'post',
+        data,
+    }
+)}
+
+// 重提事故事件
+export function resetData(data) { return axios(
+    {
+        url: '/sms/event/apply/reset',
+        method: 'post',
+        data,
+    }
+)}
+
 
 // -------------- 人員傷亡名單 -------------
 // 搜尋列表
