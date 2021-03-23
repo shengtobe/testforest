@@ -24,8 +24,8 @@
 
                     <template v-slot:item.link="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            :href="item.link"
-                            :download="item.fileName"
+                            :href="item.FileSavePath"
+                            :download="item.FileSaveName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -39,7 +39,7 @@
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="del(item.id)"
+                            @click="del(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -94,21 +94,23 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
+import { drivingfetchList, updateDriving, deleteDriving } from '@/apis/smis/safeFile'
 
 export default {
     data: () => ({
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '上傳人員', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '上傳日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檔案名稱', value: 'fileName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '下載', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '更新日期', value: 'updateTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '上傳人員', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '上傳日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '檔案名稱', value: 'FileSaveName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '下載', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'FileDescrip', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
@@ -116,66 +118,44 @@ export default {
         note: '',  // 備註
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 初始化資料
+        // 初始化資料 (搜尋所有資料)
         initData() {
             this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
 
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: '123.pdf', 
-                        link: '/demofile/123.pdf',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '222',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: 'ASRC200701.jpg', 
-                        link: '/demofile/demo.jpg',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '333',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: 'ASRC200702.jpg', 
-                        link: '/demofile/demo2.jpg',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '444',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: '123.docx', 
-                        link: '/demofile/123.docx',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                    {
-                        id: '555',
-                        name: '王小明',
-                        date: '2020-05-01 09:30:00',
-                        fileName: '456.xlsx', 
-                        link: '/demofile/456.xlsx',
-                        updateTime: '2020-05-01 09:03:00',
-                        note: '',
-                    },
-                ]
-
+            drivingfetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportFile',  // DB table
+                KeyItem: [],
+                QyName: [    // 欲回傳的欄位資料
+                    'ModuleItemID',
+                    'FileBelongMod',
+                    'InsertDTime',
+                    'FileSaveName',
+                    'FileSavePath',
+                    'FileDescrip',
+                    'UpdateDTime',
+                    'CreatorID',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -185,29 +165,60 @@ export default {
         save() {
             this.isLoading = true
 
-            setTimeout(() => {
-                this.tableItems[this.editIdx].note = this.note
-                this.chMsgbar({ success: true, msg: '更新成功' })
+            updateDriving({
+                AccidentCode: this.tableItems[this.editIdx].ModuleItemID,  // 事故編號
+                FileSaveName: this.tableItems[this.editIdx].FileSaveName,  // 檔案名稱
+                FileDescrip: this.note,  // 檔案說明(備註)
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // 待後回覆無問題，再一併寫回編輯中的該筆資料
+                    this.tableItems[this.editIdx].FileDescrip = this.note  // 檔案說明(備註)
+                    this.chMsgbar({ success: true, msg: '更新成功' })
+                } else {
+                    console.log(res.data.Msg)
+                    this.chMsgbar({ success: false, msg: '更新失敗' })
+                }
+            }).catch(err => {
+                console.log(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+            }).finally(() => {
                 this.isLoading = this.dialog = false
-            }, 1000)
+            })
         },
         // 編輯
         edit (item) {
-            this.editIdx = this.tableItems.indexOf(item)
-            this.note = item.note  // 設定表單資料
+            this.editIdx = this.tableItems.indexOf(item)  // 取得索引值
+            this.note = item.FileDescrip  // 設定表單資料 (備註)
             this.dialog = true
         },
         // 刪除
-        del(id) {
+        del(item) {
             if (confirm('你確定要刪除嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
+                this.editIdx = this.tableItems.indexOf(item)  // 取得索引值
+
+                deleteDriving({
+                    AccidentCode: this.tableItems[this.editIdx].ModuleItemID,  // 事故編號
+                    FileSaveName: this.tableItems[this.editIdx].FileSaveName,  // 檔案名稱
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.tableItems.splice(this.editIdx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '刪除失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },

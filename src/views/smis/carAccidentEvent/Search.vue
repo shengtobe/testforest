@@ -198,6 +198,24 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.location="{ item }">
+                        {{ locationOpts.find(ele => ele.value == item.FindLine).text }}
+                        {{ (item.FindLine == 'other')? `(${item.FindLineOther})` : '' }}
+                        {{ (['l1', 'l2', 'l3', 'l4'].includes(item.FindLine))? `(${item.LineK}K+${item.LineM}M)` : '' }}
+                    </template>
+                    
+                    <template v-slot:item.type="{ item }">
+                        {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}
+                    </template>
+
+                    <template v-slot:item.hurtPeople="{ item }">
+                        {{ (item.HurtPeopleCount == 'F')? '未填寫' : item.hurt_people_count }}
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        {{ accidentEventStatus.find(ele => ele.value == item.AccidentStatus).text }}
+                    </template>
+
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             :loading="isLoading"
@@ -205,10 +223,6 @@
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                    </template>
-
-                   <template v-slot:item.Status="{ item }">
-                        {{ accidentEventStatus.find(ele => ele.value == item.Status).text }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -296,13 +310,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'AccidentFindDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '傷亡人數', value: 'HurtPeopleCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 160 },
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 220 },
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 140 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
         ],
         accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         isLoading: false,  // 是否讀取中
@@ -338,6 +352,9 @@ export default {
                     'AccidentCode',
                     'AccidentFindDate',
                     'FindLine',
+                    'LineK',
+                    'LineM',
+                    'FindLineOther',
                     'AccidentType',
                     'HurtPeopleCount',
                     'AccidentStatus',
@@ -345,8 +362,7 @@ export default {
                     'CancelStatus',
                 ],
             }).then(res => {
-                // this.tableItems = JSON.parse(res.data.order_list)
-                console.log(res.data)
+                this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -358,51 +374,9 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 轉換事故事件狀態文字
-        transferStatusText(status) {
-            switch(status) {
-                case 1:
-                    return '已立案'
-                    break
-                case 2:  // 審核完備資料
-                    return '審核中'
-                    break
-                case 3:
-                    return '已完備資料'
-                    break
-                case 4:  // 審核措施落實
-                    return '審核中'
-                    break
-                case 5:
-                    return '改善措施已落實'
-                    break
-                default:
-                    break
-            }
-        },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
-            switch(item.status) {
-                case 1:  // 已立案
-                    sessionStorage.itemStatus = '1'
-                    break
-                case 2:  // 審核中 (審核完備資料)
-                    sessionStorage.itemStatus = '2'
-                    break
-                case 3:  // 已完備資料
-                    sessionStorage.itemStatus = '3'
-                    break
-                case 4: // 審核中 (審核措施落實)
-                    sessionStorage.itemStatus = '4'
-                    break
-                case 5: // 改善措施已落實
-                    sessionStorage.itemStatus = '5'
-                    break
-                default:
-                    break
-            }
-
-            let routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.id}/show` })
+            let routeData = this.$router.resolve({ path: `/smis/car-accident-event/${item.AccidentCode}/show` })
             window.open(routeData.href, '_blank')
         },
     },

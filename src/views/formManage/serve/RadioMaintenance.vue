@@ -26,7 +26,13 @@
         <v-select :items="MachineID" v-model="input.PAID" solo />
       </v-col>
       <v-col cols="12" sm="4" md="3">
-        <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
+        <deptSelect
+          label="管理單位"
+          v-model="input.department"
+          :iconYN="formIconShow"
+          outType="key"
+          key="department"
+        />
       </v-col>
 
       <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
@@ -699,14 +705,9 @@ export default {
           console.log(res.data.DT);
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
-          // console.log("data name: " + data.Name);
-          // console.log("data time: " + data.CheckDay);
           this.doMan.name = data.Name;
           let time1 = data.CheckDay.substr(0, 10);
-          //console.log("data time1: " + time1);
           this.zs = time1;
-          //console.log("doMan name: " + this.doMan.name);
-          //123資料
           this.PAID = data.PAID;
           this.mainLocation1 = data.CheckOption1;
           this.mainLocation2 = data.CheckOption2;

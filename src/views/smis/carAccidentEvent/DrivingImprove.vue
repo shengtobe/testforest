@@ -2,7 +2,7 @@
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
         行安改善措施
-        <span class="mx-3">(事故事件編號：{{ routeId }})</span>
+        <span class="mx-3">(事故事件編號：{{ id }})</span>
     </h2>
 
     <h3 class="mt-8 error--text">同類型危害已核定採用之控制措施：</h3>
@@ -25,7 +25,7 @@
                         <v-checkbox
                             class="mr-n3 ml-2"
                             v-model="selected"
-                            :value="item.id"
+                            :value="item.ProcCode"
                         ></v-checkbox>
                     </template>
 
@@ -35,18 +35,24 @@
                         >檢視</v-btn>
                     </template>
 
+                    <template v-slot:item.depart="{ item }">
+                        {{ departOpts.find(ele => ele.value == item.DeviceDepart).text }}
+                    </template>
+
                     <template v-slot:item.file="{ item }">
-                        <v-btn small dark fab color="indigo"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                        <v-btn fab small dark color="brown"
+                            v-if="item.regul_file_path != ''"
+                            :href="item.regul_file_path"
+                            :download="item.regul_file_path_name"
                         >
-                            <v-icon dark>mdi-file-document</v-icon>
+                            <v-icon>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
+                            v-if="item.file_path.length > 0"
+                            @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -83,7 +89,7 @@
 
         <v-col cols="12" class="mt-5 text-center">
             <v-btn dark class="mr-3"
-                :to="`/smis/car-accident-event/${routeId}/show`"
+                :to="`/smis/car-accident-event/${id}/show`"
             >回上層</v-btn>
 
             <v-btn dark color="success"
@@ -92,72 +98,55 @@
         </v-col>
     </v-row>
 
-    <!-- 證據 -->
-    <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
-                <v-toolbar-title>證據</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-toolbar>
-
-            <v-list-item-group>
-                <template v-for="(item, idx) in evidences">
-                    <v-list-item
-                        :key="item.name"
-                        :href="item.link"
-                        :download="item.name"
-                    >
-                        <v-list-item-content>
-                            <v-list-item-title>{{ item.name }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-divider
-                        v-if="idx + 1 < evidences.length"
-                        :key="idx"
-                    ></v-divider>
-                </template>
-            </v-list-item-group>
-        </v-card>
-    </v-dialog>
+    <!-- 證據 dialog -->
+    <EvidencesDialog
+        :show="dialogShow"
+        :fileNameArr="evidencesName"
+        :filePathArr="evidences"
+        @closeDialog="closeDialog"
+    />
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
+import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
+import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
+import { procUpdateData } from '@/apis/smis/carAccidentEvent'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
-        routeId: '',
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '措施編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120'},
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
+            { text: '措施編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70},
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
         ],
+        departOpts: departOptions,  // 管控單位
         summary: '',  // 改善措施摘要
         selected: [],  // 所選的控制措施 id
-        evidences: [],  // 證據
+        evidences: [],  // 證據路徑
+        evidencesName: [],  // 證據名稱
         dialogShow: false,  // 證據dialog是否顯示
     }),
-    components: { Pagination },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
+    components: {
+        Pagination,
+        EvidencesDialog,
     },
     computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
         selectedMsg() {
             // 重新排序
             let arr = this.selected.sort(function(a, b) {
@@ -175,90 +164,33 @@ export default {
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow()
-            this.routeId = this.$route.params.id
+            this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                // 同類危害已核定的控制措施
-                this.tableItems = [
-                    {
-                        id: 21,
-                        subject: '定期巡檢枕木',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '服務科',
-                        file: { name: '123.pdf', link: '/demofile/123.pdf' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                    {
-                        id: 36,
-                        subject: '定期巡檢扣件',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '服務科',
-                        file: { name: '123.docx', link: '/demofile/123.docx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                    {
-                        id: 45,
-                        subject: '維修後慢行觀察',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '服務科',
-                        file: { name: '123.docx', link: '/demofile/123.docx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                    {
-                        id: 49,
-                        subject: '定期校驗軌道檢測儀',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '服務科',
-                        file: { name: '123.docx', link: '/demofile/123.docx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                    {
-                        id: 53,
-                        subject: '強化鋼軌與軌枕間之扣夾力',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        depart: '服務科',
-                        file: { name: '123.docx', link: '/demofile/123.docx' },
-                        note: '',
-                        evidences: [
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
-                    },
-                ]
-
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerProc',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'PolicyCode',
+                    'ProcCode',
+                    'DeviceTitle',
+                    'DeviceDesp',
+                    'DeviceDepart',
+                    'UpdateDTime',
+                    'Remark',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -272,19 +204,39 @@ export default {
             }
 
             this.chLoadingShow()
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '更新成功'})
+
+            procUpdateData({
+                AccidentCode: this.id,  // 事故事件編號
+                ProcTitle: this.summary,  // 改善措施摘要
+                ProcCode: this.selected,  //改善措施編號
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '更新成功' })
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 顯示措施說明
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 顯示證據
-        showEvidences(arr) {
-            this.evidences = [ ...arr ]
+        showEvidences(item) {
+            this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
+            this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
             this.dialogShow = true
+        },
+        // 關閉證據dialog
+        closeDialog() {
+            this.dialogShow = false
         },
     },
     created() {

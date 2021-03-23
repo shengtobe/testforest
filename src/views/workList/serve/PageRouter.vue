@@ -25,6 +25,7 @@ import AcceptingShow from '@/views/workList/serve/AcceptingShow.vue'
 import ClosedComplated from '@/views/workList/serve/ClosedComplated.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         itemData: {},  // 工單資料
         status: '',  // 狀態
@@ -35,12 +36,6 @@ export default {
         AcceptingShow,
         ClosedComplated,
     },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        },
-    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -50,7 +45,7 @@ export default {
             this.chLoadingShow()
 
             fetchWorkOrderOne({
-                WorkOrderID: this.$route.params.id,  // 工單編號 (從路由參數抓取)
+                WorkOrderID: this.id,  // 工單編號 (從路由參數抓取)
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {

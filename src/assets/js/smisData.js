@@ -148,6 +148,79 @@ export const locationOpts = [
     { text: '其他', value: 'other' },
 ]
 
+// 行車事故 - 第一層因素
+export const AccidentFactors1 = [ 
+    { text: '內部因素', value: '1' },
+    { text: '外部因素', value: '2' },
+]
+
+// 行車事故 - 第二層因素
+export const AccidentFactors2 = [ 
+    { parent: '1', text: '人為因素', value: '1' },
+    { parent: '1', text: '車輛', value: '2' },
+    { parent: '1', text: '路線設施', value: '3' },
+    { parent: '1', text: '使用者', value: '4' },
+    { parent: '2', text: '第三方', value: '5' },
+    { parent: '2', text: '天氣與環境', value: '6' },
+]
+
+// 行車事故 - 第三層因素
+export const AccidentFactors3 = [ 
+    { parent: '1', text: '維修人員', value: '1' },
+    { parent: '1', text: '調度員及號誌員', value: '2' },
+    { parent: '1', text: '司機員', value: '3' },
+    { parent: '1', text: '其他人為因素', value: '4' },
+    { parent: '2', text: '車輪', value: '5' },
+    { parent: '2', text: '其他車輛因素', value: '6' },
+    { parent: '3', text: '軌道與相關構造', value: '7' },
+    { parent: '3', text: '電力系統', value: '8' },
+    { parent: '3', text: '其他路線因素', value: '9' },
+    { parent: '4', text: '乘客', value: '10' },
+    { parent: '4', text: '其他使用者因素', value: '11' },
+    { parent: '5', text: '入侵路線', value: '12' },
+    { parent: '5', text: '車輛入侵平交道', value: '13' },
+    { parent: '5', text: '人員入侵平交道', value: '14' },
+    { parent: '5', text: '人員在公共區域', value: '15' },
+    { parent: '5', text: '其他第三方因素', value: '16' },
+    { parent: '6', text: '環境', value: '17' },
+    { parent: '6', text: '天氣', value: '18' },
+]
+
+// 危害資料庫 - 營運模式
+export const operateModes = [ 
+    { text: '正常', value: 'm1' },
+    { text: '降級', value: 'm2' },
+    { text: '緊急', value: 'm3' },
+    { text: '維修', value: 'm4' },
+]
+
+// 危害資料庫 - 風險嚴重性
+export const riskSerious = [
+    { text: '極輕微 (S5)', value: 'S5' },
+    { text: '稍微 (S4)', value: 'S4' },
+    { text: '主要 (S3)', value: 'S3' },
+    { text: '嚴重 (S2)', value: 'S2' },
+    { text: '災難 (S1)', value: 'S1' },
+]
+
+// 危害資料庫 - 風險頻率
+export const riskFrequency = [
+    { text: '經常 (P1)', value: 'P1' },
+    { text: '很可能 (P2)', value: 'P2' },
+    { text: '偶爾 (P3)', value: 'P3' },
+    { text: '很少 (P4)', value: 'P4' },
+    { text: '幾乎不 (P5)', value: 'P5' },
+]
+
+// 危害資料庫 - 風險等級
+export const riskLevel = [
+    { text: '非常高度風險 (R1)', value: 'R1' },
+    { text: '中高度風險 (R2)', value: 'R2' },
+    { text: '中度風險 (R3)', value: 'R3' },
+    { text: '可接受，持續控管 (R4)', value: 'R4' },
+]
+
+
 // 職安-傷害部位
 export const injurySiteOpts = [
     { text: '(1) 頭(含眼、耳、鼻、口腔、下顎骨)', value: 1 },

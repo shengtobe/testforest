@@ -309,6 +309,7 @@ import { hourOptions } from '@/assets/js/dateTimeOption'
 import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
@@ -488,7 +489,7 @@ export default {
         initFetchData() {
             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
 
-            if (this.$route.params.id != undefined) {
+            if (this.id != undefined) {
                 // -------- 編輯時 -------
                 this.isEdit = true
 
@@ -506,7 +507,7 @@ export default {
             this.chLoadingShow()
 
             fetchWorkOrderOne({
-                WorkOrderID: this.$route.params.id,  // 工單編號
+                WorkOrderID: this.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data
@@ -603,8 +604,8 @@ export default {
                         CreateDDay: this.ipt.date,  // 立案日期
                         CreateDTime: this.ipt.hour,  // 立案時間 (小時)
                         MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
-                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
-                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}/${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}/${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
                         MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime(),  // client 端請求時間

@@ -161,17 +161,34 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.mode="{ item }">
+                        <span>{{ opts.mode.find(ele => ele.value == item.OperationMode).text }}</span>
+                    </template>
+
+                    <template v-slot:item.serious="{ item }">
+                        <span>{{ opts.serious.find(ele => ele.value == item.RiskSerious).text }}</span>
+                    </template>
+
+                    <template v-slot:item.frequency="{ item }">
+                        <span>{{ opts.frequency.find(ele => ele.value == item.RiskFreq).text }}</span>
+                    </template>
+
+                    <template v-slot:item.level="{ item }">
+                        <span>{{ opts.riskLevel.find(ele => ele.value == item.RiskLevel).text }}</span>
+                    </template>
+                    
+                    <template v-slot:item.status="{ item }">
+                        <span>{{ opts.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
+                    </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
                             :loading="isLoading"
-                            @click="redirect(item)"
+                            @click="viewPage(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                    </template>
-
-                    <template v-slot:item.status="{ item }">
-                        {{ transferStatusText(item.status) }}
                     </template>
 
                     <template v-slot:footer="footer">
@@ -189,11 +206,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { evtTypes, locationOpts } from '@/assets/js/smisData'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { carHarmDbStatus, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
 import { carHarmDBHarms } from '@/assets/js/smisTestData'
-
+import { fetchList } from '@/apis/smis/carHarmDatabase/harms'
+ 
 export default {
     data: () => ({
         keyword: '',  // 關鍵字
@@ -201,17 +220,29 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
         ],
         isLoading: false,  // 是否讀取中
+        opts: {
+            status: carHarmDbStatus,  // 狀態
+            mode: operateModes, // 營運模式
+            serious: riskSerious, // 風險嚴重性
+            frequency: riskFrequency, // 風險頻率
+            riskLevel: riskLevel,  // 風險等級
+        },
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -221,11 +252,33 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = carHarmDBHarms
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 快速查詢
         fastFetch() {
@@ -270,34 +323,9 @@ export default {
                     break
             }
         },
-        // 重新導向 (依結案狀態)
-        redirect(item) {
-            switch(item.status) {
-                case 1:  // 已立案
-                    sessionStorage.itemStatus = '1'
-                    break
-                case 2:  // 審核完備資料
-                    sessionStorage.itemStatus = '2'
-                    break
-                case 3:  // 已完備資料
-                    sessionStorage.itemStatus = '3'
-                    break
-                case 4:  // 審核風險已可接受
-                    sessionStorage.itemStatus = '4'
-                    break
-                case 5:  // 風險已可接受
-                    sessionStorage.itemStatus = '5'
-                    break
-                case 6:  // 審核更新
-                    sessionStorage.itemStatus = '6'
-                    break
-                case 7:  // 審核作廢
-                    sessionStorage.itemStatus = '7'
-                    break
-                default:
-                    break
-            }
-            let routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.id}/show` })
+        // 檢視內容
+        viewPage(item) {
+            let routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${item.EndangerCode}/show` })
             window.open(routeData.href, '_blank')
         },
     },

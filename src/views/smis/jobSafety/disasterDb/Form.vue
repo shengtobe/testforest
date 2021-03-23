@@ -1,22 +1,22 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `職災危害編輯 (編號：${ ipt.code1 }-${ ipt.code2 }-${ ipt.code3 })` : '職災危害新增' }}
+        {{ (this.isEdit)? `職災危害編輯 (編號：${ ipt.code1 }-${ ipt.code1 })` : '職災危害新增' }}
     </h2>
 
     <v-row class="px-2">
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="4" md="3" align-self="end">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>編號
             </h3>
             <v-text-field
                 v-model.trim="ipt.code1"
                 solo
-                placeholder="請輸入 5 碼，例：12345"
-                maxlength="5"
+                placeholder="請輸入 2 碼，例：01"
+                maxlength="2"
             ></v-text-field>
         </v-col>
-    
+
         <v-col cols="12" sm="4" md="3" align-self="end">
             <v-text-field
                 v-model.trim="ipt.code2"
@@ -25,19 +25,10 @@
                 maxlength="2"
             ></v-text-field>
         </v-col>
-
-        <v-col cols="12" sm="4" md="3" align-self="end">
-            <v-text-field
-                v-model.trim="ipt.code3"
-                solo
-                placeholder="請輸入 2 碼，例：01"
-                maxlength="2"
-            ></v-text-field>
-        </v-col>
     </v-row>
 
     <p class="px-2 font-weight-bold mt-n6">
-        編碼預覽： <span class="error--text">{{ `${ipt.code1}-${ipt.code2}-${ipt.code3}` }}</span>
+        編碼預覽： <span class="error--text">{{ `${ipt.code1}-${ipt.code2}` }}</span>
     </p>
 
     <v-row class="px-2 mt-8">
@@ -272,7 +263,6 @@ export default {
         ipt: {
             code1: '',  // 編號-第1段
             code2: '',  // 編號-第2段
-            code3: '',  // 編號-第3段
             name: '',  // 作業名稱
             workContent: '',  // 操作工作內容
             cycle: '',  // 作業週期

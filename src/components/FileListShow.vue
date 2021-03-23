@@ -20,7 +20,7 @@
                                 contain
                                 min-width="100%"
                                 height="158"
-                                :src="(['png', 'jpeg', 'gif'].includes(item.FileType))? item.FileFullPath : '/images/file.jpg'"
+                                :src="(['png', 'jpeg', 'jpg', 'gif'].includes(item.FileType))? item.FileFullPath : '/images/file.jpg'"
                                 class="grey lighten-2"
                             ></v-img>
 

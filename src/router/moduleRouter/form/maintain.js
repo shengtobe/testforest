@@ -115,8 +115,7 @@ export const FormMaintainRouter = [
     {
         linkText: '橋梁目視安全檢查表', // 111
         path: '/form-manage/maintain/bridge-visual-safety-checklist',
-        component: () =>
-            import ('@/views/formManage/maintain/BridgeVisualSafetyChecklist.vue'),
+        component: () => import('@/views/formManage/maintain/BridgeVisualSafetyChecklist.vue'),
         formGroup: ['maintain']
     },
     {
@@ -125,6 +124,14 @@ export const FormMaintainRouter = [
         component: () =>
             import ('@/views/formManage/maintain/BridgeVisualSafetyChecklistAdd.vue'),
         formGroup: []
+    },
+    {
+        linkText: '橋梁目視安全檢查表Add2', // 111 帶參數
+        path: '/form-manage/maintain/bridge-visual-safety-checklist-add/:id/newone',
+        component: () =>
+            import ('@/views/formManage/maintain/BridgeVisualSafetyChecklistAdd.vue'),
+        formGroup: [],
+        props: true,
     },
     {
         linkText: '隧道目視安全檢查表', // 115
@@ -139,5 +146,13 @@ export const FormMaintainRouter = [
         component: () =>
             import ('@/views/formManage/maintain/TunnelVisualSafetyChecklistAdd.vue'),
         formGroup: []
+    },
+    {
+        linkText: '隧道目視安全檢查表Add2', // 115 帶參數
+        path: '/form-manage/maintain/tunnel-visual-safety-checklist-add/:id/newone',
+        component: () =>
+            import ('@/views/formManage/maintain/TunnelVisualSafetyChecklistAdd.vue'),
+        formGroup: [],
+        props: true,
     },
 ]

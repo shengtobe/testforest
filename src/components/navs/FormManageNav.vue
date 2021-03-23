@@ -22,7 +22,7 @@
     </v-list-item>
 
     <v-list-item to="/form-manage/labor-safety" class="white--text">
-        <v-list-item-title>勞安</v-list-item-title>
+        <v-list-item-title>職安</v-list-item-title>
     </v-list-item>
 </v-list-group>
 </template>

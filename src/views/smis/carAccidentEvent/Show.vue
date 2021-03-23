@@ -8,59 +8,17 @@
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
-        
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-paperclip</v-icon>檔案附件
-                    </span>
-                </v-col>
+    </v-row>
 
-                <v-col class="white pa-3">
-                    <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
-                        v-for="item in files"
-                        :key="item.fileName"
-                        :href="item.link"
-                        :download="item.fileName"
-                    >
-                        {{ item.fileName }}
-                    </v-chip>
-                </v-col>
-            </v-row>
-        </v-col>
+    <!-- 其他資訊 -->
+    <OtherInfoShow :items="otherItems" />
 
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        <v-icon class="mr-1 mb-1">mdi-ungroup</v-icon>通報連結
-                    </span>
-                </v-col>
+    <!-- 檔案列表 -->
+    <FileListShow :fileList="files" />
 
-                <v-col class="white pa-3">
-                    <v-chip small label color="teal" class="mr-2 mb-2 mb-sm-0"
-                        v-for="item in notifyLinks"
-                        :key="item.id"
-                        :to="item.link"
-                        target="_blank"
-                        rel="noopener norefferrer"
-                        dark
-                    >
-                        <v-avatar left>
-                            <v-icon>mdi-link-variant</v-icon>
-                        </v-avatar>
-                        {{ item.id }}
-                    </v-chip>
-                </v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" class="mt-10">
+    <!-- 填寫人員傷亡、改善措施 -->
+    <v-row no-gutters class="mt-10">
+        <v-col cols="12">
             <v-card tile>
                 <v-toolbar flat dense dark color="brown">
                     <v-toolbar-title>
@@ -132,8 +90,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import FileListShow from '@/components/FileListShow.vue'
+import OtherInfoShow from '@/views/smis/carAccidentEvent/OtherInfoShow.vue'
+import { applyData, deleteData } from '@/apis/smis/carAccidentEvent'
 
 export default {
     props: ['itemData'],
@@ -145,22 +107,19 @@ export default {
         finishImprove: false,  // 是否完成改善措施
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        otherItems: [],  // 其他資訊
         notifyLinks: [],  // 連結的通報
     }),
     components: {
         TopBasicTable,
         BottomTable,
+        OtherInfoShow,
+        FileListShow,
     },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
-    },
-    watch: {
-        // 路由參數變化時，重新向後端取資料
-        $route(to, from) {
-            // … 
-        }
     },
     methods: {
         ...mapActions('system', [
@@ -170,47 +129,61 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
+            this.id = obj.AccidentCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.files = [ ...obj.files ]  // 檔案附件
-            this.finishDeath = obj.finishDeath // 是否完成人員傷亡名單
-            this.finishImprove = obj.finishImprove // 是否完成改善措施
+            this.otherItems = obj.otherInfo  // 其他資訊
+            this.files = [ ...obj.FileCount ]  // 檔案附件
+            this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
+            this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
 
             // 危害通報連結 (依通報狀態連至不同頁面)
-            let arr = obj.notifyLinks.map(item => {
-                let link = ''
-                switch(item.status) {
-                    case '未審核':
-                        link = `/smis/harmnotify/${item.id}/show`
-                        break
-                    case '審核中':
-                        link = `/smis/harmnotify/${item.id}/review`
-                        break
-                    case '已結案':
-                        link = `/smis/harmnotify/${item.id}/complated`
-                        break
-                    default:
-                        break
-                }
+            // let arr = obj.notifyLinks.map(item => {
+            //     let link = ''
+            //     switch(item.status) {
+            //         case '未審核':
+            //             link = `/smis/harmnotify/${item.id}/show`
+            //             break
+            //         case '審核中':
+            //             link = `/smis/harmnotify/${item.id}/review`
+            //             break
+            //         case '已結案':
+            //             link = `/smis/harmnotify/${item.id}/complated`
+            //             break
+            //         default:
+            //             break
+            //     }
 
-                return {
-                    id: item.id,
-                    link: link,
-                }
-            })
-            this.notifyLinks = [ ...arr ]
+            //     return {
+            //         id: item.id,
+            //         link: link,
+            //     }
+            // })
+            // this.notifyLinks = [ ...arr ]
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                
+                deleteData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，作廢失敗')
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 申請措施審核
@@ -220,13 +193,28 @@ export default {
             if (!this.finishImprove) errArr.push('改善措施檢討')
 
             if (this.finishDeath && this.finishImprove) {  // 都有填寫
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請措施審核成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                if (confirm('你確定要申請措施審核嗎?')) {
                     this.chLoadingShow()
-                }, 1000)
+                    
+                    applyData({
+                        AccidentCode: this.id,  // 事故事件編號
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '申請成功' })
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        alert('伺服器發生問題，申請失敗')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
             } else {
                 let errLog = '你還未填寫「'+ errArr.join('、') + '」'
                 alert(errLog)

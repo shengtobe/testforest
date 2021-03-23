@@ -4,48 +4,47 @@
     <!-- 第一排選項 -->
     <v-row class="px-2">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(起)
-        </h3>
-        <v-menu
-          v-model="a"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
+        />
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>填表日期(迄)
-        </h3>
-        <v-menu
-          v-model="q"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
-          </template>
-          <v-date-picker color="purple" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
-      <div class="col-sm-4 col-md-8 col-12">
-        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
-          <v-icon>mdi-magnify</v-icon>查詢
+      <v-col cols="12" sm="3" md="3">
+        <deptSelect
+          label="管理單位"
+          v-model="formData.searchItem.department"
+          :showIcon="formData.settings.formIconShow"
+          outType="key"
+          key="department"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3"></v-col>
+
+      <v-col cols="12" sm="3" md="3">
+        <v-form ref="uploadform">
+          <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
+          </h3>
+          <v-text-field solo placeholder="點此選擇檔案" />
+        </v-form>
+      </v-col>
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
+        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
+          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
-        <v-btn color="indigo" elevation="3" dark large @click="newOne">
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
-        </v-btn>
-      </div>
+      </v-col>
     </v-row>
+    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -76,11 +75,18 @@
               color="info darken-1"
               @click="viewPage(item)"
             >
-              <v-icon dark>mdi-magnify</v-icon>
+              <v-icon dark>mdi-pen</v-icon>
             </v-btn>
-            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
+            <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              color="red"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
               <v-icon dark>mdi-delete</v-icon>
-            </v-btn>-->
+            </v-btn>
           </template>
 
           <!-- 頁碼 -->
@@ -90,8 +96,20 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="680px">
+    <v-dialog v-model="Add" max-width="680px" >
       <v-card>
         <v-card-title class="blue white--text px-4 py-1">
           新增{{ title }}
@@ -127,7 +145,7 @@
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">填表人</h3>
-                  <v-text-field solo value />
+                  <v-text-field solo value readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
               <v-alert
@@ -205,22 +223,40 @@
             </v-col>
             <v-col cols="12" sm="7">
               <span class="d-sm-none error--text">回答：</span>
-              <v-radio-group dense row class="pa-0 ma-0">
+              <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.items[18].status">
                 <v-radio color="success" label="同意" value="1"></v-radio>
                 <v-radio color="red" label="不同意" value="2"></v-radio>
               </v-radio-group>
             </v-col>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <h3 class="mb-1 indigo--text">同意人</h3>
               <v-textarea auto-grow outlined rows="1" v-model.trim="ipt.suggest"></v-textarea>
-            </v-col>
+            </v-col> -->
             <!-- END 檢查項目 -->
           </v-row>
         </div>
-        <v-card-actions class="px-5 pb-5">
+        <!-- <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
           <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+        </v-card-actions> -->
+        <v-card-actions class="px-5 pb-5">
+          <v-btn
+            v-if="action != actions.add"
+            elevation="4"
+            color="red"
+            class="mr-2 white--text"
+            @click="deleteRecord"
+            >刪除</v-btn
+          >
+          <v-spacer></v-spacer>
+          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn
+            color="success"
+            elevation="4"
+            @click="save"
+            >送出</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -232,14 +268,21 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
     return {
       title:"心理健康量表",
-      newText:"量表",
+      newText:"",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
       ss: "",
@@ -262,11 +305,29 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      // controls for dialog
+      ShowDetailDialog: false,
+      dialogDel: false, // model off
       Add: false,
       dialog3: false,
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
+      editType: "",
+      editItem: {},
+      DynamicKey: 0,
+      DelDynamicKey: 0,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP093",
+      RPFlowNo: "",
       nowTime: "",
       doMan:{
         id: '',
@@ -296,6 +357,10 @@ export default {
         // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
         items: [
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
+          { status: 0, note: "" },
           { status: 0, note: "" },
           { status: 0, note: "" },
           { status: 0, note: "" },
@@ -357,7 +422,13 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+  },
   computed: {
     ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -395,12 +466,14 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
+      this.CheckOption1=""
+      this.CheckOption2=""
+      this.CheckOption3=""
+      this.CheckOption4=""
+      this.CheckOption5=""
+      this.CheckOption6=""
+      this.CheckOption7=""
+      this.CheckOption8=""
     },
     unique(list){
       var arr = [];
@@ -425,12 +498,18 @@ export default {
     newOne(){
       console.log("newOne23")
       this.Add = true
+      this.action = Actions.add
       console.log("this.Add: " + this.Add)
       this.initInput();
     },
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+    reset() {
+      this.formData.searchItem.dateStart = "";
+      this.formData.searchItem.dateEnd = "";
+      this.formData.searchItem.department = "";
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -444,7 +523,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
           {"Column":"EndDayVlaue","Value":this._data.df},
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
                 ],
@@ -460,7 +539,8 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId", "DepartName"
+          "FlowId", 
+          "DepartName"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
@@ -475,7 +555,77 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!")
+      this.chLoadingShow()
+
+      let arr = new Array()
+      let obj = new Object()
+
+      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
+      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
+
+      obj = new Object()
+      obj.Column = "CheckDay"
+      obj.Value = this.zs
+      arr = arr.concat(obj)               
+
+      let i;
+      for (i = 0; i < 19; i++) {
+        obj = new Object()
+        obj.Column = "CheckOption" + (i+1)
+        obj.Value = this.ipt.items[i].status
+        arr = arr.concat(obj)
+      }
+
+
+      console.log(JSON.stringify(arr))
+      console.log("this.action == Actions.add:" + this.action == Actions.add)
+      if (this.action == Actions.add){
+        //-----新增-----
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:arr,
+        }).then(res => {
+          console.log(res.data.DT)
+        }).catch(err => {
+          console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow()
+        })
+      }
+      else{
+        //-----編輯-----
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(), // client 端請求時間
+          OperatorID: this.userData.UserId, // 操作人id
+          RPFlowNo: this.RPFlowNo,
+          // FunCode: "U",
+          KeyName: this.DB_Table, // DB table
+          KeyItem: arr,
+        })
+          .then((res) => {
+            console.log(res.data.DT)
+          })
+          .catch((err) => {
+            console.log(err);
+            // this.chMsgbar({ success: false, msg: Constrant.update.failed });
+            alert('查詢時發生問題，請重新查詢!')
+          })
+          .finally(() => {
+            this.chLoadingShow()
+          });
+      }
+      this.Add = false;
+    },
+    // 關閉刪除確認dialod
+    closeDialogDel() {
+      this.dialogDel = false;
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -489,8 +639,10 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
+      console.log(item)
+      this.RPFlowNo = item.RPFlowNo
       console.log("RPFlowNo: " + item.RPFlowNo)
+      this.action = Actions.edit
       this.chLoadingShow()
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
@@ -501,19 +653,29 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
-          "CheckDay",
+          "CheckDay",//0
           "DepartName",
-          "Name",
+          "Name",//2
           "CheckMan",
-          "CheckOption1",
-          "Memo_1",
+          "CheckOption1",//4
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
+          "CheckOption9",
+          "CheckOption10",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "CheckOption15",
+          "CheckOption16",
+          "CheckOption17",
+          "CheckOption18",
+          "CheckOption19",//22
         ],
       }).then(res => {
         this.initInput();
@@ -531,30 +693,30 @@ export default {
         //123資料
         let ad = Object.keys(dat[0])
         console.log(ad)
+        console.log(" CheckOption19: " + (dat[0])['CheckOption19'])
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
+            if(i >= 4 && i <= 22){
+              console.log("i:" + i + " key: " + key + " data: " + (dat[0])[key])
+              this.ipt.items[j].status = (dat[0])[key]
+              j++;
             }
             i++
           }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
         
       }).catch(err => {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
+        console.log("finally")
         this.chLoadingShow()
       })
     },//viewPage
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
+    },
     Add() {
       alert("123");
     },

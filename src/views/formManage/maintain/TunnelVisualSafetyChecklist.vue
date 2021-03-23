@@ -6,53 +6,24 @@
     <v-row class="px-2">
       <!-- 日期-起 -->
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(起)
-        </h3>
-        <v-menu
-          v-model="CheckdayOn"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryCheckdayOn" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryCheckdayOn"
-            @input="CheckdayOn = false"
-            locale="zh-tw"
-          />
-        </v-menu>
+        <dateSelect
+          label="檢查日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
+        />
       </v-col>
-      <!-- 日期-迄 -->
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>檢查日期(迄)
-        </h3>
-        <v-menu
-          v-model="CheckdayOff"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="QueryCheckdayOff" solo v-on="on" readonly />
-          </template>
-          <v-date-picker
-            color="purple"
-            v-model="QueryCheckdayOff"
-            @input="CheckdayOff = false"
-            locale="zh-tw"
-          />
-        </v-menu>
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
       </v-col>
       <!-- 功能 -->
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -121,8 +92,13 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
@@ -132,6 +108,16 @@ export default {
       newText: "檢查表",
       isLoading: false,
       disabled: false,
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
       n01: "0",
       CheckdayOn: "",
       QueryCheckdayOn: "",
@@ -152,7 +138,7 @@ export default {
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP039",
       nowTime: "",
       doMan:{
         id: '',
@@ -179,7 +165,13 @@ export default {
       //------
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+  },
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -253,12 +245,13 @@ export default {
     },
     s01Change(selectObj){
       console.log("select is changed >> " + selectObj);
-      this.n01 = selectObj.substr(2);
+      this.n01 = selectObj;
     },
     btnNew(){
       console.log("Add new form btn is pressed. n01 >> " + this.n01);
       if(this.n01 != "0"){
-        this.$router.push('/form-manage/maintain/tunnel-visual-safety-checklist-add')
+        console.log("n01: " + this.n01)
+        this.$router.push(`/form-manage/maintain/tunnel-visual-safety-checklist-add/${this.n01}/newone`)
       }
       else{
         window.alert("請選擇隧道編號");

@@ -8,30 +8,11 @@
         <!-- 基本資料 -->
         <v-row no-gutter class="indigo--text">
           <v-col cols="12" sm="3">
-            <h3 class="mb-1">填表日期</h3>
-            <v-menu
-              v-model="MaintenanceDay"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model.trim="AddData.MaintenanceDay"
-                  outlined
-                  v-on="on"
-                  dense
-                  single-line
-                />
-              </template>
-              <v-date-picker
-                color="purple"
-                v-model="AddData.MaintenanceDay"
-                @input="MaintenanceDay = false"
-                locale="zh-tw"
-              />
-            </v-menu>
+            <dateSelect
+            label="評估日期"
+            key="checkDate"
+            v-model="zs"
+          />
           </v-col>
         </v-row>
         <!-- 選擇顯示項目 -->
@@ -39,15 +20,16 @@
           <h3 class="indigo--text">請選擇區段</h3>
         </v-col>
         
-          <v-radio-group style="margin-top: -5px" v-model="valShow" row>
+          <v-radio-group style="margin-top: -5px" v-model="valShow" row >
             <!-- 1 -->
             <v-tooltip bottom >
               <template v-slot:activator="{ on }" >
                 <span v-on="on">
-                  <v-radio  value="100" >
+                  <v-radio  value="100">
                     <template v-slot:label>
-                      <h3><strong class="primary--text" v-if="row1_1 > 0">1</strong></h3>
-                      <h4 v-if="row1_1 <= 0">1</h4>
+                      <!-- <h3><strong class="primary--text" v-if="row1_1 > 0">1</strong></h3> -->
+                      <!-- <h4 v-if="row1_1 <= 0">1</h4> -->
+                      <h4 >1</h4>
                     </template>
                   </v-radio>
                 </span>
@@ -61,8 +43,9 @@
                 <span v-on="on">
                   <v-radio value="200">
                       <template v-slot:label>
-                      <h3><strong class="primary--text" v-if="row2_1 > 0">2</strong></h3>
-                      <h4 v-if="row2_1 <= 0">2</h4>
+                      <!-- <h3><strong class="primary--text" v-if="row2_1 > 0">2</strong></h3>
+                      <h4 v-if="row2_1 <= 0">2</h4> -->
+                      <h4 >2</h4>
                     </template>
                   </v-radio>
                 </span>
@@ -75,8 +58,9 @@
                 <span v-on="on">
                   <v-radio value="300">
                     <template v-slot:label>
-                      <h3><strong class="primary--text" v-if="row3_1 > 0">3</strong></h3>
-                      <h4 v-if="row3_1 <= 0">3</h4>
+                      <!-- <h3><strong class="primary--text" v-if="row3_1 > 0">3</strong></h3>
+                      <h4 v-if="row3_1 <= 0">3</h4> -->
+                      <h4 >3</h4>
                     </template>
                   </v-radio>
                 </span>
@@ -89,8 +73,9 @@
                 <span v-on="on">
                   <v-radio value="400">
                     <template v-slot:label>
-                      <h3><strong class="primary--text" v-if="row4_1 > 0">4</strong></h3>
-                      <h4 v-if="row4_1 <= 0">4</h4>
+                      <!-- <h3><strong class="primary--text" v-if="row4_1 > 0">4</strong></h3>
+                      <h4 v-if="row4_1 <= 0">4</h4> -->
+                      <h4 >4</h4>
                     </template>
                   </v-radio>
                 </span>
@@ -103,8 +88,9 @@
                 <span v-on="on">
                   <v-radio value="500">
                     <template v-slot:label>
-                      <h3><strong class="primary--text" v-if="row5_1 > 0">5</strong></h3>
-                      <h4 v-if="row5_1 <= 0">5</h4>
+                      <!-- <h3><strong class="primary--text" v-if="row5_1 > 0">5</strong></h3>
+                      <h4 v-if="row5_1 <= 0">5</h4> -->
+                      <h4 >5</h4>
                     </template>
                   </v-radio>
                 </span>
@@ -117,8 +103,9 @@
                 <span v-on="on">
                   <v-radio value="600">
                     <template v-slot:label>
-                      <h3><strong class="primary--text" v-if="row6_1 > 0">6</strong></h3>
-                      <h4 v-if="row6_1 <= 0">6</h4>
+                      <!-- <h3><strong class="primary--text" v-if="row6_1 > 0">6</strong></h3>
+                      <h4 v-if="row6_1 <= 0">6</h4> -->
+                      <h4 >6</h4>
                     </template>
                   </v-radio>
                 </span>
@@ -440,7 +427,7 @@
               <v-row no-gutter>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">電源邏輯電路</h3>
-                  <v-radio-group style="margin-top: -5px" v-model="row1_1" row>
+                  <v-radio-group style="margin-top: -5px" v-model="CheckOption1" row>
                     <v-radio label="正常" value="1" />
                     <v-radio label="維修保養後正常" value="2" />
                     <v-radio label="異常" value="3" />
@@ -448,7 +435,7 @@
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">接收器</h3>
-                  <v-radio-group style="margin-top: -5px" v-model="row1_2" row>
+                  <v-radio-group style="margin-top: -5px" v-model="CheckOption2" row>
                     <v-radio label="正常" value="1" />
                     <v-radio label="維修保養後正常" value="2" />
                     <v-radio label="異常" value="3" />
@@ -456,7 +443,7 @@
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">警音</h3>
-                  <v-radio-group style="margin-top: -5px" v-model="row1_3" row>
+                  <v-radio-group style="margin-top: -5px" v-model="CheckOption3" row>
                     <v-radio label="正常" value="1" />
                     <v-radio label="維修保養後正常" value="2" />
                     <v-radio label="異常" value="3" />
@@ -464,68 +451,29 @@
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">警示燈</h3>
-                  <v-radio-group style="margin-top: -5px" v-model="row1_4" row>
+                  <v-radio-group style="margin-top: -5px" v-model="CheckOption4" row>
                     <v-radio label="正常" value="1" />
                     <v-radio label="維修保養後正常" value="2" />
                     <v-radio label="異常" value="3" />
                   </v-radio-group>
                 </v-col>
                 <v-col cols="12" sm="3" style="margin-top: -35px">
-                  <h3 class="mb-1">檢修日期</h3>
-                  <v-menu
-                    v-model="cross1_date1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross1_date1"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross1_date1"
-                      @input="cross1_date1 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                  <h3 class="mb-1" style="margin-top: -12px">完成日期</h3>
-                  <v-menu
-                    style="margin-top: -12px"
-                    v-model="cross1_date2"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross1_date2"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross1_date2"
-                      @input="cross1_date2 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="CheckDay100"
+                  />
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="EndDay100"
+                  />
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo100" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -551,7 +499,7 @@
                       <h3>電源邏輯電路</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row2_1"
+                        v-model="CheckOption1"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -563,7 +511,7 @@
                       <h3>警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row2_3"
+                        v-model="CheckOption2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -575,7 +523,7 @@
                       <h3>道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row2_5"
+                        v-model="CheckOption3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -587,7 +535,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row2_7"
+                        v-model="CheckOption4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -599,7 +547,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row2_8"
+                        v-model="CheckOption5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -611,61 +559,22 @@
                 </v-col>
                 <!-- 日期備註 part 2/2 -->
                 <v-col cols="12" sm="3" style="margin-top: -35px">
-                  <h3 class="mb-1">檢修日期</h3>
-                  <v-menu
-                    v-model="cross2_date1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross2_date1"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross2_date1"
-                      @input="cross2_date1 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                  <h3 class="mb-1" style="margin-top: -12px">完成日期</h3>
-                  <v-menu
-                    style="margin-top: -12px"
-                    v-model="cross2_date2"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross2_date2"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross2_date2"
-                      @input="cross2_date2 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="CheckDay200"
+                  />
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="EndDay200"
+                  />
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo200" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -690,7 +599,7 @@
                       <h3 class="mb-1">電源邏輯電路</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row3_1"
+                        v-model="CheckOption1"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -702,7 +611,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row3_3"
+                        v-model="CheckOption2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -714,7 +623,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row3_5"
+                        v-model="CheckOption3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -726,7 +635,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row3_7"
+                        v-model="CheckOption4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -738,7 +647,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row3_8"
+                        v-model="CheckOption5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -749,61 +658,22 @@
                   </v-row>
                 </v-col>
                 <v-col cols="12" sm="3" style="margin-top: -35px">
-                  <h3 class="mb-1">檢修日期</h3>
-                  <v-menu
-                    v-model="cross3_date1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross3_date1"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross3_date1"
-                      @input="cross3_date1 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                  <h3 class="mb-1" style="margin-top: -12px">完成日期</h3>
-                  <v-menu
-                    style="margin-top: -12px"
-                    v-model="cross3_date2"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross3_date2"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross3_date2"
-                      @input="cross3_date2 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="CheckDay300"
+                  />
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="EndDay300"
+                  />
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo300" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -828,7 +698,7 @@
                       <h3 class="mb-1">電源邏輯電路</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row4_1"
+                        v-model="CheckOption1"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -840,7 +710,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row4_3"
+                        v-model="CheckOption2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -852,7 +722,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row4_5"
+                        v-model="CheckOption3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -864,7 +734,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row4_7"
+                        v-model="CheckOption4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -876,7 +746,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row4_8"
+                        v-model="CheckOption5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -887,61 +757,22 @@
                   </v-row>
                 </v-col>
                 <v-col cols="12" sm="3" style="margin-top: -35px">
-                  <h3 class="mb-1">檢修日期</h3>
-                  <v-menu
-                    v-model="cross4_date1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross4_date1"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross4_date1"
-                      @input="cross4_date1 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                  <h3 class="mb-1" style="margin-top: -12px">完成日期</h3>
-                  <v-menu
-                    style="margin-top: -12px"
-                    v-model="cross4_date2"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross4_date2"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross4_date2"
-                      @input="cross4_date2 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="CheckDay400"
+                  />
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="EndDay400"
+                  />
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo400" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -966,7 +797,7 @@
                       <h3 class="mb-1">電源邏輯電路</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row5_1"
+                        v-model="CheckOption1"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -978,7 +809,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row5_3"
+                        v-model="CheckOption2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -990,7 +821,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row5_5"
+                        v-model="CheckOption3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1002,7 +833,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row5_7"
+                        v-model="CheckOption4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1014,7 +845,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row5_8"
+                        v-model="CheckOption5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1025,61 +856,22 @@
                   </v-row>
                 </v-col>
                 <v-col cols="12" sm="3" style="margin-top: -35px">
-                  <h3 class="mb-1">檢修日期</h3>
-                  <v-menu
-                    v-model="cross5_date1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross5_date1"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross5_date1"
-                      @input="cross5_date1 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                  <h3 class="mb-1" style="margin-top: -12px">完成日期</h3>
-                  <v-menu
-                    style="margin-top: -12px"
-                    v-model="cross5_date2"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross5_date2"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross5_date2"
-                      @input="cross5_date2 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="CheckDay500"
+                  />
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="EndDay500"
+                  />
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo500" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -1104,7 +896,7 @@
                       <h3 class="mb-1">電源邏輯電路</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_1"
+                        v-model="CheckOption1"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1116,7 +908,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_3"
+                        v-model="CheckOption2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1128,7 +920,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_4"
+                        v-model="CheckOption3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1140,7 +932,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_5"
+                        v-model="CheckOption4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1156,7 +948,7 @@
                       <h3 class="mb-1">遮桿閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_6"
+                        v-model="CheckOption5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1168,7 +960,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_7"
+                        v-model="CheckOption6"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1180,7 +972,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row6_8"
+                        v-model="CheckOption7"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1192,61 +984,22 @@
                   </v-row>
                 </v-col>
                 <v-col cols="12" sm="3" style="margin-top: -35px">
-                  <h3 class="mb-1">檢修日期</h3>
-                  <v-menu
-                    v-model="cross6_date1"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross6_date1"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross6_date1"
-                      @input="cross6_date1 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
-                  <h3 class="mb-1" style="margin-top: -12px">完成日期</h3>
-                  <v-menu
-                    style="margin-top: -12px"
-                    v-model="cross6_date2"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="AddData.cross6_date2"
-                        outlined
-                        placeholder="點此選擇日期"
-                        v-on="on"
-                        dense
-                        single-line
-                      />
-                    </template>
-                    <v-date-picker
-                      color="purple"
-                      v-model="AddData.cross6_date2"
-                      @input="cross6_date2 = false"
-                      locale="zh-tw"
-                    />
-                  </v-menu>
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="CheckDay600"
+                  />
+                  <dateSelect2
+                    label="檢修日期"
+                    v-model="EndDay600"
+                  />
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo600" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -1271,7 +1024,7 @@
                       <h3 class="mb-1">電源邏輯電路</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_1"
+                        v-model="CheckOption1"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1283,7 +1036,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_3"
+                        v-model="CheckOption2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1295,7 +1048,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_4"
+                        v-model="CheckOption3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1307,7 +1060,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_5"
+                        v-model="CheckOption4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1323,7 +1076,7 @@
                       <h3 class="mb-1">遮桿閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_6"
+                        v-model="CheckOption5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1335,7 +1088,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_7"
+                        v-model="CheckOption6"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1347,7 +1100,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_8"
+                        v-model="CheckOption7"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1409,11 +1162,11 @@
                 </v-col>
                 <v-col cols="12" sm="7" style="margin-top: -35px">
                   <h3 class="mb-1">備註</h3>
-                  <v-textarea hide-details auto-grow outlined rows="5" />
+                  <v-textarea hide-details v-model="Memo700" auto-grow outlined rows="5" />
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -1551,7 +1304,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -1588,7 +1341,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_1_3"
+                        v-model="row7_1_2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1600,7 +1353,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_1_4"
+                        v-model="row7_1_3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1612,7 +1365,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row7_1_5"
+                        v-model="row7_1_4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1677,7 +1430,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -1803,7 +1556,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -1840,7 +1593,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row8_3"
+                        v-model="row8_2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1852,7 +1605,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row8_4"
+                        v-model="row8_3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1864,7 +1617,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row8_5"
+                        v-model="row8_4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1876,7 +1629,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row8_8"
+                        v-model="row8_5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -1941,7 +1694,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -2119,7 +1872,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -2156,7 +1909,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row10_3"
+                        v-model="row10_2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2168,7 +1921,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row10_4"
+                        v-model="row10_3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2180,7 +1933,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row10_5"
+                        v-model="row10_4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2196,7 +1949,7 @@
                       <h3 class="mb-1">遮桿閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row10_6"
+                        v-model="row10_5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2208,7 +1961,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row10_7"
+                        v-model="row10_6"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2220,7 +1973,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row10_8"
+                        v-model="row10_7"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2286,7 +2039,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -2323,7 +2076,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row11_3"
+                        v-model="row11_2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2335,7 +2088,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row11_4"
+                        v-model="row11_3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2347,7 +2100,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row11_5"
+                        v-model="row11_4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2412,7 +2165,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -2449,7 +2202,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row12_3"
+                        v-model="row12_2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2461,7 +2214,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row12_4"
+                        v-model="row12_3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2473,7 +2226,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row12_5"
+                        v-model="row12_4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2489,7 +2242,7 @@
                       <h3 class="mb-1">遮桿閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row12_6"
+                        v-model="row12_5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2501,7 +2254,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row12_7"
+                        v-model="row12_6"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2513,7 +2266,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row12_8"
+                        v-model="row12_7"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2579,7 +2332,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -2616,7 +2369,7 @@
                       <h3 class="mb-1">警音</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row13_3"
+                        v-model="row13_2"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2628,7 +2381,7 @@
                       <h3 class="mb-1">警示燈</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row13_4"
+                        v-model="row13_3"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2640,7 +2393,7 @@
                       <h3 class="mb-1">道路閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row13_5"
+                        v-model="row13_4"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2656,7 +2409,7 @@
                       <h3 class="mb-1">遮桿閃光燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row13_6"
+                        v-model="row13_5"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2668,7 +2421,7 @@
                       <h3 class="mb-1">信號燈1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row13_7"
+                        v-model="row13_6"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2680,7 +2433,7 @@
                       <h3 class="mb-1">遮斷機1,2</h3>
                       <v-radio-group
                         style="margin-top: -5px"
-                        v-model="row13_8"
+                        v-model="row13_7"
                         row
                       >
                         <v-radio label="正常" value="1" />
@@ -2746,7 +2499,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -2913,7 +2666,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -3069,7 +2822,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -3195,7 +2948,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -3333,7 +3086,7 @@
                 </v-col>
                 <v-col cols="12" sm="2" style="margin-top: -20px">
                   <h3 class="mb-1">檢查人</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line outlined readonly v-model="doMan.name"/>
                 </v-col>
               </v-row>
             </v-alert>
@@ -4839,7 +4592,9 @@
         <v-col></v-col>
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" color="success">送出表單</v-btn>
+          <v-btn large block class="mt-n8 mb-4" 
+          
+          @click="save" color="success" >送出表單</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -4851,9 +4606,15 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-// import form51lib from "@/components/Form51Lib.vue";
+import dateSelect from "@/components/forManage/dateSelect";
+import dateSelect2 from "@/components/forManage/dateSelect2";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import { Constrant } from "@/assets/js/constrant";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
@@ -4869,45 +4630,115 @@ export default {
       ],
       title: "",
       newText: "平交道功能檢查紀錄表",
+      action: Actions.add,
+      actions: Actions,
+      ShowDetailDialog: false,
+      dialogDel: false, // model off
+      Add: false,
+      dialog3: false,
+      formData: {
+        settings: {
+          formIconShow: true,
+        },
+        searchItem: {
+          dateStart: "",
+          dateEnd: "",
+          department: "",
+        },
+      },
+      editType: "",
+      editItem: {},
+      DynamicKey: 0,
+      DelDynamicKey: 0,
+
+      DB_Table: "RP087",
+      RPFlowNo: "",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      zs: "",
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       // 自定義變數
+      CheckDay100: "",
+      CheckDay200: "",
+      CheckDay300: "",
+      CheckDay400: "",
+      CheckDay500: "",
+      CheckDay600: "",
+      CheckDay700: "",
+      EndDay100: "",
+      EndDay200: "",
+      EndDay300: "",
+      EndDay400: "",
+      EndDay500: "",
+      EndDay600: "",
+      EndDay700: "",
+      Memo100: "",
+      Memo200: "",
+      Memo300: "",
+      Memo400: "",
+      Memo500: "",
+      Memo600: "",
+      Memo700: "",
+      EqipNo: "",
+      Location: "",
+      CheckOption1: "",
+      CheckOption2: "",
+      CheckOption3: "",
+      CheckOption4: "",
+      CheckOption5: "",
+      CheckOption6: "",
+      CheckOption7: "",
+      CheckOption8: "",
       row1_1: 0,
       row1_2: 0,
       row1_3: 0,
       row1_4: 0,
       row2_1: 0,
+      row2_2: 0,
       row2_3: 0,
+      row2_4: 0,
       row2_5: 0,
+      row2_6: 0,
       row2_7: 0,
-      row2_8: 0,
       row3_1: 0,
+      row3_2: 0,
       row3_3: 0,
+      row3_4: 0,
       row3_5: 0,
-      row3_7: 0,
-      row3_8: 0,
       row4_1: 0,
+      row4_2: 0,
       row4_3: 0,
+      row4_4: 0,
       row4_5: 0,
-      row4_7: 0,
-      row4_8: 0,
       row5_1: 0,
+      row5_2: 0,
       row5_3: 0,
+      row5_4: 0,
       row5_5: 0,
-      row5_7: 0,
-      row5_8: 0,
       row6_1: 0,
+      row6_2: 0,
       row6_3: 0,
       row6_4: 0,
       row6_5: 0,
       row6_6: 0,
       row6_7: 0,
-      row6_8: 0,
       row7_1: 0,
+      row7_2: 0,
       row7_3: 0,
       row7_4: 0,
       row7_5: 0,
       row7_6: 0,
       row7_7: 0,
-      row7_8: 0,
       row7_1ku_1: 0,
       row7_1ku_2: 0,
       row7_1ku_3: 0,
@@ -5082,7 +4913,14 @@ export default {
       ],
     };
   },
-  components: { Pagination }, // 頁碼
+  components: {
+    Pagination, // 頁碼
+    dateSelect,
+    dateSelect2,
+    deptSelect,
+    ToolBar,
+    dialogDelete,
+  },
   //   components: { Pagination, form51lib }, // 頁碼
   computed: {
         ...mapState ('user', {
@@ -5090,20 +4928,66 @@ export default {
         }),
   },
   created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+    this.ipt2 = { ...this.defaultIpt }
+    //更新時間
+    this.nowTime = getTodayDateString();
+    this.doMan.name = this.userData.UserName;
+    this.doMan.id = this.userData.UserId;
+    this.doMan.depart = this.userData.DeptList[0].DeptDesc;
+    this.doMan.departId = this.userData.DeptList[0].DeptId;
+    this.zs = this.nowTime
   },
   methods: {
+    initInput(){
+      console.log("init~");
+      this.row1_1 = 0;
+      this.row1_2 = 0;
+      this.row1_3 = 0;
+      this.row1_4 = 0;
+      this.row2_1 = 0;
+      this.row2_2 = 0;
+      this.row2_3 = 0;
+      this.row2_4 = 0;
+      this.row2_5 = 0;
+      this.row3_1 = 0;
+      this.row3_2 = 0;
+      this.row3_3 = 0;
+      this.row3_4 = 0;
+      this.row3_5 = 0;
+      this.row4_1 = 0;
+      this.row4_2 = 0;
+      this.row4_3 = 0;
+      this.row4_4 = 0;
+      this.row4_5 = 0;
+      this.row5_1 = 0;
+      this.row5_2 = 0;
+      this.row5_3 = 0;
+      this.row5_4 = 0;
+      this.row5_5 = 0;
+      this.row6_1 = 0;
+      this.row6_2 = 0;
+      this.row6_3 = 0;
+      this.row6_4 = 0;
+      this.row6_5 = 0;
+      this.row6_6 = 0;
+      this.row6_7 = 0;
+      this.row7_1 = 0;
+      this.row7_2 = 0;
+      this.row7_3 = 0;
+      this.row7_4 = 0;
+      this.row7_5 = 0;
+      this.row7_6 = 0;
+      this.row7_7 = 0;
+      this.row7_1ku_1 = 0;
+      this.row7_1ku_2 = 0;
+      this.row7_1ku_3 = 0;
+      this.row7_1ku_4 = 0;
+      this.row7_1ku_5 = 0;
+    },
+    ...mapActions("system", [
+      "chMsgbar", // messageBar
+      "chLoadingShow", // 切換 loading 圖顯示
+    ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -5113,7 +4997,90 @@ export default {
     // 搜尋
     search() {},
     // 存
-    save() {},
+    save() {
+      console.log("送出!!");
+      this.chLoadingShow();
+      console.log(this.valShow);
+      switch(this.valShow){
+        case "100":
+          this.Location = "0km0-100m";
+          break;
+        case "200":
+          this.Location = "0km520m";
+          break;
+        case "300":
+          this.Location = "0km550m";
+          break;
+        case "400":
+          this.Location = "0km600m";
+          break;
+        case "500":
+          this.Location = "0km700m";
+          break;
+        case "600":
+          this.Location = "0km800m";
+          break;
+        case "700":
+          this.Location = "0km900m";
+          break;
+      }
+
+      var data = {
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          { Column: "CheckDay", Value: this.zs },
+          { Column: "EqipNo", Value: this.valShow },
+          { Column: "Location", Value: this.Location },
+          { Column: "CheckOption1", Value: this.CheckOption1 },
+          { Column: "CheckOption2", Value: this.CheckOption2 },
+          { Column: "CheckOption3", Value: this.CheckOption3 },
+          { Column: "CheckOption4", Value: this.CheckOption4 },
+          { Column: "CheckOption5", Value: this.CheckOption5 },
+          { Column: "CheckOption6", Value: this.CheckOption6 },
+          { Column: "CheckOption7", Value: this.CheckOption7 },
+        ],
+      };
+
+      // 修改
+      if (this.action == Actions.edit) {
+        // update 要自行增加RPFlowNo欄位
+        data.RPFlowNo = this.RPFlowNo;
+        console.log(data);
+        updateFormOrder(data)
+          .then((res) => {
+            console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
+          })
+          .catch((err) => {
+            console.log(err);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
+          })
+          .finally(() => {
+            this.chLoadingShow();
+          });
+      } else {
+        // 新增
+        createFormOrder0(data)
+          .then((res) => {
+            console.log(res.data.DT);
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
+          })
+          .catch((err) => {
+            console.log(err);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
+          })
+          .finally(() => {
+            this.chLoadingShow();
+            this.search();
+          });
+      }
+      this.ShowDetailDialog = false;
+      this.$router.push({ path: '/form-manage/curing/level-crossing-function-checklist' })
+      // to="/form-manage/curing/level-crossing-function-checklist-add"
+    },
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;

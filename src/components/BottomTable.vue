@@ -24,6 +24,36 @@
         </v-col>
 
         <!-- 超連結 -->
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
+            :key="item.title"
+            v-if="item.dataType == 'link'"
+        >
+            <v-row no-gutters>
+                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                    style="max-width: 160px"
+                >
+                    <span class="font-weight-black">
+                        <v-icon class="mr-1 mb-1">mdi-ungroup</v-icon>{{ item.title }}
+                    </span>
+                </v-col>
+
+                <v-col class="white pa-3">
+                    <v-chip small label color="teal" class="mr-2 mb-2 mb-sm-0"
+                        v-for="link in item.links"
+                        :key="link.id"
+                        :to="link.link"
+                        target="_blank"
+                        rel="noopener norefferrer"
+                        dark
+                    >
+                        <v-avatar left>
+                            <v-icon>mdi-link-variant</v-icon>
+                        </v-avatar>
+                        {{ link.id }}
+                    </v-chip>
+                </v-col>
+            </v-row>
+        </v-col>
     </template>
 </v-row>
 </template>

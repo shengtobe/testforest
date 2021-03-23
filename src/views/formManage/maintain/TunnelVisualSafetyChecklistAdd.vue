@@ -19,11 +19,11 @@
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on }">
-                    <v-text-field v-model.trim="AddData.MaintenanceDay" outlined v-on="on" dense single-line />
+                    <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
                   </template>
                   <v-date-picker
                     color="purple"
-                    v-model="AddData.MaintenanceDay"
+                    v-model="zs"
                     @input="MaintenanceDay = false"
                     locale="zh-tw"
                   />
@@ -32,12 +32,12 @@
               <v-col cols="12" sm="3">
                 <h3 class="mb-1">編號</h3>
                 <v-select solo style="width:180px;" placeholder="編號" return-object dense single-line 
-                  :items="sbjNum" outlined @change="s01Change"/>
+                  :items="sbjNum" outlined @change="s01Change" v-model="tunnelNum"/>
               </v-col>
               <v-col cols="12" sm="3">
                 <h3 class="mb-1">路線</h3>
                 <v-select solo style="width:180px;" placeholder="直/曲" return-object dense single-line 
-                  :items="pathType" outlined/>
+                  :items="pathType" outlined v-model="LineType"/>
               </v-col>
               <v-col cols="12" sm="2">
                 <h3 class="mb-1">長度</h3>
@@ -57,7 +57,8 @@
               <v-col cols="12" sm="3">
                 <h3 class="mb-1">襯砌型式</h3>
                 <v-select solo style="width:180px;" return-object dense single-line 
-                  :items="tunnelType" outlined/>
+                  :items="tunnelTypeList" outlined 
+                  item-value="id" item-text="text" v-model="tunnelType"/>
               </v-col>
               
             </v-row>
@@ -136,10 +137,10 @@
               <v-col cols="12" sm="5">
                 <h3>缺少:</h3>
                 <v-row style="margin-top:-4%">
-                    <v-checkbox class="mx-2" v-model="aa" label="隧道標示牌" value="A"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="bb" label="禁止行人進入" value="B"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="cc" label="罰款公告" value="C"></v-checkbox>
-                  </v-row>
+                  <v-checkbox class="mx-2" v-model="CheckOption1_1" label="隧道標示牌" value="1"></v-checkbox>
+                  <v-checkbox class="mx-2" v-model="CheckOption1_2" label="禁止行人進入" value="1"></v-checkbox>
+                  <v-checkbox class="mx-2" v-model="CheckOption1_3" label="罰款公告" value="1"></v-checkbox>
+                </v-row>
               </v-col>
             </v-row>
           </v-alert>
@@ -363,9 +364,9 @@
               <v-col cols="12" sm="5">
                 <h3>缺少:</h3>
                 <v-row style="margin-top:-4%">
-                    <v-checkbox class="mx-2" v-model="aa" label="隧道標示牌" value="A"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="bb" label="禁止行人進入" value="B"></v-checkbox>
-                    <v-checkbox class="mx-2" v-model="cc" label="罰款公告" value="C"></v-checkbox>
+                    <v-checkbox class="mx-2" v-model="CheckOption22_1" label="隧道標示牌" value="1"></v-checkbox>
+                    <v-checkbox class="mx-2" v-model="CheckOption22_2" label="禁止行人進入" value="1"></v-checkbox>
+                    <v-checkbox class="mx-2" v-model="CheckOption22_3" label="罰款公告" value="1"></v-checkbox>
                   </v-row>
               </v-col>
             </v-row>
@@ -379,21 +380,21 @@
         <v-row class="indigo--text">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">工程員</h3>
-            <v-text-field dense single-line outlined readonly v-model="sirName1"></v-text-field>
+            <v-text-field dense single-line outlined v-model="sirName1"></v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">工務長</h3>
-            <v-text-field dense single-line outlined readonly v-model="sirName2"></v-text-field>
+            <v-text-field dense single-line outlined v-model="sirName2"></v-text-field>
           </v-col>
           <v-col cols="12" sm="4">
             <h3 class="mb-1">監工長</h3>
-            <v-text-field dense single-line outlined readonly v-model="sirName3"></v-text-field>
+            <v-text-field dense single-line outlined v-model="sirName3"></v-text-field>
           </v-col>
         </v-row>
         
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" color="success">送出表單</v-btn>
+          <v-btn large block class="mt-n8 mb-4" @click="save" color="success">送出表單</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -405,17 +406,48 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import dateSelect from "@/components/forManage/dateSelect";
+import deptSelect from "@/components/forManage/deptSelect";
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Actions } from "@/assets/js/actions";
+import dialogDelete from "@/components/forManage/dialogDelete";
+import ToolBar from "@/components/forManage/toolbar";
 
 export default {
   data() {
     return {
+      props: ['id'],  //路由參數
       // 自定義變數
+      CheckOption1_1: "0",
+      CheckOption1_2: "0",
+      CheckOption1_3: "0",
+      CheckOption22_1: "0",
+      CheckOption22_2: "0",
+      CheckOption22_3: "0",
+      tunnelNum: "",
+      zs: "",
       title: "隧道目視安全檢查表",
       newText: "檢查表",
+      action: Actions.add,
+      actions: Actions,
       isLoading: false,
       disabled: false,
+      DB_Table: "RP039",
+      RPFlowNo: "",
+      nowTime: "",
+      doMan:{
+        id: '',
+        name: '',
+        depart: '',
+        checkManName: ''
+      },
+      ipt2: {},
+      defaultIpt: {  // 預設的欄位值
+          startDay: '',
+          EndDay: '',
+          depart: '',  // 單位
+        },
       note: "109年05月21日發生西南氣流豪雨，5/22日累積雨量達200mm以上，建立預警機制5/22日阿里山線暫時停駛。",
       temp1: "../../../assets/images/brgImg1_1.jpg",
       sbjNum: [],
@@ -436,7 +468,12 @@ export default {
         "brgImg1_2.jpg"
       ],
       pathType: ["直線", "曲線"],
-      tunnelType: ["RC襯砌", "預力支堡", "天然岩壁"],
+      tunnelType: "",
+      tunnelTypeList: [
+        {id: "1", text: "RC襯砌"},
+        {id: "2", text: "預力支堡"},
+        {id: "3", text: "天然岩壁"},
+        ],
       val1_1: "",
       idx: -1,
       val1_2: "",
@@ -542,7 +579,6 @@ export default {
           { discrip: "", damLv: "0" },
         ],
         items6: [// 阿里山端隧道口外
-          { discrip: "", damLv: "0" },
           { discrip: "", damLv: "0" },
           { discrip: "", damLv: "0" },
           { discrip: "", damLv: "0" },
@@ -656,23 +692,24 @@ export default {
         }),
     },
     created() {
-      this.ipt2 = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
-      }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-
+      console.log("created start~~")
+      this.nowTime = getTodayDateString();
+      this.doMan.name = this.userData.UserName;
       var i = 1;
-    for(i; i <= 15; i++ ){
+      for(i; i <= 15; i++ ){
       this.sbjNum.push("編號" + i);
     }
+    //判斷新增還是編輯
+    if(this.$route.params.id.substr(0, 2) == "編號"){
+      this.zs = this.nowTime;
+      console.log("詳細頁面:新增 初始化")
+      this.tunnelNum = this.$route.params.id;
+      this.s01Change();
+      console.log("新增 zs: "  + this.zs)
+    }
+      
+
+    
   },
   methods: {
     // 更換頁數
@@ -718,7 +755,12 @@ export default {
     },
     
     s01Change(selectObj){
+      console.log("changing~~~~~")
       this.showImg = true;
+      console.log(selectObj == undefined)
+      if(selectObj == undefined){
+        selectObj = this.tunnelNum
+      }
       console.log("select is changed >> " + selectObj);
       var i = -1;
       console.log("substring >> " + selectObj.substr(2));
@@ -780,7 +822,102 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      console.log("送出!!2");
+      this.CheckOption1_1 = (this.CheckOption1_1 == undefined)?"0":this.CheckOption1_1;
+      this.CheckOption1_2 = (this.CheckOption1_2 == undefined)?"0":this.CheckOption1_2;
+      this.CheckOption1_3 = (this.CheckOption1_3 == undefined)?"0":this.CheckOption1_3;
+      this.CheckOption22_1 = (this.CheckOption22_1 == undefined)?"0":this.CheckOption22_1;
+      this.CheckOption22_2 = (this.CheckOption22_2 == undefined)?"0":this.CheckOption22_2;
+      this.CheckOption22_3 = (this.CheckOption22_3 == undefined)?"0":this.CheckOption22_3;
+      if (this.action == Actions.add){
+        //-----新增-----
+        console.log("-----新增-----")
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            {Column:"CheckDay", Value: this.zs },
+            {Column:"TunnelID", Value: this.tunnelNum.substr(2) },
+            {Column:"Engineer",Value:this.sirName1},
+            {Column:"WorksChief",Value:this.sirName2},
+            {Column:"Supervisor",Value:this.sirName3},
+            {Column:"LineType",Value:this.LineType},
+            {Column:"Length",Value:this.v3},
+            {Column:"Start",Value:this.v1},
+            {Column:"Finish",Value:this.v2},
+            {Column:"Type",Value:this.tunnelType.id},
+            {Column:"Slope",Value:this.v5},
+            {Column:"Height",Value:this.v6},
+            {Column:"CurveRadius",Value:this.v4},
+            {Column:"CheckOption1",Value:this.ipt.items1[0].discrip},
+            {Column:"CheckOption1_1",Value:this.CheckOption1_1},
+            {Column:"CheckOption1_2",Value:this.CheckOption1_2},
+            {Column:"CheckOption1_3",Value:this.CheckOption1_3},
+            {Column:"CheckOption2",Value:this.ipt.items1[1].discrip},
+            {Column:"CheckOptionLv2",Value:this.ipt.items1[1].damLv},
+            {Column:"CheckOption3",Value:this.ipt.items1[2].discrip},
+            {Column:"CheckOptionLv3",Value:this.ipt.items1[2].damLv},
+            {Column:"CheckOption4",Value:this.ipt.items1_2.discrip},
+            {Column:"CheckOptionLv4",Value:this.ipt.items1_2.damLv},
+            {Column:"CheckOption5",Value:this.ipt.items2[0].discrip},
+            {Column:"CheckOptionLv5",Value:this.ipt.items2[0].damLv},
+            {Column:"CheckOption6",Value:this.ipt.items2[1].discrip},
+            {Column:"CheckOptionLv6",Value:this.ipt.items2[1].damLv},
+            {Column:"CheckOption7",Value:this.ipt.items2[2].discrip},
+            {Column:"CheckOptionLv7",Value:this.ipt.items2[2].damLv},
+            {Column:"CheckOption8",Value:this.ipt.items3[0].discrip},
+            {Column:"CheckOptionLv8",Value:this.ipt.items3[0].damLv},
+            {Column:"CheckOption9",Value:this.ipt.items3[1].discrip},
+            {Column:"CheckOptionLv9",Value:this.ipt.items3[1].damLv},
+            {Column:"CheckOption10",Value:this.ipt.items3[2].discrip},
+            {Column:"CheckOptionLv10",Value:this.ipt.items3[2].damLv},
+            {Column:"CheckOption11",Value:this.ipt.items3[3].discrip},
+            {Column:"CheckOptionLv11",Value:this.ipt.items3[3].damLv},
+            {Column:"CheckOption12",Value:this.ipt.items3[4].discrip},
+            {Column:"CheckOptionLv12",Value:this.ipt.items3[4].damLv},
+            {Column:"CheckOption13",Value:this.ipt.items3[5].discrip},
+            {Column:"CheckOptionLv13",Value:this.ipt.items3[5].damLv},
+            {Column:"CheckOption14",Value:this.ipt.items4[0].discrip},
+            {Column:"CheckOptionLv14",Value:this.ipt.items4[0].damLv},
+            {Column:"CheckOption15",Value:this.ipt.items4[1].discrip},
+            {Column:"CheckOptionLv15",Value:this.ipt.items4[1].damLv},
+            {Column:"CheckOption16",Value:this.ipt.items5[0].discrip},
+            {Column:"CheckOptionLv16",Value:this.ipt.items5[0].damLv},
+            {Column:"CheckOption17",Value:this.ipt.items5[1].discrip},
+            {Column:"CheckOptionLv17",Value:this.ipt.items5[1].damLv},
+            {Column:"CheckOption18",Value:this.ipt.items5[2].discrip},
+            {Column:"CheckOptionLv18",Value:this.ipt.items5[2].damLv},
+            {Column:"CheckOption19",Value:this.ipt.items6[0].discrip},
+            {Column:"CheckOptionLv19",Value:this.ipt.items6[0].damLv},
+            {Column:"CheckOption20",Value:this.ipt.items6[1].discrip},
+            {Column:"CheckOptionLv20",Value:this.ipt.items6[1].damLv},
+            {Column:"CheckOption21",Value:this.ipt.items6[2].discrip},
+            {Column:"CheckOptionLv21",Value:this.ipt.items6[2].damLv},
+            {Column:"CheckOption22",Value:this.ipt.items6_2.discrip},
+            {Column:"CheckOption22_1",Value:this.CheckOption22_1},
+            {Column:"CheckOption22_2",Value:this.CheckOption22_2},
+            {Column:"CheckOption22_3",Value:this.CheckOption22_3},
+            {Column:"Memo",Value:this.note},
+          ]
+        }).then(res => {
+          console.log("then")
+          console.log(res.data.DT)
+        }).catch(err => {
+          console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          // this.chLoadingShow()
+        })
+      }
+      else{
+        //-----編輯-----
+        console.log("-----編輯-----")
+      }
+      this.$router.push({ path: "/form-manage/maintain/tunnel-visual-safety-checklist" });
+    },
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;
@@ -788,7 +925,7 @@ export default {
     viewPage(item) {
       console.log("item: " + item)
       console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
+      // this.chLoadingShow()
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -849,7 +986,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
-        this.chLoadingShow()
+        // this.chLoadingShow()
       })
     },//viewPage
   },

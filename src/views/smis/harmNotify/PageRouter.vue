@@ -17,6 +17,7 @@ import Show from '@/views/smis/harmNotify/Show.vue'
 import ReviewComplated from '@/views/smis/harmNotify/ReviewComplated.vue'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         itemData: {},  // 工單資料
         status: '',  // 狀態
@@ -40,7 +41,7 @@ export default {
             this.chLoadingShow()
 
             fetchNotifyOne({
-                EndangerID: this.$route.params.id,  // 危害通報編號 (從路由參數抓取)
+                EndangerID: this.id,  // 危害通報編號 (從路由參數抓取)
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
@@ -60,16 +61,16 @@ export default {
 
                         // 設定下面的欄位資料
                         // 組合發現地點
-                        let locationLabel = locationOpts.find(item => item.value == res.data.FindLine).text
-
-                        if (['l2', 'l3', 'l41', 'l5'].includes(res.data.FindLine)) {  // 若為本線、祝山線、眠月線、水山線
-                            locationLabel = `${locationLabel} (${res.data.FindKLine}K+${res.data.FindMLine}M)`
-                        } else if (res.data.FindLine == 'other') {  // 若為其他
-                            locationLabel = `${locationLabel} (${res.data.FindLineOther})`
+                        let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
+                        
+                        if (['l1', 'l2', 'l3', 'l4'].includes(res.data.FindLine)) {
+                            findLocationText += ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`  // 本線、祝山線、眠月線、水山線
+                        } else if(res.data.FindLine == 'other') {
+                            findLocationText += ` (${res.data.FindLineOther})`  // 其他地點
                         }
 
                         let bottomItems = [
-                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: locationLabel },
+                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: findLocationText },
                             { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
                             { dataType: 'text', oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
                         ]

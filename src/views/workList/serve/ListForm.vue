@@ -461,6 +461,7 @@ import { fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '
 import { fetchWorkOrderOne, serveNewListExecl, createWorkOrder, updateListOrder } from '@/apis/workList/serve'
 
 export default {
+    props: ['id'],  //路由參數
     data: () => ({
         valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
         isEdit: false,  // 是否為編輯
@@ -661,7 +662,7 @@ export default {
             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
             this.dialogForm = { ...this.dialogDefault }  // 初始化 dialog
 
-            if (this.$route.params.id != undefined) {
+            if (this.id != undefined) {
                 // -------- 編輯時 -------
                 this.isEdit = true
 
@@ -677,7 +678,7 @@ export default {
             this.chLoadingShow()
 
             fetchWorkOrderOne({
-                WorkOrderID: this.$route.params.id,  // 工單編號
+                WorkOrderID: this.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data
@@ -786,8 +787,8 @@ export default {
                         Type: this.ipt.type,  // 工單性質
                         OderTypeCode: this.ipt.typeNumber,  // 工單性質編號
                         MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
-                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
-                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}/${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}/${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
                         MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
                         Malfunction: this.ipt.noticeLocation,  // 通報維修地點及事項
                         WorkSubject: '',  // 故障主旨(目前是備用的欄位)
