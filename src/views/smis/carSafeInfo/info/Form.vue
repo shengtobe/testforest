@@ -428,6 +428,7 @@ export default {
         transferName(val) {
             return this.members.find(ele => ele.value == val).name
         },
+        
         // 移除員工
         delMember(idx, t) {
             this.ipt[t].splice(idx, 1)
