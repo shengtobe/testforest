@@ -386,7 +386,7 @@ export default {
             //this.ipt.cc = [ ...obj.RecCopy ] // 副本
             //this.ipt.joiners = [ ...obj.JoinPeople ] // 加會人
             this.ipt.files = [ ...obj.FileCount ] // 附件檔案
-            
+            console.log(`aaaa:`, this.ipt.files)
 
              
         },
