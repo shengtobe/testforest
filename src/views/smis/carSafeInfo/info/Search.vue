@@ -131,8 +131,8 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.status="{ item }">
-                        {{ transferStatusText(item.status) }}
+                    <template v-slot:item.SaftyInfoStatus="{ item }">
+                        {{ transferStatusText(item.SaftyInfoStatus) }}
                     </template>
 
                     <template v-slot:item.action="{ item }">
@@ -160,13 +160,21 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
+import { safetyinfoquery, safetyinfocreate } from '@/apis/smis/carSafeInfo'
 
 export default {
     data: () => ({
-        ipt: {},
+        ipt: {
+            dateStart:  new Date().toISOString().substr(0, 10),  // 限制日期(起)
+            dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
+            title: '', //通報主題
+            status: '', //發布狀態
+            depart: '', //通報單位
+        },
         defaultIpt: {
             title: '',  // 通報主題
             dateStart:  '',  // 發布日期(起)
@@ -181,12 +189,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報主題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報人', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發布狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發布日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'SaftyInfoCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報主題', value: 'InfoTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報單位', value: 'creat_depart_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報人', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發布狀態', value: 'SaftyInfoStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發布日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         departOpts: [  // 通報單位下拉選單
@@ -203,8 +211,14 @@ export default {
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 清除搜尋內容
@@ -213,47 +227,79 @@ export default {
         },
         // 搜尋
         search() {
+            // console.log(this.ipt.dateStart)
+            // console.log(this.ipt.dateEnd)
+            // console.log(this.ipt.title)
+            // console.log(this.ipt.status)
+            // console.log(this.ipt.depart)
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        title: '3月份團康活動',
-                        depart: '綜合企劃科',
-                        name: '王小明',
-                        date: '2020-02-03',
-                        status: 1,
-                    },
-                    {
-                        id: '222',
-                        title: '售票注意事項宣導',
-                        depart: '鐵路服務科',
-                        name: '陳志揚',
-                        date: '2020-01-20',
-                        status: 2,
-                    },
-                    {
-                        id: '333',
-                        title: '年中車輛保養行程表',
-                        depart: '車輛養護科',
-                        name: '林家豪',
-                        date: '2020-01-15',
-                        status: 3,
-                    },
-                    {
-                        id: '444',
-                        title: '阿里山站售票大廳電燈更換',
-                        depart: '鐵路服務科',
-                        name: '趙永智',
-                        date: '2020-01-09',
-                        status: 4,
-                    },
-                ]
+            safetyinfoquery({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_SaftyInfomation',  // DB table
+                KeyItem: [
+                     { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 日期(起)
+                     { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd},  // 日期(迄) 
+                     { tableColumn: 'InfoTitle', columnValue: this.ipt.title},  // 通報主題
+                     { tableColumn: 'SaftyInfoStatus', columnValue: this.ipt.status},  // 發布狀態
+                     { tableColumn: 'PeopleRootDepart', columnValue: this.ipt.depart},  // 通報單位                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'SaftyInfoCode',
+                    'PeopleID',
+                    'InfoTitle',
+                    'SaftyInfoStatus',
+                    'InsertDTime',
+                    'PeopleRootDepart',              
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                console.log(this.tableItems)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
+            // 新增測試用資料
+            // setTimeout(() => {
+            //     this.tableItems = [
+            //         {
+            //             id: '111',
+            //             title: '3月份團康活動',
+            //             depart: '綜合企劃科',
+            //             name: '王小明',
+            //             date: '2020-02-03',
+            //             status: 1,
+            //         },
+            //         {
+            //             id: '222',
+            //             title: '售票注意事項宣導',
+            //             depart: '鐵路服務科',
+            //             name: '陳志揚',
+            //             date: '2020-01-20',
+            //             status: 2,
+            //         },
+            //         {
+            //             id: '333',
+            //             title: '年中車輛保養行程表',
+            //             depart: '車輛養護科',
+            //             name: '林家豪',
+            //             date: '2020-01-15',
+            //             status: 3,
+            //         },
+            //         {
+            //             id: '444',
+            //             title: '阿里山站售票大廳電燈更換',
+            //             depart: '鐵路服務科',
+            //             name: '趙永智',
+            //             date: '2020-01-09',
+            //             status: 4,
+            //         },
+            //     ]
+            //     this.chLoadingShow()
+            // }, 1000)
         },
         // 更換頁數
         chPage(n) {
@@ -262,16 +308,16 @@ export default {
         // 轉換事故事件狀態文字
         transferStatusText(status) {
             switch(status) {
-                case 1:
+                case '1':
                     return '已立案'
                     break
-                case 2:
+                case '2':
                     return '審核中'
                     break
-                case 3:
+                case '3':
                     return '加會中'
                     break
-                case 4:
+                case '4':
                     return '已發布'
                     break
                 default:
@@ -280,24 +326,24 @@ export default {
         },
         // 重新導向 (依事故事件狀態)
         redirect(item) {
-            switch(item.status) {
-                case 1:  // 已立案
+            switch(item.SaftyInfoStatus) {
+                case '1':  // 已立案
                     sessionStorage.itemStatus = '1'
                     break
-                case 2:  // 審核中
+                case '2':  // 審核中
                     sessionStorage.itemStatus = '2'
                     break
-                case 3:  // 加會中
+                case '3':  // 加會中
                     sessionStorage.itemStatus = '3'
                     break
-                case 4: // 已發布
+                case '4': // 已發布
                     sessionStorage.itemStatus = '4'
                     break
                 default:
                     break
             }
 
-            let routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.id}/show` })
+            let routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.SaftyInfoCode}/show` })
             window.open(routeData.href, '_blank')
         },
     },

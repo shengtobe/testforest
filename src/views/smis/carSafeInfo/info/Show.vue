@@ -57,9 +57,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import { safetyinfodetail } from '@/apis/smis/carSafeInfo'
 
 export default {
     props: ['itemData'],
@@ -69,6 +71,7 @@ export default {
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 檔案附件
+        Status: '',  // 檔案附件
     }),
     components: {
         TopBasicTable,
@@ -80,6 +83,11 @@ export default {
             // … 
         }
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -88,11 +96,83 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            
             this.id = obj.id  // 編號
-            this.topItems = obj.topItems  // 上面的欄位資料
+            //this.topItems = obj.topItems  // 上面的欄位資料
+            //console.log(obj.topItems)
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            console.log(obj.bottomItems)
             this.files = [ ...obj.files ]  // 檔案附件
+            console.log(...obj.files)
+            this.chLoadingShow()
+               
+            
+                safetyinfodetail({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: obj.id,  // DB table
+                
+                QyName: [    // 欲回傳的欄位資料
+                    'SaftyInfoCode',
+                    'InfoTitle',
+                    'InfoContent',
+                    'PeopleId',
+                    'PeopleName',
+                    'PeopleRootDepartId',
+                    'PeopleRootDepartName',
+                    'SaftyInfoStatus',
+                    'RecPeople',  
+                    'RecCopy',
+                    'JoinPeople', 
+                    'FileCount', 
+                                  
+                ],
+             }).then(res => {
+                console.log(res.data)
+                console.log(res.data.RecPeople)
+                //this.tableItems = JSON.parse(res.data.order_list)
+                //console.log(this.tableItems)
+                this.setShowDataint(res.data)
+             }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+             }).finally(() => {
+                this.chLoadingShow()
+             })
         },
+        // 設定上方資料
+         setShowDataint(obj) {
+                
+                    switch(obj.SaftyInfoStatus) {
+                case '1':
+                    this.Status= '已立案'
+                    break
+                case '2':
+                    this.Status=  '審核中'
+                    break
+                case '3':
+                    this.Status=  '加會中'
+                    break
+                case '4':
+                    this.Status=  '已發布'
+                    break
+                default:
+                    break
+            }
+                     this.topItems= [
+                     { icon: 'mdi-ray-vertex', text: this.Status, title: '發布狀態' },  // 日期(起)
+                     { icon: 'mdi-bank', text: obj.PeopleRootDepartName, title: '通報單位' },  // 日期(迄) 
+                     { icon: 'mdi-account', text: obj.PeopleName, title: '通報人' },  // 通報主題                                    
+                     ]
+                     this.files=[]
+                     obj.FileCount.forEach(element => this.files.push({ fileName: element.FileName, link: element.FileFullPath,}));
+                     
+                                       
+                
+            
+            
+        },
+        
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
