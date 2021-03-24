@@ -209,16 +209,16 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                    this.chMsgbar({ success: true, msg: '退回成功' })
                     this.done = true  // 隱藏頁面操作按鈕
                 } else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
-                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，退回失敗' })
             }).finally(() => {
-                this.isLoading = this.dialog = false
+                this.isLoading = this.backDialog = false
             })
         },
         // 同意結案
