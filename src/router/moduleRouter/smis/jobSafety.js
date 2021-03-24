@@ -20,7 +20,8 @@ export const JobSafetyRouter = [
     {
         linkText: '事故事件詳細內容',
         path: '/smis/jobsafety/disaster-survey/:id/show', 
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/PageRouter.vue')
+        component: () => import('@/views/smis/jobSafety/disasterSurvey/PageRouter.vue'),
+        props: true,
     },
     {
         linkText: '編輯事故事件',
@@ -77,7 +78,8 @@ export const JobSafetyRouter = [
     {
         linkText: '職災危害資料庫編輯',
         path: '/smis/jobsafety/disasterdb/:id/edit', 
-        component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
+        component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue'),
+        props: true,
     },
 
     // ----------------- 職安績效管理 -----------------

@@ -333,7 +333,7 @@
         <v-col cols="12" sm="6" md="3" class="mt-n8 mt-sm-8">
             <v-select
                 v-model="ipt.vehicle"
-                :items="opts.vehicle"
+                :items="vehicleLv2opts"
                 solo
             ></v-select>
         </v-col>
@@ -516,15 +516,15 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-// import { getNowFullTime } from '@/assets/js/commonFun'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 // import { createWorkOrder } from '@/apis/workList/maintain'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import { dapartOptsBrief } from '@/assets/js/departOption'
 import { injurySiteOpts, disasterTypeOpts, vehicleOpts } from '@/assets/js/smisData'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import { createData, detailOne, updateData } from '@/apis/smis/carHarmDatabase/harms'
+import { createData, detailOne, updateData } from '@/apis/smis/jobSafety'
 
 export default {
     props: ['id'],  //路由參數
@@ -625,18 +625,26 @@ export default {
         UploadFileAdd,
         UploadFileEdit,
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+        vehicleLv2opts() {
+            return vehicleOpts[this.ipt.vehicleLv1]
+        },
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
         },
         // 致傷媒介物-第二層下拉選單
-        'ipt.vehicleLv1': function(val) {
-            if (val != '') {
-                this.opts.vehicle = vehicleOpts[val]
-                this.ipt.vehicle = this.opts.vehicle[1]  // 因為第1個選項不可用，所以設為第2個
-            }
-        },
+        // 'ipt.vehicleLv1': function(val) {
+        //     if (val != '') {
+        //         this.opts.vehicle = vehicleOpts[val]
+        //         this.ipt.vehicle = this.opts.vehicle[1]  // 因為第1個選項不可用，所以設為第2個
+        //     }
+        // },
         
     },
     methods: {
@@ -655,68 +663,96 @@ export default {
 
             if (this.id != undefined) {
                 // -------------- 編輯時 -------------- 
+                console.log("此次load為編輯")
+                console.log(this.id)
                 this.chLoadingShow()
                 // this.id = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
 
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        workDepart: '阿里山車站',  // 工作部門
-                        name: '王小明',  // 罹災者姓名
-                        idCard: 'S122456789',  // 身分證
-                        passport: 'D88800548',  // 護照號碼
-                        type: 1,  // 勞工類型
-                        sex: '男',  // 性別
-                        old: 34,  // 年齡
-                        startWorkDate: '2003-01-02',  // 到職日期
-                        jobTitle: '維修員',  // 職稱
-                        education: '大學',  // 教育程度
-                        address: '嘉義市東區中山路199號',  // 住址
-                        workYear: 6,  // 本項工作經驗年數
-                        trainingDate: '2003-01-10 ~ 2003-06-15',  // 本項工作訓練日期
-                        depart: '阿里山車站',  // 發生單位
-                        findDate: '2020-08-23',  // 發生日期
-                        findHour: '09',  // 發生日期(時)
-                        findMin: '45',  // 發生日期(分)
-                        location: '工具間',  // 發生地點
-                        lat: '23.444131',  // 發生地點(緯度)
-                        lng: '120.776988',  // 發生地點(經度)
-                        weather: '晴',  // 氣候
-                        accidentType: 1,  // 事故類別
-                        accidentResult: 2,  // 事故結果
-                        injurySite: 9,  // 傷害部位
-                        disasterType: 8,  // 災害類型
-                        vehicleLv1: '動力機械',  // 致傷媒介物-第一層
-                        vehicle: 154,  // 致傷媒介物-第二層
-                        directReason: '直接原因文字直接原因文字直接原因文字直接原因文字直接原因文字',  // 直接原因
-                        indirectReason: '不安全行為',  // 間接原因
-                        basicReason: '基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字',  // 基本原因
-                        workItem: '傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字',  // 傷者當時工作
-                        overview: '事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字',  // 事故概況
-                        emergentWork: '緊急處理情形文字緊急處理情形文字緊急處理情形文字緊急處理情形文字',  // 緊急處理情形
-                        improveStrategy: '事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字',  // 事故單位防範及改善對策
-                        files: [
-                            { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                            { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
-                            { fileName: '123.pdf', link: '/demofile/123.pdf' },
-                            { fileName: '123.docx', link: '/demofile/123.docx' },
-                            { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
-                        ],
+                detailOne({
+                    AccidentCode: this.id,  // 工單編號 (從路由參數抓取)
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        console.log("fetchOne後收到res.data:")
+                        console.log(res.data)
+                        if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
+                            this.$router.push({ path: '/404' })
+                        } else {
+                            // res.data.controls = JSON.parse(res.data.order_list)  // 已選控制措施
+                            this.setInitDate(res.data)
+                        }
+                    } else {
+                        // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
-                    
-                    this.setInitDate(obj)
+                }).catch(err => {
+                    console.log(err)
+                    alert('伺服器發生問題，資料讀取失敗')
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
+
+                // 範例效果
+                // setTimeout(() => {
+                //     let obj = {
+                //         workDepart: '阿里山車站',  // 工作部門
+                //         name: '王小明',  // 罹災者姓名
+                //         idCard: 'S122456789',  // 身分證
+                //         passport: 'D88800548',  // 護照號碼
+                //         type: 1,  // 勞工類型
+                //         sex: '男',  // 性別
+                //         old: 34,  // 年齡
+                //         startWorkDate: '2003-01-02',  // 到職日期
+                //         jobTitle: '維修員',  // 職稱
+                //         education: '大學',  // 教育程度
+                //         address: '嘉義市東區中山路199號',  // 住址
+                //         workYear: 6,  // 本項工作經驗年數
+                //         trainingDate: '2003-01-10 ~ 2003-06-15',  // 本項工作訓練日期
+                //         depart: '阿里山車站',  // 發生單位
+                //         findDate: '2020-08-23',  // 發生日期
+                //         findHour: '09',  // 發生日期(時)
+                //         findMin: '45',  // 發生日期(分)
+                //         location: '工具間',  // 發生地點
+                //         lat: '23.444131',  // 發生地點(緯度)
+                //         lng: '120.776988',  // 發生地點(經度)
+                //         weather: '晴',  // 氣候
+                //         accidentType: 1,  // 事故類別
+                //         accidentResult: 2,  // 事故結果
+                //         injurySite: 9,  // 傷害部位
+                //         disasterType: 8,  // 災害類型
+                //         vehicleLv1: '動力機械',  // 致傷媒介物-第一層
+                //         vehicle: 154,  // 致傷媒介物-第二層
+                //         directReason: '直接原因文字直接原因文字直接原因文字直接原因文字直接原因文字',  // 直接原因
+                //         indirectReason: '不安全行為',  // 間接原因
+                //         basicReason: '基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字基本原因文字',  // 基本原因
+                //         workItem: '傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字傷者當時工作文字',  // 傷者當時工作
+                //         overview: '事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字事故概況文字',  // 事故概況
+                //         emergentWork: '緊急處理情形文字緊急處理情形文字緊急處理情形文字緊急處理情形文字',  // 緊急處理情形
+                //         improveStrategy: '事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字事故單位防範及改善對策文字',  // 事故單位防範及改善對策
+                //         files: [
+                //             { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
+                //             { fileName: 'ASRC200702.jpg', link: '/demofile/demo2.jpg' },
+                //             { fileName: '123.pdf', link: '/demofile/123.pdf' },
+                //             { fileName: '123.docx', link: '/demofile/123.docx' },
+                //             { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                //         ],
+                //     }
+                    
+                //     this.setInitDate(obj)
+                //     this.chLoadingShow()
+                // }, 1000
+                // )
 
             } else {
                 // -------------- 新增時 -------------- 
+                console.log("此次load為新增")
                 // 若由危害通報新登錄轉至此頁，則指派初始值
                 if (sessionStorage.getItem('notifyItem') !== null) {
                     let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
-                    
-                    this.notify.id = obj.id,  // 通報id
-                    this.notify.files = [ ...obj.files ]  // 通報附件
+                    this.notify.id = obj.AccidentCode,  // 通報id
+                    this.notify.files = [ ...obj.FileCount ]  // 通報附件
                     this.notify.isNew = true  // 是否為危害通報的新登錄
                     this.isExtendAnnex = true  // 延用通報附件
 
@@ -726,41 +762,41 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            this.ipt.workDepart = obj.workDepart  // 工作部門
-            this.ipt.name = obj.name  // 罹災者姓名
-            this.ipt.idCard = obj.idCard  // 身分證
-            this.ipt.passport = obj.passport  // 護照號碼
-            this.ipt.type = obj.type  //勞工類型
-            this.ipt.sex = obj.sex  // 性別
-            this.ipt.old = obj.old  // 年齡
-            this.ipt.startWorkDate = obj.startWorkDate　// 到職日期
-            this.ipt.jobTitle = obj.jobTitle　// 職稱
-            this.ipt.education = obj.education  // 教育程度
-            this.ipt.address = obj.address  // 住址
-            this.ipt.workYear = obj.workYear  // 本項工作經驗年數
-            this.ipt.trainingDate = obj.trainingDate  // 本項工作訓練日期
-            this.ipt.depart = obj.depart  // 發生單位
-            this.ipt.occurDate = obj.findDate  // 發生日期
-            this.ipt.hour = obj.findHour // 發生日期(時)
-            this.ipt.min = obj.findMin  // 發生日期(分)
-            this.ipt.location = obj.location  // 發生地點
-            this.ipt.lat = obj.lat  // 發生地點(緯度)
-            this.ipt.lng = obj.lng  // 發生地點(經度)
-            this.ipt.weather = obj.weather  // 氣候
-            this.ipt.accidentType = obj.accidentType  // 事故類別
-            this.ipt.accidentResult = obj.accidentResult  // 事故結果
-            this.ipt.injurySite = obj.injurySite  // 傷害部位
-            this.ipt.disasterType = obj.disasterType  // 災害類型
-            this.ipt.vehicleLv1 = obj.vehicleLv1  // 致傷媒介物-第一層
-            this.ipt.vehicle = obj.vehicle  // 致傷媒介物-第二層
-            this.ipt.directReason = obj.directReason  // 直接原因
-            this.ipt.indirectReason = obj.indirectReason  // 間接原因
-            this.ipt.basicReason = obj.basicReason  // 基本原因
-            this.ipt.workItem = obj.workItem  // 傷者當時工作
-            this.ipt.overview = obj.overview  // 事故概況
-            this.ipt.emergentWork = obj.emergentWork  // 緊急處理情形
-            this.ipt.improveStrategy = obj.improveStrategy  // 事故單位防範及改善對策
-            this.ipt.files = [ ...obj.files ]  // 附件檔案
+            this.ipt.workDepart = obj.PeopleDepart  // 工作部門
+            this.ipt.name = obj.HurtPeopleName  // 罹災者姓名
+            this.ipt.idCard = obj.HurtPeopleCardID  // 身分證
+            this.ipt.passport = obj.HurtPassportID  // 護照號碼
+            this.ipt.type = obj.EmployType  //勞工類型
+            this.ipt.sex = obj.PeopleSex  // 性別
+            this.ipt.old = obj.PeopleAge  // 年齡
+            this.ipt.startWorkDate = obj.WorkDate// 到職日期
+            this.ipt.jobTitle = obj.JobTitle// 職稱
+            this.ipt.education = obj.EduLevel  // 教育程度
+            this.ipt.address = obj.PeopleAddress  // 住址
+            this.ipt.workYear = obj.WorkExp  // 本項工作經驗年數
+            this.ipt.trainingDate = obj.TrainDate  // 本項工作訓練日期
+            this.ipt.depart = obj.HappenDepart  // 發生單位
+            this.ipt.occurDate = obj.HappenDate  // 發生日期
+            this.ipt.hour = obj.HappenDateHr // 發生日期(時)
+            this.ipt.min = obj.HappenDateMin  // 發生日期(分)
+            this.ipt.location = obj.HappenPlace  // 發生地點
+            this.ipt.lat = obj.HappenPlaceLat  // 發生地點(緯度)
+            this.ipt.lng = obj.HappenPlaceLong  // 發生地點(經度)
+            this.ipt.weather = obj.Weather  // 氣候
+            this.ipt.accidentType = obj.AccidentType  // 事故類別
+            this.ipt.accidentResult = obj.AccidentResult  // 事故結果
+            this.ipt.injurySite = obj.HurtPart  // 傷害部位
+            this.ipt.disasterType = obj.DisasterType  // 災害類型
+            this.ipt.vehicleLv1 = obj.HurtMediumLv1  // 致傷媒介物-第一層
+            this.ipt.vehicle = obj.HurtMediumLv2  // 致傷媒介物-第二層
+            this.ipt.directReason = obj.AccidentReason  // 直接原因
+            this.ipt.indirectReason = obj.AccidentIndirect  // 間接原因
+            this.ipt.basicReason = obj.AccidentBase  // 基本原因
+            this.ipt.workItem = obj.HurtWorking  // 傷者當時工作
+            this.ipt.overview = obj.AccidentDesp  // 事故概況
+            this.ipt.emergentWork = obj.EmergencyStatus  // 緊急處理情形
+            this.ipt.improveStrategy = obj.AccidentPolicy  // 事故單位防範及改善對策
+            this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
         },
         // 送出
         save() {
@@ -779,28 +815,45 @@ export default {
                 // }, 1000)
                 if (this.isEdit) {
                 // ---------- 編輯時---------- 
-                detailData({
-                    EndangerCode: this.id,  // 危害編號
-                    EndangerDesp: this.ipt.desc,  // 危害說明
-                    OperationMode: this.ipt.mode,  //營運模式
-                    EndangerReason: this.ipt.reason,  // 危害直接成因
-                    EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
-                    Remark: this.ipt.note,  // 備註
-                    EndangerDepart: this.ipt.depart,  // 危害權責部門
-                    RiskSerious: this.ipt.serious,  // 風險嚴重性
-                    RiskFreq: this.ipt.frequency,  // 風險頻率
-                    RiskLevel: '',  // 風險等級
-                    DeriveAccident: this.ipt.accidents,  // 衍生事故
-                    EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
-                    EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
-                    EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
-                    ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
-                    ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
-                    DeviceDepart: '',  // 控制措施權責部門
-                    ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
-                    ProcCount: chooseControlData,  // 已選控制措施清單
+                updateData({
+                    HappenDepart: this.ipt.depart, //3發生單位
+                    HurtPeopleName: this.ipt.name, //4罹災者姓名
+                    HurtPeopleCardID: this.ipt.idCard, //身分證
+                    HurtPassportID: this.ipt.passport, //護照號碼
+                    PeopleAge: this.ipt.old, //5年齡
+                    PeopleSex: this.ipt.sex, //6性別
+                    PeopleDepart: this.ipt.workDepart, //7工作部門
+                    JobTitle: this.ipt.jobTitle, //8職稱
+                    PeopleAddress: this.ipt.address, //9住址
+                    WorkDate: this.ipt.startWorkDate, //10到職日期
+                    WorkExp: this.ipt.workYear, //11參加本項工作經驗年數
+                    EduLevel: this.ipt.education, //12教育程度
+                    TrainDate: this.ipt.trainingDate, //13本項工作相關訓練日期
+                    EmployType: this.ipt.type, //1勞工類型
+                    HappenDate: this.ipt.occurDate, //14發生日期(日)
+                    HappenDateHr: this.ipt.hour, //15發生日期(時)
+                    HappenDateMin: this.ipt.min, //16發生日期(分)
+                    Weather: this.ipt.weather, //15氣候
+                    HappenPlace: this.ipt.location, //16發生地點
+                    HappenPlaceLong: this.ipt.lng, //16發生地點(經度)
+                    HappenPlaceLat: this.ipt.lat, //16發生地點(緯度)
+                    AccidentType: this.ipt.accidentType, //17事故類別
+                    AccidentResult: this.ipt.accidentResult, //18事故結果
+                    HurtPart: this.ipt.injurySite, //22傷害部位
+                    DisasterType: this.ipt.disasterType, //23災害類型
+                    HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
+                    HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
+                    AccidentReason: this.ipt.directReason, //19直接原因
+                    AccidentIndirect: this.ipt.indirectReason, //20間接原因
+                    AccidentBase: this.ipt.basicReason, //21基本原因
+                    HurtWorking: this.ipt.workItem, //25傷者當時工作
+                    AccidentDesp: this.ipt.overview, //26事故概況
+                    EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
+                    AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
+                    FileCount: [],
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    AccidentCode: this.id,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '更新成功' })
@@ -814,26 +867,45 @@ export default {
                     this.chLoadingShow()
                 })
             } else {
+                console.log("---------- 新增時---------- ")
+                console.log()
                 // ---------- 新增時---------- 
                 createData({
-                    EndangerDesp: this.ipt.desc,  // 危害說明
-                    OperationMode: this.ipt.mode,  //營運模式
-                    EndangerReason: this.ipt.reason,  // 危害直接成因
-                    EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
-                    Remark: this.ipt.note,  // 備註
-                    EndangerDepart: this.ipt.depart,  // 危害權責部門
-                    RiskSerious: this.ipt.serious,  // 風險嚴重性
-                    RiskFreq: this.ipt.frequency,  // 風險頻率
-                    RiskLevel: '',  // 風險等級
-                    DeriveAccident: this.ipt.accidents,  // 衍生事故
-                    EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
-                    EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
-                    EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
-                    ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
-                    ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
-                    DeviceDepart: '',  // 控制措施權責部門
-                    ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
-                    ProcCount: chooseControlData,  // 已選控制措施清單
+                    HappenDepart: this.ipt.depart, //3發生單位
+                    HurtPeopleName: this.ipt.name, //4罹災者姓名
+                    HurtPeopleCardID: this.ipt.idCard, //身分證
+                    HurtPassportID: this.ipt.passport, //護照號碼
+                    PeopleAge: this.ipt.old, //5年齡
+                    PeopleSex: this.ipt.sex, //6性別
+                    PeopleDepart: this.ipt.workDepart, //7工作部門
+                    JobTitle: this.ipt.jobTitle, //8職稱
+                    PeopleAddress: this.ipt.address, //9住址
+                    WorkDate: this.ipt.startWorkDate, //10到職日期
+                    WorkExp: this.ipt.workYear, //11參加本項工作經驗年數
+                    EduLevel: this.ipt.education, //12教育程度
+                    TrainDate: this.ipt.trainingDate, //13本項工作相關訓練日期
+                    EmployType: this.ipt.type, //1勞工類型
+                    HappenDate: this.ipt.occurDate, //14發生日期(日)
+                    HappenDateHr: this.ipt.hour, //15發生日期(時)
+                    HappenDateMin: this.ipt.min, //16發生日期(分)
+                    Weather: this.ipt.weather, //15氣候
+                    HappenPlace: this.ipt.location, //16發生地點
+                    HappenPlaceLong: this.ipt.lng, //16發生地點(經度)
+                    HappenPlaceLat: this.ipt.lat, //16發生地點(緯度)
+                    AccidentType: this.ipt.accidentType, //17事故類別
+                    AccidentResult: this.ipt.accidentResult, //18事故結果
+                    HurtPart: this.ipt.injurySite, //22傷害部位
+                    DisasterType: this.ipt.disasterType, //23災害類型
+                    HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
+                    HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
+                    AccidentReason: this.ipt.directReason, //19直接原因
+                    AccidentIndirect: this.ipt.indirectReason, //20間接原因
+                    AccidentBase: this.ipt.basicReason, //21基本原因
+                    HurtWorking: this.ipt.workItem, //25傷者當時工作
+                    AccidentDesp: this.ipt.overview, //26事故概況
+                    EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
+                    AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
+                    FileCount: [],
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
