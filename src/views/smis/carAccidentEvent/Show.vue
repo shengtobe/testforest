@@ -14,7 +14,7 @@
     <OtherInfoShow :items="otherItems" />
 
     <!-- 檔案列表 -->
-    <FileListShow :fileList="files" />
+    <FileListShow :fileList="files" title="檔案列表" />
 
     <!-- 填寫人員傷亡、改善措施 -->
     <v-row no-gutters class="mt-10">

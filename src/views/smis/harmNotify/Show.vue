@@ -6,12 +6,12 @@
     <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
-    <v-row no-gutters class="mt-8">
+    <v-row no-gutters class="mt-8 mb-4">
         <BottomTable :items="bottomItems" />
     </v-row>
 
     <!-- 檔案列表 -->
-    <FileListShow :fileList="files" />
+    <FileListShow :fileList="files" title="檔案列表" />
     
     <v-row class="mt-8 mb-4">
         <v-col cols="12">

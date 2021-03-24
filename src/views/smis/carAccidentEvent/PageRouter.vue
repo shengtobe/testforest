@@ -133,7 +133,6 @@ export default {
                         }
 
                         this.itemData = { ...res.data, topItems, bottomItems, otherInfo, hurtPeoples, controls }
-                        // console.log(this.itemData)
                     }
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面

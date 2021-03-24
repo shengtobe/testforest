@@ -14,7 +14,7 @@
     <OtherInfoShow :items="otherItems" />
 
     <!-- 檔案列表 -->
-    <FileListShow :fileList="files" />
+    <FileListShow :fileList="files" title="檔案列表" />
 
     <!-- 死傷人數 -->
     <HurtPeopleShow :tableItems="deathData" :deathCount="deathCount" />
@@ -143,6 +143,7 @@ export default {
         files: [],  // 檔案
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        otherItems: [],  // 其他資訊
         deathCount: '',  // 死傷人數
         deathData: [],  // 死傷資料
         controlItems: [],  // 控制措施表格資料
