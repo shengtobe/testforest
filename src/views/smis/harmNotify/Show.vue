@@ -242,7 +242,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
-import { replyNotify } from '@/apis/smis/harmNotify'
+import { replyNotify, recordNotify } from '@/apis/smis/harmNotify'
 // import NotifyEvtDialog from '@/components/smis/NotifyEvtDialog.vue'
 // import NotifyHarmDialog from '@/components/smis/NotifyHarmDialog.vue'
 // import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
@@ -471,49 +471,88 @@ export default {
         },
         // 確定立案(用在立案處理是連結跟不予處理的情況)
         save() {
-            if (!this.replay.replied) {
-                alert('請先完成回覆處理!')
-                return
-            }
+            // if (!this.replay.replied) {
+            //     alert('請先完成回覆處理!')
+            //     return
+            // }
 
-            this.chLoadingShow()
+            if (confirm('你確定要立案嗎?')) {
 
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '立案成功'})
-                this.done = true  // 隱藏頁面操作按鈕
                 this.chLoadingShow()
-            }, 1000)
+
+                // 判斷行安、職安的立案類型及種類 (依下拉選單所選的值判斷，不選擇就維持空值)
+                let carType = ''  // 行安立案類型
+                let carCase = ''  // 行安立案種類
+                let jobType = ''  // 職安立案類型
+                let jobCase = ''  // 職安立案種類
+
+                // 行安
+                switch (this.carSafeType) {
+                    case 'A':
+                        carType = 'new'
+                        carCase = 'event'
+                        break
+                    case 'B':
+                        carType = 'connect'
+                        carCase = 'event'
+                        break
+                    case 'C':
+                        carType = 'new'
+                        carCase = 'endanger'
+                        break
+                    case 'D':
+                        carType = 'connect'
+                        carCase = 'endanger'
+                        break
+                    default:
+                }
+
+                // 職安
+                switch (this.jobSafeType) {
+                    case 'A':
+                        jobType = 'new'
+                        jobCase = 'event'
+                        break
+                    case 'B':
+                        jobType = 'connect'
+                        jobCase = 'event'
+                        break
+                    case 'C':
+                        jobType = 'new'
+                        jobCase = 'endanger'
+                        break
+                    case 'D':
+                        jobType = 'connect'
+                        jobCase = 'endanger'
+                        break
+                    default:
+                }
+
+                recordNotify({
+                    EndangerID: this.id,  // 通報編號
+                    DriveRecordType: carType,  // 行安立案類型
+                    DriveRecordCase: carCase,  // 行安立案種類
+                    ProfesRecordType: jobType,  // 職安立案類型
+                    ProfesRecordCase: jobCase,  // 職安立案種類
+                    NoRecord: 'F',  // 是否不立案
+                    ChangeRecord: 'F',  // 是否變更立案類型
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.done = true  // 隱藏按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '立案成功'})
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
         },
-        // 將資料存至 sessionStorage
-        // storeSession(obj) {
-        //     sessionStorage.setItem('notifyItem', JSON.stringify({
-        //         id: obj.id,
-        //         files: obj.files,  // 附件
-        //         date: obj.findDate,  // 發現日期
-        //         hour: obj.findHour,  // 發現日期(時)
-        //         min: obj.findMin,  // 發現日期(分)
-        //         location: obj.location,  // 發現地點
-        //         locationK: obj.locationK,  // 路線k
-        //         locationM: obj.locationM,　// 路線m
-        //         locationOther: obj.locationOther,　// 其他地點
-        //         content: obj.content,  // 通報內容
-        //     }));
-        // },
-        // // 新登錄至行車事故事件
-        // addCarEvt() {
-        //     this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
-        //     this.$router.push({ path: '/smis/car-accident-event/add' })
-        // },
-        // // 新登錄至行車危害
-        // addCarHarm() {
-        //     this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
-        //     this.$router.push({ path: '/smis/car-harmdb/harms/add' })
-        // },
-        // // 新登錄至職災事故紀錄
-        // addJobEvt() {
-        //     this.storeSession(this.cacheData)  // 將資料存至 sessionStorage
-        //     this.$router.push({ path: '/smis/jobsafety/disaster-survey-add' })
-        // },
         // 不立案
         nocreate() {
             if (confirm('你確定要不立案嗎?')) {
