@@ -64,11 +64,13 @@ export const CarSafePerformanceRouter = [
     {
         linkText: '軔機檢查異常表-新增',
         path: '/smis/car-safe-performance/machine-abnormal/add',
+        props: true,
         component: () => import('@/views/smis/carSafePerformance/MachineAbnormalForm.vue')
     },
     {
         linkText: '軔機檢查異常表-編輯',
         path: '/smis/car-safe-performance/machine-abnormal/:id/edit',
+        props: true,
         component: () => import('@/views/smis/carSafePerformance/MachineAbnormalForm.vue')
     },
     // ------- 酒測、健康檢查異常表 ------- 
@@ -85,6 +87,7 @@ export const CarSafePerformanceRouter = [
     {
         linkText: '酒測、健康檢查異常表-編輯',
         path: '/smis/car-safe-performance/health-abnormal/:id/edit',
+        props: true,
         component: () => import('@/views/smis/carSafePerformance/HealthAbnormalForm.vue')
     },
     // ------- 車速異常表 -------
@@ -101,6 +104,7 @@ export const CarSafePerformanceRouter = [
     {
         linkText: '車速異常表-編輯',
         path: '/smis/car-safe-performance/speed-abnormal/:id/edit',
+        props: true,
         component: () => import('@/views/smis/carSafePerformance/SpeedAbnormalForm.vue')
     },
     // ------- 圖表 -------

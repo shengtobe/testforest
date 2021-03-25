@@ -18,7 +18,7 @@
             >
                 <template v-slot:activator="{ on }">
                     <v-text-field
-                        v-model.trim="ipt.date"
+                        v-model.trim="ipt.CheckDate"
                         solo
                         v-on="on"
                         readonly
@@ -26,7 +26,7 @@
                 </template>
                 <v-date-picker
                     color="purple"
-                    v-model="ipt.date"
+                    v-model="ipt.CheckDate"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
                 ></v-date-picker>
@@ -38,31 +38,16 @@
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
             </h3>
             <v-text-field
-                v-model.trim="ipt.carNumber"
+                v-model.trim="ipt.CarVersion"
                 solo
             ></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>異常單位
-            </h3>
-            <v-select
-                v-model="ipt.depart"
-                :items="departOpts"
-                solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account</v-icon>異常人員
             </h3>
-            <v-select
-                v-model="ipt.name"
-                :items="['王小明', '陳小華']"
-                solo
-            ></v-select>
+            <PeopleSelect v-model="ipt.ErrPeopleId" :isMuti="false" :key="componentKey" @change="getPeopleData" />
         </v-col>
 
         <v-col cols="12" md="6">
@@ -74,7 +59,7 @@
                 solo
                 rows="6"
                 placeholder="請輸入異常說明"
-                v-model.trim="ipt.desc"
+                v-model.trim="ipt.ErrDesp"
             ></v-textarea>
         </v-col>
 
@@ -87,7 +72,7 @@
                 solo
                 rows="6"
                 placeholder="請輸入異常處理情形"
-                v-model.trim="ipt.handSituation"
+                v-model.trim="ipt.ErrCheckStatus"
             ></v-textarea>
         </v-col>
 
@@ -139,46 +124,49 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
+import PeopleSelect from '@/components/PeopleSelect'
+import { mapState, mapActions } from 'vuex'
+import { login } from '@/apis/login'
+import { drunkQuery,drunkInsert,drunkUpdate } from '@/apis/smis/safetyPerformance'
+import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 
 export default {
+    props:['id'],
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
         defaultIpt: {
-            date: new Date().toISOString().substr(0, 10),  // 日期
-            depart: '北門車站',  // 異常單位
-            name: '王小明',  // 異常人員
-            number: '',  // 車次
-            desc: '',  // 異常說明
-            handSituation: '',  // 異常處理情形
+            CheckDate: new Date().toISOString().substr(0, 10),  // 日期
+            ErrDepartCode: '北門車站',  // 異常單位
+            ErrDepart: '',
+            ErrPeopleId: '王小明',  // 異常人員
+            ErrPeopleName: '',
+            CarVersion: '',  // 車次
+            ErrDesp: '',  // 異常說明
+            ErrorCheckStatus: '',  // 異常處理情形
             files: [],  // 附件
         },
         dateMemuShow: false,  // 日曆是否顯示
-        departOpts: [  // 異常單位下拉選單
-            { text: '北門車站', value: '北門車站' },
-            { text: '竹崎車站', value: '竹崎車站' },
-            { text: '交力坪車站', value: '交力坪車站' },
-            { text: '奮起湖車站', value: '奮起湖車站' },
-            { text: '二萬平車站', value: '二萬平車站' },
-            { text: '神木車站', value: '神木車站' },
-            { text: '阿里山車站', value: '阿里山車站' },
-            { text: '沼平車站', value: '沼平車站' },
-            { text: '祝山車站', value: '祝山車站' },
-        ]
+        componentKey: 0,
     }),
     components: {
         UploadFileAdd,
         UploadFileEdit,
+        PeopleSelect
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
         },
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -191,48 +179,34 @@ export default {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             // -------------- 編輯時 -------------- 
-            if (this.$route.params.id != undefined) {
+            if (this.id) {
                 this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
+                this.routeId = this.id  // 路由參數(id)
                 this.isEdit = true
-                
-
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        id: 2483,
-                        date: '2020-02-25',
-                        number: '2-4',
-                        depart: '竹崎車站',
-                        name: '王小明',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
-                        files: [
-                            {
-                                fileName: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                fileName: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
+                drunkQuery({
+                    FlowID: this.id,
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt = {...decodeObject(res.data.DataList[0])}    
+                        this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
-                    
-                    this.setInitDate(obj)
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
+            }else{
+                this.ipt.PeopleId = this.userData.UserId
+                this.ipt.PeopleName = this.userData.UserName
+                this.ipt.DepartCode = this.userData.DeptList[0].DeptId
+                this.ipt.Depart = this.userData.DeptList[0].DeptDesc
             }
-        },
-        // 設定資料(編輯時)
-        setInitDate(obj) {
-            this.ipt.date = obj.date // 日期
-            this.ipt.number = obj.number // 車次
-            this.ipt.depart = obj.depart // 異常單位
-            this.ipt.name = obj.name // 異常人員
-            this.ipt.desc = obj.desc // 異常說明
-            this.ipt.handSituation = obj.handSituation // 異常處理情形
-            this.ipt.files = [ ...obj.files ]  // 檔案
         },
         // 更換頁數
         chPage(n) {
@@ -241,19 +215,46 @@ export default {
         // 送出
         save() {
             this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                if (this.isEdit) {
-                    // 編輯時
-                    this.chMsgbar({ success: true, msg: '資料更新成功'})
-                } else {
-                    // 新增時
-                    this.$router.push({ path: '/smis/car-safe-performance/health-abnormal' })
-                    this.chMsgbar({ success: true, msg: '資料新增成功'})
-                }
-                this.chLoadingShow()
-            }, 1000)
+            this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
+            if(this.isEdit){
+                drunkUpdate({
+                    FlowID:this.id,
+                    Option:'U',
+                    ...encodeObject(this.ipt),
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '資料更新成功' })    
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }else{
+                drunkInsert({
+                    ...encodeObject(this.ipt),
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '資料新增成功' })    
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
         },
         // 加入要上傳的檔案
         joinFile(file) {
@@ -274,17 +275,30 @@ export default {
                 this.chLoadingShow()
             }, 1000)
         },
-        // 刪除檔案 (編輯時)
-        deleteFile(id, idx) {
-            if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
-
-                setTimeout(() => {
-                    // 後端請求後，移除檔案列表
-                    // this.ipt.files.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
-                    this.chLoadingShow()
-                }, 1000)
+        getPeopleData(empid){
+            if(empid){
+            const sendData = {
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                UserId: empid,
+                UserPasswd: "",
+                BackDoor: 'T',
+            }
+            login({
+                ...sendData
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.ipt.ErrDepartCode = res.data.UserData.DeptList[0].DeptId
+                    this.ipt.ErrDepart = res.data.UserData.DeptList[0].DeptDesc
+                    this.ipt.ErrPeopleName = res.data.UserData.UserName
+                } else {
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            }).finally(() => {
+            })
             }
         },
     },

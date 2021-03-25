@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `軔機檢查異常表編輯 (編號：${ routeId })` : '軔機檢查異常表新增' }}
+        {{ (this.isEdit)? `軔機檢查異常表編輯 (編號：${ id })` : '軔機檢查異常表新增' }}
     </h2>
 
     <v-row class="px-2">
@@ -18,7 +18,7 @@
             >
                 <template v-slot:activator="{ on }">
                     <v-text-field
-                        v-model.trim="ipt.date"
+                        v-model.trim="ipt.CheckDate"
                         solo
                         v-on="on"
                         readonly
@@ -26,7 +26,7 @@
                 </template>
                 <v-date-picker
                     color="purple"
-                    v-model="ipt.date"
+                    v-model="ipt.CheckDate"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
                 ></v-date-picker>
@@ -38,8 +38,8 @@
                 <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
             </h3>
             <v-select
-                v-model="ipt.type"
-                :items="['機車', '客車']"
+                v-model="ipt.CarType"
+                :items="[{value:'1',text:'機車'},{value:'2',text:'客車'}]"
                 solo
             ></v-select>
         </v-col>
@@ -49,7 +49,7 @@
                 <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
             </h3>
             <v-text-field
-                v-model.trim="ipt.carNumber"
+                v-model.trim="ipt.CarCode"
                 solo
             ></v-text-field>
         </v-col>
@@ -59,7 +59,7 @@
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
             </h3>
             <v-text-field
-                v-model.trim="ipt.carNumber"
+                v-model.trim="ipt.CarVersion"
                 solo
             ></v-text-field>
         </v-col>
@@ -73,7 +73,7 @@
                 solo
                 rows="6"
                 placeholder="請輸入異常說明"
-                v-model.trim="ipt.desc"
+                v-model.trim="ipt.ErrorDesp"
             ></v-textarea>
         </v-col>
 
@@ -86,7 +86,7 @@
                 solo
                 rows="6"
                 placeholder="請輸入異常處理情形"
-                v-model.trim="ipt.handSituation"
+                v-model.trim="ipt.ErrorCheckStatus"
             ></v-textarea>
         </v-col>
 
@@ -138,23 +138,29 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-
+import { mapState, mapActions } from 'vuex'
+import { brakeInsert,brakeQuery,brakeUpdate } from '@/apis/smis/safetyPerformance'
+import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 export default {
+    props:['id'],
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
         defaultIpt: {
-            date: new Date().toISOString().substr(0, 10),  // 日期
-            type: '機車',  // 機車或客車
-            carNumber: '',  // 車號
-            number: '',  // 車次
-            desc: '',  // 異常說明
-            handSituation: '',  // 異常處理情形
-            files: [],  // 附件
+            DepartCode:'',
+            Depart:'',
+            PeopleId:'',
+            PeopleName:'',
+            ReportCode:'',
+            CheckDate:'',
+            CarVersion:'',
+            CarType:'1',
+            CarCode:'',
+            ErrorDesp:'',
+            ErrorCheckStatus:'',
         },
         dateMemuShow: false,  // 日曆是否顯示
     }),
@@ -168,6 +174,11 @@ export default {
             // … 
         },
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -177,50 +188,34 @@ export default {
         // 初始化資料
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
-
             // -------------- 編輯時 -------------- 
-            if (this.$route.params.id != undefined) {
+            if (this.id) {
                 this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
-                
-
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        id: 1135,
-                        date: '2020-06-09',
-                        number: '1-2',
-                        type: '客車',
-                        carNumber: 1234,
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
-                        files: [
-                            {
-                                fileName: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                fileName: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
+                brakeQuery({
+                    FlowID: this.id,
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt = {...decodeObject(res.data.DataList[0])}    
+                        this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
-                    
-                    this.setInitDate(obj)
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
-            } 
-        },
-        // 設定資料(編輯時)
-        setInitDate(obj) {
-            this.ipt.date = obj.date // 日期
-            this.ipt.number = obj.number // 車次
-            this.ipt.type = obj.type // 機車或客車
-            this.ipt.carNumber = obj.carNumber // 車號
-            this.ipt.desc = obj.desc // 異常說明
-            this.ipt.handSituation = obj.handSituation // 異常處理情形
-            this.ipt.files = [ ...obj.files ]  // 檔案
+                })
+            } else{
+                this.ipt.PeopleId = this.userData.UserId
+                this.ipt.PeopleName = this.userData.UserName
+                this.ipt.DepartCode = this.userData.DeptList[0].DeptId
+                this.ipt.Depart = this.userData.DeptList[0].DeptDesc
+            }
         },
         // 更換頁數
         chPage(n) {
@@ -229,19 +224,46 @@ export default {
         // 送出
         save() {
             this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                if (this.isEdit) {
-                    // 編輯時
-                    this.chMsgbar({ success: true, msg: '資料更新成功'})
-                } else {
-                    // 新增時
-                    this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal' })
-                    this.chMsgbar({ success: true, msg: '資料新增成功'})
-                }
-                this.chLoadingShow()
-            }, 1000)
+            this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
+            if(this.isEdit){
+                brakeUpdate({
+                    FlowID:this.id,
+                    Option:'U',
+                    ...encodeObject(this.ipt),
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '資料更新成功' })    
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }else{
+                brakeInsert({
+                    ...encodeObject(this.ipt),
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '資料新增成功' })    
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
         },
         // 加入要上傳的檔案
         joinFile(file) {
