@@ -62,7 +62,7 @@ export default {
             urineBlood: jobUrineOpts,
         },
         jobs: [{text:'駕駛員',value:'1'}, {text:'車長',value:'2'}, {text:'一般員工',value:'3'}],
-        sex: [{text:'男',value:'M'}, {text:'女',value:'F'}, {text:'其他',value:'X'}],
+        sex: [{text:'男',value:'M'}, {text:'女',value:'F'}, {text:'無',value:'X'}],
         InspectionType: [{ text: '受雇', value: '1' },{ text: '定期', value: '2' }],
         delDialog: false
     }),
