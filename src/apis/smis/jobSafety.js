@@ -2,10 +2,29 @@
 
 import axios from '@/apis/axiosSetting'
 
+
+// excel檔案匯出
+export function excelData(data) { return axios(
+    {
+        url: '/sms/profession/event/export_excel',
+        method: 'post',
+        data,
+    }
+)}
+
 // 查詢
 export function searchData(data) { return axios(
     {
         url: '/sms/profession/event/queryarray',
+        method: 'post',
+        data,
+    }
+)}
+
+// 查詢 職災危害資料庫
+export function searchDataDb(data) { return axios(
+    {
+        url: '/sms/profession/danger/queryarray',
         method: 'post',
         data,
     }
@@ -20,10 +39,28 @@ export function createData(data) { return axios(
     }
 )}
 
+// 新增 職災危害資料庫
+export function createDataDb(data) { return axios(
+    {
+        url: '/sms/profession/danger/create',
+        method: 'post',
+        data,
+    }
+)}
+
 // 詳細資料
 export function detailOne(data) { return axios(
     {
         url: '/sms/profession/event/detail',
+        method: 'post',
+        data,
+    }
+)}
+
+// 詳細資料 職災危害資料庫
+export function detailOneDb(data) { return axios(
+    {
+        url: '/sms/profession/danger/detail',
         method: 'post',
         data,
     }
@@ -38,10 +75,28 @@ export function updateData(data) { return axios(
     }
 )}
 
+// 更新 職災危害資料庫
+export function updateDataDb(data) { return axios(
+    {
+        url: '/sms/profession/danger/update',
+        method: 'post',
+        data,
+    }
+)}
+
 // 刪除
 export function deleteData(data) { return axios(
     {
         url: '/sms/profession/event/delete',
+        method: 'delete',
+        data,
+    }
+)}
+
+// 刪除 職災危害資料庫
+export function deleteDataDb(data) { return axios(
+    {
+        url: '/sms/profession/danger/delete',
         method: 'delete',
         data,
     }
@@ -61,6 +116,51 @@ export function fileDeleteData(data) { return axios(
     {
         url: '/sms/profession/event/file/delete',
         method: 'delete',
+        data,
+    }
+)}
+
+// 申請審核
+export function sendCheckData(data) { return axios(
+    {
+        url: '/sms/profession/event/apply/check',
+        method: 'post',
+        data,
+    }
+)}
+
+// 審核通過(同意措施執行)
+export function passData(data) { return axios(
+    {
+        url: '/sms/profession/event/check/pass',
+        method: 'post',
+        data,
+    }
+)}
+
+// 退回
+export function withdrawData(data) { return axios(
+    {
+        url: '/sms/profession/event/check/return',
+        method: 'post',
+        data,
+    }
+)}
+
+// 重提事故事件
+export function resetData(data) { return axios(
+    {
+        url: '/sms/profession/event/apply/reset',
+        method: 'post',
+        data,
+    }
+)}
+
+// 申請結案
+export function closeData(data) { return axios(
+    {
+        url: '/sms/profession/event/apply/close',
+        method: 'post',
         data,
     }
 )}

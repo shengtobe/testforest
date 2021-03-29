@@ -56,10 +56,6 @@ export default {
                     } else {
                         this.status = res.data.AccidentStatus  // 狀態
                         // 設定上面的欄位資料
-                        console.log("設定上面的欄位資料 res.data:")
-                        console.log(res.data)
-                        console.log("WorkExp:")
-                        console.log(res.data.WorkExp)
                         let topItems = [  // 上面的欄位
                         { icon: 'mdi-ray-vertex', title: '事故狀態', text: jobDisasterSurveyStatus.find(ele => ele.value == res.data.AccidentStatus).text },
                         { icon: 'mdi-account', title: '罹災者姓名', text: res.data.HurtPeopleName },
@@ -98,15 +94,21 @@ export default {
                         { dataType: 'text', oneline: false, icon: 'none', title: '事故概況', text: res.data.AccidentDesp.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '緊急處理情形', text: res.data.EmergencyStatus.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '事故單位防範及改善對策', text: res.data.AccidentPolicy.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(起)', text: res.data.HurtDateStart.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(迄)', text: res.data.HurtDateEnd.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '通報勞檢', text: res.data.NoticeCheck.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '發生原因', text: res.data.ProcContent.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '改善措施', text: res.data.HappenReason.replace(/\n/g, '<br>') },
                     ]
 
-                    if (this.status > 1) {
-                        bottomItems.push({ oneline: true, title: '公傷假', text: `${res.data.injuryLeaveStart} ~ ${res.data.injuryLeaveEnd}` })
-                        bottomItems.push({ oneline: true, title: '通報勞檢', text: (res.data.laborInspection == 'y')? '有' : '無' })
-                        bottomItems.push({ oneline: false, title: '發生原因', text: res.data.cause.replace(/\n/g, '<br>') })
-                        bottomItems.push({ oneline: false, title: '備註', text: res.data.note.replace(/\n/g, '<br>') })
-                        bottomItems.push({ oneline: false, title: '改善措施', text: res.data.improve.replace(/\n/g, '<br>') })
-                    }
+                    // if (this.status > 1) {
+                    //     bottomItems.push({ oneline: true, title: '公傷假', text: `${res.data.injuryLeaveStart} ~ ${res.data.injuryLeaveEnd}` })
+                    //     bottomItems.push({ oneline: true, title: '通報勞檢', text: (res.data.laborInspection == 'y')? '有' : '無' })
+                    //     bottomItems.push({ oneline: false, title: '發生原因', text: res.data.cause.replace(/\n/g, '<br>') })
+                    //     bottomItems.push({ oneline: false, title: '備註', text: res.data.note.replace(/\n/g, '<br>') })
+                    //     bottomItems.push({ oneline: false, title: '改善措施', text: res.data.improve.replace(/\n/g, '<br>') })
+                    // }
 
                     this.itemData = { ...res.data, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
                     }

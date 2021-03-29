@@ -44,7 +44,7 @@
 
     <v-row class="mt-8">
         <!-- 鎖定後要填寫的部份 -->
-        <template v-if="isLocked">
+        <!-- <template v-if="isLocked">
             <v-col cols="12" sm="4" md="3">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>公傷假(起)
@@ -165,7 +165,7 @@
                     </v-list-item-group>
                 </v-card>
             </v-col>
-        </template>
+        </template> -->
 
         <v-col cols="12" class="text-center mb-8">
             <v-btn dark class="ma-2"
@@ -190,7 +190,7 @@
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
-                >{{ (isLocked)? '申請審核資料' : '鎖定' }}</v-btn>
+                >{{ (isLocked)? '申請審核資料' : '申請審核資料' }}</v-btn>
             </template>
            
 
@@ -206,7 +206,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
-import { deleteData } from '@/apis/smis/jobSafety'
+import { deleteData, sendCheckData} from '@/apis/smis/jobSafety'
 
 export default {
     props: ['itemData'],
@@ -231,8 +231,8 @@ export default {
             end: false,
         },
         laborOpts: [
-            { text: '有', value: 'y' },
-            { text: '無', value: 'n' },
+            { text: '有', value: '有' },
+            { text: '無', value: '無' },
         ],
     }),
     components: {
@@ -253,16 +253,11 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("初始化資料")
-            console.log(obj)
             this.id = obj.AccidentCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.FileCount ]  // 檔案附件
-            console.log(this.files)
             this.isLocked = obj.isLocked  // 是否已鎖定
-            console.log("topItems:")
-            console.log(this.topItems)
 
             // // 危害通報連結 (依通報狀態連至不同頁面)
             // let arr = obj.notifyLinks.map(item => {
@@ -349,37 +344,68 @@ export default {
         },
         // 鎖定
         save() {
-            if (this.isLocked) {
-                // -------------- 已鎖定 -------------- 
-                let errArr = []
-                if (!this.finishImprove) errArr.push('改善措施')
+            // if (this.isLocked) {
+            //     // -------------- 已鎖定 -------------- 
+            //     let errArr = []
+            //     if (!this.finishImprove) errArr.push('改善措施')
 
-                if (this.finishDeath && this.finishImprove) {  // 都有填寫
-                    if (confirm('你確定要申請審核嗎?')) {
-                        this.chLoadingShow()
+            //     if (this.finishDeath && this.finishImprove) {  // 都有填寫
+            //         if (confirm('你確定要申請審核嗎?')) {
+            //             this.chLoadingShow()
 
-                        setTimeout(() => {
-                            this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-                            this.chMsgbar({ success: true, msg: '申請審核成功'})
-                            this.chLoadingShow()
-                        }, 1000)
+            //             setTimeout(() => {
+            //                 this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+            //                 this.chMsgbar({ success: true, msg: '申請審核成功'})
+            //                 this.chLoadingShow()
+            //             }, 1000)
+            //         }
+            //     } else {
+            //         let errLog = '你還未填寫「'+ errArr.join('、') + '」'
+            //         alert(errLog)
+            //     }
+            // } else {
+            //     // -------------- 未鎖定 -------------- 
+            //     if (confirm('你確定要鎖定嗎?')) {
+            //         this.chLoadingShow()
+
+            //         // 向後端更新鎖定、覆核的欄位
+            //         setTimeout(() => {
+            //             // this.topItems.isReview.text = '已複核'
+            //             this.isLocked = true
+            //             this.chLoadingShow()
+            //         }, 1000)
+            //     }
+            // }
+            if (confirm('你確定要申請審核嗎?')) {
+                this.chLoadingShow()
+
+                // setTimeout(() => {
+                //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                //     this.chMsgbar({ success: true, msg: '申請審核成功'})
+                //     this.done = true
+                //     this.chLoadingShow()
+                // }, 1000)
+                //-----call申請審核api------
+                sendCheckData({
+                    AccidentCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
                     }
-                } else {
-                    let errLog = '你還未填寫「'+ errArr.join('、') + '」'
-                    alert(errLog)
-                }
-            } else {
-                // -------------- 未鎖定 -------------- 
-                if (confirm('你確定要鎖定嗎?')) {
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
+                })
 
-                    // 向後端更新鎖定、覆核的欄位
-                    setTimeout(() => {
-                        // this.topItems.isReview.text = '已複核'
-                        this.isLocked = true
-                        this.chLoadingShow()
-                    }, 1000)
-                }
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請審核成功'})
+                },1000)
             }
             
         },

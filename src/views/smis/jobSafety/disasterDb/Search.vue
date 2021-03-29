@@ -71,8 +71,8 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab color="teal"
-                            target="_blank"
-                            :to="`/smis/jobsafety/disasterdb/${item.id}/show`"
+                            :loading="isLoading"
+                            @click="redirect(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
@@ -93,9 +93,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts } from '@/assets/js/smisData'
+import { searchDataDb } from '@/apis/smis/jobSafety'
 
 export default {
     data: () => ({
@@ -106,11 +108,11 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'codes', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '作業名稱', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險可能性', value: 'possibility', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         opts: {
@@ -122,9 +124,15 @@ export default {
                 { text: '審核中', value: '審核中' },
                 { text: '已作廢', value: '已作廢' },
             ],
-        }
+        },
+        isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -138,26 +146,61 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        code1: '12047',  // 編號-第1段
-                        code2: '22',  // 編號-第2段
-                        code3: '16',  // 編號-第3段
-                        name: '堆高機作業',  // 作業名稱
-                        serious: 'S3',  // 風險嚴重性
-                        possibility: 'P3',  // 風險可能性
-                        level: 'R2',  // 風險等級
-                    },
-                ]
+            searchDataDb({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_JobAccidentData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    // 'EndangerCode',
+                    // 'EndangerStatus',
+                    // 'OperationMode',
+                    // 'RiskSerious',
+                    // 'RiskFreq',
+                    // 'RiskLevel',
+                    // 'DelStatus',
+                    // 'CancelStatus',
+                    // 'InsertDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                console.log("tableItems", this.tableItems)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
+
+            // 新增測試用資料
+            // setTimeout(() => {
+            //     this.tableItems = [
+            //         {
+            //             id: '111',
+            //             code1: '12047',  // 編號-第1段
+            //             code2: '22',  // 編號-第2段
+            //             code3: '16',  // 編號-第3段
+            //             name: '堆高機作業',  // 作業名稱
+            //             serious: 'S3',  // 風險嚴重性
+            //             possibility: 'P3',  // 風險可能性
+            //             level: 'R2',  // 風險等級
+            //         },
+            //     ]
+            //     this.chLoadingShow()
+            // }, 1000)
         },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
+        },
+        redirect(item) {
+            console.log("click 詳細內容!")
+            //開新分頁
+            let routeData = this.$router.resolve({ path: `/smis/jobsafety/disasterdb/${item.EndangerCode}/show` })
+            window.open(routeData.href, '_blank')
         },
         // 轉換風險嚴重性文字
         transferSeriousText(val) {

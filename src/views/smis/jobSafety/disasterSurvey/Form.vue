@@ -451,6 +451,110 @@
             ></v-textarea>
             <p class="red--text mt-2">* 防範及改善對策已列入追蹤管理，請事故單位填寫預定改善完成期限，並於期限內檢附改善佐證資料或照片後，本調查表方能結案</p>
         </v-col>
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>公傷假(起)
+            </h3>
+            <v-menu
+                v-model="dateMemuShow.start"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                max-width="290px"
+                min-width="290px"
+            >
+                <template v-slot:activator="{ on }">
+                    <v-text-field
+                        v-model.trim="ipt.injuryLeaveStart"
+                        solo
+                        v-on="on"
+                        readonly
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                    color="purple"
+                    v-model="ipt.injuryLeaveStart"
+                    @input="dateMemuShow.start = false"
+                    locale="zh-tw"
+                ></v-date-picker>
+            </v-menu>
+        </v-col>
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>公傷假(迄)
+            </h3>
+            <v-menu
+                v-model="dateMemuShow.end"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                max-width="290px"
+                min-width="290px"
+            >
+                <template v-slot:activator="{ on }">
+                    <v-text-field
+                        v-model.trim="ipt.injuryLeaveEnd"
+                        solo
+                        v-on="on"
+                        readonly
+                    ></v-text-field>
+                </template>
+                <v-date-picker
+                    color="purple"
+                    v-model="ipt.injuryLeaveEnd"
+                    @input="dateMemuShow.end = false"
+                    locale="zh-tw"
+                ></v-date-picker>
+            </v-menu>
+        </v-col>
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-phone-forward</v-icon>通報勞檢
+            </h3>
+            <v-select
+                v-model="ipt.laborInspection"
+                :items="laborOpts"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>發生原因
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入發生原因"
+                v-model.trim="ipt.cause"
+            ></v-textarea>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                placeholder="請輸入備註"
+                v-model.trim="ipt.note"
+            ></v-textarea>
+        </v-col>
+        <!-- 改善措施 -->
+        <v-row no-gutters class="mb-8">
+            <v-col cols="12" class="mt-8">
+                <h3 class="mb-2">
+                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>改善措施
+                </h3>
+                <v-textarea
+                    auto-grow
+                    solo
+                    rows="6"
+                    placeholder="請輸入改善措施摘要"
+                    v-model.trim="ipt.improve"
+                ></v-textarea>
+            </v-col>
+        </v-row>
 
         <!-- 上傳檔案 (新增時) -->
         <template v-if="!isEdit">
@@ -568,7 +672,21 @@ export default {
             emergentWork: '',  // 緊急處理情形
             improveStrategy: '',  // 事故單位防範及改善對策
             files: [],  // 附件檔案
+            injuryLeaveStart: new Date().toISOString().substr(0, 10),  // 公傷假(起)
+            injuryLeaveEnd: new Date().toISOString().substr(0, 10),  // 公傷假(迄)
+            laborInspection: 'n',  // 通報勞檢
+            cause: '',  // 發生原因
+            note: '',  // 備註
+            improve: '', // 改善措施
         },
+        dateMemuShow: {  // 日曆是否顯示
+            start: false,
+            end: false,
+        },
+        laborOpts: [ // 是否有通報勞檢-選單
+            { text: '有', value: '有' },
+            { text: '無', value: '無' },
+        ],
         dateMenuShow: {  // 日曆是否顯示
             startWorkDate: false,  // 到職日期
             occurDate: false,  // 發生日期
@@ -598,16 +716,16 @@ export default {
                 { text: '博士肄業', value: '博士肄業' },
             ],
             accidentType: [  // 事故類別
-                { text: '工作傷害事故', value: 1 },
-                { text: '工作交通事故', value: 2 },
-                { text: '上下班交通事故', value: 3 },
-                { text: '其他', value: 4 },
+                { text: '工作傷害事故', value: "工作傷害事故" },
+                { text: '工作交通事故', value: "工作交通事故" },
+                { text: '上下班交通事故', value: "上下班交通事故" },
+                { text: '其他', value: "其他" },
             ],
             accidentResult: [  // 事故結果
-                { text: '虛驚事故', value: 1 },
-                { text: '輕傷', value: 2 },
-                { text: '失能傷害', value: 3 },
-                { text: '死亡', value: 4 },
+                { text: '虛驚事故', value: "虛驚事故" },
+                { text: '輕傷', value: "輕傷" },
+                { text: '失能傷害', value: "失能傷害" },
+                { text: '死亡', value: "死亡" },
             ],
             injurySite: injurySiteOpts,  // 傷害部位
             disasterType: disasterTypeOpts,  // 災害類型,
@@ -796,6 +914,12 @@ export default {
             this.ipt.overview = obj.AccidentDesp  // 事故概況
             this.ipt.emergentWork = obj.EmergencyStatus  // 緊急處理情形
             this.ipt.improveStrategy = obj.AccidentPolicy  // 事故單位防範及改善對策
+            this.ipt.injuryLeaveStart = obj.HurtDateStart // 公傷假(起)
+            this.ipt.injuryLeaveEnd = obj.HurtDateEnd // 公傷假(迄)
+            this.ipt.laborInspection = obj.NoticeCheck // 通報勞檢
+            this.ipt.improve = obj.ProcContent // 發生原因
+            this.ipt.cause = obj.HappenReason // 改善措施
+            this.ipt.note = obj.Memo // 備註
             this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
         },
         // 送出
@@ -850,6 +974,12 @@ export default {
                     AccidentDesp: this.ipt.overview, //26事故概況
                     EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
                     AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
+                    HurtDateStart: this.ipt.injuryLeaveStart, // 公傷假(起)
+                    HurtDateEnd: this.ipt.injuryLeaveEnd, // 公傷假(迄)
+                    NoticeCheck: this.ipt.laborInspection, // 通報勞檢
+                    ProcContent: this.ipt.improve, // 發生原因
+                    HappenReason: this.ipt.cause, // 改善措施
+                    Memo: this.ipt.note, // 備註
                     FileCount: [],
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
@@ -905,6 +1035,12 @@ export default {
                     AccidentDesp: this.ipt.overview, //26事故概況
                     EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
                     AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
+                    HurtDateStart: this.ipt.injuryLeaveStart, // 公傷假(起)
+                    HurtDateEnd: this.ipt.injuryLeaveEnd, // 公傷假(迄)
+                    NoticeCheck: this.ipt.laborInspection, // 通報勞檢
+                    ProcContent: this.ipt.improve, // 發生原因
+                    HappenReason: this.ipt.cause, // 改善措施
+                    Memo: this.ipt.note, // 備註
                     FileCount: [],
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id

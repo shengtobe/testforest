@@ -48,7 +48,8 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.AccidentStatus  // 狀態
-
+                        console.log("res.data~~~")
+                        console.log(res.data)
                         let hurtPeoples = []  // 死傷人數資料
                         let controls = []  // 已選控制措施
                         

@@ -107,7 +107,7 @@
 
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
-                    @click="backDialog = true"
+                    @click="showDialog(true)"
                     v-if="status == 4"
                 >退回</v-btn>
 
@@ -125,12 +125,12 @@
     </v-row>
 
     <!-- 退回 dialog -->
-    <v-dialog v-model="backDialog" max-width="600px" v-if="status == 4">
+    <v-dialog v-model="dialog" max-width="600px" v-if="status == 4">
         <v-card>
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn fab small text @click="backDialog = false" class="mr-n2">
+                <v-btn fab small text @click="dialog = false" class="mr-n2">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
@@ -151,7 +151,7 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="backDialog = false">取消</v-btn>
+                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
                 <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
@@ -160,9 +160,11 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import { passData, withdrawData, deleteData, resetData, closeData } from '@/apis/smis/jobSafety'
 
 export default {
     props: ['itemData'],
@@ -173,16 +175,22 @@ export default {
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 上傳的檔案
+        dialogReturnMsg: '',  // 退回或徹銷時成功的訊息
         notifyLinks: [],  // 連結的通報
         controlReview: '',  // 措施檢討摘要
         evidences: [],  // 改善措施證據
         isLoading: false,  // 是否讀取中
-        backDialog: false,  // dialog 是否顯示
+        dialog: false,  // dialog 是否顯示
         backReason: '',  // 退回原因
     }),
     components: {
         TopBasicTable,
         BottomTable,
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -193,74 +201,123 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
-            this.status = obj.status  // 處理狀態
+            this.id = obj.AccidentCode  // 編號
+            this.status = obj.AccidentStatus  // 處理狀態
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.files = [ ...obj.files ]  // 檔案附件
-            this.controlReview = obj.controlReview.replace(/\n/g, '<br>')  // 措施檢討摘要
-            this.evidences = [ ...obj.evidences ]  // 改善措施證據
+            this.files = [ ...obj.FileCount ]  // 檔案附件
+            this.controlReview = obj.ProcReview.replace(/\n/g, '<br>')  // 措施檢討摘要
+            this.evidences = [ ...obj.FileCountImprove ]  // 改善措施證據
 
             // 危害通報連結 (依通報狀態連至不同頁面)
-            let arr = obj.notifyLinks.map(item => {
-                let link = ''
-                switch(item.status) {
-                    case '未審核':
-                        link = `/smis/harmnotify/${item.id}/show`
-                        break
-                    case '審核中':
-                        link = `/smis/harmnotify/${item.id}/review`
-                        break
-                    case '已結案':
-                        link = `/smis/harmnotify/${item.id}/complated`
-                        break
-                    default:
-                        break
-                }
+            // let arr = obj.notifyLinks.map(item => {
+            //     let link = ''
+            //     switch(item.status) {
+            //         case '未審核':
+            //             link = `/smis/harmnotify/${item.id}/show`
+            //             break
+            //         case '審核中':
+            //             link = `/smis/harmnotify/${item.id}/review`
+            //             break
+            //         case '已結案':
+            //             link = `/smis/harmnotify/${item.id}/complated`
+            //             break
+            //         default:
+            //             break
+            //     }
 
-                return {
-                    id: item.id,
-                    link: link,
-                }
-            })
-            this.notifyLinks = [ ...arr ]
+            //     return {
+            //         id: item.id,
+            //         link: link,
+            //     }
+            // })
+            // this.notifyLinks = [ ...arr ]
+        },
+        showDialog(bool) {
+            // 若為 true 是退回
+            this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
+            this.dialog = true
         },
         // 退回
         withdraw() {
             this.isLoading = true
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '退回成功'})
-                this.isLoading = this.backDialog = false
-                this.done = true  // 隱藏頁面操作按鈕
-            }, 1000)
+            // setTimeout(() => {
+            //     this.chMsgbar({ success: true, msg: '退回成功'})
+            //     this.isLoading = this.dialog = false
+            //     this.done = true  // 隱藏頁面操作按鈕
+            // }, 1000)
+            withdrawData({
+                AccidentCode: this.id,  // 事故事件編號
+                Reason: this.backReason,  // 退回原因
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                    this.done = true  // 隱藏頁面操作按鈕
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+            }).finally(() => {
+                this.isLoading = this.dialog = false
+            })
         },
         // 同意結案
         save() {
             if (confirm('你確定要結案嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '結案成功'})
+                passData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '送出成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.done = true  // 隱藏頁面操作按鈕
-                }, 1000)
+                })
             }
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
+                console.log("欲刪除的資料ID:" + this.id)
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
+                deleteData({
+                    AccidentCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '作廢失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.done = true  // 隱藏頁面操作按鈕
-                }, 1000)
+                })
             }
         },
     },
     created() {
+        console.log("created: this.itemData:", this.itemData)
         this.setShowData(this.itemData)
     }
 }

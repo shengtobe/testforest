@@ -324,32 +324,38 @@ export default {
         // 送出
         save() {
             this.isLoading = true
-
             if (this.itemIndex === -1) {
                 // -------- 新增時 -------
-                regulCreate({
-                    SelectFileType: this.ipt.type,  // 文件類別
-                    MaintainDesp: this.ipt.depart,  // 維護單位
-                    Version: this.ipt.version,  // 版次
-                    Remark: this.ipt.note,  // 備註
-                    FileName: this.ipt.upload.fileName,  // 檔案名稱
-                    FileType: this.ipt.upload.fileType,  // 檔案類型
-                    UnitData: this.ipt.upload.unitData,  // 檔案內容
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '新增成功' })
-                    } else {
-                        console.log(res.data.Msg)
-                        this.chMsgbar({ success: false, msg: '新增失敗' })
-                    }
-                }).catch(err => {
-                    console.log(err)
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
-                }).finally(() => {
-                     this.isLoading = this.dialog = false
-                })
+                if(this.ipt.upload != null && this.ipt.upload != undefined){
+                    regulCreate({
+                        SelectFileType: this.ipt.type,  // 文件類別
+                        MaintainDesp: this.ipt.depart,  // 維護單位
+                        Version: this.ipt.version,  // 版次
+                        Remark: this.ipt.note,  // 備註
+                        FileName: this.ipt.upload.fileName,  // 檔案名稱
+                        FileType: this.ipt.upload.fileType,  // 檔案類型
+                        UnitData: this.ipt.upload.unitData,  // 檔案內容
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        console.log("res.data", res.data)
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '新增成功' })
+                        } else {
+                            console.log(res.data.Msg)
+                            this.chMsgbar({ success: false, msg: '新增失敗' })
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                    }).finally(() => {
+                        this.isLoading = this.dialog = false
+                    })
+                }
+                else{
+                    this.isLoading = false
+                    alert("未選擇上傳文件")
+                }
 
             } else {
                 // -------- 編輯時 -------

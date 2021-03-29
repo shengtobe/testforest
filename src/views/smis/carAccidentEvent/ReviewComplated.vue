@@ -263,6 +263,7 @@ export default {
         // 加入檔案 (組件用)
         // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
         joinFile(obj, bool) {
+            console.log("bool:", bool)
             if (bool) {
                 this.evidences.push(obj)  // 加入要上傳後端的檔案
             } else {
@@ -303,7 +304,9 @@ export default {
         closeCase() {
             if (confirm('你確定要申請結案嗎?')) {
                 this.chLoadingShow()
-
+                console.log("上船證據:", this.evidences)
+                this.chLoadingShow()
+                return
                 closeData({
                     AccidentCode: this.id,  // 事故事件編號
                     ReviewTitle: this.controlReview,  // 措施檢討摘要

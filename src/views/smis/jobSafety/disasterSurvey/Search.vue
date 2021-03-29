@@ -248,18 +248,19 @@ export default {
                     // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料
-                    'EndangerCode',
-                    'EndangerStatus',
-                    'OperationMode',
-                    'RiskSerious',
-                    'RiskFreq',
-                    'RiskLevel',
-                    'DelStatus',
-                    'CancelStatus',
-                    'InsertDTime',
+                    // 'EndangerCode',
+                    // 'EndangerStatus',
+                    // 'OperationMode',
+                    // 'RiskSerious',
+                    // 'RiskFreq',
+                    // 'RiskLevel',
+                    // 'DelStatus',
+                    // 'CancelStatus',
+                    // 'InsertDTime',
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
