@@ -6,10 +6,14 @@
     <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
-    <v-row no-gutters class="mt-8">
+    <v-row no-gutters class="mt-8" >
+        
         <BottomTable :items="bottomItems" />
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+        </v-row>
+        
+        <FileListShow :fileList="files" title="檔案列表" />
+<v-row>
+        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
@@ -30,7 +34,7 @@
                     </v-chip>
                 </v-col>
             </v-row>
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2"
@@ -61,7 +65,8 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { safetyinfodetail } from '@/apis/smis/carSafeInfo'
+import { safetyinfodetail, safetyinfocheck, safetyinfodelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
+import FileListShow from '@/components/FileListShow.vue'
 
 export default {
     props: ['itemData'],
@@ -76,6 +81,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -97,48 +103,49 @@ export default {
         // 初始化資料
         setShowData(obj) {
             
-            this.id = obj.id  // 編號
-            //this.topItems = obj.topItems  // 上面的欄位資料
-            //console.log(obj.topItems)
+            this.id = obj.SaftyInfoCode  // 編號
+            this.topItems = obj.topItems  // 上面的欄位資料
+            
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            console.log(obj.bottomItems)
-            this.files = [ ...obj.files ]  // 檔案附件
-            console.log(...obj.files)
+            console.log(this.bottomItems)
+            
+            this.files = [ ...obj.FileCount ]  // 檔案附件
+            //console.log(...obj.files)
             this.chLoadingShow()
                
             
-                safetyinfodetail({
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-                SaftyInfoCode: obj.id,  // DB table
+            //     safetyinfodetail({
+            //     ClientReqTime: getNowFullTime(),  // client 端請求時間
+            //     OperatorID: this.userData.UserId,  // 操作人id
+            //     SaftyInfoCode: obj.id,  // DB table
                 
-                QyName: [    // 欲回傳的欄位資料
-                    'SaftyInfoCode',
-                    'InfoTitle',
-                    'InfoContent',
-                    'PeopleId',
-                    'PeopleName',
-                    'PeopleRootDepartId',
-                    'PeopleRootDepartName',
-                    'SaftyInfoStatus',
-                    'RecPeople',  
-                    'RecCopy',
-                    'JoinPeople', 
-                    'FileCount', 
+            //     QyName: [    // 欲回傳的欄位資料
+            //         'SaftyInfoCode',
+            //         'InfoTitle',
+            //         'InfoContent',
+            //         'PeopleId',
+            //         'PeopleName',
+            //         'PeopleRootDepartId',
+            //         'PeopleRootDepartName',
+            //         'SaftyInfoStatus',
+            //         'RecPeople',  
+            //         'RecCopy',
+            //         'JoinPeople', 
+            //         'FileCount', 
                                   
-                ],
-             }).then(res => {
-                console.log(res.data)
-                console.log(res.data.RecPeople)
-                //this.tableItems = JSON.parse(res.data.order_list)
-                //console.log(this.tableItems)
-                this.setShowDataint(res.data)
-             }).catch(err => {
-                console.log(err)
-                alert('查詢時發生問題，請重新查詢!')
-             }).finally(() => {
-                this.chLoadingShow()
-             })
+            //     ],
+            //  }).then(res => {
+            //     console.log(res.data)
+            //     console.log(res.data.RecPeople)
+            //     //this.tableItems = JSON.parse(res.data.order_list)
+            //     //console.log(this.tableItems)
+            //     this.setShowDataint(res.data)
+            //  }).catch(err => {
+            //     console.log(err)
+            //     alert('查詢時發生問題，請重新查詢!')
+            //  }).finally(() => {
+            //     this.chLoadingShow()
+            //  })
         },
         // 設定上方資料
          setShowDataint(obj) {
@@ -162,7 +169,8 @@ export default {
                      this.topItems= [
                      { icon: 'mdi-ray-vertex', text: this.Status, title: '發布狀態' },  // 日期(起)
                      { icon: 'mdi-bank', text: obj.PeopleRootDepartName, title: '通報單位' },  // 日期(迄) 
-                     { icon: 'mdi-account', text: obj.PeopleName, title: '通報人' },  // 通報主題                                    
+                     { icon: 'mdi-account', text: obj.PeopleName, title: '通報人' },  // 通報主題     
+                                                      
                      ]
                      this.files=[]
                      obj.FileCount.forEach(element => this.files.push({ fileName: element.FileName, link: element.FileFullPath,}));
@@ -174,27 +182,68 @@ export default {
         },
         
         // 作廢
-        del() {
+        del(obj) {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
-                    this.chLoadingShow()
-                }, 1000)
+                safetyinfodelete({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: this.id,  // DB table
+                
+             }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+             }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+             }).finally(() => {
+                this.chLoadingShow()
+             })
+
+                // setTimeout(() => {
+                //     this.chMsgbar({ success: true, msg: '作廢成功'})
+                //     this.done = true  // 隱藏頁面操作按鈕
+                //     this.chLoadingShow()
+                // }, 1000)
             }
         },
         // 申請審核
-        save() {
+        save(obj) {
             if (confirm('你確定要申請審核嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請審核成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
-                    this.chLoadingShow()
-                }, 1000)
+                safetyinfoupdate({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        SaftyInfoCode: this.id,  // DB table                       
+                        ApplyCheck: 'T', 
+             }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.done = true 
+                        this.chMsgbar({ success: true, msg: '申請成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+             }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+             }).finally(() => {
+                this.chLoadingShow()
+             })
+
+                // setTimeout(() => {
+                //     this.chMsgbar({ success: true, msg: '申請審核成功'})
+                //     this.done = true  // 隱藏頁面操作按鈕
+                //     this.chLoadingShow()
+                // }, 1000)
             }
         },
     },

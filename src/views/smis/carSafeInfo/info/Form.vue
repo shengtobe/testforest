@@ -100,7 +100,7 @@
                     class="mb-1 ml-2"
                 >移除全部</v-btn> -->
             </h4>
-            <PeopleSelect v-model="ipt.recipients" :isMuti="true" /> 
+            <PeopleSelect v-model="ipt.recipients" :isMuti="true"/> 
             <!-- <div>
                 <v-chip
                     v-for="(item, idx) in ipt.recipients"
@@ -128,7 +128,7 @@
                     class="mb-1 ml-2"
                 >移除全部</v-btn> -->
             </h4>
-            <PeopleSelect v-model="ipt.cc" :isMuti="true" /> 
+            <PeopleSelect v-model="ipt.cc" :isMuti="true"/> 
             <!-- <div>
                 <v-chip
                     v-for="(item, idx) in ipt.cc"
@@ -156,7 +156,7 @@
                     class="mb-1 ml-2"
                 >移除全部</v-btn> -->
             </h4>
-            <PeopleSelect v-model="ipt.joiners" :isMuti="true" /> 
+            <PeopleSelect v-model="ipt.joiners" :isMuti="true"/> 
             <!-- <div>
                 <v-chip
                     v-for="(item, idx) in ipt.joiners"
@@ -225,14 +225,15 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { dapartOptsForMember } from '@/assets/js/departOption'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, getOrg } from '@/assets/js/commonFun'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import PeopleSelect from '@/components/PeopleSelect'
-import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete } from '@/apis/smis/carSafeInfo'
+import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
 
 export default {
     data: () => ({
+        getOrg_objneed: {},
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
@@ -294,6 +295,7 @@ export default {
         ]),
         // 初始化資料
         initData() {
+            //this.getOrg_objneed = getOrg(this.userData.UserId);
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             // -------------- 編輯時 -------------- 
@@ -428,7 +430,7 @@ export default {
         transferName(val) {
             return this.members.find(ele => ele.value == val).name
         },
-        
+
         // 移除員工
         delMember(idx, t) {
             this.ipt[t].splice(idx, 1)
@@ -457,23 +459,9 @@ export default {
         // 上傳檔案 (編輯時)
         uploadFile(file) {
             this.chLoadingShow()
-            if (file) {
-                let reader = new FileReader()  // blob 用
-
-                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
-                reader.readAsArrayBuffer(file)
-
-                // 設定讀取完時的動作
-                reader.onload = () => {
-                    // 抓出副檔名
-                    let nameArr = file.name.split('.')  // 用小數點拆成陣列
-                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
-                    
-                    let fileArr = [{ FileName: file.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }]
-                    
-                    safetyinfofileupdate({
+            safetyinfofileupdate({
                         SaftyInfoCode: this.routeId,  // 措施編號
-                        FileCount: fileArr,  // 新檔案
+                        FileCount: file,  // 新檔案
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
@@ -493,22 +481,16 @@ export default {
                     }).finally(() => {
                         this.chLoadingShow()
                     })
-                }
-            }
-            // setTimeout(() => {
-            //     // 後端請求後，回傳檔案資料 (id、filename、link)
-            //     // this.ipt.files.push(fileData)
-            //     this.chMsgbar({ success: true, msg: '檔案新增成功'})
-            //     this.chLoadingShow()
-            // }, 1000)
         },
         // 刪除檔案 (編輯時)
-        deleteFile(id, idx) {
+        deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
+                console.log(this.ipt.files)
+                console.log(idx)
                 this.chLoadingShow()
-                deleteFile({
-                    ProcCode: this.id,  // 編號
-                    FileName: this.ipt.files[idx].fileName,  // 檔案名稱
+                safetyinfofiledelete({
+                    SaftyInfoCode: this.routeId,   // 編號
+                    FileName: this.ipt.files[idx].FileName,  // 檔案名稱
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
@@ -534,46 +516,89 @@ export default {
         },
         // 送出
         save() {
-            this.chLoadingShow()
-            let RParr = this.ipt.recipients.map(item => ({
-                PeopleId: item
-            }))
-            let RCarr = this.ipt.cc.map(item => ({
-                PeopleId: item
-            }))
-            let JParr = this.ipt.joiners.map(item => ({
-                PeopleId: item
-            }))
-                safetyinfocreate({
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                    InfoTitle: this.ipt.title, //通報主題
-                    InfoContent: this.ipt.desc,  //發布內容
-                    RecPeople: RParr, 
-                    RecCopy: RCarr, 
-                    JoinPeople: JParr, 
-                    FileCount: this.ipt.files,  // 附件檔案          
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '回覆成功'})
-                        this.status = '2'  // 狀態改為已回覆
-                    } else {
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch(err => {
-                     this.chMsgbar({ success: false, msg: '回覆成功'})
-                }).finally(() => {
-                    this.chLoadingShow()
-                })
+            if (this.$route.params.id == undefined) {
+                this.chLoadingShow()
+                let RParr = this.ipt.recipients.map(item => ({
+                    PeopleId: item
+                }))
+                let RCarr = this.ipt.cc.map(item => ({
+                    PeopleId: item
+                }))
+                let JParr = this.ipt.joiners.map(item => ({
+                    PeopleId: item
+                }))
+                console.log(RParr)
+                console.log(RCarr)
+                console.log(JParr)
+                    safetyinfocreate({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        InfoTitle: this.ipt.title, //通報主題
+                        InfoContent: this.ipt.desc,  //發布內容
+                        RecPeople: RParr, 
+                        RecCopy: RCarr, 
+                        JoinPeople: JParr, 
+                        FileCount: this.ipt.files,  // 附件檔案          
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '建立成功'})
+                            this.status = '1'  // 狀態改為已回覆
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '建立成功'})
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
 
-            // 測試用資料
-            // setTimeout(() => {
-            //     let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
-            //     if (!this.isEdit) this.$router.push({ path: '/smis/car-safeinfo/info' })
-            //     this.chMsgbar({ success: true, msg: txt })
-            //     this.chLoadingShow()
-            // }, 1000)
+                // 測試用資料
+                // setTimeout(() => {
+                //     let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                //     if (!this.isEdit) this.$router.push({ path: '/smis/car-safeinfo/info' })
+                //     this.chMsgbar({ success: true, msg: txt })
+                //     this.chLoadingShow()
+                // }, 1000)
+            } else {
+                this.chLoadingShow()
+                let RParr = this.ipt.recipients.map(item => ({
+                    PeopleId: item
+                }))
+                let RCarr = this.ipt.cc.map(item => ({
+                    PeopleId: item
+                }))
+                let JParr = this.ipt.joiners.map(item => ({
+                    PeopleId: item
+                }))
+                console.log(RParr)
+                console.log(RCarr)
+                console.log(JParr)
+                    safetyinfoupdate({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        SaftyInfoCode: this.routeId,   // 編號
+                        InfoTitle: this.ipt.title, //通報主題
+                        InfoContent: this.ipt.desc,  //發布內容
+                        RecPeople: RParr, 
+                        RecCopy: RCarr, 
+                        JoinPeople: JParr, 
+                        FileCount: {},  // 附件檔案  
+                        ApplyCheck: 'F',        
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '修改成功'})
+                            this.status = '1'  // 狀態改為已回覆
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '修改成功'})
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+            }
         },
     },
     created() {

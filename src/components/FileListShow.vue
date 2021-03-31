@@ -1,12 +1,12 @@
 <template>
-<v-row class="mt-8">
+<v-row>
     <v-col cols="12" class="mt-2">
         <v-card flat>
             <v-card-title
                 class="purple lighten-3 py-2 px-3 white--text"
                 primary-title
             >
-                <h5>檔案列表</h5>
+                <h5>{{ title }}</h5>
             </v-card-title>
 
             <v-row class="py-2 px-4">
@@ -40,6 +40,6 @@
 
 <script>
 export default {
-    props: ['fileList'],
+    props: ['fileList', 'title'],
 }
 </script>

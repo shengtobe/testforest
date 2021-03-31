@@ -77,6 +77,15 @@ export function safetyinfocreate(data) { return axios(
     }
 )}
 
+// 資訊更新
+export function safetyinfoupdate(data) { return axios(
+    {
+        url: '/sms/safety/info/update',
+        method: 'post',
+        data,
+    }
+)}
+
 // 單檔更新
 export function safetyinfofileupdate(data) { return axios(
     {
@@ -95,6 +104,41 @@ export function safetyinfofiledelete(data) { return axios(
     }
 )}
 
+// 審核
+export function safetyinfocheck(data) { return axios(
+    {
+        url: '/sms/safety/info/check',
+        method: 'post',
+        data,
+    }
+)}
+
+// 刪除_作廢(審核階段)
+export function safetyinfodelete(data) { return axios(
+    {
+        url: '/sms/safety/info/delete',
+        method: 'delete',
+        data,
+    }
+)}
+
+// 退回
+export function safetyinforeturn(data) { return axios(
+    {
+        url: '/sms/safety/info/return',
+        method: 'post',
+        data,
+    }
+)}
+
+// 加會
+export function safetyinfojoincheck(data) { return axios(
+    {
+        url: '/sms/safety/info/joincheck',
+        method: 'post',
+        data,
+    }
+)}
 
 // // ------------------ 行車事故事件附件 ---------------------
 // // 搜尋

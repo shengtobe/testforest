@@ -8,8 +8,11 @@
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+</v-row>
+        
+        <FileListShow :fileList="files" title="檔案列表" />
+<v-row>
+        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
@@ -30,7 +33,7 @@
                     </v-chip>
                 </v-col>
             </v-row>
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" class="mt-8" v-if="status == 3">
             <h3 class="mb-1">
@@ -54,17 +57,18 @@
             </h3>
             
             <v-row no-gutters
+                style="border-bottom: 1px solid #CFD8DC"
                 v-for="item in opinionList"
-                :key="item.name"
+                :key="item.PeopleName"
             >
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
                 >
-                    <span class="font-weight-black">{{ item.name }}</span>
+                    <span class="font-weight-black">{{ item.PeopleName }}</span>
                 </v-col>
 
-                <v-col class="white pa-3"
-                    v-html="item.text.replace(/\n/g, '<br>')"
+                <v-col class="white pl-3 pb-2 pt-3"
+                    v-html="item.JoinMemo.replace(/\n/g, '<br>')"
                 ></v-col>
             </v-row>
         </v-col>
@@ -222,9 +226,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import FileListShow from '@/components/FileListShow.vue'
+import { safetyinfodelete, safetyinforeturn, safetyinfojoincheck, safetyinfocheck } from '@/apis/smis/carSafeInfo'
 
 export default {
     props: ['itemData'],
@@ -263,6 +270,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -270,48 +278,158 @@ export default {
             // … 
         }
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
-            this.status = obj.status  // 事故事件狀態(值)
+            console.log(obj)
+            this.id = obj.SaftyInfoCode  // 編號
+            this.status = obj.SaftyInfoStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.files = [ ...obj.files ]  // 檔案附件
-            this.opinionList = [ ...obj.opinionList ]  // 加會意見列表
+            this.files = [ ...obj.FileCount ]  // 檔案附件
+            //this.files = [ ...obj.files ]  // 檔案附件
+            //this.opinionList = [ ...obj.opinionList ]  // 加會意見列表
+            this.opinionList = [ ...obj.JoinPeople ]  // 加會意見列表
+            this.chLoadingShow()
+            //     safetyinfodetail({
+            //             ClientReqTime: getNowFullTime(),  // client 端請求時間
+            //            OperatorID: this.userData.UserId,  // 操作人id
+            //            SaftyInfoCode: obj.SaftyInfoCode,  // DB table
+                
+            //           QyName: [    // 欲回傳的欄位資料
+            //            'SaftyInfoCode',
+            //          'InfoTitle',
+            //            'InfoContent',
+            //           'PeopleId',
+            //            'PeopleName',
+            //           'PeopleRootDepartId',
+            //           'PeopleRootDepartName',
+            //           'SaftyInfoStatus',
+            //            'RecPeople',  
+            //            'RecCopy',
+            //           'JoinPeople', 
+            //           'FileCount', 
+                                  
+            //           ],
+            //           }).then(res => {
+            //            //console.log(res.data)
+            //          //console.log(res.data.RecPeople)
+            //            //this.tableItems = JSON.parse(res.data.order_list)
+            //             //console.log(this.tableItems)
+            //            this.setShowDataint(res.data)
+            //            //this.tableItems = res.data
+                
+            //            }).catch(err => {
+            //             console.log(err)
+            //             alert('查詢時發生問題，請重新查詢!')
+            //            }).finally(() => {
+            //              this.chLoadingShow()
+            //            })
 
-            // 讀取追蹤-加會人
-            this.joinTableItems = obj.Jdata.map((item, idx) => ({
-                num: idx + 1,
-                depart: item.depart,
-                name: item.name,
-                isRead: (item.isRead)? '已讀' : '未讀',
-                time: item.time,
-                hasMsg: item.hasMsg,
-            }))
+            // // 讀取追蹤-加會人
+            // this.joinTableItems = obj.Jdata.map((item, idx) => ({
+            //     num: idx + 1,
+            //     depart: item.depart,
+            //     name: item.name,
+            //     isRead: (item.isRead)? '已讀' : '未讀',
+            //     time: item.time,
+            //     hasMsg: item.hasMsg,
+            // }))
 
-            // 讀取追蹤-收件人
-            this.tableItems = obj.Rdata.map((item, idx) => ({
-                num: idx + 1,
-                depart: item.depart,
-                name: item.name,
-                isRead: (item.isRead)? '已讀' : '未讀',
-                time: item.time,
-            }))
+            // // 讀取追蹤-收件人
+            // this.tableItems = obj.Rdata.map((item, idx) => ({
+            //     num: idx + 1,
+            //     depart: item.depart,
+            //     name: item.name,
+            //     isRead: (item.isRead)? '已讀' : '未讀',
+            //     time: item.time,
+            // }))
+        },
+        setShowDataint(obj) {
+            this.status = obj.SaftyInfoStatus
+            
+            let stry = 'err'
+                 switch(obj.SaftyInfoStatus) {
+                  case '1':
+                      stry= '已立案'
+                      break
+                  case '2':
+                      stry=  '審核中'
+                       break
+                 case '3':
+                     stry=  '加會中'
+                     break
+                 case '4':
+                      stry=  '已發布'
+                     break
+                  default:
+                        break
+                     }
+                    console.log(obj)
+                    let topItems = [  // 上面的欄位
+                        { icon: 'mdi-ray-vertex', title: '發布狀態', text: stry },
+                        { icon: 'mdi-bank', title: '通報單位', text: obj.PeopleRootDepartName },
+                        { icon: 'mdi-account', title: '通報人', text: obj.PeopleName },
+                    ]
+
+                    // 設定下面的欄位資料
+                    let RecPeoplestr = obj.RecPeople.map(item => item.PeopleName).join('、');
+                    let RecCopystr = obj.RecCopy.map(item => item.PeopleName).join('、');
+                    let JoinPeoplestr = obj.JoinPeople.map(item => item.PeopleName).join('、');
+                    
+                    let bottomItems = [
+                        { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '通報主題', text: obj.InfoTitle },
+                        { dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '收件人', text: RecPeoplestr },
+                        { dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '副本', text: RecCopystr },
+                        { dataType: 'text', oneline: true, icon: 'mdi-account-multiple', title: '加會人', text: JoinPeoplestr },
+                        { dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '發布內容', text: obj.InfoContent.replace(/\n/g, '<br>') },
+                    ]
+                    //this.$route.params.id
+
+
+                    this.itemData = { ...obj, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
+
         },
         // 退回
         withdraw() {
             this.isLoading = true
-
+//console.log(this.backReason)
             setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '退回成功'})
-                this.done = true  // 隱藏頁面操作按鈕
-                this.dialog = false
+
+                safetyinforeturn({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SaftyInfoCode: this.id,  // DB table
+                    Reason: this.backReason //退回原因
+                 }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        
+                        this.chMsgbar({ success: true, msg: '退回成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                        this.dialog = false
+                    this.chLoadingShow()
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                 }).catch(err => {
+                     console.log(err)
+                     alert('退回時發生問題，請重新執行!')
+                 }).finally(() => {
+                     this.chLoadingShow()
+                })
+              
             }, 1000)
         },
         // 作廢
@@ -320,9 +438,28 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                    safetyinfodelete({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: this.id,  // DB table
+                
+             }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+             }).catch(err => {
+                console.log(err)
+                alert('作廢時發生問題，請重新執行!')
+             }).finally(() => {
+                this.chLoadingShow()
+             })
+                    
                 }, 1000)
             }
         },
@@ -332,6 +469,30 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
+
+                safetyinfocheck({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SaftyInfoCode: this.id,  // DB table
+                    
+                 }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        
+                        this.chMsgbar({ success: true, msg: '發布成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                        //this.dialog = false
+                        this.chLoadingShow()
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                 }).catch(err => {
+                     console.log(err)
+                     alert('發布時發生問題，請重新執行!')
+                 }).finally(() => {
+                     this.chLoadingShow()
+                })
+
                     this.chMsgbar({ success: true, msg: '同意發布成功'})
                     this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
@@ -344,6 +505,29 @@ export default {
                 this.chLoadingShow()
 
                 setTimeout(() => {
+//console.log(this.opinion)
+                safetyinfojoincheck({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SaftyInfoCode: this.id,  // DB table
+                    JoinMemo: this.opinion //加會意見
+                 }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        
+                        this.chMsgbar({ success: true, msg: '同意送出意見成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                        this.dialog = false
+                        this.chLoadingShow()
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                 }).catch(err => {
+                     console.log(err)
+                     alert('同意送出意見時發生問題，請重新執行!')
+                 }).finally(() => {
+                     this.chLoadingShow()
+                })
                     this.chMsgbar({ success: true, msg: '同意送出意見成功'})
                     this.done = true  // 隱藏頁面操作按鈕
                     this.chLoadingShow()
