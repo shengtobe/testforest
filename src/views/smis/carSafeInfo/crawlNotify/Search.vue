@@ -94,38 +94,38 @@
                     </template>
 
                     <template v-slot:item.location="{ item }">
-                        {{ `${item.pointStart} ~ ${item.pointEnd} km` }}
+                        {{ `${item.LimitStart} ~ ${item.LimitEnd} km` }}
                     </template>
 
                     <template v-slot:item.normal="{ item }">
-                        {{ item.normal }} km/h
+                        {{ item.NormalLimit }} km/h
                     </template>
 
                     <template v-slot:item.slow="{ item }">
-                        {{ item.slow }} km/h
+                        {{ item.SlowLimit }} km/h
                     </template>
 
                     <template v-slot:item.date="{ item }">
-                        {{ `${item.dateStart} ~ ${item.dateEnd}` }}
+                        {{ `${item.convert_Date_Start} ~ ${item.convert_Date_End}` }}
                     </template>
 
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small dark color="brown" class="mr-2"
-                            :to="`/smis/car-safeinfo/crawl-notify/${item.id}/read-track`"
+                            :to="`/smis/car-safeinfo/crawl-notify/${item.SlowReportCode}/read-track`"
                         >
                             <v-icon>mdi-radar</v-icon>
                         </v-btn>
 
                         <v-btn fab small color="primary" class="mr-2"
                             target="_blank"
-                            :to="`/smis/car-safeinfo/crawl-notify/${item.id}/edit`"
+                            :to="`/smis/car-safeinfo/crawl-notify/${item.SlowReportCode}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
                         <v-btn fab small color="success"
                             :disabled="item.isStop"
-                            @click="stop(item.id)"
+                            @click="stop(item.SlowReportCode)"
                         >
                             <v-icon>mdi-share</v-icon>
                         </v-btn>
@@ -147,8 +147,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
+import { fetchList, deleteRegul } from '@/apis/smis/carSafeInfo'
 
 export default {
     data: () => ({
@@ -163,17 +165,22 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '路線', value: 'line', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'SlowReportCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '路線', value: 'ReportLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報人', value: 'creater', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '讀取追蹤、編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
     }),
     components: { Pagination },  // 頁碼
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -184,64 +191,111 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        line: '本線',
-                        pointStart: '5.7',
-                        pointEnd: '8',
-                        normal: '70',
-                        slow: '50',
-                        dateStart: '2019-05-10',
-                        dateEnd: '2019-05-22',
-                        creater: '王小明',
-                        isStop: false,  // 是否解除
-                    },
-                    {
-                        id: '222',
-                        line: '眠月線',
-                        pointStart: '210.3',
-                        pointEnd: '211.5',
-                        normal: '60',
-                        slow: '45',
-                        dateStart: '2019-06-13',
-                        dateEnd: '2019-06-30',
-                        creater: '王小明',
-                        isStop: true,  // 是否解除
-                    },
-                    {
-                        id: '333',
-                        line: '本線',
-                        pointStart: '33',
-                        pointEnd: '35.2',
-                        normal: '70',
-                        slow: '60',
-                        dateStart: '2019-10-01',
-                        dateEnd: '2019-10-20',
-                        creater: '王小明',
-                        isStop: false,  // 是否解除
-                    },
-                ]
+             fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_SlowSpeedReport',  // DB table
+                KeyItem: [
+                     { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 日期(起)
+                     { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd},  // 日期(迄)                   
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'PeopleId',
+                    'LimitStart',
+                    'LimitEnd',
+                    'NormalLimit',
+                    'SlowLimit',
+                    'LimitStartDate',
+                    'LimitEndDate',  
+                    'ReportLine',  
+                    'SlowReportCode',               
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                //console.log(this.tableItems)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
+            // 新增測試用資料
+            // setTimeout(() => {
+            //     this.tableItems = [
+            //         {
+            //             id: '111',
+            //             line: '本線',
+            //             pointStart: '5.7',
+            //             pointEnd: '8',
+            //             normal: '70',
+            //             slow: '50',
+            //             dateStart: '2019-05-10',
+            //             dateEnd: '2019-05-22',
+            //             creater: '王小明',
+            //             isStop: false,  // 是否解除
+            //         },
+            //         {
+            //             id: '222',
+            //             line: '眠月線',
+            //             pointStart: '210.3',
+            //             pointEnd: '211.5',
+            //             normal: '60',
+            //             slow: '45',
+            //             dateStart: '2019-06-13',
+            //             dateEnd: '2019-06-30',
+            //             creater: '王小明',
+            //             isStop: true,  // 是否解除
+            //         },
+            //         {
+            //             id: '333',
+            //             line: '本線',
+            //             pointStart: '33',
+            //             pointEnd: '35.2',
+            //             normal: '70',
+            //             slow: '60',
+            //             dateStart: '2019-10-01',
+            //             dateEnd: '2019-10-20',
+            //             creater: '王小明',
+            //             isStop: false,  // 是否解除
+            //         },
+            //     ]
+            //     this.chLoadingShow()
+            // }, 1000)
         },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
         },
         // 解除
-        stop(id) {
+        stop(SlowReportCode) {
             if (confirm('解除會發通知給所有收件人，並且之後無法再編輯，你確定要解除嗎?')) {
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems[idx].isStop = true  // 把解除按鈕 disabled 掉
-                    this.chMsgbar({ success: true, msg: '解除成功'})
+                deleteRegul({
+                    SlowSpeedCode: SlowReportCode,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        let idx = this.tableItems.findIndex(item => item.SlowReportCode == SlowReportCode)
+                        this.tableItems.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '解除成功' })
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '解除失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
+
+                // setTimeout(() => {
+                //     let idx = this.tableItems.findIndex(item => item.id == id)
+                //     this.tableItems[idx].isStop = true  // 把解除按鈕 disabled 掉
+                //     this.chMsgbar({ success: true, msg: '解除成功'})
+                //     this.chLoadingShow()
+                // }, 1000)
             }
         },
     },

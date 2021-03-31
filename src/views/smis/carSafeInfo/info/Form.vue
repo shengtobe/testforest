@@ -32,7 +32,7 @@
         </v-col>
 
         <!-- 發布對象 -->
-        <v-col cols="12">
+        <!-- <v-col cols="12">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>發布對象
             </h3>
@@ -87,21 +87,21 @@
                     </v-col>
                 </v-row>
             </v-sheet>
-        </v-col>
+        </v-col> -->
 
         <!-- 收件人 -->
         <v-col cols="12">
             <h4 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
-                <v-btn
+                <!-- <v-btn
                     small
                     color="error"
                     @click="delAll('recipients')"
                     class="mb-1 ml-2"
-                >移除全部</v-btn>
+                >移除全部</v-btn> -->
             </h4>
-            
-            <div>
+            <PeopleSelect v-model="ipt.recipients" :isMuti="true"/> 
+            <!-- <div>
                 <v-chip
                     v-for="(item, idx) in ipt.recipients"
                     :key="item"
@@ -114,22 +114,22 @@
                         @click="delMember(idx, 'recipients')"
                     >mdi-close-circle</v-icon>
                 </v-chip>
-            </div>
+            </div> -->
         </v-col>
 
         <!-- 副本 -->
         <v-col cols="12" class="mt-8">
             <h4 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>副本
-                <v-btn
+                <!-- <v-btn
                     small
                     color="error"
                     @click="delAll('cc')"
                     class="mb-1 ml-2"
-                >移除全部</v-btn>
+                >移除全部</v-btn> -->
             </h4>
-            
-            <div>
+            <PeopleSelect v-model="ipt.cc" :isMuti="true"/> 
+            <!-- <div>
                 <v-chip
                     v-for="(item, idx) in ipt.cc"
                     :key="item"
@@ -142,22 +142,22 @@
                         @click="delMember(idx, 'cc')"
                     >mdi-close-circle</v-icon>
                 </v-chip>
-            </div>
+            </div> -->
         </v-col>
 
         <!-- 加會人 -->
         <v-col cols="12" class="mt-8">
             <h4 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>加會人
-                <v-btn
+                <!-- <v-btn
                     small
                     color="error"
                     @click="delAll('joiners')"
                     class="mb-1 ml-2"
-                >移除全部</v-btn>
+                >移除全部</v-btn> -->
             </h4>
-            
-            <div>
+            <PeopleSelect v-model="ipt.joiners" :isMuti="true"/> 
+            <!-- <div>
                 <v-chip
                     v-for="(item, idx) in ipt.joiners"
                     :key="item"
@@ -170,10 +170,11 @@
                         @click="delMember(idx, 'joiners')"
                     >mdi-close-circle</v-icon>
                 </v-chip>
-            </div>
+            </div> -->
         </v-col>
 
         <!-- 上傳檔案 (新增時) -->
+        <!-- <template v-if="!isEdit"> -->
         <template v-if="!isEdit">
             <v-col cols="12" class="mt-8 mb-2">
                 <v-divider></v-divider>
@@ -182,7 +183,7 @@
             <UploadFileAdd
                 title="檔案上傳"
                 :uploadDisnable="false"
-                :fileList="ipt.files"
+                :fileList="showFiles"
                 @joinFile="joinFile"
                 @rmFile="rmFile"
             />
@@ -222,13 +223,17 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { dapartOptsForMember } from '@/assets/js/departOption'
+import { getNowFullTime, getOrg } from '@/assets/js/commonFun'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
+import PeopleSelect from '@/components/PeopleSelect'
+import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
 
 export default {
     data: () => ({
+        getOrg_objneed: {},
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
@@ -240,6 +245,8 @@ export default {
             joiners: [],  // 加會人
             files: [],  // 附件檔案
         },
+        Status: '',
+        
         choose: '',  // 所選部門
         target: 'recipients',  // 所選對像
         opts: {  // 下拉選單
@@ -262,16 +269,24 @@ export default {
             { name: '鄭家豪 (K24758)', value: '7'},
             { name: '王永慶 (K25896)', value: '8'},
         ],
+        showFiles: [],  // 要顯示的縮圖
     }),
+    
     components: {
         UploadFileAdd,
         UploadFileEdit,
+        PeopleSelect,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
         },
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -280,6 +295,7 @@ export default {
         ]),
         // 初始化資料
         initData() {
+            //this.getOrg_objneed = getOrg(this.userData.UserId);
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             // -------------- 編輯時 -------------- 
@@ -287,32 +303,93 @@ export default {
                 this.chLoadingShow()
                 this.routeId = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
-
+             safetyinfodetail({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: this.routeId,  // DB table
+                
+                QyName: [    // 欲回傳的欄位資料
+                    'SaftyInfoCode',
+                    'InfoTitle',
+                    'InfoContent',
+                    'PeopleId',
+                    'PeopleName',
+                    'PeopleRootDepartId',
+                    'PeopleRootDepartName',
+                    'SaftyInfoStatus',
+                    'RecPeople',  
+                    'RecCopy',
+                    'JoinPeople', 
+                    'FileCount', 
+                                  
+                ],
+             }).then(res => {
+                console.log(res.data)
+                console.log(res.data.RecPeople)
+                //this.tableItems = JSON.parse(res.data.order_list)
+                //console.log(this.tableItems)
+                this.setShowDataint(res.data)
+             }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+             }).finally(() => {
+                this.chLoadingShow()
+             })
                 // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        id: '111',
-                        depart: '綜合企劃科',
-                        name: '王小明',
-                        title: '3月份團康活動',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 說明
-                        recipients: ['2', '4', '5'],  // 收件人
-                        cc: ['6'],  // 副本
-                        joiners: ['7'],  // 加會人
-                        files: [
-                            { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
-                            { fileName: '123.docx', link: '/demofile/123.docx' },
-                            { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
-                        ],
-                        status: 1,
-                    }
+                // setTimeout(() => {
+                //     let obj = {
+                //         id: '111',
+                //         depart: '綜合企劃科',
+                //         name: '王小明',
+                //         title: '3月份團康活動',
+                //         desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 說明
+                //         recipients: ['2', '4', '5'],  // 收件人
+                //         cc: ['6'],  // 副本
+                //         joiners: ['7'],  // 加會人
+                //         files: [
+                //             { fileName: 'ASRC200701.jpg', link: '/demofile/demo.jpg' },
+                //             { fileName: '123.docx', link: '/demofile/123.docx' },
+                //             { fileName: '456.xlsx', link: '/demofile/456.xlsx' },
+                //         ],
+                //         status: 1,
+                //     }
                     
-                    this.setInitDate(obj)
-                    this.chLoadingShow()
-                }, 1000)
+                //     this.setInitDate(obj)
+                //     this.chLoadingShow()
+                // }, 1000)
             }
         },
         // 設定資料(編輯時)
+         setShowDataint(obj) {
+                
+                    switch(obj.SaftyInfoStatus) {
+                case '1':
+                    this.Status= '已立案'
+                    break
+                case '2':
+                    this.Status=  '審核中'
+                    break
+                case '3':
+                    this.Status=  '加會中'
+                    break
+                case '4':
+                    this.Status=  '已發布'
+                    break
+                default:
+                    break
+            }
+                     
+            this.ipt.title = obj.InfoTitle // 通報主題
+            this.ipt.desc = obj.InfoContent // 發布內容RecCopy: RCarr, JoinPeople: JParr, 
+            this.ipt.recipients = obj.RecPeople.map(item => item.PeopleId)
+            this.ipt.cc = obj.RecCopy.map(item => item.PeopleId)
+            this.ipt.joiners = obj.JoinPeople.map(item => item.PeopleId)
+            //this.ipt.recipients = [ ...obj.RecPeople ] // 收件人
+            //this.ipt.cc = [ ...obj.RecCopy ] // 副本
+            //this.ipt.joiners = [ ...obj.JoinPeople ] // 加會人
+            this.ipt.files = [ ...obj.FileCount ] // 附件檔案
+        },
+        // 設定資料
         setInitDate(obj) {
             this.ipt.title = obj.title // 通報主題
             this.ipt.desc = obj.desc // 發布內容
@@ -353,6 +430,7 @@ export default {
         transferName(val) {
             return this.members.find(ele => ele.value == val).name
         },
+
         // 移除員工
         delMember(idx, t) {
             this.ipt[t].splice(idx, 1)
@@ -362,48 +440,165 @@ export default {
             this.ipt[t] = [ ...[] ]
         },
         // 加入要上傳的檔案 (新增時)
-        joinFile(file) {
-            this.ipt.files.push(file)
+        joinFile(obj, bool) {
+            //this.ipt.files.push(file)
+            if (bool) {
+                //console.log(obj)
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                //console.log(obj)
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
         },
         // 移除要上傳的檔案 (新增時)
         rmFile(idx) {
+            //this.ipt.files.splice(idx, 1)
+            this.showFiles.splice(idx, 1)
             this.ipt.files.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {
             this.chLoadingShow()
-
-            setTimeout(() => {
-                // 後端請求後，回傳檔案資料 (id、filename、link)
-                // this.ipt.files.push(fileData)
-                this.chMsgbar({ success: true, msg: '檔案新增成功'})
-                this.chLoadingShow()
-            }, 1000)
+            safetyinfofileupdate({
+                        SaftyInfoCode: this.routeId,  // 措施編號
+                        FileCount: file,  // 新檔案
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '上傳成功' })
+                            // 把檔案資料寫入畫面中
+                            this.ipt.files = [ ...res.data.FileCount.map(item => ({
+                                fileName: item.FileName,
+                                link: item.FilePath,
+                            }))]
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
         },
         // 刪除檔案 (編輯時)
-        deleteFile(id, idx) {
+        deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
+                console.log(this.ipt.files)
+                console.log(idx)
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    // 後端請求後，移除檔案列表
-                    this.ipt.files.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                safetyinfofiledelete({
+                    SaftyInfoCode: this.routeId,   // 編號
+                    FileName: this.ipt.files[idx].FileName,  // 檔案名稱
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt.files.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
+                // setTimeout(() => {
+                //     // 後端請求後，移除檔案列表
+                //     this.ipt.files.splice(idx, 1)
+                //     this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                //     this.chLoadingShow()
+                // }, 1000)
             }
         },
         // 送出
         save() {
-            this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
-                if (!this.isEdit) this.$router.push({ path: '/smis/car-safeinfo/info' })
-                this.chMsgbar({ success: true, msg: txt })
+            if (this.$route.params.id == undefined) {
                 this.chLoadingShow()
-            }, 1000)
+                let RParr = this.ipt.recipients.map(item => ({
+                    PeopleId: item
+                }))
+                let RCarr = this.ipt.cc.map(item => ({
+                    PeopleId: item
+                }))
+                let JParr = this.ipt.joiners.map(item => ({
+                    PeopleId: item
+                }))
+                console.log(RParr)
+                console.log(RCarr)
+                console.log(JParr)
+                    safetyinfocreate({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        InfoTitle: this.ipt.title, //通報主題
+                        InfoContent: this.ipt.desc,  //發布內容
+                        RecPeople: RParr, 
+                        RecCopy: RCarr, 
+                        JoinPeople: JParr, 
+                        FileCount: this.ipt.files,  // 附件檔案          
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '建立成功'})
+                            this.status = '1'  // 狀態改為已回覆
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '建立成功'})
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+
+                // 測試用資料
+                // setTimeout(() => {
+                //     let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
+                //     if (!this.isEdit) this.$router.push({ path: '/smis/car-safeinfo/info' })
+                //     this.chMsgbar({ success: true, msg: txt })
+                //     this.chLoadingShow()
+                // }, 1000)
+            } else {
+                this.chLoadingShow()
+                let RParr = this.ipt.recipients.map(item => ({
+                    PeopleId: item
+                }))
+                let RCarr = this.ipt.cc.map(item => ({
+                    PeopleId: item
+                }))
+                let JParr = this.ipt.joiners.map(item => ({
+                    PeopleId: item
+                }))
+                console.log(RParr)
+                console.log(RCarr)
+                console.log(JParr)
+                    safetyinfoupdate({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        SaftyInfoCode: this.routeId,   // 編號
+                        InfoTitle: this.ipt.title, //通報主題
+                        InfoContent: this.ipt.desc,  //發布內容
+                        RecPeople: RParr, 
+                        RecCopy: RCarr, 
+                        JoinPeople: JParr, 
+                        FileCount: {},  // 附件檔案  
+                        ApplyCheck: 'F',        
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '修改成功'})
+                            this.status = '1'  // 狀態改為已回覆
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '修改成功'})
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+            }
         },
     },
     created() {
