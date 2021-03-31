@@ -395,7 +395,6 @@ export default {
         // 上傳檔案 (編輯時)
         uploadFile(fileArr) {
             this.chLoadingShow()
-
             updateFile({
                 ProcCode: this.id,  // 措施編號
                 FileCount: fileArr,  // 新檔案

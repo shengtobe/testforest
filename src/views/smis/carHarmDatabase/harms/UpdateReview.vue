@@ -5,6 +5,14 @@
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-12">
         <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-bank</v-icon>危害說明
+        </h3>
+        <VersionDiff
+            :before="before.descp"
+            :after="after.descp"
+        />
+
+        <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-bank</v-icon>權責單位
         </h3>
         <VersionDiff
@@ -336,14 +344,22 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import VersionDiff from '@/components/smis/VersionDiff.vue'
+import { getBeforeData} from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
+    props: ['itemData'],
     data: () => ({
         id: '',
         done: false,  // 是否完成頁面操作
         before: {  // 變更前
+            OOOOOO: '', // AAAAAA
+            descp: '', // 危害說明
+            reason: '', // 危害直接成因
+            indirect: '', // 可能的危害間接原因
             depart: '',// 權責部門
             mode: '',  // 營運模式
             wbs: '',  // 關聯子系統
@@ -376,13 +392,13 @@ export default {
             uploads: [],
         },
         headers: [  // 表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
         ],
         dialog: false,  // 退回dialog是否顯示
         isLoading: false,  // 是否讀取中
@@ -391,6 +407,11 @@ export default {
         dialogShow: false,  // 控制措施證據dialog是否顯示
     }),
     components: { VersionDiff },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -406,176 +427,97 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
-            this.id = this.$route.params.id
+            // this.chLoadingShow()
+            this.id = this.itemData.EndangerCode
+            let tableItems
+            let maxIndex
+            let old
 
-            // 新增測試用資料
-            setTimeout(() => {
-                let obj1 = {
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
-                    reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
-                    indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
-                    note: '',  // 備註
-                    depart: '鐵路服務科',// 權責部門
-                    mode: '正常',  // 營運模式
-                    wbs: 'APC2',  // 關聯子系統
-                    serious: '稍微 (S4)',  // 風險嚴重性
-                    frequency: '很少 (P4)',  // 風險頻率
-                    level: '可接受，持續控管 (R4)',  // 風險等級
-                    affectTraveler: true,  // 影響旅客
-                    affectStaff: true,  // 影響員工
-                    affectPublic: false,  // 影響大眾
-                    trainLate: false,  // 列車誤點
-                    stopOperation: false,  // 中斷營運
-                    accidents: ['側線火災事故', '設備損壞事故'],  // 衍生事故
-                    controls: [  // 控制措施
-                        {
-                            id: 123,
-                            subject: '火災處理要點',
-                            desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                            depart: '綜合企劃科',
-                            file: { name: '123.pdf', link: '/demofile/123.pdf' },
-                            note: '',
-                            evidences: [
-                                {
-                                    name: '456.xlsx',
-                                    link: '/demofile/456.xlsx'
-                                },
-                                {
-                                    name: '123.pdf',
-                                    link: '/demofile/123.pdf'
-                                },
-                            ],
-                            
-                        },
-                        {
-                            id: 456,
-                            subject: '中暑急救要點',
-                            desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                            depart: '綜合企劃科',
-                            file: { name: '123.docx', link: '/demofile/123.docx' },
-                            note: '',
-                            evidences: [
-                                {
-                                    name: '123.pdf',
-                                    link: '/demofile/123.pdf'
-                                },
-                            ],
-                        },
-                    ],
-                    uploads: [
-                        {
-                            controlId: '123',
-                            files: [
-                                {
-                                    name: '456.xlsx',
-                                    link: '/demofile/456.xlsx'
-                                },
-                            ]
-                        },
-                    ]
+            getBeforeData({
+                EndangerCode: this.id,  // 事故事件編號
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // this.chMsgbar({ success: true, msg: '重提成功' })
+                    this.done = true  // 隱藏頁面操作按鈕
+                    tableItems = JSON.parse(res.data.order_list)
+                    let times = tableItems.map(item => item.InsertDTime)
+                    let newArr = []
+                    times.forEach(time => {
+                        let date = new Date(time)
+                        newArr.push(date.getTime()); 
+                    });
+                    maxIndex = newArr.findIndex((element)=>{
+                        return element == Math.max(...newArr)
+                    })
+                    old = tableItems[maxIndex]
+                    console.log("old1", tableItems[maxIndex])
+                    console.log("old2", old)
+                    
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
                 }
-
-                let obj2 = {
-                    desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',  // 危害說明
-                    reason: '直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字直接成因文字',  // 危害直接成因
-                    indirectReason: '間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字間接原因文字',  // 可能的危害間接原因
-                    note: '',  // 備註
-                    depart: '鐵路服務科',// 權責部門
-                    mode: '正常',  // 營運模式
-                    wbs: 'APC2',  // 關聯子系統
-                    serious: '稍微 (S4)',  // 風險嚴重性
-                    frequency: '幾乎不 (P5)',  // 風險頻率
-                    level: '可接受，持續控管 (R4)',  // 風險等級
-                    affectTraveler: true,  // 影響旅客
-                    affectStaff: true,  // 影響員工
-                    affectPublic: false,  // 影響大眾
-                    trainLate: false,  // 列車誤點
-                    stopOperation: false,  // 中斷營運
-                    accidents: ['側線火災事故'],  // 衍生事故
-                    controls: [  // 控制措施
-                        {
-                            id: 123,
-                            subject: '火災處理要點',
-                            desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                            depart: '綜合企劃科',
-                            file: { name: '123.pdf', link: '/demofile/123.pdf' },
-                            note: '',
-                            evidences: [
-                                {
-                                    name: '123.pdf',
-                                    link: '/demofile/123.pdf'
-                                },
-                            ],
-                        },
-                    ],
-                    uploads: [
-                        {
-                            controlId: '123',
-                            files: [
-                                {
-                                    name: '456.xlsx',
-                                    link: '/demofile/456.xlsx'
-                                },
-                            ]
-                        },
-                        { 
-                            controlId: '456', 
-                            files: [
-                                {
-                                    name: '123.pdf',
-                                    link: '/demofile/123.pdf'
-                                },
-                            ]
-                        },
-                    ]
-                }
-
-                this.setShowData(obj1, obj2)
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+            }).finally(() => {
+                console.log("old3", old)
+                this.setShowData(tableItems[maxIndex], this.itemData)
                 this.chLoadingShow()
-            }, 1000)
+            })
+            
+            // this.setShowData(tableItems[maxIndex], this.itemData)
+            // this.setShowData(this.itemData, old)
         },
         // 初始化資料
         setShowData(before, after) {
+            console.log("before>>", before)
+            console.log("after>>", after)
+            alert("Enter 初始化資料") // descp
+            // 危害說明
+            this.before.descp = before.EndangerDesp
+            this.after.descp = after.EndangerDesp
+
             // 權責部門
-            this.before.depart = before.depart.replace(/\n/g, '<br>')
-            this.after.depart = after.depart.replace(/\n/g, '<br>')
+            this.before.depart = before.EndangerDepart
+            this.after.depart = after.EndangerDepart
 
             // 營運模式
-            this.before.mode = before.mode.replace(/\n/g, '<br>')
-            this.after.mode = after.mode.replace(/\n/g, '<br>')
+            this.before.mode = operateModes.find(ele => ele.value == before.OperationMode).text
+            this.after.mode = operateModes.find(ele => ele.value == after.OperationMode).text
 
-            // 關聯子系統
-            this.before.wbs = before.wbs.replace(/\n/g, '<br>')
-            this.after.wbs = after.wbs.replace(/\n/g, '<br>')
+            // 關聯子系統 operateModes.find(ele => ele.value == before.OperationMode).text
+            this.before.wbs = before.ConnectWBS
+            this.after.wbs = after.ConnectWBS
 
             // 風險嚴重性
-            this.before.serious = before.serious.replace(/\n/g, '<br>')
-            this.after.serious = after.serious.replace(/\n/g, '<br>')
+            this.before.serious = before.serious
+            this.after.serious = after.serious
 
             // 風險頻率
-            this.before.frequency = before.frequency.replace(/\n/g, '<br>')
-            this.after.frequency = after.frequency.replace(/\n/g, '<br>')
+            this.before.frequency = before.frequency
+            this.after.frequency = after.frequency
 
             // 風險等級
-            this.before.level = before.level.replace(/\n/g, '<br>')
-            this.after.level = after.level.replace(/\n/g, '<br>')
+            this.before.level = before.level
+            this.after.level = after.level
 
             // 危害說明
-            this.before.desc = before.desc.replace(/\n/g, '<br>')
-            this.after.desc = after.desc.replace(/\n/g, '<br>')
+            this.before.desc = before.desc
+            this.after.desc = after.desc
 
             // 危害直接成因
-            this.before.reason = before.reason.replace(/\n/g, '<br>')
-            this.after.reason = after.reason.replace(/\n/g, '<br>')
+            this.before.reason = before.reason
+            this.after.reason = after.reason
 
             // 可能的危害間接原因
-            this.before.indirectReason = before.indirectReason.replace(/\n/g, '<br>')
-            this.after.indirectReason = after.indirectReason.replace(/\n/g, '<br>')
+            this.before.indirectReason = before.indirectReason
+            this.after.indirectReason = after.indirectReason
 
             // 備註
-            this.before.note = before.note.replace(/\n/g, '<br>')
-            this.after.note = after.note.replace(/\n/g, '<br>')
+            this.before.note = before.note
+            this.after.note = after.note
             
             // 影響、運轉影響情形字串
             let arr_before = []
@@ -584,7 +526,7 @@ export default {
             if (before.affectPublic) arr_before.push('影響大眾')
             if (before.trainLate) arr_before.push('列車誤點')
             if (before.stopOperation) arr_before.push('中斷營運')
-            this.before.affectTxt = arr_before.join('、')
+            // this.before.affectTxt = arr_before.join('、')
 
             let arr_after = []
             if (after.affectTraveler) arr_after.push('影響旅客')
@@ -592,11 +534,11 @@ export default {
             if (after.affectPublic) arr_after.push('影響大眾')
             if (after.trainLate) arr_after.push('列車誤點')
             if (after.stopOperation) arr_after.push('中斷營運')
-            this.after.affectTxt = arr_after.join('、') 
+            // this.after.affectTxt = arr_after.join('、') 
 
             // 衍生事故字串
-            this.before.accidentsTxt = before.accidents.join('、')
-            this.after.accidentsTxt = after.accidents.join('、')
+            // this.before.accidentsTxt = before.accidents.join('、')
+            // this.after.accidentsTxt = after.accidents.join('、')
 
             // 控制措施
             this.before.controls = [ ...before.controls ]
