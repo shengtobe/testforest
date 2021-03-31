@@ -18,7 +18,7 @@
             >
                 <template v-slot:activator="{ on }">
                     <v-text-field
-                        v-model.trim="ipt.date"
+                        v-model.trim="ipt.CheckDate"
                         solo
                         v-on="on"
                         readonly
@@ -26,7 +26,7 @@
                 </template>
                 <v-date-picker
                     color="purple"
-                    v-model="ipt.date"
+                    v-model="ipt.CheckDate"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
                 ></v-date-picker>
@@ -38,7 +38,7 @@
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
             </h3>
             <v-text-field
-                v-model.trim="ipt.number"
+                v-model.trim="ipt.CarVersion"
                 solo
                 placeholder="例：1-2"
             ></v-text-field>
@@ -48,10 +48,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account</v-icon>駕駛姓名
             </h3>
-            <v-text-field
-                v-model.trim="ipt.name"
-                solo
-            ></v-text-field>
+            <PeopleSelect v-model="ipt.ErrPeopleId" :isMuti="false" :key="componentKey" @change="getPeopleData" />
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
@@ -59,7 +56,7 @@
                 <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>區段
             </h3>
             <v-text-field
-                v-model.trim="ipt.location"
+                v-model.trim="ipt.CarLineZone"
                 solo
                 placeholder="例：主線 5k 10m"
             ></v-text-field>
@@ -70,7 +67,7 @@
                 <v-icon class="mr-1 mb-1">mdi-clock</v-icon>時間範圍
             </h3>
             <v-text-field
-                v-model.trim="ipt.timeRange"
+                v-model.trim="ipt.CarTimeRange"
                 solo
                 placeholder="例：1100~1120"
             ></v-text-field>
@@ -81,7 +78,7 @@
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>平均車速
             </h3>
             <v-text-field
-                v-model.trim="ipt.averageSpeed"
+                v-model.trim="ipt.AverageSpeed"
                 solo
                 placeholder="例：40"
             ></v-text-field>
@@ -92,7 +89,7 @@
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>每小時超出公里數
             </h3>
             <v-text-field
-                v-model.trim="ipt.overKm"
+                v-model.trim="ipt.OverSpeed"
                 solo
                 placeholder="例：10"
             ></v-text-field>
@@ -103,10 +100,15 @@
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>超速級別
             </h3>
             <v-select
-                v-model="ipt.hypervelocity"
-                :items="['1 級', '2 級', '其他']"
+                v-model="OverSpeedId"
+                :items="[{value:'1',text:'1 級'},{value:'2',text:'2 級'}, {value:'3',text:'其他'}]"
                 solo
             ></v-select>
+            <v-text-field
+                v-show="OverSpeedId == '3'"
+                v-model.trim="OverSpeedText"
+                solo
+            ></v-text-field>
         </v-col>
 
         <v-col cols="12" md="6">
@@ -118,7 +120,7 @@
                 solo
                 rows="6"
                 placeholder="請輸入異常概況"
-                v-model.trim="ipt.desc"
+                v-model.trim="ipt.ErrTitle"
             ></v-textarea>
         </v-col>
 
@@ -131,7 +133,7 @@
                 solo
                 rows="6"
                 placeholder="請輸入異常處理情形"
-                v-model.trim="ipt.handSituation"
+                v-model.trim="ipt.ErrCheckStatus"
             ></v-textarea>
         </v-col>
 
@@ -183,26 +185,35 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
+import PeopleSelect from '@/components/PeopleSelect'
+import { mapState, mapActions } from 'vuex'
+import { login } from '@/apis/login'
+import { carspeedQuery,carspeedInsert,carspeedUpdate } from '@/apis/smis/safetyPerformance'
+import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 
 export default {
+    props:['id'],
     data: () => ({
+        componentKey: 0,
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
         defaultIpt: {
-            date: new Date().toISOString().substr(0, 10),  // 日期
-            number: '',  // 車次
-            name: '',  // 駕駛姓名
-            location: '',  // 區段
-            timeRange: '',  // 時間範圍
-            averageSpeed: '',  // 平均車速
-            overKm: '',  // 每小時超出公里數
-            hypervelocity: '1 級',  // 超速級別
-            desc: '',  // 異常概況
-            handSituation: '',  // 異常處理情形
+            CheckDate: new Date().toISOString().substr(0, 10),  // 日期
+            CarVersion: '',  // 車次
+            ErrPeopleId: '',  // 駕駛姓名
+            ErrPeopleName: '',
+            ErrDepartCode: '',
+            ErrDepart: '',
+            CarLineZone: '',  // 區段
+            CarTimeRange: '',  // 時間範圍
+            AverageSpeed: '',  // 平均車速
+            OverSpeed: '',  // 每小時超出公里數
+            OverSpeedStatus: '1',  // 超速級別
+            ErrTitle: '',  // 異常概況
+            ErrCheckStatus: '',  // 異常處理情形
             files: [],  // 附件
         },
         dateMemuShow: false,  // 日曆是否顯示
@@ -210,12 +221,49 @@ export default {
     components: {
         UploadFileAdd,
         UploadFileEdit,
+        PeopleSelect
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
         },
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+        OverSpeedId: {
+            get () {
+				if(this.ipt.OverSpeedStatus != '1' && this.ipt.OverSpeedStatus != '2') {
+                    return '3'
+                }else{
+                    return this.ipt.OverSpeedStatus
+                }
+			},
+			set (value) {
+                if(value != '1' && value != '2') {
+                    this.ipt.OverSpeedStatus = '3'
+                }else{
+                    this.ipt.OverSpeedStatus = value
+                }
+                
+            }
+        },
+        OverSpeedText: {
+           get () {
+				if(this.OverSpeedId != '1' && this.OverSpeedId != '2' && this.OverSpeedId != '3') {
+                    return this.ipt.OverSpeedStatus
+                }else{
+                    return ''
+                }
+			},
+			set (value) {
+                if(this.OverSpeedId != '1' && this.OverSpeedId != '2'){
+                    this.ipt.OverSpeedStatus = value
+                }
+            } 
+        }
     },
     methods: {
         ...mapActions('system', [
@@ -228,56 +276,34 @@ export default {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             // -------------- 編輯時 -------------- 
-            if (this.$route.params.id != undefined) {
+            if (this.id) {
                 this.chLoadingShow()
-                this.routeId = this.$route.params.id  // 路由參數(id)
+                this.routeId = this.id  // 路由參數(id)
                 this.isEdit = true
-                
-
-                // 範例效果
-                setTimeout(() => {
-                    let obj = {
-                        id: 3201,
-                        date: '2020-04-04',
-                        number: '4-5',
-                        name: '王小明',
-                        location: '本線 12k 125m',
-                        timeRange: '0930~0940',
-                        averageSpeed: '50',
-                        overKm: '10',
-                        hypervelocity: '2 級',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
-                        files: [
-                            {
-                                fileName: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                fileName: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
+                carspeedQuery({
+                    FlowID: this.id,
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt = {...decodeObject(res.data.DataList[0])}    
+                        this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
                     }
-                    
-                    this.setInitDate(obj)
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
-            } 
-        },
-        // 設定資料(編輯時)
-        setInitDate(obj) {
-            this.ipt.date = obj.date // 日期
-            this.ipt.number = obj.number // 車次
-            this.ipt.name = obj.name // 駕駛姓名
-            this.ipt.location = obj.location // 區段
-            this.ipt.timeRange = obj.timeRange // 時間範圍
-            this.ipt.averageSpeed = obj.averageSpeed // 平均車速
-            this.ipt.overKm = obj.overKm // 每小時超出公里數
-            this.ipt.hypervelocity = obj.hypervelocity // 超速級別
-            this.ipt.desc = obj.desc // 異常概況
-            this.ipt.handSituation = obj.handSituation // 異常處理情形
-            this.ipt.files = [ ...obj.files ]  // 檔案
+                })
+            }else{
+                this.ipt.PeopleId = this.userData.UserId
+                this.ipt.PeopleName = this.userData.UserName
+                this.ipt.DepartCode = this.userData.DeptList[0].DeptId
+                this.ipt.Depart = this.userData.DeptList[0].DeptDesc
+            }
         },
         // 更換頁數
         chPage(n) {
@@ -286,19 +312,72 @@ export default {
         // 送出
         save() {
             this.chLoadingShow()
-
-            // 測試用資料
-            setTimeout(() => {
-                if (this.isEdit) {
-                    // 編輯時
-                    this.chMsgbar({ success: true, msg: '資料更新成功'})
+            this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
+            if(this.isEdit){
+                carspeedUpdate({
+                    FlowID:this.id,
+                    Option:'U',
+                    ...encodeObject(this.ipt),
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '資料更新成功' })    
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }else{
+                carspeedInsert({
+                    ...encodeObject(this.ipt),
+                    ClientReqTime: getNowFullTime(),
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then( res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '資料新增成功' })    
+                    }else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch( err => {
+                    console.warn(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
+            }
+        },
+        getPeopleData(empid){
+            if(empid){
+            const sendData = {
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                UserId: empid,
+                UserPasswd: "",
+                BackDoor: 'T',
+            }
+            login({
+                ...sendData
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.ipt.ErrDepartCode = res.data.UserData.DeptList[0].DeptId
+                    this.ipt.ErrDepart = res.data.UserData.DeptList[0].DeptDesc
+                    this.ipt.ErrPeopleName = res.data.UserData.UserName
                 } else {
-                    // 新增時
-                    this.$router.push({ path: '/smis/car-safe-performance/speed-abnormal' })
-                    this.chMsgbar({ success: true, msg: '資料新增成功'})
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
                 }
-                this.chLoadingShow()
-            }, 1000)
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            }).finally(() => {
+            })
+            }
         },
         // 加入要上傳的檔案
         joinFile(file) {

@@ -50,7 +50,7 @@
             <v-select
                 readonly
                 v-model="ipt.PeopleSex"
-                :items="[{text:'男性',value:'M'}, {text:'女性',value:'F'}, {text:'第三性別',value:'X'}]"
+                :items="[{text:'男性',value:'M'}, {text:'女性',value:'F'}, {text:'無',value:'X'}]"
                 solo
             ></v-select>
         </v-col>

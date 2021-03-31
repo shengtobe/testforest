@@ -16,7 +16,7 @@
             >
                 <template v-slot:activator="{ on }">
                     <v-text-field
-                        v-model.trim="searchIpt.dateStart"
+                        v-model.trim="searchIpt.DTime_Start"
                         solo
                         v-on="on"
                         readonly
@@ -24,7 +24,7 @@
                 </template>
                 <v-date-picker
                     color="purple"
-                    v-model="searchIpt.dateStart"
+                    v-model="searchIpt.DTime_Start"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
                 ></v-date-picker>
@@ -44,7 +44,7 @@
             >
                 <template v-slot:activator="{ on }">
                     <v-text-field
-                        v-model.trim="searchIpt.dateEnd"
+                        v-model.trim="searchIpt.DTime_End"
                         solo
                         v-on="on"
                         readonly
@@ -52,7 +52,7 @@
                 </template>
                 <v-date-picker
                     color="purple"
-                    v-model="searchIpt.dateEnd"
+                    v-model="searchIpt.DTime_End"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
                 ></v-date-picker>
@@ -64,7 +64,7 @@
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車次
             </h3>
             <v-text-field
-                v-model.trim="searchIpt.number"
+                v-model.trim="searchIpt.CarVersion"
                 solo
             ></v-text-field>
         </v-col>
@@ -112,20 +112,21 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.desc="{ item }">
+                    <template v-slot:item.ErrTitle="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.ErrTitle)"
                         >檢視</v-btn>
                     </template>
 
-                    <template v-slot:item.handSituation="{ item }">
+                    <template v-slot:item.ErrCheckStatus="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.handSituation)"
+                            @click="showContent(item.ErrCheckStatus)"
                         >檢視</v-btn>
                     </template>
 
-                    <template v-slot:item.files="{ item }">
+                    <template v-slot:item.Attachment="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
+                            v-if="item.Attachment.length > 0 && item.Attachment[0] != ''"
                             @click="showFiles(item.files)"
                         >
                             <v-icon>mdi-file-document</v-icon>
@@ -136,13 +137,13 @@
                         <v-btn fab small color="primary"
                             target="_blank"
                             class="mr-3"
-                            :to="`/smis/car-safe-performance/speed-abnormal/${item.id}/edit`"
+                            :to="`/smis/car-safe-performance/speed-abnormal/${item.FlowID}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
                         <v-btn fab small color="error"
-                            @click="delControl(item.id)"
+                            @click="delControl(item.FlowID)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -191,20 +192,33 @@
             </v-list-item-group>
         </v-card>
     </v-dialog>
+    <!-- 刪除 modal -->
+    <v-dialog v-model="Delete" persistent max-width="290">
+        <v-card>
+            <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="close">取消</v-btn>
+                <v-btn color="success" @click="goDelete">刪除</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { carspeedQueryList,carspeedUpdate } from '@/apis/smis/safetyPerformance'
+import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
 
 export default {
     data: () => ({
         searchIpt: {},
         searchDefault: {
-            dateStart: '',  // 日期(起)
-            dateEnd: '',  // 日期(迄)
-            number: '',  // 車次
+            DTime_Start: '',  // 日期(起)
+            DTime_End: '',  // 日期(迄)
+            CarVersion: '',  // 車次
         },
         dateMemuShow: {
             start: false,
@@ -218,24 +232,31 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-            { text: '車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80' },
-            { text: '駕駛姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '區段', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '時間範圍', value: 'timeRange', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '平均車速', value: 'averageSpeed', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '每小時超出公里數', value: 'overKm', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-            { text: '超速級別', value: 'hypervelocity', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '異常概況', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '處理情形', value: 'handSituation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            // { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '日期', value: 'CheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '車次', value: 'CarVersion', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80' },
+            { text: '駕駛姓名', value: 'ErrPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '區段', value: 'CarLineZone', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '時間範圍', value: 'CarTimeRange', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
+            { text: '平均車速', value: 'AverageSpeed', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '每小時超出公里數', value: 'OverSpeed', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '超速級別', value: 'OverSpeedStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '異常概況', value: 'ErrTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '處理情形', value: 'ErrCheckStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
             { text: '附件', value: 'files', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
         ],
         fileList: [],  // 檔案列表
         dialogShow: false,  // 檔案dialog是否顯示
+        Delete: false,
+        DeleteItem: '',
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -246,40 +267,30 @@ export default {
         reset() {
             this.searchIpt = { ...this.searchDefault }
         },
-        // 查詢
+         // 查詢
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 3201,
-                        date: '2020-04-04',
-                        number: '4-5',
-                        name: '王小明',
-                        location: '本線 12k 125m',
-                        timeRange: '0930~0940',
-                        averageSpeed: '50',
-                        overKm: '10',
-                        hypervelocity: '2 級',
-                        desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-                        handSituation: '處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形處理情形',
-                        files: [
-                            {
-                                name: '456.xlsx',
-                                link: '/demofile/456.xlsx'
-                            },
-                            {
-                                name: '123.pdf',
-                                link: '/demofile/123.pdf'
-                            },
-                        ],
+            carspeedQueryList({
+                ...this.searchIpt,
+                ClientReqTime: getNowFullTime(),
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then( res => {
+                if (res.data.ErrorCode == 0) {
+                    if(res.data.DataList.length > 0){
+                        this.tableItems = decodeObject(res.data.DataList)
                     }
-                ]
+                }else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，清單查詢失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
+            
         },
         // 更換頁數
         chPage(n) {
@@ -289,24 +300,42 @@ export default {
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
-        // 刪除控制措施
+         // 刪除控制措施
         delControl(id) {
-            if (confirm('你確定要刪除嗎?')) {
+            this.DeleteItem = id
+            this.Delete = true
+        },
+        goDelete() {
+            this.chLoadingShow()
+            carspeedUpdate({
+                FlowID:this.DeleteItem,
+                Option: 'D',
+                ClientReqTime: getNowFullTime(),
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then( res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '刪除成功' })
+                }else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch( err => {
+                console.warn(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
-                    this.chLoadingShow()
-                }, 1000)
-            }
+                this.Delete = false
+                this.search()
+            })
         },
         // 顯示檔案
         showFiles(arr) {
             if (arr.length > 0) this.fileList = [ ...arr ]
             this.dialogShow = true
         },
+        close(){
+            this.Delete = false
+        }
     },
     created() {
         this.searchIpt = { ...this.searchDefault }
