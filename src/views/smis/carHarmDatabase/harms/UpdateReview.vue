@@ -4,14 +4,6 @@
 
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-12">
-        <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-bank</v-icon>危害說明
-        </h3>
-        <VersionDiff
-            :before="before.descp"
-            :after="after.descp"
-        />
-
         <h3 class="mb-1 mt-12">
             <v-icon class="mr-1 mb-1">mdi-bank</v-icon>權責單位
         </h3>
@@ -134,16 +126,21 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
+                     <template v-slot:item.depart="{ item }">
+                        {{ opts.depart.find(ele => ele.value == item.DeviceDepart).text }}
+                    </template>
+
                     <template v-slot:item.desc="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                            v-if="item.regul_file_path != ''"
+                            :href="item.regul_file_path"
+                            :download="item.FileFullName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -151,11 +148,13 @@
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
+                            v-if="item.file_path.length > 0"
+                            @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
+                   
                 </v-data-table>
             </v-card>
         </v-col>
@@ -174,16 +173,21 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
+                     <template v-slot:item.depart="{ item }">
+                        {{ opts.depart.find(ele => ele.value == item.DeviceDepart).text }}
+                    </template>
+
                     <template v-slot:item.desc="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                            v-if="item.regul_file_path != ''"
+                            :href="item.regul_file_path"
+                            :download="item.FileFullName"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -191,11 +195,13 @@
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
+                            v-if="item.file_path.length > 0"
+                            @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
+                    
                 </v-data-table>
             </v-card>
         </v-col>
@@ -357,9 +363,6 @@ export default {
         done: false,  // 是否完成頁面操作
         before: {  // 變更前
             OOOOOO: '', // AAAAAA
-            descp: '', // 危害說明
-            reason: '', // 危害直接成因
-            indirect: '', // 可能的危害間接原因
             depart: '',// 權責部門
             mode: '',  // 營運模式
             wbs: '',  // 關聯子系統
@@ -440,7 +443,7 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     // this.chMsgbar({ success: true, msg: '重提成功' })
-                    this.done = true  // 隱藏頁面操作按鈕
+                    // this.done = true  // 隱藏頁面操作按鈕
                     tableItems = JSON.parse(res.data.order_list)
                     let times = tableItems.map(item => item.InsertDTime)
                     let newArr = []
@@ -452,8 +455,6 @@ export default {
                         return element == Math.max(...newArr)
                     })
                     old = tableItems[maxIndex]
-                    console.log("old1", tableItems[maxIndex])
-                    console.log("old2", old)
                     
                 } else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -462,7 +463,6 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題' })
             }).finally(() => {
-                console.log("old3", old)
                 this.setShowData(tableItems[maxIndex], this.itemData)
                 this.chLoadingShow()
             })
@@ -474,7 +474,7 @@ export default {
         setShowData(before, after) {
             console.log("before>>", before)
             console.log("after>>", after)
-            alert("Enter 初始化資料") // descp
+            console.log("controls>>", after.controls)
             // 危害說明
             this.before.descp = before.EndangerDesp
             this.after.descp = after.EndangerDesp
@@ -492,53 +492,53 @@ export default {
             this.after.wbs = after.ConnectWBS
 
             // 風險嚴重性
-            this.before.serious = before.serious
-            this.after.serious = after.serious
+            this.before.serious = before.RiskSerious
+            this.after.serious = after.RiskSerious
 
             // 風險頻率
-            this.before.frequency = before.frequency
-            this.after.frequency = after.frequency
+            this.before.frequency = before.RiskFreq
+            this.after.frequency = after.RiskFreq
 
             // 風險等級
-            this.before.level = before.level
-            this.after.level = after.level
+            this.before.level = before.RiskLevel
+            this.after.level = after.RiskLevel
 
             // 危害說明
-            this.before.desc = before.desc
-            this.after.desc = after.desc
+            this.before.desc = before.EndangerDesp
+            this.after.desc = after.EndangerDesp
 
             // 危害直接成因
-            this.before.reason = before.reason
-            this.after.reason = after.reason
+            this.before.reason = before.EndangerReason
+            this.after.reason = after.EndangerReason
 
             // 可能的危害間接原因
-            this.before.indirectReason = before.indirectReason
-            this.after.indirectReason = after.indirectReason
+            this.before.indirectReason = before.EndangerIndirect
+            this.after.indirectReason = after.EndangerIndirect
 
             // 備註
-            this.before.note = before.note
-            this.after.note = after.note
+            this.before.note = before.Remark
+            this.after.note = after.Remark
             
             // 影響、運轉影響情形字串
             let arr_before = []
-            if (before.affectTraveler) arr_before.push('影響旅客')
-            if (before.affectStaff) arr_before.push('影響員工')
-            if (before.affectPublic) arr_before.push('影響大眾')
-            if (before.trainLate) arr_before.push('列車誤點')
-            if (before.stopOperation) arr_before.push('中斷營運')
-            // this.before.affectTxt = arr_before.join('、')
+            if (before.EffectTraveler == 'T') arr_before.push('影響旅客')
+            if (before.EffectEmploy == 'T') arr_before.push('影響員工')
+            if (before.EffectPeople == 'T') arr_before.push('影響大眾')
+            if (before.ServiceCarError == 'T') arr_before.push('列車誤點')
+            if (before.ServiceStopError == 'T') arr_before.push('中斷營運')
+            this.before.affectTxt = arr_before.join('、')
 
             let arr_after = []
-            if (after.affectTraveler) arr_after.push('影響旅客')
-            if (after.affectStaff) arr_after.push('影響員工')
-            if (after.affectPublic) arr_after.push('影響大眾')
-            if (after.trainLate) arr_after.push('列車誤點')
-            if (after.stopOperation) arr_after.push('中斷營運')
-            // this.after.affectTxt = arr_after.join('、') 
+            if (after.EffectTraveler == 'T') arr_after.push('影響旅客')
+            if (after.EffectEmploy == 'T') arr_after.push('影響員工')
+            if (after.EffectPeople == 'T') arr_after.push('影響大眾')
+            if (after.ServiceCarError == 'T') arr_after.push('列車誤點')
+            if (after.ServiceStopError == 'T') arr_after.push('中斷營運')
+            this.after.affectTxt = arr_after.join('、') 
 
             // 衍生事故字串
-            // this.before.accidentsTxt = before.accidents.join('、')
-            // this.after.accidentsTxt = after.accidents.join('、')
+            this.before.accidentsTxt = before.DeriveAccident
+            this.after.accidentsTxt = after.DeriveAccident.join(',')
 
             // 控制措施
             this.before.controls = [ ...before.controls ]
@@ -565,8 +565,9 @@ export default {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 顯示證據
-        showEvidences(arr) {
-            this.evidences = [ ...arr ]
+        showEvidences(item) {
+            this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
+            this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
             this.dialogShow = true
         },
         // 退回
