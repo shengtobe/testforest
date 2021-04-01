@@ -272,7 +272,7 @@
 
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
-                    @click="dialog = true"
+                    @click="showDialog(true)"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
@@ -351,16 +351,18 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { departOptions } from '@/assets/js/departOption'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import VersionDiff from '@/components/smis/VersionDiff.vue'
-import { getBeforeData} from '@/apis/smis/carHarmDatabase/harms'
+import { getBeforeData, sendUpdateData, sendRetuenData, updatePassData} from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['itemData'],
     data: () => ({
         id: '',
         done: false,  // 是否完成頁面操作
+        dialogReturnMsg: '',  // 退回或徹銷時成功的訊息
         before: {  // 變更前
             OOOOOO: '', // AAAAAA
             depart: '',// 權責部門
@@ -393,6 +395,16 @@ export default {
             affectTxt: '',
             accidentsTxt: '',
             uploads: [],
+        },
+        opts: {  // 下拉選單
+            depart: [  // 部門
+                 { text: '不限', value: '' },
+                ...departOptions,
+            ],
+            depart2: departOptions,  // 部門(不含不限)
+            mode: operateModes,  // 營運模式
+            serious: riskSerious,  // 風險嚴重性
+            frequency: riskFrequency,  // 風險頻率
         },
         headers: [  // 表格欄位
             { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
@@ -436,6 +448,9 @@ export default {
             let maxIndex
             let old
 
+            // this.setShowData(this.itemData, this.itemData)
+            // return
+
             getBeforeData({
                 EndangerCode: this.id,  // 事故事件編號
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -445,16 +460,17 @@ export default {
                     // this.chMsgbar({ success: true, msg: '重提成功' })
                     // this.done = true  // 隱藏頁面操作按鈕
                     tableItems = JSON.parse(res.data.order_list)
-                    let times = tableItems.map(item => item.InsertDTime)
-                    let newArr = []
-                    times.forEach(time => {
-                        let date = new Date(time)
-                        newArr.push(date.getTime()); 
-                    });
-                    maxIndex = newArr.findIndex((element)=>{
-                        return element == Math.max(...newArr)
-                    })
-                    old = tableItems[maxIndex]
+                    console.log("tableItems", tableItems)
+                    // let times = tableItems.map(item => item.InsertDTime)
+                    // let newArr = []
+                    // times.forEach(time => {
+                    //     let date = new Date(time)
+                    //     newArr.push(date.getTime()); 
+                    // });
+                    // maxIndex = newArr.findIndex((element)=>{
+                    //     return element == Math.max(...newArr)
+                    // })
+                    // old = tableItems[maxIndex]
                     
                 } else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -463,18 +479,15 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題' })
             }).finally(() => {
-                this.setShowData(tableItems[maxIndex], this.itemData)
+                this.setShowData(tableItems[0], this.itemData)
                 this.chLoadingShow()
             })
             
-            // this.setShowData(tableItems[maxIndex], this.itemData)
             // this.setShowData(this.itemData, old)
         },
         // 初始化資料
         setShowData(before, after) {
-            console.log("before>>", before)
-            console.log("after>>", after)
-            console.log("controls>>", after.controls)
+            let aa = JSON.parse(before.proc_detail)
             // 危害說明
             this.before.descp = before.EndangerDesp
             this.after.descp = after.EndangerDesp
@@ -541,23 +554,39 @@ export default {
             this.after.accidentsTxt = after.DeriveAccident.join(',')
 
             // 控制措施
-            this.before.controls = [ ...before.controls ]
+            this.before.controls = [ ...aa ]
             this.after.controls = [ ...after.controls ]
 
             // 上傳之證據
             this.before.uploads = [ ...before.uploads ]
             this.after.uploads = [ ...after.uploads ]
         },
+        showDialog(bool) {
+            // 若為 true 是退回
+            this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
+            this.dialog = true
+        },
         // 同意更新
         save() {
             if (confirm('你確定要更新嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '更新成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                updatePassData({
+                    EndangerCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 顯示檢視內容
@@ -574,11 +603,24 @@ export default {
         withdraw() {
             this.isLoading = true
 
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '退回成功'})
-                this.done = true  // 隱藏頁面操作按鈕
-                this.dialog = false
-            }, 1000)
+            sendRetuenData({
+                EndangerCode: this.id,  // 事故事件編號
+                Reason: this.backReason,  // 退回原因
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                    this.done = true  // 隱藏頁面操作按鈕
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+            }).finally(() => {
+                this.isLoading = this.dialog = false
+            })
         },
     },
     created() {

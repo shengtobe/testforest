@@ -109,4 +109,13 @@ export function getBeforeData(data) { return axios(
     }
 )}
 
+// 審核更新通過
+export function updatePassData(data) { return axios(
+    {
+        url: '/sms/dangerdb/check/update',
+        method: 'post',
+        data,
+    }
+)}
+
 

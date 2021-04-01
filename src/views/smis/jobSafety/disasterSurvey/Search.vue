@@ -275,7 +275,6 @@ export default {
         
         // 重新導向 (依結案狀態)
         redirect(item) {
-            console.log("click 詳細內容!")
             //開新分頁
             let routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.AccidentCode}/show` })
             window.open(routeData.href, '_blank')

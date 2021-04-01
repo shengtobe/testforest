@@ -471,6 +471,7 @@ import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
 import Pagination from '@/components/Pagination.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData, fetchOne, sendUpdateData} from '@/apis/smis/carHarmDatabase/harms'
+import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
 
 export default {
     props: ['id'],
@@ -534,14 +535,14 @@ export default {
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
         tableItems: [],  // 控制措施權責部門的表格資料
         headers: [  // 控制措施權責部門的表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
         ],
         chooseHeaders: [  // 已選的表格欄位
             { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
@@ -746,6 +747,7 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '更新成功' })
+                        this.done = true
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -762,62 +764,31 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 測試用資料
-            // setTimeout(() => {
-            //     this.tableItems = [
-            //         {
-            //             id: 123,
-            //             subject: '火災處理要點',
-            //             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-            //             depart: '綜合企劃科',
-            //             file: { link: '/demofile/123.pdf' },
-            //             note: '',
-            //             evidences: [
-            //                 {
-            //                     name: '123.pdf',
-            //                     link: '/demofile/123.pdf'
-            //                 },
-            //             ],
-            //         },
-            //         {
-            //             id: 456,
-            //             subject: '中暑急救要點',
-            //             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-            //             depart: '綜合企劃科',
-            //             file: { link: '/demofile/123.docx' },
-            //             note: '',
-            //             evidences: [
-            //                 {
-            //                     name: '123.pdf',
-            //                     link: '/demofile/123.pdf'
-            //                 },
-            //                 {
-            //                     name: '123.docx',
-            //                     link: '/demofile/123.docx'
-            //                 },
-            //             ],
-            //         },
-            //         {
-            //             id: 789,
-            //             subject: '火車誤點處理措施',
-            //             desc: '說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字說明文字',
-            //             depart: '鐵路服務科',
-            //             file: { link: '/demofile/456.xlsx' },
-            //             note: '',
-            //             evidences: [
-            //                 {
-            //                     name: '456.xlsx',
-            //                     link: '/demofile/456.xlsx'
-            //                 },
-            //                 {
-            //                     name: '123.pdf',
-            //                     link: '/demofile/123.pdf'
-            //                 },
-            //             ],
-            //         },
-            //     ]
-            //     this.chLoadingShow()
-            // }, 1000)
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerProc',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    // 'PolicyCode',
+                    // 'ProcCode',
+                    // 'DeviceTitle',
+                    // 'DeviceDesp',
+                    // 'DeviceDepart',
+                    // 'UpdateDTime',
+                    // 'Remark',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
         },
         // 顯示檢視內容
         showContent(txt) {

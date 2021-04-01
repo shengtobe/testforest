@@ -160,8 +160,11 @@
             <v-select
                 v-model="carSafeType"
                 :items="carSafeTypeOpt"
+                @change="selector1Changed"
+                @click="click1"
                 solo
             ></v-select>
+            <p class="red--text mt-n6">{{ pick1 }}</p>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
@@ -171,8 +174,171 @@
             <v-select
                 v-model="jobSafeType"
                 :items="jobSafeTypeOpt"
+                @change="selector2Changed"
                 solo
             ></v-select>
+        </v-col>
+
+        <!-- 既有行安事故 -->
+       <v-col cols="12" v-if="shwoPick1_1Form">
+            <v-card>
+                <v-data-table
+                    :headers="headers1_1"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.location="{ item }">
+                        {{ locationOpts.find(ele => ele.value == item.FindLine).text }}
+                        {{ (item.FindLine == 'other')? `(${item.FindLineOther})` : '' }}
+                        {{ (['l1', 'l2', 'l3', 'l4'].includes(item.FindLine))? `(${item.LineK}K+${item.LineM}M)` : '' }}
+                    </template>
+                    
+                    <template v-slot:item.type="{ item }">
+                        {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}
+                    </template>
+
+                    <template v-slot:item.hurtPeople="{ item }">
+                        {{ (item.HurtPeopleCount == 'F')? '未填寫' : item.hurt_people_count }}
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        {{ accidentEventStatus.find(ele => ele.value == item.AccidentStatus).text }}
+                    </template>
+
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab color="teal"
+                            :loading="isLoading"
+                            @click="redirect(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
+        <!-- 既有行安危害 -->
+        <v-col cols="12" class="mt-8" v-if="shwoPick1_2Form">
+            <v-card>
+                <v-data-table
+                    :headers="headers1_2"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.mode="{ item }">
+                        <span>{{ opts1_2.mode.find(ele => ele.value == item.OperationMode).text }}</span>
+                    </template>
+
+                    <template v-slot:item.serious="{ item }">
+                        <span>{{ opts1_2.serious.find(ele => ele.value == item.RiskSerious).text }}</span>
+                    </template>
+
+                    <template v-slot:item.frequency="{ item }">
+                        <span>{{ opts1_2.frequency.find(ele => ele.value == item.RiskFreq).text }}</span>
+                    </template>
+
+                    <template v-slot:item.level="{ item }">
+                        <span>{{ opts1_2.riskLevel.find(ele => ele.value == item.RiskLevel).text }}</span>
+                    </template>
+                    
+                    <template v-slot:item.status="{ item }">
+                        <span>{{ opts1_2.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
+                    </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab color="teal"
+                            @click="pick1Event(item)"
+                        >
+                            <v-icon dark>mdi-gesture-tap</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
+        <!-- 既有職災事件事故 -->
+         <v-col cols="12" class="mt-8" v-if="shwoPick2_1Form">
+            <v-card>
+                <v-data-table
+                    :headers="headers2_1"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <!-- <template v-slot:item.status="{ item }">
+                        {{ transferStatusText(item.status) }}
+                    </template> -->
+
+                    <template v-slot:item.status="{ item }">
+                        <span>{{ opts.status.find(ele => ele.value == item.AccidentStatus).text }}</span>
+                    </template>
+
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab color="teal"
+                            @click="pick1Event(item)"
+                        >
+                            <v-icon dark>mdi-gesture-tap</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
         </v-col>
 
         <v-col cols="12" class="text-center mt-8">
@@ -191,6 +357,8 @@
             </template>
         </v-col>
     </v-row>
+
+    
 
     <!-- dialog - 行車事故事件 -->
     <!-- <NotifyEvtDialog
@@ -239,10 +407,17 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { jobDisasterSurveyStatus } from '@/assets/js/smisData'
+import { carHarmDbStatus, operateModes, riskSerious, riskFrequency, riskLevel, arAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { replyNotify, recordNotify } from '@/apis/smis/harmNotify'
+import Pagination from '@/components/Pagination.vue'
+import { searchData } from '@/apis/smis/jobSafety'
+import { dapartOptsBrief } from '@/assets/js/departOption'
+import { fetchList as fetchListDb } from '@/apis/smis/carHarmDatabase/harms'
+import { fetchList as fetchListEvent } from '@/apis/smis/carAccidentEvent'
 // import NotifyEvtDialog from '@/components/smis/NotifyEvtDialog.vue'
 // import NotifyHarmDialog from '@/components/smis/NotifyHarmDialog.vue'
 // import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
@@ -253,6 +428,14 @@ export default {
         id: '',  // 危害通報編號
         done: false,  // 是否完成頁面操作
         status: '',  // 狀態
+        pick1: '', // 既有行安事故編號
+        pick1_2: '', // 既有行安危害編號
+        pick2_1: '', // 既有職災事故編號
+        pick2_2: '', // 既有職安危害編號
+        shwoPick1_1Form: false, // 顯示既有行安事故表格
+        shwoPick1_2Form: false, // 顯示既有行安事故表格
+        shwoPick2_1Form: false, // 顯示既有行安事故表格
+        shwoPick2_2Form: false, // 顯示既有行安事故表格
         replayMsg: '',  // 回覆的訊息
         // cacheData: {},  // 暫存資料 (sessionStorage 會取用)
         topItems: [],  // 上面的欄位
@@ -269,6 +452,53 @@ export default {
             '感謝通報，已採「事故/事件」立案',
             '自訂訊息',
         ],
+        tableItems: [],  // 表格資料
+        pageOpt: { page: 1 },  // 目前頁數
+        headers1_1: [  // 表格顯示的欄位
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        headers1_2: [  // 表格顯示的欄位
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
+            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+        ],
+        headers2_1: [  // 表格顯示的欄位
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        ],
+        opts: {
+            depart: dapartOptsBrief,  // 部門
+            status: [  // 事故事件狀態 (審核中有二個，故傳中文值讓後端判斷)
+                { text: '不限', value: '' },
+                ...jobDisasterSurveyStatus,
+                { text: '已作廢', value: '已作廢' },
+                // { text: '已立案', value: '已立案' },
+                // { text: '已完備資料', value: '已完備資料' },
+                // { text: '改善措施已落實', value: '改善措施已落實' },
+                // { text: '審核中', value: '審核中' },
+            ],
+        },
+        opts1_2: {
+            status: carHarmDbStatus,  // 狀態
+            mode: operateModes, // 營運模式
+            serious: riskSerious, // 風險嚴重性
+            frequency: riskFrequency, // 風險頻率
+            riskLevel: riskLevel,  // 風險等級
+        },
+        
         // dialogShow: {  // dialog 是否顯示
         //     carEvt: false,  // 行車事故事件
         //     carHarm: false,  // 行車危害
@@ -352,6 +582,7 @@ export default {
         TopBasicTable,
         BottomTable,
         FileListShow,
+        Pagination
         // NotifyEvtDialog,
         // NotifyHarmDialog,
     },
@@ -366,6 +597,122 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        click1(){
+            console.log("cccccccccccclick")
+        },
+        selector1Changed(){
+            this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_2Form = false
+            switch(this.carSafeType){
+                case 'B':
+                    this.shwoPick1_1Form = true;
+                    this.chLoadingShow()
+                    fetchListEvent({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_AccidentEventData',  // DB table
+                        KeyItem: [
+                            { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 發生日期(起)
+                            { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd },  // 發生日期(迄)
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'AccidentCode',
+                            'AccidentFindDate',
+                            'FindLine',
+                            'LineK',
+                            'LineM',
+                            'FindLineOther',
+                            'AccidentType',
+                            'HurtPeopleCount',
+                            'AccidentStatus',
+                            'DelStatus',
+                            'CancelStatus',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                    break;
+                case 'D':
+                    this.shwoPick1_2Form = true;
+                    this.chLoadingShow()
+                    fetchListDb({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            // 'EndangerCode',
+                            // 'EndangerStatus',
+                            // 'OperationMode',
+                            // 'RiskSerious',
+                            // 'RiskFreq',
+                            // 'RiskLevel',
+                            // 'DelStatus',
+                            // 'CancelStatus',
+                            // 'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("D tableItems", this.tableItems)
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                    break;
+            }
+        },
+        selector2Changed(){
+            this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_2Form = false
+            switch(this.jobSafeType){
+                case 'B':
+                    this.shwoPick2_1Form = true;
+                    this.chLoadingShow()
+                    
+                    searchData({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_JobAccidentSurvey',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            // 'EndangerCode',
+                            // 'EndangerStatus',
+                            // 'OperationMode',
+                            // 'RiskSerious',
+                            // 'RiskFreq',
+                            // 'RiskLevel',
+                            // 'DelStatus',
+                            // 'CancelStatus',
+                            // 'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("tableItems", this.tableItems)
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                    break;
+                case 'D':
+                    this.shwoPick1_2Form = true;
+                    // this.chLoadingShow()
+                    
+                    break;
+            }
+        },
         // 初始化資料
         setShowData(obj) {
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
@@ -553,6 +900,10 @@ export default {
                 })
             }
         },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
         // 不立案
         nocreate() {
             if (confirm('你確定要不立案嗎?')) {
@@ -564,6 +915,20 @@ export default {
                     this.chLoadingShow()
                 }, 1000)
             }
+        },
+        pick1Event(item) {
+            switch(this.carSafeType){
+                case 'B':
+                    this.shwoPick1_1Form = false;
+                    this.pick1 = item.AccidentCode
+                    break;
+                case 'D':
+                    this.shwoPick1_2Form = false;
+                    this.pick1 = item.EndangerCode
+                    break;
+            }
+            // this.carSafeType = ''
+            
         },
     },
     created() {
