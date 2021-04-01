@@ -130,14 +130,6 @@ export default {
         {
           key: '',
           value: '選擇單位'
-        },
-        {
-          key: 'ARCO004',
-          value: '服務科'
-        },
-        {
-          key: 'ARCO015',
-          value: '維護科'
         }
       ],
     header: [
@@ -225,6 +217,22 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    //抓單位清單
+    _getOrg(){
+      const that = this
+      fetchOrganization().then(res => {
+        if (res.data.ErrorCode == 0) {
+          that.deptData.push(res.data.user_depart_list_group_1.map((item) => {
+            return {key:item.DepartCode,value:item.DepartName}
+          }))
+        }else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
+      })
+    },
     setDataList() {
       const that = this
       this.chLoadingShow()
@@ -251,6 +259,7 @@ export default {
       }).finally(() => {
         that.chLoadingShow()
         that.tableItem = decodeObject(that.tableItem)
+        this._getOrg()
       })
     },
     // 更換頁數
