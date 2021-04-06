@@ -108,6 +108,10 @@
                     <template v-slot:loading>
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
+                    
+                    <template v-slot:item.JobName="{ item }">
+                        {{ opts.job.find(e=>e.value==item.JobName).text }}
+                    </template>
 
                     <template v-slot:item.NextCheck="{ item }">
                         {{ (item.NextCheck == 'T')? '須健檢' : '不須健檢' }}
@@ -273,37 +277,9 @@ export default {
             ],
             job: [  // 職務
                 { text: '不限', value: '' },
-                { text: '人事室主任',value: '人事室主任' },
-                { text: '工友',value: '工友' },
-                { text: '工程士',value: '工程士' },
-                { text: '工程員',value: '工程員' },
-                { text: '主任',value: '主任' },
-                { text: '司機員',value: '司機員' },
-                { text: '列車長',value: '列車長' },
-                { text: '安全衛生管理員',value: '安全衛生管理員' },
-                { text: '行政助理',value: '行政助理' },
-                { text: '行政專員',value: '行政專員' },
-                { text: '助理工程員',value: '助理工程員' },
-                { text: '助理員',value: '助理員' },
-                { text: '技士',value: '技士' },
-                { text: '技正',value: '技正' },
-                { text: '技佐',value: '技佐' },
-                { text: '技術士',value: '技術士' },
-                { text: '政風室主任',value: '政風室主任' },
-                { text: '科長',value: '科長' },
-                { text: '科員',value: '科員' },
-                { text: '約僱助理',value: '約僱助理' },
-                { text: '書記',value: '書記' },
-                { text: '秘書',value: '秘書' },
-                { text: '站務士',value: '站務士' },
-                { text: '站務員',value: '站務員' },
-                { text: '副處長',value: '副處長' },
-                { text: '專員',value: '專員' },
-                { text: '處長',value: '處長' },
-                { text: '管理師',value: '管理師' },
-                { text: '調度員',value: '調度員' },
-                { text: '辦事員',value: '辦事員' },
-                { text: '臨時人員',value: '臨時人員' },
+                { text:'駕駛員', value:'1' }, 
+                { text:'車長', value:'2' }, 
+                { text:'一般員工', value:'3' }
             ],
             onJob: [  // 是否在職
                 { text: '不限', value: 'N' },
@@ -319,7 +295,7 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            { text: '部門', value: 'DepartName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+            { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
             { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '80' },
             { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '90' },
             { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
@@ -387,6 +363,7 @@ export default {
                         this.tableItems = res.data.HealthDataList
                     }else{
                         this.chMsgbar({ success: false, msg: '查無資料' })
+                        this.tableItems = []
                     }
                 }else{
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

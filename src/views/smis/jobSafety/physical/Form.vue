@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4">
-        {{ (this.isEdit)? `個人健檢資料編輯 (日期：${ ipt.physicalDate })` : `個人健檢資料新增`}}
+        {{ (this.isEdit)? `個人健檢資料編輯 (日期：${ ipt.HealthCheckDate })` : `個人健檢資料新增`}}
     </h2>
     <v-row>
       <v-col cols="12" sm="3">

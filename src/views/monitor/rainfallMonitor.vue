@@ -253,7 +253,7 @@ export default {
           }
           return rtnObj
         })
-        this.dayRain.options.title.text = `時雨量異常次數(門檻值： ${this.ipt.alarmDay} mm)`
+        this.dayRain.options.title.text = `24小時累積雨量異常次數(門檻值： ${this.ipt.alarmDay} mm)`
         this.dayRain.componentKey ++
       }).catch( err => {
         console.warn(err)
