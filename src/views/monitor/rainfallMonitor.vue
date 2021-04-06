@@ -91,20 +91,24 @@ export default {
               scaleLabel:{
                 display: true,
                 labelString: '次數',
+                fontSize: 18
               },
               ticks: {
                 suggestedMax: 25,
+                fontSize: 16
               }
             }],
             xAxes: [{
               scaleLabel:{
                 display: true,
                 labelString: '時間',
+                fontSize: 18
               },
               ticks: {
                 autoSkip: false,
                 maxRotation: 50,
-                minRotation: 50
+                minRotation: 50,
+                fontSize: 16
               }
             }]
           },
@@ -135,20 +139,24 @@ export default {
               scaleLabel:{
                 display: true,
                 labelString: '次數',
+                fontSize: 18
               },
               ticks: {
                 suggestedMax: 25,
+                fontSize: 16
               }
             }],
             xAxes: [{
               scaleLabel:{
                 display: true,
                 labelString: '時間',
+                fontSize: 18
               },
               ticks: {
                 autoSkip: false,
                 maxRotation: 50,
-                minRotation: 50
+                minRotation: 50,
+                fontSize: 16
               }
             }]
           },
