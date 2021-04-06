@@ -577,10 +577,11 @@
             <UploadFileAdd
                 title="檔案上傳"
                 :uploadDisnable="isExtendAnnex"
-                :fileList="ipt.files"
+                :fileList="showFiles"
                 @joinFile="joinFile"
                 @rmFile="rmFile"
             />
+
         </template>
 
         <v-col cols="12" class="text-center mb-8">
@@ -628,13 +629,16 @@ import { dapartOptsBrief } from '@/assets/js/departOption'
 import { injurySiteOpts, disasterTypeOpts, vehicleOpts } from '@/assets/js/smisData'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import { createData, detailOne, updateData } from '@/apis/smis/jobSafety'
+import FileListShow from '@/components/FileListShow.vue'
+import { createData, detailOne, updateData, fileUpdateData, fileDeleteData } from '@/apis/smis/jobSafety'
 
 export default {
     props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否編輯中
+        evidences: [],  // 改善措施證據
+        showFiles: [],  // 要顯示的縮圖
         ipt: {},
         defaultIpt: {
             name: '',  // 罹災者姓名
@@ -742,6 +746,7 @@ export default {
     components: {
         UploadFileAdd,
         UploadFileEdit,
+        FileListShow
     },
     computed: {
         ...mapState ('user', {
@@ -980,7 +985,7 @@ export default {
                     ProcContent: this.ipt.improve, // 發生原因
                     HappenReason: this.ipt.cause, // 改善措施
                     Memo: this.ipt.note, // 備註
-                    FileCount: [],
+                    FileCount: this.evidences,
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                     AccidentCode: this.id,
@@ -1041,7 +1046,7 @@ export default {
                     ProcContent: this.ipt.improve, // 發生原因
                     HappenReason: this.ipt.cause, // 改善措施
                     Memo: this.ipt.note, // 備註
-                    FileCount: [],
+                    FileCount: this.evidences,
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
@@ -1063,35 +1068,77 @@ export default {
             }
         },
         // 加入要上傳的檔案 (新增時)
-        joinFile(file) {
-            this.ipt.files.push(file)
+        // joinFile(file) {
+        //     this.ipt.files.push(file)
+        // },
+        joinFile(obj, bool) {
+            console.log("bool:", bool)
+            if (bool) {
+                console.log("檔案:", obj)
+                this.evidences.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                console.log("縮圖:", obj)
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
         },
         // 刪除要上傳的檔案 (新增時)
+        // rmFile(idx) {
+        //     this.ipt.files.splice(idx, 1)
+        // },
         rmFile(idx) {
-            this.ipt.files.splice(idx, 1)
+            this.showFiles.splice(idx, 1)
+            this.evidences.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)
-        uploadFile(file) {
+        uploadFile(fileArr) {
             this.chLoadingShow()
 
-            setTimeout(() => {
-                // 後端請求後，回傳檔案資料 (id、filename、link)
-                // this.ipt.files.push(fileData)
-                this.chMsgbar({ success: true, msg: '檔案新增成功'})
+            fileUpdateData({
+                AccidentCode: this.id,  // 措施編號
+                FileCount: fileArr,  // 新檔案
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '上傳成功' })
+                    // 把檔案資料寫入畫面中
+                    this.ipt.files = [ ...res.data.FileCount.map(item => ({
+                        FileName: item.FileName,
+                        link: item.FilePath,
+                    }))]
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 刪除檔案 (編輯時)
-        deleteFile(id, idx) {
+        deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow() // fileDeleteData
 
-                setTimeout(() => {
-                    // 後端請求後，移除檔案列表
-                    this.ipt.files.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '檔案刪除成功'})
+                fileDeleteData({
+                    AccidentCode: this.id,  // 編號
+                    FileName: this.ipt.files[idx].FileName,  // 檔案名稱
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.ipt.files.splice(idx, 1)
+                        this.chMsgbar({ success: true, msg: '刪除成功' })
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },

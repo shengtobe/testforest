@@ -83,7 +83,7 @@
             <!-- 檔案列表 -->
 
             <UploadFileAdd
-                title="證據上傳"
+                title="檔案上傳"
                 :uploadDisnable="false"
                 :fileList="showFiles"
                 @joinFile="joinFile"
