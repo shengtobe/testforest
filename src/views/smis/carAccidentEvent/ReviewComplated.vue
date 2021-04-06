@@ -304,9 +304,6 @@ export default {
         closeCase() {
             if (confirm('你確定要申請結案嗎?')) {
                 this.chLoadingShow()
-                console.log("上船證據:", this.evidences)
-                this.chLoadingShow()
-                return
                 closeData({
                     AccidentCode: this.id,  // 事故事件編號
                     ReviewTitle: this.controlReview,  // 措施檢討摘要
