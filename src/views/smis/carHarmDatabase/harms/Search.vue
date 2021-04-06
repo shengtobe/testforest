@@ -135,11 +135,11 @@
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >已立案 (1)</v-btn>
+            >已立案</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
                 @click="fastFetch"
-            >審核中 (4)</v-btn>
+            >審核中</v-btn>
         </v-col>
 
         <!-- 表格資料 -->

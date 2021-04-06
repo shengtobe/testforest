@@ -198,11 +198,11 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.location="{ item }">
+                    <!-- <template v-slot:item.location="{ item }">
                         {{ locationOpts.find(ele => ele.value == item.FindLine).text }}
                         {{ (item.FindLine == 'other')? `(${item.FindLineOther})` : '' }}
                         {{ (['l1', 'l2', 'l3', 'l4'].includes(item.FindLine))? `(${item.LineK}K+${item.LineM}M)` : '' }}
-                    </template>
+                    </template> -->
                     
                     <template v-slot:item.type="{ item }">
                         {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}

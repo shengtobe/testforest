@@ -52,8 +52,11 @@
             </v-card>
         </v-col>
 
+        <FileListShow :fileList="files" title="檔案列表" />
+
+
         <!-- 上傳的檔案列表 -->
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC" 
+        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC" 
             v-if="status == 4"
             v-for="(list, i) in tableItems"
             :key="list.controlId"
@@ -83,7 +86,7 @@
                     </v-chip>
                 </v-col>
             </v-row>
-        </v-col>
+        </v-col> -->
         <!-- 上傳的證據檔案列表
         <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>本案上傳之證據
@@ -157,6 +160,8 @@
             </template>
         </v-col>
     </v-row>
+
+
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
@@ -253,6 +258,7 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import FileListShow from '@/components/FileListShow.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData} from '@/apis/smis/carHarmDatabase/harms'
 
@@ -295,6 +301,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow
     },
     computed: {
         ...mapState ('user', {
@@ -321,6 +328,8 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
+            console.log("obj: ", obj)
+            this.files = [ ...obj.FileCount ]  // 檔案附件
             this.uploads = obj.uploads  // 證據
             this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
         },

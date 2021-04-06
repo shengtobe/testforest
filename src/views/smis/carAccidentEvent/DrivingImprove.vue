@@ -29,9 +29,9 @@
                         ></v-checkbox>
                     </template>
 
-                    <template v-slot:item.desc="{ item }">
+                    <template v-slot:item.DeviceDesp="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
@@ -126,7 +126,7 @@ export default {
             { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
             { text: '措施編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
             { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '措施說明', value: 'DeviceDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
             { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
             { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70},
             { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 70 },
@@ -226,6 +226,7 @@ export default {
         },
         // 顯示措施說明
         showContent(txt) {
+            // this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 顯示證據

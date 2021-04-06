@@ -12,6 +12,7 @@ export const carAccidentEventStatus = [
 
 // 行車危害狀態
 export const carHarmDbStatus = [
+    { text: '未知', value: '' },
     { text: '已立案', value: '1' },
     { text: '審核中', value: '2' },
     { text: '已完備資料', value: '3' },
@@ -27,6 +28,7 @@ export const carSafeInfoStatus = [
     { text: '審核中', value: '2' },
     { text: '加會中', value: '3' },
     { text: '已發布', value: '4' },
+    { text: '未知', value: '' },
 ]
 
 // 職安事故事件狀態
@@ -36,6 +38,7 @@ export const jobDisasterSurveyStatus = [
     { text: '已完備資料', value: '3' },
     { text: '審核中', value: '4' },
     { text: '改善措施已落實', value: '5' },
+    { text: '未知', value: '' },
 ]
 
 // 危害通報狀態
@@ -78,6 +81,7 @@ export const evtTypes = [
     { text: '異常事件-天然災變', value: 'A15' },
     { text: '異常事件-列車取消', value: 'A16' },
     { text: '異常事件-其他事件', value: 'A17' },
+    { text: '未選擇', value: '' },
 ]
 
 // 職災危害類型
@@ -109,6 +113,7 @@ export const jobHarmType = [
     { text: '非上下班鐵路交通事故', value: '25' },
     { text: '非上下班船艙、航空器交通事故', value: '26' },
     { text: '非上下班其他交通事故', value: '27' },
+    { text: '未選擇', value: '' },
 ]
 
 // 事故發生地點
@@ -146,16 +151,19 @@ export const locationOpts = [
     { text: '阿里山車庫', value: 'g2' },
     { text: '修理工廠', value: 'factory' },
     { text: '其他', value: 'other' },
+    { text: '未選擇', value: '' },
 ]
 
 // 行車事故 - 第一層因素
 export const AccidentFactors1 = [ 
+    { text: '未選擇', value: '' },
     { text: '內部因素', value: '1' },
     { text: '外部因素', value: '2' },
 ]
 
 // 行車事故 - 第二層因素
 export const AccidentFactors2 = [ 
+    { text: '未選擇', value: '' },
     { parent: '1', text: '人為因素', value: '1' },
     { parent: '1', text: '車輛', value: '2' },
     { parent: '1', text: '路線設施', value: '3' },
@@ -166,6 +174,7 @@ export const AccidentFactors2 = [
 
 // 行車事故 - 第三層因素
 export const AccidentFactors3 = [ 
+    { text: '未選擇', value: '' },
     { parent: '1', text: '維修人員', value: '1' },
     { parent: '1', text: '調度員及號誌員', value: '2' },
     { parent: '1', text: '司機員', value: '3' },
@@ -192,6 +201,7 @@ export const operateModes = [
     { text: '降級', value: 'm2' },
     { text: '緊急', value: 'm3' },
     { text: '維修', value: 'm4' },
+    { text: '未選擇', value: '' },
 ]
 
 // 危害資料庫 - 風險嚴重性
@@ -201,6 +211,7 @@ export const riskSerious = [
     { text: '主要 (S3)', value: 'S3' },
     { text: '嚴重 (S2)', value: 'S2' },
     { text: '災難 (S1)', value: 'S1' },
+    { text: '未選擇', value: '' },
 ]
 
 // 危害資料庫 - 風險頻率
@@ -210,6 +221,7 @@ export const riskFrequency = [
     { text: '偶爾 (P3)', value: 'P3' },
     { text: '很少 (P4)', value: 'P4' },
     { text: '幾乎不 (P5)', value: 'P5' },
+    { text: '未選擇', value: '' },
 ]
 
 // 危害資料庫 - 風險等級
@@ -218,6 +230,7 @@ export const riskLevel = [
     { text: '中高度風險 (R2)', value: 'R2' },
     { text: '中度風險 (R3)', value: 'R3' },
     { text: '可接受，持續控管 (R4)', value: 'R4' },
+    { text: '未選擇', value: '' },
 ]
 
 
@@ -434,6 +447,7 @@ export const jobSeriousOpts = [
     { text: '高度 (S3)', value: 'S3' },
     { text: '重大 (S4)', value: 'S4' },
     { text: '極端 (S5)', value: 'S5' },
+    { text: '未選擇', value: '' },
 ]
 
 // 職安-風險可能性
@@ -443,6 +457,7 @@ export const jobPossibilityOpts = [
     { text: '有可能 (P3)', value: 'P3' },
     { text: '較有可能 (P4)', value: 'P4' },
     { text: '極可能 (P5)', value: 'P5' },
+    { text: '未選擇', value: '' },
 ]
 
 // 職安-風險等級
@@ -452,6 +467,7 @@ export const jobLevelOpts = [
     { text: '中高度風險 (R3)', value: 'R3' },
     { text: '高度風險 (R4)', value: 'R4' },
     { text: '非常高度風險 (R5)', value: 'R5' },
+    { text: '未選擇', value: '' },
 ]
 
 // 職安-尿蛋白、尿潛血
@@ -462,4 +478,5 @@ export const jobUrineOpts = [
     { text: '++', value: "4" },
     { text: '+++', value: "5" },
     { text: '++++', value: "6" },
+    { text: '未選擇', value: '' },
 ]

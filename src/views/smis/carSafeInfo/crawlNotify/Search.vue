@@ -20,6 +20,7 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
                     ></v-text-field>
                 </template>
                 <v-date-picker
@@ -48,6 +49,7 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
                     ></v-text-field>
                 </template>
                 <v-date-picker
@@ -190,6 +192,8 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
+            if(this.ipt.dateStart == null) this.ipt.dateStart = '';
+            if(this.ipt.dateEnd == null) this.ipt.dateEnd = '';
 
              fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
