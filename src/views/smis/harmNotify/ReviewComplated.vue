@@ -132,13 +132,13 @@
                     @click="edit"
                 >變更立案類型</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
-                    @click="dialog = true"
+                <!-- <v-btn dark  class="ma-2" color="error"
+                    @click="dialog = true" 
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
-                >同意不立案</v-btn>
+                >同意不立案</v-btn> -->
             </template>
         </v-col>
     </v-row>
@@ -180,12 +180,14 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
 import { locationOpts } from '@/assets/js/smisData'
+import { recordNotify } from '@/apis/smis/harmNotify'
 
 export default {
     props: ['itemData'],
@@ -232,6 +234,11 @@ export default {
         $route(to, from) {
             // … 
         }
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -326,11 +333,32 @@ export default {
             if (confirm('你確定要不立案嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '同意不立案成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                recordNotify({
+                    EndangerID: this.id,  // 通報編號
+                    DriveRecordType: 'no',  // 行安立案類型
+                    DriveRecordCase: 'no',  // 行安立案種類
+                    ProfesRecordType: 'no',  // 職安立案類型
+                    ProfesRecordCase: 'no',  // 職安立案種類
+                    DriveConnectID: 'no',
+                    ProfesConnectID: 'no',
+                    EndangerCode: '',
+                    NoRecord: 'T',  // 是否不立案
+                    ChangeRecord: 'F',  // 是否變更立案類型
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.done = true  // 隱藏按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '立案成功'})
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 變更立案類型
@@ -340,10 +368,32 @@ export default {
             if (confirm('你確定要變更立案類型嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
+                recordNotify({
+                    EndangerID: this.id,  // 通報編號
+                    DriveRecordType: 'no',  // 行安立案類型
+                    DriveRecordCase: 'no',  // 行安立案種類
+                    ProfesRecordType: 'no',  // 職安立案類型
+                    ProfesRecordCase: 'no',  // 職安立案種類
+                    DriveConnectID: 'no',
+                    ProfesConnectID: 'no',
+                    EndangerCode: '',
+                    NoRecord: 'F',  // 是否不立案
+                    ChangeRecord: 'T',  // 是否變更立案類型
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.done = true  // 隱藏按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '立案成功'})
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.$router.push({ path: `/smis/harmnotify/${this.routeId}/show` })
-                }, 1000)
+                })
             }
         },
     },
