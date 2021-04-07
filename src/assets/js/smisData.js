@@ -260,6 +260,7 @@ export const injurySiteOpts = [
     { text: '(22) 內臟', value: 22 },
     { text: '(23) 全身', value: 23 },
     { text: '(24) 其他', value: 24 },
+    { text: '', value: 0 },
 ]
 
 // 職安-災害類型
@@ -291,6 +292,7 @@ export const disasterTypeOpts = [
     { text: '(32) 非上下班鐵路交通事故', value: 32 },
     { text: '(33) 非上下班船艙、航空器交通事故', value: 33 },
     { text: '(39) 非上下班其他交通事故', value: 39 },
+    { text: '', value: 0 },
 ]
 
 // 職安-致傷媒介物
@@ -327,6 +329,7 @@ export const vehicleOpts = {
         { text: '(157) 錕合機、粉碎機', value: 157 },
         { text: '(158) 滾筒', value: 158 },
         { text: '(159) 其他', value: 159 },
+        { text: '', value: 0 },
     ],
     '裝卸運搬機械': [
         { text: '* 起重機械', disabled: true },
@@ -350,6 +353,7 @@ export const vehicleOpts = {
         { text: '(231) 汽車、公共汽車', value: 231 },
         { text: '(232) 火車', value: 232 },
         { text: '(239) 其他', value: 239 },
+        { text: '', value: 0 },
     ],
     '其他設備': [
         { text: '* 壓力容器類', disabled: true },
@@ -386,6 +390,7 @@ export const vehicleOpts = {
         { divider: true },
         { text: '* 其他設備', disabled: true },
         { text: '(391) 其他設備', value: 391 },
+        { text: '', value: 0 },
     ],
     '營建物及施工設備': [
         { text: '* 營建物及施工設備', disabled: true },
@@ -398,6 +403,7 @@ export const vehicleOpts = {
         { text: '(417) 通路', value: 417 },
         { text: '(418) 營建物', value: 418 },
         { text: '(419) 其他', value: 419 },
+        { text: '', value: 0 },
     ],
     '物質材料': [
         { text: '* 危險物、有害物', disabled: true },
@@ -413,6 +419,7 @@ export const vehicleOpts = {
         { text: '(522) 木材、竹材', value: 522 },
         { text: '(523) 石頭、砂、小石子', value: 523 },
         { text: '(529) 其他', value: 529 },
+        { text: '', value: 0 },
     ],
     '貨物': [
         { text: '* 運搬物體', disabled: true },

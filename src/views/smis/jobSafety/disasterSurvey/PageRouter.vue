@@ -72,6 +72,17 @@ export default {
                     ]
 
                     // 設定下面的欄位資料
+                        let hh
+                        if(res.data.HurtMediumLv1 == '' || res.data.HurtMediumLv1 == null){
+                             hh = ''
+                        }
+                        else{
+                            if(res.data.HurtMediumLv2 == '' || res.data.HurtMediumLv2 == null){
+                                hh = ''
+                            }else{
+                                hh = vehicleOpts[res.data.HurtMediumLv1].find(item => item.value == res.data.HurtMediumLv2).text
+                            }
+                        }
                     let bottomItems = [
                         { dataType: 'text', oneline: true, icon: 'none', title: '本項工作經驗年數', text: res.data.WorkExp },
                         { dataType: 'text', oneline: true, icon: 'none', title: '本項工作訓練日期', text: res.data.TrainDate },
@@ -86,7 +97,7 @@ export default {
                         { dataType: 'text', oneline: true, icon: 'none', title: '事故結果', text: res.data.AccidentResult },
                         { dataType: 'text', oneline: true, icon: 'none', title: '傷害部位', text: injurySiteOpts.find(item => item.value == res.data.HurtPart).text },
                         { dataType: 'text', oneline: true, icon: 'none', title: '災害類型', text: disasterTypeOpts.find(item => item.value == res.data.DisasterType).text },
-                        { dataType: 'text', oneline: true, icon: 'none', title: '致傷媒介物', text: vehicleOpts[res.data.HurtMediumLv1].find(item => item.value == res.data.HurtMediumLv2).text },
+                        { dataType: 'text', oneline: true, icon: 'none', title: '致傷媒介物', text: hh },
                         { dataType: 'text', oneline: false, icon: 'none', title: '直接原因', text: res.data.AccidentReason.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '間接原因', text: res.data.AccidentIndirect.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '基本原因', text: res.data.AccidentBase.replace(/\n/g, '<br>') },
@@ -151,8 +162,6 @@ export default {
         },
     },
     created() {
-        console.log("職災PageRouter: loaded!")
-        console.log("職災PageRouter: created start")
         this.fetchData()
     }
 }

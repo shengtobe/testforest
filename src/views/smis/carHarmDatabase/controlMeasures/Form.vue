@@ -150,8 +150,13 @@
                 <v-divider></v-divider>
             </v-col>
 
-            <UploadFileEdit
+            <!-- <UploadFileEdit
                 :fileList="ipt.files"
+                @uploadFile="uploadFile"
+                @deleteFile="deleteFile"
+                class="mb-10"
+            /> -->
+            <UploadFileEdit title="檔案管理"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
                 class="mb-10"
@@ -394,6 +399,8 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(fileArr) {
+            console.log("fileArr: ", fileArr)
+            return
             this.chLoadingShow()
             updateFile({
                 ProcCode: this.id,  // 措施編號

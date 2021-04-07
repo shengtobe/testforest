@@ -165,7 +165,7 @@
                 <v-divider></v-divider>
             </v-col>
 
-            <UploadFileEdit
+            <UploadFileEdit title="檔案管理"
                 :fileList="ipt.files"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"

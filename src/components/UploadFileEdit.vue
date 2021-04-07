@@ -1,7 +1,7 @@
 <template>
 <v-col cols="12">
     <h3 class="mb-1">
-        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>檔案管理
+        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>{{ title }}
     </h3>
 
     <v-row>
@@ -64,7 +64,7 @@
 
 <script>
 export default {
-    props: ['uploadDisnable', 'fileList'],  // props：是否disabled、檔案列表
+    props: ['uploadDisnable', 'fileList', 'title'],  // props：是否disabled、檔案列表
     data: () => ({
         choseFile: null,  // 所選的檔案
     }),

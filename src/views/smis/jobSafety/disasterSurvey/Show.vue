@@ -319,7 +319,6 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                console.log("欲刪除的資料ID:" + this.id)
                 this.chLoadingShow()
 
                 deleteData({
@@ -331,7 +330,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {

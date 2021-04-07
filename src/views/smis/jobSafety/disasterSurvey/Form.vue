@@ -602,7 +602,7 @@
                 <v-divider></v-divider>
             </v-col>
 
-            <UploadFileEdit
+            <UploadFileEdit title="檔案管理"
                 :fileList="ipt.files"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
@@ -779,15 +779,12 @@ export default {
         initData() {
             // 初始化表單
             this.ipt = { ...this.defaultIpt }
-
             // 產生致傷媒介物-第一層選單 & 設定預設值
             this.opts.vehicleLv1 = Object.keys(vehicleOpts)
             this.ipt.vehicleLv1 = this.opts.vehicleLv1[0]
 
             if (this.id != undefined) {
                 // -------------- 編輯時 -------------- 
-                console.log("此次load為編輯")
-                console.log(this.id)
                 this.chLoadingShow()
                 // this.id = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
@@ -797,8 +794,6 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        console.log("fetchOne後收到res.data:")
-                        console.log(res.data)
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
@@ -870,7 +865,6 @@ export default {
 
             } else {
                 // -------------- 新增時 -------------- 
-                console.log("此次load為新增")
                 // 若由危害通報新登錄轉至此頁，則指派初始值
                 if (sessionStorage.getItem('notifyItem') !== null) {
                     let obj = JSON.parse(sessionStorage.getItem('notifyItem'))
@@ -1002,8 +996,6 @@ export default {
                     this.chLoadingShow()
                 })
             } else {
-                console.log("---------- 新增時---------- ")
-                console.log()
                 // ---------- 新增時---------- 
                 createData({
                     HappenDepart: this.ipt.depart, //3發生單位
@@ -1072,12 +1064,9 @@ export default {
         //     this.ipt.files.push(file)
         // },
         joinFile(obj, bool) {
-            console.log("bool:", bool)
             if (bool) {
-                console.log("檔案:", obj)
                 this.evidences.push(obj)  // 加入要上傳後端的檔案
             } else {
-                console.log("縮圖:", obj)
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
         },

@@ -55,7 +55,15 @@
         <v-col cols="12" class="mt-12 mb-8" v-if="status == 3">
             <v-divider></v-divider>
         </v-col>
-
+        <!-- <v-col cols="12">
+            <UploadFileAdd
+                title="證據上傳"
+                :fileList="showFiles"
+                :uploadDisnable="false"
+                @joinFile="joinFile"
+                @rmFile="rmFile"
+            />
+        </v-col> -->
         <!-- 證據上傳 -->
         <v-col cols="12" v-if="status == 3">
             <v-row>
@@ -71,6 +79,7 @@
                 </v-col>
 
                 <v-col cols="12" sm="6" md="7">
+                    
                     <h3 class="mb-1">
                         <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>證據上傳
                     </h3>
@@ -237,6 +246,7 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData} from '@/apis/smis/carHarmDatabase/harms'
 
@@ -251,6 +261,7 @@ export default {
         bottomItems: [],  // 下面的欄位
         tableItems: [],  // 表格資料 (控制措施)
         ctrlDriveId: [], // 控制措施編號
+        showFiles: [],  // 要顯示的縮圖
         headers: [  // 表格欄位
             { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -275,6 +286,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        UploadFileAdd
     },
     computed: {
         ...mapState ('user', {
@@ -309,6 +321,22 @@ export default {
             // 若為 true 是退回
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
+        },
+        joinFile(obj, bool) {
+            console.log("obj: ", obj)
+            console.log("bool: ", bool)
+            return
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
+        },
+        // 移除要上傳的檔案 (組件用)
+        rmFile(idx) {
+            return
+            this.showFiles.splice(idx, 1)
+            this.ipt.files.splice(idx, 1)
         },
         // 退回
         withdraw() {
@@ -473,6 +501,22 @@ export default {
 
                 // // 若已加入列表中沒找到檔案則加入
                 if (file == undefined){
+                    let reader = new FileReader()  // blob 用
+                    reader.readAsArrayBuffer(chooseItem)
+                    
+                    // 設定讀取完時的動作
+                    reader.onload = () => {
+                        // 抓出副檔名
+                        let nameArr = chooseItem.name.split('.')  // 用小數點拆成陣列
+                        let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                        
+                        let FileName = chooseItem.name
+                        let FileType =  type
+                        let UnitData = Array.from(new Uint8Array(reader.result))
+                        console.log("UnitData", UnitData)
+                    }
+                    return
+                    
                     this.uploads[idx].file_path_name.push(chooseItem.name)
                 }
                 else{
