@@ -174,7 +174,6 @@ export const AccidentFactors2 = [
 
 // 行車事故 - 第三層因素
 export const AccidentFactors3 = [ 
-    { text: '未選擇', value: '' },
     { parent: '1', text: '維修人員', value: '1' },
     { parent: '1', text: '調度員及號誌員', value: '2' },
     { parent: '1', text: '司機員', value: '3' },
@@ -222,6 +221,7 @@ export const riskFrequency = [
     { text: '很少 (P4)', value: 'P4' },
     { text: '幾乎不 (P5)', value: 'P5' },
     { text: '未選擇', value: '' },
+    { text: '未選擇', value: null },
 ]
 
 // 危害資料庫 - 風險等級
@@ -329,7 +329,7 @@ export const vehicleOpts = {
         { text: '(157) 錕合機、粉碎機', value: 157 },
         { text: '(158) 滾筒', value: 158 },
         { text: '(159) 其他', value: 159 },
-        { text: '', value: 0 },
+        { text: '無', value: 0 },
     ],
     '裝卸運搬機械': [
         { text: '* 起重機械', disabled: true },
@@ -425,6 +425,7 @@ export const vehicleOpts = {
         { text: '* 運搬物體', disabled: true },
         { text: '(611) 已包裝貨物', value: 611 },
         { text: '(612) 未包裝機械', value: 612 },
+        { text: '', value: 0 },
     ],
     '環境': [
         { text: '* 環境', disabled: true },
@@ -434,6 +435,7 @@ export const vehicleOpts = {
         { text: '(714) 特殊環境', value: 714 },
         { text: '(715) 高低溫環境', value: 715 },
         { text: '(719) 其他', value: 719 },
+        { text: '', value: 0 },
     ],
     '其他類': [
         { text: '* 其他媒介物', disabled: true },
@@ -444,6 +446,7 @@ export const vehicleOpts = {
         { divider: true },
         { text: '* 不能分類', disabled: true },
         { text: '(999) 不能分類', value: 999 },
+        { text: '', value: 0 },
     ],
 }
 

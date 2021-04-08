@@ -167,7 +167,13 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("tableItems", this.tableItems)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')

@@ -190,6 +190,13 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
                 this.totalPrice = res.data.ListSpent
             }).catch(err => {
                 console.log(err)
