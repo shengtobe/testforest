@@ -79,9 +79,9 @@ export default {
                         let bottomItems = [
                             { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
                             { dataType: 'text', oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
-                            { dataType: 'text', oneline: true, icon: 'mdi-calendar-text', title: '回覆日期', text: findLocationText },
-                            { dataType: 'text', oneline: true, icon: 'mdi-message-processing', title: '回覆訊息', text: findLocationText },
-                            { dataType: 'text', oneline: true, icon: 'mdi-ray-vertex', title: '立案狀態', text: findLocationText },
+                            { dataType: 'text', oneline: true, icon: 'mdi-calendar-text', title: '回覆日期', text: res.data.ReplyDTime.substr(0,10) },
+                            { dataType: 'text', oneline: true, icon: 'mdi-message-processing', title: '回覆訊息', text: res.data.ReplyMsg },
+                            { dataType: 'text', oneline: true, icon: 'mdi-ray-vertex', title: '立案狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
                         ]
 
                             // 設定下面的欄位資料

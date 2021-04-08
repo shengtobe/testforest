@@ -138,6 +138,7 @@ export default {
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.otherItems = obj.otherInfo  // 其他資訊
             this.files = [ ...obj.FileCount ]  // 檔案附件
+            console.log("this.files: ", this.files)
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
 

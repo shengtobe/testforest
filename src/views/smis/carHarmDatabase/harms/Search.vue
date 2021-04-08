@@ -251,6 +251,7 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
+            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間

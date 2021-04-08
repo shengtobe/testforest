@@ -207,7 +207,7 @@
         </v-col>
 
         <!-- 本案上傳之證據 -->
-        <h3 class="mb-1 mt-12">
+        <h3 class="mb-1 mt-12" v-if="closeForNow">
             <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>本案上傳之證據<br>
             (變更前)
         </h3>
@@ -238,7 +238,7 @@
         </v-col>
 
         
-        <h3 class="mb-1 mt-8">(變更後)</h3>
+        <h3 class="mb-1 mt-8" v-if="closeForNow">(變更後)</h3>
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
             v-for="list in after.uploads"
             :key="list.controlId"
@@ -361,6 +361,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',
+        closeForNow: false, // 暫時隱藏欄位
         done: false,  // 是否完成頁面操作
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息
         before: {  // 變更前
@@ -460,7 +461,6 @@ export default {
                     // this.chMsgbar({ success: true, msg: '重提成功' })
                     // this.done = true  // 隱藏頁面操作按鈕
                     tableItems = JSON.parse(res.data.order_list)
-                    console.log("tableItems", tableItems)
                     // let times = tableItems.map(item => item.InsertDTime)
                     // let newArr = []
                     // times.forEach(time => {

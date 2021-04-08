@@ -235,14 +235,18 @@
 
                     <template v-slot:item.desc="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
+                    </template>
+
+                    <template v-slot:item.depart="{ item }">
+                        {{ opts.depart.find(ele => ele.value == item.DeviceDepart).text }}
                     </template>
 
                     <template v-slot:item.file="{ item }">
                         <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                            :href="item.file_path"
+                            :download="item.file_path_name"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -250,7 +254,7 @@
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
-                            @click="showEvidences(item.evidences)"
+                            @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -423,7 +427,15 @@
     </v-row>
 
     <!-- 證據 dialog -->
-    <v-dialog v-model="dialogShow" max-width="400px">
+    <EvidencesDialog
+        :show="dialogShow"
+        :fileNameArr="evidencesName"
+        :filePathArr="evidences"
+        @closeDialog="closeDialog"
+    />
+
+    <!-- 證據 dialog -->
+    <!-- <v-dialog v-model="dialogShow" max-width="400px">
         <v-card>
             <v-toolbar flat dense dark color="purple lighten-2">
                 <v-toolbar-title>證據</v-toolbar-title>
@@ -452,7 +464,7 @@
                 </template>
             </v-list-item-group>
         </v-card>
-    </v-dialog>
+    </v-dialog> -->
 
     <!-- <v-form
         ref="form"
@@ -469,6 +481,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
+import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
 import Pagination from '@/components/Pagination.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData, fetchOne, sendUpdateData} from '@/apis/smis/carHarmDatabase/harms'
 import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
@@ -529,7 +542,7 @@ export default {
             ],
         },
         controlSearch: {  // 控制措施搜尋
-            depart: 'all',  // 部門
+            depart: '',  // 部門
             subject: '',  // 簡述
         },
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
@@ -555,6 +568,7 @@ export default {
             { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
         ],
         evidences: [],  // 控制措施證據
+        evidencesName: [],  // 證據名稱
         dialogShow: false,  // 控制措施證據dialog是否顯示
         controlIdOpts: [],  // 證據上傳下拉選單 (選控制措施編號)
         choose: null,  // 上傳時所選的檔案
@@ -564,6 +578,7 @@ export default {
     components: {
         AccidentCheckbox,
         Pagination,
+        EvidencesDialog
     },
     computed: {
         ...mapState ('user', {
@@ -594,6 +609,7 @@ export default {
                     EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
+                    console.log("fetchOne OK")
                     if (res.data.ErrorCode == 0) {
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
@@ -675,7 +691,12 @@ export default {
             }, 1000)
         },
         // 設定資料
+        // 關閉證據dialog
+        closeDialog() {
+            this.dialogShow = false
+        },
         setInitDate(obj) {
+            console.log("obj: ", obj)
             this.ipt.desc = obj.EndangerDesp // 危害說明
             this.ipt.reason = obj.EndangerReason  // 危害直接成因
             this.ipt.indirectReason = obj.EndangerIndirect  // 可能的危害間接原因
@@ -691,7 +712,9 @@ export default {
             this.ipt.trainLate = (obj.ServiceCarError == 'T')? true : false  // 列車誤點
             this.ipt.stopOperation = (obj.ServiceStopError == 'T')? true : false  // 中斷營運
             this.ipt.accidents = [ ...obj.DeriveAccident ]  // 衍生事故
-            this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施
+            this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施 
+            this.controlIdOpts = [ obj.controls.map(item => item.ProcCode) ]  // 已選控制措施 ProcCode
+            console.log("controlIdOpts: ", this.controlIdOpts)
 
             // // 重組上傳檔案的控制措施編號下拉選單、檔案列表
             // obj.controls.forEach(item => {
@@ -710,6 +733,9 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         },
+        test(value){
+            console.log("value: ", value)
+        },
         // 申請更新
         save() {
             if (confirm('你確定要申請更新嗎?')) {
@@ -720,7 +746,7 @@ export default {
                     EndangerCode: '',
                     ProcCode: item.ProcCode
                 }))
-
+                console.log("chooseControlData: ", chooseControlData)
                 sendUpdateData({
                     EndangerCode: this.id,  // 危害編號
                     EndangerDesp: this.ipt.desc,  // 危害說明
@@ -769,8 +795,8 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'SMS_EndangerProc',  // DB table
                 KeyItem: [
-                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
-                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                    { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     // 'PolicyCode',
@@ -782,7 +808,9 @@ export default {
                     // 'Remark',
                 ],
             }).then(res => {
+                console.log("res.data.order_list: ", res.data.order_list)
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("tableItems: ", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -792,31 +820,42 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
+            console.log("txt:: ", txt)
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 顯示證據
-        showEvidences(arr) {
-            this.evidences = [ ...arr ]
+        showEvidences(item) {
+            console.log("item: ", item)
+            this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
+            this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
+            console.log("evidences: ", this.evidences)
+            console.log("evidencesName: ", this.evidencesName)
             this.dialogShow = true
         },
         // 增加已選的控制措施
         addControl(item) {
             // 沒找到才新增
-            let arr = this.ipt.controlChoose.find(ele => ele.id == item.id)
+            let arr = this.ipt.controlChoose.find(ele => ele.ProcCode == item.ProcCode)
             if (arr == undefined) {
-                this.ipt.controlChoose.push(item)
-                this.controlIdOpts.push(item.id)  // 加入上傳檔案的控制措施編號下拉選單
-                this.uploads.push({ controlId: item.id, files: []})  // 加入檔案列表
+                this.ipt.controlChoose.push(item) //
+                this.controlIdOpts.push(item.ProcCode)
             }
         },
         // 刪除已選的控制措施
         delControl(id) {
-            let idx = this.ipt.controlChoose.findIndex(ele => ele.id == id)
-            this.ipt.controlChoose.splice(idx, 1)
+            console.log("id: ", id)
+            let idx = this.ipt.controlChoose.findIndex(ele => ele.ProcCode == id)
+            if(idx != -1){
+                this.ipt.controlChoose.splice(idx, 1)
+            }
 
             // 移除上傳檔案的控制措施編號下拉選單
             let idx2 = this.controlIdOpts.findIndex(ele => ele == id)
-            this.controlIdOpts.splice(idx2, 1)
+            if(idx2 != -1){
+                this.controlIdOpts.splice(idx2, 1)
+            }
+            console.log("this.uploads: ", this.uploads)
+            return
 
             // 移除檔案列表
             let idx3 = this.uploads.findIndex(ele => ele.controlId == id)

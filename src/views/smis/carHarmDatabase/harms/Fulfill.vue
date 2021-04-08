@@ -10,7 +10,7 @@
         <BottomTable :items="bottomItems" />
 
         <!-- 控制措施 -->
-        <v-col cols="12" class="mt-8 mb-10">
+        <v-col cols="12" class="mt-8 mb-10" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
             </h3>
@@ -51,6 +51,9 @@
                 </v-data-table>
             </v-card>
         </v-col>
+
+        <!-- 已選的控制措施 -->
+        <ShowControlsTable :tableItems="tableItems" />
 
         <FileListShow :fileList="files" title="檔案列表" />
 
@@ -259,6 +262,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
+import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData} from '@/apis/smis/carHarmDatabase/harms'
 
@@ -301,7 +305,8 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
-        FileListShow
+        FileListShow,
+        ShowControlsTable
     },
     computed: {
         ...mapState ('user', {
@@ -328,8 +333,20 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
-            console.log("obj: ", obj)
-            this.files = [ ...obj.FileCount ]  // 檔案附件
+            //tableItems是多個控制措施
+            this.files = [];
+            this.tableItems.forEach(control => {
+                let aa = {FileFullPath: control.regul_file_path, FileName: control.regul_file_path_name, FileType: (control.regul_file_path_name.split('.'))[1]}
+                this.files.push(aa)
+                // this.files.push(control.map(item => ({
+                //         FileFullPath: item.regul_file_path,
+                //         FileName: item.regul_file_path_name,
+                //         FileType: (item.regul_file_path_name.split(','))[1]
+                //     }))
+                // )
+            });
+            // this.files = [ this.tableItems ]  // 檔案附件
+            console.log("files: ", this.files)
             this.uploads = obj.uploads  // 證據
             this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
         },

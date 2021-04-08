@@ -399,8 +399,6 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(fileArr) {
-            console.log("fileArr: ", fileArr)
-            return
             this.chLoadingShow()
             updateFile({
                 ProcCode: this.id,  // 措施編號

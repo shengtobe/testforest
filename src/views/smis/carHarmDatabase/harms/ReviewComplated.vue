@@ -262,6 +262,7 @@ export default {
         tableItems: [],  // 表格資料 (控制措施)
         ctrlDriveId: [], // 控制措施編號
         showFiles: [],  // 要顯示的縮圖
+        eachFile:{ FileName: '' ,FileType: '', UnitData: '', ProcCode: '' },
         headers: [  // 表格欄位
             { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -323,9 +324,6 @@ export default {
             this.dialog = true
         },
         joinFile(obj, bool) {
-            console.log("obj: ", obj)
-            console.log("bool: ", bool)
-            return
             if (bool) {
                 this.ipt.files.push(obj)  // 加入要上傳後端的檔案
             } else {
@@ -334,7 +332,6 @@ export default {
         },
         // 移除要上傳的檔案 (組件用)
         rmFile(idx) {
-            return
             this.showFiles.splice(idx, 1)
             this.ipt.files.splice(idx, 1)
         },
@@ -421,7 +418,6 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
-                    console.log("申請結案後:", res.data)
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '送出成功' })
                         this.done = true  // 隱藏頁面操作按鈕
@@ -475,10 +471,6 @@ export default {
         },
         // 加入要上傳的檔案
         join() {
-            console.log("uploads: ", this.uploads)
-            console.log("choose: ", this.choose)
-            console.log("this.choose[0].name: ", this.choose[0].name)
-            console.log("controlId", this.controlId)
             if(this.choose == null){
                 alert("請選擇要上傳的檔案")
                 return
@@ -493,7 +485,6 @@ export default {
             })
             // 已加入的檔案不重覆增加
             this.choose.forEach(chooseItem => {
-                console.log("chooseItem: ", chooseItem)
                 //檢測檔名是否存在
                 let file = this.uploads[idx].file_path_name.find(item => {
                     return item == chooseItem.name
@@ -510,12 +501,12 @@ export default {
                         let nameArr = chooseItem.name.split('.')  // 用小數點拆成陣列
                         let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
                         
-                        let FileName = chooseItem.name
-                        let FileType =  type
-                        let UnitData = Array.from(new Uint8Array(reader.result))
-                        console.log("UnitData", UnitData)
+                        this.eachFile.FileName = chooseItem.name
+                        this.eachFile.FileType = type
+                        this.eachFile.UnitData = Array.from(new Uint8Array(reader.result))
+                        this.eachFile.ProcCode = this.uploads[idx].ProcCode
                     }
-                    return
+                    this.evidences.push(this.eachFile)
                     
                     this.uploads[idx].file_path_name.push(chooseItem.name)
                 }
