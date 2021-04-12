@@ -3,7 +3,8 @@
 }
 #app {
   font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
-  background-color: #dbe8f5;  /* 背景色 */
+  /*background-color: #dbe8f5;  /* 背景色 */
+  background: no-repeat url('../images/backgroundImgT2.png');
 }
 #main-bar {
   position: fixed;
@@ -44,7 +45,7 @@
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #5C6BC0;
+  background: #D57129;
   border-radius: 3px;
 }
 /* 移除表格在手機版時的上方空白 */

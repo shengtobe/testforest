@@ -2,7 +2,7 @@
   <v-container style="max-width: 1200px">
     <h2 class="mb-4">邊坡監測</h2>
     <v-row>
-        <v-col cols="12" sm="2" class="indigo--text" >
+        <v-col cols="12" sm="2" class="info--text" >
             <h2 align="center"> 即時資料</h2>
         </v-col>
         <v-col cols="12" sm="10" >
@@ -13,7 +13,7 @@
               >
               <template v-slot:default>
                 <tbody>
-                  <tr class="cyan darken-2 white--text">
+                  <tr class="accent white--text">
                     <th>地點</th>
                     <th colspan="2" class="text-center text-h6">二萬平主站-第一分道</th>
                   </tr>
@@ -58,7 +58,7 @@
 
     <v-row style="margin-top:-2%">
       <!-- 控制措施 -->
-      <v-col cols="12" sm="2" class="indigo--text">
+      <v-col cols="12" sm="2" class="info--text">
             <h2 align="center"> 歷史資料</h2>
         </v-col>
       <v-col cols="12" sm="3">
@@ -78,7 +78,7 @@
           solo />
       </v-col>
       <v-col cols="12" md="2" align-self="center" >
-        <v-btn color="green" dark large @click="goSearch">
+        <v-btn color="success" dark large @click="goSearch">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -91,12 +91,13 @@
             <v-spacer/>
             <v-card>
                 <v-data-table
-                    :headers="headers"
-                    :items="tableItems"
-                    :options.sync="pageOpt"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
+                  light
+                  :headers="headers"
+                  :items="tableItems"
+                  :options.sync="pageOpt"
+                  disable-sort
+                  disable-filtering
+                  hide-default-footer
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -145,14 +146,14 @@ export default {
     pageOpt: {page:1},
     tableItems:[],
     headers: [
-      { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
-      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '30' },
+      { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
     ]
   }),
   components: {
