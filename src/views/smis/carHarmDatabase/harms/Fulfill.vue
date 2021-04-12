@@ -55,7 +55,15 @@
         <!-- 已選的控制措施 -->
         <ShowControlsTable :tableItems="tableItems" />
 
-        <FileListShow :fileList="files" title="檔案列表" />
+        
+
+        <!-- 上傳的檔案列表 -->
+        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC" 
+            v-for="(list, i) in evidenceGroup"
+            :key="list.controlId"
+        >
+            <FileListShow :fileList="list" :title="controlsName[i]+'證據'" />
+        </v-col>
 
 
         <!-- 上傳的檔案列表 -->
@@ -275,6 +283,8 @@ export default {
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         tableItems: [],  // 表格資料
+        evidenceGroup: [],
+        controlsName: [],
         headers: [  // 表格欄位 (控制措施)
             { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
@@ -328,6 +338,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj::", obj)
             this.id = obj.EndangerCode  // 編號
             this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -346,8 +357,24 @@ export default {
                 // )
             });
             // this.files = [ this.tableItems ]  // 檔案附件
-            console.log("files: ", this.files)
-            this.uploads = obj.uploads  // 證據
+            this.uploads = obj.controls  // 控制措施s
+            this.uploads.forEach(element => {
+                // element是一個控制措施
+                this.controlsName.push(element.ProcCode)
+                let temp = []; //一個控制措施的所有證據
+                for (let index = 0; index < element.file_path.length; index++) {
+                    //一個個 證據
+                    const path = element.file_path[index];
+                    const name = element.file_path_name[index];
+                    let aa = {FileFullPath: path, FileName: name, FileType: (name.split('.'))[1]} //目前證據
+                    console.log("aa: ", aa)
+                    temp.push(aa) //把目前證據丟進去
+                }
+                console.log("temp: ", temp)
+                this.evidenceGroup.push(temp);
+            });
+            
+            console.log("this.evidenceGroup: ", this.evidenceGroup)
             this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
         },
         // 退回

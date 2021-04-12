@@ -10,7 +10,8 @@
         <BottomTable :items="bottomItems" />
 
         <!-- 控制措施 -->
-        <v-col cols="12" class="mt-8">
+        <ShowControlsTable :tableItems="tableItems" />
+        <!-- <v-col cols="12" class="mt-8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
             </h3>
@@ -50,7 +51,7 @@
                     </template>
                 </v-data-table>
             </v-card>
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" class="mt-12 mb-8" v-if="status == 3">
             <v-divider></v-divider>
@@ -247,6 +248,8 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
+import FileListShow from '@/components/FileListShow.vue'
+import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData} from '@/apis/smis/carHarmDatabase/harms'
 
@@ -287,7 +290,9 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
-        UploadFileAdd
+        UploadFileAdd,
+        ShowControlsTable,
+        FileListShow
     },
     computed: {
         ...mapState ('user', {

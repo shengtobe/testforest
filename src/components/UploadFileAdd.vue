@@ -12,6 +12,8 @@
                 solo
                 multiple
                 v-model="choseFiles"
+                :clearable='true'
+                @click:clear="deleting"
                 @change="select"
                 :disabled="uploadDisnable"
             >
@@ -76,15 +78,31 @@ export default {
     data: () => ({
         choseFiles: null,  // 所選的檔案
         urltxt: '',
+        fileBuffer: [],
     }),
     methods: {
+        deleting(){
+            this.fileBuffer = [];
+            this.choseFiles = null;
+        },
         // 選擇檔案
         select(file) {
-            this.choseFiles = file
+            this.choseFiles.forEach(oneFile => {
+                let ff = this.fileBuffer.find(item => {
+                        return item.name == oneFile.name && item.size == oneFile.size
+                    })
+                if(ff == undefined){
+                    this.fileBuffer.push(oneFile)
+                }
+            });
+            this.choseFiles = this.fileBuffer
         },
         // 加入要上傳的檔案
         join() {
-            if (this.choseFiles != null) {
+            console.log("fileBuffer: ", this.fileBuffer)
+            console.log("choseFiles: ", this.choseFiles)
+            if (this.choseFiles.length > 0) {
+                console.log("Enter join~~~~")
                 // 已加入的檔案不重覆增加
                 this.choseFiles.forEach(ele => {
                     let file = this.fileList.find(item => {
@@ -126,7 +144,8 @@ export default {
                         }
                     }
                 })
-                this.choseFiles = null
+                this.fileBuffer = [];
+                this.choseFiles = null;
             }
         },
         // 移除要上傳的檔案
