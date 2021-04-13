@@ -99,10 +99,8 @@ export default {
         },
         // 加入要上傳的檔案
         join() {
-            console.log("fileBuffer: ", this.fileBuffer)
-            console.log("choseFiles: ", this.choseFiles)
+            if(this.choseFiles == null || this.choseFiles == undefined) return
             if (this.choseFiles.length > 0) {
-                console.log("Enter join~~~~")
                 // 已加入的檔案不重覆增加
                 this.choseFiles.forEach(ele => {
                     let file = this.fileList.find(item => {

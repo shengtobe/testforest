@@ -109,11 +109,11 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>關聯子系統
             </h3>
-            <v-select
-                v-model="ipt.wbs"
-                :items="opts.wbs"
+            <v-text-field
+                :value="ipt.wbs"
                 solo
-            ></v-select>
+                @click="eqCodeShow = true"
+            ></v-text-field>
         </v-col>
 
         <!-- 影響、運轉影響情形 -->
@@ -340,7 +340,7 @@
 
     <v-row no-gutters class="px-2">
         <!-- 證據上傳 -->
-        <v-col cols="12">
+        <v-col cols="12" v-if="false">
             <v-row>
                 <v-col cols="12" sm="4" md="3">
                     <h3 class="mb-1">
@@ -380,6 +380,14 @@
             </v-row>
         </v-col>
 
+        <UploadFileAdd v-if="false"
+            title="證據上傳"
+            :uploadDisnable="false"
+            :fileList="showFiles"
+            @joinFile="joinFile"
+            @rmFile="rmFile"
+        />
+
         <!-- 上傳的檔案列表 -->
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC"
             v-for="(list, i) in uploads"
@@ -411,7 +419,24 @@
                 </v-col>
             </v-row>
         </v-col>
-
+        <!-- 關聯子系統 dailog -->
+        <v-dialog v-model="eqCodeShow" max-width="900px">
+            <v-card>
+            <v-card-title class="yellow darken-1 px-4 py-1">
+                選擇設備標示編號(WBS)
+                <v-spacer />
+                <v-btn fab small text @click="eqCodeShow = false" class="mr-n2">
+                <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+            <EquipRepairCode :key="componentKey" :toLv="2" :nowEqCode="ipt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2" elevation="4" @click="eqCodeShow = false">取消</v-btn>
+                <v-btn color="success" elevation="4" @click="setWBS">送出</v-btn>
+            </v-card-actions>
+            </v-card>
+        </v-dialog>
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4"
                 @click="closeWindow"
@@ -482,6 +507,8 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
 import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
+import EquipRepairCode from '@/components/EquipRepairCode.vue'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import Pagination from '@/components/Pagination.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData, fetchOne, sendUpdateData} from '@/apis/smis/carHarmDatabase/harms'
 import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
@@ -489,8 +516,12 @@ import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
 export default {
     props: ['id'],
     data: () => ({
+        test13:'test13',
         valid: true,  // 表單是否驗證欄位
         done: false,  // 是否完成頁面操作
+        searchTemp: {},  // 關聯子系統 dialog 暫存資料用
+        eqCodeShow: false,  // 關聯子系統 dialog 是否顯示
+        componentKey: 0,  // 關聯子系統 dialog 內組件計算增數用
         ipt: {
             accidents: [],  // 衍生事故(給組件的預設值)
         },
@@ -511,6 +542,7 @@ export default {
             stopOperation: false,  // 中斷營運
             accidents: [],  // 衍生事故
             controlChoose: [],  // 已選的控制措施
+            files: [],  // 檔案(證據)
         },
         opts: {  // 下拉選單
             depart: departOptions,  // 權責部門
@@ -574,11 +606,14 @@ export default {
         choose: null,  // 上傳時所選的檔案
         controlId: null,  // 控制措施編號 (證據上傳時用)
         uploads: [],  // 證據上傳檔案列表
+        showFiles: [],  // 要顯示的縮圖
     }),
     components: {
         AccidentCheckbox,
         Pagination,
-        EvidencesDialog
+        EvidencesDialog,
+        EquipRepairCode,
+        UploadFileAdd
     },
     computed: {
         ...mapState ('user', {
@@ -695,8 +730,21 @@ export default {
         closeDialog() {
             this.dialogShow = false
         },
+        //抓取未確認的設備標示編碼
+        getTempCode(value) {
+            this.searchTemp.wbs = value
+        },
+        //抓取未確認的設備標示編碼中文
+        getTempName(value) {
+            this.searchTemp.wbsShow = value
+        },
+        //確認設備標示編碼，寫入
+        setWBS() {
+            this.ipt.wbs = this.searchTemp.wbs
+            this.eqCodeShow = false
+        },
         setInitDate(obj) {
-            console.log("obj: ", obj)
+            console.log("obj~~~~~: ", obj)
             this.ipt.desc = obj.EndangerDesp // 危害說明
             this.ipt.reason = obj.EndangerReason  // 危害直接成因
             this.ipt.indirectReason = obj.EndangerIndirect  // 可能的危害間接原因
@@ -713,8 +761,8 @@ export default {
             this.ipt.stopOperation = (obj.ServiceStopError == 'T')? true : false  // 中斷營運
             this.ipt.accidents = [ ...obj.DeriveAccident ]  // 衍生事故
             this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施 
-            this.controlIdOpts = [ obj.controls.map(item => item.ProcCode) ]  // 已選控制措施 ProcCode
-            console.log("controlIdOpts: ", this.controlIdOpts)
+            this.controlIdOpts = [ ...obj.controls.map(item => item.ProcCode) ]  // 已選控制措施 ProcCode
+            console.log("this.controlIdOpts: ", this.controlIdOpts)
 
             // // 重組上傳檔案的控制措施編號下拉選單、檔案列表
             // obj.controls.forEach(item => {
@@ -784,6 +832,30 @@ export default {
                     this.chLoadingShow()
                 })
             }
+        },
+        joinFile(obj, bool) {
+            if(this.controlId == null && bool == true) return
+            if(this.controlId == null && bool == false){
+                alert("未選擇控制措施")
+                return
+            }
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
+            if(!bool){
+                console.log("this.ipt.files: ", this.ipt.files)
+                console.log("this.showFiles: ", this.showFiles)
+            }
+        },
+        // 移除要上傳的檔案 (組件用)
+        rmFile(idx) {
+            this.showFiles.splice(idx, 1)
+            this.ipt.files.splice(idx, 1)
+
+            console.log("this.ipt.files: ", this.ipt.files)
+            console.log("this.showFiles: ", this.showFiles)
         },
         // 搜尋控制措施
         search() {

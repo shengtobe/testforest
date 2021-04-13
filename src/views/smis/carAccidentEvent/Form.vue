@@ -717,6 +717,8 @@ export default {
         // 送出
         save() {
             this.chLoadingShow()
+            if(this.ipt.locationK == '') this.ipt.locationK = '0'
+            if(this.ipt.locationM == '') this.ipt.locationM = '0'
 
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
