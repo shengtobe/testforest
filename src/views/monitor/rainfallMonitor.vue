@@ -29,7 +29,7 @@
           solo />
       </v-col>
       <v-col cols="12" md="3">
-        <v-btn color="green" dark large class="mt-9" @click="search">
+        <v-btn color="success" large class="mt-9" @click="search">
             <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>

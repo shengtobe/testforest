@@ -259,7 +259,11 @@
   </v-main>
 </v-app>
 </template>
-
+<style>
+.container{
+    background: linear-gradient(to bottom right ,rgba(245,245,245,0.7),rgba(245,245,245,0.5));
+}
+</style>
 <script>
 import { mapState, mapActions } from 'vuex'
 import aesjs from 'aes-js'
@@ -270,7 +274,8 @@ import MessageBar from '@/components/MessageBar.vue'
 
 export default {
     data: () => ({
-        mainColor: 'light-blue darken-1',
+        // mainColor: 'light-blue darken-1',
+         mainColor: 'primary',
         showNav: false,  // 導覽列是否顯示
         titleColor1: 'blue lighten-4',
         titleColor2: 'amber lighten-4',
