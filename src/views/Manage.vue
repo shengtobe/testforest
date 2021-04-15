@@ -6,7 +6,7 @@
   <MessageBar />
 
   <!-- app-bar -->
-  <v-app-bar app dark clipped-left :color="mainColor" dense
+  <v-app-bar app clipped-left :color="mainColor" dense dark
     id="main-bar"
   >
     <v-app-bar-nav-icon
@@ -261,7 +261,13 @@
 </template>
 <style>
 .container{
-    background: linear-gradient(to bottom right ,rgba(245,245,245,0.7),rgba(245,245,245,0.5));
+    background: linear-gradient(to bottom right ,rgba(245,245,245,0.8),rgba(245,245,245,0.5));
+    border-radius: 0rem 0rem 1rem 1rem;
+}
+</style>
+<style scoped>
+.top-nav{
+    background: linear-gradient(to right, #dd6b19d8, #fd7c1f7c);
 }
 </style>
 <script>
@@ -275,7 +281,7 @@ import MessageBar from '@/components/MessageBar.vue'
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',
-         mainColor: 'primary',
+         mainColor: 'top-nav',
         showNav: false,  // 導覽列是否顯示
         titleColor1: 'blue lighten-4',
         titleColor2: 'amber lighten-4',

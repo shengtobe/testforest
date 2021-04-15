@@ -13,7 +13,7 @@
               >
               <template v-slot:default>
                 <tbody>
-                  <tr class="accent white--text">
+                  <tr class="accent white--text shadowText">
                     <th>地點</th>
                     <th colspan="2" class="text-center text-h6">二萬平主站-第一分道</th>
                   </tr>
@@ -82,7 +82,6 @@
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
-      <v-col cols="0" sm="1"></v-col>
     </v-row>
     <v-row>
         <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px">
@@ -146,14 +145,14 @@ export default {
     pageOpt: {page:1},
     tableItems:[],
     headers: [
-      { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      // { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
+      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '15' },
+      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '15' },
+      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '15' },
+      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '15' },
+      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '13' },
+      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '13' },
+      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '13' },
     ]
   }),
   components: {
@@ -228,9 +227,12 @@ export default {
     border:1px black solid
   }
   tr:nth-child(odd){
-    background: #E0F7FA;
+    background: #f8dec6;
   }
   tr:nth-child(even){
-    background-color: #B2EBF2;
+    background-color: #ffca98;
+  }
+  >>>.shadowText{
+    text-shadow: black 0.1rem 0.1rem 0.05rem;
   }
 </style>
