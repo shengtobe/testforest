@@ -174,6 +174,7 @@ export default {
           {
             borderWidth: '1',
             barPercentage: 1,
+            backgroundColor: 'rgba(227, 124, 20, 0.55)',
             data: []
           }
         ]

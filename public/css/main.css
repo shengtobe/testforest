@@ -4,7 +4,8 @@
 #app {
   font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
   /*background-color: #dbe8f5;  /* 背景色 */
-  background: no-repeat url('../images/backgroundImgT2.png');
+  background-blend-mode: multiply;
+  background: url('../images/backgroundImgT2.png') rgba(213, 113, 41, 0.1) no-repeat center center; 
 }
 #main-bar {
   position: fixed;
@@ -13,7 +14,8 @@
 #main-nav {
   width: 100vw;
   height: 100vh;
-  background-color: white;
+  /*background-color: white;*/
+  background: no-repeat url('../images/TestBg4.png');
   z-index: 10;
   position: fixed;
   top: 0;
