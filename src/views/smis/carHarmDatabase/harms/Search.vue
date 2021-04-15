@@ -126,11 +126,11 @@
             </h3>
             
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
-                @click="fastFetch"
+                @click="searchAllEndanger"
             >全部危害</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
-                @click="fastFetch"
+                @click="searchHighRisk"
             >高風險</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
@@ -219,6 +219,7 @@ export default {
         chooses: [],  // 查詢項目(checkbox 勾選的項目)
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
+        searchType: 'normal', // 'normal'/'allEndanger'/
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
             { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
@@ -289,6 +290,95 @@ export default {
                 this.chLoadingShow()
             })
         },
+        // 全部危害
+        searchAllEndanger() {
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+            console.log("this.userData", this.userData)
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        }, 
+        // 高風險
+        searchHighRisk() {
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+            console.log("this.userData", this.userData)
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.riskSerious == 'S1' || element.riskSerious == 'S2'){
+                        tableItems.push(element)
+                    }
+                });
+                console.log("tempTableItems", this.tempTableItems)
+                console.log("tableItems", this.tableItems)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        }, 
         // 快速查詢
         fastFetch() {
             this.chLoadingShow()

@@ -228,7 +228,7 @@ export default {
         searchDefault: {
             DTime_Start: '',  // 日期(起)
             DTime_End: '',  // 日期(迄)
-            Option: 'T',  // 機車或客車
+            Option: 'T',  // 機車'1'或客車'2'
             CarCode: '',  // 車號
         },
         dateMemuShow: {
@@ -347,6 +347,8 @@ export default {
     },
     created() {
         this.searchIpt = { ...this.searchDefault }
+        console.log("searchDefault: ", this.searchDefault)
+        console.log("searchIpt: ", this.searchIpt)
     }
 }
 </script>
