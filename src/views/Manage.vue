@@ -21,7 +21,12 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
 
-    <v-toolbar-title class="shadowText">林鐵資訊管理系統</v-toolbar-title>
+    <v-toolbar-title class="shadowText align-center">
+        <div>
+            <img style="vertical-align: sub;width:1.5rem" src="@/../public/images/ROC_Forestry_Bureau_Seal.svg"/>
+            林鐵資訊管理系統
+        </div>
+    </v-toolbar-title>
     
     <v-spacer></v-spacer>
 
