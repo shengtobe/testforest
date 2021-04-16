@@ -59,6 +59,10 @@ const routes = [
       ...FormServeRouter,  // 服務科
 
       ...MonitorRouter,  // 監控系統
+      {
+        path: '/text-theme',
+        component: () => import('../views/themeTest.vue')
+      }
     ],
     beforeEnter: (to, from, next) => {
       // 檢查是否登入

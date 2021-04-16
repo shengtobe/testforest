@@ -232,7 +232,4 @@ export default {
   tr:nth-child(even){
     background-color: #ffca98;
   }
-  >>>.shadowText{
-    text-shadow: black 0.1rem 0.1rem 0.05rem;
-  }
 </style>

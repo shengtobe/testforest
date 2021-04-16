@@ -21,12 +21,12 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
 
-    <v-toolbar-title>林鐵資訊管理系統</v-toolbar-title>
+    <v-toolbar-title class="shadowText">林鐵資訊管理系統</v-toolbar-title>
     
     <v-spacer></v-spacer>
 
     <!-- 登入者資訊 -->
-    <div class="mr-4 d-none d-sm-flex">
+    <div class="mr-4 d-none d-sm-flex shadowText">
         {{ `${userData.DeptList[0].DeptDesc} - ${userData.UserName}(${userData.UserId})` }}
     </div>
     
@@ -245,6 +245,12 @@
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
                                 <v-divider></v-divider>
+                                <!-- 報表管理 -->
+                                <v-list-item :class="titleColor3" disabled>
+                                    <strong class="black--text">測試區域</strong>
+                                </v-list-item>
+                                <v-divider></v-divider>
+                                <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>
@@ -267,8 +273,11 @@
 </style>
 <style scoped>
 .top-nav{
-    background: linear-gradient(to right, #dd6b19d8, #fd7c1f7c);
+    background: linear-gradient(to right, #fd974e, #ffad72);
 }
+>>>.shadowText{
+    text-shadow: black 0.05rem 0.05rem 0.05rem;
+  }
 </style>
 <script>
 import { mapState, mapActions } from 'vuex'
