@@ -130,6 +130,7 @@
                         <v-select
                             v-model="hasLicenLv1Select"
                             :items="hasLicenseOptLv1"
+                            @change="pickOne"
                             solo
                         ></v-select>
                     </v-col>
@@ -327,23 +328,23 @@
 import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { fetchWorkOrderOne, dispatchOrder } from '@/apis/workList/maintain'
+import { fetchWorkOrderOne, dispatchOrder, fetchLicenseManData } from '@/apis/workList/maintain'
 
 // 需證照人員名單 (demo用)
-let hasLicense = {
-    '固定式起重機': [
-        { text: '潘學文', value: '15741' },
-        { text: '尤宗偉', value: '12401' },
-        { text: '蘇峻逸', value: '12216' },
-        { text: '郭明珠', value: '17303' },
-    ],
-    '一般手工電焊': [
-        { text: '賴威志', value: '13745' },
-        { text: '黃妙修', value: '00008' },
-        { text: '李慧美', value: '11018' },
-        { text: '吳曉旻', value: '11006' },
-    ]
-}
+// let hasLicense = {
+//     '固定式起重機': [
+//         { text: '潘學文', value: '15741' },
+//         { text: '尤宗偉', value: '12401' },
+//         { text: '蘇峻逸', value: '12216' },
+//         { text: '郭明珠', value: '17303' },
+//     ],
+//     '一般手工電焊': [
+//         { text: '賴威志', value: '13745' },
+//         { text: '黃妙修', value: '00008' },
+//         { text: '李慧美', value: '11018' },
+//         { text: '吳曉旻', value: '11006' },
+//     ]
+// }
 
 export default {
     props: ['id'],  //路由參數
@@ -351,6 +352,23 @@ export default {
         done: false,  // 是否完成頁面操作
         valid: true,  // 表單是否驗證欄位
         isLoading: false,  // 是否讀取中
+        hasLicenseOptLv1: [],
+        hasLicenseOptLv2: [],
+        licenseItems: [],
+        hasLicense: {
+            '固定式起重機': [
+                { text: '潘學文', value: '15741' },
+                { text: '尤宗偉', value: '12401' },
+                { text: '蘇峻逸', value: '12216' },
+                { text: '郭明珠', value: '17303' },
+            ],
+            '一般手工電焊': [
+                { text: '賴威志', value: '13745' },
+                { text: '黃妙修', value: '00008' },
+                { text: '李慧美', value: '11018' },
+                { text: '吳曉旻', value: '11006' },
+            ]
+        },
         ipt: {
             workNumber: '',  // 工單編號
             workLocation: '',  // 工作地點
@@ -401,11 +419,11 @@ export default {
             return `${this.ipt.eqNumber1}-${this.ipt.eqNumber2}-${this.ipt.eqNumber3}-${this.ipt.eqNumber4}`
         },
         // 有證照option -- 科室
-        hasLicenseOptLv1: () => Object.keys(hasLicense),
+        // hasLicenseOptLv1: () => Object.keys(this.hasLicense),
         // 有證照option -- 人員清單
-        hasLicenseOptLv2() {
-            return (hasLicense[this.hasLicenLv1Select])
-        },
+        // hasLicenseOptLv2() {
+        //     return (this.hasLicense[this.hasLicenLv1Select])
+        // },
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -414,6 +432,9 @@ export default {
         },
         // 更換科室時，自動選該科室人員清單的第一人
         hasLicenLv1Select: function (newVal, oldVal) {
+            console.log("newVal: ", newVal)
+            console.log("oldVal: ", oldVal)
+            return
             if (newVal != oldVal) {
                 this.hasLicenLv2Select = this.hasLicenseOptLv2[0].value
             }
@@ -447,23 +468,48 @@ export default {
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
                 this.ipt.malfunctionDes = res.data.Malfunction  // 故障描述
 
-                // 初始化林鐵人員下拉選項預設值
-                this.initMemberSelect()
+                
 
                 // 初始化外包人員的表單
                 this.vendorForm = Object.assign({}, this.defaultVendorForm)
 
                 // 組合全部有證照人員資料(反查姓名用)
                 let arr = []
-                for (let key in hasLicense) {
-                    arr = [ ...arr, ...hasLicense[key]]
+                for (let key in this.hasLicense) {
+                    arr = [ ...arr, ...this.hasLicense[key]]
                 }
                 this.allLicenseArr = arr
             }).catch(err => {
                 alert('資料讀取失敗')
             }).finally(() => {
+                // this.chLoadingShow()
+            })
+
+            fetchLicenseManData({
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                let obj = res.data
+                console.log("obj: ", obj)
+                this.licenseItems = JSON.parse(res.data.order_list)
+                console.log("licenseItems: ", this.licenseItems)
+                // 初始化林鐵人員下拉選項預設值
+                this.initMemberSelect(this.licenseItems)
+            }).catch(err => {
+                console.log(err)
+                alert('資料讀取失敗2')
+            }).finally(() => {
+                console.log("over")
                 this.chLoadingShow()
             })
+        },
+        pickOne(){
+            let select1 = this.hasLicenLv1Select
+            this.licenseItems.forEach(element => {
+                if(element.License == select1){
+                    this.hasLicenseOptLv2 = element.people_name_list
+                    return
+                }
+            });
         },
         // 選擇代理人、作業人員 (組識表組件用)
         chooseMembers(iptName) {
@@ -476,18 +522,26 @@ export default {
             this.ipt[this.nowIptName].name = this.memberName
         },
         // 初始化林鐵人員下拉選項預設值
-        initMemberSelect() {
-            this.hasLicenLv1Select = Object.keys(hasLicense)[0]  // 需證照人員
+        initMemberSelect(data) {
+            console.log("data: ", data)
+            // this.hasLicenLv1Select = Object.keys(this.hasLicense)[0]  // 需證照人員
+            this.hasLicenseOptLv1 = data.map(item => item.License)
+            console.log("hasLicenseOptLv1: ", this.hasLicenseOptLv1)
         },
         // 增加林鐵的人員(第二參數為是否有證照)
         addMember(id, bool) {
             if(id == '' || id == null) return
             
             if (bool && this.ipt.licensedMembers.findIndex(ele => ele.PeopleId == id) == -1) {
+                console.log("11: ", this.ipt.licensedMembers)
                 // 有證照且未被加入
+                return
                 this.ipt.licensedArr.push(this.allLicenseArr.find(item => item.value ==id).text)  // 顯示用，只放入姓名
+                console.log("1: ", this.ipt.licensedArr)
                 this.ipt.licensedMembers.push({ PeopleId: id })  // 後端上傳用(證照功能未完成，先做demo資料)
             } else if (!bool && this.ipt.commonMembers.findIndex(ele => ele.PeopleId == id) == -1) {
+                console.log("2")
+                return
                 // 作業人員
                 this.ipt.commonMemArr.push(this.ipt.commonNowIpt.name)  // 顯示用，只放入姓名
                 this.ipt.commonMembers.push({ PeopleId: this.ipt.commonNowIpt.id })  // 後端上傳用

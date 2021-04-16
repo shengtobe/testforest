@@ -74,6 +74,15 @@ export function fetchWorkOrderOne(data) { return axios(
     }
 )}
 
+// 取得證照人員資料
+export function fetchLicenseManData(data) { return axios(
+    {
+        url: '/global/licensedata/querylist',
+        method: 'post',
+        data,
+    }
+)}
+
 // 更新工單
 export function updateListOrder(data) { return axios(
     {

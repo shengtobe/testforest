@@ -198,7 +198,8 @@ export default {
         },
         // 新增
         add() {
-            this.ipt = undefined
+            // this.ipt = undefined
+            this.ipt.FlowID = this.id
             this.dialog = true
             this.componentKey++
         },

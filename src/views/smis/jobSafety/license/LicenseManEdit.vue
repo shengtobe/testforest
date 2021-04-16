@@ -85,6 +85,34 @@
           </v-menu>
         </v-col>
 
+        <!-- <v-col cols="12" sm="4">
+          <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>證照有效日
+          </h3>
+          <v-menu
+            v-model="dateMemuShow.expDate"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model.trim="ipt.ExpDTime"
+                solo
+                v-on="on"
+                readonly
+              ></v-text-field>
+            </template>
+            <v-date-picker
+              color="purple"
+              v-model="ipt.ExpDTime"
+              @input="dateMemuShow.expDate = false"
+              locale="zh-tw"
+            ></v-date-picker>
+          </v-menu>
+        </v-col> -->
+
         <v-col cols="12">
           <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註
@@ -129,7 +157,8 @@ export default {
     },  // dialog 欄位
     dateMemuShow: {
       activeDate: false,
-      lastTrain: false
+      lastTrain: false,
+      expDate: false
     },
     isLoading: false
   }),
@@ -157,18 +186,36 @@ export default {
       }
       this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/\//g,"-")
       this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/\//g,"-")
+      this.ipt.ExpDTime = this.ipt.ExpDTime.replace(/\//g,"-")
       this.ipt.License = this.name
     },
     // 送出
     save() {
+      if(this.ipt.Name == ''){
+        alert("請選擇人員姓名")
+        return
+      }
+      else if(this.ipt.LicenseNo == undefined || this.ipt.LicenseNo == ''){
+        alert("請填寫證照編號")
+        return
+      }
+      else if(this.ipt.EffectiveDate == undefined || this.ipt.ReTrainingTime == undefined || this.ipt.EffectiveDate == '' || this.ipt.ReTrainingTime == ''){
+        alert("請選擇日期")
+        return
+      }
+      if(this.ipt.Memo == undefined) this.ipt.Memo = '';
+
       this.isLoading = true
-      this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/-/g,"\/")
-      this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/-/g,"\/")
+      // this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/-/g,"\/")
+      // this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/-/g,"\/")
+      // this.ipt.ExpDTime = this.ipt.ExpDTime.replace(/-/g,"\/")
       licenseOption({
         ...this.ipt,
-        Option: (this.data)?'2':'1',
+        Option: (this.data.ID)?'2':'1',
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
+        LicenseFK: this.ipt.FlowID,
+        License: this.name
       }).then(res=>{
         console.warn(res.data)
         if (res.data.ErrorCode == 0) {
@@ -178,11 +225,13 @@ export default {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
         }
+        console.log("licenseOption OK!111")
       }).catch( err => {
         console.warn(err)
         const msg = '伺服器發生問題，資料' + ((this.data)?'修改':'新增') + '失敗'
         this.chMsgbar({ success: false, msg: msg })
       }).finally(() => {
+        console.log("licenseOption OK!222")
         this.isLoading = false
         this.cancel()
       })

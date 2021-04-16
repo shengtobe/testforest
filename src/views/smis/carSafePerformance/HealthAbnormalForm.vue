@@ -147,7 +147,7 @@ export default {
             CarVersion: '',  // 車次
             ErrDesp: '',  // 異常說明
             ErrorCheckStatus: '',  // 異常處理情形
-            files: [],  // 附件
+            FileCount: [],  // 附件
         },
         dateMemuShow: false,  // 日曆是否顯示
         componentKey: 0,

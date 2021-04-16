@@ -200,8 +200,8 @@ export default {
                 }).then( res => {
                     console.log("res.data.DataList[0]: ", res.data.DataList[0])
                     if (res.data.ErrorCode == 0) {
-                        this.ipt = {...decodeObject(res.data.DataList[0])}  
-                        console.log("this.ipt: ", this.ipt)  
+                        this.ipt = {FileCount:[], ...decodeObject(res.data.DataList[0])}  
+                        console.log("this.ipt2: ", this.ipt)  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
                     }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
