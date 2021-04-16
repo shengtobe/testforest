@@ -168,7 +168,7 @@
                         <v-card outlined tile class="mt-sm-12">
                             <v-list class="pa-0">
                                 <!-- 職安管理 -->
-                                <v-list-item :class="titleColor2" disabled>
+                                <v-list-item :class="titleColor2_3" disabled>
                                     <strong class="black--text">職安管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
@@ -299,6 +299,7 @@ export default {
         showNav: false,  // 導覽列是否顯示
         titleColor1: 'blue lighten-4',
         titleColor2: 'amber lighten-4',
+        titleColor2_3: 'light-green accent-1',
         titleColor3: 'red lighten-4',
     }),
     computed: {

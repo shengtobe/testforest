@@ -19,6 +19,12 @@ export const WorkListRouter = [
         component: () => import('@/views/workList/serve/ListForm.vue')
     },
     {
+        linkText: '工單新增',  // 立案表單2
+        path: '/worklist/serve/:money/newList0',
+        component: () => import('@/views/workList/serve/ListForm.vue'),
+        props: true,
+    },
+    {
         linkText: '工單編輯',  // 編輯立案
         path: '/worklist/serve/:id/editList',
         component: () => import('@/views/workList/serve/ListForm.vue'),

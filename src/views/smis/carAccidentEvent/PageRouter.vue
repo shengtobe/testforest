@@ -48,6 +48,10 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.AccidentStatus  // 狀態
+                        console.log("res.data~~~")
+                        console.log(res.data)
+                        let hurtPeoples = []  // 死傷人數資料
+                        let controls = []  // 已選控制措施
                         
                         // 組合發現地點文字
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
@@ -124,7 +128,12 @@ export default {
                             { oneline: false, title: '民眾或旅客行為說明', text: res.data.PeopleMemo.replace(/\n/g, '<br>') },
                         ]
                         
-                        this.itemData = { ...res.data, topItems, bottomItems, otherInfo }
+                        if (this.status > 1) {
+                            hurtPeoples = JSON.parse(res.data.order_list_hurt_people)  // 死傷人數資料
+                            controls = JSON.parse(res.data.order_list)  // 已選控制措施
+                        }
+
+                        this.itemData = { ...res.data, topItems, bottomItems, otherInfo, hurtPeoples, controls }
                     }
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面

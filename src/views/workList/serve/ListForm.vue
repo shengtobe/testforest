@@ -13,6 +13,7 @@
             <v-col cols="12" sm="6" md="3">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>年度
+                    <span class="red--text">*</span>
                 </h3>
                 <v-text-field
                     v-model.trim="ipt.year"
@@ -461,11 +462,11 @@ import { fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4 } from '
 import { fetchWorkOrderOne, serveNewListExecl, createWorkOrder, updateListOrder } from '@/apis/workList/serve'
 
 export default {
-    props: ['id'],  //路由參數
+    props: ['id', 'money'],  //路由參數
     data: () => ({
         valid: false,  // 表單是否驗證欄位 (先不驗證以利測試)
         isEdit: false,  // 是否為編輯
-        id: '',  // 工單編號
+        // id: '',  // 工單編號
         ipt: {
             eqNumber1: '',  // 設備標示編號1
             eqNumber2: '',  // 設備標示編號2
@@ -671,6 +672,7 @@ export default {
             } else {
                 // 新增的情況
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
+                this.ipt.money = this.money
             }
         },
         // 向後端請求資料(編輯時用)
@@ -770,6 +772,22 @@ export default {
         },
         // 送出表單
         save() {
+            if(this.ipt.year == ''){
+                alert("年度未填")
+                return
+            }
+            else if(this.ipt.eqNumber1 == '' || this.ipt.eqNumber2 == '' || this.ipt.eqNumber3 == '' || this.ipt.eqNumber4 == ''){
+                alert("設備標示編號未選妥")
+                return
+            }
+            else if(this.subIptShow.opt22 == true && this.ipt.eqNumber22 == ''){
+                alert("設備標示編號未選妥")
+                return
+            }
+            else if(this.subIptShow.opt32 == true && this.ipt.eqNumber32 == ''){
+                alert("設備標示編號未選妥")
+                return
+            }
             // if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.chLoadingShow()
 

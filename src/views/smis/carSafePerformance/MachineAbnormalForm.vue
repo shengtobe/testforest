@@ -118,7 +118,7 @@
                 <v-divider></v-divider>
             </v-col>
 
-            <UploadFileEdit
+            <UploadFileEdit title="檔案管理"
                 :fileList="ipt.files"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
@@ -155,12 +155,13 @@ export default {
             PeopleId:'',
             PeopleName:'',
             ReportCode:'',
-            CheckDate:'',
+            CheckDate: new Date().toISOString().substr(0, 10),
             CarVersion:'',
             CarType:'1',
             CarCode:'',
             ErrorDesp:'',
             ErrorCheckStatus:'',
+            FileCount: [],
         },
         dateMemuShow: false,  // 日曆是否顯示
     }),
@@ -197,8 +198,10 @@ export default {
                     ClientReqTime: getNowFullTime(),
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then( res => {
+                    console.log("res.data.DataList[0]: ", res.data.DataList[0])
                     if (res.data.ErrorCode == 0) {
-                        this.ipt = {...decodeObject(res.data.DataList[0])}    
+                        this.ipt = {...decodeObject(res.data.DataList[0])}  
+                        console.log("this.ipt: ", this.ipt)  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
                     }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -266,11 +269,16 @@ export default {
             }
         },
         // 加入要上傳的檔案
-        joinFile(file) {
-            this.ipt.files.push(file)
+        joinFile(obj, bool) {
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
         },
-        // 移除要上傳的檔案
+        // 移除要上傳的檔案 (組件用)
         rmFile(idx) {
+            this.showFiles.splice(idx, 1)
             this.ipt.files.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)

@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1200px">
+<v-container style="max-width: 1200px" >
     <v-row class="px-2 mb-8 mt-2">
         <!-- 個人訊息 -->
         <h3 class="px-3">個人訊息</h3>

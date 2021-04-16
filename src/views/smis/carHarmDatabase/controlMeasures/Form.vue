@@ -150,8 +150,13 @@
                 <v-divider></v-divider>
             </v-col>
 
-            <UploadFileEdit
+            <!-- <UploadFileEdit
                 :fileList="ipt.files"
+                @uploadFile="uploadFile"
+                @deleteFile="deleteFile"
+                class="mb-10"
+            /> -->
+            <UploadFileEdit title="檔案管理"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
                 class="mb-10"
@@ -393,47 +398,30 @@ export default {
             this.ipt.files.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)
-        uploadFile(file) {
+        uploadFile(fileArr) {
             this.chLoadingShow()
-
-            if (file) {
-                let reader = new FileReader()  // blob 用
-
-                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
-                reader.readAsArrayBuffer(file)
-
-                // 設定讀取完時的動作
-                reader.onload = () => {
-                    // 抓出副檔名
-                    let nameArr = file.name.split('.')  // 用小數點拆成陣列
-                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
-                    
-                    let fileArr = [{ FileName: file.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }]
-                    
-                    updateFile({
-                        ProcCode: this.id,  // 措施編號
-                        FileCount: fileArr,  // 新檔案
-                        ClientReqTime: getNowFullTime(),  // client 端請求時間
-                        OperatorID: this.userData.UserId,  // 操作人id
-                    }).then(res => {
-                        if (res.data.ErrorCode == 0) {
-                            this.chMsgbar({ success: true, msg: '上傳成功' })
-                            // 把檔案資料寫入畫面中
-                            this.ipt.files = [ ...res.data.FileCount.map(item => ({
-                                fileName: item.FileName,
-                                link: item.FilePath,
-                            }))]
-                        } else {
-                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                            this.$router.push({ path: '/error' })
-                        }
-                    }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
-                    }).finally(() => {
-                        this.chLoadingShow()
-                    })
+            updateFile({
+                ProcCode: this.id,  // 措施編號
+                FileCount: fileArr,  // 新檔案
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '上傳成功' })
+                    // 把檔案資料寫入畫面中
+                    this.ipt.files = [ ...res.data.FileCount.map(item => ({
+                        fileName: item.FileName,
+                        link: item.FilePath,
+                    }))]
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
                 }
-            }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
+            }).finally(() => {
+                this.chLoadingShow()
+            })
         },
         // 刪除檔案 (編輯時)
         deleteFile(idx) {

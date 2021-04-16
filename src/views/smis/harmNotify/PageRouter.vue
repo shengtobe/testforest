@@ -45,36 +45,46 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("Page Router res.data: ", res.data)
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.ReportStatus  // 狀態
 
-                        // 設定上面的欄位資料
-                        let topItems = [
-                            { icon: 'mdi-ray-vertex', title: '通報狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
-                            { icon: 'mdi-account', title: '通報人', text: res.data.NoticePeople },
-                            { icon: 'mdi-apps', title: '所屬部門', text: res.data.NoticePeopleDepart },
-                            { icon: 'mdi-calendar-text', title: '發現日期', text: res.data.FindDTime },
-                            { icon: 'mdi-calendar-text', title: '填報日期', text: res.data.FillDTime },
-                        ]
-
-                        // 設定下面的欄位資料
                         // 組合發現地點
+                        console.log("組合發現地點")
+                        console.log("FindLine: ", res.data.FindLine)
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
+                        console.log("findLocationText: ", findLocationText)
                         
                         if (['l1', 'l2', 'l3', 'l4'].includes(res.data.FindLine)) {
                             findLocationText += ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`  // 本線、祝山線、眠月線、水山線
                         } else if(res.data.FindLine == 'other') {
                             findLocationText += ` (${res.data.FindLineOther})`  // 其他地點
                         }
+                        console.log("2findLocationText: ", findLocationText)
 
-                        let bottomItems = [
-                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: findLocationText },
-                            { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
-                            { dataType: 'text', oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
+                        
+
+                        // 設定上面的欄位資料
+                        let topItems = [
+                            { icon: 'mdi-account', title: '通報人', text: res.data.NoticePeople },
+                            { icon: 'mdi-apps', title: '所屬部門', text: res.data.NoticePeopleDepart },
+                            { icon: 'mdi-calendar-text', title: '發現日期', text: res.data.FindDTime },
+                            { icon: 'mdi-calendar-text', title: '填報日期', text: res.data.FillDTime },
+                            { icon: 'mdi-map-marker', title: '發現地點', text: findLocationText },
+                            { icon: 'mdi-ray-vertex', title: '通報狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
                         ]
 
+                        let bottomItems = [
+                            { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
+                            { dataType: 'text', oneline: false, icon: 'mdi-note', title: '通報內容', text: res.data.ReportContent.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: true, icon: 'mdi-calendar-text', title: '回覆日期', text: res.data.ReplyDTime.substr(0,10) },
+                            { dataType: 'text', oneline: true, icon: 'mdi-message-processing', title: '回覆訊息', text: res.data.ReplyMsg },
+                            { dataType: 'text', oneline: true, icon: 'mdi-ray-vertex', title: '立案狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
+                        ]
+
+                            // 設定下面的欄位資料
                         // if (this.status > 1) {
                         //     topItems.push({ icon: 'mdi-calendar-text', title: '預計驗收日期', text: res.data.ExpectedDT })
                         //     topItems.push({ icon: 'mdi-alert-outline', title: '進場管制申請', text: (res.data.WorkApplication == 'T')? '是' : '否' })

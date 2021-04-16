@@ -42,7 +42,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
-import { deleteData } from '@/apis/smis/carHarmDatabase/harms'
+import { deleteData, sendCheckData, sendPassData} from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['itemData'],
@@ -106,11 +106,29 @@ export default {
             if (confirm('你確定要申請審核嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請審核成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                // setTimeout(() => {
+                //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                //     this.chMsgbar({ success: true, msg: '申請審核成功'})
+                //     this.done = true
+                //     this.chLoadingShow()
+                // }, 1000)
+                //-----call申請審核api------
+                sendCheckData({
+                    EndangerCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
     },

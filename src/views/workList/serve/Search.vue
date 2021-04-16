@@ -57,13 +57,13 @@
         
         <v-col cols="12">
             <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
-                @click="search"
+                @click="search(false)"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
             <v-btn color="indigo" dark large class="mb-4 mb-sm-0"
-                to="/worklist/serve/newList"
+                @click="newOne(theMoney)"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -156,6 +156,8 @@ export default {
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         isLoading: false,  // 是否讀取中
+        theMoney: '',
+
     }),
     components: { Pagination },  // 頁碼
     computed: {
@@ -168,7 +170,7 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 查詢資料
-        search() {
+        search(bool) {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
@@ -190,6 +192,16 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
+                if(bool == true){
+                    this.theMoney = this.tableItems[0].WorkBudget
+                }
                 this.totalPrice = res.data.ListSpent
             }).catch(err => {
                 console.log(err)
@@ -197,6 +209,11 @@ export default {
             }).finally(() => {
                 this.chLoadingShow()
             })
+        },
+        // 新增
+        newOne(item) {
+            let routeData = this.$router.resolve({ path: `/worklist/serve/${item}/newList0` })
+            window.open(routeData.href, '_blank')
         },
         // 檢視內容
         redirect(item) {
@@ -207,6 +224,9 @@ export default {
         chPage(n) {
             this.pageOpt.page = n
         }
+    },
+    created() {
+        this.search(true)
     },
 }
 </script>

@@ -1,6 +1,7 @@
 // -------- 組織下拉選單 --------
 
 export const departOptions = [
+    { text: '不限', value: '' },
     { text: '處長室', value: 'ARCO001' },
     { text: '副處長室', value: 'ARCO002' },
     { text: '秘書室', value: 'ARCO023' },

@@ -198,11 +198,11 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.location="{ item }">
+                    <!-- <template v-slot:item.location="{ item }">
                         {{ locationOpts.find(ele => ele.value == item.FindLine).text }}
                         {{ (item.FindLine == 'other')? `(${item.FindLineOther})` : '' }}
                         {{ (['l1', 'l2', 'l3', 'l4'].includes(item.FindLine))? `(${item.LineK}K+${item.LineM}M)` : '' }}
-                    </template>
+                    </template> -->
                     
                     <template v-slot:item.type="{ item }">
                         {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}
@@ -312,7 +312,7 @@ export default {
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
             { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 160 },
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 160 },
             { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 220 },
             { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 140 },
@@ -362,7 +362,26 @@ export default {
                     'CancelStatus',
                 ],
             }).then(res => {
+                console.log("go")
                 this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    // 組合發現地點文字
+                    let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
+                    
+                    if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {
+                        findLocationText += ` (${element.LineK}K+${element.LineM}M)`  // 本線、祝山線、眠月線、水山線
+                        
+                    } else if(element.FindLine == 'other') {
+                        findLocationText += ` (${element.FindLineOther})`  // 其他地點
+                    }
+                    element.FindLine = findLocationText
+                });
+
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')

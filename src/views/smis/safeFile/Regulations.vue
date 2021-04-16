@@ -188,17 +188,8 @@
                             ></v-text-field>
                         </v-col>
 
-                        <v-col cols="12">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>文件上傳
-                            </h3>
-                            <v-file-input
-                                label="請點此選擇要上傳的檔案"
-                                solo
-                                v-model="ipt.file"
-                                @change="select"
-                            ></v-file-input>
-                        </v-col>
+                        <!-- 文件上傳 -->
+                        <UploadOneFileAdd @joinFile="select" />
 
                         <v-col cols="12" v-if="itemIndex > -1" class="mt-n10">
                             <span class="error--text">目前檔案： {{ ipt.nowfile }}</span>
@@ -221,6 +212,7 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue'
 import { departOptions } from '@/assets/js/departOption'
 import { regulfetchList, regulCreate, updateRegul, deleteRegul } from '@/apis/smis/safeFile'
 
@@ -261,7 +253,7 @@ export default {
             depart: 'ARCO001',  // 維護單位
             type: '1',  // 文件類型
             version: '',  // 版次
-            file: null,  // 檔案
+            upload: null,  // 檔案
             note: '',  // 備註
         },
         departOpts: departOptions,  // dialog 維護單位下拉選單
@@ -271,7 +263,10 @@ export default {
             { text: '其他文件', value: '3' },
         ],
     }),
-    components: { Pagination },  // 頁碼
+    components: {
+        Pagination,
+        UploadOneFileAdd,
+    },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -329,32 +324,38 @@ export default {
         // 送出
         save() {
             this.isLoading = true
-
             if (this.itemIndex === -1) {
                 // -------- 新增時 -------
-                regulCreate({
-                    SelectFileType: this.ipt.type,  // 文件類別
-                    MaintainDesp: this.ipt.depart,  // 維護單位
-                    Version: this.ipt.version,  // 版次
-                    Remark: this.ipt.note,  // 備註
-                    FileName: this.ipt.upload.fileName,  // 檔案名稱
-                    FileType: this.ipt.upload.fileType,  // 檔案類型
-                    UnitData: this.ipt.upload.unitData,  // 檔案內容
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '新增成功' })
-                    } else {
-                        console.log(res.data.Msg)
-                        this.chMsgbar({ success: false, msg: '新增失敗' })
-                    }
-                }).catch(err => {
-                    console.log(err)
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
-                }).finally(() => {
-                     this.isLoading = this.dialog = false
-                })
+                if(this.ipt.upload != null && this.ipt.upload != undefined){
+                    regulCreate({
+                        SelectFileType: this.ipt.type,  // 文件類別
+                        MaintainDesp: this.ipt.depart,  // 維護單位
+                        Version: this.ipt.version,  // 版次
+                        Remark: this.ipt.note,  // 備註
+                        FileName: this.ipt.upload.fileName,  // 檔案名稱
+                        FileType: this.ipt.upload.fileType,  // 檔案類型
+                        UnitData: this.ipt.upload.unitData,  // 檔案內容
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        console.log("res.data", res.data)
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '新增成功' })
+                        } else {
+                            console.log(res.data.Msg)
+                            this.chMsgbar({ success: false, msg: '新增失敗' })
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                    }).finally(() => {
+                        this.isLoading = this.dialog = false
+                    })
+                }
+                else{
+                    this.isLoading = false
+                    alert("未選擇上傳文件")
+                }
 
             } else {
                 // -------- 編輯時 -------
@@ -364,9 +365,9 @@ export default {
                     MaintainDesp: this.ipt.depart,  // 維護單位
                     Version: this.ipt.version,  // 版次
                     Remark: this.ipt.note,  // 備註
-                    FileName: (this.ipt.file)? this.ipt.upload.fileName : null,  // 檔案名稱
-                    FileType: (this.ipt.file)? this.ipt.upload.fileType : null,  // 檔案類型
-                    UnitData: (this.ipt.file)? this.ipt.upload.unitData : null,  // 檔案內容
+                    FileName: (this.ipt.upload)? this.ipt.upload.fileName : null,  // 檔案名稱
+                    FileType: (this.ipt.upload)? this.ipt.upload.fileType : null,  // 檔案類型
+                    UnitData: (this.ipt.upload)? this.ipt.upload.unitData : null,  // 檔案內容
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
@@ -379,7 +380,7 @@ export default {
                         this.tableItems[this.itemIndex].convert_findDate = res.data.convert_findDate  // 最後更新時間
 
                         // 若有傳檔案，則更新檔案路徑及檔名
-                        if (this.ipt.file) {
+                        if (this.ipt.upload) {
                             this.tableItems[this.itemIndex].FileFullName = this.ipt.upload.fileName  // 檔案名稱
                             this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
                         }
@@ -447,23 +448,7 @@ export default {
         },
         // 選擇檔案(dialog內)
         select(file) {
-            this.ipt.file = file
-
-            if (file) {
-                let reader = new FileReader()  // blob 用
-
-                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
-                reader.readAsArrayBuffer(file)
-
-                // 設定讀取完時的動作
-                reader.onload = () => {
-                    // 抓出副檔名
-                    let nameArr = file.name.split('.')  // 用小數點拆成陣列
-                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
-                    
-                    this.ipt.upload = { fileName: file.name, fileType: type, unitData: Array.from(new Uint8Array(reader.result)) }
-                }
-            }
+            this.ipt.upload = file
         },
     },
     created() {

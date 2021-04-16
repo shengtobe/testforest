@@ -54,8 +54,8 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.EndangerStatus  // 狀態
-
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
+
             
                         // 組合影響、運轉影響情形字串
                         let affectsArr = []

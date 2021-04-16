@@ -46,3 +46,76 @@ export function deleteData(data) { return axios(
         data,
     }
 )}
+// 申請審核
+export function sendCheckData(data) { return axios(
+    {
+        url: '/sms/dangerdb/apply/check',
+        method: 'post',
+        data,
+    }
+)}
+
+// 申請結案
+export function sendCloseData(data) { return axios(
+    {
+        url: '/sms/dangerdb/apply/close',
+        method: 'post',
+        data,
+    }
+)}
+
+// 審核通過
+export function sendPassData(data) { return axios(
+    {
+        url: '/sms/dangerdb/check/pass',
+        method: 'post',
+        data,
+    }
+)}
+
+// 退回
+export function sendRetuenData(data) { return axios(
+    {
+        url: '/sms/dangerdb/check/return',
+        method: 'post',
+        data,
+    }
+)}
+
+// 重提
+export function sendResetData(data) { return axios(
+    {
+        url: '/sms/dangerdb/apply/reset',
+        method: 'post',
+        data,
+    }
+)}
+
+// 申請更新(危害更新)
+export function sendUpdateData(data) { return axios(
+    {
+        url: '/sms/dangerdb/apply/update',
+        method: 'post',
+        data,
+    }
+)}
+
+// 行車危害編修歷程記錄查詢
+export function getBeforeData(data) { return axios(
+    {
+        url: '/sms/dangerdb/record/query',
+        method: 'post',
+        data,
+    }
+)}
+
+// 審核更新通過
+export function updatePassData(data) { return axios(
+    {
+        url: '/sms/dangerdb/check/update',
+        method: 'post',
+        data,
+    }
+)}
+
+

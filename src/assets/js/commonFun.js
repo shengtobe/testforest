@@ -85,6 +85,8 @@ export function encodeObject(unsafeObject) {
 //參數說明：被替換過的物件
 //回傳值：原始物件
 export function decodeObject(safeObject) {
+  if(safeObject == null) return;
+    console.log("safeObject: ", safeObject)
     let unsafeObject = {}
     const objectKeys = Object.keys(safeObject)
     objectKeys.forEach((element) => {

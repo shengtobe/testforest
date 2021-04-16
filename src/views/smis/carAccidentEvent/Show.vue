@@ -14,7 +14,7 @@
     <OtherInfoShow :items="otherItems" />
 
     <!-- 檔案列表 -->
-    <FileListShow :fileList="files" />
+    <FileListShow :fileList="files" title="檔案列表" />
 
     <!-- 填寫人員傷亡、改善措施 -->
     <v-row no-gutters class="mt-10">
@@ -129,11 +129,16 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("=========初始化資料========")
+            console.log(obj)
+            
             this.id = obj.AccidentCode  // 編號
+            // console.log("this.id", this.id)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.otherItems = obj.otherInfo  // 其他資訊
             this.files = [ ...obj.FileCount ]  // 檔案附件
+            console.log("this.files: ", this.files)
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
 
@@ -222,6 +227,8 @@ export default {
         },
     },
     created() {
+        console.log("========created=========")
+        console.log(this.itemData)
         this.setShowData(this.itemData)
     }
 }

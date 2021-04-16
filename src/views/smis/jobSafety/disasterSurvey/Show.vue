@@ -9,30 +9,9 @@
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
-            <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
-                >
-                    <span class="font-weight-black">
-                        檔案附件
-                    </span>
-                </v-col>
+       
 
-                <v-col class="white pa-3">
-                    <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
-                        v-for="item in files"
-                        :key="item.fileName"
-                        :href="item.link"
-                        :download="item.fileName"
-                    >
-                        {{ item.fileName }}
-                    </v-chip>
-                </v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
+        <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
                     style="max-width: 160px"
@@ -58,12 +37,14 @@
                     </v-chip>
                 </v-col>
             </v-row>
-        </v-col>
+        </v-col> -->
     </v-row>
+
+    <FileListShow :fileList="files" title="檔案列表" />
 
     <v-row class="mt-8">
         <!-- 鎖定後要填寫的部份 -->
-        <template v-if="isLocked">
+        <!-- <template v-if="isLocked">
             <v-col cols="12" sm="4" md="3">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>公傷假(起)
@@ -184,45 +165,54 @@
                     </v-list-item-group>
                 </v-card>
             </v-col>
-        </template>
+        </template> -->
 
         <v-col cols="12" class="text-center mb-8">
             <v-btn dark class="ma-2"
-                to="/smis/jobsafety/disaster-survey"
-            >回搜尋頁</v-btn>
+                @click="closeWindow"
+            >關閉視窗</v-btn>
 
-            <v-btn dark class="ma-2"
-                color="indigo"
-                :to="`/smis/jobsafety/disaster-survey/${id}/edit`"
-                v-if="!isLocked"
-            >編輯</v-btn>
+            <template v-if="!done">
+                <v-btn dark class="ma-2"
+                    color="indigo"
+                    :to="`/smis/jobsafety/disaster-survey/${this.itemData.AccidentCode}/edit`"
+                    v-if="!isLocked"
+                >編輯</v-btn>
 
-            <v-btn dark color="teal" class="ma-2"
-                v-if="!isLocked"
-                @click="excel"
-            >列印</v-btn>
+                <v-btn dark color="teal" class="ma-2"
+                    v-if="!isLocked"
+                    @click="excel"
+                >列印</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
-                @click="del"
-            >作廢</v-btn>
+                 <v-btn dark  class="ma-2" color="error"
+                    @click="del"
+                >作廢</v-btn>
 
-            <v-btn dark  class="ma-2" color="success"
-                @click="save"
-            >{{ (isLocked)? '申請審核資料' : '鎖定' }}</v-btn>
+                <v-btn dark  class="ma-2" color="success"
+                    @click="save"
+                >{{ (isLocked)? '申請審核資料' : '申請審核資料' }}</v-btn>
+            </template>
+           
+
+            
         </v-col>
     </v-row>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import FileListShow from '@/components/FileListShow.vue'
+import { deleteData, sendCheckData} from '@/apis/smis/jobSafety'
 
 export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        done: false,  // 是否完成頁面操作
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 上傳的檔案
@@ -241,100 +231,179 @@ export default {
             end: false,
         },
         laborOpts: [
-            { text: '有', value: 'y' },
-            { text: '無', value: 'n' },
+            { text: '有', value: '有' },
+            { text: '無', value: '無' },
         ],
     }),
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+            'closeWindow',  // 關閉視窗
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
+            this.id = obj.AccidentCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.files = [ ...obj.files ]  // 檔案附件
+            this.files = [ ...obj.FileCount ]  // 檔案附件
             this.isLocked = obj.isLocked  // 是否已鎖定
 
-            // 危害通報連結 (依通報狀態連至不同頁面)
-            let arr = obj.notifyLinks.map(item => {
-                let link = ''
-                switch(item.status) {
-                    case '未審核':
-                        link = `/smis/harmnotify/${item.id}/show`
-                        break
-                    case '審核中':
-                        link = `/smis/harmnotify/${item.id}/review`
-                        break
-                    case '已結案':
-                        link = `/smis/harmnotify/${item.id}/complated`
-                        break
-                    default:
-                        break
-                }
+            // // 危害通報連結 (依通報狀態連至不同頁面)
+            // let arr = obj.notifyLinks.map(item => {
+            //     let link = ''
+            //     switch(item.status) {
+            //         case '未審核':
+            //             link = `/smis/harmnotify/${item.id}/show`
+            //             break
+            //         case '審核中':
+            //             link = `/smis/harmnotify/${item.id}/review`
+            //             break
+            //         case '已結案':
+            //             link = `/smis/harmnotify/${item.id}/complated`
+            //             break
+            //         default:
+            //             break
+            //     }
 
-                return {
-                    id: item.id,
-                    link: link,
-                }
-            })
-            this.notifyLinks = [ ...arr ]
+            //     return {
+            //         id: item.id,
+            //         link: link,
+            //     }
+            // })
+            // this.notifyLinks = [ ...arr ]
         },
         // 列印
         excel() {
-
+            serveNewListExecl({
+                CreatorID: this.userData.UserId,  // 立案人id
+                WorkYear: this.ipt.year,  // 年度
+                WorkBudget: this.ipt.money,  // 預算金額
+                AgreementDTime: this.ipt.expiryDate,  // 履約到期日
+                WorkNoticeStartDTime: this.ipt.workDateStart,  // 通知施作日期 (起)
+                WorkNoticeEndDTime: this.ipt.workDateEnd,  // 通知施作日期 (訖)
+                NoticeMethod: this.ipt.noticeMethod,  // 通知方式
+                NoticeManID: this.ipt.noticeMember,  // 通知人
+                // Type: this.ipt.type,  // 工單性質
+                OderTypeCode: this.ipt.typeNumber,  // 工單性質編號
+                // MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
+                // MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
+                // MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
+                // MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                Malfunction: this.ipt.noticeLocation,  // 通報維修地點及事項
+                WorkSubject: '',  // 故障主旨(目前是備用的欄位)
+                ItemCount: this.ipt.items, // 請修項目
+                TotalSpent: this.totalMoney,  // 總金額
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                let link = document.createElement('a')
+                link.href = `/downloads/${res.data.file_name}`
+                link.setAttribute('download', res.data.file_name)
+                document.body.appendChild(link)
+                link.click()
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
+                deleteData({
+                    AccidentCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        this.chMsgbar({ success: false, msg: '作廢失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 鎖定
         save() {
-            if (this.isLocked) {
-                // -------------- 已鎖定 -------------- 
-                let errArr = []
-                if (!this.finishImprove) errArr.push('改善措施')
+            // if (this.isLocked) {
+            //     // -------------- 已鎖定 -------------- 
+            //     let errArr = []
+            //     if (!this.finishImprove) errArr.push('改善措施')
 
-                if (this.finishDeath && this.finishImprove) {  // 都有填寫
-                    if (confirm('你確定要申請審核嗎?')) {
-                        this.chLoadingShow()
+            //     if (this.finishDeath && this.finishImprove) {  // 都有填寫
+            //         if (confirm('你確定要申請審核嗎?')) {
+            //             this.chLoadingShow()
 
-                        setTimeout(() => {
-                            this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-                            this.chMsgbar({ success: true, msg: '申請審核成功'})
-                            this.chLoadingShow()
-                        }, 1000)
+            //             setTimeout(() => {
+            //                 this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+            //                 this.chMsgbar({ success: true, msg: '申請審核成功'})
+            //                 this.chLoadingShow()
+            //             }, 1000)
+            //         }
+            //     } else {
+            //         let errLog = '你還未填寫「'+ errArr.join('、') + '」'
+            //         alert(errLog)
+            //     }
+            // } else {
+            //     // -------------- 未鎖定 -------------- 
+            //     if (confirm('你確定要鎖定嗎?')) {
+            //         this.chLoadingShow()
+
+            //         // 向後端更新鎖定、覆核的欄位
+            //         setTimeout(() => {
+            //             // this.topItems.isReview.text = '已複核'
+            //             this.isLocked = true
+            //             this.chLoadingShow()
+            //         }, 1000)
+            //     }
+            // }
+            if (confirm('你確定要申請審核嗎?')) {
+                this.chLoadingShow()
+
+                // setTimeout(() => {
+                //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                //     this.chMsgbar({ success: true, msg: '申請審核成功'})
+                //     this.done = true
+                //     this.chLoadingShow()
+                // }, 1000)
+                //-----call申請審核api------
+                sendCheckData({
+                    AccidentCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
                     }
-                } else {
-                    let errLog = '你還未填寫「'+ errArr.join('、') + '」'
-                    alert(errLog)
-                }
-            } else {
-                // -------------- 未鎖定 -------------- 
-                if (confirm('你確定要鎖定嗎?')) {
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
+                })
 
-                    // 向後端更新鎖定、覆核的欄位
-                    setTimeout(() => {
-                        // this.topItems.isReview.text = '已複核'
-                        this.isLocked = true
-                        this.chLoadingShow()
-                    }, 1000)
-                }
+                setTimeout(() => {
+                    this.chMsgbar({ success: true, msg: '申請審核成功'})
+                },1000)
             }
             
         },

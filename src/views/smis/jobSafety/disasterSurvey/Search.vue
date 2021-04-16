@@ -142,8 +142,12 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.status="{ item }">
+                    <!-- <template v-slot:item.status="{ item }">
                         {{ transferStatusText(item.status) }}
+                    </template> -->
+
+                    <template v-slot:item.status="{ item }">
+                        <span>{{ opts.status.find(ele => ele.value == item.AccidentStatus).text }}</span>
                     </template>
 
                     <template v-slot:item.content="{ item }">
@@ -170,9 +174,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { jobDisasterSurveyStatus } from '@/assets/js/smisData'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import { dapartOptsBrief } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
+import { searchData } from '@/apis/smis/jobSafety'
 
 export default {
     data: () => ({
@@ -192,10 +199,10 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作部門', value: 'workDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '罹災者姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
@@ -203,16 +210,22 @@ export default {
             depart: dapartOptsBrief,  // 部門
             status: [  // 事故事件狀態 (審核中有二個，故傳中文值讓後端判斷)
                 { text: '不限', value: '' },
-                { text: '已立案', value: '已立案' },
-                { text: '已完備資料', value: '已完備資料' },
-                { text: '改善措施已落實', value: '改善措施已落實' },
-                { text: '審核中', value: '審核中' },
+                ...jobDisasterSurveyStatus,
                 { text: '已作廢', value: '已作廢' },
+                // { text: '已立案', value: '已立案' },
+                // { text: '已完備資料', value: '已完備資料' },
+                // { text: '改善措施已落實', value: '改善措施已落實' },
+                // { text: '審核中', value: '審核中' },
             ],
         },
         isLoading: false,  // 是否讀取中
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -226,97 +239,50 @@ export default {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '2020090501',
-                        workDepart: '阿里山車站',
-                        name: '王小明',
-                        date: '2020-08-23',
-                        status: 1,
-                    },
-                    {
-                        id: '2020090501',
-                        workDepart: '阿里山車站',
-                        name: '王小明',
-                        date: '2020-08-23',
-                        status: 2,
-                    },
-                    {
-                        id: '2020090501',
-                        workDepart: '阿里山車站',
-                        name: '王小明',
-                        date: '2020-08-23',
-                        status: 3,
-                    },
-                    {
-                        id: '2020090501',
-                        workDepart: '阿里山車站',
-                        name: '王小明',
-                        date: '2020-08-23',
-                        status: 4,
-                    },
-                    {
-                        id: '2020090501',
-                        workDepart: '阿里山車站',
-                        name: '王小明',
-                        date: '2020-08-23',
-                        status: 5,
-                    },
-                ]
+            searchData({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_JobAccidentSurvey',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    // 'EndangerCode',
+                    // 'EndangerStatus',
+                    // 'OperationMode',
+                    // 'RiskSerious',
+                    // 'RiskFreq',
+                    // 'RiskLevel',
+                    // 'DelStatus',
+                    // 'CancelStatus',
+                    // 'InsertDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 轉換事故事件狀態文字
-        transferStatusText(status) {
-            switch(status) {
-                case 1:
-                    return '已立案'
-                    break
-                case 2:  // 審核完備資料
-                    return '審核中'
-                    break
-                case 3:
-                    return '已完備資料'
-                    break
-                case 4:  // 審核措施落實
-                    return '審核中'
-                    break
-                case 5:
-                    return '改善措施已落實'
-                    break
-                default:
-                    break
-            }
-        },
+        
         // 重新導向 (依結案狀態)
         redirect(item) {
-            switch(item.status) {
-                case 1:  // 已立案
-                    sessionStorage.itemStatus = '1'
-                    break
-                case 2:  // 審核中 (審核完備資料)
-                    sessionStorage.itemStatus = '2'
-                    break
-                case 3:  // 已完備資料
-                    sessionStorage.itemStatus = '3'
-                    break
-                case 4: // 審核中 (審核措施落實)
-                    sessionStorage.itemStatus = '4'
-                    break
-                case 5: // 改善措施已落實
-                    sessionStorage.itemStatus = '5'
-                    break
-                default:
-                    break
-            }
-            
-            let routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.id}/show` })
+            //開新分頁
+            let routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${item.AccidentCode}/show` })
             window.open(routeData.href, '_blank')
         },
     },

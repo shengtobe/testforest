@@ -60,6 +60,7 @@
             </v-row>
         </v-col>
 
+
         <!-- 檢討摘要、證據上傳 -->
         <template v-if="status == 3">
             <v-col cols="12" class="mt-12 mb-8">
@@ -79,10 +80,12 @@
                 ></v-textarea>
             </v-col>
 
+            <!-- 檔案列表 -->
+
             <UploadFileAdd
-                title="證據上傳"
+                title="檔案上傳"
                 :uploadDisnable="false"
-                :fileList="evidences"
+                :fileList="showFiles"
                 @joinFile="joinFile"
                 @rmFile="rmFile"
             />
@@ -95,7 +98,7 @@
 
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
-                    @click="dialog = true"
+                    @click="showDialog(true)"
                     v-if="status == 2"
                 >退回</v-btn>
 
@@ -160,10 +163,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import FileListShow from '@/components/FileListShow.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import { passData, withdrawData, deleteData, resetData, closeData } from '@/apis/smis/jobSafety'
 
 export default {
     props: ['itemData'],
@@ -174,9 +180,11 @@ export default {
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 上傳的檔案
+        dialogReturnMsg: '',  // 退回或徹銷時成功的訊息
         notifyLinks: [],  // 連結的通報
         controlReview: '',  // 措施檢討摘要
         evidences: [],  // 改善措施證據
+        showFiles: [],  // 要顯示的縮圖
         isLoading: false,  // 是否讀取中
         dialog: false,  // 退回 dialog 是否顯示
         backReason: '',  // 退回原因
@@ -185,6 +193,12 @@ export default {
         TopBasicTable,
         BottomTable,
         UploadFileAdd,
+        FileListShow
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -194,88 +208,159 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
-            this.status = obj.status  // 處理狀態
+            this.id = obj.AccidentCode  // 編號
+            this.status = obj.AccidentStatus  // 處理狀態
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.files = [ ...obj.files ]  // 檔案附件
+            this.files = [ ...obj.FileCount ]  // 檔案附件
 
             // 危害通報連結 (依通報狀態連至不同頁面)
-            let arr = obj.notifyLinks.map(item => {
-                let link = ''
-                switch(item.status) {
-                    case '未審核':
-                        link = `/smis/harmnotify/${item.id}/show`
-                        break
-                    case '審核中':
-                        link = `/smis/harmnotify/${item.id}/review`
-                        break
-                    case '已結案':
-                        link = `/smis/harmnotify/${item.id}/complated`
-                        break
-                    default:
-                        break
-                }
+            // let arr = obj.notifyLinks.map(item => {
+            //     let link = ''
+            //     switch(item.status) {
+            //         case '未審核':
+            //             link = `/smis/harmnotify/${item.id}/show`
+            //             break
+            //         case '審核中':
+            //             link = `/smis/harmnotify/${item.id}/review`
+            //             break
+            //         case '已結案':
+            //             link = `/smis/harmnotify/${item.id}/complated`
+            //             break
+            //         default:
+            //             break
+            //     }
 
-                return {
-                    id: item.id,
-                    link: link,
-                }
-            })
-            this.notifyLinks = [ ...arr ]
+            //     return {
+            //         id: item.id,
+            //         link: link,
+            //     }
+            // })
+            // this.notifyLinks = [ ...arr ]
+        },
+        showDialog(bool) {
+            // 若為 true 是退回
+            this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
+            this.dialog = true
         },
         // 退回
         withdraw() {
             this.isLoading = true
-
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '退回成功'})
+            // setTimeout(() => {
+            //     this.chMsgbar({ success: true, msg: '退回成功'})
+            //     this.isLoading = this.dialog = false
+            //     this.done = true  // 隱藏頁面操作按鈕
+            // }, 1000)
+            withdrawData({
+                AccidentCode: this.id,  // 事故事件編號
+                Reason: this.backReason,  // 退回原因
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                    this.done = true  // 隱藏頁面操作按鈕
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+            }).finally(() => {
                 this.isLoading = this.dialog = false
-                this.done = true  // 隱藏頁面操作按鈕
-            }, 1000)
+            })
         },
         // 同意措施執行
         save() {
             if (confirm('你確定要同意措施執行嗎?')) {
                 this.chLoadingShow()
-
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '同意措施執行成功'})
+                passData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '送出成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.done = true  // 隱藏頁面操作按鈕
-                }, 1000)
+                })
             }
         },
         // 加入要上傳的檔案
-        joinFile(file) {
-            this.evidences.push(file)
+        joinFile(obj, bool) {
+            console.log("bool:", bool)
+            if (bool) {
+                console.log("檔案:", obj)
+                this.evidences.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                console.log("縮圖:", obj)
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
         },
         // 移除要上傳的檔案
         rmFile(idx) {
+            this.showFiles.splice(idx, 1)
             this.evidences.splice(idx, 1)
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
+                console.log("欲刪除的資料ID:" + this.id)
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
+                deleteData({
+                    AccidentCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '作廢失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.done = true  // 隱藏頁面操作按鈕
-                }, 1000)
+                })
             }
         },
         // 申請結案
         closeCase() {
             if (confirm('你確定要申請結案嗎?')) {
                 this.chLoadingShow()
+                console.log("this.controlReview:", this.controlReview)
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請結案成功'})
+                closeData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    ProcReview: this.controlReview,  // 措施檢討摘要
+                    FileCount: this.evidences,  // 上傳檔案列表 (證據)
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    console.log("申請結案後:", res.data)
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '送出成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.done = true  // 隱藏頁面操作按鈕
-                }, 1000)
+                })
             }
         },
         // 重提事故事件
@@ -283,11 +368,23 @@ export default {
             if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '重提事故事件成功'})
+                resetData({
+                    AccidentCode: this.id,  // 事故事件編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '重提成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，重提失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                    this.done = true  // 隱藏頁面操作按鈕
-                }, 1000)
+                })
             }
         },
     },

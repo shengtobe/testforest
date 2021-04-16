@@ -134,7 +134,7 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
-                    <v-list-item to="/smis/harmnotify/status-type">
+                    <v-list-item to="/smis/harmnotify/case-type">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         立案類型統計圖
                     </v-list-item>
@@ -165,8 +165,8 @@ import { fetchList } from '@/apis/smis/harmNotify'
 export default {
     data: () => ({
         ipt: {
-            dateStart:  new Date().toISOString().substr(0, 10),  // 通報日期(起)
-            dateEnd: new Date().toISOString().substr(0, 10),  // 通報日期(迄)
+            dateStart:  '',  // 通報日期(起)
+            dateEnd: '',  // 通報日期(迄)
             status: '',  // 通報狀態
         },
         dateMemuShow: {  // 日曆是否顯示
@@ -195,10 +195,16 @@ export default {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+        clickDate(){
+            console.log("click date~~~")
+        },
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
+            // 如果null要改空字串
+            if(this.ipt.dateStart == null) this.ipt.dateStart = ''
+            if(this.ipt.dateEnd == null) this.ipt.dateEnd = ''
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -219,6 +225,13 @@ export default {
                 IsFirstLoad: (bool)? 'T' : 'F',
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')

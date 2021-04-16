@@ -1,7 +1,7 @@
 <template>
 <v-col cols="12">
     <h3 class="mb-1">
-        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>檔案管理
+        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>{{ title }}
     </h3>
 
     <v-row>
@@ -30,7 +30,7 @@
         <!-- 檔案 -->
         <v-col
             cols="12"
-            sm="6"
+            class="mb-n4"
             v-for="(item, i) in fileList"
             :key="(item.fileName == undefined)? item.FileName : item.fileName"
         >
@@ -64,7 +64,7 @@
 
 <script>
 export default {
-    props: ['uploadDisnable', 'fileList'],  // props：是否disabled、檔案列表
+    props: ['uploadDisnable', 'fileList', 'title'],  // props：是否disabled、檔案列表
     data: () => ({
         choseFile: null,  // 所選的檔案
     }),
@@ -76,8 +76,23 @@ export default {
         // 上傳檔案
         upload() {
             if (this.choseFile != null) {
-                this.$emit('uploadFile', this.choseFile)
-                this.choseFile = null
+                let reader = new FileReader()  // blob 用
+
+                // 設定 reader 物件的 result 屬性，為 ArrayBuffer
+                reader.readAsArrayBuffer(this.choseFile)
+
+                // 設定讀取完時的動作
+                reader.onload = () => {
+                    // 抓出副檔名
+                    let nameArr = this.choseFile.name.split('.')  // 用小數點拆成陣列
+                    let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                    
+                    // 組合要給後端的資料
+                    let fileArr = [{ FileName: this.choseFile.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }]
+                    
+                    this.$emit('uploadFile', fileArr)
+                    this.choseFile = null
+                }
             }
         },
         // 刪除檔案

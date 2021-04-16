@@ -272,6 +272,8 @@ export default {
         ]),
         // 初始化資料
         initDate() {
+            console.log("money: ", this.money)
+            return
             this.chLoadingShow()
 
             // 因為要檢查是否有權限編輯，向後端請求資料

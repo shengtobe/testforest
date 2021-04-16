@@ -37,3 +37,12 @@ export function replyNotify(data) { return axios(
         data,
     }
 )}
+
+// 立案
+export function recordNotify(data) { return axios(
+    {
+        url: '/sms/dangernotify/recordcase',
+        method: 'post',
+        data,
+    }
+)}

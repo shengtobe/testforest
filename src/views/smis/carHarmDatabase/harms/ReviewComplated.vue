@@ -10,7 +10,8 @@
         <BottomTable :items="bottomItems" />
 
         <!-- 控制措施 -->
-        <v-col cols="12" class="mt-8">
+        <ShowControlsTable :tableItems="tableItems" />
+        <!-- <v-col cols="12" class="mt-8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-check-circle</v-icon>控制措施
             </h3>
@@ -26,16 +27,16 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
-                    <template v-slot:item.desc="{ item }">
+                    <template v-slot:item.DeviceDesp="{ item }">
                         <v-btn color="teal" dark
-                            @click="showContent(item.desc)"
+                            @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
-                    <template v-slot:item.file="{ item }">
+                    <template v-slot:item.file_path="{ item }">
                         <v-btn fab small dark color="brown"
-                            :href="item.file.link"
-                            :download="item.file.name"
+                            :href="item.regul_file_path.link"
+                            :download="item.regul_file_path"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -50,12 +51,20 @@
                     </template>
                 </v-data-table>
             </v-card>
-        </v-col>
+        </v-col> -->
 
         <v-col cols="12" class="mt-12 mb-8" v-if="status == 3">
             <v-divider></v-divider>
         </v-col>
-
+        <!-- <v-col cols="12">
+            <UploadFileAdd
+                title="證據上傳"
+                :fileList="showFiles"
+                :uploadDisnable="false"
+                @joinFile="joinFile"
+                @rmFile="rmFile"
+            />
+        </v-col> -->
         <!-- 證據上傳 -->
         <v-col cols="12" v-if="status == 3">
             <v-row>
@@ -65,12 +74,13 @@
                     </h3>
                     <v-select
                         v-model="controlId"
-                        :items="['123', '456']"
+                        :items="ctrlDriveId"
                         solo
                     ></v-select>
                 </v-col>
 
                 <v-col cols="12" sm="6" md="7">
+                    
                     <h3 class="mb-1">
                         <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>證據上傳
                     </h3>
@@ -105,23 +115,23 @@
         >
             <v-row no-gutters>
                 <v-col class="purple lighten-3 pl-3 pb-2 pt-3"
-                    style="max-width: 160px"
+                    style="max-width: 200px"
                 >
                     <span class="font-weight-black">
-                        措施編號 {{ list.controlId }}
+                        措施編號 {{ list.ProcCode }}
                     </span>
                 </v-col>
 
                 <v-col class="white px-3 d-flex flex-wrap">
                     <v-chip
-                        v-for="(file, idx) in list.files"
-                        :key="file.name"
+                        v-for="(file, idx) in list.file_path_name"
+                        :key="file"
                         class="mr-3 my-2"
                         label
                         color="teal"
                         dark
                     >
-                        {{ file.name }} 
+                        {{ file }} 
                         <v-icon right
                             @click="rmFile(i, idx)"
                         >mdi-close-circle</v-icon>
@@ -137,7 +147,7 @@
 
             <template v-if="!done">
                 <v-btn dark  class="ma-2" color="error"
-                    @click="dialog = true"
+                    @click="showDialog(true)"
                     v-if="status == 2"
                 >退回</v-btn>
 
@@ -235,8 +245,13 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
+import FileListShow from '@/components/FileListShow.vue'
+import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData} from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['itemData'],
@@ -245,32 +260,44 @@ export default {
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         topItems: [],  // 上面的欄位
+        dialogReturnMsg: '',  // 退回或徹銷時成功的訊息
         bottomItems: [],  // 下面的欄位
         tableItems: [],  // 表格資料 (控制措施)
+        ctrlDriveId: [], // 控制措施編號
+        showFiles: [],  // 要顯示的縮圖
+        eachFile:{ FileName: '' ,FileType: '', UnitData: '', ProcCode: '' },
         headers: [  // 表格欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'subject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '措施說明', value: 'DeviceDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '管控單位', value: 'DeviceDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '規章', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '證據', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
         evidences: [],  // 控制措施證據
         dialogShow: false,  // 控制措施證據 dialog 是否顯示
         isLoading: false,  // 是否讀取中
         dialog: false,  // 退回 dialog 是否顯示
         backReason: '',  // 退回原因
-        controlId: '123',  // 控制措施編號 (證據上傳時用)
+        controlId: '',  // 控制措施編號 (證據上傳時用)
         choose: null,  // 上傳時所選的檔案
         uploads: [  // 證據上傳檔案列表
-            { controlId: '123', files: []},
-            { controlId: '456', files: []},
+            // { controlId: '123', files: []},
+            // { controlId: '456', files: []},
         ],  
     }),
     components: {
         TopBasicTable,
         BottomTable,
+        UploadFileAdd,
+        ShowControlsTable,
+        FileListShow
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -287,32 +314,76 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.id = obj.id  // 編號
-            this.status = obj.status  // 事故事件狀態(值)
+            this.id = obj.EndangerCode  // 編號
+            this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
+            // 重組編號下拉選單列表
+            this.ctrlDriveId = this.tableItems.map(item => item.ProcCode )
+            this.uploads = this.tableItems
+        },
+        showDialog(bool) {
+            // 若為 true 是退回
+            this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
+            this.dialog = true
+        },
+        joinFile(obj, bool) {
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
+        },
+        // 移除要上傳的檔案 (組件用)
+        rmFile(idx) {
+            this.showFiles.splice(idx, 1)
+            this.ipt.files.splice(idx, 1)
         },
         // 退回
         withdraw() {
             this.isLoading = true
 
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '退回成功'})
-                this.done = true  // 隱藏頁面操作按鈕
-                this.dialog = false
-            }, 1000)
+            sendRetuenData({
+                EndangerCode: this.id,  // 事故事件編號
+                Reason: this.backReason,  // 退回原因
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                    this.done = true  // 隱藏頁面操作按鈕
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+            }).finally(() => {
+                this.isLoading = this.dialog = false
+            })
         },
         // 同意措施執行
         save() {
             if (confirm('你確定要同意措施執行嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '同意措施執行成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                sendPassData({
+                    EndangerCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 作廢
@@ -320,11 +391,24 @@ export default {
             if (confirm('你確定要作廢嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '作廢成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                deleteData({
+                    EndangerCode: this.id,  // 編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '作廢成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        console.log(res.data.Msg)
+                        this.chMsgbar({ success: false, msg: '作廢失敗' })
+                    }
+                }).catch(err => {
+                    console.log(err)
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 申請結案
@@ -332,11 +416,25 @@ export default {
             if (confirm('你確定要申請結案嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請結案成功'})
-                    this.done = true  // 隱藏頁面操作按鈕
+                sendCloseData({
+                    EndangerCode: this.id,  // 事故事件編號
+                    ProcReview: this.controlReview,  // 措施檢討摘要
+                    FileCount: this.evidences,  // 上傳檔案列表 (證據)
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '送出成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 顯示檢視內容
@@ -353,10 +451,23 @@ export default {
             if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
                 this.chLoadingShow()
 
-                setTimeout(() => {
-                    this.$router.push({ path: `/smis/car-harmdb/harms/${this.id}/show` })
+                sendResetData({
+                    EndangerCode: this.id,  // 事故事件編號
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '重提成功' })
+                        this.done = true  // 隱藏頁面操作按鈕
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，重提失敗' })
+                }).finally(() => {
                     this.chLoadingShow()
-                }, 1000)
+                })
             }
         },
         // 選擇上傳的檔案
@@ -365,27 +476,55 @@ export default {
         },
         // 加入要上傳的檔案
         join() {
-            if (this.choose != null) {
-                // 找出目前所選的控制措施 id 檔案列表的索引值
-                let idx = this.uploads.findIndex(ele => {
-                    return ele.controlId == this.controlId
+            if(this.choose == null){
+                alert("請選擇要上傳的檔案")
+                return
+            }
+            if(this.controlId == ''){
+                alert("請選擇控制措施編號")
+                return
+            }
+            // 找出目前所選的控制措施 id 檔案列表的索引值
+            let idx = this.uploads.findIndex(ele => {
+                return ele.ProcCode == this.controlId
+            })
+            // 已加入的檔案不重覆增加
+            this.choose.forEach(chooseItem => {
+                //檢測檔名是否存在
+                let file = this.uploads[idx].file_path_name.find(item => {
+                    return item == chooseItem.name
                 })
 
-                // 已加入的檔案不重覆增加
-                this.choose.forEach(ele => {
-                    let file = this.uploads[idx].files.find(item => {
-                        return item.name == ele.name && item.size == ele.size
-                    })
+                // // 若已加入列表中沒找到檔案則加入
+                if (file == undefined){
+                    let reader = new FileReader()  // blob 用
+                    reader.readAsArrayBuffer(chooseItem)
                     
-                    // // 若已加入列表中沒找到檔案則加入
-                    if (file == undefined) this.uploads[idx].files.push(ele)
-                })
-                this.choose = null
-            }
+                    // 設定讀取完時的動作
+                    reader.onload = () => {
+                        // 抓出副檔名
+                        let nameArr = chooseItem.name.split('.')  // 用小數點拆成陣列
+                        let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
+                        
+                        this.eachFile.FileName = chooseItem.name
+                        this.eachFile.FileType = type
+                        this.eachFile.UnitData = Array.from(new Uint8Array(reader.result))
+                        this.eachFile.ProcCode = this.uploads[idx].ProcCode
+                    }
+                    this.evidences.push(this.eachFile)
+                    
+                    this.uploads[idx].file_path_name.push(chooseItem.name)
+                }
+                else{
+                    alert("檔名有重複")
+                }
+            })
+            this.choose = null
         },
         // 刪除要上傳的檔案
         rmFile(fileListIdx, itemIdx) {
-            this.uploads[fileListIdx].files.splice(itemIdx, 1)
+            this.uploads[fileListIdx].file_path_name.splice(itemIdx, 1)
+            this.uploads[fileListIdx].file_path.splice(itemIdx, 1)
         },
     },
     created() {

@@ -20,12 +20,14 @@ export const JobSafetyRouter = [
     {
         linkText: '事故事件詳細內容',
         path: '/smis/jobsafety/disaster-survey/:id/show', 
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/PageRouter.vue')
+        component: () => import('@/views/smis/jobSafety/disasterSurvey/PageRouter.vue'),
+        props: true,
     },
     {
         linkText: '編輯事故事件',
         path: '/smis/jobsafety/disaster-survey/:id/edit', 
-        component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue')
+        component: () => import('@/views/smis/jobSafety/disasterSurvey/Form.vue'),
+        props: true,
     },
     {
         linkText: '改善措施',
@@ -64,19 +66,21 @@ export const JobSafetyRouter = [
         component: () => import('@/views/smis/jobSafety/disasterDb/Search.vue')
     },
     {
+        linkText: '危害資料庫詳細內容',
+        path: '/smis/jobsafety/disasterDb/:id/show', 
+        component: () => import('@/views/smis/jobSafety/disasterDb/PageRouter.vue'),
+        props: true,
+    },
+    {
         linkText: '職災危害資料庫新增',
         path: '/smis/jobsafety/disasterdb/add', 
         component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
     },
     {
-        linkText: '職災危害資料詳庫細內容',
-        path: '/smis/jobsafety/disasterdb/:id/show', 
-        component: () => import('@/views/smis/jobSafety/disasterDb/Show.vue')
-    },
-    {
         linkText: '職災危害資料庫編輯',
         path: '/smis/jobsafety/disasterdb/:id/edit', 
-        component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
+        component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue'),
+        props: true,
     },
 
     // ----------------- 職安績效管理 -----------------
