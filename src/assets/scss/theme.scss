@@ -1,0 +1,25 @@
+$direction-list: (
+  'top':'to top',
+  'right-top':'to right top',
+  'left-top':'to left top',
+  'right':'to right',
+  'left':'to left',
+  'bottom':'to bottom',
+  'right-bottom':'to right bottom',
+  'left-bottom':'to left bottom'
+);
+$theme-color-list: (
+  'orange': #f89e36,
+  'gold': #FFD700,
+  'dark-yellow':#967f1b,
+  'red': #dd0000,
+  'cyan':#00BCD4,
+  'light-blue':#03A9F4
+);
+@each $dkey, $dvalue in $direction-list {
+  @each $ckey, $cvalue in $theme-color-list {
+    .metal-#{$ckey}-#{$dkey}{
+      background: linear-gradient(#{$dvalue}, #{$cvalue}60, #{$cvalue}8e),linear-gradient(#{$dvalue}, #d7d7d7 0%, #858585 45%, #d7d7d7 55%, #fff 100%);
+    }
+  }
+}
