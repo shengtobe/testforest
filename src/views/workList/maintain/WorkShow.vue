@@ -318,20 +318,19 @@
     <v-row>
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn class="ma-2"
+                <v-btn class="ma-2 btn-delete"
                     :loading="isLoading"
                     color="error"
                     @click="dialog = true"
                 >退回</v-btn>
 
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-add"
                     :loading="isLoading"
-                    color="success"
                     @click="save"
                 >送出</v-btn>
             </template>
