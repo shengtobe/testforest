@@ -92,6 +92,7 @@ export default {
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            console.log("this.bottomItems: ",this.bottomItems)
         },
         // 刪除
         deleteItem() {

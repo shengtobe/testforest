@@ -68,7 +68,7 @@
                 </h3>
                 <v-text-field
                     v-model.trim.number="ipt.memberCount"
-                    solo
+                    solo type="number"
                 ></v-text-field>
             </v-col>
         </v-row>
@@ -130,6 +130,7 @@
                         <v-select
                             v-model="hasLicenLv1Select"
                             :items="hasLicenseOptLv1"
+                            @change="pickOne"
                             solo
                         ></v-select>
                     </v-col>
@@ -262,10 +263,11 @@
                                         <h3 class="mb-1">
                                             <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>廠商名稱
                                         </h3>
-                                        <v-text-field
-                                            v-model.trim="vendorForm.name"
+                                        <v-select
+                                            v-model="vendorForm.name"
+                                            :items="vendorList"
                                             solo
-                                        ></v-text-field>
+                                        ></v-select>
                                     </v-col>
 
                                     <v-col cols="12" sm="5">
@@ -274,7 +276,7 @@
                                         </h3>
                                         <v-text-field
                                             v-model.trim.number="vendorForm.count"
-                                            solo
+                                            solo type="number"
                                         ></v-text-field>
                                     </v-col>
                                 </v-row>
@@ -327,23 +329,23 @@
 import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { fetchWorkOrderOne, dispatchOrder } from '@/apis/workList/maintain'
+import { fetchWorkOrderOne, dispatchOrder, fetchLicenseManData, fetchFirmList } from '@/apis/workList/maintain'
 
 // 需證照人員名單 (demo用)
-let hasLicense = {
-    '固定式起重機': [
-        { text: '潘學文', value: '15741' },
-        { text: '尤宗偉', value: '12401' },
-        { text: '蘇峻逸', value: '12216' },
-        { text: '郭明珠', value: '17303' },
-    ],
-    '一般手工電焊': [
-        { text: '賴威志', value: '13745' },
-        { text: '黃妙修', value: '00008' },
-        { text: '李慧美', value: '11018' },
-        { text: '吳曉旻', value: '11006' },
-    ]
-}
+// let hasLicense = {
+//     '固定式起重機': [
+//         { text: '潘學文', value: '15741' },
+//         { text: '尤宗偉', value: '12401' },
+//         { text: '蘇峻逸', value: '12216' },
+//         { text: '郭明珠', value: '17303' },
+//     ],
+//     '一般手工電焊': [
+//         { text: '賴威志', value: '13745' },
+//         { text: '黃妙修', value: '00008' },
+//         { text: '李慧美', value: '11018' },
+//         { text: '吳曉旻', value: '11006' },
+//     ]
+// }
 
 export default {
     props: ['id'],  //路由參數
@@ -351,6 +353,27 @@ export default {
         done: false,  // 是否完成頁面操作
         valid: true,  // 表單是否驗證欄位
         isLoading: false,  // 是否讀取中
+        hasLicenseOptLv1: [],
+        hasLicenseOptLv2: [],
+        licenseItems: [],
+        firmItems: [],
+        vendorList: [],
+        manValueList: [], //人員value陣列
+        manTextList: [], //人員text陣列
+        hasLicense: {
+            '固定式起重機': [
+                { text: '潘學文', value: '15741' },
+                { text: '尤宗偉', value: '12401' },
+                { text: '蘇峻逸', value: '12216' },
+                { text: '郭明珠', value: '17303' },
+            ],
+            '一般手工電焊': [
+                { text: '賴威志', value: '13745' },
+                { text: '黃妙修', value: '00008' },
+                { text: '李慧美', value: '11018' },
+                { text: '吳曉旻', value: '11006' },
+            ]
+        },
         ipt: {
             workNumber: '',  // 工單編號
             workLocation: '',  // 工作地點
@@ -372,6 +395,7 @@ export default {
                 name: '',
             },
             licensedMembers: [],  // 需證照人員 (後端上傳用)
+            licensedMembersValue: [],  // 需證照人員 (後端上傳用)
             commonMembers: [],  // 作業人員 (後端上傳用)
             vendors: [],  // 外包廠商資料
         },
@@ -401,11 +425,11 @@ export default {
             return `${this.ipt.eqNumber1}-${this.ipt.eqNumber2}-${this.ipt.eqNumber3}-${this.ipt.eqNumber4}`
         },
         // 有證照option -- 科室
-        hasLicenseOptLv1: () => Object.keys(hasLicense),
+        // hasLicenseOptLv1: () => Object.keys(this.hasLicense),
         // 有證照option -- 人員清單
-        hasLicenseOptLv2() {
-            return (hasLicense[this.hasLicenLv1Select])
-        },
+        // hasLicenseOptLv2() {
+        //     return (this.hasLicense[this.hasLicenLv1Select])
+        // },
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -414,6 +438,9 @@ export default {
         },
         // 更換科室時，自動選該科室人員清單的第一人
         hasLicenLv1Select: function (newVal, oldVal) {
+            console.log("newVal: ", newVal)
+            console.log("oldVal: ", oldVal)
+            return
             if (newVal != oldVal) {
                 this.hasLicenLv2Select = this.hasLicenseOptLv2[0].value
             }
@@ -439,6 +466,7 @@ export default {
                 WorkOrderID: this.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
+                console.log("初始請求:res.data:", res.data)
                 // 檢查是否有權限編輯
                 if (res.data.CreatorID != this.userData.UserId && res.data.CreatorID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
@@ -447,23 +475,81 @@ export default {
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
                 this.ipt.malfunctionDes = res.data.Malfunction  // 故障描述
 
-                // 初始化林鐵人員下拉選項預設值
-                this.initMemberSelect()
+                
 
                 // 初始化外包人員的表單
                 this.vendorForm = Object.assign({}, this.defaultVendorForm)
 
                 // 組合全部有證照人員資料(反查姓名用)
-                let arr = []
-                for (let key in hasLicense) {
-                    arr = [ ...arr, ...hasLicense[key]]
-                }
-                this.allLicenseArr = arr
+                // let arr = []
+                // console.log("this.hasLicense: ", this.hasLicense)
+                // for (let key in this.hasLicense) {
+                //     arr = [ ...arr, ...this.hasLicense[key]]
+                // }
+                // this.allLicenseArr = arr
+                // console.log("初始化證照陣列:this.allLicenseArr: ", this.allLicenseArr)
             }).catch(err => {
                 alert('資料讀取失敗')
             }).finally(() => {
-                this.chLoadingShow()
+                // this.chLoadingShow()
             })
+
+            //請求證照人員清單
+            fetchLicenseManData({
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                let obj = res.data
+                console.log("obj: ", obj)
+                this.licenseItems = JSON.parse(res.data.order_list)
+                console.log("證照人員清單licenseItems: ", this.licenseItems)
+                //組合全部有證照人員資料(反查text/valeu用)
+                this.licenseItems.forEach(element => {
+                    for (let i = 0; i < element.people_id_list.length; i++) {
+                        if(this.manValueList.indexOf(element.people_id_list[i]) < 0){
+                            this.manValueList.push(element.people_id_list[i])
+                            this.manTextList.push(element.people_name_list[i])
+                        }
+                    }
+                });
+
+                // 初始化林鐵人員下拉選項預設值
+                this.initMemberSelect(this.licenseItems)
+            }).catch(err => {
+                console.log(err)
+                alert('資料讀取失敗2')
+            }).finally(() => {
+                console.log("over")
+            })
+
+            //請求廠商清單
+            fetchFirmList({
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                let obj = res.data
+                console.log("obj: ", obj)
+                this.firmItems = JSON.parse(res.data.order_list)
+                console.log("firmItems: ", this.firmItems)
+                this.vendorList = this.firmItems.map(item => item.VendorName)
+                // 初始化林鐵人員下拉選項預設值
+            }).catch(err => {
+                console.log(err)
+                alert('資料讀取失敗2')
+            }).finally(() => {
+                console.log("over2")
+            })
+
+
+            this.chLoadingShow()
+        },
+        pickOne(){
+            console.log("this.licenseItems: ", this.licenseItems)
+            let select1 = this.hasLicenLv1Select
+            this.licenseItems.forEach(element => {
+                if(element.License == select1){
+                    this.hasLicenseOptLv2 = element.people_name_list
+                    return
+                }
+            });
         },
         // 選擇代理人、作業人員 (組識表組件用)
         chooseMembers(iptName) {
@@ -476,17 +562,27 @@ export default {
             this.ipt[this.nowIptName].name = this.memberName
         },
         // 初始化林鐵人員下拉選項預設值
-        initMemberSelect() {
-            this.hasLicenLv1Select = Object.keys(hasLicense)[0]  // 需證照人員
+        initMemberSelect(data) {
+            console.log("初始化林鐵人員下拉選項預設值data: ", data)
+            // this.hasLicenLv1Select = Object.keys(this.hasLicense)[0]  // 需證照人員
+            this.hasLicenseOptLv1 = data.map(item => item.License)
         },
         // 增加林鐵的人員(第二參數為是否有證照)
         addMember(id, bool) {
+            console.log("add>>>>>>")
+            console.log("id: ", id)
+            console.log("bool: ", bool)
             if(id == '' || id == null) return
             
             if (bool && this.ipt.licensedMembers.findIndex(ele => ele.PeopleId == id) == -1) {
                 // 有證照且未被加入
-                this.ipt.licensedArr.push(this.allLicenseArr.find(item => item.value ==id).text)  // 顯示用，只放入姓名
+                // this.ipt.licensedArr.push(this.allLicenseArr.find(item => item.value ==id).text)  // 顯示用，只放入姓名
+                this.ipt.licensedArr.push(id)  // 顯示用，只放入姓名
                 this.ipt.licensedMembers.push({ PeopleId: id })  // 後端上傳用(證照功能未完成，先做demo資料)
+                
+                this.ipt.licensedMembersValue.push({ PeopleId:this.manValueList[this.manTextList.indexOf(id)]})  // 後端上傳用(證照功能未完成，先做demo資料)
+                console.log("this.ipt.licensedMembersValue: ", this.ipt.licensedMembersValue)
+                return
             } else if (!bool && this.ipt.commonMembers.findIndex(ele => ele.PeopleId == id) == -1) {
                 // 作業人員
                 this.ipt.commonMemArr.push(this.ipt.commonNowIpt.name)  // 顯示用，只放入姓名
@@ -508,7 +604,7 @@ export default {
                     WorkSafety: (this.ipt.safeDanger)? 'T' : 'F',  // 安全危害作業
                     Malfunction: this.ipt.malfunctionDes,  // 故障描述
                     Memo: this.ipt.note,  // 備註
-                    PeopleLicense: this.ipt.licensedMembers,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
+                    PeopleLicense: this.ipt.licensedMembersValue,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
                     PeopleNoLicense: this.ipt.commonMembers,  // 林鐵人員統計(無證照)
                     OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -535,6 +631,8 @@ export default {
                 // 需證照人員
                 this.ipt.licensedArr.splice(idx, 1)
                 this.ipt.licensedMembers.splice(idx, 1)  // 後端上傳用
+                this.manTextList.splice(idx, 1)
+                this.manValueList.splice(idx, 1)
             } else {
                 // 作業人員
                 this.ipt.commonMemArr.splice(idx, 1)  // 顯示用

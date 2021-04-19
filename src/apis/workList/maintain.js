@@ -2,6 +2,15 @@
 
 import axios from '@/apis/axiosSetting'
 
+// 請求廠商名單
+export function fetchFirmList(data) { return axios(
+    {
+        url: '/global/outsourcedata/querylist',
+        method: 'post',
+        data,
+    }
+)}
+
 // 取得設備標示編號Lv1
 export function fetchEqCodeLv1(data) { return axios(
     {
@@ -69,6 +78,15 @@ export function deleteOrder(data) { return axios(
 export function fetchWorkOrderOne(data) { return axios(
     {
         url: '/mmis/order/querydetail',
+        method: 'post',
+        data,
+    }
+)}
+
+// 取得證照人員資料
+export function fetchLicenseManData(data) { return axios(
+    {
+        url: '/global/licensedata/querylist',
         method: 'post',
         data,
     }
@@ -154,3 +172,4 @@ export function delayOrder(data) { return axios(
         data,
     }
 )}
+

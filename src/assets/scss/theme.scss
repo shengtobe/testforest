@@ -98,6 +98,11 @@ $theme-color-list: (
     @include metal-bg(#ff0000);
     @extend .shadow-text;
   }
+
+  &-close{
+    @include metal-bg(#0a0a0a);
+    @extend .shadow-text;
+  }
 }
 
 .label{

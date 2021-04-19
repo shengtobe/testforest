@@ -306,7 +306,7 @@ import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
 import { getNowFullTime, verifyIptError } from '@/assets/js/commonFun'
 import { hourOptions } from '@/assets/js/dateTimeOption'
-import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
+import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder, fetchLicenseManData } from '@/apis/workList/maintain'
 
 export default {
     props: ['id'],  //路由參數
@@ -495,6 +495,8 @@ export default {
 
                 // 向後端請求資料
                 this.fetchOrderOne()
+                // 向後端請求證照人員資料
+                this.fetchLicenseMan()
             } else {
                 // 新增的情況
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
@@ -536,6 +538,23 @@ export default {
 
                 // 將派工人資料寫入 vuex(組織表)
                 this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
+            }).catch(err => {
+                console.log(err)
+                alert('資料讀取失敗')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
+        // 向後端請求證照人員資料
+        fetchOrderOne() {
+            this.chLoadingShow()
+
+            fetchLicenseManData({
+                ClientReqTime: getNowFullTime()  // client 端請求時間
+            }).then(res => {
+                let obj = res.data
+                console.log("obj: ", obj)
+                
             }).catch(err => {
                 console.log(err)
                 alert('資料讀取失敗')
