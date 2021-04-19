@@ -86,12 +86,10 @@
         <div class="success lighten-5">success lighten-5</div>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <div class="wooden-darken-wood"><br/><br><br><br><br><br><br><br></div>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
-primary
-secondary
-accent
-error
-warning
-info
-success

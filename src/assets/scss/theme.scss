@@ -1,25 +1,107 @@
 $direction-list: (
   'top':'to top',
-  'right-top':'to right top',
-  'left-top':'to left top',
   'right':'to right',
   'left':'to left',
   'bottom':'to bottom',
-  'right-bottom':'to right bottom',
-  'left-bottom':'to left bottom'
 );
 $theme-color-list: (
   'orange': #f89e36,
   'gold': #FFD700,
-  'dark-yellow':#967f1b,
+  'wood': #E6BF83,
+  'darken-wood': #C8A165,
+  'copper': #B87333,
+  'dark-yellow':#967F1B,
   'red': #dd0000,
-  'cyan':#00BCD4,
-  'light-blue':#03A9F4
+  'cyan': #00BCD4,
+  'light-blue': #03A9F4,
+  'magenta': #ff00ff
 );
+
+@mixin metal-bg($top-color) {
+  // background: linear-gradient(to top, #{$top-color}60, #{$top-color}8e),linear-gradient(to top, #d7d7d7 0%, #858585 45%, #d7d7d7 55%, #fff 100%);
+  background: linear-gradient(to top, #d7d7d760 0%, #85858560 45%, #d7d7d760 55%, #ffffff60 100%), linear-gradient(to top, #{$top-color}, #{$top-color});
+}
+
 @each $dkey, $dvalue in $direction-list {
   @each $ckey, $cvalue in $theme-color-list {
-    .metal-#{$ckey}-#{$dkey}{
+    .metal-#{$ckey}-#{$dkey} {
       background: linear-gradient(#{$dvalue}, #{$cvalue}60, #{$cvalue}8e),linear-gradient(#{$dvalue}, #d7d7d7 0%, #858585 45%, #d7d7d7 55%, #fff 100%);
     }
+  }
+}
+
+@each $ckey, $cvalue in $theme-color-list {
+  .wooden-#{$ckey}{
+    background: linear-gradient(to top, #{$cvalue}8e, #{$cvalue}8e),linear-gradient(to top, #d7d7d760 0%, #85858560 45%, #d7d7d760 55%, #ffffff60 100%),url('../../../public/images/wood-texture/Texture1.jpg') !important;
+  }
+}
+
+.shadow-text {
+  color: #fff;
+  text-shadow: black 0rem 0rem 0.2rem;
+}
+
+.theme-table {
+  div.v-data-table__wrapper table {
+    thead {
+      tr th {
+        @include metal-bg(#967F1B);
+      }
+    }
+    tbody {
+      tr:nth-of-type(odd) {
+        background: #F0F4C3;
+      }
+      tr:nth-of-type(even) {
+        background: #F9FBE7;
+      }
+    }
+  }
+  div:not(.v-data-table__wrapper){
+    @include metal-bg(#967F1B);
+    @extend .shadow-text;
+  }
+}
+
+.btn{
+  &-search{
+    @include metal-bg(#21b1ff);
+    @extend .shadow-text;
+  }
+
+  &-add{
+    @include metal-bg(#0ec900);
+    @extend .shadow-text;
+  }
+
+  &-clear{
+    @include metal-bg(#ffffff);
+    // @extend .shadow-text;
+  }
+
+  &-modify{
+    @include metal-bg(#0051ff);
+    @extend .shadow-text;
+  }
+
+  &-detail{
+    @include metal-bg(#5200d6);
+    @extend .shadow-text;
+  }
+
+  &-memo{
+    @include metal-bg(#d87e17);
+    @extend .shadow-text;
+  }
+
+  &-delete{
+    @include metal-bg(#ff0000);
+    @extend .shadow-text;
+  }
+}
+
+.label{
+  &-header{
+    color: #70886f;
   }
 }

@@ -13,36 +13,36 @@
               >
               <template v-slot:default>
                 <tbody>
-                  <tr class="tHeader white--text shadowText">
+                  <tr class="metal-dark-yellow-top white--text shadowText">
                     <th>地點</th>
                     <th colspan="2" class="text-center text-h6">二萬平主站-第一分道</th>
                   </tr>
-                  <tr class="accent lighten-4">
+                  <tr class="lime lighten-4">
                     <th>監控位置</th>
                     <td class="text-center">{{ `${toptable.LocationList[0].LocName}(${toptable.LocationList[0].LocID})` }}</td>
                     <td class="text-center">{{ `${toptable.LocationList[1].LocName}(${toptable.LocationList[1].LocID})` }}</td>
                   </tr>
-                  <tr class="accent lighten-5">
+                  <tr class="lime lighten-5">
                     <th>更新時間</th>
                     <td>{{ toptable.LocationList[0].DataDTime }}</td>
                     <td>{{ toptable.LocationList[1].DataDTime }}</td>
                   </tr>
-                  <tr class="accent lighten-4">
+                  <tr class="lime lighten-4">
                     <th>座標位置</th>
                     <td>{{`(${toptable.LocationList[0].GPSValue_X},${toptable.LocationList[0].GPSValue_Y})`}}</td>
                     <td>{{`(${toptable.LocationList[1].GPSValue_X},${toptable.LocationList[1].GPSValue_Y})`}}</td>
                   </tr>
-                  <tr class="accent lighten-5">
+                  <tr class="lime lighten-5">
                     <th>初始值</th>
                     <td>{{ toptable.LocationList[0].InitValue }}</td>
                     <td>{{ toptable.LocationList[1].InitValue }}</td>
                   </tr>
-                  <tr  class="accent lighten-4">
+                  <tr  class="lime lighten-4">
                     <th>監測值</th>
                     <td>{{ toptable.LocationList[0].Value }}</td>
                     <td>{{ toptable.LocationList[1].Value }}</td>
                   </tr>
-                  <tr class="accent lighten-5">
+                  <tr class="lime lighten-5">
                     <th>變異值</th>
                     <td>{{ toptable.LocationList[0].DiffValue }}</td>
                     <td>{{ toptable.LocationList[1].DiffValue }}</td>
@@ -126,7 +126,6 @@
             <v-spacer />
         </v-col>
     </v-row>
-    <div class="metal-light-blue-top">123</div>
   </v-container>
 </template>
 <style scoped>
@@ -141,7 +140,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchList } from '@/apis/monitor/slope'
 import DateSelect from '@/components/forManage/dateSelect'
 import Pagination from '@/components/Pagination'
-import '@/assets/scss/theme.scss'
+
 export default {
   data: () => ({
     imgUrl1: require("../../assets/images/slope1.jpg"),
@@ -153,13 +152,13 @@ export default {
     tableItems:[],
     headers: [
       // { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '15' },
-      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '15' },
-      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '15' },
-      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '15' },
-      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '13' },
-      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '13' },
-      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold tHeader shadowText', width: '13' },
+      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
+      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
+      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
+      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
+      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '13' },
+      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '13' },
+      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '13' },
     ]
   }),
   components: {
