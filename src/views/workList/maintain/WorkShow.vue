@@ -280,7 +280,7 @@
                                         </h3>
                                         <v-text-field
                                             v-model.trim.number="jobForm.Count"
-                                            solo
+                                            solo type="number"
                                             :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                                         ></v-text-field>
                                     </v-col>
@@ -464,17 +464,21 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj: ", obj)
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            console.log("this.bottomItems: ",this.bottomItems)
             this.defaultJobForm.Location = obj.WorkPlace  // 工作地點預設值
 
             // 組合所有林鐵人員下拉選單(用於選工作項)
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
+            console.log("arr: ", arr)
             this.allLicenseMembers = arr.map(ele => ({
                 text: ele.PeopleName,
                 value: ele.PeopleId,
             }))
+            console.log("allLicenseMembers: ", this.allLicenseMembers)
             
             // 工時表單初始化
             this.jobHour.items = this.allLicenseMembers.map(item => ({
@@ -485,6 +489,7 @@ export default {
                 JobName: '',
                 Count: 1, 
             }))
+            console.log("this.jobHour.items: ", this.jobHour.items)
 
             // 向後端查詢工作項
             fetchJobName({

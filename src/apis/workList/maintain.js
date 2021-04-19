@@ -2,6 +2,15 @@
 
 import axios from '@/apis/axiosSetting'
 
+// 請求廠商名單
+export function fetchFirmList(data) { return axios(
+    {
+        url: '/global/outsourcedata/querylist',
+        method: 'post',
+        data,
+    }
+)}
+
 // 取得設備標示編號Lv1
 export function fetchEqCodeLv1(data) { return axios(
     {
@@ -163,3 +172,4 @@ export function delayOrder(data) { return axios(
         data,
     }
 )}
+

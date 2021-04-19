@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { fetchWorkOrderOne } from '@/apis/workList/maintain'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
@@ -36,6 +36,11 @@ export default {
         AcceptingShow,
         ClosedComplated,
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -47,12 +52,15 @@ export default {
             fetchWorkOrderOne({
                 WorkOrderID: this.id,  // 工單編號 (從路由參數抓取)
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.Status  // 狀態
+                        console.log("status::::: ", this.status)
+                        console.log("data::::: ", res.data)
 
                         // 設定上面的欄位資料
                         let topItems = [

@@ -40,9 +40,12 @@
                                 <v-card-text class="px-6 py-4">
                                     <v-row>
                                         <v-col cols="12" sm="8">
+                                            <!-- <input placeholder="請輸入金額" 
+                                            v-model.number="jobPrice" 
+                                            type="number" solo> -->
                                             <v-text-field
                                                 v-model.trim.number="jobPrice"
-                                                solo
+                                                solo type="number"
                                                 placeholder="請輸入金額"
                                                 :rules="[v => Number.isFinite(v) || '請輸入整數或小數']"
                                             ></v-text-field>
@@ -93,7 +96,7 @@
                 <v-text-field
                     hide-details
                     v-model.trim="totalHour"
-                    solo
+                    solo type="number"
                     placeholder="請輸入總工時，例如：5"
                     :rules="[v => /^\d+$/.test(v) || '請輸入整數']"
                 ></v-text-field>
@@ -657,6 +660,7 @@ export default {
         totalMoney() {
             return this.tableItems.reduce((a,b)=>a + b.Count * b.Price, 0)
         }
+        
     },
     methods: {
         ...mapActions('system', [
@@ -664,6 +668,23 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        isRealNum(val){
+            // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除，
+            
+        　　if(val === "" || val ==null){
+                return false;
+        　　}
+        if(!isNaN(val)){　　　　
+        //对于空数组和只有一个数值成员的数组或全是数字组成的字符串，
+        //isNaN返回false，例如：'123'、[]、[2]、['123'],isNaN返回false,
+        //所以如果不需要val包含这些特殊情况，则这个判断改写为if(!isNaN(val) && typeof val === 'number' )
+        　　　 return true; 
+        　　}
+
+        　else{ 
+        　　　　return false; 
+        　　} 
+        },
         // 初始化資料
         setShowData(obj) {
             this.workNumber = obj.WorkOrderID  // 工單編號
@@ -679,6 +700,7 @@ export default {
         },
         // 確定工作項金額
         saveMoney() {
+            console.log("isRealNum: ", this.isRealNum(this.jobPrice))
             this.tableItems[this.editIdx].Price = this.jobPrice
             this.moneyDialog = false
         },
