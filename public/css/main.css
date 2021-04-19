@@ -4,8 +4,9 @@
 #app {
   font-family: "微軟正黑體",Arial, Helvetica, sans-serif;
   /*background-color: #dbe8f5;  /* 背景色 */
-  background-blend-mode: multiply;
-  background: url('../images/backgroundImgT2.png') rgba(213, 113, 41, 0.1) no-repeat center center; 
+  /*background-blend-mode: multiply;*/
+  /*background: url('../images/backgroundImgT2.png') rgba(213, 113, 41, 0.1) no-repeat center center; */
+  background: linear-gradient(to top, #c08d408e, #d19a248e, #c08d408e),linear-gradient(to top, #d7d7d7a0 , #d7d7d7a0 ),url('../images/wood-texture/Texture2.jpg');
 }
 #main-bar {
   position: fixed;

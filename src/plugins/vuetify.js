@@ -19,11 +19,11 @@ export default new Vuetify({
         */
        /* 主題2 */
         primary: '#0ec900',
-        secondary: '#8aa688',
+        secondary: '#99e81a',
         accent: '#30e3bc',
         error: '#ff1212',
         warning: '#e4f734',
-        info: '#6ce81a',
+        info: '#8aa688',
         success: '#21b1ff'
       },
     },

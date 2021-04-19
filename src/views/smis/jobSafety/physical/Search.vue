@@ -5,7 +5,7 @@
     <v-row class="px-2 mb-8">
 
         <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
+            <h3 class="label-header mb-1">
                 <v-icon class="mr-1 mb-1">mdi-bank</v-icon>部門
             </h3>
             <v-select
@@ -16,7 +16,7 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
+            <h3 class="label-header mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account</v-icon>姓名
             </h3>
             <v-text-field
@@ -27,7 +27,7 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
+            <h3 class="label-header mb-1">
                 <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>職務
             </h3>
             <v-select
@@ -38,7 +38,7 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
+            <h3 class="label-header mb-1">
                 <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>是否在職
             </h3>
             <v-select
@@ -49,7 +49,7 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
+            <h3 class="label-header mb-1">
                 <v-icon class="mr-1 mb-1">mdi-lightbulb-on</v-icon>健檢提醒
             </h3>
             <v-select
@@ -60,7 +60,7 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
+            <h3 class="label-header mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>年度
             </h3>
             <v-text-field
@@ -71,19 +71,19 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn color="success" large class="my-2 mr-2"
+            <v-btn dark large class="btn-search my-2 mr-2"
                 @click="search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="primary" dark large class="ma-2"
+            <v-btn dark large class="btn-add ma-2"
                 @click="add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="ma-2"
+            <v-btn large class="btn-clear ma-2"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
@@ -100,6 +100,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -138,13 +139,13 @@
                     </template>
 
                     <template v-slot:item.Memo="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn dark class="btn-memo"
                             @click="showContent(item.Memo)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.link="{ item }">
-                        <v-btn small dark fab color="purple"
+                        <v-btn small dark fab class="btn-detail"
                             target="_blank"
                             :to="`/smis/jobsafety/physical/${item.ID}/list`"
                         >
@@ -153,17 +154,16 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary"
-                            class="mr-3"
+                        <v-btn fab small dark class="btn-modify mr-3"
                             @click="goedit(item)"
                         >
-                            <v-icon>mdi-pen</v-icon>
+                            <v-icon dark>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small dark class="btn-delete"
                             @click="openDel(item)"
                         >
-                            <v-icon>mdi-delete</v-icon>
+                            <v-icon dark>mdi-delete</v-icon>
                         </v-btn>
                     </template>
 
@@ -295,18 +295,18 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '110' },
-            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '80' },
-            { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '90' },
-            { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '100' },
-            { text: '健檢提醒', value: 'NextCheck', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '100' },
-            { text: '最新健檢日', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '120' },
-            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '80' },
-            { text: '衛教', value: 'HealthChkStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '70' },
-            { text: '追蹤', value: 'TrackStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '70' },
-            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '70' },
-            { text: '健檢資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '70' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent shadowText', width: '130' },
+            { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '110' },
+            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '80' },
+            { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '90' },
+            { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
+            { text: '健檢提醒', value: 'NextCheck', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
+            { text: '最新健檢日', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '120' },
+            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '80' },
+            { text: '衛教', value: 'HealthChkStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+            { text: '追蹤', value: 'TrackStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+            { text: '健檢資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '130' },
         ],
         dialog: false,  // dialog 是否顯示
         delDialog: false,

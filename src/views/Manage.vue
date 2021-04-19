@@ -21,12 +21,18 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
 
-    <v-toolbar-title class="shadowText">林鐵資訊管理系統</v-toolbar-title>
+    <v-toolbar-title class="shadowText align-center font-weight-bold">
+        <div>
+            <!-- <img style="vertical-align: sub;width:1.5rem" src="@/../public/images/ROC_Forestry_Bureau_Seal.svg"/> -->
+            <img style="vertical-align: sub;width:1.5rem" src="@/../public/images/forstRailwayLOGO.png"/>
+            林鐵資訊管理系統
+        </div>
+    </v-toolbar-title>
     
     <v-spacer></v-spacer>
 
     <!-- 登入者資訊 -->
-    <div class="mr-4 d-none d-sm-flex shadowText">
+    <div class="mr-4 d-none d-sm-flex shadowText font-weight-bold">
         {{ `${userData.DeptList[0].DeptDesc} - ${userData.UserName}(${userData.UserId})` }}
     </div>
     
@@ -273,10 +279,12 @@
 </style>
 <style scoped>
 .top-nav{
-    background: linear-gradient(to right, #fd974e, #ffad72);
+    background: linear-gradient(to top, #382414 0%, #180b00 25%, #382414 100%);
+    /*background: linear-gradient(to top, #f89e3660, #f89e368e),linear-gradient(to top, #d7d7d7 0%, #747474 45%, #d7d7d7 55%, #fff 100%);*/
+
 }
 >>>.shadowText{
-    text-shadow: black 0.05rem 0.05rem 0.05rem;
+    text-shadow: black 0rem 0rem 0.4rem;
   }
 </style>
 <script>
@@ -286,7 +294,7 @@ import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
-
+import '@/assets/scss/theme.scss'
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',
