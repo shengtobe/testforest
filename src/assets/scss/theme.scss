@@ -84,6 +84,7 @@ $theme-color-list: (
     @extend .shadow-text;
   }
 
+  // 00
   &-detail{
     @include metal-bg(#5200d6);
     @extend .shadow-text;
