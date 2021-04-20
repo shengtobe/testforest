@@ -75,7 +75,6 @@ export function encodeObject(unsafeObject) {
             safeObject[element] = unsafeObject[element]??""
         }
     })
-    console.warn(unsafeObject,Array.isArray(unsafeObject))
     return safeObject
 }
 //表單-把物件內部被替換過的字串換回來
