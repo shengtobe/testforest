@@ -75,7 +75,7 @@ export function encodeObject(unsafeObject) {
             safeObject[element] = unsafeObject[element]??""
         }
     })
-    if (Array.isArray(unsafeObject)) {
+    if (!Array.isArray(unsafeObject)) {
         return objToArr(safeObject)
     } else {
         return safeObject
