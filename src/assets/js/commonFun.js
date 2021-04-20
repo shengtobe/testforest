@@ -72,7 +72,7 @@ export function encodeObject(unsafeObject) {
         } else if (typeof (unsafeObject[element]) == 'object') {
             safeObject[element] = encodeObject(unsafeObject[element])
         } else {
-            safeObject[element] = unsafeObject[element]||""
+            safeObject[element] = unsafeObject[element]??""
         }
     })
     if (Array.isArray(unsafeObject)) {
@@ -95,10 +95,10 @@ export function decodeObject(safeObject) {
         } else if (typeof (safeObject[element]) == 'object') {
             unsafeObject[element] = decodeObject(safeObject[element])
         } else {
-            unsafeObject[element] = safeObject[element] || ""
+            unsafeObject[element] = safeObject[element]??""
         }
     })
-    if (Array.isArray(safeObject)) {
+    if (!Array.isArray(safeObject)) {
         return objToArr(unsafeObject)
     } else {
         return unsafeObject
