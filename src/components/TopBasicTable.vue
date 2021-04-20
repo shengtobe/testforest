@@ -5,7 +5,7 @@
         :key="item.title"
     >
         <v-row no-gutters>
-            <v-col class="teal pl-3 pb-2 pt-3"
+            <v-col class="gradual-bg-green pl-3 pb-2 pt-3"
                 style="max-width: 160px"
             >
                 <span class="white--text">
@@ -14,7 +14,7 @@
                 </span>
             </v-col>
 
-            <v-col class="white pl-3 pb-2 pt-3">
+            <v-col class="light-white-green pl-3 pb-2 pt-3">
                 {{ item.text }}
             </v-col>
         </v-row>

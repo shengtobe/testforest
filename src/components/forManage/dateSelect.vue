@@ -29,7 +29,7 @@
         ></v-text-field>
       </template>
       <v-date-picker
-        color="purple"
+        color="primary"
         v-model="dataSet"
         @input="showYN = false"
         locale="zh-tw"

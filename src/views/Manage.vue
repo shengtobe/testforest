@@ -279,7 +279,7 @@
 </style>
 <style scoped>
 .top-nav{
-    background: linear-gradient(to top, #382414 0%, #180b00 25%, #382414 100%);
+    background: linear-gradient(to top, #3a2514 0%, #2b1400 25%, #382414 100%);
     /*background: linear-gradient(to top, #f89e3660, #f89e368e),linear-gradient(to top, #d7d7d7 0%, #747474 45%, #d7d7d7 55%, #fff 100%);*/
 
 }
@@ -294,7 +294,7 @@ import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
-import '@/assets/scss/theme.scss'
+
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',

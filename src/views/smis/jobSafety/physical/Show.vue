@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+    <h2 class="label-header mb-4">
         個人健檢資料
     </h2>
 
@@ -12,16 +12,16 @@
         <BottomTable :items="bottomItems" />
 
         <v-col cols="12" class="text-center mb-8">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="btn-close mr-3"
                 :to="`/smis/jobsafety/physical/${id}/list`"
             >回上層</v-btn>
 
-            <v-btn dark class="ma-2"
+            <v-btn dark class="btn-modify ma-2"
                 color="indigo"
                 :to="`/smis/jobsafety/physical/${id}/form/${sid}`"
             >編輯</v-btn>
 
-            <v-btn dark  class="ma-2" color="error"
+            <v-btn dark  class="btn-delete ma-2" color="error"
                 @click="delDialog=true"
             >作廢</v-btn>
         </v-col>

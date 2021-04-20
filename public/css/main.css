@@ -24,33 +24,8 @@
   /* transition: left .4s; */
   overflow-y: scroll;
 }
-.v-enter, .v-leave-to {
-  left: -100vw;
-}
-.v-enter-to, .v-leave {
-  left: 0;
-}
-.v-enter-active {
-  transition: left .4s;
-  
-}
-.v-leave-active {
-  transition: left .6s;
-}
-/* ------ scrollbar ------ */
-/* width */
-::-webkit-scrollbar {
-  width: 8px;
-}
-/* Track */
-::-webkit-scrollbar-track {
-  background: #CFD8DC;
-}
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #D57129;
-  border-radius: 3px;
-}
+
+
 /* 移除表格在手機版時的上方空白 */
 @media only screen and (max-width: 600px) {
   table > thead {

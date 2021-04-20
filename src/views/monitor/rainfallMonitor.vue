@@ -46,17 +46,21 @@
         <v-text-field solo type="number" min=0 v-model="ipt.alarmDay" suffix="mm"/>
       </v-col>
     </v-row>
-    <v-row no-gutter class="indigo--text">
-        <v-col cols="12" sm="6">
+    <v-row no-gutter class="mb-2">
+        <v-col cols="12" sm="6" class="trans-white">
             <chartBar :chartdata="hourRain.chartdata" :options="hourRain.options" :key="hourRain.componentKey"/>
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" class="trans-white">
           <chartBar :chartdata="dayRain.chartdata" :options="dayRain.options" :key="dayRain.componentKey"/>
         </v-col>
     </v-row>
   </v-container>
 </template>
-
+<style scoped>
+  .trans-white{
+    background: rgba(255, 255, 255, 0.5);
+  }
+</style>
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, groupBy } from '@/assets/js/commonFun'
@@ -132,7 +136,7 @@ export default {
             datalabels: {
               align: "top",
               anchor: "end",
-            },
+            }
           },
           scales: {
             yAxes: [{

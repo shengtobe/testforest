@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">健檢管理查詢</h2>
+    <h2 class="label-title mb-4">健檢管理查詢</h2>
 
     <v-row class="px-2 mb-8">
 
@@ -180,8 +180,8 @@
     </v-row>
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
-        <v-card>
-            <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+        <v-card class="theme-card">
+            <v-card-title class="white--text px-4 py-1">
                 編輯資料
                 <v-spacer></v-spacer>
                 <v-btn dark fab small text @click="dialog = false" class="mr-n2">
@@ -209,7 +209,7 @@
                                 <v-checkbox
                                     v-model="ipt.HealthChkStatus"
                                     label="衛教"
-                                    color="blue"
+                                    color="yellow darken-2"
                                     hide-details
                                 ></v-checkbox>
                             </v-col>
@@ -218,7 +218,7 @@
                                 <v-checkbox
                                     v-model="ipt.TrackStatus"
                                     label="追蹤"
-                                    color="blue"
+                                    color="yellow darken-2"
                                     hide-details
                                 ></v-checkbox>
                             </v-col>
@@ -229,20 +229,20 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success" elevation="4"  :loading="isLoading" @click="gosave">送出</v-btn>
+                <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="gosave">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
     <v-dialog v-model="delDialog" max-width="350px">
-        <v-card>
-            <v-card-title class="red white--text px-4 py-1 headline"
+        <v-card class="theme-del-card">
+            <v-card-title class="white--text px-4 py-1 headline"
             >確認是否刪除?</v-card-title
             >
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="delDialog=false">取消</v-btn>
-            <v-btn color="red" class="white--text" @click="godel">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="delDialog=false">取消</v-btn>
+            <v-btn class="btn-delete white--text" @click="godel">刪除</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -301,7 +301,7 @@ export default {
             { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
             { text: '健檢提醒', value: 'NextCheck', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
             { text: '最新健檢日', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '120' },
-            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '80' },
+            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
             { text: '衛教', value: 'HealthChkStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
             { text: '追蹤', value: 'TrackStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
             { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },

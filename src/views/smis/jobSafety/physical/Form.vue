@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="label-title mb-4">
         {{ (this.isEdit)? `個人健檢資料編輯 (日期：${ ipt.HealthCheckDate })` : `個人健檢資料新增`}}
     </h2>
     <v-row>
@@ -90,7 +90,7 @@
             <v-text-field
                 v-model.trim="ipt.EmployDate"
                 solo
-                
+                readonly
                 placeholder="請輸入受雇日期"
             ></v-text-field>
         </v-col>
@@ -126,7 +126,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.HealthCheckDate"
                     @input="dateMenuShow.physicalDate = false"
                     locale="zh-tw"
@@ -500,12 +500,13 @@
         </v-col>
 
         <v-col cols="12" class="text-center mb-8">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="btn-close mr-3"
               @click="goBack"
             >回上層</v-btn>
             
             <v-btn
-                color="success"
+                dark
+                class="btn-add"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>

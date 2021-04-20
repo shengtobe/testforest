@@ -8,8 +8,9 @@ export default new Vuetify({
     themes: {
       light: {
         /* 主題1 */
-        /*
+        
         primary: '#D57129',
+        /*
         secondary: '#948782',
         accent: '#ffa012',
         error: '#fa320a',
@@ -18,13 +19,15 @@ export default new Vuetify({
         success: '#629c65'
         */
        /* 主題2 */
-        primary: '#0ec900',
+       /* 
+       primary: '#0ec900',
         secondary: '#99e81a',
         accent: '#30e3bc',
         error: '#ff1212',
         warning: '#e4f734',
         info: '#8aa688',
         success: '#21b1ff'
+        */
       },
     },
   },

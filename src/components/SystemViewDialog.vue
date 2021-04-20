@@ -1,18 +1,18 @@
 <template>
 <v-dialog v-model="viewDialog.show" max-width="600">
-    <v-card>
+    <v-card class="theme-card">
         <v-card-title
-            class="yellow lighten-3 py-2 px-3"
+            class="white--text py-2 px-3"
             primary-title
         >
-            <v-icon class="mr-2">mdi-file-document</v-icon>
+            <v-icon class="white--text mr-2">mdi-file-document</v-icon>
             <strong>檢視內容</strong>
             <v-spacer></v-spacer>
 
             <v-btn text fab small
                 @click="chViewDialog({ show: false })"
             >
-                <v-icon>mdi-close</v-icon>
+                <v-icon class="white--text">mdi-close</v-icon>
             </v-btn>
         </v-card-title>
 

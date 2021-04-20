@@ -1,14 +1,14 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">個人健檢資料</h2>
+    <h2 class="label-title mb-4">個人健檢資料</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12">
-            <v-btn dark large class="my-2 mr-2"
+            <v-btn dark large class="btn-close my-2 mr-2"
                 @click="close"
             >回搜尋頁</v-btn>
 
-            <v-btn color="indigo" dark large class="ma-2"
+            <v-btn dark large class="btn-add ma-2"
                 @click="add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -25,6 +25,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -39,7 +40,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             target="_blank"
                             :to="`/smis/jobsafety/physical/${id}/show/${item.FlowID}`"
                         >
