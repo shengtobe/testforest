@@ -75,7 +75,11 @@ export function encodeObject(unsafeObject) {
             safeObject[element] = unsafeObject[element]??""
         }
     })
-    return safeObject
+    if (typeof (unsafeObject) == 'object' && Array.isArray(unsafeObject)) {
+        return objToArr(safeObject)
+    } else {
+        return safeObject
+    }
 }
 //表單-把物件內部被替換過的字串換回來
 //參數說明：被替換過的物件
@@ -94,7 +98,11 @@ export function decodeObject(safeObject) {
             unsafeObject[element] = safeObject[element]??""
         }
     })
-    return unsafeObject
+    if (typeof (safeObject) == 'object' && Array.isArray(safeObject)) {
+        return objToArr(unsafeObject)
+    } else {
+        return unsafeObject
+    }
 }
 //將傳入值從物件變成依照key值排序過的array
 //參數說明：要轉換的物件
@@ -102,7 +110,8 @@ export function decodeObject(safeObject) {
 export function objToArr(obj) {
     let resArray = []
     const objectKeys = Object.keys(obj)
-    objectKeys.sort()
+    objectKeys.forEach(e=>parseInt(e))
+    objectKeys.sort((a,b)=>a-b)
     objectKeys.forEach((element) => resArray.push(obj[element]))
     return resArray
 }
