@@ -151,7 +151,6 @@ body{
     @extend .shadow-text;
   }
 
-  // 00
   &-detail{
     @include metal-bg(#4bc047);
     @extend .shadow-text;

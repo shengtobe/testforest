@@ -385,7 +385,7 @@
 
     <v-row class="mt-8">
         <v-col cols="12" class="text-center">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
@@ -395,25 +395,25 @@
             >竣工單</v-btn> -->
 
             <template v-if="!done">
-                <v-btn class="ma-2" dark
+                <v-btn class="ma-2 btn-detail" dark
                     :loading="isLoading"
                     color="purple"
                     @click="delay.dialogShow = true"
                 >延後驗收</v-btn>
 
-                <v-btn class="ma-2"
+                <v-btn class="ma-2 btn-delete"
                     :loading="isLoading"
                     color="error"
                     @click="showDialog(true)"
                 >退回</v-btn>
 
-                <v-btn class="ma-2" dark
+                <v-btn class="ma-2 btn-memo" dark
                     :loading="isLoading"
                     color="yellow darken-2"
                     @click="showDialog(false)"
                 >徹銷</v-btn>
 
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-add"
                     :loading="isLoading"
                     color="success"
                     @click="save"
