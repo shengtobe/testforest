@@ -39,6 +39,7 @@
             :options.sync="pageOpt"
             disable-sort
             hide-default-footer
+            @click:row="rowclick"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -52,12 +53,17 @@
 
             <!-- headers 的 fid 欄位 (檢視內容) -->
             <template v-slot:item.linkText="{ item }">
-              <router-link
+              <!-- <router-link
                 :to="item.path"
                 class="text-decoration-none text-subtitle-1 grey--text text--darken-3"
               >
                 {{ item.linkText }}
-              </router-link>
+              </router-link> -->
+              <div
+                class="text-decoration-none text-subtitle-1 grey--text text--darken-3"
+              >
+                {{ item.linkText }}
+              </div>
             </template>
 
             <!-- 頁碼 -->
@@ -163,6 +169,9 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    rowclick(item){
+      this.$router.push({path:item.path})
+    }
   },
   created() {
     this.initData();
