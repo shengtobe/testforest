@@ -95,7 +95,7 @@
             <UploadFileAdd
                 title="附件上傳"
                 :uploadDisnable="false"
-                :fileList="ipt.files"
+                :fileList="showFiles"
                 @joinFile="joinFile"
                 @rmFile="rmFile"
             />
@@ -119,7 +119,7 @@
             </v-col>
 
             <UploadFileEdit title="檔案管理"
-                :fileList="ipt.files"
+                :fileList="FileCount"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
                 class="mb-10"
@@ -149,6 +149,7 @@ export default {
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
+        showFiles: [],  // 要顯示的縮圖
         defaultIpt: {
             DepartCode:'',
             Depart:'',
@@ -161,8 +162,9 @@ export default {
             CarCode:'',
             ErrorDesp:'',
             ErrorCheckStatus:'',
-            FileCount: [],
+            // FileCount: [],
         },
+        FileCount: [],
         dateMemuShow: false,  // 日曆是否顯示
     }),
     components: {
@@ -200,7 +202,7 @@ export default {
                 }).then( res => {
                     console.log("res.data.DataList[0]: ", res.data.DataList[0])
                     if (res.data.ErrorCode == 0) {
-                        this.ipt = {FileCount:[], ...decodeObject(res.data.DataList[0])}  
+                        this.ipt = {...decodeObject(res.data.DataList[0])}  
                         console.log("this.ipt2: ", this.ipt)  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
                     }else {
@@ -226,6 +228,20 @@ export default {
         },
         // 送出
         save() {
+            // console.log("1");
+            // let dw = []
+            // console.log("2");
+            // console.log("this.ipt: ", this.ipt);
+            // dw = [...encodeObject(this.ipt)];
+            // return
+            // console.log("3");
+            // console.log("dw len: ", dw);
+            // dw.forEach(element => {
+            //     console.log(".....element", element)
+            // });
+            // console.log("4");
+            // console.log("FileCount: ", this.ipt.FileCount);
+            // return
             this.chLoadingShow()
             this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
             if(this.isEdit){
@@ -242,6 +258,8 @@ export default {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
                     }
+                    this.FileCount = [ ...[]]
+                    this.showFiles = [ ...[]]
                 }).catch( err => {
                     console.warn(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
@@ -251,6 +269,7 @@ export default {
             }else{
                 brakeInsert({
                     ...encodeObject(this.ipt),
+                    FileCount: this.FileCount,
                     ClientReqTime: getNowFullTime(),
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then( res => {
@@ -271,7 +290,7 @@ export default {
         // 加入要上傳的檔案
         joinFile(obj, bool) {
             if (bool) {
-                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+                this.FileCount.push(obj)  // 加入要上傳後端的檔案
             } else {
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
@@ -279,7 +298,7 @@ export default {
         // 移除要上傳的檔案 (組件用)
         rmFile(idx) {
             this.showFiles.splice(idx, 1)
-            this.ipt.files.splice(idx, 1)
+            this.FileCount.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {

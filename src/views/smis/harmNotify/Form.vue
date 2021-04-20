@@ -297,8 +297,10 @@ export default {
         joinFile(obj, bool) {
             if (bool) {
                 this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+                console.log("this.ipt.files: ", this.ipt.files)
             } else {
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
+                console.log("this.showFiles: ", this.showFiles)
             }
         },
         // 移除要上傳的檔案 (組件用)
