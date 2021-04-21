@@ -77,11 +77,11 @@
         </v-col>
 
         <!-- 檔案上傳，新增時 -->
-        <template v-if="!isEdit">
+        <template>
             <UploadFileAdd
                 title="附件上傳"
                 :uploadDisnable="false"
-                :fileList="ipt.files"
+                :fileList="showFiles"
                 @joinFile="joinFile"
                 @rmFile="rmFile"
             />
@@ -104,7 +104,7 @@
                 <v-divider></v-divider>
             </v-col>
 
-            <UploadFileEdit title="檔案管理"
+            <UploadFileEdit title="檔案管理" v-if="false"
                 :fileList="ipt.files"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
@@ -137,6 +137,7 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
+        showFiles: [],  // 要顯示的縮圖
         ipt: {},
         defaultIpt: {
             CheckDate: new Date().toISOString().substr(0, 10),  // 日期
@@ -189,8 +190,8 @@ export default {
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then( res => {
                     if (res.data.ErrorCode == 0) {
-                        this.ipt = {...decodeObject(res.data.DataList[0])}    
-                        this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
+                        this.ipt = {FileCount: [],...decodeObject(res.data.DataList[0])}    
+                        this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0]
                     }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -214,8 +215,10 @@ export default {
         },
         // 送出
         save() {
+            console.log("this.ipt: ", this.ipt);
+            let de = {...encodeObject(this.ipt)}
+            console.log("de: ", de)
             this.chLoadingShow()
-            this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
             if(this.isEdit){
                 drunkUpdate({
                     FlowID:this.id,
@@ -257,12 +260,18 @@ export default {
             }
         },
         // 加入要上傳的檔案
-        joinFile(file) {
-            this.ipt.files.push(file)
+        joinFile(obj, bool) {
+            console.log("加入要上傳的檔案");
+            if (bool) {
+                this.ipt.FileCount.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
         },
         // 移除要上傳的檔案
         rmFile(idx) {
-            this.ipt.files.splice(idx, 1)
+            this.showFiles.splice(idx, 1)
+            this.ipt.FileCount.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {

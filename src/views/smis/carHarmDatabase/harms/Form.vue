@@ -63,61 +63,73 @@
     <v-divider class="mx-2 mt-5 mb-4"></v-divider>
 
     <v-row class="px-2">
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>權責單位
-            </h3>
-            <v-select
-                v-model="ipt.depart"
-                :items="opts.depart2"
-                solo
-            ></v-select>
-        </v-col>
+        <v-col cols="8" color="red" >
+            <v-row>
+                <v-col cols="12" sm="5" md="6">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-bank</v-icon>權責單位
+                    </h3>
+                    <v-select
+                        v-model="ipt.depart"
+                        :items="opts.depart2"
+                        solo
+                    ></v-select>
+                </v-col>
 
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>營運模式
-            </h3>
-            <v-select
-                v-model="ipt.mode"
-                :items="opts.mode"
-                solo
-            ></v-select>
-        </v-col>
+                <v-col cols="12" sm="5" md="6">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>營運模式
+                    </h3>
+                    <v-select
+                        v-model="ipt.mode"
+                        :items="opts.mode"
+                        solo
+                    ></v-select>
+                </v-col>
 
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-format-line-spacing</v-icon>風險嚴重性
-            </h3>
-            <v-select
-                v-model="ipt.serious"
-                :items="opts.serious"
-                solo
-            ></v-select>
-        </v-col>
+                <v-col cols="12" sm="4" md="6">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-format-line-spacing</v-icon>風險嚴重性
+                    </h3>
+                    <v-select
+                        v-model="ipt.serious"
+                        :items="opts.serious"
+                        solo
+                    ></v-select>
+                </v-col>
 
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-signal-variant</v-icon>風險頻率
-            </h3>
-            <v-select
-                v-model="ipt.frequency"
-                :items="opts.frequency"
-                solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>關聯子系統
-            </h3>
+                <v-col cols="12" sm="4" md="6">
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-signal-variant</v-icon>風險頻率
+                    </h3>
+                    <v-select
+                        v-model="ipt.frequency"
+                        :items="opts.frequency"
+                        solo
+                    ></v-select>
+                </v-col>
+            </v-row>
             
-            <v-text-field
-                :value="ipt.wbs"
-                solo
-                readonly
-                @click="eqCodeShow = true"
-            ></v-text-field>
+        </v-col>
+        
+
+        
+
+        <v-col cols="12" sm="4" md="4" align-self="center">
+            <v-row  >
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>關聯子系統
+                </h3>
+            </v-row>
+            <v-row  class="mt-n7">
+                <v-text-field class="mt-8 "
+                    :value="ipt.wbs"
+                    solo
+                    readonly
+                    @click="eqCodeShow = true"
+                ></v-text-field>
+            </v-row>
+            
         </v-col>
 
         <!-- 影響、運轉影響情形 -->

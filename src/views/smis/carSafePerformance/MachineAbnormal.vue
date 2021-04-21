@@ -138,7 +138,7 @@
                     <template v-slot:item.Attachment="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
                             v-if="item.Attachment.length > 0 && item.Attachment[0] != ''"
-                            @click="showFiles(item.Attachment)"
+                            @click="showFiles(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -186,12 +186,12 @@
             <v-list-item-group>
                 <template v-for="(item, idx) in fileList">
                     <v-list-item
-                        :key="item.name"
-                        :href="item.link"
-                        :download="item.name"
+                        :key="item.Attachment"
+                        :href="item.AttachmentPath"
+                        :download="item.Attachment"
                     >
                         <v-list-item-content>
-                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                            <v-list-item-title>{{ item.Attachment }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
 
@@ -221,7 +221,7 @@
 import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 import { brakeQueryList,brakeUpdate } from '@/apis/smis/safetyPerformance'
-import { getNowFullTime,decodeObject } from '@/assets/js/commonFun'
+import { getNowFullTime,decodeObject, objToArr } from '@/assets/js/commonFun'
 export default {
     data: () => ({
         searchIpt: {},
@@ -286,8 +286,9 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then( res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("res.data: ", res.data);
                     if(res.data.DataList.length > 0){
-                        this.tableItems = decodeObject(res.data.DataList)
+                         this.tableItems = decodeObject(res.data.DataList)
                     }
                 }else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -320,6 +321,7 @@ export default {
                 Option: 'D',
                 ClientReqTime: getNowFullTime(),
                 OperatorID: this.userData.UserId,  // 操作人id
+                FileCount: []
             }).then( res => {
                 if (res.data.ErrorCode == 0) {
                     this.chMsgbar({ success: true, msg: '刪除成功' })
@@ -341,7 +343,15 @@ export default {
         },
         // 顯示檔案
         showFiles(arr) {
-            if (arr.length > 0) this.fileList = [ ...arr ]
+            this.fileList = [...[]]
+            console.log("arr: ", arr);
+            if (arr.Attachment.length > 0){
+                for (let i = 0; i < arr.Attachment.length; i++) {
+                    this.fileList.push({Attachment: arr.Attachment[i], AttachmentPath: arr.AttachmentPath[i]})
+                }
+            }
+            
+            console.log("fileList: ", this.fileList);
             this.dialogShow = true
         },
     },
