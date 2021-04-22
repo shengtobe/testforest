@@ -20,6 +20,7 @@ $theme-color-list: (
   'magenta': #ff00ff,
   'green': #5dc46e,
   'brown': #221306,
+  'light-brown':#c69c50,
 );
 
 @mixin metal-bg($top-color) {
@@ -143,7 +144,7 @@ body{
       }
     }
   }
-  div:not(.v-data-table__wrapper, [class^="v-data-table__mobile-row"], [class^="v-data-table__divider"] ){
+  .v-data-table__wrapper+div:not(.v-data-table__wrapper, [class^="v-data-table__mobile-row"], [class^="v-data-table__divider"] ){
     @include metal-bg(#967F1B);
     @extend .shadow-text;
   }
@@ -192,6 +193,11 @@ body{
 
   &-expansion{
     @include metal-bg(#795800);
+    @extend .shadow-text;
+  }
+
+  &-fileup{
+    @include metal-bg(#fd0d69);
     @extend .shadow-text;
   }
 }

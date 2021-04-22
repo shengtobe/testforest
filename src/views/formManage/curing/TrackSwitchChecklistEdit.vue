@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card clas="theme-card">
+    <v-card-title class=" white--text px-4 py-1">
       {{ editType }}{{ commonSettings.title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -15,7 +15,7 @@
         </v-col>
         <!-- 檢查項目 -->
         <v-col cols="12">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="4">
               <dateSelect
                 label="檢查日期"
@@ -42,7 +42,7 @@
 
           <div v-for="(question, index) in questions" :key="index">
             <v-row
-              class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+              class="label-header darken-2 d-none d-sm-flex font-weight-black"
               v-if="index % 3 == 0"
             >
               <v-col><h3 class="mb-1">檢查項目</h3></v-col>
@@ -55,7 +55,7 @@
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6"
               :key="index"
@@ -104,15 +104,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"
@@ -212,42 +211,42 @@ export default {
           text: "檢查項目",
           value: "b1",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "岔道編號：1",
           value: "b2",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "岔道編號：3",
           value: "b3",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "岔道編號：5",
           value: "b4",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "岔道編號：9",
           value: "b5",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "岔道編號：11",
           value: "b6",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
       ],
 

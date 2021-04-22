@@ -1,6 +1,6 @@
 <template>   
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ editType }}{{ title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -11,7 +11,7 @@
     </commonQuestion>
     <v-row class="px-6 py-4">
       <v-col cols="12">
-        <h3 class="mb-1 indigo--text">
+        <h3 class="mb-1 label-header">
           改善措施
         </h3>
         <v-textarea
@@ -26,15 +26,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-cancel white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"

@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ editType }}{{ title }}
       <v-spacer />
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -11,7 +11,7 @@
     <div class="px-6 py-4">
       <v-col cols="12">
         <!-- 檢查項目 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">機車編號</h3>
             <v-text-field solo v-model="inputData.editableData.CarNo">
@@ -31,7 +31,7 @@
             <v-text-field solo v-model="inputData.editableData.Weather"/>
           </v-col>
         </v-row>
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">本日行駛</h3>
             <v-text-field solo v-model="inputData.editableData.Km">
@@ -55,9 +55,14 @@
         <v-expansion-panels v-model="panel" multiple>
           <!-- (ㄧ)引擎啟動後10分鐘 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(ㄧ)引擎啟動後10分鐘</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(ㄧ)引擎啟動後10分鐘
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template></v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎油壓</h3>
                   <v-text-field solo v-model="inputData.editableData.CheckOption1" messages="(參考值1.5-5)">
@@ -83,9 +88,14 @@
           </v-expansion-panel>
           <!-- (二)發電機引擎 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(二)發電機引擎</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(二)發電機引擎
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template></v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎油壓</h3>
                   <v-text-field solo v-model="inputData.editableData.CheckOption4" messages="(參考值2.1-4.6)">
@@ -139,9 +149,15 @@
           </v-expansion-panel>
           <!-- (三)車次、區間、噸數 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(三)車次、區間、噸數</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(三)車次、區間、噸數
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">車次</h3>
                   <v-text-field solo v-model="inputData.editableData.CheckOption12" />
@@ -159,9 +175,15 @@
           </v-expansion-panel>
           <!-- (四)出車命令 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(四)出車命令</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(四)出車命令
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12">
                   <p>
                     ※司機酒測合格並接受勤前教育，無線電測試結果良好，完成開車前整備。
@@ -180,9 +202,15 @@
           </v-expansion-panel>
           <!-- (五)機車使用中狀況 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(五)機車使用中狀況</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(五)機車使用中狀況
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">引擎rpm</h3>
                   <v-text-field solo v-model="inputData.editableData.CheckOption15">
@@ -282,9 +310,15 @@
           </v-expansion-panel>
           <!-- (六)路線 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(六)路線</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(六)路線
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">路基</h3>
                   <v-text-field solo v-model="inputData.editableData.CheckOption32" />
@@ -302,9 +336,15 @@
           </v-expansion-panel>
           <!-- (七)其他事項 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(七)其他事項</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(七)其他事項
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12">
                   <h3 class="mb-1">其他事項</h3>
                   <v-textarea solo rows="4"  v-model="inputData.editableData.CheckOption35"/>
@@ -314,9 +354,15 @@
           </v-expansion-panel>
           <!-- (八)本日用油 -->
           <v-expansion-panel>
-            <v-expansion-panel-header color="teal" class="white--text">(八)本日用油</v-expansion-panel-header>
+            <v-expansion-panel-header color="btn-expansion" class="white--text">(八)本日用油
+              <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row no-gutter class="indigo--text darken-2 d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">柴油</h3>
                   <v-text-field solo v-model="inputData.editableData.CheckOption36">
@@ -365,15 +411,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"
