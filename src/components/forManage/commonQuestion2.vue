@@ -7,7 +7,7 @@
       </v-col>
     </v-row>
     <!-- 單獨填寫區域 -->
-    <v-row no-gutter class="indigo--text">
+    <v-row no-gutter class="label-header">
       <v-col cols="12" sm="4">
         <dateSelect
           :label="forDate"
@@ -41,12 +41,17 @@
     <!-- 摺疊題目區 -->
     <v-expansion-panels multiple>
       <slot name="preExpan" :editItem="value.editableData"></slot>
-      <v-expansion-panel v-for="(question,index) in settings.questions" :key="'EXP_'+index">
-        <v-expansion-panel-header color="teal" class="white--text">
+      <v-expansion-panel v-for="(question,index) in settings.questions" :key="'EXP_'+index" dark>
+        <v-expansion-panel-header class="btn-expansion white--text">
           {{ question.panelLabel }}
+          <template v-slot:actions>
+            <v-icon color="dropdownicon">
+              $expand
+            </v-icon>
+          </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+          <v-row no-gutter class="label-header d-none d-sm-flex font-weight-black">
             <v-col cols="12" :sm="questionLabel.width" v-for="(questionLabel,ind) in question.questionLabels" :key="'EXP_QL_'+ind">
               <h3 class="mb-1">
                 {{ questionLabel.text }}
@@ -57,7 +62,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             v-for="(answer,ind) in question.questionAnswers"
             :key="'EXP_QA_'+(question.answerStart+ind)"
@@ -136,7 +141,7 @@
     <slot name="beforeTextarea"></slot>
     <v-row v-if="settings.textareas">
       <v-col cols="12" v-for="(textarea,index) in settings.textareas" :key="'TXA_'+index">
-        <h3 class="mb-1 indigo--text">
+        <h3 class="mb-1 label-header">
           {{ textarea.label }}
         </h3>
         <v-textarea

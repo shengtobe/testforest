@@ -3,12 +3,12 @@
   
   <v-row>
     <v-col cols="12" md="2">
-      <v-btn color="secondary" large :to="`/smis/car-safe-performance/analysis`">
+      <v-btn class="btn-close" dark large :to="`/smis/car-safe-performance/analysis`">
         回上一頁
       </v-btn>
     </v-col>
     <v-col cols="12" md="8" class="text-center">
-      <h2 class="mb-4">{{decodeURIComponent(acdname)}}控制措施執行成效</h2>
+      <h2 class="label-title mb-4">{{decodeURIComponent(acdname)}}控制措施執行成效</h2>
     </v-col>
     <template v-if="decodeURIComponent(acdname)!='慢行路段分析'">
       <v-col cols="12" class="text-center align-center">
@@ -23,7 +23,7 @@
             </v-select>
           </v-col>
           <v-col cols="6" md="3">
-            <v-btn color="primary" large @click="workOrderTable.showYN = true">
+            <v-btn class="btn-memo" dark large @click="workOrderTable.showYN = true">
               異常列表
             </v-btn>
           </v-col>
@@ -35,6 +35,7 @@
               :headers="workOrderTable.header"
               :items="workOrderTable.items"  
               hide-default-footer
+              class="theme-table"
               >
               <template v-slot:no-data>
                 <span class="red--text subtitle-1">沒有資料</span>
@@ -45,7 +46,7 @@
               </template>
 
               <template v-slot:item.Extend="{ item }">
-                <v-btn color="success" rounded dark>
+                <v-btn class="btn-add" rounded dark>
                   <v-icon dark>mdi-clipboard-outline</v-icon>
                 </v-btn>
               </template>

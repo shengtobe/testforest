@@ -1,14 +1,14 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">人員資料 ({{ decodeURIComponent(name) }})</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">人員資料 ({{ decodeURIComponent(name) }})</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12">
-            <v-btn dark large class="my-2 mr-2"
+            <v-btn dark large class="my-2 mr-2 btn-close"
                 to="/smis/jobsafety/license"
             >回搜尋頁</v-btn>
 
-            <v-btn color="indigo" dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-add"
                 @click="add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -25,6 +25,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -47,20 +48,20 @@
                     </template>
 
                     <template v-slot:item.Memo="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn dark class="btn-memo"
                             @click="showContent(item.Memo)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary"
-                            class="mr-3"
+                        <v-btn fab small
+                            class="mr-3 btn-modify"
                             @click="edit(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete"
                             @click="godel(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -85,14 +86,14 @@
     </v-dialog>
     <!-- 刪除 -->
     <v-dialog v-model="delDialog" max-width="350px">
-        <v-card>
-            <v-card-title class="red white--text px-4 py-1 headline"
+        <v-card class="theme-del-card">
+            <v-card-title class="white--text px-4 py-1 headline"
             >確認是否刪除?</v-card-title
             >
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="delDialog=false">取消</v-btn>
-            <v-btn color="red" class="white--text" @click="del(delItem)">刪除</v-btn>
+            <v-btn class="white--text btn-close" @click="delDialog=false">取消</v-btn>
+            <v-btn class="white--text btn-delete" @click="del(delItem)">刪除</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -123,16 +124,16 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            // { text: '是否須回訓', value: 'needTrain', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-            { text: '證照編號', value: 'LicenseNo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '140' },
-            { text: '證照生效日', value: 'EffectiveDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '最後回訓日', value: 'ReTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '證照有效日', value: 'ExpDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
+            // { text: '是否須回訓', value: 'needTrain', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '120' },
+            { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '120' },
+            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '證照編號', value: 'LicenseNo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '140' },
+            { text: '證照生效日', value: 'EffectiveDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '120' },
+            { text: '最後回訓日', value: 'ReTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '120' },
+            { text: '證照有效日', value: 'ExpDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '120' },
+            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '130' },
         ],
         dialog: false,  // dialog 是否顯示
         componentKey: 0,

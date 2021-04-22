@@ -1,9 +1,9 @@
 <template>
-  <v-container style="max-width: 1200px">
-    <h2 class="mb-4">邊坡監測</h2>
+  <v-container style="max-width: 1200px" class="label-header">
+    <h2 class="label-title mb-4">邊坡監測</h2>
     <v-row>
         <v-col cols="12" sm="2" class="info--text" >
-            <h2 align="center"> 即時資料</h2>
+            <h2 class="label-title" align="center"> 即時資料</h2>
         </v-col>
         <v-col cols="12" sm="10" >
             <v-spacer />
@@ -59,7 +59,7 @@
     <v-row style="margin-top:-2%">
       <!-- 控制措施 -->
       <v-col cols="12" sm="2" class="info--text">
-            <h2 align="center"> 歷史資料</h2>
+            <h2 class="label-title" align="center"> 歷史資料</h2>
         </v-col>
       <v-col cols="12" sm="3">
         <DateSelect label="查詢日期(起)" v-model="q_datestart" key="dateStart" :showIcon="true"/>
@@ -78,7 +78,7 @@
           solo />
       </v-col>
       <v-col cols="12" md="2" align-self="center" >
-        <v-btn color="success" dark large @click="goSearch">
+        <v-btn class="btn-search" dark large @click="goSearch">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -97,6 +97,7 @@
                   disable-sort
                   disable-filtering
                   hide-default-footer
+                  class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -152,13 +153,13 @@ export default {
     tableItems:[],
     headers: [
       // { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
-      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
-      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
-      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
-      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '15' },
-      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '13' },
-      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '13' },
-      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold metal-dark-yellow-top shadowText', width: '13' },
+      { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
+      { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
+      { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
+      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
+      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
+      { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
+      { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
     ]
   }),
   components: {

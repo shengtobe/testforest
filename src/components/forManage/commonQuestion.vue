@@ -8,7 +8,7 @@
       </v-col>
       <!-- 檢查項目 -->
       <v-col cols="12">
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="4">
             <dateSelect
               label="檢查日期"
@@ -39,7 +39,7 @@
         </v-row>
         <v-row
           no-gutter
-          class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+          class="label-header d-none d-sm-flex font-weight-black"
         >
           <v-col cols="12" :sm="settings.width.qusetion">
             <h3 class="mb-1">檢查部分</h3>
@@ -70,7 +70,7 @@
           dense
           border="top"
           colored-border
-          color="teal"
+          color="border-bg-dark-yellow"
           elevation="4"
           v-for="(item, idx) in settings.qestions"
           :key="idx"
@@ -140,7 +140,7 @@
     <v-row v-if="settings.textarea">
       <!-- 改善建議、改善追蹤 -->
       <v-col cols="12" v-for="(item,index) in settings.textarea" :key="'ta'+index">
-        <h3 class="mb-1 indigo--text">{{ item.label }}</h3>
+        <h3 class="mb-1 label-header">{{ item.label }}</h3>
         <v-textarea
           auto-grow
           outlined

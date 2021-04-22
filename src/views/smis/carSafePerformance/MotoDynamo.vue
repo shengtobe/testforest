@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">機車行駛公里及發電機工時表查詢</h2>
+<v-container class="label-header" style="max-width: 1200px">
+    <h2 class="label-title mb-4">機車行駛公里及發電機工時表查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
@@ -49,31 +49,31 @@
         </v-col>
 
         <v-col cols="12" class="mb-4">
-            <v-btn color="success" large class="mt-2 mb-2 mr-2"
+            <v-btn dark large class="btn-search mt-2 mb-2 mr-2"
                 @click="search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="ma-2"
+            <v-btn dark large class="btn-add ma-2"
                 @click="add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="ma-2"
+            <v-btn elevation="2" large class="btn-clear ma-2"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
-            <v-btn dark large class="ma-2"
+            <v-btn dark large class="btn-close ma-2"
                 :to="`/smis/car-safe-performance`"
             >回上層</v-btn>
         </v-col>
         
-        <p class="error--text px-2">
-            <v-icon class="error--text mb-1">mdi-alert-decagram</v-icon>
+        <p class="label-warning px-2">
+            <v-icon class="label-warning mb-1">mdi-alert-decagram</v-icon>
             注意：一般員工僅能編修當月與上個月之資料
         </p>
 
@@ -87,6 +87,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -101,7 +102,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn fab small dark color="teal"
+                        <v-btn dark fab small dark class="btn-detail"
                             @click="view(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
@@ -109,13 +110,13 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary" class="mr-2"
+                        <v-btn dark fab small class="btn-modify mr-2"
                             @click="edit(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn dark fab small class="btn-delete"
                             @click="del(item.id)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -137,8 +138,8 @@
 
     <!-- 詳細資料 -->
     <v-dialog v-model="contentShow" max-width="500px">
-        <v-card>
-            <v-card-title class="yellow darken-1 px-4 py-1">
+        <v-card class="theme-card">
+            <v-card-title class="px-4 py-1">
                 詳細資料
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="contentShow = false" class="mr-n2">
@@ -217,8 +218,8 @@
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
-        <v-card>
-            <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+        <v-card class="theme-card">
+            <v-card-title class=" white--text px-4 py-1">
                 {{ dialogTitle }}
                 <v-spacer></v-spacer>
                 <v-btn dark fab small text @click="dialog = false" class="mr-n2">
@@ -227,8 +228,8 @@
             </v-card-title>
 
             <v-card-text class="px-6 py-4">
-                <p class="error--text">
-                    <v-icon class="error--text mb-1">mdi-alert-decagram</v-icon>
+                <p class="label-warning">
+                    <v-icon class="label-warning mb-1">mdi-alert-decagram</v-icon>
                     注意：一般員工僅能編修當月與上個月之資料
                 </p>
                 <!-- <v-form
@@ -439,13 +440,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '型號', value: 'motoId', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '司機員', value: 'drivers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '行駛區間', value: 'locations', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '列車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '詳細資訊', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '型號', value: 'motoId', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '司機員', value: 'drivers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '行駛區間', value: 'locations', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '列車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '詳細資訊', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         monthOpts: monthOptions,  // 月份下拉選單(dialog用)
         serchMonthOpts: [  // 搜尋表單月份下拉選單

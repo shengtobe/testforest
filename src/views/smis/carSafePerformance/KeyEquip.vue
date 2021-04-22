@@ -3,12 +3,12 @@
   
   <v-row>
     <v-col cols="12" md="2">
-      <v-btn color="secondary" large :to="`/smis/car-safe-performance/analysis`">
+      <v-btn class="btn-close" dark large :to="`/smis/car-safe-performance/analysis`">
         回上一頁
       </v-btn>
     </v-col>
     <v-col cols="12" md="8" class="text-center">
-      <h2 class="mb-4">{{decodeURIComponent(acdname)}}安全關鍵設備可靠度</h2>
+      <h2 class="label-title mb-4">{{decodeURIComponent(acdname)}}安全關鍵設備可靠度</h2>
     </v-col>
     <v-col cols="12" class="text-center align-center">
       <v-row>
@@ -21,7 +21,7 @@
           ></v-select>
         </v-col>
         <v-col cols="8" md="3" class="d-flex text-left align-center">
-          <h3>安全關鍵設備MKBF績效</h3>
+          <h3 class="label-header">安全關鍵設備MKBF績效</h3>
         </v-col>
         <v-col cols="0" md="4">
           <v-row>
@@ -39,7 +39,7 @@
               ></v-select>
             </v-col>
             <v-col cols="6" class="d-flex text-left align-center">
-              <v-btn color="primary" large :to="`/smis/car-safe-performance/${acdname}/key-equip/${eqname}/key-analysis`">
+              <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${acdname}/key-equip/${eqname}/key-analysis`">
                 趨勢分析
               </v-btn>
             </v-col>

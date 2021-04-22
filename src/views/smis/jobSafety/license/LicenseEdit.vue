@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ dialogTitle }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="cancel" class="mr-n2">
@@ -8,7 +8,7 @@
       </v-btn>
     </v-card-title>
 
-  <v-card-text class="px-6 py-4">
+  <v-card-text class="px-6 py-4 label-header">
     <v-row>
       <v-col cols="12" sm="4">
         <h3 class="mb-1">
@@ -71,8 +71,8 @@
   
   <v-card-actions class="px-5 pb-5">
     <v-spacer></v-spacer>
-    <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="cancel">取消</v-btn>
-    <v-btn color="success" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
+    <v-btn class="mr-2 btn-close" elevation="4"  :loading="isLoading" @click="cancel">取消</v-btn>
+    <v-btn class="btn-add" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
   </v-card-actions>
 </v-card>
 </template>
