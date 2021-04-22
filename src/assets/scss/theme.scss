@@ -173,7 +173,6 @@ body{
   &-detail{
     @include metal-bg(#4bc047);
     @extend .shadow-text;
-    color:#fff;
   }
 
   &-memo{
