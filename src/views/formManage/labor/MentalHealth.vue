@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -39,7 +39,7 @@
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
@@ -55,6 +55,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -68,11 +69,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -82,7 +82,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -110,8 +110,8 @@
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="680px" >
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
@@ -127,7 +127,7 @@
             </v-col>-->
             <!-- 檢查項目 -->
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">填表日期</h3>
                   <v-menu
@@ -140,7 +140,7 @@
                     <template v-slot:activator="{ on }">
                       <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
                     </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
+                    <v-date-picker color="primary" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
                 <v-col cols="12" sm="4">
@@ -152,7 +152,7 @@
                 dense
                 border="top"
                 colored-border
-                color="teal"
+                color="border-bg-dark-yellow"
                 elevation="4"
                 v-for="(item, idx) in items"
                 :key="idx"
@@ -161,7 +161,7 @@
                 <v-row no-gutter>
                   <v-col cols="12" sm="4">{{ item.question }}</v-col>
                   <v-col cols="12" sm="7" style="white-space:pre-wrap">
-                    <span class="d-sm-none error--text">回答：</span>
+                    <span class="d-sm-none label-header">回答：</span>
                     <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
                       <v-radio color="success" label="沒有或極少(每週一天以下)" value="1"></v-radio>
                       <v-radio color="orange" label="有時(1~2天/週)" value="2"></v-radio>
@@ -177,7 +177,7 @@
               <!-- <v-text-field v-model="PersonalFatigueTotal">
                 <span slot="prepend" >分數:</span>
               </v-text-field>-->
-              <v-toolbar color="teal" dark >
+              <v-toolbar color="gradual-bg-darken-wood" dark >
                 <v-toolbar-title style="width:40%; text-align:center">分數</v-toolbar-title>
                 <v-divider class="mx-4" inset vertical></v-divider>
                 <v-text-field flat v-model="PersonalFatigueTotal" readonly style="margin-top:30px;">
@@ -187,14 +187,14 @@
             </v-col>
             <!-- 分數解釋 -->
             <v-col cols="13" sm="12">
-              <v-toolbar color="teal lighten-2" dark>
+              <v-toolbar color="gradual-bg-darken-wood" dark>
                 <v-spacer />
                 <v-toolbar-title>分數解釋</v-toolbar-title>
                 <v-spacer />
               </v-toolbar>
             </v-col>
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+              <v-row no-gutter class="label-header d-none d-sm-flex font-weight-black">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">分數</h3>
                 </v-col>
@@ -206,7 +206,7 @@
                 dense
                 border="top"
                 colored-border
-                color="teal"
+                color="border-bg-dark-yellow"
                 elevation="4"
                 v-for="(item, idx) in score1"
                 :key="idx"
@@ -222,7 +222,7 @@
               <b>※您是否同意檢附量表分數，以作為後續健康風險評估之用途?</b>
             </v-col>
             <v-col cols="12" sm="7">
-              <span class="d-sm-none error--text">回答：</span>
+              <span class="d-sm-none label-header">回答：</span>
               <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.items[18].status">
                 <v-radio color="success" label="同意" value="1"></v-radio>
                 <v-radio color="red" label="不同意" value="2"></v-radio>
@@ -244,15 +244,14 @@
           <v-btn
             v-if="action != actions.add"
             elevation="4"
-            color="red"
-            class="mr-2 white--text"
+            class="mr-2 btn-delete white--text"
             @click="deleteRecord"
             >刪除</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
           <v-btn
-            color="success"
+            class="btn-add white--text"
             elevation="4"
             @click="save"
             >送出</v-btn
@@ -343,12 +342,12 @@ export default {
         },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       //------
