@@ -1,7 +1,7 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">編輯設備標示編號</h2>
-    <v-btn color="red" dark large class="ml-2" to="/mmis/train-track-lane">
+    <h2 class="mb-4 label-title">編輯設備標示編號</h2>
+    <v-btn dark large class="ml-2 btn-delete" to="/mmis/train-track-lane">
       <v-icon class="mr-1">mdi-arrow-left</v-icon>回 列車、軌道、車道設備
     </v-btn>
     
@@ -9,7 +9,7 @@
 
     <v-row class="px-2">
       <v-col cols="12" >
-        <v-row class="px-2 mb-6">
+        <v-row class="px-2 mb-6 label-header">
           
           <v-col cols="12" class="mt-n4">
             <v-row>
@@ -30,7 +30,7 @@
                 <!-- <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv1 == ''" @click="goAdd('1')">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn> -->
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv1 != ''" :disabled="_editDisabled.Lv1" @click="goEdit('1')">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv1 != ''" :disabled="_editDisabled.Lv1" @click="goEdit('1')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -54,10 +54,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="3" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv2 == ''" @click="goAdd('2')" :disabled="_addDisabled.eqCodeListLv2">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv2 == ''" @click="goAdd('2')" :disabled="_addDisabled.eqCodeListLv2">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv2" @click="goEdit('2')">
+                <v-btn dark large class="ml-2 btn-modify" v-else :disabled="_editDisabled.Lv2" @click="goEdit('2')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -76,10 +76,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="3" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv22 == ''" @click="goAdd('22')" :disabled="_addDisabled.eqCodeListLv22">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv22 == ''" @click="goAdd('22')" :disabled="_addDisabled.eqCodeListLv22">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv22" @click="goEdit('22')">
+                <v-btn dark large class="ml-2 btn-modify" v-else :disabled="_editDisabled.Lv22" @click="goEdit('22')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -103,10 +103,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="3" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv3 == ''" @click="goAdd('3')" :disabled="_addDisabled.eqCodeListLv3">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv3 == ''" @click="goAdd('3')" :disabled="_addDisabled.eqCodeListLv3">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv3" @click="goEdit('3')">
+                <v-btn dark large class="ml-2 btn-modify" v-else :disabled="_editDisabled.Lv3" @click="goEdit('3')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -125,10 +125,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="3" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv32 == ''" @click="goAdd('32')" :disabled="_addDisabled.eqCodeListLv32">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv32 == ''" @click="goAdd('32')" :disabled="_addDisabled.eqCodeListLv32">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv32" @click="goEdit('32')">
+                <v-btn dark large class="ml-2 btn-modify" v-else :disabled="_editDisabled.Lv32" @click="goEdit('32')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -152,10 +152,10 @@
                 ></v-select>
               </v-col>
               <v-col cols="3" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv4 == ''" @click="goAdd('4')" :disabled="_addDisabled.eqCodeListLv4">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv4 == ''" @click="goAdd('4')" :disabled="_addDisabled.eqCodeListLv4">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
-                <v-btn color="indigo" dark large class="ml-2" v-else :disabled="_editDisabled.Lv4" @click="goEdit('4')">
+                <v-btn dark large class="ml-2 btn-modify" v-else :disabled="_editDisabled.Lv4" @click="goEdit('4')">
                   <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                 </v-btn>
               </v-col>
@@ -178,14 +178,14 @@
                 ></v-select>
               </v-col>
               <v-col cols="3" align-self="center">
-                <v-btn color="indigo" dark large class="ml-2" v-if="selectItem.Lv5 == ''" @click="goAdd('5')" :disabled="_addDisabled.eqCodeListLv5">
+                <v-btn dark large class="ml-2 btn-modify" v-if="selectItem.Lv5 == ''" @click="goAdd('5')" :disabled="_addDisabled.eqCodeListLv5">
                   <v-icon class="mr-1">mdi-plus</v-icon>新增
                 </v-btn>
                 <div v-else>
-                  <v-btn color="indigo" dark large class="ml-2"  :disabled="_editDisabled.Lv5" @click="goEdit('5')">
+                  <v-btn dark large class="ml-2 btn-modify"  :disabled="_editDisabled.Lv5" @click="goEdit('5')">
                     <v-icon class="mr-1">mdi-pencil</v-icon>編輯
                   </v-btn>
-                  <v-btn color="red" dark large class="ml-2" :disabled="_editDisabled.Lv5" @click="goDel('5')">
+                  <v-btn dark large class="ml-2 btn-delete" :disabled="_editDisabled.Lv5" @click="goDel('5')">
                     <v-icon class="mr-1">mdi-delete-empty</v-icon>刪除
                   </v-btn>
                 </div>
@@ -199,12 +199,12 @@
       <EquipCodeEdit :detailCode="detailCode" :inputType="inType" :parentList="editParent" :inLevel="editLevel" @close="close" :key="componentKey"></EquipCodeEdit>  
     </v-dialog>
     <v-dialog v-model="Del" persistent max-width="290">
-      <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+      <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn color="success" @click="goDelete">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn class="btn-delete white--text" @click="goDelete">刪除</v-btn>
           </v-card-actions>
         </v-card>
     </v-dialog>

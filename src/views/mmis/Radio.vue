@@ -1,10 +1,10 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">無線電設備管理</h2>
+    <h2 class="mb-4 label-title">無線電設備管理</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 查詢欄位 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -28,10 +28,10 @@
       </v-col>
 
       <v-col cols="12" md="3" align-self="center" @click="setDataList">
-        <v-btn color="green" dark large>
+        <v-btn class="btn-search" dark large>
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="goEdit(-1)">
+        <v-btn dark large class="ml-2 btn-add" @click="goEdit(-1)">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -47,6 +47,7 @@
             hide-default-footer
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -59,16 +60,15 @@
             <template v-slot:item.a8={item}>
               <v-btn
                 title="編輯"
-                class="mr-2"
+                class="mr-2 btn-modify"
                 small
                 dark
                 fab
-                color="info darken-1"
                 @click="goEdit(item.FlowId)"
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="openDelete(item.FlowId)">
+              <v-btn title="刪除" small dark fab class="btn-delete" @click="openDelete(item.FlowId)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -139,63 +139,63 @@ export default {
         value: "id",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "機號",
         value: "SerialNo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "位置",
         value: "Loc",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "類型",
         value: "Type",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "單位",
         value: "DepartParentName",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "車站",
         value: "DepartName",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "持有人編號",
         value: "ManID",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "持有人",
         value: "Name",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "修改、刪除",
         value: "a8",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     ipt: {

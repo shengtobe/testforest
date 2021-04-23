@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">維修工時履歷</h2>
+    <h2 class="mb-4 label-title">維修工時履歷</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
       <!-- 查詢時間(起訖) -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -19,7 +19,7 @@
             <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.StartDay"
             @input="dateSelect.StartDay = false"
             locale="zh-tw"
@@ -42,7 +42,7 @@
             <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.EndDay"
             @input="dateSelect.EndDay = false"
             locale="zh-tw"
@@ -66,8 +66,8 @@
         <v-text-field v-model.trim="searchIpt.wbsShow" readonly solo @click="goEq"  />
       </v-col>
       <v-dialog v-model="eqCodeShow" max-width="900px">
-        <v-card>
-          <v-card-title class="yellow darken-1 px-4 py-1">
+        <v-card class="theme-card">
+          <v-card-title class="px-4 py-1">
             選擇設備標示編號(WBS)
             <v-spacer />
             <v-btn fab small text @click="cancel" class="mr-n2">
@@ -77,8 +77,8 @@
           <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="cancel">取消</v-btn>
-            <v-btn color="success" elevation="4" @click="setWBS">送出</v-btn>
+            <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancel">取消</v-btn>
+            <v-btn class="btn-add white--text" elevation="4" @click="setWBS">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -148,7 +148,7 @@
             <v-text-field v-model.trim="searchIpt.RepairDate" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.RepairDate"
             @input="dateSelect.RepairDate = false"
             locale="zh-tw"
@@ -171,7 +171,7 @@
             <v-text-field v-model.trim="searchIpt.StartWorkDate" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.StartWorkDate"
             @input="dateSelect.StartWorkDate = false"
             locale="zh-tw"
@@ -194,7 +194,7 @@
             <v-text-field v-model.trim="searchIpt.FinishedDate" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.FinishedDate"
             @input="dateSelect.FinishedDate = false"
             locale="zh-tw"
@@ -217,7 +217,7 @@
             <v-text-field v-model.trim="searchIpt.AcceptanceDate" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.AcceptanceDate"
             @input="dateSelect.AcceptanceDate = false"
             locale="zh-tw"
@@ -240,7 +240,7 @@
             <v-text-field v-model.trim="searchIpt.closDate" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="searchIpt.closDate"
             @input="dateSelect.closDate = false"
             locale="zh-tw"
@@ -256,10 +256,10 @@
       </v-col>
 
       <v-col cols="12" class="mb-8">
-        <v-btn color="success" large class="mr-3" @click="search">
+        <v-btn large class="mr-3 btn-search white--text" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn elevation="2" large @click="reset">
+        <v-btn elevation="2" large class="btn-clear" @click="reset">
           <v-icon>mdi-reload</v-icon>清除搜尋內容
         </v-btn>
       </v-col>
@@ -274,6 +274,7 @@
             disable-sort
             disable-filtering
             hide-default-footer
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -284,17 +285,17 @@
             </template>
 
             <template v-slot:item.ViewTicket="{ item }">
-              <v-btn fab small dark color="teal" @click="view(item.WorkNumber)">
+              <v-btn fab small dark class="btn-detail" @click="view(item.WorkNumber)">
                 <v-icon>mdi-file-document</v-icon>
               </v-btn>
             </template>
 
             <template v-slot:item.action="{ item }">
-              <v-btn fab small color="primary" class="mr-2" @click="Edit = true">
+              <v-btn fab small class="mr-2 btn-modify white--text" @click="Edit = true">
                 <v-icon>mdi-pen</v-icon>
               </v-btn>
 
-              <v-btn fab small color="error" @click="Delete = true">
+              <v-btn fab small class="btn-delete white--text" @click="Delete = true">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -310,8 +311,8 @@
 
     <!-- 檢視工單 -->
     <v-dialog v-model="contentShow" max-width="700px">
-      <v-card>
-        <v-card-title class="yellow darken-1 px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="px-4 py-1">
           檢視工單
           <v-spacer />
           <v-btn fab small text @click="contentShow = false" class="mr-n2">
@@ -319,7 +320,7 @@
           </v-btn>
         </v-card-title>
 
-        <div class="px-4 py-3">
+        <div class="px-4 py-3 label-header">
           <v-row no-gutters>
             <v-col cols="12">
               <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>
@@ -455,42 +456,42 @@ export default {
         value: "id",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "工單編號",
         value: "WorkNumber",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "科室",
         value: "Dept",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "設備標示編號",
         value: "wbs",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "立單日期",
         value: "Established",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "檢視工單",
         value: "ViewTicket",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     contentShow: false, // 詳細內容 dialog 是否顯示

@@ -1,10 +1,10 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">列車、軌道、車道設備</h2>
+    <h2 class="mb-4 label-title">列車、軌道、車道設備</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 查詢欄位 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -26,13 +26,13 @@
       </v-col>
 
       <v-col cols="12" md="6" align-self="center">
-        <v-btn color="green" dark large @click="setShowData()">
+        <v-btn class="btn-search" dark large @click="setShowData()">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="add">
+        <v-btn dark large class="ml-2 btn-modify" @click="add">
           <v-icon class="mr-1">mdi-plus</v-icon>編輯
         </v-btn>
-        <v-btn color="red" dark large class="ml-2" to="/mmis/edit-eqcode">
+        <v-btn dark large class="ml-2 btn-delete" to="/mmis/edit-eqcode">
           <v-icon class="mr-1">mdi-data-matrix-edit</v-icon>編輯設備標示編號
         </v-btn>
       </v-col>
@@ -50,6 +50,7 @@
             hide-default-footer
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -63,25 +64,25 @@
               <td :colspan="headers.length">
                 <div class="row">
                   <div class="col-12 col-md-8">
-                    <v-chip class="ma-2" color="cyan" label>型號</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>型號</v-chip>
                     {{ item.Type }}
-                    <v-chip class="ma-2" color="cyan" label>版本</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>版本</v-chip>
                     {{ item.Ver }}
-                    <v-chip class="ma-2" color="cyan" label>製造商</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>製造商</v-chip>
                     {{ item.Company }}
-                    <v-chip class="ma-2" color="cyan" label>供應商</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>供應商</v-chip>
                     {{ item.Supplier }}
                     <br />
-                    <v-chip class="ma-2" color="cyan" label>維修單位</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>維修單位</v-chip>
                     {{ item.DepartName }}
-                    <v-chip class="ma-2" color="cyan" label>外部維修單位</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>外部維修單位</v-chip>
                     {{ item.OutMaintainDepart }}
-                    <v-chip class="ma-2" color="cyan" label>技術文件</v-chip>
+                    <v-chip class="ma-2" color="dropdownicon" label>技術文件</v-chip>
                     <v-chip
                       v-if="item.LocDocument"
                       small
                       label
-                      color="primary"
+                      color="secondary"
                       class="mr-2 mb-2 mb-sm-0"
                       href="../../../public/demofile/123.docx"
                       :download="item.LocDocument"
@@ -106,16 +107,15 @@
             <template v-slot:item.a8="{item}">
               <v-btn
                 title="編輯"
-                class="mr-2"
+                class="mr-2 btn-modify"
                 small
                 dark
                 fab
-                color="info darken-1"
                 @click="goEdit(item.FlowId)"
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="confirmDelete(item.FlowId)">
+              <v-btn title="刪除" small dark fab class="btn-delete" @click="confirmDelete(item.FlowId)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -127,8 +127,8 @@
       </v-col>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
+        <v-card class="theme-card">
+          <v-card-title class="white--text px-4 py-1">
             {{dialog_title}}
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
@@ -140,19 +140,19 @@
           </v-lazy>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-            <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+            <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
+            <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn color="success" @click="goDelete">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn class="btn-delete white--text" @click="goDelete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -185,40 +185,40 @@ export default {
         align: "start",
         sortable: true,
         divider: true, // 線格
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "單位",
         value: "DepartName",
 
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "設備標示編號",
         value: "MaintainCode",
 
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "設備名稱",
         value: "EqipName",
 
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "照片",
         value: "StatusPic",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "設備功能描述",
         value: "Description",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "修改、刪除",
@@ -226,14 +226,14 @@ export default {
         align: "center",
         divider: true,
         sortable: false,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "",
         value: "data-table-expand",
         divider: true,
         sortable: false,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     ipt: {

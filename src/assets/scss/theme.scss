@@ -169,6 +169,11 @@ body{
   &-modify{
     @include metal-bg(#0051fe);
     @extend .shadow-text;
+    &:disabled{
+      background: rgba(0,0,0,0.3);
+      color: rgba(0,0,0,0.3);
+      text-shadow: none;
+    }
   }
 
   &-detail{

@@ -14,7 +14,7 @@
       getWorkName:回傳工作項中文
 -->
 <template>
-  <v-row class="px-2 mb-6">
+  <v-row class="px-2 mb-6 label-header">
 
     <v-col cols="12" class="mt-n4" v-if="toLv >= 1" v-show="_levelShow.Lv1">
       <v-row>

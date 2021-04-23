@@ -1,10 +1,10 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">週期性工作提醒</h2>
+    <h2 class="mb-4 label-title">週期性工作提醒</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 控制措施 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -21,7 +21,7 @@
             <v-text-field v-model.trim="datestart" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="datestart"
             @input="q_datestart = false"
             locale="zh-tw"
@@ -43,7 +43,7 @@
             <v-text-field v-model.trim="dateend" solo v-on="on" readonly />
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="dateend"
             @input="q_dateend = false"
             locale="zh-tw"
@@ -51,10 +51,10 @@
         </v-menu>
       </v-col>
       <v-col cols="12" md="3" align-self="center">
-        <v-btn color="green" dark large @click="getQueryList">
+        <v-btn class="btn-search" dark large @click="getQueryList">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="_goAdd">
+        <v-btn dark large class="ml-2 btn-add" @click="_goAdd">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -77,6 +77,7 @@
             item-key="id"
             :options.sync="pageOpt"
             hide-default-footer
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -86,11 +87,11 @@
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
             <template v-slot:item.a8="{item}">
-              <v-btn fab small color="primary" class="mr-2" @click="_goEdit(item.AlarmFlowID)">
+              <v-btn fab small class="mr-2 btn-modify white--text" @click="_goEdit(item.AlarmFlowID)">
                 <v-icon>mdi-pen</v-icon>
               </v-btn>
 
-              <v-btn fab small color="error" @click="_goDelete(item.AlarmFlowID)">
+              <v-btn fab small class="btn-delete white--text" @click="_goDelete(item.AlarmFlowID)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -117,12 +118,12 @@
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn :loading="isLoading" color="success" @click="_delete">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn :loading="isLoading" class="btn-delete white--text" @click="_delete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -151,48 +152,48 @@ export default {
         value: "id",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "單位(廠/庫、監工區)",
         value: "DepartName",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "工作提醒事項",
         value: "Memo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "通知起始日",
         value: "AlarmDTime",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "提醒週期(日曆天)",
         value: "Cycle",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "修改、刪除",
         value: "a8",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       // {
       //   text: "",
       //   value: "data-table-expand",
       //   divider: true,
-      //   class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      //   class: "subtitle-1 white--text font-weight-bold",
       // },
     ],
     tableItems: [

@@ -1,10 +1,10 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">料件管理</h2>
+    <h2 class="mb-4 label-title">料件管理</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 控制措施 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -21,19 +21,19 @@
       </v-col>
 
       <v-col cols="12" md="6" align-self="center">
-        <v-btn color="green" dark large @click="searchData">
+        <v-btn class="btn-search" dark large @click="searchData">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="goAdd()">
+        <v-btn dark large class="ml-2 btn-add" @click="goAdd()">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
-        <v-btn color="pink lighten-2" dark large class="ml-2" @click="Del = true">
+        <v-btn dark large class="ml-2 btn-expansion" @click="Del = true">
           <v-icon class="mr-1">mdi-folder-move-outline</v-icon>移存申請單
         </v-btn>
       </v-col>
 
       <v-col cols="12">
-        <span style="color: red;">*可設定安全庫存數量與單價的數值</span>
+        <span class="label-warning">*可設定安全庫存數量與單價的數值</span>
         <v-card>
           <v-data-table
             :headers="headers"
@@ -44,6 +44,7 @@
             hide-default-footer
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -63,11 +64,11 @@
             </template>
 
             <template v-slot:item.a8="{ item }">
-              <v-btn fab small color="primary" class="mr-2" @click="goEdit(item.Material)">
+              <v-btn fab small class="mr-2 btn-modify" @click="goEdit(item.Material)">
                 <v-icon>mdi-pen</v-icon>
               </v-btn>
 
-              <v-btn fab small color="error" @click="wantDelete(item.Material)">
+              <v-btn fab small class="btn-delete" @click="wantDelete(item.Material)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -80,8 +81,8 @@
       </v-col>
       <!-- 詳細資料 -->
       <v-dialog v-model="contentShow" max-width="900px">
-        <v-card>
-          <v-card-title class="yellow darken-1 px-4 py-1">
+        <v-card class="theme-card">
+          <v-card-title class="px-4 py-1">
             詳細資料
             <v-spacer />
             <v-btn fab small text @click="contentShow = false" class="mr-n2">
@@ -89,7 +90,7 @@
             </v-btn>
           </v-card-title>
 
-          <div class="px-4 py-3">
+          <div class="px-4 py-3 label-header">
             <v-row no-gutters>
               <v-col cols="12">
                 <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>
@@ -191,12 +192,12 @@
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn color="success" @click="goDelete">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn class="btn-delete white--text" @click="goDelete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -234,7 +235,7 @@ export default {
           align: "center",
           sortable: true,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "監工區(廠/庫)",
@@ -242,7 +243,7 @@ export default {
           align: "center",
           sortable: true,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "班別(組)",
@@ -250,7 +251,7 @@ export default {
           align: "center",
           sortable: true,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "材料編號",
@@ -258,7 +259,7 @@ export default {
           align: "center",
           sortable: true,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "材料名稱",
@@ -266,7 +267,7 @@ export default {
           align: "center",
           sortable: true,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: " 安全庫存數量",
@@ -274,7 +275,7 @@ export default {
           align: "center",
           sortable: false,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "本月結存數量",
@@ -282,21 +283,21 @@ export default {
           align: "center",
           sortable: false,
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "詳細",
           value: "ViewTicket",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "修改、刪除",
           value: "a8",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
       ],
       contentShow: false, // 詳細內容 dialog 是否顯示
