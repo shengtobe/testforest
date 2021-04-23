@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -46,6 +46,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -59,11 +60,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -73,7 +73,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -101,8 +101,8 @@
     </v-dialog>
     <!-- 新增竹崎監工區大型物料存放位置表 modal -->
     <v-dialog v-model="Add" max-width="900px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
@@ -114,7 +114,7 @@
           <v-row>
             <!-- 檢查項目 -->
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>填寫日期
@@ -154,11 +154,18 @@
 
               <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
                 <v-expansion-panel>
-                  <v-expansion-panel-header>存放數量</v-expansion-panel-header>
+                  <v-expansion-panel-header>
+                    存放數量
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                      class="label-header darken-2 d-none d-sm-flex font-weight-black"
                     >
                       <v-col cols="12" sm="3">
                         <h3 class="mb-1">新枕木</h3>
@@ -184,15 +191,15 @@
             <!-- END 檢查項目 -->
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">規範</h3>
+              <h3 class="mb-1 label-header">規範</h3>
               <v-textarea auto-grow outlined rows="4" v-model="Specific"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">存放地點</h3>
+              <h3 class="mb-1 label-header">存放地點</h3>
               <v-textarea auto-grow outlined rows="4" v-model="Location"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">備註</h3>
+              <h3 class="mb-1 label-header">備註</h3>
               <v-textarea auto-grow outlined rows="4" v-model="Memo"/>
             </v-col>
           </v-row>
@@ -201,15 +208,14 @@
           <v-btn
             v-if="action != actions.add"
             elevation="4"
-            color="red"
-            class="mr-2 white--text"
+            class="mr-2 btn-delete white--text"
             @click="deleteRecord(RPFlowNo)"
             >刪除</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
           <v-btn
-            color="success"
+            class="btn-add white--text"
             elevation="4"
             @click="save"
             >送出</v-btn
@@ -313,12 +319,12 @@ export default {
         },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       //------

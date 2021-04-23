@@ -1,12 +1,12 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">新增{{ title }}</p>
+      <p class="font-weight-black title text-center label-title">新增{{ title }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
         <v-col cols="12" sm="8">
           
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <!-- row1 -->
             <v-row>
               <v-col cols="12" sm="4">
@@ -22,7 +22,7 @@
                     <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
                   </template>
                   <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="zs"
                     @input="MaintenanceDay = false"
                     locale="zh-tw"
@@ -104,7 +104,7 @@
           <img style="width:100%" v-if="showImg" :src="vn[i_num].imgUrl2" alt="err"/>
           <v-spacer />
         </v-col>
-        <v-row no-gutter class="indigo--text" style="width: 100%">
+        <v-row no-gutter class="label-header" style="width: 100%">
           <v-col class="aa">
             <h3 class="mb-1">橋墩高度</h3>
             <v-text-field type="number" readonly dense single-line outlined v-model="val1_1">123
@@ -155,7 +155,7 @@
             </v-text-field>
           </v-col>
         </v-row>
-        <v-row no-gutter class="indigo--text" style="width: 100%">
+        <v-row no-gutter class="label-header" style="width: 100%">
           <v-col class="aa">
             <h3 class="mb-1">簡支樑長度</h3>
             <v-text-field type="number" readonly dense single-line outlined v-model="val2_1">
@@ -208,7 +208,7 @@
         </v-row>
         <!-- 檢查項目 -->
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="6">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -226,7 +226,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             v-for="(item, idx) in items1"
             :key="item.question"
@@ -235,7 +235,7 @@
             <v-row no-gutter>
               <v-col cols="12" sm="6">{{ item.question }}</v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">檢查結果：</span>
+                <span class="d-sm-none label-header">檢查結果：</span>
                 <v-radio-group dense row v-model="ipt.items1[idx].result" class="pa-0 ma-0">
                   <v-radio color="success" label="無" value="1"></v-radio>
                   <v-radio color="red" label="嘉義側" value="2"></v-radio>
@@ -243,7 +243,7 @@
                 </v-radio-group>
               </v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">危害等級：</span>
+                <span class="d-sm-none label-header">危害等級：</span>
                 <v-radio-group dense row v-model="ipt.items1[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -257,7 +257,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             v-for="(item, idx) in items2"
             :key="item.question"
@@ -266,14 +266,14 @@
             <v-row no-gutter>
               <v-col cols="12" sm="6">{{ item.question }}</v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">檢查結果：</span>
+                <span class="d-sm-none label-header">檢查結果：</span>
                 <v-radio-group dense row v-model="ipt.items2[idx].result" class="pa-0 ma-0">
                   <v-radio color="success" label="無" value="1"></v-radio>
                   <v-radio color="red" label="編號" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">危害等級：</span>
+                <span class="d-sm-none label-header">危害等級：</span>
                 <v-radio-group dense row v-model="ipt.items2[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -287,14 +287,14 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             class="rt mb-6"
           >
             <v-row no-gutter>
               <v-col cols="12" sm="6">{{ items3[0].question }}</v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">檢查結果：</span>
+                <span class="d-sm-none label-header">檢查結果：</span>
                 <v-radio-group dense row v-model="ipt.items3[0].result" class="pa-0 ma-0">
                   <v-radio color="success" label="無" value="1"></v-radio>
                   <v-radio color="red" label="編號" value="2"></v-radio>
@@ -310,21 +310,21 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             class="rt mb-6"
           >
             <v-row no-gutter>
               <v-col cols="12" sm="6">{{ items4[0].question }}</v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">檢查結果：</span>
+                <span class="d-sm-none label-header">檢查結果：</span>
                 <v-radio-group dense row v-model="ipt.items4[0].result" class="pa-0 ma-0">
                   <v-radio color="success" label="無" value="1"></v-radio>
                   <v-radio color="red" label="編號" value="2"></v-radio>
                 </v-radio-group>
               </v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">危害等級：</span>
+                <span class="d-sm-none label-header">危害等級：</span>
                 <v-radio-group dense row v-model="ipt.items4[0].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -338,7 +338,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             v-for="(item, idx) in items5"
             :key="item.question"
@@ -347,7 +347,7 @@
             <v-row no-gutter>
               <v-col cols="12" sm="6">{{ item.question }}</v-col>
               <v-col cols="12" sm="3">
-                <span class="d-sm-none error--text">檢查結果：</span>
+                <span class="d-sm-none label-header">檢查結果：</span>
                 <v-radio-group dense row v-model="ipt.items5[idx].result" class="pa-0 ma-0">
                   <v-radio color="success" label="無" value="1"></v-radio>
                   <v-radio color="red" label="有" value="2"></v-radio>
@@ -363,7 +363,7 @@
           <h3>其他情況描述</h3>
           <v-textarea v-model="note" auto-grow outlined rows="4" />
         </v-col>
-        <v-row class="indigo--text">
+        <v-row class="label-header">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">工程員</h3>
             <v-text-field dense single-line outlined v-model="sirName1"></v-text-field>
@@ -685,35 +685,35 @@ export default {
           value: "Item",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "檢查日期",
           value: "Checkday",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "審查狀態",
           value: "Review",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "填寫人",
           value: "Name",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "功能",
           value: "Shop",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
       ],
       tableItems: [
