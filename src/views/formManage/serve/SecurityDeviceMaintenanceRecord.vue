@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -21,15 +21,14 @@
       </v-col>
 
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
-          color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
+          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add"
           @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
@@ -46,6 +45,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -59,11 +59,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
@@ -79,8 +78,8 @@
     </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="800px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
@@ -92,7 +91,7 @@
           <v-row>
             <!-- 檢查項目 -->
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="3">
                   <!-- <h3 class="mb-1">施工日期(起)</h3>
                   <v-menu
@@ -119,14 +118,14 @@
                   <v-text-field solo value v-model="Place"/>
                 </v-col>
               </v-row>
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12">
-                  <h3 class="mb-1 indigo--text">工作內容</h3>
+                  <h3 class="mb-1 label-header">工作內容</h3>
                   <v-textarea solo rows="4" v-model="Content"/>
                 </v-col>
               </v-row> 
-              <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
-                <v-row no-gutter>
+              <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4" class="mb-6">
+                <v-row no-gutter class="label-header">
                   <v-col cols="12" sm="4">
                     <h3 class="mt-4">工作時間</h3>
                   </v-col>
@@ -143,7 +142,7 @@
                     <v-text-field type="number" v-model="EndWorkMinute" solo style="width: 0px;" placeholder="分"/>
                   </v-col>
                 </v-row>
-                <v-row no-gutter>
+                <v-row no-gutter class="label-header">
                   <v-col cols="12" sm="4">
                     <h3 class="mt-4">
                       工作狀態
@@ -162,7 +161,7 @@
                     <v-textarea auto-grow outlined rows="1" v-model="Worker" />
                   </v-col>
                 </v-row>
-                <v-row no-gutter>
+                <v-row no-gutter class="label-header">
                   <v-col cols="12" sm="4">
                     <h3 class="mt-4">停用機件</h3>
                   </v-col>
@@ -179,7 +178,7 @@
             </v-col>
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">備註</h3>
+              <h3 class="mb-1 label-header">備註</h3>
               <v-textarea solo rows="4" />
             </v-col>
             <!-- END 檢查項目 -->
@@ -188,8 +187,8 @@
 
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -275,12 +274,12 @@ export default {
         },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       //------

@@ -7,9 +7,9 @@
 // 7. 十字岔道
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -30,17 +30,16 @@
         <deptSelect label="管理單位" v-model="input.department" :iconYN="formIconShow" outType="key" key="department"/>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
         <v-btn
-          color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
+          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add"
           @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
@@ -57,6 +56,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -70,11 +70,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
@@ -90,8 +89,8 @@
     </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="1060px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
@@ -103,7 +102,7 @@
           <v-row>
             <!-- 檢查部分 -->
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="3">
                   <dateSelect
                     label="保養日期"
@@ -126,7 +125,7 @@
                 </v-col-->
               </v-row>
               <v-col cols="13" sm="12">
-                        <v-toolbar color="teal lighten-2" dark>
+                        <v-toolbar color="gradual-bg-darken-wood" dark>
                         <v-spacer/>
                         <v-toolbar-title>轉轍器</v-toolbar-title>
                         <v-spacer/>
@@ -134,7 +133,7 @@
                     </v-col>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                      class="label-header d-none d-sm-flex font-weight-black">
                         <v-col cols="12" sm="2">
                         <h3 class="mb-1">轉轍器號碼</h3>
                       </v-col>
@@ -158,13 +157,13 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in items1"
                       :key="idx"
                       class="mb-6 mt-4"
                     >
-                      <v-row no-gutter>
+                      <v-row no-gutter class="label-header">
                         <v-col cols="12" sm="2">
                           {{ item.question }}
                           </v-col>
@@ -221,7 +220,7 @@
                     </v-alert>
                     <!-- ---------------------進、出站號誌燈--------------------- -->
                       <v-col cols="13" sm="12">
-                        <v-toolbar color="teal lighten-2" dark>
+                        <v-toolbar color="gradual-bg-darken-wood" dark>
                         <v-spacer/>
                         <v-toolbar-title>進、出站號誌燈</v-toolbar-title>
                         <v-spacer/>
@@ -229,7 +228,7 @@
                     </v-col>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                      class="label-header d-none d-sm-flex font-weight-black">
                         <v-col cols="12" sm="4">
                         <h3 class="mb-1">檢查項目</h3>
                       </v-col>
@@ -244,13 +243,13 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in items2"
                       :key="idx"
                       class="mb-6 mt-4"
                     >
-                      <v-row no-gutter>
+                      <v-row no-gutter class="label-header">
                         <v-col cols="12" sm="4">{{ item.question }}</v-col>
                         <v-col cols="12" sm="4">
                           <v-radio-group
@@ -277,8 +276,8 @@
         </div>
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -359,19 +358,19 @@ export default {
         checkManName: ''
       },
       headers2: [  // 表格顯示的欄位
-            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '設備標示編號', value: 'MaintainCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       ipt2: {},

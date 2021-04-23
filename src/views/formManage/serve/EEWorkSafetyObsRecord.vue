@@ -1,7 +1,7 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
-    <v-row class="px-2">
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
+    <v-row class="px-2 label-header">
       <!-- 第一排選項 -->
       <v-col cols="12" sm="2" md="3">
         <dateSelect
@@ -70,12 +70,12 @@
       </v-col> -->
 
       <v-dialog v-model="dialogDel" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn color="success">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn class="btn-delete white--text">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -89,6 +89,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -102,11 +103,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -116,7 +116,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -143,9 +143,9 @@
     </v-dialog>
       <!-- 新增保養資料 modal -->
       <v-dialog v-model="Add" max-width="800px">
-        <v-card>
+        <v-card class="theme-card">
           <!-- 標題 -->
-          <v-card-title class="blue white--text px-4 py-1">
+          <v-card-title class="white--text px-4 py-1">
             新增員工工作安全觀察表(每月2 次)
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">
@@ -153,12 +153,12 @@
             </v-btn>
           </v-card-title>
           <!-- 內容 -->
-          <div class="px-6 py-4">
+          <div class="px-6 py-4 label-header">
             <v-row>
               <v-col cols="12">
-              <p>1.本查核紀錄表每月至少觀察2人</p>
-              <p>2.本表於月底前完成查核，經主管核章後，留存於管理單位之系統保存備查。</p>
-            </v-col>
+                <p>1.本查核紀錄表每月至少觀察2人</p>
+                <p>2.本表於月底前完成查核，經主管核章後，留存於管理單位之系統保存備查。</p>
+              </v-col>
               <v-col cols="12" sm="4">
                 <h3 class="mb-1">觀察日期</h3>
                 <v-menu
@@ -172,7 +172,7 @@
                     <v-text-field hide-details v-on="on" solo v-model="zs"/>
                   </template>
                   <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="zs"
                     @input="dialogDateMenuShow.enters = false"
                     locale="zh-tw"
@@ -221,38 +221,38 @@
                 </v-row>
               </v-col>
               <v-col cols="12">
-                  <h3 class="mb-1 indigo--text">觀察內容：（觀察此人進行工作檢討工作關鍵性安全要點、交談結果）</h3>
+                  <h3 class="mb-1">觀察內容：（觀察此人進行工作檢討工作關鍵性安全要點、交談結果）</h3>
               </v-col>
               <v-col cols="12">
-              <h3 class="mb-1 indigo--text">一、工作步驟是否正確？合乎標準作業程序？</h3>
+              <h3 class="mb-1">一、工作步驟是否正確？合乎標準作業程序？</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption9"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">二、工作熟練程度如何？</h3>
+              <h3 class="mb-1">二、工作熟練程度如何？</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption10"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">三、不安全動作係由何種原因所致？</h3>
+              <h3 class="mb-1">三、不安全動作係由何種原因所致？</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption11"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">四、可能發生的意外有哪些？防止措施如何？</h3>
+              <h3 class="mb-1">四、可能發生的意外有哪些？防止措施如何？</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption12"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">五、對工作者說明或糾正要點：</h3>
+              <h3 class="mb-1">五、對工作者說明或糾正要點：</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption13"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">六、提請有關單位協辦事項有哪些？</h3>
+              <h3 class="mb-1">六、提請有關單位協辦事項有哪些？</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption14"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">七、工作者對進行此工作的意見：</h3>
+              <h3 class="mb-1">七、工作者對進行此工作的意見：</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption15"/>
             </v-col>
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">八、其他</h3>
+              <h3 class="mb-1">八、其他</h3>
               <v-textarea auto-grow outlined rows="4" v-model="CheckOption16"/>
             </v-col>
             </v-row>
@@ -279,15 +279,14 @@
           <v-btn
             v-if="action != actions.add"
             elevation="4"
-            color="red"
-            class="mr-2 white--text"
+            class="mr-2 btn-delete white--text"
             @click="deleteRecord(RPFlowNo)"
             >刪除</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
           <v-btn
-            color="success"
+            class="btn-add white--text"
             elevation="4"
             @click="save"
             >送出</v-btn
@@ -459,12 +458,12 @@ export default {
         },
     headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "觀察日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "觀察人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "觀察單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "觀察日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "觀察人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "觀察單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
   }),
   components: {

@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -40,6 +40,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -53,11 +54,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -67,7 +67,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="
                 dialogDel = true;
                 RPFlowNo = item.RPFlowNo;
@@ -98,20 +98,20 @@
     </v-dialog>
     <!-- 必填欄位空白提醒視窗 -->
     <v-dialog v-model="dialogNull" persistent max-width="290">
-      <v-card>
-        <v-card-title class="red white--text px-4 py-1 headline"
+      <v-card class="theme-del-card">
+        <v-card-title class="white--text px-4 py-1 headline"
           >請填妥必要欄位</v-card-title
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="dialogNull = false">確定</v-btn>
+          <v-btn class="btn-add white--text" @click="dialogNull = false">確定</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- 新增/編輯自動檢點表 modal -->
     <v-dialog v-model="ShowDetailDialog" max-width="700px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1">
           {{ action }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
@@ -129,7 +129,7 @@
 
             <!-- 檢查項目 -->
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="6">
                   <h3 class="mb-1">設備</h3>
                   <v-radio-group
@@ -196,13 +196,18 @@
               </v-row>
               <v-expansion-panels :disabled="disabled" multiple>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text"
-                    >無線電機(含電源供應器)</v-expansion-panel-header
-                  >
+                  <v-expansion-panel-header color="btn-expansion" class="white--text">
+                    無線電機(含電源供應器)
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>
+                    </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                      class="label-header d-none d-sm-flex font-weight-black"
                     >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
@@ -215,7 +220,7 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in itemlist.items1"
                       :key="idx"
@@ -224,7 +229,7 @@
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.description }}</v-col>
                         <v-col cols="12" sm="5">
-                          <span class="d-sm-none error--text">檢查結果：</span>
+                          <span class="d-sm-none label-header">檢查結果：</span>
                           <v-radio-group
                             dense
                             row
@@ -250,13 +255,18 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text"
-                    >天線組件</v-expansion-panel-header
-                  >
+                  <v-expansion-panel-header color="btn-expansion" class="white--text">
+                    天線組件
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                      class="label-header d-none d-sm-flex font-weight-black"
                     >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
@@ -269,7 +279,7 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in itemlist.items2"
                       :key="idx"
@@ -278,7 +288,7 @@
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.description }}</v-col>
                         <v-col cols="12" sm="5">
-                          <span class="d-sm-none error--text">檢查結果：</span>
+                          <span class="d-sm-none label-header">檢查結果：</span>
                           <v-radio-group
                             dense
                             row
@@ -302,13 +312,18 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text"
-                    >電瓶、保險絲及電源線(車裝台免填)</v-expansion-panel-header
-                  >
+                  <v-expansion-panel-header color="btn-expansion" class="white--text">
+                    電瓶、保險絲及電源線(車裝台免填)
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                      class="label-header d-none d-sm-flex font-weight-black"
                     >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
@@ -321,7 +336,7 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in itemlist.items3"
                       :key="idx"
@@ -330,7 +345,7 @@
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.description }}</v-col>
                         <v-col cols="12" sm="5">
-                          <span class="d-sm-none error--text">檢查結果：</span>
+                          <span class="d-sm-none label-header">檢查結果：</span>
                           <v-radio-group
                             dense
                             row
@@ -354,13 +369,18 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text"
-                    >數位錄音設備（無者免填）</v-expansion-panel-header
-                  >
+                  <v-expansion-panel-header color="btn-expansion" class="white--text">
+                    數位錄音設備（無者免填）
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-row
                       no-gutter
-                      class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                      class="label-header d-none d-sm-flex font-weight-black"
                     >
                       <v-col cols="12" sm="7">
                         <h3 class="mb-1">保養檢查項目</h3>
@@ -373,7 +393,7 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in itemlist.items4"
                       :key="idx"
@@ -382,7 +402,7 @@
                       <v-row no-gutter>
                         <v-col cols="12" sm="7">{{ item.description }}</v-col>
                         <v-col cols="12" sm="5">
-                          <span class="d-sm-none error--text">檢查結果：</span>
+                          <span class="d-sm-none label-header">檢查結果：</span>
                           <v-radio-group
                             dense
                             row
@@ -409,7 +429,7 @@
             </v-col>
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
-              <h3 class="mb-1 indigo--text">不正常狀態及處理說明</h3>
+              <h3 class="mb-1 label-header">不正常狀態及處理說明</h3>
               <v-textarea
                 hide-details
                 auto-grow
@@ -425,18 +445,17 @@
         <v-card-actions class="px-5 pb-5">
           <v-btn
             v-if="action != actions.add"
-            class="mr-2 white--text"
+            class="mr-2 btn-delete white--text"
             elevation="4"
-            color="red"
             @click="dialogDel = true"
             >刪除</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="ShowDetailDialog = false"
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="ShowDetailDialog = false"
             >取消</v-btn
           >
           <v-btn
-            color="success"
+            class="btn-add white--text"
             elevation="4"
             :loading="isLoading"
             @click="save"
@@ -522,42 +541,42 @@ export default {
           value: "ItemNo",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "保養日期",
           value: "CheckDay",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "審查狀態",
           value: "CheckStatus",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "填寫人",
           value: "Name",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "保養單位",
           value: "DepartName",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "功能",
           value: "content",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
       ],
       tableItems: [],
