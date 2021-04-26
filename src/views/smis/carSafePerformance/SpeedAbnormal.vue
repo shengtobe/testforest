@@ -127,7 +127,7 @@
                     <template v-slot:item.Attachment="{ item }">
                         <v-btn fab small dark color="purple lighten-2"
                             v-if="item.Attachment.length > 0 && item.Attachment[0] != ''"
-                            @click="showFiles(item.files)"
+                            @click="showFiles(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
@@ -175,12 +175,12 @@
             <v-list-item-group>
                 <template v-for="(item, idx) in fileList">
                     <v-list-item
-                        :key="item.name"
-                        :href="item.link"
-                        :download="item.name"
+                        :key="item.Attachment"
+                        :href="item.AttachmentPath"
+                        :download="item.Attachment"
                     >
                         <v-list-item-content>
-                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                            <v-list-item-title>{{ item.Attachment }}</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
 
@@ -243,7 +243,7 @@ export default {
             { text: '超速級別', value: 'OverSpeedStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
             { text: '異常概況', value: 'ErrTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
             { text: '處理情形', value: 'ErrCheckStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '附件', value: 'files', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '附件', value: 'Attachment', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
         ],
         fileList: [],  // 檔案列表
@@ -312,6 +312,7 @@ export default {
                 Option: 'D',
                 ClientReqTime: getNowFullTime(),
                 OperatorID: this.userData.UserId,  // 操作人id
+                FileCount: []
             }).then( res => {
                 if (res.data.ErrorCode == 0) {
                     this.chMsgbar({ success: true, msg: '刪除成功' })
@@ -330,7 +331,15 @@ export default {
         },
         // 顯示檔案
         showFiles(arr) {
-            if (arr.length > 0) this.fileList = [ ...arr ]
+            this.fileList = [...[]]
+            console.log("arr: ", arr);
+            if (arr.Attachment.length > 0){
+                for (let i = 0; i < arr.Attachment.length; i++) {
+                    this.fileList.push({Attachment: arr.Attachment[i], AttachmentPath: arr.AttachmentPath[i]})
+                }
+            }
+            
+            console.log("fileList: ", this.fileList);
             this.dialogShow = true
         },
         close(){

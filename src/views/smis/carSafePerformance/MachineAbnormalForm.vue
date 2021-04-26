@@ -91,7 +91,7 @@
         </v-col>
 
         <!-- 檔案上傳，新增時 -->
-        <template v-if="!isEdit">
+        <template >
             <UploadFileAdd
                 title="附件上傳"
                 :uploadDisnable="false"
@@ -113,13 +113,13 @@
         </v-col>
 
         <!-- 附件 (編輯時) -->
-        <template v-if="isEdit">
+        <template v-if="false">
             <v-col cols="12" class="mt-8 mb-2">
                 <v-divider></v-divider>
             </v-col>
 
             <UploadFileEdit title="檔案管理"
-                :fileList="FileCount"
+                :fileList="ipt.FileCount"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
                 class="mb-10"
@@ -162,8 +162,9 @@ export default {
             CarCode:'',
             ErrorDesp:'',
             ErrorCheckStatus:'',
-            // FileCount: [],
+            FileCount: [],
         },
+        BarkeID: '',
         FileCount: [],
         dateMemuShow: false,  // 日曆是否顯示
     }),
@@ -202,7 +203,7 @@ export default {
                 }).then( res => {
                     console.log("res.data.DataList[0]: ", res.data.DataList[0])
                     if (res.data.ErrorCode == 0) {
-                        this.ipt = {...decodeObject(res.data.DataList[0])}  
+                        this.ipt = {FileCount: [], ...decodeObject(res.data.DataList[0]), BarkeID: res.data.DataList[0].BarkeID}  
                         console.log("this.ipt2: ", this.ipt)  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
                     }else {
@@ -245,6 +246,10 @@ export default {
             this.chLoadingShow()
             this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
             if(this.isEdit){
+                // console.log("編輯的 ipt: ", this.ipt)
+                // console.log("this.ipt.FileCount: ", this.ipt.FileCount);
+                // this.chLoadingShow()
+                // return
                 brakeUpdate({
                     FlowID:this.id,
                     Option:'U',
@@ -258,7 +263,7 @@ export default {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
                     }
-                    this.FileCount = [ ...[]]
+                    this.ipt.FileCount = [ ...[]]
                     this.showFiles = [ ...[]]
                 }).catch( err => {
                     console.warn(err)
@@ -269,7 +274,7 @@ export default {
             }else{
                 brakeInsert({
                     ...encodeObject(this.ipt),
-                    FileCount: this.FileCount,
+                    // FileCount: this.FileCount,
                     ClientReqTime: getNowFullTime(),
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then( res => {
@@ -290,7 +295,7 @@ export default {
         // 加入要上傳的檔案
         joinFile(obj, bool) {
             if (bool) {
-                this.FileCount.push(obj)  // 加入要上傳後端的檔案
+                this.ipt.FileCount.push(obj)  // 加入要上傳後端的檔案
             } else {
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
@@ -298,11 +303,14 @@ export default {
         // 移除要上傳的檔案 (組件用)
         rmFile(idx) {
             this.showFiles.splice(idx, 1)
-            this.FileCount.splice(idx, 1)
+            this.ipt.FileCount.splice(idx, 1)
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {
             this.chLoadingShow()
+
+            console.log("88")
+            return
 
             setTimeout(() => {
                 // 後端請求後，回傳檔案資料 (id、filename、link)

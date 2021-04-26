@@ -90,6 +90,8 @@
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/access">功能清單權限管理</v-list-item>
                                 <v-divider></v-divider>
+                                <v-list-item @click="showNav = false" to="/access/userManage">人員權限管理</v-list-item>
+                                <v-divider></v-divider>
                             </v-list>
                         </v-card>
                     </v-col>

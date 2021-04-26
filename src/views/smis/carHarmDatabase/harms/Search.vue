@@ -112,9 +112,9 @@
                         ></v-checkbox>
                     </v-col>
 
-                    <v-col cols="12" class="mt-2">
+                    <!-- <v-col cols="12" class="mt-2">
                         <span class="error--text">* 請至要勾選上述其中一個項目</span>
-                    </v-col>
+                    </v-col> -->
                 </v-row>
             </v-sheet>
         </v-col>
@@ -134,11 +134,11 @@
             >高風險</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
-                @click="fastFetch"
+                @click="caseFetch"
             >已立案</v-btn>
 
             <v-btn color="yellow lighten-3" class="mb-2 mr-3"
-                @click="fastFetch"
+                @click="checkFetch"
             >審核中</v-btn>
         </v-col>
 
@@ -252,43 +252,167 @@ export default {
         search() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
+            
+            if(this.chooses.length == 0){
+                //無勾選
+                if(this.keyword == ''){//勾選X 關鍵字X 就搜尋全部
+                    fetchList({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'EndangerCode',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        this.tableItems.forEach(element => {
+                            for(let ele in element){
+                                if(element[ele] == null){
+                                    element[ele] = '';
+                                }
+                                else{
+                                    switch(ele){
+                                        case 'EndangerDesp'://危害說明
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                    }
+                                }
+                            }
+                        });
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
+                else{//勾選X 關鍵字√ 就搜尋全部欄位 有任一欄位符合就列出
+                    fetchList({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'EndangerCode',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        this.tableItems.forEach(element => {
+                            for(let ele in element){
+                                if(element[ele] == null){
+                                    element[ele] = '';
+                                }
+                            }
+                        });
+                        console.log("勾選X 關鍵字√ tableItems", this.tableItems)
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
+            }
+            else{
+                //勾選√
+                if(this.keyword == ''){ //勾選√ 關鍵字X
 
-            fetchList({
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-                KeyName: 'SMS_EndangerData',  // DB table
-                KeyItem: [
-                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
-                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
-                ],
-                QyName: [    // 欲回傳的欄位資料
-                    'EndangerCode',
-                    'EndangerStatus',
-                    'OperationMode',
-                    'RiskSerious',
-                    'RiskFreq',
-                    'RiskLevel',
-                    'DelStatus',
-                    'CancelStatus',
-                    'InsertDTime',
-                ],
-            }).then(res => {
-                this.tableItems = JSON.parse(res.data.order_list)
-                this.tableItems.forEach(element => {
-                    for(let ele in element){
-                        if(element[ele] == null){
-                            element[ele] = '';
-                        }
-                    }
-                });
-                console.log("tableItems", this.tableItems)
-            }).catch(err => {
-                console.log(err)
-                alert('查詢時發生問題，請重新查詢!')
-            }).finally(() => {
-                this.chLoadingShow()
-            })
+                }
+                else{ //勾選√ 關鍵字√
+                    fetchList({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'EndangerCode',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        this.tableItems.forEach(element => {
+                            for(let ele in element){
+                                if(element[ele] == null){
+                                    element[ele] = '';
+                                }
+                                else{
+                                    switch(ele){
+                                        case 'EndangerDesp'://危害說明
+                                            break;
+                                        case 'EndangerReason':// 危害直接成因
+                                            break;
+                                        case 'EndangerIndirect':// 可能的危害間接原因
+                                            break;
+                                        case 'DeriveAccident':// 衍伸事故
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                        case 'AAAAAA'://AAAAA
+                                            break;
+                                    }
+                                }
+                            }
+                        });
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
+                }
+            }
+
+            
         },
         // 全部危害
         searchAllEndanger() {
@@ -332,7 +456,7 @@ export default {
             })
         }, 
         // 高風險
-        searchHighRisk() {
+        searchHighRisk() { 
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
             console.log("this.userData", this.userData)
@@ -366,8 +490,8 @@ export default {
                             element[ele] = '';
                         }
                     }
-                    if(element.riskSerious == 'S1' || element.riskSerious == 'S2'){
-                        tableItems.push(element)
+                    if(element.RiskSerious == 'S1' || element.RiskSerious == 'S2'){
+                        this.tableItems.push(element)
                     }
                 });
                 console.log("tempTableItems", this.tempTableItems)
@@ -379,16 +503,105 @@ export default {
                 this.chLoadingShow()
             })
         }, 
-        // 快速查詢
-        fastFetch() {
+        // 已立案
+        caseFetch() { //caseFetch
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
+            console.log("this.userData", this.userData)
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [ ...carHarmDBHarms ]
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.EndangerStatus == '1'){
+                        this.tableItems.push(element)
+                    }
+                });
+                console.log("已立案tempTableItems", this.tempTableItems)
+                console.log("已立案tableItems", this.tableItems)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow()
-            }, 1000)
+            })
+        }, 
+        // 審核中
+        checkFetch() { //checkFetch
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+            console.log("this.userData", this.userData)
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    switch(element.EndangerStatus){
+                        case '2':
+                        case '4':
+                        case '6':
+                            this.tableItems.push(element)
+                            break;
+                    }
+                });
+                console.log("已立案tempTableItems", this.tempTableItems)
+                console.log("已立案tableItems", this.tableItems)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
         }, 
         // 更換頁數
         chPage(n) {
