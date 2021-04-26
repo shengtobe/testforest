@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">危害編號：{{ id }}</h2>
+    <h2 class="mb-4 label-title">危害編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
@@ -13,21 +13,20 @@
         <ShowControlsTable :tableItems="tableItems" />
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2"
-                    color="indigo"
+                <v-btn dark class="ma-2 btn-modify"
                     :to="`/smis/car-harmdb/harms/${id}/edit`"
                 >編輯</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                 >作廢</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="save"
                 >申請措施審核</v-btn>
             </template>

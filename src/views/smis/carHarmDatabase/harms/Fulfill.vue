@@ -1,12 +1,12 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">危害編號：{{ id }}</h2>
+    <h2 class="mb-4 label-title">危害編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
 
     <!-- 下面的欄位 -->
-    <v-row no-gutters class="mt-8">
+    <v-row no-gutters class="mt-8 label-header">
         <BottomTable :items="bottomItems" />
 
         <!-- 控制措施 -->
@@ -21,19 +21,20 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
                     <template v-slot:item.DeviceDesp="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-detail" dark
                             @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file_path="{ item }">
-                        <v-btn fab small dark color="brown"
+                        <v-btn fab small dark class="btn-memo"
                             :href="item.regul_file_path.link"
                             :download="item.regul_file_path"
                         >
@@ -42,7 +43,7 @@
                     </template>
 
                     <template v-slot:item.evidences="{ item }">
-                        <v-btn fab small dark color="purple lighten-2"
+                        <v-btn fab small dark class="btn-expansion white--text"
                             @click="showEvidences(item.evidences)"
                         >
                             <v-icon>mdi-file-document</v-icon>
@@ -129,42 +130,42 @@
         </v-col> -->
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="dialog = true"
                     v-if="status == 4 || status == 7"
                 >退回</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="save"
                     v-if="status == 4"
                 >同意結案</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                     v-if="status == 5 && version.nowId == version.lasterId"
                 >作廢</v-btn>
 
-                <v-btn dark  class="ma-2" color="primary"
+                <v-btn dark  class="ma-2 btn-detail"
                     @click="rerun"
                     v-if="status == 5 && version.nowId == version.lasterId"
                 >重提危害</v-btn>
 
-                <v-btn dark  class="ma-2" color="brown"
+                <v-btn dark  class="ma-2 btn-expansion"
                     @click="showVersion"
                     v-if="status == 5"
                 >編修歷程紀錄</v-btn>
 
-                <v-btn dark  class="ma-2" color="indigo"
+                <v-btn dark  class="ma-2 btn-modify"
                     :to="`/smis/car-harmdb/harms/${id}/update`"
                     v-if="status == 5 && version.nowId == version.lasterId"
                 >危害更新</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="agreeDel"
                     v-if="status == 7"
                 >同意作廢</v-btn>
@@ -178,8 +179,8 @@
     <v-dialog v-model="dialog" max-width="600px"
         v-if="status == 4 || status == 7"
     >
-        <v-card>
-            <v-toolbar dark flat dense color="error" class="mb-2">
+        <v-card class="theme-del-card">
+            <v-toolbar dark flat dense class="mb-2 metal-red-top">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
@@ -203,16 +204,16 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-close white--text" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 
     <!-- 控制措施證據 dialog -->
     <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
+        <v-card class="theme-card">
+            <v-toolbar flat dense dark class="metal-dark-yellow-top">
                 <v-toolbar-title>證據</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialogShow = false" class="mr-n2">
@@ -243,7 +244,7 @@
 
     <!-- 編修歷程紀錄 -->
     <v-dialog v-model="verDialogShow" max-width="500px">
-        <v-card>
+        <v-card class="theme-card">
             <v-card>
                 <v-data-table
                     :headers="verHeaders"
@@ -251,9 +252,10 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:item.action="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-memo" dark
                             :loading="isLoading"
                             @click="chVersion(item.id)"
                         >切換</v-btn>

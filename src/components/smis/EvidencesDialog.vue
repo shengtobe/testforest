@@ -1,7 +1,7 @@
 <template>
 <v-dialog v-model="show" max-width="400px" @click:outside="close">
-    <v-card>
-        <v-toolbar flat dense dark color="purple lighten-2">
+    <v-card class="theme-card">
+        <v-toolbar flat dense dark class="metal-dark-yellow-top">
             <v-toolbar-title>證據</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn fab small text @click="close" class="mr-n2">

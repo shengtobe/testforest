@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">行車危害查詢</h2>
+    <h2 class="mb-4 label-title">行車危害查詢</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" md="5">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>簡易查詢
@@ -16,13 +16,13 @@
         </v-col>
 
         <v-col cols="12" md="3" align-self="end">
-            <v-btn color="green" dark large class="mb-1 mr-3"
+            <v-btn dark large class="mb-1 mr-3 btn-search"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="mb-1"
+            <v-btn dark large class="mb-1 btn-add"
                 to="/smis/car-harmdb/harms/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -36,7 +36,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="危害說明"
-                            color="info"
+                            color="primary"
                             value="t1"
                             hide-details
                         ></v-checkbox>
@@ -46,7 +46,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="危害直接成因"
-                            color="info"
+                            color="primary"
                             value="t2"
                             hide-details
                         ></v-checkbox>
@@ -56,7 +56,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="可能的危害間接原因"
-                            color="info"
+                            color="primary"
                             value="t3"
                             hide-details
                         ></v-checkbox>
@@ -66,7 +66,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="衍生事故"
-                            color="info"
+                            color="primary"
                             value="t4"
                             hide-details
                         ></v-checkbox>
@@ -76,7 +76,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="危害權責部門"
-                            color="info"
+                            color="primary"
                             value="t5"
                             hide-details
                         ></v-checkbox>
@@ -86,7 +86,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="備註"
-                            color="info"
+                            color="primary"
                             value="t6"
                             hide-details
                         ></v-checkbox>
@@ -96,7 +96,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="控制措施權責部門"
-                            color="info"
+                            color="primary"
                             value="t7"
                             hide-details
                         ></v-checkbox>
@@ -106,7 +106,7 @@
                         <v-checkbox
                             v-model="chooses"
                             label="設備標示編號"
-                            color="info"
+                            color="primary"
                             value="t8"
                             hide-details
                         ></v-checkbox>
@@ -125,19 +125,19 @@
                 <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>快速查詢
             </h3>
             
-            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="searchAllEndanger"
             >全部危害</v-btn>
 
-            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="searchHighRisk"
             >高風險</v-btn>
 
-            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="caseFetch"
             >已立案</v-btn>
 
-            <v-btn color="yellow lighten-3" class="mb-2 mr-3"
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="checkFetch"
             >審核中</v-btn>
         </v-col>
@@ -152,6 +152,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -183,7 +184,7 @@
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             :loading="isLoading"
                             @click="viewPage(item)"
                         >
@@ -221,13 +222,13 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         searchType: 'normal', // 'normal'/'allEndanger'/
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         isLoading: false,  // 是否讀取中
         opts: {
