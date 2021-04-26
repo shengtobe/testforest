@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">慢行通報新增</h2>
+    <h2 class="mb-4 label-title">慢行通報新增</h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-mark</v-icon>通報路線
@@ -37,7 +37,7 @@
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>常態速限(km/h)
-                <v-btn small dark class="mb-1 ml-2 purple"
+                <v-btn small dark class="mb-1 ml-2 btn-delete"
                     @click="dialogShow = true"
                 >速限表</v-btn>
             </h3>
@@ -193,12 +193,12 @@
         </v-col>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 to="/smis/car-safeinfo/crawl-notify"
             >回搜尋頁</v-btn>
             
             <v-btn
-                color="success"
+                class="btn-add white--text"
                 @click="save"
             >送出</v-btn>
         </v-col>
@@ -206,8 +206,8 @@
 
     <!-- 常態速限表 -->
     <v-dialog v-model="dialogShow" max-width="450px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
+        <v-card class="theme-del-card">
+            <v-toolbar flat dense dark class="metal-red-top">
                 <v-icon class="mr-2">mdi-gauge</v-icon>
                 <v-toolbar-title>常態速限表</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -222,6 +222,7 @@
                 disable-sort
                 disable-filtering
                 hide-default-footer
+                class="theme-table"
             ></v-data-table>
         </v-card>
     </v-dialog>
@@ -268,9 +269,9 @@ export default {
         ],
         dialogShow: false,  // 速限表是否顯示
         headers: [  // 速限表顯示的欄位
-            { text: '起訖站', value: 'station', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '直線最高速度', value: 'straight', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '曲線最高速度', value: 'curve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '起訖站', value: 'station', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '直線最高速度', value: 'straight', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '曲線最高速度', value: 'curve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         tableItems: [  // 速限表表格資料
             { station: '嘉義 ~ 北門', straight: 30, curve: 28},

@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">慢行通報編輯 (編號：{{ id }})</h2>
+    <h2 class="mb-4 label-title">慢行通報編輯 (編號：{{ id }})</h2>
 
     <p class="error--text" v-if="isStop">
         <v-icon class="mr-1 mb-1 error--text">mdi-alert-decagram</v-icon>
@@ -14,18 +14,18 @@
             :key="item.title"
         >
             <v-row no-gutters>
-                <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
+                <v-col class="gradual-bg-wood label-header pl-3 pb-2 pt-3"
                     style="max-width: 160px"
                 >
                     <span class="font-weight-black">{{ item.title }}</span>
                 </v-col>
 
-                <v-col class="white pa-3">{{ item.value }}</v-col>
+                <v-col class="light-white-wood pa-3">{{ item.value }}</v-col>
             </v-row>
         </v-col>
     </v-row>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <!-- 延長日期 -->
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
@@ -49,7 +49,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="date"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
@@ -142,11 +142,11 @@
         </v-col>
 
         <v-col cols="12" class="my-8">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <v-btn dark color="success"
+            <v-btn dark class="btn-add"
                 v-if="!isStop"
                 @click="update"
             >儲存</v-btn>

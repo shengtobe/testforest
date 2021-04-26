@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">安全資訊查詢</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">安全資訊查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="8" md="3">
@@ -45,7 +45,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -73,7 +73,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -93,19 +93,19 @@
         </v-col>
 
         <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-right">
-            <v-btn color="success" large class="mr-3 mb-3"
+            <v-btn large class="mr-3 mb-3 btn-search white--text"
                 @click="search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="mr-3 mb-3"
+            <v-btn dark large class="mr-3 mb-3 btn-add"
                 to="/smis/car-safeinfo/info/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="mb-3"
+            <v-btn elevation="2" large class="mb-3 btn-close white--text"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
@@ -122,6 +122,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -136,7 +137,7 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             :loading="isLoading"
                             @click="redirect(item)"
                         >
@@ -189,13 +190,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'SaftyInfoCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報主題', value: 'InfoTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報單位', value: 'creat_depart_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報人', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發布狀態', value: 'SaftyInfoStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發布日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'SaftyInfoCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主題', value: 'InfoTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報單位', value: 'creat_depart_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發布狀態', value: 'SaftyInfoStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發布日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         departOpts: [  // 通報單位下拉選單
             { text: '不限', value: '' },

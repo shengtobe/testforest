@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">慢行通報讀取追蹤 (編號：{{ routeId }})</h2>
+    <h2 class="mb-4 label-title">慢行通報讀取追蹤 (編號：{{ routeId }})</h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-comment-processing</v-icon>關鍵字
@@ -24,6 +24,7 @@
                     :options.sync="pageOpt"
                     disable-sort
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -35,7 +36,7 @@
 
                     <template v-slot:item.isRead="{ item }">
                         <div v-if="item.isRead == '已讀'">{{ item.isRead }}</div>
-                        <div v-else class="error--text">{{ item.isRead }}</div>
+                        <div v-else class="label-warning">{{ item.isRead }}</div>
                     </template>
 
                     <!-- 頁碼 -->
@@ -51,7 +52,7 @@
         </v-col>
 
         <v-col cols="12" class="text-center mb-8">
-            <v-btn dark
+            <v-btn dark class="btn-close"
                 to="/smis/car-safeinfo/crawl-notify"
             >回搜尋頁</v-btn>
         </v-col>
@@ -70,11 +71,11 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '項次', value: 'num', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 80 },
-            { text: '單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '是否讀取', value: 'isRead', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '讀取時間', value: 'time', align: 'center', filterable: false, divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '項次', value: 'num', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 80 },
+            { text: '單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '是否讀取', value: 'isRead', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '讀取時間', value: 'time', align: 'center', filterable: false, divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
     }),
     components: { Pagination },  // 頁碼

@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">安全資訊讀取追蹤 (編號：{{ routeId }})</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">安全資訊讀取追蹤 (編號：{{ routeId }})</h2>
 
     <v-row class="px-2">
         <!-- 加會人 -->
@@ -15,6 +15,7 @@
                     :items="joinTableItems"
                     disable-sort
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -27,7 +28,7 @@
 
                     <template v-slot:item.hasMsg="{ item }">
                         <div v-if="item.hasMsg">已留意見</div>
-                        <div v-else class="error--text">尚未留意見</div>
+                        <div v-else class="label-warning">尚未留意見</div>
                     </template>
                 </v-data-table>
             </v-card>
@@ -55,6 +56,7 @@
                     :options.sync="pageOpt"
                     disable-sort
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -66,7 +68,7 @@
 
                     <template v-slot:item.isRead="{ item }">
                         <div v-if="item.isRead == '已讀'">{{ item.isRead }}</div>
-                        <div v-else class="error--text">{{ item.isRead }}</div>
+                        <div v-else class="label-warning">{{ item.isRead }}</div>
                     </template>
 
                     <!-- 頁碼 -->
@@ -82,7 +84,7 @@
         </v-col>
 
         <v-col cols="12" class="text-center mb-8">
-            <v-btn dark
+            <v-btn dark class="btn-close"
                 to="/smis/car-safeinfo/info"
             >回搜尋頁</v-btn>
         </v-col>
