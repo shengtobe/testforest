@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">行車事故事件附件管理</h2>
+    <h2 class="mb-4 label-title">行車事故事件附件管理</h2>
 
     <v-row class="px-2 mb-8">
         <!-- 表格資料 -->
@@ -13,6 +13,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -32,13 +33,13 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary" class="mr-2"
+                        <v-btn fab small class="mr-2 btn-modify"
                             @click="edit(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete"
                             @click="del(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -60,8 +61,8 @@
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="600px">
-        <v-card>
-            <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+        <v-card class="theme-card">
+            <v-card-title class="white--text px-4 py-1">
                 編輯資料
                 <v-spacer></v-spacer>
                 <v-btn dark fab small text @click="dialog = false" class="mr-n2">
@@ -104,13 +105,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '上傳人員', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '上傳日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '檔案名稱', value: 'FileSaveName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '下載', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '備註', value: 'FileDescrip', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '上傳人員', value: 'creator_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '上傳日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '檔案名稱', value: 'FileSaveName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '下載', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '備註', value: 'FileDescrip', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
