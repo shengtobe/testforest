@@ -71,8 +71,8 @@
   
   <v-card-actions class="px-5 pb-5">
     <v-spacer></v-spacer>
-    <v-btn class="mr-2 btn-close" elevation="4"  :loading="isLoading" @click="cancel">取消</v-btn>
-    <v-btn class="btn-add" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
+    <v-btn class="mr-2 btn-close white--text" elevation="4"  :loading="isLoading" @click="cancel">取消</v-btn>
+    <v-btn class="btn-add white--text" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
   </v-card-actions>
 </v-card>
 </template>
