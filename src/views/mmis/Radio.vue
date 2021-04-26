@@ -103,6 +103,7 @@ import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { radioQueryList,radioDelete } from '@/apis/materialManage/radioManage'
+import { fetchOrganization } from '@/apis/organization'
 import radioEdit from '@/views/mmis/RadioCreate.vue'
 export default {
   data: () => ({
@@ -222,7 +223,7 @@ export default {
       const that = this
       fetchOrganization().then(res => {
         if (res.data.ErrorCode == 0) {
-          that.deptData.push(res.data.user_depart_list_group_1.map((item) => {
+          that.deptData.push(...res.data.user_depart_list_group_1.map((item) => {
             return {key:item.DepartCode,value:item.DepartName}
           }))
         }else {
