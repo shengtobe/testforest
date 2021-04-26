@@ -1,11 +1,11 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+    <h2 class="mb-4 label-title">
         職災事故事件改善措施
         <span class="mx-3">(事故事件編號：{{ routeId }})</span>
     </h2>
 
-    <v-row no-gutters class="mb-8">
+    <v-row no-gutters class="mb-8 label-header">
         <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
                 <v-col class="yellow lighten-3 pl-3 pb-2 pt-3"
@@ -68,11 +68,11 @@
         </v-col>
 
         <v-col cols="12" class="mt-8 text-center">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="mr-3 btn-close"
                 :to="`/smis/jobsafety/disaster-survey/${routeId}/show`"
             >回上層</v-btn>
 
-            <v-btn dark color="success"
+            <v-btn dark class="btn-add"
                 @click="save"
             >更新資料</v-btn>
         </v-col>

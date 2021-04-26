@@ -1,9 +1,9 @@
 <template>
 <v-row>
     <v-col cols="12" class="mt-2">
-        <v-card flat>
+        <v-card flat class="theme-upload-card">
             <v-card-title
-                class="purple lighten-3 py-2 px-3 white--text"
+                class="py-2 px-3 white--text"
                 primary-title
             >
                 <h5>{{ title }}</h5>

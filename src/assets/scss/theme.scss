@@ -63,6 +63,12 @@ $theme-color-list: (
   color: #fff;
   text-shadow: black 0rem 0rem 0.2rem;
 }
+
+.shadow-text-white{
+  color: #000;
+  text-shadow: #fff 0rem 0rem 0.2rem;
+}
+
 /* ------ scrollbar ------ */
 body{
   &::-webkit-scrollbar {
@@ -263,6 +269,14 @@ body{
   .v-card__{
     &title{
       @extend .metal-red-top;
+    }
+  }
+}
+
+.theme-upload-card{
+  .v-card__{
+    &title{
+      @extend .metal-orange-top;
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">職災危害資料庫查詢</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">職災危害資料庫查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" md="6">
@@ -15,13 +15,13 @@
         </v-col>
 
         <v-col cols="12" md="6" align-self="center">
-            <v-btn color="green" dark large class="my-2 mr-2"
+            <v-btn dark large class="my-2 mr-2 btn-search"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-add"
                 to="/smis/jobsafety/disasterdb/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -44,6 +44,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -70,7 +71,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             :loading="isLoading"
                             @click="redirect(item)"
                         >
@@ -108,12 +109,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         opts: {
             status: [  // 事故事件狀態 (審核中有二個，故傳中文值讓後端判斷)

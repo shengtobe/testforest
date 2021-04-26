@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">職災事故事件查詢</h2>
+    <h2 class="mb-4 label-title">職災事故事件查詢</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發生日期(起)
@@ -23,7 +23,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -51,7 +51,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -104,19 +104,19 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn color="green" dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-search"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn elevation="2" large class="ma-2"
+            <v-btn elevation="2" large class="ma-2 btn-clear"
                 @click="reset"
             >
                 <v-icon class="mr-1">mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
-            <v-btn color="amber lighten-3" elevation="2" large class="ma-2"
+            <v-btn elevation="2" large class="ma-2 btn-memo white--text"
                 to="/smis/jobsafety/month-record"
             >
                 <v-icon class="mr-1">mdi-view-list</v-icon>職災紀錄表
@@ -133,6 +133,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -151,7 +152,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             :loading="isLoading"
                             @click="redirect(item)"
                         >
@@ -199,12 +200,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         opts: {
             depart: dapartOptsBrief,  // 部門

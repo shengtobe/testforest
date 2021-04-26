@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">科室職災事故統計</h2>
+    <h2 class="mb-4 label-title">科室職災事故統計</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" md="6">
@@ -16,7 +16,7 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn dark
+            <v-btn dark class="btn-close"
                 to="/smis/jobsafety/performance"
             >回上層</v-btn>
         </v-col>

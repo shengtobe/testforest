@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">事故事件編號：{{ id }}</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">事故事件編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
@@ -101,22 +101,22 @@
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="showDialog(true)"
                     v-if="status == 4"
                 >退回</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="save"
                     v-if="status == 4"
                 >同意結案</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                     v-if="status == 5"
                 >作廢</v-btn>
@@ -126,8 +126,8 @@
 
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px" v-if="status == 4">
-        <v-card>
-            <v-toolbar dark flat dense color="error" class="mb-2">
+        <v-card class="theme-del-card">
+            <v-toolbar dark flat dense class="mb-2 metal-red-top">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialog = false" class="mr-n2">
@@ -151,8 +151,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-delete white--text" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

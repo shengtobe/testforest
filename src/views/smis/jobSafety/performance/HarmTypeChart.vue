@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">職災傷害類型統計</h2>
+    <h2 class="mb-4 label-title">職災傷害類型統計</h2>
     
-    <p class="error--text">* 此圖各數字的單位為「%」</p>
+    <p class="label-warning">* 此圖各數字的單位為「%」</p>
 
     <!-- 圖表 -->
     <canvas ref="canvas" style="background-color: white;"
@@ -11,7 +11,7 @@
 
     <v-btn
         dark
-        class="my-8"
+        class="my-8 btn-close"
         to="/smis/jobsafety/performance"
     >回上層</v-btn>
 </v-container>

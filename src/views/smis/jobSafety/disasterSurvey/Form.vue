@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">
         {{ (this.isEdit)? `職災事故事件編輯 (編號：${ id })` : '職業災害事故調查表' }}
     </h2>
 
@@ -585,13 +585,13 @@
         </template>
 
         <v-col cols="12" class="text-center mb-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close white--text"
                 v-if="isEdit"
                 :to="`/smis/jobsafety/disaster-survey/${this.id}/show`"
             >回上層</v-btn>
 
             <v-btn
-                color="success"
+                class="btn-add white--text"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
