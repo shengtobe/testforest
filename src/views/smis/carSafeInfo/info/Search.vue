@@ -105,7 +105,7 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="mb-3 btn-close white--text"
+            <v-btn elevation="2" large class="mb-3 btn-clear"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容

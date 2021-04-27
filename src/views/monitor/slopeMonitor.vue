@@ -9,7 +9,7 @@
             <v-spacer />
             <v-simple-table
               dense
-              v-if="toptable.LocationList"
+              v-if="toptable.LocationList.length"
               >
               <template v-slot:default>
                 <tbody>
