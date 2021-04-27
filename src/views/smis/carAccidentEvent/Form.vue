@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">
         {{ (this.isEdit)? `行車事故事件編輯 (編號：${ id })` : '行車事故事件新增' }}
     </h2>
 
@@ -227,7 +227,7 @@
                 <v-checkbox
                     v-model="ipt.loadType"
                     :label="item"
-                    color="indigo"
+                    color="primary"
                     :value="item"
                     hide-details
                 ></v-checkbox>
@@ -255,7 +255,7 @@
                 <v-checkbox
                     v-model="ipt.aroundEnv"
                     :label="item"
-                    color="indigo"
+                    color="primary"
                     :value="item"
                     hide-details
                 ></v-checkbox>
@@ -283,7 +283,7 @@
                 <v-checkbox
                     v-model="ipt.fenceEq"
                     :label="item"
-                    color="indigo"
+                    color="primary"
                     :value="item"
                     hide-details
                 >
@@ -511,17 +511,17 @@
         
 
         <v-col cols="12" class="text-center">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 v-if="!isEdit"
                 to="/smis/car-accident-event"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 v-else
                 :to="`/smis/car-accident-event/${this.id}/show`"
             >回上層</v-btn>
 
-            <v-btn dark color="success"
+            <v-btn dark class="btn-add"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>

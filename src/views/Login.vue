@@ -4,9 +4,9 @@
     <v-container class="fill-height" fluid>
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="4">
-          <v-card class="elevation-12">
+          <v-card class="elevation-12 theme-card">
             <v-toolbar dark flat
-              :color="mainColor"
+              class="metal-dark-yellow-top"
             >
               <v-toolbar-title>林鐵資訊管理系統</v-toolbar-title>
             </v-toolbar>
@@ -49,8 +49,7 @@
               <v-row>
                 <v-col sm="6">
                   <v-btn block dark large
-                    class="my-3"
-                    :color="mainColor"
+                    class="my-3 metal-dark-yellow-top"
                     :loading="isLoading"
                     @click="submit(true)"
                   >Login</v-btn>
@@ -58,8 +57,7 @@
 
                 <v-col sm="6">
                   <v-btn block dark large
-                    class="my-3"
-                    :color="mainColor"
+                    class="my-3 metal-dark-yellow-top"
                     :loading="isLoading"
                     @click="submit(false)"
                   >Login (無驗證)</v-btn>
@@ -91,7 +89,6 @@ import aesjs from 'aes-js'
 
 export default {
   data: () => ({
-    mainColor: 'light-blue darken-1',
     // valid: true,    // 先備註掉
     valid: false,
     isLoading: false,

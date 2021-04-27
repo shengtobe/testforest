@@ -21,6 +21,7 @@ $theme-color-list: (
   'green': #5dc46e,
   'brown': #221306,
   'light-brown':#c69c50,
+  'indigo': #a28bb3
 );
 
 @mixin metal-bg($top-color) {
@@ -276,7 +277,7 @@ body{
 .theme-upload-card{
   .v-card__{
     &title{
-      @extend .metal-orange-top;
+      @extend .gradual-bg-orange;
     }
   }
 }

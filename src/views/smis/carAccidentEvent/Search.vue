@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">行車事故事件查詢</h2>
+    <h2 class="mb-4 label-title">行車事故事件查詢</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點
@@ -34,7 +34,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -62,7 +62,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -153,25 +153,25 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
+            <v-btn dark large class="mr-3 mb-4 mb-sm-0 btn-search"
                 @click="search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="mr-3 mb-4 mb-sm-0"
+            <v-btn dark large class="mr-3 mb-4 mb-sm-0 btn-add"
                 to="/smis/car-accident-event/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0"
+            <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0 btn-clear"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
-            <v-btn color="pink" elevation="2" dark large class="mr-3 mb-4 mb-sm-0"
+            <v-btn elevation="2" dark large class="mr-3 mb-4 mb-sm-0 btn-fileup"
                 target="_blank"
                 to="/smis/car-accident-event/del-recovery"
             >
@@ -189,6 +189,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -217,7 +218,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             :loading="isLoading"
                             @click="redirect(item)"
                         >
@@ -239,7 +240,7 @@
         <!-- 趨勢圖 -->
         <v-col cols="12" class="mt-8">
             <v-card class="mx-auto">
-                <v-card-title class="yellow lighten-3 py-2 px-3">
+                <v-card-title class="gradual-bg-darken-wood py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>
                     <strong>統計趨勢圖</strong>
                 </v-card-title>
@@ -310,13 +311,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 160 },
-            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 220 },
-            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 140 },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         isLoading: false,  // 是否讀取中

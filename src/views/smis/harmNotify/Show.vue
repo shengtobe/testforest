@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">通報編號：{{ id }}</h2>
+    <h2 class="mb-4 label-title">通報編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
@@ -13,7 +13,7 @@
     <!-- 檔案列表 -->
     <FileListShow :fileList="files" title="檔案列表" />
     
-    <v-row class="mt-8 mb-4">
+    <v-row class="mt-8 mb-4 label-header">
         <v-col cols="12">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>回覆處理
@@ -46,7 +46,7 @@
         </v-col>
 
         <v-col cols="12" class="text-center" v-if="status == 1">
-            <v-btn dark color="success"
+            <v-btn dark class="btn-add"
                 @click="sendReplay"
             >送出回覆</v-btn>
         </v-col>
@@ -55,7 +55,7 @@
     <v-divider class="mb-3"></v-divider>
 
     <!-- 立案處理 -->
-    <v-row class="mb-12">
+    <v-row class="mb-12 label-header">
         <!-- <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-database-plus</v-icon>立案處理
         </h3>
@@ -214,6 +214,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -242,7 +243,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-deatil"
                             @click="pick1Event(item)"
                         >
                             <v-icon dark>mdi-gesture-tap</v-icon>
@@ -273,6 +274,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -304,7 +306,7 @@
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             @click="pick1Event(item)"
                         >
                             <v-icon dark>mdi-gesture-tap</v-icon>
@@ -335,6 +337,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -353,7 +356,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             @click="pick2Event(item)"
                         >
                             <v-icon dark>mdi-gesture-tap</v-icon>
@@ -384,6 +387,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -410,7 +414,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             @click="pick2Event(item)"
                         >
                             <v-icon dark>mdi-gesture-tap</v-icon>
@@ -431,16 +435,16 @@
         
 
         <v-col cols="12" class="text-center mt-8" v-if="status == 2">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark color="purple" class="mr-4"
+                <v-btn dark class="mr-4 btn-delete"
                     @click="pressSave(true)"
                 >不立案</v-btn>
 
-                <v-btn dark color="success"
+                <v-btn dark class="btn-add"
                     @click="pressSave(false)"
                 >確定立案</v-btn>
             </template>
@@ -552,38 +556,38 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers1_1: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 160 },
-            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 220 },
-            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 140 },
-            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         headers1_2: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 120 },
-            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         headers2_1: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         headers2_2: [  // 表格顯示的欄位
-             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         opts: {
             depart: dapartOptsBrief,  // 部門
@@ -624,45 +628,45 @@ export default {
         // },
         // headers: {  // dialog 表格顯示的標題欄位
         //     carEvt: [
-        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '死傷人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '設備受損情形', value: 'eqLoss', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '運轉影響情形', value: 'serviceShock', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '死傷人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '設備受損情形', value: 'eqLoss', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '運轉影響情形', value: 'serviceShock', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         //     ],
         //     carHarm: [
-        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '危害說明', value: 'caption', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '直接原因', value: 'reason', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '衍生事故', value: 'deriveEvt', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '營運模式', value: 'serviceMode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '危害說明', value: 'caption', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '直接原因', value: 'reason', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '衍生事故', value: 'deriveEvt', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '營運模式', value: 'serviceMode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         //     ],
         //     jobEvt: [
-        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '勞工類型', value: 'memberType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '事故類別', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '災害類型', value: 'harmType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '事故結果', value: 'result', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '勞工類型', value: 'memberType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '事故類別', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '災害類型', value: 'harmType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '事故結果', value: 'result', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         //     ],
         //     jobHarm: [
-        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '作業名稱', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '工作內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '作業環境', value: 'env', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '工具設備', value: 'tools', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '危害類型', value: 'harmType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '風險嚴重性', value: 'riskSerious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '風險等級', value: 'riskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+        //         { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '作業名稱', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '工作內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '作業環境', value: 'env', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '工具設備', value: 'tools', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '危害類型', value: 'harmType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '風險嚴重性', value: 'riskSerious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '風險等級', value: 'riskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //         { text: '連結資料', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         //     ],
         // },
         // noActionShow: false,  // 不予處理原因欄位是否顯示

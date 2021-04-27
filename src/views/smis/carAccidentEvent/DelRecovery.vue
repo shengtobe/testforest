@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">復原刪除</h2>
+    <h2 class="mb-4 label-title">復原刪除</h2>
 
     <v-row no-gutters class="mb-8">
         <v-col cols="12" class="mb-8">
@@ -12,13 +12,14 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn color="success" dark
+                        <v-btn class="btn-add" dark
                             @click="recovery(item)"
                         >復原</v-btn>
                     </template>
@@ -35,7 +36,7 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
         </v-col>
@@ -53,12 +54,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '傷亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '復原', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '傷亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '復原', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
     }),
     components: { Pagination },

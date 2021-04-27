@@ -20,13 +20,13 @@
     <v-row no-gutters class="mt-10">
         <v-col cols="12">
             <v-card tile>
-                <v-toolbar flat dense dark color="brown">
+                <v-toolbar flat dense dark class="gradual-bg-light-brown">
                     <v-toolbar-title>
                         <v-icon class="mb-1 mr-2">mdi-pen</v-icon>相關表單填寫
                     </v-toolbar-title>
                 </v-toolbar>
 
-                <v-list-item-group>
+                <v-list-item-group class="light-white-light-brown">
                         <v-list-item append
                             :to="`/smis/car-accident-event/${id}/person-casualty`"
                         >
@@ -65,21 +65,20 @@
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2"
-                    color="indigo"
+                <v-btn dark class="ma-2 btn-modify"
                     :to="`/smis/car-accident-event/${id}/edit`"
                 >編輯</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                 >作廢</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="save"
                 >申請審核資料</v-btn>
             </template>
