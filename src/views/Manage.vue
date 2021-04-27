@@ -300,7 +300,8 @@ import MessageBar from '@/components/MessageBar.vue'
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',
-         mainColor: 'top-nav',
+        role: null,
+        mainColor: 'top-nav',
         showNav: false,  // 導覽列是否顯示
         titleColor1: 'blue lighten-4',
         titleColor2: 'amber lighten-4',
@@ -355,10 +356,14 @@ export default {
 
             try {
                 // 儲存使用者資訊
-                this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
+                let a1 = this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
                 
                 // 儲存權限資訊
-                this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+                let a2 = this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+
+                // 使用者權限
+                this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
+                console.log("Manage頁: role: ", this.role)
             } catch (e) {
                 this.logout()
             }

@@ -192,6 +192,7 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                if(this.tableItems.length == 0) return
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -212,7 +213,14 @@ export default {
         },
         // 新增
         newOne(item) {
-            let routeData = this.$router.resolve({ path: `/worklist/serve/${item}/newList0` })
+            let routeData
+            if(item == '' || item == undefined){
+                routeData = this.$router.resolve({ path: `/worklist/serve/newList` })
+            }
+            else{
+                routeData = this.$router.resolve({ path: `/worklist/serve/${item}/newList0` })
+            }
+            
             window.open(routeData.href, '_blank')
         },
         // 檢視內容
