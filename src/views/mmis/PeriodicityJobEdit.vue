@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{titleShow}}工作提醒
       <v-spacer></v-spacer>
       <v-btn dark fab small text  class="mr-n2" @click="_close">
@@ -11,7 +11,7 @@
       <v-row>
         <!-- 檢查項目 -->
         <v-col cols="12">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="4">
               <h3 class="mb-1">單位(廠/庫、監工區)</h3>
               <v-text-field solo value v-model="queryItem.DepartName" />
@@ -29,7 +29,7 @@
                   <v-text-field v-model.trim="queryItem.AlarmDTime" solo v-on="on" readonly />
                 </template>
                 <v-date-picker
-                  color="purple"
+                  color="primary"
                   v-model="queryItem.AlarmDTime"
                   @input="a_datestart = false"
                   locale="zh-tw"
@@ -49,7 +49,7 @@
                   <v-text-field v-model.trim="queryItem.AlarmEndDTime" solo v-on="on" readonly />
                 </template>
                 <v-date-picker
-                  color="purple"
+                  color="primary"
                   v-model="queryItem.AlarmEndDTime"
                   @input="a_dateend = false"
                   locale="zh-tw"
@@ -87,8 +87,8 @@
     </div>
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="_close">取消</v-btn>
-      <v-btn color="success" elevation="4" :loading="isLoading" @click="goSave">送出</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="_close">取消</v-btn>
+      <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="goSave">送出</v-btn>
     </v-card-actions>
   </v-card>
 </template>

@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">危害通報查詢</h2>
+    <h2 class="mb-4 label-title">危害通報查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
@@ -24,7 +24,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -53,7 +53,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -73,7 +73,7 @@
         </v-col>
 
         <v-col cols="12" sm="4" md="3" align-self="center" class="mb-8 mb-md-0">
-            <v-btn color="green" dark large
+            <v-btn class="btn-search" dark large
                 @click="search(false)"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
@@ -90,6 +90,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -105,7 +106,7 @@
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
+                        <v-btn small dark fab class="btn-detail"
                             :loading="isLoading"
                             @click="viewPage(item)"
                         >
@@ -128,7 +129,7 @@
         <!-- 趨勢圖 -->
         <v-col cols="12">
             <v-card class="mx-auto">
-                <v-card-title class="yellow lighten-3 py-2 px-3">
+                <v-card-title class="gradual-bg-darken-wood py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>
                     <strong>統計趨勢圖</strong>
                 </v-card-title>
@@ -177,11 +178,11 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         isLoading: false,  // 是否讀取中
     }),

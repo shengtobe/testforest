@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class=" white--text px-4 py-1">
       {{ editType }}{{ commonSettings.title }}
       <v-spacer />
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -15,7 +15,7 @@
         </v-col>
       </v-row>
       <!-- 1 -->
-      <v-row>
+      <v-row class="label-header">
         <v-col cols="12" sm="3">
           <h3 class="mb-1">使用前、後</h3>
           <v-radio-group dense row v-model="inputData.editableData.Status">
@@ -37,7 +37,7 @@
         </v-col>
       </v-row>
       <!-- 2 -->
-      <v-row>
+      <v-row class="label-header">
         <v-col cols="12" sm="3">
           <h3 class="mb-1">司機員</h3>
           <v-text-field v-model="inputData.editableData.Driver" solo />
@@ -60,7 +60,7 @@
         dense
         border="top"
         colored-border
-        color="teal"
+        color="border-bg-dark-yellow"
         elevation="4"
         v-for="(question, idx) in questions"
         :key="idx"
@@ -68,10 +68,10 @@
       >
         <v-row>
           <v-col>
-            <h3 class="mb-1 indigo--text">{{ question.label }}</h3>
+            <h3 class="mb-1 label-header">{{ question.label }}</h3>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row class="label-header">
           <v-col>
             <h3>{{ question.description }}</h3>
             <v-radio-group
@@ -105,9 +105,9 @@
         </v-row>
       </v-alert>
       <!-- 4 -->
-      <v-row>
+      <v-row class="label-header">
         <v-col cols="12">
-          <h3 class="mb-1 indigo--text">備註</h3>
+          <h3 class="mb-1 label-header">備註</h3>
           <v-textarea
             v-model="inputData.editableData.Memo"
             auto-grow
@@ -121,15 +121,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"

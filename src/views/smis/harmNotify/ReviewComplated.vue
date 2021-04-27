@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">通報編號：{{ routeId }}</h2>
+    <h2 class="mb-4 label-title">通報編號：{{ routeId }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
@@ -123,12 +123,12 @@
         </v-col> -->
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-2"
+            <v-btn dark class="mr-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark  class="ma-2" color="primary"
+                <v-btn dark  class="ma-2 btn-modify"
                     @click="edit"
                 >變更立案類型</v-btn>
 
@@ -146,7 +146,7 @@
     <!-- 退回 dialog -->
     <v-dialog v-model="dialog" max-width="600px"
     >
-        <v-card>
+        <v-card class="theme-del-card">
             <v-toolbar dark flat dense color="error" class="mb-2">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -171,8 +171,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-close white--text" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

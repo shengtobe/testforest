@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">職業災害紀錄表</h2>
+    <h2 class="mb-4 label-title">職業災害紀錄表</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(起)
@@ -23,7 +23,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -51,7 +51,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -60,24 +60,24 @@
         </v-col>
 
         <v-col cols="12" sm="12" md="6" align-self="center">
-            <v-btn color="green" dark large class="my-2 mr-2"
+            <v-btn dark large class="my-2 mr-2 btn-search"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-close"
                 to="/smis/jobsafety/disaster-survey"
             >回搜尋頁</v-btn>
 
-            <v-btn dark large color="teal" class="ma-2"
+            <v-btn dark large class="ma-2 btn-detail"
                 @click="excel"
             >匯出</v-btn>
         </v-col>
 
         <v-col cols="12" class="mt-1 mt-md-n5">
             <span class="font-weight-bold">累計損失日數： </span>
-            <span class="font-weight-bold error--text">{{ totalLossDate }}</span>
+            <span class="font-weight-bold label-warning">{{ totalLossDate }}</span>
         </v-col>
 
         <!-- 表格資料 -->
@@ -90,6 +90,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -116,13 +117,13 @@
                     </template>
 
                     <template v-slot:item.cause="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-detail" dark
                             @click="showContent(item.HappenReason)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.improve="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-detail" dark
                             @click="showContent(item.ProcContent)"
                         >檢視</v-btn>
                     </template>
@@ -132,7 +133,7 @@
                     </template>
 
                     <template v-slot:item.note="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-detail" dark
                             @click="showContent(item.Memo)"
                         >檢視</v-btn>
                     </template>
@@ -172,18 +173,18 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-            { text: '發生地點', value: 'HappenPlace', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-            { text: '發生單位', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '120' },
-            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '90' },
-            { text: '職稱', value: 'JobTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-            { text: '災害類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '160' },
-            { text: '傷害部位', value: 'HurtPart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '160' },
-            { text: '公傷假', value: 'injuryLeave', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
-            { text: '發生原因', value: 'cause', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '改善措施', value: 'improve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '通報勞檢', value: 'laborInspection', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '發生地點', value: 'HappenPlace', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '發生單位', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '120' },
+            { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '90' },
+            { text: '職稱', value: 'JobTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '災害類型', value: 'AccidentType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '160' },
+            { text: '傷害部位', value: 'HurtPart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '160' },
+            { text: '公傷假', value: 'injuryLeave', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '130' },
+            { text: '發生原因', value: 'cause', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '改善措施', value: 'improve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '通報勞檢', value: 'laborInspection', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '備註', value: 'note', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
         ],
     }),
     components: { Pagination },

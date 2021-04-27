@@ -1,10 +1,10 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1600px" class="px-8">
-      <p class="font-weight-black title text-center">
+      <p class="font-weight-black title text-center label-title">
         {{ editType }}{{ newText }}
       </p>
-      <v-row class="white px-4">
+      <v-row class="white px-4 label-header">
         <!-- 上面的欄位 -->
         <v-col cols="12" sm="4">
           <dateSelect
@@ -41,7 +41,7 @@
         <v-row>
           <!-- 檢查項目 -->
           <v-col cols="12" sm="12">
-            <v-toolbar color="teal lighten-2" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
               <v-spacer />
               <v-toolbar-title>{{ each.title }}</v-toolbar-title>
               <v-spacer />
@@ -52,7 +52,7 @@
 
         <div v-for="(question, idx2) in each.questions" :key="idx + '_' + idx2">
           <!-- header -->
-          <v-row dense v-if="idx2 % 5 == 0" :key="'header' + idx + '_' + idx2">
+          <v-row dense v-if="idx2 % 5 == 0" :key="'header' + idx + '_' + idx2" class="label-header">
             <v-col cols="auto" sm="2">
               <h3 class="mb-1">潛在風險</h3>
             </v-col>
@@ -107,15 +107,14 @@
         <v-btn
           v-if="editType != actions.add"
           elevation="4"
-          color="red"
-          class="mr-2 white--text"
+          class="mr-2 btn-delete white--text"
           @click="deleteRecord"
           >刪除</v-btn
         >
         <v-spacer></v-spacer>
-        <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+        <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
         <v-btn
-          color="success"
+          class="btn-add white--text"
           elevation="4"
           :loading="commonSettings.isLoading"
           @click="save"

@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢修日期(起)"
@@ -31,6 +31,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -44,11 +45,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -58,7 +58,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -154,63 +154,63 @@ export default {
         value: "ItemNo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "保養日期",
         value: "CheckDay",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "地點",
         value: "Location",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "車號",
         value: "CarNo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "破損及不良部分",
         value: "Memo_1",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "狀況及原因",
         value: "Memo_2",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "處置",
         value: "Memo_3",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "填寫人",
         value: "Name",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "功能",
         value: "content",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     tableItems: [],

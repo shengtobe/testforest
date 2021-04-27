@@ -6,7 +6,7 @@
       <p class="font-weight-black title text-center">新增{{ newText }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="3">
             <dateSelect
             label="評估日期"
@@ -17,7 +17,7 @@
         </v-row>
         <!-- 選擇顯示項目 -->
         <v-col cols="12" sm="12">
-          <h3 class="indigo--text">請選擇區段</h3>
+          <h3 class="label-header">請選擇區段</h3>
         </v-col>
         
           <v-radio-group style="margin-top: -5px" v-model="valShow" row >
@@ -413,16 +413,16 @@
 
         <!-- 軌段檢查 -->
         <!-- 1 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 100">
+        <v-row no-gutter class="label-header" v-if="valShow == 100">
           <v-col cols="12" sm="12">
             <h3>1. 0km0-100m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="3">
@@ -480,16 +480,16 @@
           </v-col>
         </v-row>
         <!-- 2 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 200">
+        <v-row no-gutter class="label-header" v-if="valShow == 200">
           <v-col cols="12">
             <h3>2. 0km520m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <!-- 檢查項目 part 1/2 -->
@@ -581,16 +581,16 @@
           </v-col>
         </v-row>
         <!-- 3 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 300">
+        <v-row no-gutter class="label-header" v-if="valShow == 300">
           <v-col cols="12" sm="12">
             <h3>3. 0km550m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -680,16 +680,16 @@
           </v-col>
         </v-row>
         <!-- 4 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 400">
+        <v-row no-gutter class="label-header" v-if="valShow == 400">
           <v-col cols="12" sm="12">
             <h3>4. 0km600m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -779,16 +779,16 @@
           </v-col>
         </v-row>
         <!-- 5 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 500">
+        <v-row no-gutter class="label-header" v-if="valShow == 500">
           <v-col cols="12" sm="12">
             <h3>5. 0km700m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -878,16 +878,16 @@
           </v-col>
         </v-row>
         <!-- 6 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 600">
+        <v-row no-gutter class="label-header" v-if="valShow == 600">
           <v-col cols="12" sm="12">
             <h3>6. 0km800m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1006,16 +1006,16 @@
           </v-col>
         </v-row>
         <!-- 7 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 700">
+        <v-row no-gutter class="label-header" v-if="valShow == 700">
           <v-col cols="12" sm="12">
             <h3>7. 0km900m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1173,16 +1173,16 @@
           </v-col>
         </v-row>
         <!-- 7-1庫 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 711">
+        <v-row no-gutter class="label-header" v-if="valShow == 711">
           <v-col cols="12" sm="12">
             <h3>7-1庫. 車庫線</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1311,16 +1311,16 @@
           </v-col>
         </v-row>
         <!-- 7-1 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 710">
+        <v-row no-gutter class="label-header" v-if="valShow == 710">
           <v-col cols="12" sm="12">
             <h3>7-1. 1km190m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1437,16 +1437,16 @@
           </v-col>
         </v-row>
         <!-- 7-2 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 720">
+        <v-row no-gutter class="label-header" v-if="valShow == 720">
           <v-col cols="12" sm="12">
             <h3>7-2. 1km240m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1563,16 +1563,16 @@
           </v-col>
         </v-row>
         <!-- 8 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 800">
+        <v-row no-gutter class="label-header" v-if="valShow == 800">
           <v-col cols="12" sm="12">
             <h3>8. 1km440m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1701,16 +1701,16 @@
           </v-col>
         </v-row>
         <!-- 9 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 900">
+        <v-row no-gutter class="label-header" v-if="valShow == 900">
           <v-col cols="12" sm="12">
             <h3>9. 1km900m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -1879,16 +1879,16 @@
           </v-col>
         </v-row>
         <!-- 10 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1000">
+        <v-row no-gutter class="label-header" v-if="valShow == 1000">
           <v-col cols="12" sm="12">
             <h3>10. 2km110m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2046,16 +2046,16 @@
           </v-col>
         </v-row>
         <!-- 11 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1100">
+        <v-row no-gutter class="label-header" v-if="valShow == 1100">
           <v-col cols="12" sm="12">
             <h3>11. 2km200m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2172,16 +2172,16 @@
           </v-col>
         </v-row>
         <!-- 12 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1200">
+        <v-row no-gutter class="label-header" v-if="valShow == 1200">
           <v-col cols="12" sm="12">
             <h3>12. 2km520m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2339,16 +2339,16 @@
           </v-col>
         </v-row>
         <!-- 13 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1300">
+        <v-row no-gutter class="label-header" v-if="valShow == 1300">
           <v-col cols="12" sm="12">
             <h3>13. 2km830m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2506,16 +2506,16 @@
           </v-col>
         </v-row>
         <!-- 14 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1400">
+        <v-row no-gutter class="label-header" v-if="valShow == 1400">
           <v-col cols="12" sm="12">
             <h3>14. 3km310m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2673,16 +2673,16 @@
           </v-col>
         </v-row>
         <!-- 15 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1500">
+        <v-row no-gutter class="label-header" v-if="valShow == 1500">
           <v-col cols="12" sm="12">
             <h3>15. 3km580m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2829,16 +2829,16 @@
           </v-col>
         </v-row>
         <!-- 15-1 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1510">
+        <v-row no-gutter class="label-header" v-if="valShow == 1510">
           <v-col cols="12" sm="12">
             <h3>15-1. 4km500m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -2955,16 +2955,16 @@
           </v-col>
         </v-row>
         <!-- 16 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1600">
+        <v-row no-gutter class="label-header" v-if="valShow == 1600">
           <v-col cols="12" sm="12">
             <h3>16. 4km560m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3093,16 +3093,16 @@
           </v-col>
         </v-row>
         <!-- 17 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1700">
+        <v-row no-gutter class="label-header" v-if="valShow == 1700">
           <v-col cols="12" sm="12">
             <h3>17. 4km900m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3260,16 +3260,16 @@
           </v-col>
         </v-row>
         <!-- 17-1 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1710">
+        <v-row no-gutter class="label-header" v-if="valShow == 1710">
           <v-col cols="12" sm="12">
             <h3>17-1. 6km130m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3398,16 +3398,16 @@
           </v-col>
         </v-row>
         <!-- 18 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1800">
+        <v-row no-gutter class="label-header" v-if="valShow == 1800">
           <v-col cols="12" sm="12">
             <h3>18. 6km240m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3536,16 +3536,16 @@
           </v-col>
         </v-row>
         <!-- 18-1 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1810">
+        <v-row no-gutter class="label-header" v-if="valShow == 1810">
           <v-col cols="12" sm="12">
             <h3>18-1. 6km460m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3662,16 +3662,16 @@
           </v-col>
         </v-row>
         <!-- 19 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1900">
+        <v-row no-gutter class="label-header" v-if="valShow == 1900">
           <v-col cols="12" sm="12">
             <h3>19. 6km740m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3800,16 +3800,16 @@
           </v-col>
         </v-row>
         <!-- 19-1 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1910">
+        <v-row no-gutter class="label-header" v-if="valShow == 1910">
           <v-col cols="12" sm="12">
             <h3>19-1. 6km810m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -3926,16 +3926,16 @@
           </v-col>
         </v-row>
         <!-- 19-2 -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 1920">
+        <v-row no-gutter class="label-header" v-if="valShow == 1920">
           <v-col cols="12" sm="12">
             <h3>19-2. 6km830m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -4052,16 +4052,16 @@
           </v-col>
         </v-row>
         <!-- XXX -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 2500">
+        <v-row no-gutter class="label-header" v-if="valShow == 2500">
           <v-col cols="12" sm="12">
             <h3>XXX. XkmXX0m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -4231,16 +4231,16 @@
           </v-col>
         </v-row>
         <!-- XXX -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 2600">
+        <v-row no-gutter class="label-header" v-if="valShow == 2600">
           <v-col cols="12" sm="12">
             <h3>XXX. XkmXX0m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -4410,16 +4410,16 @@
           </v-col>
         </v-row>
         <!-- XXX -->
-        <v-row no-gutter class="indigo--text" v-if="valShow == 2700">
+        <v-row no-gutter class="label-header" v-if="valShow == 2700">
           <v-col cols="12" sm="12">
             <h3>XXX. XkmXX0m</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
-              class="mb-6 mt-2"
+              class="mb-6 mt-2 label-header"
             >
               <v-row no-gutter>
                 <v-col cols="12" sm="12">
@@ -4592,9 +4592,8 @@
         <v-col></v-col>
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" 
-          
-          @click="save" color="success" >送出表單</v-btn>
+          <v-btn large block class="mt-n8 mb-4 btn-add white--text"
+          @click="save" >送出表單</v-btn>
         </v-col>
       </v-row>
     </v-container>

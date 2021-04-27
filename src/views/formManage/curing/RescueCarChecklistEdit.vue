@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ editType }}{{ commonSettings.title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -8,7 +8,7 @@
       </v-btn>
     </v-card-title>
     <!-- <commonQuestion v-model="inputData" :settings="settings" /> -->
-    <div class="px-6 py-4">
+    <div class="px-6 py-4 label-header">
       <v-row>
         <!-- 檢查項目 -->
         <v-col cols="12">
@@ -59,7 +59,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             v-for="(item, idx) in items"
             :key="idx"
@@ -114,15 +114,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"
@@ -220,42 +219,42 @@ export default {
           value: "ItemNo",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "保養日期",
           value: "CheckDay",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "審查狀態",
           value: "CheckStatus",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "填寫人",
           value: "Name",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "保養單位",
           value: "DepartName",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "功能",
           value: "content",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
       ],
       tableItems: [],

@@ -1,10 +1,10 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">工班管理</h2>
+    <h2 class="mb-4 label-title">工班管理</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 控制措施 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -14,10 +14,10 @@
       </v-col>
 
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large @click="goSearch">
+        <v-btn class="btn-search" dark large @click="goSearch">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" dark large class="ml-2" @click="goAdd">
+        <v-btn dark large class="ml-2 btn-add" @click="goAdd">
           <v-icon class="mr-1">mdi-plus</v-icon>新增
         </v-btn>
       </v-col>
@@ -31,6 +31,7 @@
             disable-sort
             disable-filtering
             hide-default-footer
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -43,16 +44,15 @@
             <template v-slot:item.a8="{item}">
               <v-btn
                 title="編輯"
-                class="mr-2"
+                class="mr-2 btn-modify"
                 small
                 dark
                 fab
-                color="info darken-1"
                 @click="goEdit(item.FlowID)"
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab color="red" @click="goDelete(item.FlowID)">
+              <v-btn title="刪除" small dark fab class="btn-delete" @click="goDelete(item.FlowID)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -69,12 +69,12 @@
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn color="success" @click="Del">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn class="btn-delete white--text" @click="Del">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -103,35 +103,35 @@ export default {
         value: "id",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "監工區(廠/庫)",
         value: "DepartName2",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "班別(組)",
         value: "Class",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "姓名",
         value: "PeopleName",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "修改、刪除",
         value: "a8",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     isLoading: false,

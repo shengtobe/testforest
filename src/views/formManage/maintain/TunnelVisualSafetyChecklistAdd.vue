@@ -1,12 +1,12 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">新增{{ title }}</p>
+      <p class="font-weight-black title text-center label-title">新增{{ title }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
         <v-col cols="12" sm="8">
           
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <!-- row1 -->
             <v-row>
               <v-col cols="12" sm="4">
@@ -22,7 +22,7 @@
                     <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
                   </template>
                   <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="zs"
                     @input="MaintenanceDay = false"
                     locale="zh-tw"
@@ -88,14 +88,14 @@
         <!-- 檢查項目 -->
         <!-- 嘉義端隧道口外 -->
         <v-col cols="13" sm="12">
-            <v-toolbar color="teal" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
             <v-spacer />
             <v-toolbar-title>嘉義端隧道口外</v-toolbar-title>
             <v-spacer />
             </v-toolbar>
         </v-col>
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -108,17 +108,17 @@
           </v-row>
         </v-col>
         <v-col cols="12">
-          <v-alert dense border="top" colored-border color="teal" elevation="4"
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4"
             v-for="(item, idx) in items1" :key="item.question" class="mb-6"
             >
             <v-row no-gutter>
               <v-col cols="12" sm="3">{{ item.question }}</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items1[idx].discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
-                <span class="d-sm-none error--text">危險等級：</span>
+                <span class="d-sm-none label-header">危險等級：</span>
                 <v-radio-group dense row v-model="ipt.items1[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -127,11 +127,11 @@
               </v-col>
             </v-row>
           </v-alert>
-          <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4" class="mb-6">
             <v-row no-gutter>
               <v-col cols="12" sm="3">號誌</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items1_2.discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
@@ -147,14 +147,14 @@
         </v-col>
           <!-- 嘉義端隧道門 -->
         <v-col cols="13" sm="12">
-            <v-toolbar color="teal" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
             <v-spacer />
             <v-toolbar-title>嘉義端隧道門</v-toolbar-title>
             <v-spacer />
             </v-toolbar>
         </v-col>
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -167,17 +167,17 @@
           </v-row>
         </v-col>
         <v-col cols="12">
-          <v-alert dense border="top" colored-border color="teal" elevation="4"
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4"
             v-for="(item, idx) in items2" :key="item.question" class="mb-6"
             >
             <v-row no-gutter>
               <v-col cols="12" sm="3">{{ item.question }}</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items2[idx].discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
-                <span class="d-sm-none error--text">危險等級：</span>
+                <span class="d-sm-none label-header">危險等級：</span>
                 <v-radio-group dense row v-model="ipt.items2[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -189,14 +189,14 @@
         </v-col>
         <!-- 隧道襯砌 -->
         <v-col cols="13" sm="12">
-            <v-toolbar color="teal" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
             <v-spacer />
             <v-toolbar-title>隧道襯砌</v-toolbar-title>
             <v-spacer />
             </v-toolbar>
         </v-col>
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -209,17 +209,17 @@
           </v-row>
         </v-col>
         <v-col cols="12">
-          <v-alert dense border="top" colored-border color="teal" elevation="4"
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4"
             v-for="(item, idx) in items3" :key="item.question" class="mb-6"
             >
             <v-row no-gutter>
               <v-col cols="12" sm="3">{{ item.question }}</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items3[idx].discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
-                <span class="d-sm-none error--text">危險等級：</span>
+                <span class="d-sm-none label-header">危險等級：</span>
                 <v-radio-group dense row v-model="ipt.items3[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -231,14 +231,14 @@
         </v-col>
         <!-- 隧道排水 -->
         <v-col cols="13" sm="12">
-            <v-toolbar color="teal" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
             <v-spacer />
             <v-toolbar-title>隧道排水</v-toolbar-title>
             <v-spacer />
             </v-toolbar>
         </v-col>
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -251,17 +251,17 @@
           </v-row>
         </v-col>
         <v-col cols="12">
-          <v-alert dense border="top" colored-border color="teal" elevation="4"
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4"
             v-for="(item, idx) in items4" :key="item.question" class="mb-6"
             >
             <v-row no-gutter>
               <v-col cols="12" sm="3">{{ item.question }}</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items4[idx].discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
-                <span class="d-sm-none error--text">危險等級：</span>
+                <span class="d-sm-none label-header">危險等級：</span>
                 <v-radio-group dense row v-model="ipt.items4[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -273,14 +273,14 @@
         </v-col>
         <!-- 阿里山端洞門 -->
         <v-col cols="13" sm="12">
-            <v-toolbar color="teal" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
             <v-spacer />
             <v-toolbar-title>阿里山端洞門</v-toolbar-title>
             <v-spacer />
             </v-toolbar>
         </v-col>
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -293,17 +293,17 @@
           </v-row>
         </v-col>
         <v-col cols="12">
-          <v-alert dense border="top" colored-border color="teal" elevation="4"
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4"
             v-for="(item, idx) in items5" :key="item.question" class="mb-6"
             >
             <v-row no-gutter>
               <v-col cols="12" sm="3">{{ item.question }}</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items5[idx].discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
-                <span class="d-sm-none error--text">危險等級：</span>
+                <span class="d-sm-none label-header">危險等級：</span>
                 <v-radio-group dense row v-model="ipt.items5[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -315,14 +315,14 @@
         </v-col>
         <!-- 阿里山端隧道口外 -->
         <v-col cols="13" sm="12">
-            <v-toolbar color="teal" dark>
+            <v-toolbar color="gradual-bg-darken-wood" dark>
             <v-spacer />
             <v-toolbar-title>阿里山端隧道口外</v-toolbar-title>
             <v-spacer />
             </v-toolbar>
         </v-col>
         <v-col cols="12" style="margin-bottom:-26px">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <h3 class="mb-1">檢查項目</h3>
             </v-col>
@@ -335,17 +335,17 @@
           </v-row>
         </v-col>
         <v-col cols="12">
-          <v-alert dense border="top" colored-border color="teal" elevation="4"
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4"
             v-for="(item, idx) in items6" :key="item.question" class="mb-6"
             >
             <v-row no-gutter>
               <v-col cols="12" sm="3">{{ item.question }}</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items6[idx].discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
-                <span class="d-sm-none error--text">危險等級：</span>
+                <span class="d-sm-none label-header">危險等級：</span>
                 <v-radio-group dense row v-model="ipt.items6[idx].damLv" class="pa-0 ma-0">
                   <v-radio color="red" label="1" value="1"></v-radio>
                   <v-radio color="red" label="2" value="2"></v-radio>
@@ -358,7 +358,7 @@
             <v-row no-gutter>
               <v-col cols="12" sm="3">號誌</v-col>
               <v-col cols="12" sm="4">
-                <span class="d-sm-none error--text">問題描述：</span>
+                <span class="d-sm-none label-header">問題描述：</span>
                 <v-textarea auto-grow outlined rows="1" v-model="ipt.items6_2.discrip"/>
               </v-col>
               <v-col cols="12" sm="5">
@@ -377,7 +377,7 @@
           <h3>其他情況描述</h3>
           <v-textarea v-model="note" auto-grow outlined rows="4" />
         </v-col>
-        <v-row class="indigo--text">
+        <v-row class="label-header">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">工程員</h3>
             <v-text-field dense single-line outlined v-model="sirName1"></v-text-field>
@@ -394,7 +394,7 @@
         
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" @click="save" color="success">送出表單</v-btn>
+          <v-btn large block class="mt-n8 mb-4 btn-add white--text" @click="save">送出表單</v-btn>
         </v-col>
       </v-row>
     </v-container>

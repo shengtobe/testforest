@@ -23,7 +23,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="ipt.dateStart"
             @input="dateMenuShow.start = false"
             locale="zh-tw"
@@ -50,7 +50,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="ipt.dateEnd"
             @input="dateMemuShow.end = false"
             locale="zh-tw"
@@ -170,7 +170,7 @@
       <v-dialog v-model="Add" max-width="600px">
         <v-card>
           <!-- 標題 -->
-          <v-card-title class="blue white--text px-4 py-1">
+          <v-card-title class=" white--text px-4 py-1">
             新增{{ title }}
             <v-spacer />
             <v-btn dark fab small text @click="close" class="mr-n2">

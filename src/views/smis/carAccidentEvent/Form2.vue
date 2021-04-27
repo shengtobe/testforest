@@ -1,10 +1,10 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+    <h2 class="mb-4 label-title">
         {{ (this.isEdit)? `行車事故事件編輯 (編號：${ routeId })` : '行車事故事件新增' }}
     </h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發現日期
@@ -25,7 +25,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.date"
                     @input="dateMenuShow = false"
                     locale="zh-tw"
@@ -76,7 +76,7 @@
         :locationOther="ipt.locationOther"
     />
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" sm="6">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-cellphone-link-off</v-icon>設備受損情形
@@ -174,17 +174,17 @@
         
 
         <v-col cols="12" class="text-center">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-search"
                 v-if="!isEdit"
                 to="/smis/car-accident-event"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 v-else
                 :to="`/smis/car-accident-event/${this.routeId}/show`"
             >回上層</v-btn>
 
-            <v-btn dark color="success"
+            <v-btn dark class="btn-add"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>

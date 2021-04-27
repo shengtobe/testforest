@@ -3,7 +3,7 @@
   
   <v-row>
     <v-col cols="12" md="2">
-      <v-btn color="secondary" large :to="`/smis/car-safe-performance/analysis`">
+      <v-btn class="btn-close" dark large :to="`/smis/car-safe-performance/analysis`">
         回上一頁
       </v-btn>
     </v-col>
@@ -13,7 +13,7 @@
     <v-col cols="12">
       <ChartLine :chartdata="chartdata" :options="options" />
     </v-col>
-    <v-col cols="4" class="text-center pa-0">
+    <v-col cols="4" class="text-center pt-0">
       <v-row>
         <v-col cols="8">
           <v-select
@@ -24,28 +24,29 @@
           ></v-select>
         </v-col>
         <v-col cols="4">
-          <v-btn color="primary" large @click="goSearch">
+          <v-btn class="btn-memo" dark large @click="goSearch">
             事故列表
           </v-btn>
         </v-col>
       </v-row>
     </v-col>
     <v-col cols="4" class="text-center">
-      <v-btn color="primary" large :to="`/smis/car-safe-performance/${acdname}/accident-analysis`">
+      <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${acdname}/accident-analysis`">
         事故原因趨勢分析
       </v-btn>
     </v-col>
     <v-col cols="4" class="text-center">
-      <v-btn color="primary" large :to="`/smis/car-safe-performance/${acdname}/year-analysis`">
+      <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${acdname}/year-analysis`">
         事故原因年度分析
       </v-btn>
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12" 
+      v-if="accidentTable.showYN">
       <v-data-table
-        v-if="accidentTable.showYN"
         :headers="accidentTable.header"
         :items="accidentTable.item"  
         hide-default-footer
+        class="theme-table"
       >
         <template v-slot:no-data>
           <span class="red--text subtitle-1">沒有資料</span>
@@ -135,14 +136,14 @@ export default {
     accidentTable: {
       showYN: false,
       header: [
-        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
+        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold ', width: '110' },
       ],
       item:[
         {

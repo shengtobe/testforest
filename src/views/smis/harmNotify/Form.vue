@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">危害通報新增</h2>
+    <h2 class="mb-4 label-title">危害通報新增</h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發現日期
@@ -23,7 +23,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.date"
                     @input="dateMenuShow = false"
                     locale="zh-tw"
@@ -55,11 +55,11 @@
     </v-row>
 
     <!-- 發現地點 -->
-    <h3 class="mb-1 ml-2">
+    <h3 class="mb-1 ml-2 label-header">
         <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發現地點
     </h3>
 
-    <v-sheet elevation="2" class="mx-2 mb-8 px-3">
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 label-header">
         <!-- 路線 -->
         <h3 class="mb-1 pt-2">路線</h3>
         <v-row no-gutters>
@@ -159,7 +159,7 @@
         </v-row>
     </v-sheet>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" sm="6">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-pen</v-icon>通報主旨
@@ -197,7 +197,7 @@
 
         <v-col cols="12" class="text-center mt-8">
             <v-btn
-                color="success"
+                class="btn-add white--text"
                 @click="save"
                 large
             >送出</v-btn>

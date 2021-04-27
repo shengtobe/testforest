@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4">表單搜尋</h2>
+    <h2 class="mb-4 label-title">表單搜尋</h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1"><v-icon class="mr-1 mb-1">mdi-bank</v-icon>科室</h3>
         <v-select
@@ -26,7 +26,7 @@
         ></v-text-field>
       </v-col>
 
-      <v-col cols="12" class="error--text">
+      <v-col cols="12" class="label-warning">
         *請點擊「表單名稱」進入管理頁面
       </v-col>
 
@@ -39,6 +39,8 @@
             :options.sync="pageOpt"
             disable-sort
             hide-default-footer
+            @click:row="rowclick"
+            class="theme-table"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -52,12 +54,17 @@
 
             <!-- headers 的 fid 欄位 (檢視內容) -->
             <template v-slot:item.linkText="{ item }">
-              <router-link
+              <!-- <router-link
                 :to="item.path"
                 class="text-decoration-none text-subtitle-1 grey--text text--darken-3"
               >
                 {{ item.linkText }}
-              </router-link>
+              </router-link> -->
+              <div
+                class="text-decoration-none text-subtitle-1 grey--text text--darken-3"
+              >
+                {{ item.linkText }}
+              </div>
             </template>
 
             <!-- 頁碼 -->
@@ -102,7 +109,7 @@ export default {
         value: "idx",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
         width: 80,
       },
       {
@@ -110,7 +117,7 @@ export default {
         value: "linkText",
         align: "left",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
   }),
@@ -163,6 +170,9 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    rowclick(item){
+      this.$router.push({path:item.path})
+    }
   },
   created() {
     this.initData();

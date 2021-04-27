@@ -13,6 +13,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -31,9 +32,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
-                            
-                        >
+                        <v-btn small dark fab class="btn-detail">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
@@ -62,6 +61,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -76,9 +76,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab color="teal"
-                            
-                        >
+                        <v-btn small dark fab class="btn-detail">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
@@ -98,7 +96,7 @@
         <!-- 版本資訊 -->
         <v-col cols="12" class="mb-8 px-4">
             <p>系統版本： {{ userData.Version }}</p>
-            <div v-html="userData.VersionMemo.replace(/\n/g, '<br>')"></div>
+            <div style="background: #ffffff60;border-radius: 1rem;padding: 1rem;" v-html="userData.VersionMemo.replace(/\n/g, '<br>')"></div>
         </v-col>
     </v-row>
 </v-container>
@@ -121,15 +119,15 @@ export default {
         },
         headers: {  // 表格顯示的欄位
             personal: [
-                { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-                { text: '部門', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-                { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+                { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+                { text: '部門', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+                { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             ],
             todo: [
-                { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-                { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+                { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+                { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             ],
         }
             

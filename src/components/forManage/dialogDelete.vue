@@ -15,14 +15,14 @@
   可參考檔案：AcetyleneWeldChecklistYear.vue
 -->
 <template>
-  <v-card>
-    <v-card-title class="red white--text px-4 py-1 headline"
+  <v-card class="theme-del-card">
+    <v-card-title class="white--text px-4 py-1 headline"
       >確認是否刪除?</v-card-title
     >
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn @click="cancel">取消</v-btn>
-      <v-btn color="red" @click="deleteRecord()" class="white--text"
+      <v-btn class="btn-close white--text" @click="cancel">取消</v-btn>
+      <v-btn @click="deleteRecord()" class="btn-delete white--text"
         >刪除</v-btn
       >
     </v-card-actions>

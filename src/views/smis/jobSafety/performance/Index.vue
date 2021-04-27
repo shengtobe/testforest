@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">職安績效管理</h2>
+    <h2 class="mb-4 label-title">職安績效管理</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <!-- 趨勢圖 -->
         <v-col cols="12">
             <v-card class="mx-auto">

@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ editType }}{{ this.title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -19,7 +19,7 @@
         </v-col>
         <!-- 檢查項目 -->
         <v-col cols="12">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <!-- 上面的欄位 -->
             <v-col cols="12" sm="3" md="3">
               <dateSelect
@@ -50,7 +50,7 @@
               />
             </v-col>
           </v-row>
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="3">
               <dateSelect
                 label="本次檢修開始日期"
@@ -88,13 +88,18 @@
           <v-expansion-panels multiple>
             <template v-for="(list, index) in newItemList">
               <v-expansion-panel :key="'EP_' + (index + 1)">
-                <v-expansion-panel-header color="teal" class="white--text">{{
-                  list.title
-                }}</v-expansion-panel-header>
+                <v-expansion-panel-header color="teal" class="white--text">
+                  {{ list.title }}
+                  <template v-slot:actions>
+                    <v-icon color="dropdownicon">
+                      $expand
+                    </v-icon>
+                  </template>
+                </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-row
                     no-gutter
-                    class="indigo--text darken-2 d-none d-sm-flex font-weight-black"
+                    class="label-header darken-2 d-none d-sm-flex font-weight-black"
                   >
                     <v-col cols="12" sm="4">
                       <h3 class="mb-1">檢查項目</h3>
@@ -110,7 +115,7 @@
                     dense
                     border="top"
                     colored-border
-                    color="teal"
+                    color="border-bg-dark-yellow"
                     elevation="4"
                     v-for="(item, idx2) in list.items"
                     :key="'i' + (list.startIndex + idx2)"
@@ -119,7 +124,7 @@
                     <v-row no-gutter>
                       <v-col cols="12" sm="4">{{ item.question }}</v-col>
                       <v-col cols="12" sm="4">
-                        <span class="d-sm-none error--text">檢查結果：</span>
+                        <span class="d-sm-none label-header">檢查結果：</span>
                         <v-radio-group
                           dense
                           row
@@ -180,15 +185,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"

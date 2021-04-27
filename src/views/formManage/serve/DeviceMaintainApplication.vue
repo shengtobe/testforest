@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -25,7 +25,7 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
           <h3 class="mb-1">
@@ -35,15 +35,14 @@
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
         <v-btn
-          color="indigo"
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
+          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add"
           @click="newOne"
         >
           <!-- @click="AddJobApplication = true" -->
@@ -61,6 +60,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -74,11 +74,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <!--上面一行原程式: @click="AddJobApplication = true" -->
@@ -95,7 +94,7 @@
     </v-col>
     <!-- 新增保安裝置保修工作申請書 modal -->
     <v-dialog v-model="AddJobApplication" max-width="900px">
-      <v-card>
+      <v-card class="theme-card">
         <v-card-title class="blue white--text px-4 py-1">
           新增{{ title }}
           <v-spacer />
@@ -108,7 +107,7 @@
           <v-row>
             <!-- 檢查項目 -->
             <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">站長</h3>
                   <v-text-field solo v-model="CheckMan"/>
@@ -128,7 +127,14 @@
               </v-row>
               <v-expansion-panels multiple>
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">工作概要</v-expansion-panel-header>
+                  <v-expansion-panel-header color="btn-expansion" class="white--text">
+                    工作概要
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>  
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-col cols="12">
                       <p>1.編號原則：站名-年-月-流水號 例如 北站1080301號</p>
@@ -139,11 +145,11 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       class="mb-6 mt-4"
                     >
-                      <v-row no-gutter>
+                      <v-row no-gutter class="label-header">
                         <v-col cols="12" sm="3">
                           <dateSelect
                             label="檢查日期"
@@ -177,7 +183,7 @@
                               />
                             </template>
                             <v-date-picker
-                              color="purple"
+                              color="primary"
                               v-model="BgWorkDay"
                               @input="BgWorkDay_Show = false"
                               locale="zh-tw"
@@ -206,7 +212,7 @@
                               />
                             </template>
                             <v-date-picker
-                              color="purple"
+                              color="primary"
                               v-model="FinDay"
                               @input="FinDay_Show = false"
                               locale="zh-tw"
@@ -225,7 +231,14 @@
                 </v-expansion-panel>
 
                 <v-expansion-panel>
-                  <v-expansion-panel-header color="teal" class="white--text">施工許可證</v-expansion-panel-header>
+                  <v-expansion-panel-header color="btn-expansion" class="white--text">
+                    施工許可證
+                    <template v-slot:actions>
+                      <v-icon color="dropdownicon">
+                        $expand
+                      </v-icon>
+                    </template>
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-col cols="12">
                       <p>1. 本證施工負責人應妥為保管不得遺失或損毀。</p>
@@ -236,11 +249,11 @@
                       dense
                       border="top"
                       colored-border
-                      color="teal"
+                      color="border-bg-dark-yellow"
                       elevation="4"
                       class="mb-6 mt-4"
                     >
-                      <v-row no-gutter>
+                      <v-row no-gutter class="label-header">
                         <v-col cols="12" sm="3">
                           <h3>編號</h3>
                           <v-text-field dense single-line outlined v-model="WorkID"/>
@@ -287,7 +300,7 @@
                               />
                             </template>
                             <v-date-picker
-                              color="purple"
+                              color="primary"
                               v-model="ReadyWorkDay"
                               @input="WorkCheckTime = false"
                               locale="zh-tw"
@@ -316,7 +329,7 @@
                               />
                             </template>
                             <v-date-picker
-                              color="purple"
+                              color="primary"
                               v-model="FinishDay"
                               @input="WorkFinishTime = false"
                               locale="zh-tw"
@@ -350,8 +363,8 @@
 
         <v-card-actions class="px-5 pb-5">
           <v-spacer />
-          <v-btn class="mr-2" elevation="4" @click="CloseJobApplication">取消</v-btn>
-          <v-btn color="success" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="CloseJobApplication">取消</v-btn>
+          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -491,12 +504,12 @@ export default {
         },
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        // { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        // { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       //------

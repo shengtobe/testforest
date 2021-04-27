@@ -1,6 +1,6 @@
 <template>   
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ editType }}{{ title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -17,7 +17,7 @@
         </v-col>
         <!-- 檢查部分 -->
         <v-col cols="12">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="4">
               <dateSelect
                 :label="forDate"
@@ -53,12 +53,19 @@
           </v-row>
           <v-expansion-panels multiple>
             <v-expansion-panel v-for="(panel,pIndex) in settings.panels" :key="'P'+pIndex">
-              <v-expansion-panel-header color="teal" class="white--text">{{ panel.panelLabel }}</v-expansion-panel-header>
+              <v-expansion-panel-header color="btn-expansion" class="white--text">
+                {{ panel.panelLabel }}
+                <template v-slot:actions>
+                  <v-icon color="dropdownicon">
+                    $expand
+                  </v-icon>
+                </template>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <template v-for="(area,aIndex) in panel.areas">
                   <v-row :key="'P'+pIndex+'A'+aIndex+'T'">
                     <v-col cols="12" sm="12">
-                      <v-toolbar color="teal lighten-2" dark>
+                      <v-toolbar color="gradual-bg-darken-wood" dark>
                         <v-spacer/>
                         <v-toolbar-title>{{ area.areaLabel }}</v-toolbar-title>
                         <v-spacer/>
@@ -68,7 +75,7 @@
                   <v-row
                     :key="'P'+pIndex+'A'+aIndex+'H'"
                     no-gutter
-                    class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+                    class="label-header d-none d-sm-flex font-weight-black">
                     <v-col cols="12" sm="6">
                       <h3 class="mb-1">檢查部分</h3>
                     </v-col>
@@ -80,7 +87,7 @@
                     dense
                     border="top"
                     colored-border
-                    color="teal"
+                    color="border-bg-dark-yellow"
                     elevation="4"
                     v-for="(question,qIndex) in area.questions"
                     :key="'P'+pIndex+'A'+aIndex+'Q'+qIndex"
@@ -89,7 +96,7 @@
                     <v-row no-gutter>
                       <v-col cols="12" sm="6">{{ question.question }}</v-col>
                       <v-col cols="12" sm="6">
-                        <span class="d-sm-none error--text">檢查結果：</span>
+                        <span class="d-sm-none label-header">檢查結果：</span>
                         <v-radio-group
                           dense
                           row
@@ -110,11 +117,11 @@
         </v-col>
         <!-- 改善建議、改善追蹤 -->
         <v-col cols="12">
-          <h3 class="mb-1 indigo--text">改善建議</h3>
+          <h3 class="mb-1 label-header">改善建議</h3>
           <v-textarea auto-grow outlined rows="4" v-model="inputData.editableData.Advice"/>
         </v-col>
         <v-col cols="12">
-          <h3 class="mb-1 indigo--text">改善措施</h3>
+          <h3 class="mb-1 label-header">改善措施</h3>
           <v-textarea auto-grow outlined rows="4" v-model="inputData.editableData.Measures"/>
         </v-col>
         <!-- END 檢查部分 -->
@@ -124,15 +131,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 white--text btn-delete"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"

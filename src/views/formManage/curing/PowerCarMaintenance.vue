@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="保養日期(起)"
@@ -40,9 +40,16 @@
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
           <v-expansion-panel>
-            <v-expansion-panel-header>車歷卡資料</v-expansion-panel-header>
+            <v-expansion-panel-header>
+              車歷卡資料
+              <template v-slot:actions>
+                <v-icon color="dropdownicon">
+                  $expand
+                </v-icon>
+              </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
-              <v-row>
+              <v-row class="label-header">
                 <v-col cols="12" sm="4" md="3">
                   <h3 class="mb-1">車號</h3>
                   <v-text-field
@@ -76,7 +83,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row class="label-header">
                 <v-col>
                   <h3 class="mb-1">型式</h3>
                   <v-text-field
@@ -110,7 +117,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row class="label-header">
                 <v-col cols="12" sm="4" md="3">
                   <h3 class="mb-1">皮重</h3>
                   <v-text-field
@@ -144,7 +151,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-              <v-row>
+              <v-row class="label-header">
                 <v-col cols="12" sm="4" md="3">
                   <h3 class="mb-1">載重</h3>
                   <v-text-field
@@ -185,7 +192,14 @@
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
           <v-expansion-panel>
-            <v-expansion-panel-header>動力車保養紀錄</v-expansion-panel-header>
+            <v-expansion-panel-header>
+              動力車保養紀錄
+              <template v-slot:actions>
+                <v-icon color="dropdownicon">
+                  $expand
+                </v-icon>
+              </template>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-col cols="12">
                 <v-card>
@@ -196,6 +210,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                   >
                     <template v-slot:no-data>
                       <span class="red--text subtitle-1">沒有資料</span>
@@ -209,11 +224,10 @@
                     <template v-slot:item.content="{ item }">
                       <v-btn
                         title="詳細資料"
-                        class="mr-2"
+                        class="mr-2 btn-memo"
                         small
                         dark
                         fab
-                        color="info darken-1"
                         @click="viewPage(item)"
                       >
                         <v-icon dark>mdi-pen</v-icon>
@@ -223,7 +237,7 @@
                         small
                         dark
                         fab
-                        color="red"
+                        class="btn-delete"
                         @click="deleteRecord(item.RPFlowNo)"
                       >
                         <v-icon dark>mdi-delete</v-icon>
@@ -336,42 +350,42 @@ export default {
         value: "ItemNo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "保養日期",
         value: "CheckDay",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "審查狀態",
         value: "CheckStatus",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "填寫人",
         value: "Name",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "保養單位",
         value: "DepartName",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "功能",
         value: "content",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     tableItems: [],

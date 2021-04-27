@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 檢查日期(起) -->
       <v-col cols="12" sm="3" md="3">
         <dateSelect
@@ -30,6 +30,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -49,6 +50,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -60,11 +62,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -74,7 +75,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -146,25 +147,25 @@ export default {
       DB_Table: "RP084",
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "車種", value: "Type", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "車別", value: "Category", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "號碼", value: "CarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "使用車次", value: "UsingCarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "狀態", value: "StatusText", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "說明", value: "Memo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "車種", value: "Type", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "車別", value: "Category", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "號碼", value: "CarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "使用車次", value: "UsingCarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "狀態", value: "StatusText", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "說明", value: "Memo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       header: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "車別", value: "Category", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "現有總數", value: "TotalAmount", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "使用", value: "0", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "待用", value: "1", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "停用", value: "4", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "在庫待修", value: "2", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "進廠檢修", value: "3", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "其他", value: "else", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "車別", value: "Category", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "現有總數", value: "TotalAmount", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "使用", value: "0", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "待用", value: "1", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "停用", value: "4", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "在庫待修", value: "2", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "進廠檢修", value: "3", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "其他", value: "else", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItem:[],
       //------

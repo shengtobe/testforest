@@ -1,23 +1,22 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">職災危害編號：{{ code1 }}{{ code2 }}{{ code3 }}</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">職災危害編號：{{ code1 }}{{ code2 }}{{ code3 }}</h2>
 
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2"
-                    color="indigo"
+                <v-btn dark class="ma-2 btn-add"
                     :to="`/smis/jobsafety/disasterdb/${id}/edit`"
                 >編輯</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                 >作廢</v-btn>
             </template>

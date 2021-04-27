@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">安全會議文件查詢</h2>
+    <h2 class="mb-4 label-title">安全會議文件查詢</h2>
 
-    <v-row class="px-2 mb-8">
+    <v-row class="px-2 mb-8 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>會議日期(起)
@@ -23,7 +23,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -51,7 +51,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -80,19 +80,19 @@
         </v-col>
 
         <v-col cols="12" class="mb-8">
-            <v-btn color="success" large class="mr-3"
+            <v-btn large class="mr-3 btn-search white--text"
                 @click="search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="mr-3"
+            <v-btn dark large class="mr-3 btn-add white--text"
                 @click="add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large
+            <v-btn elevation="2" large class="btn-clear"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
@@ -109,6 +109,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -123,7 +124,7 @@
                     </template>
 
                     <template v-slot:item.download="{ item }">
-                        <v-btn fab small dark color="purple lighten-2"
+                        <v-btn fab small dark class="btn-detail"
                             v-if="item.file_path != ''"
                             :href="item.file_path"
                             :download="item.file_name"
@@ -133,13 +134,13 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary" class="mr-2"
+                        <v-btn fab small class="mr-2 btn-modify white--text"
                             @click="edit(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete white--text"
                             @click="del(item.SaftyFlieID)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -161,8 +162,8 @@
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="600px">
-        <v-card>
-            <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+        <v-card class="theme-card">
+            <v-card-title class="white--text px-4 py-1">
                 {{ dialogTitle }}
                 <v-spacer></v-spacer>
                 <v-btn dark fab small text @click="dialog = false" class="mr-n2">
@@ -176,7 +177,7 @@
                     v-model="jobFormValid"
                     lazy-validation
                 > -->
-                    <v-row>
+                    <v-row class="label-header">
                         <v-col cols="12" sm="4">
                             <h3 class="mb-1">
                                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>會議日期
@@ -197,7 +198,7 @@
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
-                                    color="purple"
+                                    color="primary"
                                     v-model="ipt.date"
                                     @input="dateMemuShow.form = false"
                                     locale="zh-tw"
@@ -251,7 +252,7 @@
                         <UploadOneFileAdd @joinFile="select" />
 
                         <v-col cols="12" v-if="itemIndex > -1" class="mt-n10">
-                            <span class="error--text">目前檔案： {{ ipt.nowfile }}</span>
+                            <span class="label-warning">目前檔案： {{ ipt.nowfile }}</span>
                         </v-col>
                     </v-row>
                 <!-- </v-form> -->
@@ -259,8 +260,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
+                <v-btn class="mr-2 btn-close white--text" elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -291,13 +292,13 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'SaftyFlieID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '會議日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '會議主題', value: 'MeetingTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '文件下載', value: 'download', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
+            { text: '編號', value: 'SaftyFlieID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '會議日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '會議主題', value: 'MeetingTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '文件下載', value: 'download', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '更新日期', value: 'convert_update', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中

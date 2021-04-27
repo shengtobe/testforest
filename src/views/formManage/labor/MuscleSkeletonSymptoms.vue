@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>調查日期(起)
@@ -23,7 +23,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="z"
             @input="a = false"
             locale="zh-tw"
@@ -50,7 +50,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="df"
             @input="q = false"
             locale="zh-tw"
@@ -58,16 +58,16 @@
         </v-menu>
       </v-col>
       <div class="col-sm-4 col-md-8 col-12">
-        <v-btn color="green" dark large class="col-4 col-md-2 mr-3">
+        <v-btn  dark large class="col-4 col-md-2 mr-3 btn-search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn color="indigo" elevation="3" dark large @click="newOne">
+        <v-btn class="btn-add" elevation="3" dark large @click="newOne">
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
     </v-row>
     <!-- 人數 -->
-    <v-row>
+    <v-row class="label-header">
       <v-col cols="12" sm="6">
       </v-col>
       <v-col cols="12" sm="2">
@@ -100,6 +100,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -113,10 +114,9 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
@@ -136,8 +136,8 @@
     
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" max-width="680px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark small text @click="close" class="mr-n2">
@@ -152,8 +152,8 @@
               <p>2.缺點由使用單位自行改善，不克者委請設備商修護。</p>
             </v-col> -->
             <!-- 檢查項目 -->
-            <v-col cols="12">
-              <v-row no-gutter class="indigo--text">
+            <v-col cols="12" class="label-header">
+              <v-row no-gutter>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">填表日期</h3>
                   <v-menu
@@ -170,7 +170,7 @@
                       ></v-text-field>
                     </template>
                     <v-date-picker
-                      color="purple"
+                      color="primary"
                       v-model="zs"
                       @input="ass = false"
                       locale="zh-tw"
@@ -325,9 +325,9 @@
         </div>
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
           <v-btn
-            color="success"
+            class="btn-add white--text"
             elevation="4"
             :loading="isLoading"
             @click="save"
@@ -388,44 +388,44 @@ export default {
       pageOpt: { page: 1 }, // 目前頁數
       headers: [
         // 表格顯示的欄位
-        {text: "所屬單位", value: "a1",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "檢查日期",value: "a2",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "審查狀態",value: "a3",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "姓名",value: "a4",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "職稱",value: "a5",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "性別",value: "a6",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "作業名稱",value: "a7",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "年齡",value: "a8",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "年資",value: "a9",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "身高(cm)",value: "a10",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "體重(kg)",value: "a11",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "慣用手",value: "a12",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "職業傷害",value: "a13",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "通報中",value: "a14",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "問卷調查",value: "a15",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "是否不適",value: "a16",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "與目前工作有關",value: "a17",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "痠痛持續時間",value: "a18",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "頸",value: "a19",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "上背",value: "a20",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "下背",value: "a21",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "左肩",value: "a22",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "右肩",value: "a23",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "左手肘 前臂",value: "a24",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "右手肘 前臂",value: "a25",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "左手 手腕",value: "a26",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "右手 手腕",value: "a27",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "左臀/大腿",value: "a28",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "右臀/大腿",value: "a29",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "左膝",value: "a30",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "右膝",value: "a31",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "左腳踝/腳",value: "a32",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "右腳踝/腳",value: "a33",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "簡易人因工程改善",value: "a34",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "是否改善",value: "a35",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "進階人因工程改善",value: "a36",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "是否改善",value: "a37",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
-        {text: "備註",value: "a38",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold light-blue darken-1"},
+        {text: "所屬單位", value: "a1",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "檢查日期",value: "a2",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "審查狀態",value: "a3",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "姓名",value: "a4",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "職稱",value: "a5",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "性別",value: "a6",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "作業名稱",value: "a7",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "年齡",value: "a8",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "年資",value: "a9",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "身高(cm)",value: "a10",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "體重(kg)",value: "a11",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "慣用手",value: "a12",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "職業傷害",value: "a13",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "通報中",value: "a14",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "問卷調查",value: "a15",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "是否不適",value: "a16",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "與目前工作有關",value: "a17",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "痠痛持續時間",value: "a18",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "頸",value: "a19",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "上背",value: "a20",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "下背",value: "a21",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左肩",value: "a22",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右肩",value: "a23",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左手肘 前臂",value: "a24",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右手肘 前臂",value: "a25",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左手 手腕",value: "a26",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右手 手腕",value: "a27",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左臀/大腿",value: "a28",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右臀/大腿",value: "a29",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左膝",value: "a30",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右膝",value: "a31",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左腳踝/腳",value: "a32",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右腳踝/腳",value: "a33",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "簡易人因工程改善",value: "a34",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "是否改善",value: "a35",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "進階人因工程改善",value: "a36",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "是否改善",value: "a37",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "備註",value: "a38",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
       ],
       tableItems: [
         {

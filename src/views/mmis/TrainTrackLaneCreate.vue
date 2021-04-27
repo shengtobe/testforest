@@ -3,7 +3,7 @@
     <v-row>
       <!-- 檢查項目 -->
       <v-col cols="12">
-        <v-row no-gutter class="indigo--text"  
+        <v-row no-gutter class="label-header"  
           ref="form"
           v-model="valid"
           lazy-validation>
@@ -67,14 +67,14 @@
         </v-row>
         <!--選擇設備標示編號-->
         <v-dialog v-model="showMaintainCode" max-width="450px">
-          <v-card>
-            <v-card-title class="blue white--text px-4 py-1">
+          <v-card class="theme-card">
+            <v-card-title class="white--text px-4 py-1">
               <v-spacer></v-spacer>
               <v-btn dark fab small text @click="showMaintainCode=false" class="mr-n2">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
-            <v-col cols="12">
+            <v-col cols="12" class="label-header">
               <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
               </h3>
@@ -86,8 +86,8 @@
             <equipRepairObject :toLv="toLv" :nowEqCode="nowEqCode" @getEqCode="_getNewEqCode" @getEqName="_getNewEqName" :key="componentKey"></equipRepairObject>
             <v-card-actions class="px-5 pb-5">
               <v-spacer></v-spacer>
-              <v-btn class="mr-2" elevation="4" @click="showMaintainCode=false">取消</v-btn>
-              <v-btn color="success" elevation="4" @click="selectMainCode">選擇</v-btn>
+              <v-btn class="mr-2 btn-close white--text" elevation="4" @click="showMaintainCode=false">取消</v-btn>
+              <v-btn class="btn-add white--text" elevation="4" @click="selectMainCode">選擇</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>

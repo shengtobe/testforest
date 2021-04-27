@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">證照管理查詢</h2>
+<v-container class="label-header" style="max-width: 1200px">
+    <h2 class="label-title mb-4">證照管理查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
@@ -15,13 +15,13 @@
         </v-col>
 
         <v-col cols="12" sm="8" md="9" align-self="center">
-            <v-btn color="success" large class="my-2 mr-2"
+            <v-btn dark large class="btn-search my-2 mr-2"
                 @click="search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="ma-2"
+            <v-btn dark large class="btn-add ma-2"
                 @click="add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -38,6 +38,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -48,13 +49,13 @@
                     </template>
 
                     <template v-slot:item.Memo="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-memo" dark
                             @click="showContent(item.Memo)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.link="{ item }">
-                        <v-btn small dark fab color="purple"
+                        <v-btn small dark fab class="btn-detail"
                             target="_blank"
                             :to="`/smis/jobsafety/license/${item.FlowID}/list/${encodeURIComponent(item.License)}`"
                         >
@@ -64,13 +65,13 @@
 
                     <template v-slot:item.action="{ item }">
                         <v-btn fab small color="primary"
-                            class="mr-3"
+                            class="btn-modify mr-3"
                             @click="edit(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete"
                             @click="godel(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -95,14 +96,14 @@
     </v-dialog>
     <!-- 刪除 -->
     <v-dialog v-model="delDialog" max-width="350px">
-        <v-card>
+        <v-card class="theme-del-card">
             <v-card-title class="red white--text px-4 py-1 headline"
             >會連同所有人員資料一併刪除，你確定要刪除嗎?</v-card-title
             >
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="delDialog=false">取消</v-btn>
-            <v-btn color="red" class="white--text" @click="del(delItem)">刪除</v-btn>
+            <v-btn class="btn-close" dark @click="delDialog=false">取消</v-btn>
+            <v-btn class="btn-delete" dark @click="del(delItem)">刪除</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -123,13 +124,13 @@ export default {
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
             // { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證照名稱', value: 'License', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '初訓時間(小時)', value: 'InitTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '回訓時間(小時)', value: 'ReTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '有效時間(年)', value: 'ValidityPeriod', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '人員資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '130' },
+            { text: '證照名稱', value: 'License', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '初訓時間(小時)', value: 'InitTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '回訓時間(小時)', value: 'ReTrainingTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '有效時間(年)', value: 'ValidityPeriod', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '人員資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '130' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中

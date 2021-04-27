@@ -22,7 +22,7 @@
 
         <v-col cols="12" sm="2" class="text-right text-md-left">
             <v-btn large
-                color="primary"
+                class="btn-memo white--text"
                 @click="upload"
             >檔案上傳</v-btn>
         </v-col>
@@ -44,15 +44,14 @@
                     <v-btn
                         dark
                         small
-                        color="teal"
                         :href="(item.link == undefined)? item.FileFullPath : item.link"
                         :download="(item.fileName == undefined)? item.FileName : item.fileName"
-                        class="mr-3"
+                        class="mr-3 btn-modify"
                     >下載</v-btn>
 
                     <v-btn
                         small
-                        color="error"
+                        class="btn-delete white--text"
                         @click="delFile(i)"
                     >刪除</v-btn>
                 </v-col>

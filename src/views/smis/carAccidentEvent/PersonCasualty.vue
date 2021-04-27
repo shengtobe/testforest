@@ -1,10 +1,10 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+    <h2 class="mb-4 label-title">
         人員傷亡名單
         <span class="mx-3">(事故事件編號：{{ id }})</span>
 
-        <v-btn small dark fab color="indigo darken-3" class="mb-1"
+        <v-btn small dark fab class="mb-1 btn-modify"
             @click="dialogShow = true"
         >
             <v-icon dark>mdi-plus</v-icon>
@@ -21,6 +21,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -33,8 +34,8 @@
                     <!-- 表格最上面插入 toolbar 及 dialog -->
                     <template v-slot:top>
                         <v-dialog v-model="dialogShow" max-width="800px">
-                            <v-card>
-                                <v-card-title class="teal white--text px-4 py-1">
+                            <v-card class="theme-card">
+                                <v-card-title class="white--text px-4 py-1">
                                     {{ formTitle }}
                                     <v-spacer></v-spacer>
                                     <v-btn dark fab small text @click="dialogShow = false" class="mr-n2">
@@ -177,15 +178,15 @@
                                 
                                 <v-card-actions class="px-5 pb-5">
                                     <v-spacer></v-spacer>
-                                    <v-btn class="mr-2" elevation="4" @click="dialogShow = false" :loading="isDialogLoading">取消</v-btn>
-                                    <v-btn color="success" elevation="4" @click="save" :loading="isDialogLoading">送出</v-btn>
+                                    <v-btn class="mr-2 btn-close white--text" elevation="4" @click="dialogShow = false" :loading="isDialogLoading">取消</v-btn>
+                                    <v-btn class="btn-add white--text" elevation="4" @click="save" :loading="isDialogLoading">送出</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
                     </template>
 
                     <template v-slot:item.info="{ item }">
-                        <v-btn fab small dark color="teal"
+                        <v-btn fab small dark class="btn-detail"
                             @click="view(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
@@ -193,13 +194,13 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary" class="mr-2"
+                        <v-btn fab small class="mr-2 btn-modify"
                             @click="editItem(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete"
                             @click="deleteItem(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -218,11 +219,11 @@
         </v-col>
 
         <v-col cols="12" class="mt-5 text-center">
-            <v-btn dark class="mr-3"
+            <v-btn dark class="mr-3 btn-close"
                 :to="`/smis/car-accident-event/${id}/show`"
             >回上層</v-btn>
 
-            <v-btn dark color="brown"
+            <v-btn dark class="btn-memo"
                 @click="noDeath"
             >設為無人傷亡</v-btn>
         </v-col>
@@ -230,8 +231,8 @@
 
     <!-- 個人資料 dialog -->
     <v-dialog v-model="infoShow" max-width="500px">
-        <v-card>
-            <v-card-title class="yellow darken-1 px-4 py-1">
+        <v-card class="theme-card">
+            <v-card-title class="px-4 py-1">
                 詳細資料
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="infoShow = false" class="mr-n2">
@@ -294,14 +295,14 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '個人資料', value: 'info', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '傷亡種類', value: 'HurtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '收治醫院', value: 'SetHospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '賠償金額', value: 'Reparation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '保險註記', value: 'SafeRemark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '個人資料', value: 'info', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '傷亡種類', value: 'HurtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '收治醫院', value: 'SetHospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '賠償金額', value: 'Reparation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '保險註記', value: 'SafeRemark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
         ],
         editedIndex: -1,
         editedItem: {},

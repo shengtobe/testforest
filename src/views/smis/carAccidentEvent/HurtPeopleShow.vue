@@ -1,7 +1,7 @@
 <template>
 <div>
     <v-row no-gutters class="mb-8">
-        <v-col cols="12" class="mt-10">
+        <v-col cols="12" class="mt-10 label-header">
             <h3>
                 <v-icon class="mr-1 mb-2">mdi-hospital-building</v-icon>
                 <span class="mr-2">死傷人數：</span>{{ deathCount }}
@@ -16,6 +16,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -26,7 +27,7 @@
                     </template>
 
                     <template v-slot:item.info="{ item }">
-                        <v-btn fab small dark color="teal"
+                        <v-btn fab small dark class="btn-detail"
                             @click="view(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
@@ -38,8 +39,8 @@
 
         <!-- 個人資料 dialog -->
         <v-dialog v-model="infoShow" max-width="500px">
-            <v-card>
-                <v-card-title class="yellow darken-1 px-4 py-1">
+            <v-card class="theme-card">
+                <v-card-title class="px-4 py-1">
                     詳細資料
                     <v-spacer></v-spacer>
                     <v-btn fab small text @click="infoShow = false" class="mr-n2">
@@ -47,7 +48,7 @@
                     </v-btn>
                 </v-card-title>
 
-                <div class="px-4 py-3">
+                <div class="px-4 py-3 label-header">
                     <v-row no-gutters>
                         <v-col cols="12">
                             <v-icon class="mr-1 mb-1">mdi-human-male-female</v-icon>
@@ -93,13 +94,13 @@ export default {
     props: ['tableItems', 'deathCount'],
     data: () => ({
         headers: [  // 表格顯示的欄位
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '個人資料', value: 'info', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '傷亡種類', value: 'HurtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '收治醫院', value: 'SetHospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '賠償金額', value: 'Reparation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 100 },
-            { text: '保險註記', value: 'SafeRemark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: 150 },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '個人資料', value: 'info', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '傷亡種類', value: 'HurtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '收治醫院', value: 'SetHospital', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '賠償金額', value: 'Reparation', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '保險註記', value: 'SafeRemark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
         ],
         infoShow: false,  // 個人資料 dialog 是否顯示
         info: {},  // 個人資料

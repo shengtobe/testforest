@@ -1,10 +1,10 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+    <h2 class="mb-4 label-title">
         {{ (this.isEdit)? `危害編輯 (編號：${ id })` : '危害新增' }}
     </h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" md="6">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-pen</v-icon>危害說明
@@ -62,7 +62,7 @@
 
     <v-divider class="mx-2 mt-5 mb-4"></v-divider>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="8" color="red" >
             <v-row>
                 <v-col cols="12" sm="5" md="6">
@@ -224,7 +224,7 @@
         </v-col>
 
         <v-col cols="12" md="3" align-self="center" class="mt-n5 mt-md-0">
-            <v-btn color="green" dark large
+            <v-btn class=" btn-search white--text" dark large
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
@@ -240,6 +240,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -254,13 +255,13 @@
                     </template>
 
                     <template v-slot:item.desc="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-memo" dark
                             @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file="{ item }">
-                        <v-btn fab small dark color="brown"
+                        <v-btn fab small dark class="btn-expansion white--text"
                             v-if="item.regul_file_path != ''"
                             :href="item.regul_file_path"
                             :download="item.FileFullName"
@@ -270,7 +271,7 @@
                     </template>
 
                     <template v-slot:item.evidences="{ item }">
-                        <v-btn fab small dark color="purple lighten-2"
+                        <v-btn fab small dark class="btn-detail white--text"
                             v-if="item.file_path.length > 0"
                             @click="showEvidences(item)"
                         >
@@ -279,7 +280,7 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small dark color="indigo"
+                        <v-btn fab small dark class="btn-modify white--text"
                             @click="addControl(item)"
                         >
                             <v-icon>mdi-plus</v-icon>
@@ -308,6 +309,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -318,13 +320,13 @@
                     </template>
 
                     <template v-slot:item.desc="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-memo" dark
                             @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.file="{ item }">
-                        <v-btn fab small dark color="brown"
+                        <v-btn fab small dark class="btn-expansion white--text"
                             v-if="item.regul_file_path != ''"
                             :href="item.regul_file_path"
                             :download="item.FileFullName"
@@ -334,7 +336,7 @@
                     </template>
 
                     <template v-slot:item.evidences="{ item }">
-                        <v-btn fab small dark color="purple lighten-2"
+                        <v-btn fab small dark class="btn-detail white--text"
                             v-if="item.file_path.length > 0"
                             @click="showEvidences(item)"
                         >
@@ -343,7 +345,7 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete white--text"
                             @click="delControl(item.ProcCode)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -354,18 +356,18 @@
         </v-col>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 v-if="!isEdit"
                 to="/smis/car-harmdb/harms"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="mr-3"
+            <v-btn dark class="mr-3 btn-close"
                 v-else
                 :to="`/smis/car-harmdb/harms/${this.id}/show`"
             >回上層</v-btn>
             
             <v-btn
-                color="success"
+                class="btn-add white--text"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
@@ -463,24 +465,24 @@ export default {
         pageOpt: { page: 1 },  // 控制措施權責部門的表格目前頁數
         tableItems: [],  // 控制措施權責部門的表格資料
         headers: [  // 控制措施權責部門的表格欄位
-            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '選用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
         ],
         chooseHeaders: [  // 已選的表格欄位
-            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
         ],
         evidences: [],  // 證據路徑
         evidencesName: [],  // 證據名稱

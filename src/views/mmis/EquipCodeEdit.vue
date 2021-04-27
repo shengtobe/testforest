@@ -1,12 +1,12 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       <v-spacer>{{(inputType=='edit')?'編輯':inputType=='add'?'新增':''}}資料</v-spacer>
       <v-btn dark fab small text class="mr-n2" @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-card-title>
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="2" align-self="center">
         <h3 align="center">科室單位</h3>
       </v-col>
@@ -66,8 +66,8 @@
     </v-row>
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-      <v-btn color="success" elevation="4" @click="save">儲存</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="btn-add white--text" elevation="4" @click="save">儲存</v-btn>
     </v-card-actions>
   </v-card>
 </template>

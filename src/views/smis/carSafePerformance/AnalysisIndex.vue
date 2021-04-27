@@ -77,116 +77,141 @@
     </v-row> -->
     <v-row>
         <v-col cols="12" md="2">
-            <v-btn color="secondary" large :to="`/smis/car-safe-performance`">
+            <v-btn class="btn-close" dark large :to="`/smis/car-safe-performance`">
                 回上一頁
             </v-btn>
         </v-col>
         <v-col cols="12" md="8" class="text-center">
-            <h2 class="mb-4">行車安全績效趨勢</h2>
+            <h2 class="label-title mb-4">行車安全績效趨勢</h2>
         </v-col>
         <v-col cols="12">
-            <v-btn color="success" large class="my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('全系統行車事故率')}/accident-trend`">
+            <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('全系統行車事故率')}/accident-trend`">
                 全系統行車事故率
             </v-btn>
-            <v-btn color="success" large class="my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('重大行車事故率')}/accident-trend`">
+            <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('重大行車事故率')}/accident-trend`">
                 重大行車事故率
             </v-btn>
-            <v-btn color="success" large class="my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('一般行車事故率')}/accident-trend`">
+            <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('一般行車事故率')}/accident-trend`">
                 一般行車事故率
             </v-btn>
-            <v-btn color="success" large class="my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('行車異常事故率')}/accident-trend`">
+            <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/${encodeURIComponent('行車異常事故率')}/accident-trend`">
                 行車異常事故率
             </v-btn>
         </v-col>
         <v-col cols="12" style="position:relative;">
-            <v-row style="min-height:10rem;border-bottom:1px solid;">
+            <v-row class="tri-area">
                 <v-col cols="7">
-                    <h2>第<br>１<br>層</h2>
+                    <h2 class="label-header">第<br>一<br>層</h2>
                 </v-col>
-                <v-col cols="5" class="float-right">
+                <v-col cols="5" align-self="center">
                     <v-row>
-                        <v-col cols="10">
+                        <v-col cols="8">
                             <v-select
                                 :items="selectOptions.Lv1"
                                 v-model="selectValues.Lv1"
                                 solo
+                                hide-details
                             ></v-select>
                         </v-col>
-                        <v-col cols="2">
-                            <v-btn color="primary" large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv1)}/accident-trend`">
+                        <v-col cols="4">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv1)}/accident-trend`">
+                                <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
             </v-row>
-            <v-row style="min-height:10rem;border-bottom:1px solid;">
+            <v-row class="tri-area">
                 <v-col cols="7">
-                    <h2>第<br>２<br>層</h2>
+                    <h2 class="label-header">第<br>二<br>層</h2>
                 </v-col>
-                <v-col cols="5" class="float-right">
+                <v-col cols="5" align-self="center">
                     <v-row>
-                        <v-col cols="10">
+                        <v-col cols="8">
                             <v-select
                                 :items="getLvOptions.Lv2"
                                 v-model="selectValues.Lv2"
                                 solo
+                                hide-details
                             ></v-select>
                         </v-col>
-                        <v-col cols="2">
-                            <v-btn color="primary" large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv2)}/accident-trend`">
+                        <v-col cols="4">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv2)}/accident-trend`">
+                                <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
             </v-row>
-            <v-row style="min-height:10rem;border-bottom:1px solid;">
+            <v-row class="tri-area">
                 <v-col cols="7">
-                    <h2>第<br>３<br>層</h2>
+                    <h2 class="label-header">第<br>三<br>層</h2>
                 </v-col>
-                <v-col cols="5" class="float-right">
+                <v-col cols="5" align-self="center">
                     <v-row>
-                        <v-col cols="10">
+                        <v-col cols="8">
                             <v-select
                                 :items="getLvOptions.Lv3"
                                 v-model="selectValues.Lv3"
                                 solo
+                                hide-details
                             ></v-select>
                         </v-col>
-                        <v-col cols="2">
-                            <v-btn color="primary" large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv3)}/key-equip`">
+                        <v-col cols="4">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv3)}/key-equip`">
+                                <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
             </v-row>
-            <v-row style="min-height:10rem;border-bottom:1px solid;">
+            <v-row class="tri-area">
                 <v-col cols="7">
-                    <h2>第<br>４<br>層</h2>
+                    <h2 class="label-header">第<br>四<br>層</h2>
                 </v-col>
-                <v-col cols="5" class="float-right">
+                <v-col cols="5" align-self="center">
                     <v-row>
-                        <v-col cols="10">
+                        <v-col cols="8">
                             <v-select
                                 :items="getLvOptions.Lv4"
                                 v-model="selectValues.Lv4"
                                 solo
+                                hide-details
                             ></v-select>
                         </v-col>
-                        <v-col cols="2">
-                            <v-btn color="primary" large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv4)}/work-effectiveness`">
+                        <v-col cols="4">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv4)}/work-effectiveness`">
+                                <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
                         </v-col>
                     </v-row>
                 </v-col>
             </v-row>
-            <div class="T1"></div>
-            <div class="trapezoid"></div>
-            <div class="trapezoid2"></div>
-            <div class="trapezoid3"></div>
+            <div class="triangle">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 600 600" width="40rem" height="40rem">
+                    <defs>
+                        <linearGradient id="Gradient1" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#ff917a"/>
+                            <stop offset="25%" stop-color="#ff2f05"/>
+                            <stop offset="25%" stop-color="#ffc09c"/>
+                            <stop offset="50%" stop-color="#ff5e00"/>
+                            <stop offset="50%" stop-color="#ffdc96"/>
+                            <stop offset="75%" stop-color="#ffaa00"/>
+                            <stop offset="75%" stop-color="#ffea8f"/>
+                            <stop offset="100%" stop-color="#ffd000"/>
+                        </linearGradient>
+                    </defs>
+                    <polygon points="300,0 600,600 0,600" fill="url(#Gradient1)"/>
+                    <text x="265" y="110" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第一層</text>
+                    <text x="265" y="260" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第二層</text>
+                    <text x="265" y="410" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第三層</text>
+                    <text x="265" y="560" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第四層</text>
+                </svg>
+            </div>
         </v-col>
     </v-row>
     
@@ -472,41 +497,13 @@ export default {
   },
 };
 </script>
-<style>
-.T1, .trapezoid, .trapezoid2, .trapezoid3{
-    position:absolute; left:12px; top:12px; 
+<style scoped>
+>>>.tri-area{
+    min-height:10rem;
+    border-bottom:1px solid #6b6b6b7a;
 }
-.T1 {
-    border-right: 20rem solid transparent;
-    border-left: 20rem solid transparent;
-    border-bottom: 40rem solid rgb(0, 123, 255);
-    display:inline-block;
+.triangle{
+    position:absolute; left:1rem; top:12px; 
 }
-.trapezoid {
-    width: 40rem;
-    height: 40rem;
-    background: transparent;
-    border-top: 10rem solid transparent;
-    border-bottom: 30rem solid rgb(0, 200, 255);
-    border-left: 15rem solid transparent;
-    border-right: 15rem solid transparent;
-}
-.trapezoid2 {
-    width: 40rem;
-    height: 40rem;
-    background: transparent;
-    border-top: 20rem solid transparent;
-    border-bottom: 20rem solid rgb(0, 255, 217);
-    border-left: 10rem solid transparent;
-    border-right: 10rem solid transparent;
-}
-.trapezoid3 {
-    width: 40rem;
-    height: 40rem;
-    background: transparent;
-    border-top: 30rem solid transparent;
-    border-bottom: 10rem solid rgb(0, 255, 81);
-    border-left: 5rem solid transparent;
-    border-right: 5rem solid transparent;
-}
+
 </style>

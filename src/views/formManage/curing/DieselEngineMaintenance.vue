@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 保養日期起迄 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
@@ -24,7 +24,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="ipt.dateStart"
             @input="dateMenuShow.start = false"
             locale="zh-tw"
@@ -51,7 +51,7 @@
             ></v-text-field>
           </template>
           <v-date-picker
-            color="purple"
+            color="primary"
             v-model="ipt.dateEnd"
             @input="dateMenuShow.end = false"
             locale="zh-tw"
@@ -59,10 +59,10 @@
         </v-menu>
       </v-col>
       <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
-        <v-btn color="green" dark large class="mr-3 mb-3" @click="search">
+        <v-btn dark large class="mr-3 mb-3 btn-search" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn elevation="2" large class="mb-3" @click="reset">
+        <v-btn elevation="2" large class="mb-3 btn-clear" @click="reset">
           <v-icon>mdi-reload</v-icon>清除搜尋內容
         </v-btn>
       </v-col>
@@ -74,11 +74,10 @@
         class="mb-5 text-md-right"
       >
         <v-btn
-          color="indigo"
           elevation="3"
           dark
           large
-          class="mr-3 mb-3"
+          class="mr-3 mb-3 btn-add"
           @click="newOne"
         >
           <!-- @click="ShowDetailDialog = true" -->
@@ -87,8 +86,8 @@
       </v-col>
       <!-- 新增/修改保養資料 modal -->
       <v-dialog v-model="ShowDetailDialog" max-width="600px">
-        <v-card>
-          <v-card-title class="blue white--text px-4 py-1">
+        <v-card class="theme-card">
+          <v-card-title class="white--text px-4 py-1">
             {{ action }}{{ title }}
             <v-spacer></v-spacer>
             <v-btn dark fab small text @click="close" class="mr-n2">
@@ -96,7 +95,7 @@
             </v-btn>
           </v-card-title>
 
-          <div class="px-6 py-4">
+          <div class="px-6 py-4 label-header">
             <v-row>
               <!-- 保養日期 -->
               <v-col cols="8" sm="4">
@@ -184,18 +183,17 @@
           <v-card-actions class="px-5 pb-5">
             <v-btn
               v-if="action != actions.add"
-              class="mr-2"
+              class="mr-2 btn-delete"
               elevation="4"
-              color="red"
               @click="dialogDel = true"
               >刪除</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn class="mr-2" elevation="4" @click="ShowDetailDialog = false"
+            <v-btn class="mr-2 btn-close white--text" elevation="4" @click="ShowDetailDialog = false"
               >取消</v-btn
             >
             <v-btn
-              color="success"
+              class="btn-add white--text"
               elevation="4"
               :loading="isLoading"
               @click="save"
@@ -206,15 +204,15 @@
       </v-dialog>
       <!-- 刪除確認視窗 -->
       <v-dialog v-model="dialogDel" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline"
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline"
             >確認是否刪除?</v-card-title
           >
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="dialogDel = false">取消</v-btn>
+            <v-btn class="btn-close white--text" @click="dialogDel = false">取消</v-btn>
             <v-btn
-              color="red"
+              class="btn-delete white--text"
               @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
               >刪除</v-btn
             >
@@ -223,13 +221,13 @@
       </v-dialog>
       <!-- 必填欄位空白提醒視窗 -->
       <v-dialog v-model="dialogNull" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline"
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline"
             >請填妥必要欄位</v-card-title
           >
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="dialogNull = false">確定</v-btn>
+            <v-btn class="btn-add white--text" @click="dialogNull = false">確定</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -244,6 +242,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="Theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -257,11 +256,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="編輯"
-              class="mr-2"
+              class="btn-memo mr-2"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <!-- @click="dialogShowEdit = true" -->
@@ -272,7 +270,7 @@
               small
               dark
               fab
-              color="red"
+              class="Btn-delete"
               @click="
                 dialogDel = true;
                 RPFlowNo = item.RPFlowNo;
@@ -547,63 +545,63 @@ export default {
         value: "ItemNo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "保養日期",
         value: "CheckDay",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "公里",
         value: "Km",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "機油濾清器",
         value: "機油濾清器",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "柴油濾清器",
         value: "柴油濾清器",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "水泵濾清器",
         value: "水泵濾清器",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "保養人",
         value: "Name",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "備註",
         value: "Memo",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
       {
         text: "功能",
         value: "content",
         align: "center",
         divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+        class: "subtitle-1 white--text font-weight-bold",
       },
     ],
     dateMenuShow: {

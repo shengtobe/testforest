@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -46,6 +46,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -59,11 +60,10 @@
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2"
+              class="mr-2 btn-memo"
               small
               dark
               fab
-              color="info darken-1"
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-pen</v-icon>
@@ -73,7 +73,7 @@
               small
               dark
               fab
-              color="red"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -101,20 +101,20 @@
     </v-dialog>
     <!-- 必填欄位空白提醒視窗 -->
     <v-dialog v-model="dialogNull" persistent max-width="290">
-      <v-card>
+      <v-card class="theme-del-card">
         <v-card-title class="red white--text px-4 py-1 headline"
           >請填妥必要欄位: 車種</v-card-title
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="dialogNull = false">確定</v-btn>
+          <v-btn class="btn-add white--text" @click="dialogNull = false">確定</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- 新增機動道班台車使用申請書 modal -->
     <v-dialog v-model="Add" max-width="900px">
-      <v-card>
-        <v-card-title class="blue white--text px-4 py-1">
+      <v-card class="theme-card">
+        <v-card-title class="white--text px-4 py-1 label-title">
           新增{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
@@ -127,7 +127,7 @@
             <!-- 檢查項目 -->
             <v-col cols="12">
               <!-- 申請日期、車種 -->
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">申請日期</h3>
                   <v-menu
@@ -141,7 +141,7 @@
                       <v-text-field v-model.trim="AddData.ApplicationDay" solo v-on="on" readonly />
                     </template>
                     <v-date-picker
-                      color="purple"
+                      color="primary"
                       v-model="AddData.ApplicationDay"
                       @input="ApplicationDay = false"
                       locale="zh-tw"
@@ -157,7 +157,7 @@
                 </v-col>
               </v-row>
               <!-- 單位、職稱、申請人 -->
-              <v-row no-gutter class="indigo--text">
+              <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="4">
                   <!-- <h3 class="mb-1">單位</h3>
                   <v-text-field solo v-model="DepartName" /> -->
@@ -228,7 +228,7 @@
               </v-alert>
               <!-- 時間 -->
               <v-col cols="12">
-                <h3 class="mb-1 indigo--text">使用時間</h3>
+                <h3 class="mb-1 label-header">使用時間</h3>
               </v-col>
               <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
                 <v-row no-gutter>
@@ -264,7 +264,7 @@
                           />
                         </template>
                         <v-date-picker
-                          color="purple"
+                          color="primary"
                           v-model="AddData.UsageTime.TimeDay"
                           @input="UsageTimeDay = false"
                           locale="zh-tw"
@@ -321,15 +321,15 @@
             </v-col>
             <!-- 目的、輛數、記事 -->
             <v-col cols="12" sm="4">
-              <h3 class="mb-1 indigo--text">使用目的</h3>
+              <h3 class="mb-1 label-header">使用目的</h3>
               <v-textarea auto-grow outlined rows="4" v-model="AddData.Purpose" />
             </v-col>
             <v-col cols="12" sm="4">
-              <h3 class="mb-1 indigo--text">輛數</h3>
+              <h3 class="mb-1 label-header">輛數</h3>
               <v-textarea auto-grow outlined rows="4" v-model="AddData.VehiclesNumber" />
             </v-col>
             <v-col cols="12" sm="4">
-              <h3 class="mb-1 indigo--text">記事</h3>
+              <h3 class="mb-1 label-header">記事</h3>
               <v-textarea auto-grow outlined rows="4" v-model="AddData.Note" />
             </v-col>
             <!-- END 檢查項目 -->
@@ -340,15 +340,14 @@
           <v-btn
             v-if="action != actions.add"
             elevation="4"
-            color="red"
-            class="mr-2 white--text"
+            class="mr-2 btn-delete white--text"
             @click="deleteRecord(RPFlowNo)"
             >刪除</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+          <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
           <v-btn
-            color="success"
+            class="btn-add white--text"
             elevation="4"
             @click="save"
             >送出</v-btn
@@ -471,12 +470,12 @@ export default {
       ],
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
-        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
-        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
+        { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
       //------

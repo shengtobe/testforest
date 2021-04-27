@@ -4,7 +4,7 @@
       <p class="font-weight-black title text-center">新增{{ title }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="3">
             <dateSelect
               label="保養日期"
@@ -90,7 +90,7 @@
           </v-col>
         </v-row>
         <!-- 人員出勤狀態 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="6" sm="1">
             <h3 class="mb-1">休假</h3>
             <v-text-field
@@ -223,14 +223,14 @@
           </v-col>
         </v-row>
         <!-- 出料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>出料</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -270,14 +270,14 @@
           </v-col>
         </v-row>
         <!-- 進料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>進料</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -317,14 +317,14 @@
           </v-col>
         </v-row>
         <!-- 舊料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>舊料</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -416,14 +416,14 @@
           </v-col>
         </v-row>
         <!-- 使用機具 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>本日使用機具</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -564,14 +564,14 @@
           </v-col>
         </v-row>
         <!-- 工具及材料檢查 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>工具及材料檢查</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -670,14 +670,14 @@
           </v-col>
         </v-row>
         <!-- 其餘檢查 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>其餘檢查</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -770,14 +770,14 @@
           </v-col>
         </v-row>
         <!-- 項目宣導 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12">
             <h3>勤前教育項目宣導</h3>
             <v-alert
               dense
               border="top"
               colored-border
-              color="teal"
+              color="border-bg-dark-yellow"
               elevation="4"
               class="mb-6 mt-2"
             >
@@ -819,7 +819,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             class="mb-6 mt-2"
           >
@@ -860,7 +860,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             class="mb-6 mt-2"
           >
@@ -881,7 +881,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             class="mb-6 mt-2"
           >
@@ -902,7 +902,7 @@
             dense
             border="top"
             colored-border
-            color="teal"
+            color="border-bg-dark-yellow"
             elevation="4"
             class="mb-6 mt-2"
           >
@@ -927,15 +927,14 @@
         <v-btn
           v-if="editType != actions.add"
           elevation="4"
-          color="red"
-          class="mr-2 white--text"
+          class="mr-2 btn-delete white--text"
           @click="deleteRecord"
           >刪除</v-btn
         >
         <v-spacer></v-spacer>
-        <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+        <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
         <v-btn
-          color="success"
+          class="btn-add white--text"
           elevation="4"
           :loading="commonSettings.isLoading"
           @click="save"

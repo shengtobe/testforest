@@ -10,6 +10,7 @@ export default new Vuetify({
         /* 主題1 */
         
         primary: '#D57129',
+        dropdownicon: '#f6d5a8',
         /*
         secondary: '#948782',
         accent: '#ffa012',

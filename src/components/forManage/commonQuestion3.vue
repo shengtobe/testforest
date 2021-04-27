@@ -1,17 +1,17 @@
 <template>
   <div>
-    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex font-weight-black">
+    <v-row no-gutter class="label-header d-none d-sm-flex font-weight-black">
       <v-col cols="12" :sm="header.width" v-for="(header,hIndex) in settings.headers" :key="'H'+hIndex">
         <h3 class="mb-1">{{ header.text }}</h3>
       </v-col>
     </v-row>
-    <v-row no-gutter class="indigo--text darken-2 d-none d-sm-flex">
+    <v-row no-gutter class="label-header d-none d-sm-flex">
       <v-col cols="12">
         <v-alert 
           dense 
           border="top" 
           colored-border 
-          color="teal" 
+          color="border-bg-dark-yellow" 
           elevation="4" 
           class="mb-6" 
           v-for="(answer,aIndex) in settings.alerts" 

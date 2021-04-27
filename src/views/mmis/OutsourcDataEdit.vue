@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{titleShow}}外包廠商資料
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -11,7 +11,7 @@
       <v-row>
         <!-- 檢查項目 -->
         <v-col cols="12">
-          <v-row no-gutter class="indigo--text">
+          <v-row no-gutter class="label-header">
             <v-col cols="12" sm="4">
               <h3 class="mb-1">負責單位</h3>
               <v-select solo hide-details :items="orgList" v-model="queryItem.DepartName" />
@@ -43,8 +43,8 @@
     </div>
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-      <v-btn color="success" elevation="4" :loading="isLoading" @click="goSave">送出</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="goSave">送出</v-btn>
     </v-card-actions>
   </v-card>
 </template>

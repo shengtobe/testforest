@@ -25,15 +25,15 @@
 
         <v-col cols="12" sm="2" class="text-right text-md-left">
             <v-btn large
-                color="primary"
+                class="btn-memo white--text"
                 @click="join"
             >加入檔案</v-btn>
         </v-col>
 
         <v-col cols="12" class="mt-2">
-            <v-card flat>
+            <v-card flat class="theme-upload-card">
                 <v-card-title
-                    class="purple lighten-3 py-2 px-3 white--text"
+                    class="shadow-text py-2 px-3 white--text"
                     primary-title
                 >
                     <h5>檔案列表</h5>

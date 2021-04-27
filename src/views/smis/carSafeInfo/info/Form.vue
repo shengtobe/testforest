@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">
         {{ (this.isEdit)? `安全資訊編輯 (編號：${ routeId })` : '安全資訊新增' }}
     </h2>
 
@@ -190,17 +190,17 @@
         </template>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 v-if="!isEdit"
                 to="/smis/car-safeinfo/info"
             >回搜尋頁</v-btn>
 
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 v-else
                 :to="`/smis/car-safeinfo/info/${this.routeId}/show`"
             >回上層</v-btn>
 
-            <v-btn dark color="success"
+            <v-btn dark class="btn-add"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>

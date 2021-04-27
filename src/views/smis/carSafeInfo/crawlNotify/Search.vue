@@ -1,6 +1,6 @@
 <template>
-<v-container style="max-width: 1200px">
-    <h2 class="mb-4">慢行通報查詢</h2>
+<v-container style="max-width: 1200px" class="label-header">
+    <h2 class="mb-4 label-title">慢行通報查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
@@ -24,7 +24,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateStart"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -53,7 +53,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.dateEnd"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -62,14 +62,14 @@
         </v-col>
 
         <v-col cols="12" md="6" align-self="center" class="mb-8 mb-md-0">
-            <v-btn color="success" large
+            <v-btn dark large
                 @click="search"
-                class="mr-3"
+                class="mr-3 btn-search"
             >
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large
+            <v-btn class="btn-add" dark large
                 to="/smis/car-safeinfo/crawl-notify/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -86,6 +86,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -112,20 +113,20 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small dark color="brown" class="mr-2"
+                        <v-btn fab small dark  class="mr-2 btn-memo"
                             :to="`/smis/car-safeinfo/crawl-notify/${item.SlowReportCode}/read-track`"
                         >
                             <v-icon>mdi-radar</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="primary" class="mr-2"
+                        <v-btn fab small class="mr-2 btn-modify white--text"
                             target="_blank"
                             :to="`/smis/car-safeinfo/crawl-notify/${item.SlowReportCode}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="success"
+                        <v-btn fab small class="btn-delete white--text"
                             :disabled="item.isStop"
                             @click="stop(item.SlowReportCode)"
                         >
@@ -167,14 +168,14 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'SlowReportCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '路線', value: 'ReportLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '讀取追蹤、編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'SlowReportCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '路線', value: 'ReportLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '讀取追蹤、編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
     }),
     components: { Pagination },  // 頁碼

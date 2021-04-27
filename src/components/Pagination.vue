@@ -3,14 +3,14 @@
         <v-divider></v-divider>
 
         <p class="py-2 text-center">
-            <v-btn icon class="mr-1" color="indigo"
+            <v-btn icon class="mr-1" color="dropdownicon"
                 @click="first"
                 :disabled="(footer.props.pagination.page == 1)? true : false"
             >
                 <v-icon>mdi-page-first</v-icon>
             </v-btn>
 
-            <v-btn icon class="mr-1" color="indigo"
+            <v-btn icon class="mr-1" color="dropdownicon"
                 @click="prev"
                 :disabled="(footer.props.pagination.page == 1)? true : false"
             >
@@ -19,14 +19,14 @@
 
             {{ footer.props.pagination.page }} / {{ footer.props.pagination.pageCount }}
 
-            <v-btn icon class="ml-1" color="indigo"
+            <v-btn icon class="ml-1" color="dropdownicon"
                 @click="next"
                 :disabled="(footer.props.pagination.page == footer.props.pagination.pageCount)? true : false"
             >
                 <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
 
-            <v-btn icon class="ml-1" color="indigo"
+            <v-btn icon class="ml-1" color="dropdownicon"
                 @click="last"
                 :disabled="(footer.props.pagination.page == footer.props.pagination.pageCount)? true : false"
             >

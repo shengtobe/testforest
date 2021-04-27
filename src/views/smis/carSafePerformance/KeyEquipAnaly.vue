@@ -3,7 +3,7 @@
   
   <v-row>
     <v-col cols="2" md="2">
-      <v-btn color="secondary" large :to="`/smis/car-safe-performance/${acdname}/key-equip`">
+      <v-btn class="btn-close" dark large :to="`/smis/car-safe-performance/${acdname}/key-equip`">
         回上一頁
       </v-btn>
     </v-col>
@@ -34,9 +34,9 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-col cols="12">
+    <!-- <v-col cols="12">
       <ChartLine :chartdata="MixChart.chartdata" :options="MixChart.options" :key="MixChart.componentKey" />
-    </v-col>
+    </v-col> -->
     <v-col cols="12">
       <v-row>
         <v-col cols="6" md="3">
@@ -46,7 +46,7 @@
           </v-select>
         </v-col>
         <v-col cols="6" md="3">
-          <v-btn color="primary" large @click="workOrderTable.showYN = true">
+          <v-btn class="btn-memo" dark large @click="workOrderTable.showYN = true">
             工單列表
           </v-btn>
         </v-col>
@@ -58,6 +58,7 @@
             :headers="workOrderTable.header"
             :items="workOrderTable.items"  
             hide-default-footer
+            class="theme-table"
             >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -68,7 +69,7 @@
             </template>
 
             <template v-slot:item.Extend="{ item }">
-              <v-btn color="success" rounded dark>
+              <v-btn class="btn-add" rounded dark>
                 <v-icon dark>mdi-clipboard-outline</v-icon>
               </v-btn>
             </template>
@@ -340,10 +341,10 @@ export default {
       showYN: false,
       pageOpt: { page: 1 },
       header:[
-        { text: '工單編號', value: 'FlowId', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '故障主旨', value: 'Title', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '處理階段', value: 'Level', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '檢視內容', value: 'Extend', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+        { text: '工單編號', value: 'FlowId', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '故障主旨', value: 'Title', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '處理階段', value: 'Level', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '檢視內容', value: 'Extend', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
       items:[
         {FlowId:'TEST0001',Title:'測試工單',Level:'報修階段'}

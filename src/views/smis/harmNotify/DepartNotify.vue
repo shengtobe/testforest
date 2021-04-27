@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">各部門通報次數趨勢圖</h2>
+    <h2 class="mb-4 label-title">各部門通報次數趨勢圖</h2>
     
     <p class="error--text">* 可點擊圖表上方色塊旁的名稱來隱藏該記錄</p>
 
@@ -11,7 +11,7 @@
 
     <v-btn
         dark
-        class="mr-4 my-8"
+        class="mr-4 my-8 btn-close"
         to="/smis/harmnotify/audit"
     >回搜尋頁</v-btn>
 </v-container>

@@ -1,10 +1,10 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">新增{{ newText }}</p>
+      <p class="font-weight-black title text-center label-title">新增{{ newText }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">單位</h3>
             <v-text-field dense single-line outlined />
@@ -109,7 +109,7 @@
                 />
               </template>
               <v-date-picker
-                color="deep-orange"
+                color="primary"
                 v-model="AddData.MaintenanceDay2"
                 @input="MaintenanceDay2 = false"
                 locale="zh-tw"
@@ -157,7 +157,7 @@
                 />
               </template>
               <v-date-picker
-                color="deep-orange"
+                color="primary"
                 v-model="AddData.MaintenanceDay2"
                 @input="MaintenanceDay2 = false"
                 locale="zh-tw"
@@ -288,7 +288,7 @@
 
         <!-- 送出 -->
         <v-col class="mt-2" cols="12">
-          <v-btn large block class="mt-n8 mb-4" color="success">送出表單</v-btn>
+          <v-btn large block class="mt-n8 mb-4 btn-add white--text">送出表單</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -384,35 +384,35 @@ export default {
           value: "Item",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "檢查日期",
           value: "Checkday",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "審查狀態",
           value: "Review",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "填寫人",
           value: "Name",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
         {
           text: "功能",
           value: "Shop",
           align: "center",
           divider: true,
-          class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+          class: "subtitle-1 white--text font-weight-bold",
         },
       ],
       tableItems: [

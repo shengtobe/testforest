@@ -1,7 +1,7 @@
 <template>
-  <v-card>
+  <v-card class="theme-card">
     <!-- 標題 -->
-    <v-card-title class="blue white--text px-4 py-1">
+    <v-card-title class="white--text px-4 py-1">
       {{ mainTitle }}
       <v-spacer />
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -9,10 +9,10 @@
       </v-btn>
     </v-card-title>
     <!-- 內容 -->
-    <div class="px-6 py-4">
+    <div class="px-6 py-4 label-header">
       <v-row class="white px-4">
         <!-- 基本資料 -->
-        <v-row no-gutter class="indigo--text">
+        <v-row no-gutter class="label-header">
           <v-col cols="12" sm="4">
             <h3 class="mb-1">單位</h3>
             <v-text-field
@@ -413,15 +413,14 @@
       <v-btn
         v-if="editType != actions.add"
         elevation="4"
-        color="red"
-        class="mr-2 white--text"
+        class="mr-2 btn-delete white--text"
         @click="deleteRecord"
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        color="success"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"

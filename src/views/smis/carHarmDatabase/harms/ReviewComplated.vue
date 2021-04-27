@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">危害編號：{{ id }}</h2>
+    <h2 class="mb-4 label-title">危害編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
@@ -67,7 +67,7 @@
         </v-col> -->
         <!-- 證據上傳 -->
         <v-col cols="12" v-if="status == 3">
-            <v-row>
+            <v-row class="label-header">
                 <v-col cols="12" sm="4" md="3">
                     <h3 class="mb-1">
                         <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>控制措施編號
@@ -114,7 +114,7 @@
             :key="list.controlId"
         >
             <v-row no-gutters>
-                <v-col class="purple lighten-3 pl-3 pb-2 pt-3"
+                <v-col class="gradual-bg-dark-yellow pl-3 pb-2 pt-3"
                     style="max-width: 200px"
                 >
                     <span class="font-weight-black">
@@ -122,13 +122,12 @@
                     </span>
                 </v-col>
 
-                <v-col class="white px-3 d-flex flex-wrap">
+                <v-col class="light-white-dark-yellow px-3 d-flex flex-wrap">
                     <v-chip
                         v-for="(file, idx) in list.file_path_name"
                         :key="file"
-                        class="mr-3 my-2"
+                        class="mr-3 my-2 btn-delete"
                         label
-                        color="teal"
                         dark
                     >
                         {{ file }} 
@@ -141,32 +140,32 @@
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="showDialog(true)"
                     v-if="status == 2"
                 >退回</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="save"
                     v-if="status == 2"
                 >同意措施執行</v-btn>
 
-                <v-btn dark  class="ma-2" color="error"
+                <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                     v-if="status == 3"
                 >作廢</v-btn>
 
-                <v-btn dark  class="ma-2" color="primary"
+                <v-btn dark  class="ma-2 btn-modify"
                     @click="rerun"
                     v-if="status == 3"
                 >重提危害</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-add"
                     @click="closeCase"
                     v-if="status == 3"
                 >申請結案</v-btn>
@@ -178,8 +177,8 @@
     <v-dialog v-model="dialog" max-width="600px"
         v-if="status == 2"
     >
-        <v-card>
-            <v-toolbar dark flat dense color="error" class="mb-2">
+        <v-card class="theme-del-card">
+            <v-toolbar dark flat dense class="mb-2 metal-red-top">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
@@ -203,16 +202,16 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-delete white--text" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 
     <!-- 控制措施證據 dialog -->
     <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
+        <v-card class="theme-card">
+            <v-toolbar flat dense dark class="metal-dark-yellow-top">
                 <v-toolbar-title>證據</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialogShow = false" class="mr-n2">
@@ -267,13 +266,13 @@ export default {
         showFiles: [],  // 要顯示的縮圖
         eachFile:{ FileName: '' ,FileType: '', UnitData: '', ProcCode: '' },
         headers: [  // 表格欄位
-            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '措施說明', value: 'DeviceDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '管控單位', value: 'DeviceDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規章', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '證據', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '措施說明', value: 'DeviceDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '管控單位', value: 'DeviceDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '規章', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '證據', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         evidences: [],  // 控制措施證據
         dialogShow: false,  // 控制措施證據 dialog 是否顯示

@@ -168,27 +168,26 @@
         </template> -->
 
         <v-col cols="12" class="text-center mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2"
-                    color="indigo"
+                <v-btn dark class="ma-2 btn-modify"
                     :to="`/smis/jobsafety/disaster-survey/${this.itemData.AccidentCode}/edit`"
                     v-if="!isLocked"
                 >編輯</v-btn>
 
-                <v-btn dark color="teal" class="ma-2"
+                <v-btn dark class="ma-2 btn-add"
                     v-if="!isLocked"
                     @click="excel"
                 >列印</v-btn>
 
-                 <v-btn dark  class="ma-2" color="error"
+                 <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
                 >作廢</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
+                <v-btn dark  class="ma-2 btn-memo"
                     @click="save"
                 >{{ (isLocked)? '申請審核資料' : '申請審核資料' }}</v-btn>
             </template>

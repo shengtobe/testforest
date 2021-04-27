@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+    <v-card-title class=" white--text px-4 py-1">
       {{ editType }}{{ commonSettings.title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
