@@ -75,7 +75,7 @@ html{
   overflow:auto !important;
 }
 body, #main-nav{
-  overflow: none;
+  overflow: hidden;
   &::-webkit-scrollbar {
     width: 0.7rem;
     background: transparent;
