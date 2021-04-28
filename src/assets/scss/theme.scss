@@ -71,7 +71,11 @@ $theme-color-list: (
 }
 
 /* ------ scrollbar ------ */
-body{
+html{
+  overflow:auto !important;
+}
+body, #main-nav{
+  overflow: none;
   &::-webkit-scrollbar {
     width: 0.7rem;
     background: transparent;
@@ -89,8 +93,8 @@ body{
 }
 .v-data-table__wrapper{
   &::-webkit-scrollbar{
-    width: 0.4rem;
-    height: 0.4rem;
+    width: 0.5rem;
+    height: 0.5rem;
     &-track {
       background: #CFD8DC;
       border-radius: 0.2rem;
@@ -104,8 +108,8 @@ body{
 }
 .v-menu__content{
   &::-webkit-scrollbar{
-    width: 0.4rem;
-    height: 0.4rem;
+    width: 0.5rem;
+    height: 0.5rem;
     &-track {
       background: #CFD8DC;
       border-radius: 0.2rem;

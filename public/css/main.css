@@ -22,7 +22,7 @@
   top: 0;
   /* left: -100vw; */
   /* transition: left .4s; */
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 
