@@ -8,7 +8,7 @@
       </v-btn>
     </v-col>
     <v-col cols="8" md="8" class="text-center">
-      <h2 class="mb-4">{{decodeURIComponent(eqname)}}可靠度</h2>
+      <h2 class="mb-4 label-title">{{decodeURIComponent(eqname)}}可靠度</h2>
     </v-col>
     <v-col cols="2" md="2"></v-col>
     <v-col cols="12" class="text-center align-center">
@@ -17,7 +17,7 @@
     <v-col cols="12" md="6">
       <v-row>
         <v-col cols="12" class="text-center">
-          <h3>{{decodeURIComponent(eqname)}} 可靠度 逐季績效</h3>
+          <h3 class="label-header">{{decodeURIComponent(eqname)}} 可靠度 逐季績效</h3>
         </v-col>
         <v-col cols="12">
           <ChartBar :chartdata="BarChart.chartdata" :options="BarChart.options" :key="BarChart.componentKey" />
@@ -27,7 +27,7 @@
     <v-col cols="12" md="6">
       <v-row>
         <v-col cols="12" class="text-center">
-          <h3>{{decodeURIComponent(eqname)}} 可靠度 移動平均績效</h3>
+          <h3 class="label-header">{{decodeURIComponent(eqname)}} 可靠度 移動平均績效</h3>
         </v-col>
         <v-col cols="12">
           <ChartLine :chartdata="LineChart.chartdata" :options="LineChart.options" :key="LineChart.componentKey" />

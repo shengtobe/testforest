@@ -2,7 +2,7 @@
 <v-container style="max-width: 1200px">
   <v-row>
     <v-col cols="4">
-      <v-btn color="secondary" large :to="`/smis/car-safe-performance/${encodeURIComponent(acdname)}/accident-trend`">
+      <v-btn class="btn-close white--text" large :to="`/smis/car-safe-performance/${encodeURIComponent(acdname)}/accident-trend`">
         回上一頁
       </v-btn>
     </v-col>
@@ -15,13 +15,13 @@
       ></v-select>
     </v-col>
     <v-col cols="4">
-      <h2>年{{decodeURIComponent(acdname)}}事故原因比例</h2>
+      <h2 class="label-title">年{{decodeURIComponent(acdname)}}事故原因比例</h2>
     </v-col>
     <v-col cols="2" />
     <v-col cols="4">
       <v-row>
         <v-col cols="12" class="text-center align-center">
-          <h3>第一層原因</h3>
+          <h3 class="label-header">第一層原因</h3>
         </v-col>
         <v-col cols="12">
           <ChartPie :chartdata="Lv1Chart.chartdata" :options="Lv1Chart.options" :key="Lv1Chart.componentKey" />
@@ -37,7 +37,7 @@
               ></v-select>
             </v-col>
             <v-col cols="4" class="pa-0">
-              <v-btn color="primary" large @click="searchLv1">
+              <v-btn class="btn-memo white--text" large @click="searchLv1">
                 事故列表
               </v-btn>
             </v-col>
@@ -48,7 +48,7 @@
     <v-col cols="4">
       <v-row>
         <v-col cols="12" class="text-center align-center">
-          <h3>第二層原因</h3>
+          <h3 class="label-header">第二層原因</h3>
         </v-col>
         <v-col cols="12">
           <ChartPie :chartdata="Lv2Chart.chartdata" :options="Lv2Chart.options" :key="Lv2Chart.componentKey" />
@@ -64,7 +64,7 @@
               ></v-select>
             </v-col>
             <v-col cols="4" class="pa-0">
-              <v-btn color="primary" large @click="searchLv2">
+              <v-btn class="btn-memo white--text" large @click="searchLv2">
                 事故列表
               </v-btn>
             </v-col>
@@ -75,7 +75,7 @@
     <v-col cols="4">
       <v-row>
         <v-col cols="12" class="text-center align-center">
-          <h3>第三層原因</h3>
+          <h3 class="label-header">第三層原因</h3>
         </v-col>
         <v-col cols="12">
           <ChartPie :chartdata="Lv2Chart.chartdata" :options="Lv2Chart.options" :key="Lv2Chart.componentKey" />
@@ -91,7 +91,7 @@
               ></v-select>
             </v-col>
             <v-col cols="4" class="pa-0">
-              <v-btn color="primary" large @click="searchLv3">
+              <v-btn class="btn-memo white--text" large @click="searchLv3">
                 事故列表
               </v-btn>
             </v-col>
@@ -105,6 +105,7 @@
         :headers="accidentTableLv1.header"
         :items="accidentTableLv1.item"  
         hide-default-footer
+        class="theme-table"
       >
         <template v-slot:no-data>
           <span class="red--text subtitle-1">沒有資料</span>
@@ -129,6 +130,7 @@
         :headers="accidentTableLv2.header"
         :items="accidentTableLv2.item"  
         hide-default-footer
+        class="theme-table"
       >
         <template v-slot:no-data>
           <span class="red--text subtitle-1">沒有資料</span>
@@ -153,6 +155,7 @@
         :headers="accidentTableLv3.header"
         :items="accidentTableLv3.item"  
         hide-default-footer
+        class="theme-table"
       >
         <template v-slot:no-data>
           <span class="red--text subtitle-1">沒有資料</span>
@@ -357,14 +360,14 @@ export default {
     accidentTableLv1: {
       showYN:false,
       header:[
-        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
       item:[
         {
@@ -383,14 +386,14 @@ export default {
     accidentTableLv2: {
       showYN: false,
       header:[
-        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
       item:[
         {
@@ -409,14 +412,14 @@ export default {
     accidentTableLv3: {
       showYN: false,
       header:[
-        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+        { text: '發生時間', value: 'AccidentFindDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '發生地點', value: 'FindLine', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '事故種類', value: 'AccidentType', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '處置過程及原因分析', value: 'FixProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '檢討改進事項', value: 'ReviewProcess', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '人員死傷及設備受損情形', value: 'HurtPeopleCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '運轉影響情形', value: 'OperationLost', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '備註', value: 'RemarkDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
       item:[
         {
@@ -513,13 +516,13 @@ export default {
     },
     //查詢事件清單
     searchLv1() {
-      this.accidentTableLv1.showYN = true
+      this.accidentTableLv1.showYN = !this.accidentTableLv1.showYN
     },
     searchLv2() {
-      this.accidentTableLv2.showYN = true
+      this.accidentTableLv2.showYN = !this.accidentTableLv2.showYN
     },
     searchLv3() {
-      this.accidentTableLv3.showYN = true
+      this.accidentTableLv3.showYN = !this.accidentTableLv3.showYN
     }
   },
   mounted() {

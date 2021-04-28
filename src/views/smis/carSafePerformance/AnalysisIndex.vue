@@ -99,11 +99,32 @@
             </v-btn>
         </v-col>
         <v-col cols="12" style="position:relative;">
+            <div class="triangle">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 600 600" width="40rem" height="40rem">
+                    <defs>
+                        <linearGradient id="Gradient1" x1="0" x2="0" y1="0" y2="1">
+                            <stop offset="0%" stop-color="#ff917a"/>
+                            <stop offset="25%" stop-color="#ff2f05"/>
+                            <stop offset="25%" stop-color="#ffc09c"/>
+                            <stop offset="50%" stop-color="#ff5e00"/>
+                            <stop offset="50%" stop-color="#ffdc96"/>
+                            <stop offset="75%" stop-color="#ffaa00"/>
+                            <stop offset="75%" stop-color="#ffea8f"/>
+                            <stop offset="100%" stop-color="#ffd000"/>
+                        </linearGradient>
+                    </defs>
+                    <polygon points="300,0 600,600 0,600" fill="url(#Gradient1)"/>
+                    <!-- <text x="265" y="110" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第一層</text>
+                    <text x="265" y="260" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第二層</text>
+                    <text x="265" y="410" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第三層</text>
+                    <text x="265" y="560" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第四層</text> -->
+                </svg>
+            </div>
             <v-row class="tri-area">
-                <v-col cols="7">
+                <v-col cols="1" md="7">
                     <h2 class="label-header">第<br>一<br>層</h2>
                 </v-col>
-                <v-col cols="5" align-self="center">
+                <v-col cols="11" md="5" align-self="center">
                     <v-row>
                         <v-col cols="8">
                             <v-select
@@ -123,10 +144,10 @@
                 </v-col>
             </v-row>
             <v-row class="tri-area">
-                <v-col cols="7">
+                <v-col cols="1" md="7">
                     <h2 class="label-header">第<br>二<br>層</h2>
                 </v-col>
-                <v-col cols="5" align-self="center">
+                <v-col cols="11" md="5" align-self="center">
                     <v-row>
                         <v-col cols="8">
                             <v-select
@@ -146,10 +167,10 @@
                 </v-col>
             </v-row>
             <v-row class="tri-area">
-                <v-col cols="7">
+                <v-col cols="1" md="7">
                     <h2 class="label-header">第<br>三<br>層</h2>
                 </v-col>
-                <v-col cols="5" align-self="center">
+                <v-col cols="11" md="5" align-self="center">
                     <v-row>
                         <v-col cols="8">
                             <v-select
@@ -169,10 +190,10 @@
                 </v-col>
             </v-row>
             <v-row class="tri-area">
-                <v-col cols="7">
+                <v-col cols="1" md="7">
                     <h2 class="label-header">第<br>四<br>層</h2>
                 </v-col>
-                <v-col cols="5" align-self="center">
+                <v-col cols="11" md="5" align-self="center">
                     <v-row>
                         <v-col cols="8">
                             <v-select
@@ -191,30 +212,8 @@
                     </v-row>
                 </v-col>
             </v-row>
-            <div class="triangle">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 600 600" width="40rem" height="40rem">
-                    <defs>
-                        <linearGradient id="Gradient1" x1="0" x2="0" y1="0" y2="1">
-                            <stop offset="0%" stop-color="#ff917a"/>
-                            <stop offset="25%" stop-color="#ff2f05"/>
-                            <stop offset="25%" stop-color="#ffc09c"/>
-                            <stop offset="50%" stop-color="#ff5e00"/>
-                            <stop offset="50%" stop-color="#ffdc96"/>
-                            <stop offset="75%" stop-color="#ffaa00"/>
-                            <stop offset="75%" stop-color="#ffea8f"/>
-                            <stop offset="100%" stop-color="#ffd000"/>
-                        </linearGradient>
-                    </defs>
-                    <polygon points="300,0 600,600 0,600" fill="url(#Gradient1)"/>
-                    <text x="265" y="110" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第一層</text>
-                    <text x="265" y="260" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第二層</text>
-                    <text x="265" y="410" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第三層</text>
-                    <text x="265" y="560" fill="#617a60" class="label-header" style="font-size:1.5rem;font-weight:bold;">第四層</text>
-                </svg>
-            </div>
         </v-col>
     </v-row>
-    
 </v-container>
 </template>
 <script>
@@ -504,6 +503,7 @@ export default {
 }
 .triangle{
     position:absolute; left:1rem; top:12px; 
+    z-index: 0;
 }
 
 </style>

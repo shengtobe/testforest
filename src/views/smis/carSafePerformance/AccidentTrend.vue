@@ -8,7 +8,7 @@
       </v-btn>
     </v-col>
     <v-col cols="12" md="8" class="text-center">
-      <h2 class="mb-4">{{decodeURIComponent(acdname)}}趨勢</h2>
+      <h2 class="mb-4 label-title">{{decodeURIComponent(acdname)}}趨勢</h2>
     </v-col>
     <v-col cols="12">
       <ChartLine :chartdata="chartdata" :options="options" />
