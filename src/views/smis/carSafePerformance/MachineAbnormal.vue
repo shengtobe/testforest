@@ -1,8 +1,8 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">軔機檢查異常表查詢</h2>
+    <h2 class="mb-4 label-title">軔機檢查異常表查詢</h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(起)
@@ -23,7 +23,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.DTime_Start"
                     @input="dateMemuShow.start = false"
                     locale="zh-tw"
@@ -51,7 +51,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="searchIpt.DTime_End"
                     @input="dateMemuShow.end = false"
                     locale="zh-tw"
@@ -81,25 +81,25 @@
         </v-col>
 
         <v-col cols="12">
-            <v-btn color="green" dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-search"
                 @click="search"
             >
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn color="indigo" dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-add"
                 to="/smis/car-safe-performance/machine-abnormal/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <v-btn elevation="2" large class="ma-2"
+            <v-btn elevation="2" large class="ma-2 btn-clear"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
-            <v-btn dark large class="ma-2"
+            <v-btn dark large class="ma-2 btn-close"
                 :to="`/smis/car-safe-performance`"
             >回上層</v-btn>
         </v-col>
@@ -114,6 +114,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -124,19 +125,19 @@
                     </template>
 
                     <template v-slot:item.ErrorDesp="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-detail" dark
                             @click="showContent(item.ErrorDesp)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.ErrorCheckStatus="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-detail" dark
                             @click="showContent(item.ErrorCheckStatus)"
                         >檢視</v-btn>
                     </template>
 
                     <template v-slot:item.Attachment="{ item }">
-                        <v-btn fab small dark color="purple lighten-2"
+                        <v-btn fab small dark class="btn-memo"
                             v-if="item.Attachment.length > 0 && item.Attachment[0] != ''"
                             @click="showFiles(item)"
                         >
@@ -145,15 +146,15 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small color="primary"
+                        <v-btn fab small
                             target="_blank"
-                            class="mr-3"
+                            class="mr-3 btn-modify white--text"
                             :to="`/smis/car-safe-performance/machine-abnormal/${item.FlowID}/edit`"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small color="error"
+                        <v-btn fab small class="btn-delete white--text"
                             @click="delControl(item.FlowID)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -174,8 +175,8 @@
 
     <!-- 檔案列表 -->
     <v-dialog v-model="dialogShow" max-width="400px">
-        <v-card>
-            <v-toolbar flat dense dark color="purple lighten-2">
+        <v-card class="theme-card">
+            <v-toolbar flat dense dark class="metal-dark-yellow-top">
                 <v-toolbar-title>檔案列表</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialogShow = false" class="mr-n2">
@@ -205,12 +206,12 @@
     </v-dialog>
     <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
-        <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+        <v-card class="theme-del-card">
+          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn @click="close">取消</v-btn>
-            <v-btn color="success" @click="goDelete">刪除</v-btn>
+            <v-btn class="btn-close white--text" @click="close">取消</v-btn>
+            <v-btn class="btn-delete white--text" @click="goDelete">刪除</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -243,15 +244,15 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            // { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '日期', value: 'CheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '車次', value: 'CarVersion', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '機/客車', value: 'CarType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '車號', value: 'CarCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '異常說明', value: 'ErrorDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理情形', value: 'ErrorCheckStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '附件', value: 'Attachment', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            // { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '日期', value: 'CheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '車次', value: 'CarVersion', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '機/客車', value: 'CarType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '車號', value: 'CarCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '異常說明', value: 'ErrorDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '處理情形', value: 'ErrorCheckStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '附件', value: 'Attachment', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         fileList: [],  // 檔案列表
         dialogShow: false,  // 檔案dialog是否顯示

@@ -1,10 +1,10 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">
+    <h2 class="mb-4 label-title">
         {{ (this.isEdit)? `軔機檢查異常表編輯 (編號：${ id })` : '軔機檢查異常表新增' }}
     </h2>
 
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期
@@ -25,7 +25,7 @@
                     ></v-text-field>
                 </template>
                 <v-date-picker
-                    color="purple"
+                    color="primary"
                     v-model="ipt.CheckDate"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
@@ -102,12 +102,12 @@
         </template>
 
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="mr-4"
+            <v-btn dark class="mr-4 btn-close"
                 to="/smis/car-safe-performance/machine-abnormal"
             >回搜尋頁</v-btn>
             
             <v-btn
-                color="success"
+                class="btn-add white--text"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
