@@ -136,6 +136,7 @@ export default {
                   fontSize: 18,
                 },
                 ticks: {
+                  suggestedMin: 0,
                   suggestedMax: 25,
                   fontSize: 16,
                 },
@@ -188,6 +189,7 @@ export default {
                   fontSize: 18,
                 },
                 ticks: {
+                  suggestedMin: 0,
                   suggestedMax: 25,
                   fontSize: 16,
                 },
@@ -263,8 +265,9 @@ export default {
       };
       fetchList(sendData)
         .then((res) => {
-          this.hourRain.chartdata.labels = '' + today.getFullYear() + (((today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1));
-          this.hourRain.chartdata.datasets = DataListHr.map((element,index) => ({
+          console.log(res.data)
+          this.hourRain.chartdata.labels = ['' + today.getFullYear() + (((today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1))];
+          this.hourRain.chartdata.datasets = res.data.DataListHr.map((element,index) => ({
             label: element.Location,
             borderWidth: "1",
             barPercentage: 1,
@@ -272,8 +275,9 @@ export default {
             backgroundColor: "rgba(" + this.colorArr[index] + ",0.3)",
             data: [element.Count]
           }));
-          this.dayRain.chartdata.labels = '' + today.getFullYear() + (( (today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1));
-          this.dayRain.chartdata.datasets = DataListDay.map((element,index) => ({
+          this.hourRain.componentKey++;
+          this.dayRain.chartdata.labels = ['' + today.getFullYear() + (( (today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1))];
+          this.dayRain.chartdata.datasets = res.data.DataListDay.map((element,index) => ({
             label: element.Location,
             borderWidth: "1",
             barPercentage: 1,
@@ -281,6 +285,7 @@ export default {
             backgroundColor: "rgba(" + this.colorArr[index] + ",0.3)",
             data: [element.Count]
           }));
+          this.dayRain.componentKey++;
         });
       // fetchList({
       //   ...sendData,
