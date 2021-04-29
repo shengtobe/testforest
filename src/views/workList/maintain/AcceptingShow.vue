@@ -20,6 +20,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -29,7 +30,7 @@
                     <template v-slot:top>
                         <v-dialog v-model="moneyDialog" max-width="450px">
                             <v-card>
-                                <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+                                <v-card-title class="light-blue darken-1 white--text px-4 py-1 btn-modify">
                                     請輸入金額
                                     <v-spacer></v-spacer>
                                     <v-btn dark fab small text @click="moneyDialog = false" class="mr-n2">
@@ -52,7 +53,7 @@
                                         </v-col>
 
                                         <v-col cols="12" sm="4">
-                                            <v-btn color="green" dark large @click="saveMoney">確定</v-btn>
+                                            <v-btn class="btn-add" color="green" dark large @click="saveMoney">確定</v-btn>
                                         </v-col>
                                     </v-row>
                                 </v-card-text>
@@ -62,7 +63,7 @@
 
                     <template v-slot:item.Price="{ item }">
                         <span class="red--text font-weight-black">{{ item.Price }}</span>
-                        <v-btn small dark fab color="info darken-1"
+                        <v-btn small dark fab color="info darken-1 btn-modify"
                             @click="showMoneyDialog(item)"
                             class="ml-4"
                         >
@@ -430,22 +431,23 @@
 
     <!-- 工作項金額 dialog -->
 
-    <!-- 退回 dialog -->
+    <!-- 退回 撤銷 dialog -->
     <v-dialog v-model="dialog" max-width="600px">
         <v-card>
-            <v-toolbar dark flat dense color="error" class="mb-2">
+            <v-toolbar dark flat dense color="error" class="mb-2 btn-delete">
                 <v-toolbar-title>{{ dialogTitle }}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-toolbar>
+            <!-- :title="controlsName[i]+'證據'" -->
 
             <v-card-text>
                 <v-row>
                     <v-col cols="12">
                         <v-textarea
-                            hide-details
+                            hide-details :placeholder="'請輸入'+dialogTitle"
                             auto-grow
                             outlined
                             rows="8"
@@ -457,8 +459,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-clear" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-delete" color="success"  elevation="4" :loading="isLoading" @click="withdraw">{{ dialogBtnTxt }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -466,7 +468,7 @@
     <!-- 延後驗收 dialog -->
     <v-dialog v-model="delay.dialogShow" max-width="600px">
         <v-card>
-            <v-toolbar dark flat dense color="purple" class="mb-2">
+            <v-toolbar dark flat dense color="purple" class="mb-2 btn-add">
                 <v-toolbar-title>延後驗收</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="delay.dialogShow = false" class="mr-n2">
@@ -533,8 +535,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="delay.dialogShow = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="delaySave">送出</v-btn>
+                <v-btn class="mr-2 btn-clear" elevation="4" :loading="isLoading" @click="delay.dialogShow = false">取消</v-btn>
+                <v-btn class="btn-add" color="success"  elevation="4" :loading="isLoading" @click="delaySave">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -557,16 +559,17 @@ export default {
         workNumber: '',  // 工單編號
         dialog: false,  // dialog 是否顯示
         dialogTitle: '',  // dialog 標題
+        dialogBtnTxt: '', // dialog 按鈕內容
         dialogApiName: '',  // 使用的 API 函式名稱
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
         tableItems: [],  // 工時表格資料
         headers: [  // 工時標題
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         jobPrice: '', // 工作項金額
         moneyDialog: false,  // 金額 dialog 是否顯示
@@ -708,53 +711,58 @@ export default {
         showDialog(bool) {
             // 若為 true 是退回、false 是徹銷
             this.dialogTitle = (bool)? '退回原因' : '徹銷原因'
+            this.dialogBtnTxt = this.dialogTitle.substr(0, 2)
             this.dialogApiName = bool  // true 為退回，false 為徹銷
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
         },
         // 退回、徹銷
         withdraw() {
-            this.isLoading = true
+            let tipMsg = (this.reason == '')?'退回原因為空白，確定退回嗎?':'是否確定退回?';
+            if (confirm(tipMsg)){
+                this.isLoading = true
 
-            if (this.dialogApiName) {
-                withdrawOrder({
-                    WorkOrderID: this.workNumber,  // 工單編號
-                    ReturnReason: this.reason,  // 退回原因
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
-                        this.done = true  // 隱藏頁面操作按鈕
-                    } else {
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch(err => {
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
-                }).finally(() => {
-                    this.isLoading = this.dialog = false
-                })
-            } else {
-                cancelOrder({
-                    WorkOrderID: this.workNumber,  // 工單編號
-                    CancelReason: this.reason,  // 徹銷原因
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
-                        this.done = true  // 隱藏頁面操作按鈕
-                    } else {
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch(err => {
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
-                }).finally(() => {
-                    this.isLoading = this.dialog = false
-                })
+                if (this.dialogApiName) {
+                    withdrawOrder({
+                        WorkOrderID: this.workNumber,  // 工單編號
+                        ReturnReason: this.reason,  // 退回原因
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                    }).finally(() => {
+                        this.isLoading = this.dialog = false
+                    })
+                } else {
+                    cancelOrder({
+                        WorkOrderID: this.workNumber,  // 工單編號
+                        CancelReason: this.reason,  // 徹銷原因
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                    }).finally(() => {
+                        this.isLoading = this.dialog = false
+                    })
+                }
             }
+            
         },
         // 送出 (同意驗收)
         save() {

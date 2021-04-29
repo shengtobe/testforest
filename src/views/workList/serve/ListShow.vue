@@ -14,27 +14,27 @@
 
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center my-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn class="ma-2"
+                <v-btn class="ma-2 btn-expansion"
                     color="primary"
                     :to="`/worklist/serve/${id}/editList`"
                 >編輯</v-btn>
 
-                <v-btn class="ma-2"
+                <v-btn class="ma-2 btn-delete"
                     color="error"
                     @click="deleteItem"
                 >刪除</v-btn>
 
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-search"
                     color="amber darken-1"
                     @click="closeWork"
                 >結案</v-btn>
 
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-add"
                     color="success"
                     :to="`/worklist/serve/${id}/newWork`"
                 >派工</v-btn>

@@ -190,7 +190,7 @@
 
                     <v-btn
                         v-if="isEdit"
-                        class="ml-3 mb-1"
+                        class="ml-3 mb-1 btn-modify"
                         color="primary"
                         @click="editEqCode"
                     >編輯</v-btn>
@@ -290,7 +290,7 @@
                     
                     <v-btn fab dark small color="indigo"
                         @click="dialog = true"
-                        class="ml-2 mb-1"
+                        class="ml-2 mb-1 btn-expansion"
                     >
                         <v-icon dark>mdi-plus</v-icon>
                     </v-btn>
@@ -303,6 +303,7 @@
                         disable-sort
                         disable-filtering
                         hide-default-footer
+                        class="theme-table"
                     >
                         <template v-slot:no-data>
                             <span class="red--text subtitle-1">沒有資料</span>
@@ -315,7 +316,7 @@
 
                         <!-- 插入 action 欄位做刪除 -->
                         <template v-slot:item.action="{ item }">
-                            <v-btn small dark fab color="red darken-1"
+                            <v-btn small dark fab color="red darken-1 btn-delete"
                                 @click="deleteItem(item)"
                             >
                                 <v-icon dark>mdi-delete</v-icon>
@@ -334,21 +335,21 @@
             </v-col>
 
             <v-col cols="12" class="text-center mb-8">
-                <v-btn dark class="mr-4"
+                <v-btn dark class="mr-4 btn-close"
                     @click="closeWindow"
                     v-if="isEdit"
                 >關閉視窗</v-btn>
 
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-close"
                     v-else
                     to="/worklist/serve"
                 >回搜尋頁</v-btn>
 
-                <v-btn dark color="teal" class="ma-2"
+                <v-btn dark color="teal" class="ma-2 btn-modify"
                     @click="excel"
                 >列印</v-btn>
 
-                <v-btn color="success" class="ma-2"
+                <v-btn color="success" class="ma-2 btn-add"
                     @click="save"
                 >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
             </v-col>
@@ -359,7 +360,7 @@
     <v-dialog v-model="dialog" max-width="600px">
         <v-card>
             <v-card-title
-                class="yellow lighten-3 py-2 px-3"
+                class="yellow lighten-3 py-2 px-3 btn-memo"
                 primary-title
             >
                 新增請修項目
@@ -426,7 +427,7 @@
                             </h3>
                             <v-text-field
                                 v-model.trim.number="dialogForm.ServiceCount"
-                                placeholder="請輸入預估數量"
+                                placeholder="請輸入預估數量" type="number"
                                 solo
                             ></v-text-field>
                         </v-col>
@@ -437,7 +438,7 @@
                             </h3>
                             <v-text-field
                                 v-model.trim.number="dialogForm.ServicePrice"
-                                placeholder="請輸入單價"
+                                placeholder="請輸入單價" type="number"
                                 solo
                             ></v-text-field>
                         </v-col>
@@ -447,8 +448,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" @click="close">取消</v-btn>
-                <v-btn color="success"  elevation="4" @click="add">送出</v-btn>
+                <v-btn class="mr-2 btn-clear" elevation="4" @click="close">取消</v-btn>
+                <v-btn class="btn-add" color="success"  elevation="4" @click="add">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -500,14 +501,14 @@ export default {
             workEnd: false,  // 通知施作日期 (訖)
         }, 
         headers: [  // 表格顯示的欄位
-            // { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工項(項目)', value: 'ServiceItem', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '規格', value: 'ServiceSpec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '單位', value: 'ServiceUnit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '預估數量', value: 'ServiceCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '單價', value: 'ServicePrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            // { text: '項次', value: 'numbers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '工項(項目)', value: 'ServiceItem', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '規格', value: 'ServiceSpec', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '單位', value: 'ServiceUnit', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '預估數量', value: 'ServiceCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '單價', value: 'ServicePrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
         ],
         dialog: false,  // dialog 是否顯示
         addValid: true,  // dialog 表單是否驗證

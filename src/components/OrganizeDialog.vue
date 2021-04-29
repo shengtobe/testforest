@@ -95,8 +95,8 @@
 
             <v-card-actions class="px-5 pb-5 mt-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" @click="dialogShow = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" @click="submit">送出</v-btn>
+                <v-btn class="mr-2 btn-clear" elevation="4" @click="dialogShow = false">取消</v-btn>
+                <v-btn class="btn-add" color="success"  elevation="4" @click="submit">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

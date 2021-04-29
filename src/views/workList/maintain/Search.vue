@@ -213,19 +213,19 @@
             </v-col>
 
             <v-col cols="12" class="mb-4">
-                <v-btn color="green" dark large class="mr-3 mb-4 mb-sm-0"
+                <v-btn dark large class="mr-3 mb-4 mb-sm-0 btn-search"
                     @click="search"
                 >
                     <v-icon>mdi-magnify</v-icon>查詢
                 </v-btn>
 
-                <v-btn color="indigo" dark large class="mr-3 mb-4 mb-sm-0"
+                <v-btn color="indigo" dark large class="mr-3 mb-4 mb-sm-0 btn-add"
                     to="/worklist/maintain/newList"
                 >
                     <v-icon>mdi-plus</v-icon>新增
                 </v-btn>
 
-                <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0"
+                <v-btn elevation="2" large class="mr-3 mb-4 mb-sm-0 btn-clear"
                     @click="reset"
                 >
                     <v-icon>mdi-reload</v-icon>清除搜尋內容
@@ -244,6 +244,7 @@
                         disable-sort
                         disable-filtering
                         hide-default-footer
+                        class="theme-table"
                     >
                         <template v-slot:no-data>
                             <span class="red--text subtitle-1">沒有資料</span>
@@ -259,7 +260,7 @@
 
                         <!-- headers 的 content 欄位 (檢視內容) -->
                         <template v-slot:item.content="{ item }">
-                            <v-btn small dark fab color="teal"
+                            <v-btn small dark fab color="teal" class="btn-detail"
                                 :loading="isLoading"
                                 @click="viewPage(item)"
                             >
@@ -319,10 +320,10 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '故障主旨', value: 'WorkSubject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '工單編號', value: 'WorkOrderID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '故障主旨', value: 'WorkSubject', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         isLoading: false,  // 是否讀取中
     }),

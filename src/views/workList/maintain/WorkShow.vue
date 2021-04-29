@@ -202,7 +202,7 @@
         <span class="red--text">*</span>
         <v-btn fab dark small color="indigo"
             @click="setJobHour(false)"
-            class="ml-2 mb-1"
+            class="ml-2 mb-1 btn-modify"
         >
             <v-icon dark>mdi-plus</v-icon>
         </v-btn>
@@ -215,6 +215,7 @@
             disable-sort
             disable-filtering
             hide-default-footer
+            class="theme-table"
         >
             <template v-slot:no-data>
                 <span class="red--text subtitle-1">沒有資料</span>
@@ -224,7 +225,7 @@
             <template v-slot:top>
                 <v-dialog v-model="jobHour.dialogShow" max-width="600px">
                     <v-card>
-                        <v-card-title class="light-blue darken-1 white--text px-4 py-1">
+                        <v-card-title class="btn-expansion white--text px-4 py-1">
                             {{ jobHour.titleName }}
                             <v-spacer></v-spacer>
                             <v-btn dark fab small text @click="jobHour.dialogShow = false" class="mr-n2">
@@ -290,8 +291,8 @@
                         
                         <v-card-actions class="px-5 pb-5">
                             <v-spacer></v-spacer>
-                            <v-btn class="mr-2" elevation="4" @click="jobHour.dialogShow = false">取消</v-btn>
-                            <v-btn color="success" elevation="4" @click="saveJob">送出</v-btn>
+                            <v-btn class="mr-2 btn-clear" elevation="4" @click="jobHour.dialogShow = false">取消</v-btn>
+                            <v-btn class="btn-add" color="success" elevation="4" @click="saveJob">送出</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -300,13 +301,13 @@
             <!-- 插入 action 欄位編輯 -->
             <template v-slot:item.action="{ item }">
                 <v-btn small dark fab color="info darken-1"
-                    class="mr-3"
+                    class="mr-3 btn-modify"
                     @click="setJobHour(true, item)"
                 >
                     <v-icon dark>mdi-pen</v-icon>
                 </v-btn>
 
-                <v-btn fab small color="error"
+                <v-btn fab small color="error" class="btn-delete"
                     @click="del(item)"
                 >
                     <v-icon>mdi-delete</v-icon>
@@ -347,7 +348,7 @@
     <!-- dialog -->
     <v-dialog v-model="dialog" max-width="600px">
         <v-card>
-            <v-toolbar dark flat dense color="error" class="mb-2">
+            <v-toolbar dark flat dense color="error" class="mb-2 btn-delete">
                 <v-toolbar-title>退回原因</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
@@ -359,7 +360,7 @@
                 <v-row>
                     <v-col cols="12">
                         <v-textarea
-                            hide-details
+                            hide-details placeholder="請輸入退回原因"
                             auto-grow
                             outlined
                             rows="8"
@@ -371,8 +372,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-clear" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add" color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -425,11 +426,11 @@ export default {
             isEdit: false,  // 是否為工時編輯時
             titleName: '',  // dialog 標題人名
             headers: [
-                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-                { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             ],
             items: [],
             editIdx: 0,  // 編輯中資料的索引值

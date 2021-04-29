@@ -307,13 +307,13 @@
             </v-col>
 
             <v-col cols="12" class="text-center">
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-close"
                     @click="closeWindow"
                 >關閉視窗</v-btn>
 
                 <template v-if="!done">
                     <v-btn
-                         class="ma-2"
+                         class="ma-2 btn-add"
                         :loading="isLoading"
                         color="success"
                         @click="save"
@@ -590,6 +590,10 @@ export default {
             }
         },
         save() {
+            if(this.ipt.agent.name == ''){
+                alert("代理人未填")
+                return
+            }
             if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow()
                 
