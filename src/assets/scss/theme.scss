@@ -159,12 +159,15 @@ body{
 
 .btn{
   &-search{
-    @include metal-bg(#21b1ff);
+    // @include metal-bg(#21b1ff); //亮藍
+    @include metal-bg(#0082c9); // 暗藍
+    // @include metal-bg(#008d23); // 暗綠
     @extend .shadow-text;
   }
 
   &-add{
-    @include metal-bg(#0ec900);
+    // @include metal-bg(#0ec900); // 亮綠
+    @include metal-bg(#0ba800); // 深綠
     @extend .shadow-text;
   }
 
@@ -184,7 +187,9 @@ body{
   }
 
   &-detail{
-    @include metal-bg(#4bc047);
+    // @include metal-bg(#4bc047); // 淺綠
+    // @include metal-bg(#00705e); // 深青
+    @include metal-bg(#069e1b); // 深綠
     @extend .shadow-text;
   }
 
@@ -199,7 +204,7 @@ body{
   }
 
   &-close{
-    @include metal-bg(#0a0a0a);
+    @include metal-bg(#000000);
     @extend .shadow-text;
   }
 

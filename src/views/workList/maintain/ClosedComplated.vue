@@ -22,6 +22,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -40,7 +41,7 @@
         </v-col>
 
         <v-col cols="12" class="text-center">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
@@ -50,7 +51,7 @@
             >竣工單</v-btn> -->
 
             <template v-if="!done">
-                <v-btn class="ma-2"
+                <v-btn class="ma-2 btn-delete"
                     :loading="isLoading"
                     color="error"
                     @click="showDialog(true)"
@@ -59,12 +60,12 @@
 
                 <v-btn class="ma-2" dark
                     :loading="isLoading"
-                    color="yellow darken-2"
+                    color="yellow darken-2 btn-expansion"
                     @click="showDialog(false)"
                     v-if="status == 4"
                 >徹銷</v-btn>
 
-                <v-btn dark class="ma-2"
+                <v-btn dark class="ma-2 btn-add"
                     :loading="isLoading"
                     color="success"
                     @click="save"
@@ -95,7 +96,7 @@
                 <v-row>
                     <v-col cols="12">
                         <v-textarea
-                            hide-details
+                            hide-details :placeholder="'請輸入'+dialogTitle"
                             auto-grow
                             outlined
                             rows="8"
@@ -107,8 +108,8 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="withdraw">送出</v-btn>
+                <v-btn class="mr-2 btn-clear" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-delete" color="success"  elevation="4" :loading="isLoading" @click="withdraw">{{ dialogBtnTxt }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -131,6 +132,7 @@ export default {
         workNumber: '',  // 工單編號
         dialog: false,  // dialog 是否顯示
         dialogTitle: '',  // dialog 標題
+        dialogBtnTxt: '', // dialog 按鈕內容
         dialogApiName: '',  // 使用的 API 函式名稱
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
@@ -138,11 +140,11 @@ export default {
         totalJobHour: 0,  // 總工時
         tableItems: [],  // 工時表格資料
         headers: [  // 工時標題
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
@@ -175,6 +177,7 @@ export default {
         showDialog(bool) {
             // 若為 true 是退回、false 是徹銷
             this.dialogTitle = (bool)? '退回原因' : '徹銷原因'
+            this.dialogBtnTxt = this.dialogTitle.substr(0, 2)
             this.dialogApiName = bool  // true 為退回，false 為徹銷
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true

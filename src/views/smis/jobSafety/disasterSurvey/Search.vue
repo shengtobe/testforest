@@ -113,7 +113,7 @@
             <v-btn elevation="2" large class="ma-2 btn-clear"
                 @click="reset"
             >
-                <v-icon class="mr-1">mdi-reload</v-icon>清除搜尋內容
+                <v-icon class="mr-1 btn-clear">mdi-reload</v-icon>清除搜尋內容
             </v-btn>
 
             <v-btn elevation="2" large class="ma-2 btn-memo white--text"

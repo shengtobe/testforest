@@ -281,18 +281,18 @@
             </v-col>
 
             <v-col cols="12" class="text-center">
-                <v-btn dark class="mr-4"
+                <v-btn dark class="mr-4 btn-close"
                     @click="closeWindow"
                     v-if="isEdit"
                 >關閉視窗</v-btn>
 
-                <v-btn dark class="mr-4"
+                <v-btn dark class="mr-4 btn-close"
                     v-else
                     to="/worklist/maintain"
                 >回搜尋頁</v-btn>
 
                 <v-btn
-                    color="success"
+                    class="btn-add white--text"
                     @click="save"
                 >送出</v-btn>
             </v-col>
