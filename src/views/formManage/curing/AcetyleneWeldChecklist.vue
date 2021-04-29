@@ -48,7 +48,7 @@
         <v-btn dark large class="mr-3 mb-3 btn-search" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
-        <v-btn elevation="2" large class="mb-3 btn-clear" dark @click="reset">
+        <v-btn elevation="2" large class="mb-3 btn-clear" @click="reset">
           <v-icon>mdi-reload</v-icon>清除搜尋內容
         </v-btn>
       </v-col>
