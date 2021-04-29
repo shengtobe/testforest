@@ -155,7 +155,15 @@
                                 v-model="selectValues.Lv2"
                                 solo
                                 hide-details
-                            ></v-select>
+                            >
+                                <template v-slot:no-data>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>請選擇上層</v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </template>
+                            </v-select>
                         </v-col>
                         <v-col cols="4">
                             <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv2)}/accident-trend`">
@@ -178,7 +186,15 @@
                                 v-model="selectValues.Lv3"
                                 solo
                                 hide-details
-                            ></v-select>
+                            >
+                                <template v-slot:no-data>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>請選擇上層</v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </template>
+                            </v-select>
                         </v-col>
                         <v-col cols="4">
                             <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv3)}/key-equip`">
@@ -201,7 +217,15 @@
                                 v-model="selectValues.Lv4"
                                 solo
                                 hide-details
-                            ></v-select>
+                            >
+                                <template v-slot:no-data>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>請選擇上層</v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </template>
+                            </v-select>
                         </v-col>
                         <v-col cols="4">
                             <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv4)}/work-effectiveness`">
