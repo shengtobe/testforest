@@ -20,16 +20,33 @@ export function userAuthUpdate(data) { return axios(
 )}
 // 取得群組權限表
 export function fetchGroupAuth(data) { return axios(
-    {
-        url: '/user/account/groupquery',
-        method: 'post',
-        data,
-    }
-)}
+        {
+            url: '/user/account/groupquery',
+            method: 'post',
+            data,
+        }
+    )
+}
 //群組權限管理更新
 export function groupAuthUpdate(data) { return axios(
     {
         url: '/user/account/groupupdate',
+        method: 'post',
+        data,
+    }
+)}
+// 權限敲門功能
+export function checkEnter(data) { return axios(
+    {
+        url: '/user/account/checkFunc',
+        method: 'post',
+        data,
+    }
+)}
+// 使用者權限查詢
+export function canInUpdate(data) { return axios(
+    {
+        url: '/user/account/authorverifquery',
         method: 'post',
         data,
     }

@@ -41,7 +41,6 @@
       <v-icon>mdi-export</v-icon>
     </v-btn>
   </v-app-bar>
-
     <!-- fullscreen nav -->
     <transition>
         <div id="main-nav" v-if="showNav">
@@ -106,9 +105,9 @@
                                     <strong class="black--text">危害通報管理</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
+                                <v-list-item  @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
+                                <v-list-item v-show="false" @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 行車事故事件 -->
@@ -296,6 +295,7 @@ import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
+import store from '@/store/index'
 
 export default {
     data: () => ({
@@ -356,10 +356,11 @@ export default {
 
             try {
                 // 儲存使用者資訊
-                let a1 = this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
+                let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
+                this.saveUserProfile(UData)
                 
                 // 儲存權限資訊
-                let a2 = this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+                this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
@@ -370,6 +371,11 @@ export default {
         },
     },
     created() {
+        console.log("🎬🎬🎬Manage in");
+        // console.log("🎬🎬user: ", store.state.user.userData.FunctionsAuthorData);
+        console.log("🎬🎬user: ", store.state.user);
+        console.log("🎬🎬user.userData: ", store.state.user.userData.FunctionsAuthorData);
+        // store.state.user.groupData
         // ------------ 已寫好的登入功能，先備註掉 -------------
         this.checkLocalStorage()
     },

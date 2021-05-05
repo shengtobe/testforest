@@ -1,9 +1,7 @@
 <template>
   <v-container style="max-width: 1200px">
+      <h2 class="mb-4">人員權限管理</h2>
     <v-row>
-      <v-col cols="12" sm="6" md="3">
-        <h2 class="mb-4">人員權限管理</h2>
-      </v-col>
       <v-col cols="12" sm="6" md="3">
           <h3 class="mb-1">
               <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>部門

@@ -273,6 +273,8 @@ export default {
             }).finally(() => {
                 this.deptLoading = false
             })
+
+            
         }
 }
 </script>
