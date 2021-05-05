@@ -325,6 +325,9 @@ export default {
             'saveUserProfile',  // 儲存使用者基本資料
             'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
+        findFuncIDIsShow(FID){
+            return false
+        },
         // 登出
         logout() {
             localStorage.clear()  // 清除所有 localstorage
@@ -375,6 +378,7 @@ export default {
         // console.log("🎬🎬user: ", store.state.user.userData.FunctionsAuthorData);
         console.log("🎬🎬user: ", store.state.user);
         console.log("🎬🎬user.userData: ", store.state.user.userData.FunctionsAuthorData);
+        console.log("show?: ", store.state.user.userData.FunctionsAuthorData.find(item => item == 'SMS_1'));
         // store.state.user.groupData
         // ------------ 已寫好的登入功能，先備註掉 -------------
         this.checkLocalStorage()
