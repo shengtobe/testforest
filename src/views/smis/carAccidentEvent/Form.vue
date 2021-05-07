@@ -550,7 +550,7 @@ import { evtTypes, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import { createData, fetchOne, updateData, updateFile, deleteFile } from '@/apis/smis/carAccidentEvent'
+import { createData, fetchOne, updateData, updateFile, deleteFile, fetchEvtTypes } from '@/apis/smis/carAccidentEvent'
 
 export default {
     props: ['id'],  //路由參數
@@ -568,7 +568,7 @@ export default {
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
-            evtType: 'M1', // 事故類型
+            evtType: '', // 事故類型
             slope: '',  // 路線坡度
             curve: '',  // 曲線半徑
             loadType: [],  // 路段型態
@@ -605,7 +605,7 @@ export default {
             fenceEq: ['圍籬', '監視設備', '其他'],  // 鐵路設施設備及圍籬之
             accidentFactors1: AccidentFactors1,  // 第一層因素
         },
-        evtTypeOpts: evtTypes,  // 事故類型下拉選單
+        evtTypeOpts: [],  // 事故類型下拉選單
         showFiles: [],  // 要顯示的縮圖
     }),
     components: {
@@ -641,6 +641,26 @@ export default {
         // 初始化資料
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單欄位
+            // 初始化事故類型 fetchEvtTypes
+            fetchEvtTypes({
+                OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.evtTypeOpts = JSON.parse(res.data.order_list)
+                    console.log("evtTypeOpts", this.evtTypeOpts);
+                } else {
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，事故類型讀取失敗')
+            }).finally(() => {
+                // this.chLoadingShow()
+            })
+            return
 
             if (this.id != undefined) {
                 // -------------- 編輯時 -------------- 

@@ -3,6 +3,15 @@
 import axios from '@/apis/axiosSetting'
 
 // -------------- 行車事故事件 -------------
+// 要求事故類型清單
+export function fetchEvtTypes(data) { return axios(
+    {
+        url: '/global/accident/type/query',
+        method: 'post',
+        data,
+    }
+)}
+
 // 搜尋列表
 export function fetchList(data) { return axios(
     {

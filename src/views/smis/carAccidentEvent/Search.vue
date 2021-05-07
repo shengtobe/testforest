@@ -365,6 +365,7 @@ export default {
             }).then(res => {
                 console.log("go")
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("行車事故搜尋tableItems: ", this.tableItems)
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
