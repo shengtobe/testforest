@@ -55,21 +55,21 @@
                     :loading="isLoading"
                     color="error"
                     @click="showDialog(true)"
-                    v-if="status == 4"
+                    v-if="(status == 4) && isShowBtn"
                 >退回</v-btn>
 
                 <v-btn class="ma-2" dark
                     :loading="isLoading"
                     color="yellow darken-2 btn-expansion"
-                    @click="showDialog(false)"
-                    v-if="status == 4"
+                    @click="showDialog(false)" 
+                    v-if="(status == 4) && isShowBtn"
                 >徹銷</v-btn>
 
                 <v-btn dark class="ma-2 btn-add"
-                    :loading="isLoading"
+                    :loading="isLoading" 
                     color="success"
                     @click="save"
-                    v-if="status == 4"
+                    v-if="(status == 4) && isShowBtn"
                 >結案</v-btn>
             </template>
         </v-col>
@@ -126,6 +126,7 @@ import { closeOrder, withdrawOrder, cancelOrder } from '@/apis/workList/maintain
 export default {
     props: ['itemData'],
     data: () => ({
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         isLoading: false,  // 是否讀取中
@@ -172,6 +173,12 @@ export default {
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
+            if(this.status == "4"){
+                this.isShowBtn = obj.AllDepartorID == this.userData.UserId
+            }
+            else{
+
+            }
         },
         // 顯示 dialog
         showDialog(bool) {

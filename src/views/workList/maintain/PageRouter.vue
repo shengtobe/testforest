@@ -55,6 +55,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("🚀🚀PageRouter res.data: ", res.data);
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {

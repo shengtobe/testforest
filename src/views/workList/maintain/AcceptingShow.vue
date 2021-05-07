@@ -398,25 +398,25 @@
             <template v-if="!done">
                 <v-btn class="ma-2 btn-detail" dark
                     :loading="isLoading"
-                    color="purple"
+                    color="purple" v-if="isShowBtn"
                     @click="delay.dialogShow = true"
                 >延後驗收</v-btn>
 
                 <v-btn class="ma-2 btn-delete"
                     :loading="isLoading"
-                    color="error"
+                    color="error" v-if="isShowBtn"
                     @click="showDialog(true)"
                 >退回</v-btn>
 
                 <v-btn class="ma-2 btn-memo" dark
                     :loading="isLoading"
-                    color="yellow darken-2"
+                    color="yellow darken-2" v-if="isShowBtn"
                     @click="showDialog(false)"
                 >徹銷</v-btn>
 
                 <v-btn dark class="ma-2 btn-add"
                     :loading="isLoading"
-                    color="success"
+                    color="success" v-if="isShowBtn"
                     @click="save"
                 >同意驗收</v-btn>
             </template>
@@ -553,6 +553,7 @@ import { acceptanceOrder, withdrawOrder, cancelOrder, delayOrder } from '@/apis/
 export default {
     props: ['itemData'],
     data: () => ({
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         totalHourValid: true,  // 總工時是否驗證欄位
         isLoading: false,  // 是否讀取中
@@ -568,7 +569,7 @@ export default {
             { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         jobPrice: '', // 工作項金額
@@ -690,6 +691,7 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
+            this.isShowBtn = obj.CreatorID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料

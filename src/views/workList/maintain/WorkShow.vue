@@ -276,7 +276,7 @@
 
                                     <v-col cols="12" sm="4">
                                         <h3 class="mb-1">
-                                            <v-icon class="mr-1 mb-1">mdi-calculator</v-icon>工作量
+                                            <v-icon class="mr-1 mb-1">mdi-calculator</v-icon>工作量(hr)
                                             <span class="red--text">*</span>
                                         </h3>
                                         <v-text-field
@@ -326,19 +326,19 @@
             <template v-if="!done">
                 <v-btn class="ma-2 btn-delete"
                     :loading="isLoading"
-                    color="error"
+                    color="error" v-if="isShowBtn"
                     @click="dialog = true"
                 >退回</v-btn>
 
                 <v-btn dark class="ma-2 btn-add"
-                    :loading="isLoading"
+                    :loading="isLoading" v-if="isShowBtn"
                     @click="save"
                 >送出</v-btn>
             </template>
         </v-col>
 
         <!-- 按鈕說明，demo 用 -->
-        <v-col cols="12" class="error--text">
+        <v-col cols="12" class="error--text" v-show="false">
             <h4>按鈕出現說明</h4>
             1. 退回：派工人、代理人<br>
             2. 維修情況：派工人、代理人、林鐵維修人員
@@ -391,6 +391,7 @@ import { maintainOrder, fetchJobName, withdrawOrder } from '@/apis/workList/main
 export default {
     props: ['itemData'],
     data: () => ({
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         valid: false,  // 表單是否驗證欄位 (demo先取消掉)
         isLoading: false,  // 是否讀取中
@@ -429,7 +430,7 @@ export default {
                 { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '工作量', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             ],
             items: [],
@@ -464,7 +465,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj: ", obj)
+            this.isShowBtn = obj.CreatorID == this.userData.UserId || obj.DispatchID == this.userData.UserId || obj.AgentID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
