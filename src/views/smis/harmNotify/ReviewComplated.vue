@@ -127,7 +127,7 @@
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <template v-if="!done">
+            <template v-if="(!done) && isShowBtn">
                 <v-btn dark  class="ma-2 btn-modify"
                     @click="edit"
                 >變更立案類型</v-btn>
@@ -194,6 +194,7 @@ export default {
     // props: ['closeStatus'],  // 測試用屬性
     data: () => ({
         routeId: '',
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         topItems: {  // 上面的欄位
             creater: { icon: 'mdi-account', title: '通報人', text: '' },
@@ -238,6 +239,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,  // 使用者基本資料
         }),
     },
     methods: {
@@ -291,15 +293,13 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
-            console.log("Top: ", obj.topItems)
-            console.log("bottom: ", obj.bottomItems)
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
             this.id = obj.EndangerID  // 危害通報編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            console.log("this.bottomItems", this.bottomItems)
             this.files = [ ...obj.FileCount ]  // 檔案附件
             this.replayMsg = obj.ReplyMsg  // 回覆訊息
+            this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
 
             // this.topItems.creater.text = `${obj.NoticePeople} (${obj.NoticePeopleId})`  // 通報人
             // // this.topItems.creater.text = obj.NoticePeople  // 通報人
@@ -399,8 +399,6 @@ export default {
     },
     created() {
         // this.fetchData()
-        console.log("created this.itemData: ", this.itemData)
-        console.log("created 地點: ", this.itemData.topItems[4])
         this.setShowData(this.itemData)
     },
 }

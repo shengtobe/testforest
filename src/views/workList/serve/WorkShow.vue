@@ -205,17 +205,17 @@
 
             <template v-if="!done">
                 <v-btn class="ma-2"
-                    color="primary"
+                    color="primary" v-if="isShowBtn"
                     :to="`/worklist/serve/${id}/editWork`"
                 >編輯</v-btn>
 
                 <v-btn class="ma-2"
-                    color="error"
+                    color="error" v-if="isShowBtn"
                     @click="dialog = true"
                 >退回</v-btn>
 
                 <v-btn dark class="ma-2"
-                    color="success"
+                    color="success" v-if="isShowBtn"
                     @click="save"
                 >送出</v-btn>
             </template>
@@ -269,6 +269,7 @@ import ShowTable from '@/views/workList/serve/ShowTable.vue'
 export default {
     props: ['itemData'],
     data: () => ({
+        isShowBtn: false,
         id: '',  // 工單編號
         done: false,  // 是否完成頁面操作
         valid: false,  // 表單是否驗證
@@ -322,6 +323,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            this.isShowBtn = obj.CreatorID == this.userData.UserId
             this.id = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料

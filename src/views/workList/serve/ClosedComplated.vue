@@ -19,27 +19,27 @@
             >關閉視窗</v-btn>
 
             <v-btn class="ma-2" dark
-                color="brown"
-                @click="excel"
+                color="brown" v-if="isShowBtn"
+                @click="excel" 
             >竣工單</v-btn>
 
             <template v-if="!done">
                 <v-btn class="ma-2"
                     color="error"
                     @click="showDialog(true)"
-                    v-if="status == 4"
+                    v-if="(status == 4) && isShowBtn"
                 >退回</v-btn>
 
                 <v-btn class="ma-2" dark
                     color="yellow darken-2"
                     @click="showDialog(false)"
-                    v-if="status == 4"
+                    v-if="(status == 4) && isShowBtn"
                 >徹銷</v-btn>
 
                 <v-btn dark class="ma-2"
                     color="success"
                     @click="save"
-                    v-if="status == 4"
+                    v-if="(status == 4) && isShowBtn"
                 >結案</v-btn>
             </template>
         </v-col>
@@ -93,6 +93,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 工單編號
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         status: '',  // 處理階段
         isLoading: false,  // 是否讀取中
@@ -134,6 +135,7 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.tableItems ]  // 表格資料
+            this.isShowBtn = obj.AllDepartorID == this.userData.UserId
         },
         // 顯示 dialog
         showDialog(bool) {

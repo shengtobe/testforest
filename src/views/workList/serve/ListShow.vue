@@ -19,23 +19,23 @@
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn class="ma-2 btn-expansion"
+                <v-btn class="ma-2 btn-expansion" v-if="isShowBtn"
                     color="primary"
                     :to="`/worklist/serve/${id}/editList`"
                 >編輯</v-btn>
 
-                <v-btn class="ma-2 btn-delete"
+                <v-btn class="ma-2 btn-delete" v-if="isShowBtn"
                     color="error"
                     @click="deleteItem"
                 >刪除</v-btn>
 
                 <v-btn dark class="ma-2 btn-search"
-                    color="amber darken-1"
+                    color="amber darken-1" v-if="isShowBtn"
                     @click="closeWork"
                 >結案</v-btn>
 
                 <v-btn dark class="ma-2 btn-add"
-                    color="success"
+                    color="success" v-if="isShowBtn"
                     :to="`/worklist/serve/${id}/newWork`"
                 >派工</v-btn>
             </template>
@@ -56,6 +56,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 工單編號
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
@@ -85,6 +86,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            this.isShowBtn = obj.CreatorID == this.userData.UserId
             this.id = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料

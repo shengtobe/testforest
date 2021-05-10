@@ -197,7 +197,6 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         clickDate(){
-            console.log("click date~~~")
         },
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {

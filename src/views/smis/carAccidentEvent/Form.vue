@@ -660,7 +660,6 @@ export default {
             }).finally(() => {
                 // this.chLoadingShow()
             })
-            return
 
             if (this.id != undefined) {
                 // -------------- 編輯時 -------------- 
@@ -672,6 +671,7 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
+                        console.log("/sms/event/detail: ", res.data)
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
