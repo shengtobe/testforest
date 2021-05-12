@@ -13,3 +13,4 @@ export const SET_ORGANIZE_ALL = 'SET_ORGANIZE_ALL'  // 設定向後端取得的�
 // user data
 export const SET_USER_PROFILE = 'SET_USER_PROFILE'  // 設定使用者基本資料
 export const SET_USER_GROUP = 'SET_USER_GROUP'  // 設定使用者權限(群組)資料
+export const SET_FUNCID_LIST = 'SET_FUNCID_LIST'  // 設定使用者權限(群組)資料

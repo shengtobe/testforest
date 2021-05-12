@@ -70,16 +70,16 @@
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2 btn-modify"
+                <v-btn dark class="ma-2 btn-modify" v-if="isShowBtn"
                     :to="`/smis/car-accident-event/${id}/edit`"
                 >編輯</v-btn>
 
                 <v-btn dark  class="ma-2 btn-delete"
-                    @click="del"
+                    @click="del" v-if="isShowBtn"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
-                    @click="save"
+                    @click="save" v-if="isShowBtn"
                 >申請審核資料</v-btn>
             </template>
         </v-col>
@@ -100,6 +100,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         files: [],  // 上傳的檔案
         finishDeath: false,  // 是否完成人員傷亡名單
@@ -118,6 +119,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            userGroup: state => state.userGroup,  // 使用者基本資料
         }),
     },
     methods: {
@@ -140,6 +142,7 @@ export default {
             console.log("this.files: ", this.files)
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
+            this.isShowBtn = this.groupData.RoleLv2 == "T"
 
             // 危害通報連結 (依通報狀態連至不同頁面)
             // let arr = obj.notifyLinks.map(item => {

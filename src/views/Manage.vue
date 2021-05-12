@@ -312,7 +312,11 @@ export default {
         ...mapState ('user', {
             key: state => state.key,  // 加密金鑰
             userData: state => state.userData,  // 使用者基本資料
-        })
+            userFunc: state => state.funcIdList,  // 
+        }),
+        FuncShow(){
+            
+        }
     },
     components: {
         SystemDialog,  // 系統重要訊息 Dialog
@@ -324,9 +328,12 @@ export default {
         ...mapActions('user', [
             'saveUserProfile',  // 儲存使用者基本資料
             'saveUserGroup',  // 儲存使用者權限(群組)資料
+            'saveFuncIdList',  // 
         ]),
         FShow(FID){ // 是否有這個訪問權限
-            return (this.funcShow.find(item => item == FID) == null)
+            // return (this.userFunc.find(item => item == FID) == null)
+            console.log("userFunc: ", this.userFunc);
+            return (!this.userFunc.find(item => item == FID))
         },
         // 登出
         logout() {
@@ -367,6 +374,10 @@ export default {
                 
                 // 儲存權限資訊
                 this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+                //
+                this.saveFuncIdList(UData.FunctionsAuthorData)
+
+                console.log("✍️✍️✍️userFunc: ", this.userFunc)
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))

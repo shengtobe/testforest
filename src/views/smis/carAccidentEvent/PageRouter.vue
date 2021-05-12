@@ -132,7 +132,6 @@ export default {
                             hurtPeoples = JSON.parse(res.data.order_list_hurt_people)  // 死傷人數資料
                             controls = JSON.parse(res.data.order_list)  // 已選控制措施
                         }
-
                         this.itemData = { ...res.data, topItems, bottomItems, otherInfo, hurtPeoples, controls }
                     }
                 } else {

@@ -208,6 +208,7 @@ export const AccidentFactors2 = [
 
 // 行車事故 - 第三層因素
 export const AccidentFactors3 = [ 
+    { text: '未選擇', value: '' },
     { parent: '1', text: '維修人員', value: '1' },
     { parent: '1', text: '調度員及號誌員', value: '2' },
     { parent: '1', text: '司機員', value: '3' },

@@ -150,6 +150,7 @@ export default {
           localStorage.jwt = this.encode(res.data.Token, this.key)  // JWT 也進行加密，要使用時再解密就好
           localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
           localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
+          console.log("login in now")
           this.$router.push('/')
         } else {
           this.errMsg = res.data.Msg

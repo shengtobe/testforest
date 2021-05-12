@@ -79,7 +79,7 @@
 </template>
 <script>
   import { fetchOrganization } from '@/apis/organization' 
-  import { fetchGroupAuth, groupAuthUpdate } from '@/apis/access'
+  import { fetchGroupAuth, groupAuthUpdate, canInUpdate } from '@/apis/access'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { mapState, mapActions } from 'vuex'
 
@@ -109,18 +109,20 @@ export default {
         computed: {
             ...mapState ('user', {
                 userData: state => state.userData,  // 使用者基本資料
+                userFunc: state => state.funcIdList,
             }),
-            compute_name:function() {
-
-            }
         },
         methods: {
             ...mapActions('system', [
                 'chMsgbar',  // messageBar
-                'chLoadingShow'  // 切換 loading 圖顯示
+                'chLoadingShow',  // 切換 loading 圖顯示
+            ]),
+            ...mapActions('user', [
+                'saveFuncIdList'
             ]),
             
             save() {
+
               if (confirm('你確定要儲存此權限設定嗎?')){
                 this.chLoadingShow()
 
@@ -148,6 +150,23 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '送出成功' })
+
+
+                        //更新 FunIdlist
+                        canInUpdate({
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                        }).then(res => {
+                            if (res.data.ErrorCode == 0) {
+                              this.saveFuncIdList(res.data.FunctionsAuthorData)
+                            }
+                        }).catch( err => {
+                            console.log(err)
+                        }).finally(() => {
+                        })
+
+
+                        this.tableItems.map(item => item.FunctionName )
                     } else {
                         this.$router.push({ path: '/error' })
                     }
@@ -272,6 +291,18 @@ export default {
                 alert('查詢權限時發生問題，請重新查詢!')
             }).finally(() => {
                 this.deptLoading = false
+            })
+
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                  console.log("🏆🏆res.data: ", res.data)
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
             })
 
             
