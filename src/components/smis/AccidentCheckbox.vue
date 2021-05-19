@@ -1,335 +1,83 @@
 <template>
 <v-sheet color="white" elevation="2" class="px-2 pb-5">
     <!-- 重大事故 -->
-    <h3 class="pt-3 mb-n2 error--text">重大事故</h3>
-    <v-row no-gutters>
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="正線衝撞事故"
-                color="black"
-                value="M1"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
+    <v-row no-gutters v-for="(group, gIndex) in groups" :key="'G_'+gIndex">
+        <v-col cols="12" sm="12" md="12">
+            <h3 class="pt-3 mb-n2 error--text">{{group.TypeName}}</h3>
         </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="正線出軌事故"
-                color="black"
-                value="M2"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="正線火災事故"
-                color="black"
-                value="M3"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-    </v-row>
-
-    <!-- 一般事故 -->
-    <h3 class="mt-8 mb-n2 primary--text">一般事故</h3>
-    <v-row no-gutters>
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="側線衝撞事故"
-                color="black"
-                value="G1"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="側線出軌事故"
-                color="black"
-                value="G2"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="側線火災事故"
-                color="black"
-                value="G3"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="平交道事故"
-                color="black"
-                value="G4"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="人員死傷事故"
-                color="black"
-                value="G5"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="設備損害事故"
-                color="black"
-                value="G6"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="運轉中斷事故"
-                color="black"
-                value="G7"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-    </v-row>
-
-    <!-- 異常事件 -->
-    <h3 class="mt-8 mb-n2 success--text">異常事件</h3>
-    <v-row no-gutters>
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="列車或車輛分離"
-                color="black"
-                value="A1"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="進入錯線"
-                color="black"
-                value="A2"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="冒進號誌"
-                color="black"
-                value="A3"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="列車或車輛溜逸"
-                color="black"
-                value="A4"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="違反閉塞運轉"
-                color="black"
-                value="A5"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="違反號誌運轉"
-                color="black"
-                value="A6"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="號誌處理錯誤"
-                color="black"
-                value="A7"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="車輛故障"
-                color="black"
-                value="A8"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="路線障礙"
-                color="black"
-                value="A9"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="電子設備故障"
-                color="black"
-                value="A10"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="運轉保安裝置故障"
-                color="black"
-                value="A11"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="外物入侵"
-                color="black"
-                value="A12"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="危險品洩漏"
-                color="black"
-                value="A13"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="駕駛失能"
-                color="black"
-                value="A14"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="天然災變"
-                color="black"
-                value="A15"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="列車取消"
-                color="black"
-                value="A16"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <v-checkbox
-                v-model="accidents"
-                label="其他事件"
-                color="black"
-                value="A17"
-                hide-details
-                @change="checked"
-            ></v-checkbox>
-        </v-col>
+        <v-row no-gutters >
+            <v-col cols="12" sm="4" md="3" v-for="(item, iIndex) in group.TypeList" :key="'G_' + gIndex + '_i_' + iIndex">
+                <v-checkbox
+                    v-model="accidents"
+                    :label="item.Text"
+                    color="info"
+                    hide-details
+                    :value="item.Value"
+                    @change="checked"
+                ></v-checkbox>
+            </v-col>
+        </v-row>
+        
     </v-row>
 </v-sheet>
 </template>
 
 <script>
+import {fetchEvtTypes2 } from '@/apis/smis/carAccidentEvent'
+import { mapState, mapActions } from 'vuex'
+import { getNowFullTime } from '@/assets/js/commonFun'
+
 export default {
     props: ['checkArr'],
     data: () => ({
         accidents: [],
+        groups: [], //AccidentCount
+        group: [],
     }),
     watch: {
         checkArr(val) {
             this.accidents = [ ...val ]
         }
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         // 選擇
         checked() {
+            console.log("this.accidents: ", this.accidents);
+            return
             this.$emit('checkAccident', this.accidents)
         }
     },
     created() {
-        this.accidents = [ ...this.checkArr ]
+        fetchEvtTypes2({
+            OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                console.log("🐝🐝 res: ", res.data.AccidentCount);
+                this.groups = res.data.AccidentCount;
+                
+
+                // this.evtTypeOpts = JSON.parse(res.data.order_list)
+                // console.log("套件內的evtTypeOpts", this.evtTypeOpts);
+
+                // this.accidents = [ ...this.checkArr ]
+            } else {
+                // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+            }
+        }).catch(err => {
+            console.log(err)
+            alert('伺服器發生問題，事故類型讀取失敗')
+        }).finally(() => {
+            // this.chLoadingShow()
+        })
+        
     }
 }
 </script>

@@ -56,7 +56,6 @@ export default {
                         this.status = res.data.EndangerStatus  // 狀態
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
 
-            
                         // 組合影響、運轉影響情形字串
                         let affectsArr = []
                         if (res.data.EffectTraveler == 'T') affectsArr.push('影響旅客')
@@ -65,12 +64,19 @@ export default {
                         if (res.data.ServiceCarError == 'T') affectsArr.push('列車誤點')
                         if (res.data.ServiceStopError == 'T') affectsArr.push('中斷營運')
 
+
                         // 組合衍生事故字串
+                        console.log("1");
                         let accidentsTxt = '<lu>'
+                        console.log("2");
+                        console.log(("res.data.DeriveAccident: ", res.data.DeriveAccident));
+                        console.log("3");
                         res.data.DeriveAccident.forEach(item => {
                             accidentsTxt += `<li>${evtTypes.find(ele => ele.value == item).text}</li>`
                         })
+                        console.log("4");
                         accidentsTxt += '</lu>'
+                        console.log("5");
 
                         let topItems = [  // 上面的欄位
                             { icon: 'mdi-ray-vertex', title: '危害狀態', text: carHarmDbStatus.find(ele => ele.value == res.data.EndangerStatus).text },
@@ -113,6 +119,7 @@ export default {
         },
     },
     created() {
+        console.log("src\views\smis\carHarmDatabase\harms\PageRouter.vue");
         this.fetchData()
     }
 }

@@ -13,6 +13,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOne } from '@/apis/smis/carAccidentEvent'
 import { carAccidentEventStatus, evtTypes, locationOpts, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '@/assets/js/smisData'

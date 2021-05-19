@@ -13,8 +13,8 @@
     <!-- 檔案列表 -->
     <FileListShow :fileList="files" title="檔案列表" />
     
-    <v-row class="mt-8 mb-4 label-header" v-if="isShowBtn">
-        <v-col cols="12">
+    <v-row class="mt-8 mb-4 label-header" >
+        <v-col cols="12" v-if="isShowBtn">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>回覆處理
             </h3>
@@ -44,10 +44,15 @@
                 ></v-text-field>
             </v-sheet>
         </v-col>
+				
 
         <v-col cols="12" class="text-center" v-if="status == 1">
+						<v-btn dark class="mr-4 btn-close"
+                @click="closeWindow"
+            >關閉視窗</v-btn>
+						
             <v-btn dark class="btn-add"
-                @click="sendReplay"
+                @click="sendReplay" v-if="isShowBtn"
             >送出回覆</v-btn>
         </v-col>
     </v-row>
@@ -499,6 +504,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carAccidentEventStatus, jobDisasterSurveyStatus, carHarmDbStatus, operateModes, riskSerious, riskFrequency, riskLevel, arAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
 import TopBasicTable from '@/components/TopBasicTable.vue'
@@ -709,6 +715,9 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         click1(){
         },
         selector1Changed(){
@@ -872,13 +881,31 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
+						console.log("👻 obj: ", obj);
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
             this.id = obj.EndangerID  // 危害通報編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.FileCount ]  // 檔案附件
             this.replayMsg = obj.ReplyMsg  // 回覆訊息
-            this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
+
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    console.log("🦋 res.data.GroupData", res.data.GroupData);
+                    console.log("🦋🦋 (brfore)groupData: ", this.groupData);
+                    this.saveUserGroup(res.data.GroupData)
+                    console.log("🦋🦋🦋 (after))groupData: ", this.groupData);
+                    this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
+
+            
         },
         // 連結行車事故事件
         // connCarEvt() {

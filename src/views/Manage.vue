@@ -312,6 +312,7 @@ export default {
         ...mapState ('user', {
             key: state => state.key,  // 加密金鑰
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,  // 使用者基本資料
             userFunc: state => state.funcIdList,  // 
         }),
         FuncShow(){
@@ -355,6 +356,7 @@ export default {
         // 檢查 localStorage
         checkLocalStorage() {
             // 檢查是否有 jwt、使用者資訊、權限資訊
+            console.log("✍️groupData: ", this.groupData);
             if (
                 localStorage.getItem('jwt') == null ||
                 localStorage.getItem('userData') == null ||
@@ -367,6 +369,7 @@ export default {
             try {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
+                console.log("UData: ", UData);
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
                 console.log("funcShow:", this.funcShow);
                 console.log("DeptList:", UData.DeptList);
@@ -377,7 +380,8 @@ export default {
                 //
                 this.saveFuncIdList(UData.FunctionsAuthorData)
 
-                console.log("✍️✍️✍️userFunc: ", this.userFunc)
+                console.log("✍️✍userFunc: ", this.userFunc)
+                console.log("✍️✍️✍️groupData: ", this.groupData)
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
@@ -389,12 +393,16 @@ export default {
     },
     created() {
         console.log("🎬🎬🎬Manage in");
+        
         // console.log("🎬🎬user: ", store.state.user.userData.FunctionsAuthorData);
         
         // console.log("🎬🎬user.userData: ", store.state.user.userData.FunctionsAuthorData);
         // console.log("show?: ", store.state.user.userData.FunctionsAuthorData.find(item => item == 'SMS_1'));
         // store.state.user.groupData
         // ------------ 已寫好的登入功能，先備註掉 -------------
+        // if(!this.groupData){
+        //     this.checkLocalStorage()
+        // }
         this.checkLocalStorage()
     },
 }

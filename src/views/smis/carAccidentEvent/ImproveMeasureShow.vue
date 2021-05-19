@@ -78,6 +78,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { departOptions } from '@/assets/js/departOption'
 import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
 

@@ -194,13 +194,13 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small class="mr-2 btn-modify"
+                        <v-btn fab small dark class="mr-2 btn-modify"
                             @click="editItem(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small class="btn-delete"
+                        <v-btn fab small dark class="btn-delete"
                             @click="deleteItem(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -282,6 +282,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { hurtFetchList, hurtCreateData, hurtUpdateData, hurtDeleteData } from '@/apis/smis/carAccidentEvent'
 import Pagination from '@/components/Pagination.vue'
@@ -332,6 +333,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
         formTitle () {
             return (this.editedIndex == -1) ? '新增資料' : '編輯資料'
@@ -341,6 +343,9 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 向後端取得資料
         fetchData() {

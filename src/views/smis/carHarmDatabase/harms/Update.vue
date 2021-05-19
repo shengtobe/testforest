@@ -504,6 +504,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
@@ -519,6 +520,7 @@ export default {
     data: () => ({
         test13:'test13',
         valid: true,  // 表單是否驗證欄位
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         searchTemp: {},  // 關聯子系統 dialog 暫存資料用
         eqCodeShow: false,  // 關聯子系統 dialog 是否顯示
@@ -619,6 +621,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -633,6 +636,9 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 初始化資料
         initData() {
@@ -974,6 +980,30 @@ export default {
         },
     },
     created() {
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                console.log("🚓 res.data.GroupData", res.data.GroupData);
+                console.log("🚓🚓 (brfore)groupData: ", this.groupData);
+                this.saveUserGroup(res.data.GroupData)
+                console.log("🚓🚓🚓 (after)groupData: ", this.groupData);
+                this.isShowBtn = this.groupData.RoleLv2 == "T"
+
+                if(this.isShowBtn){
+                    this.initData()
+                }
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
+
         this.initData()
     }
 }

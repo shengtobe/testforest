@@ -21,6 +21,7 @@
 import Chart from 'chart.js'
 import { mapActions } from 'vuex'
 import { AbnormalTypeChartData } from '@/assets/js/smisTestData'
+import { canInUpdate } from '@/apis/access'
 
 export default {
     data: () => ({
@@ -29,6 +30,9 @@ export default {
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 初始化資料
         initData() {

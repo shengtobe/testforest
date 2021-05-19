@@ -11,7 +11,7 @@
           hide-default-footer
           disable-pagination
           disable-sort
-          dense
+          dense class="theme-table"
           :items="methodList"
           :headers="headers">
           <template v-slot:item.UserLv1="{ item }">
@@ -70,7 +70,7 @@
       <v-spacer></v-spacer>
       <v-col cols="10"/>
       <v-col cols="2" class="text-right">
-        <v-btn color=primary @click="save">
+        <v-btn class="btn-memo white--text" @click="save">
           <v-icon>mdi-content-save</v-icon>存檔    
         </v-btn>
       </v-col>
@@ -91,13 +91,13 @@ export default {
         departList: [],
         departSelect: '',
         headers:[
-            { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '登入用戶', value: 'UserLv1', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '行安幕僚', value: 'UserLv2', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '職安幕僚', value: 'UserLv3', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '高階主管', value: 'UserLv4', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '系統管理員', value: 'UserLv5', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '登入用戶', value: 'UserLv1', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '行安幕僚', value: 'UserLv2', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '職安幕僚', value: 'UserLv3', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '高階主管', value: 'UserLv4', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '系統管理員', value: 'UserLv5', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
         ]
         }),
         components: {
@@ -166,7 +166,7 @@ export default {
                         })
 
 
-                        this.tableItems.map(item => item.FunctionName )
+                        // this.tableItems.map(item => item.FunctionName )
                     } else {
                         this.$router.push({ path: '/error' })
                     }

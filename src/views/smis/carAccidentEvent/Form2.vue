@@ -275,6 +275,7 @@ export default {
             this.ipt = { ...this.defaultIpt }  // 初始化表單欄位
 
             if (this.$route.params.id != undefined) {
+                console.log("行安編輯/新增2 初始:");
                 // -------------- 編輯時 -------------- 
                 this.chLoadingShow()
                 this.routeId = this.$route.params.id  // 路由參數(id)

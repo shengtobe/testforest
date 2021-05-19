@@ -190,6 +190,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,  //
         }),
     },
     methods: {
@@ -200,6 +201,7 @@ export default {
         },
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {
+            console.log("search groupData: ", this.groupData);
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
             // 如果null要改空字串

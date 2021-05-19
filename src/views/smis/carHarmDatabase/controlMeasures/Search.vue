@@ -32,7 +32,7 @@
                 <v-icon class="mr-1">mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn dark large class="mr-3 btn-add"
+            <v-btn dark large class="mr-3 btn-add" v-if="isShowBtn"
                 to="/smis/car-harmdb/control-measures/add"
             >
                 <v-icon>mdi-plus</v-icon>新增
@@ -81,15 +81,15 @@
 
                     <template v-slot:item.evidences="{ item }">
                         <v-btn fab small dark class="btn-detail white--text"
-                            v-if="item.file_path.length > 0"
+                            v-if="item.file_path.length > 0" 
                             @click="showEvidences(item)"
                         >
                             <v-icon>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
 
-                    <template v-slot:item.action="{ item }">
-                        <v-btn fab small
+                    <template v-slot:item.action="{ item }" v-if="isShowBtn">
+                        <v-btn fab small v-if="isShowBtn"
                             target="_blank"
                             class="mr-3 btn-modify white--text"
                             :to="`/smis/car-harmdb/control-measures/${item.ProcCode}/edit`"
@@ -97,7 +97,7 @@
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small class="btn-delete white--text"
+                        <v-btn fab small class="btn-delete white--text" v-if="isShowBtn"
                             @click="delControl(item.ProcCode)"
                         >
                             <v-icon>mdi-delete</v-icon>
@@ -128,6 +128,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
@@ -137,6 +138,7 @@ import { fetchList, deleteData } from '@/apis/smis/carHarmDatabase/controlMeasur
 export default {
     data: () => ({
         depart: '',  // 管控單位
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         departOpts: [  // 管控單位下拉選單
             { text: '不限', value: '' },
             ...departOptions,
@@ -145,15 +147,7 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         tableItems: [],  // 表格資料
         headers: [  // 表格欄位
-            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-        ],
+            ],
         evidences: [],  // 證據路徑
         evidencesName: [],  // 證據名稱
         dialogShow: false,  // 證據dialog是否顯示
@@ -165,6 +159,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -172,6 +167,9 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 查詢
         search() {
@@ -251,6 +249,50 @@ export default {
         closeDialog() {
             this.dialogShow = false
         },
+    },
+    created(){
+        //敲門
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                console.log("userData: ", this.userData);
+                console.log("groupData: ", this.groupData);
+                this.isShowBtn = this.groupData.RoleLv2 == "T";
+
+                if(this.isShowBtn){
+                    this.headers = [  // 表格欄位
+                        { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+                        { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+                        { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+                        { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+                        { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
+                        { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
+                        { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+                        { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+                    ]
+                }
+                else{
+                    this.headers = [  // 表格欄位
+                        { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+                        { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+                        { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+                        { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+                        { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
+                        { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
+                        { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+                    ]
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
+        //
+        
     }
+
 }
 </script>

@@ -43,6 +43,7 @@ const actions = {
     saveUserGroup ({ commit }, payload) {
         commit('SET_USER_GROUP', payload)
     },
+    // 儲存可訪問功能之清單
     saveFuncIdList ({ commit }, payload) {
         commit('SET_FUNCID_LIST', payload)
     }

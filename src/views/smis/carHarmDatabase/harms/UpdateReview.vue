@@ -121,6 +121,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -131,7 +132,7 @@
                     </template>
 
                     <template v-slot:item.desc="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-search" dark
                             @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
@@ -168,6 +169,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    class="theme-table"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
@@ -178,7 +180,7 @@
                     </template>
 
                     <template v-slot:item.desc="{ item }">
-                        <v-btn color="teal" dark
+                        <v-btn class="btn-search" dark
                             @click="showContent(item.DeviceDesp)"
                         >檢視</v-btn>
                     </template>
@@ -266,17 +268,17 @@
         </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
-            <v-btn dark class="ma-2"
+            <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark  class="ma-2" color="error"
-                    @click="showDialog(true)"
+                <v-btn dark  class="ma-2 btn-delete"
+                    @click="showDialog(true)" v-if="isShowBtn"
                 >退回</v-btn>
 
-                <v-btn dark  class="ma-2" color="success"
-                    @click="save"
+                <v-btn dark  class="ma-2 btn-detail"
+                    @click="save" v-if="isShowBtn"
                 >同意更新</v-btn>
             </template>
         </v-col>
@@ -352,6 +354,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { departOptions } from '@/assets/js/departOption'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import VersionDiff from '@/components/smis/VersionDiff.vue'
@@ -362,6 +365,7 @@ export default {
     data: () => ({
         id: '',
         closeForNow: false, // 暫時隱藏欄位
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息
         before: {  // 變更前
@@ -408,13 +412,13 @@ export default {
             frequency: riskFrequency,  // 風險頻率
         },
         headers: [  // 表格欄位
-            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '150' },
-            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
-            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '70' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '100' },
+            { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+            { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
+            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
         ],
         dialog: false,  // 退回dialog是否顯示
         isLoading: false,  // 是否讀取中
@@ -426,6 +430,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -441,6 +446,9 @@ export default {
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 向後端取得資料
         fetchData() {
             // this.chLoadingShow()
@@ -448,6 +456,21 @@ export default {
             let tableItems
             let maxIndex
             let old
+
+            //敲門
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    // 需主管同意
+                    this.isShowBtn = this.groupData.RoleLv4 == "T";
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
 
             // this.setShowData(this.itemData, this.itemData)
             // return

@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px" class="label-header">
-    <h2 class="mb-4 label-title">
+    <h2 class="mb-4 label-title" >
         {{ (this.isEdit)? `行車事故事件編輯 (編號：${ id })` : '行車事故事件新增' }}
     </h2>
 
@@ -545,6 +545,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { evtTypes, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '@/assets/js/smisData'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
@@ -556,6 +557,7 @@ export default {
     props: ['id'],  //路由參數
     data: () => ({
         routeId: '',  // 編號
+        isShowBtn: false,
         isEdit: false,  // 是否為編輯狀態
         ipt: {},
         defaultIpt: {
@@ -615,6 +617,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
         accidentFOpts2() {
             return AccidentFactors2.filter(item => item.parent == this.ipt.accidentFactors1)
@@ -638,6 +641,9 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單欄位
@@ -660,8 +666,10 @@ export default {
             }).finally(() => {
                 // this.chLoadingShow()
             })
-
+            console.log("行安編輯/新增 初始:", this.id);
             if (this.id != undefined) {
+                // -------------- 編輯前先詢問有無權限 -------------- 
+                
                 // -------------- 編輯時 -------------- 
                 this.chLoadingShow()
                 this.isEdit = true
@@ -921,7 +929,29 @@ export default {
         },
     },
     created() {
-        this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                console.log("🚓 res.data.GroupData", res.data.GroupData);
+                console.log("🚓🚓 (brfore)groupData: ", this.groupData);
+                this.saveUserGroup(res.data.GroupData)
+                console.log("🚓🚓🚓 (after)groupData: ", this.groupData);
+                this.isShowBtn = this.groupData.RoleLv2 == "T"
+
+                if(this.isShowBtn){
+                    this.initData()
+                }
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     }
 }
 </script>

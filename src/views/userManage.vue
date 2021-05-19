@@ -21,7 +21,7 @@
           hide-default-footer
           disable-pagination
           disable-sort
-          dense
+          dense class="theme-table"
           :items="methodList"
           :headers="headers">
           <template v-slot:item.UserLv1="{ item }">
@@ -80,7 +80,7 @@
       <v-spacer></v-spacer>
       <v-col cols="10"/>
       <v-col cols="2" class="text-right">
-        <v-btn color=primary @click="save">
+        <v-btn class="btn-memo white--text" @click="save">
           <v-icon>mdi-content-save</v-icon>存檔    
         </v-btn>
       </v-col>
@@ -89,7 +89,7 @@
 </template>
 <script>
   import { fetchOrganization } from '@/apis/organization' 
-  import { fetchUserAuth, userAuthUpdate } from '@/apis/access'
+  import { fetchUserAuth, userAuthUpdate, canInUpdate } from '@/apis/access'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { mapState, mapActions } from 'vuex'
 
@@ -101,13 +101,13 @@ export default {
         departList: [],
         departSelect: '',
         headers:[
-            { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '登入用戶', value: 'UserLv1', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '行安幕僚', value: 'UserLv2', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '職安幕僚', value: 'UserLv3', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '高階主管', value: 'UserLv4', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '系統管理員', value: 'UserLv5', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '登入用戶', value: 'UserLv1', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '行安幕僚', value: 'UserLv2', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '職安幕僚', value: 'UserLv3', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '高階主管', value: 'UserLv4', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '系統管理員', value: 'UserLv5', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
         ]
         }),
         components: {
@@ -119,6 +119,8 @@ export default {
         computed: {
             ...mapState ('user', {
                 userData: state => state.userData,  // 使用者基本資料
+                groupData: state => state.groupData,  // 使用者基本資料
+                funcIdList: state => state.funcIdList,  // 使用者基本資料
             }),
             compute_name:function() {
 
@@ -128,6 +130,10 @@ export default {
             ...mapActions('system', [
                 'chMsgbar',  // messageBar
                 'chLoadingShow'  // 切換 loading 圖顯示
+            ]),
+            ...mapActions('user', [
+                'saveUserGroup',  // 儲存使用者權限(群組)資料
+                'saveFuncIdList'
             ]),
             
             save() {
@@ -158,10 +164,39 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '送出成功' })
+
+                        //更新 FunIdlist
+                        canInUpdate({
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                        }).then(res => {
+                            if (res.data.ErrorCode == 0) {
+                              console.log("👾👾 res.data: ", res.data);
+                              this.saveFuncIdList(res.data.FunctionsAuthorData)
+                              
+                              更新groupData
+                              let fResult = this.tableItems.find(item => item.PeopleId == this.userData.UserId)
+                              this.saveUserGroup({
+                                RoleLv1: fResult.RoleLv1,
+                                RoleLv2: fResult.RoleLv2,
+                                RoleLv3: fResult.RoleLv3,
+                                RoleLv4: fResult.RoleLv4,
+                                RoleLv5: fResult.RoleLv5
+                              })
+
+                              console.log("userManager全域的groupData: ", this.groupData);
+                            }
+                        }).catch( err => {
+                            console.log(err)
+                        }).finally(() => {
+                        })
+
+                        
                     } else {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
+                    console.log(err);
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
                     this.chLoadingShow()
@@ -264,7 +299,8 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                   this.tableItems = JSON.parse(res.data.order_list)
-                    console.log("抓人員權限表 res.data: ", this.tableItems)
+                    console.log("抓人員權限表 res.data: ", res.data)
+                    console.log("抓人員權限表 tableItems: ", this.tableItems)
                     // methodList:[
                     // { 
                     //     methodName:"危害通報頁面",	

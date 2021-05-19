@@ -18,15 +18,15 @@
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2 btn-modify"
+                <v-btn dark class="ma-2 btn-modify" v-if="isShowBtn"
                     :to="`/smis/car-harmdb/harms/${id}/edit`"
                 >編輯</v-btn>
 
-                <v-btn dark  class="ma-2 btn-delete"
+                <v-btn dark  class="ma-2 btn-delete" v-if="isShowBtn"
                     @click="del"
                 >作廢</v-btn>
 
-                <v-btn dark  class="ma-2 btn-add"
+                <v-btn dark  class="ma-2 btn-add" v-if="isShowBtn"
                     @click="save"
                 >申請措施審核</v-btn>
             </template>
@@ -37,6 +37,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -47,6 +48,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
@@ -60,6 +62,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -68,12 +71,32 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj: ", obj);
             this.id = obj.EndangerCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.controls ]  // 控制措施
+
+            //敲門
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    console.log("userData: ", this.userData);
+                    console.log("groupData: ", this.groupData);
+                    this.isShowBtn = this.groupData.RoleLv2 == "T";
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
         },
         // 作廢
         del() {
@@ -132,6 +155,7 @@ export default {
         },
     },
     created() {
+        console.log("created: this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
     }
 }

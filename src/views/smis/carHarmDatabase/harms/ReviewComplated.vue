@@ -147,27 +147,27 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="showDialog(true)"
-                    v-if="status == 2"
+                    v-if="status == 2 && isShowBtn"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="save"
-                    v-if="status == 2"
+                    v-if="status == 2 && isShowBtn"
                 >同意措施執行</v-btn>
 
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2 btn-modify"
                     @click="rerun"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn"
                 >重提危害</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="closeCase"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn"
                 >申請結案</v-btn>
             </template>
         </v-col>
@@ -245,6 +245,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import FileListShow from '@/components/FileListShow.vue'
@@ -256,6 +257,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         topItems: [],  // 上面的欄位
@@ -296,6 +298,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -311,6 +314,9 @@ export default {
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         setShowData(obj) {
             this.id = obj.EndangerCode  // 編號
@@ -321,6 +327,25 @@ export default {
             // 重組編號下拉選單列表
             this.ctrlDriveId = this.tableItems.map(item => item.ProcCode )
             this.uploads = this.tableItems
+
+            //敲門
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    if(this.status == 2){
+                        this.isShowBtn = this.groupData.RoleLv4 == "T";
+                    }
+                    else if(this.status == 3){
+                        this.isShowBtn = this.groupData.RoleLv2 == "T";
+                    }
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
         },
         showDialog(bool) {
             // 若為 true 是退回
@@ -527,6 +552,7 @@ export default {
         },
     },
     created() {
+        console.log("src\views\smis\carHarmDatabase\harms\ReviewComplated.vue");
         this.setShowData(this.itemData)
     }
 }

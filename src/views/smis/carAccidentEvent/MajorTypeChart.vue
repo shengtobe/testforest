@@ -19,6 +19,7 @@
 
 <script>
 import Chart from 'chart.js'
+import { canInUpdate } from '@/apis/access'
 import { mapActions } from 'vuex'
 import { MajorTypeChartData } from '@/assets/js/smisTestData'
 

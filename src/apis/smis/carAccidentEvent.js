@@ -12,6 +12,15 @@ export function fetchEvtTypes(data) { return axios(
     }
 )}
 
+// 要求衍生事故類型清單
+export function fetchEvtTypes2(data) { return axios(
+    {
+        url: '/global/dangerdb/type/query',
+        method: 'post',
+        data,
+    }
+)}
+
 // 搜尋列表
 export function fetchList(data) { return axios(
     {
