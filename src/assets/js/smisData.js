@@ -160,6 +160,7 @@ export const locationOpts = [
     { text: '北門車站', value: 't2' },
     { text: '鹿滿車站', value: 't3' },
     { text: '竹崎車站', value: 't4' },
+    { text: '木屐寮車站', value: 't4-2' },
     { text: '樟腦寮車站', value: 't5' },
     { text: '獨立山車站', value: 't6' },
     { text: '梨園寮車站', value: 't7' },
