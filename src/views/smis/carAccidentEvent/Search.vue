@@ -371,14 +371,13 @@ export default {
             }).then(res => {
                 console.log("go")
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("行車事故搜尋tableItems: ", this.tableItems)
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
                             element[ele] = '';
                         }
                     }
-                    // 組合發現地點文字
+                    // 組合發現地點文字 AccidentCode
                     let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
                     
                     if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {

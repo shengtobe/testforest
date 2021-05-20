@@ -346,7 +346,6 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj::", obj)
             this.id = obj.EndangerCode  // 編號
             this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -361,8 +360,6 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.saveUserGroup(res.data.GroupData)
-                    console.log("userData: ", this.userData);
-                    console.log("groupData: ", this.groupData);
                     if (this.status == 4) {
                         this.isShowBtn = (this.groupData.RoleLv4 == "T");
                     } else if(this.status == 5) {
@@ -395,14 +392,11 @@ export default {
                     const path = element.file_path[index];
                     const name = element.file_path_name[index];
                     let aa = {FileFullPath: path, FileName: name, FileType: (name.split('.'))[1]} //目前證據
-                    console.log("aa: ", aa)
                     temp.push(aa) //把目前證據丟進去
                 }
-                console.log("temp: ", temp)
                 this.evidenceGroup.push(temp);
             });
             
-            console.log("this.evidenceGroup: ", this.evidenceGroup)
             this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
         },
         // 退回
@@ -444,7 +438,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
@@ -469,7 +462,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {

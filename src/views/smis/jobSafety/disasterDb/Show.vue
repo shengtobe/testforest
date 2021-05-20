@@ -11,13 +11,13 @@
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <template v-if="!done">
-                <v-btn dark class="ma-2 btn-add"
+            <template v-if="!done && isShowBtn">
+                <v-btn dark class="ma-2 btn-add" 
                     :to="`/smis/jobsafety/disasterdb/${id}/edit`"
                 >編輯</v-btn>
 
                 <v-btn dark  class="ma-2 btn-delete"
-                    @click="del"
+                    @click="del" v-if="isShowBtn"
                 >作廢</v-btn>
             </template>
         </v-col>
@@ -27,6 +27,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts } from '@/assets/js/smisData'
 import BottomTable from '@/components/BottomTable.vue'
@@ -36,6 +37,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         bottomItems: [],  // 欄位資料
         code1: '',  // 編號-第1段
@@ -52,6 +54,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -59,6 +62,9 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 向後端取得資料
         fetchData() {
@@ -106,6 +112,20 @@ export default {
             // this.code3 = obj.code3 // 編號-第3段
             this.code3 = "" // 編號-第3段
             this.bottomItems = obj.bottomItems
+            console.log("obj.JobAccidentType: ", obj.JobAccidentType);
+
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    this.isShowBtn = this.groupData.RoleLv3 == "T"
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
             
         },
         // 刪除
@@ -136,6 +156,7 @@ export default {
         },
     },
     created() {
+        console.log("this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
         // this.fetchData()
     }

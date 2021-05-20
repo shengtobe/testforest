@@ -66,17 +66,11 @@ export default {
 
 
                         // 組合衍生事故字串
-                        console.log("1");
                         let accidentsTxt = '<lu>'
-                        console.log("2");
-                        console.log(("res.data.DeriveAccident: ", res.data.DeriveAccident));
-                        console.log("3");
                         res.data.DeriveAccident.forEach(item => {
                             accidentsTxt += `<li>${evtTypes.find(ele => ele.value == item).text}</li>`
                         })
-                        console.log("4");
                         accidentsTxt += '</lu>'
-                        console.log("5");
 
                         let topItems = [  // 上面的欄位
                             { icon: 'mdi-ray-vertex', title: '危害狀態', text: carHarmDbStatus.find(ele => ele.value == res.data.EndangerStatus).text },
@@ -119,7 +113,6 @@ export default {
         },
     },
     created() {
-        console.log("src\views\smis\carHarmDatabase\harms\PageRouter.vue");
         this.fetchData()
     }
 }

@@ -256,6 +256,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { disasterTypeOpts, riskSerious, jobPossibilityOpts } from '@/assets/js/smisData'
 import { createDataDb, updateDataDb, detailOneDb } from '@/apis/smis/jobSafety'
@@ -264,6 +265,7 @@ export default {
     props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
+        isShowBtn: false,
         isEdit: false,  // 是否為編輯
         ipt: {
             code1: '',  // 編號-第1段
@@ -319,6 +321,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -334,6 +337,9 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 初始化資料
         initData() {
@@ -400,13 +406,11 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
+            console.log("設定資料(編輯時): obj:", obj)
             this.ipt.EndangerCode = obj.EndangerCode // 職業危害編碼
             let CodeArr = obj.EndangerCode.split("-")
-            console.log("strrrrrr:" , obj.EndangerCode)
-            console.log("arrrrr:" , CodeArr)
             this.ipt.code1 = CodeArr[0]
             this.ipt.code2 = CodeArr[1]
-            console.log("code1:" , this.ipt.code1)
             this.ipt.JobName = obj.JobName // 2作業名稱
             this.ipt.JobContent = obj.JobContent // 3操作工作內容
             this.ipt.JobCycle = obj.JobCycle // 4作業週期
@@ -555,7 +559,25 @@ export default {
         },
     },
     created() {
-        this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv3 == "T"
+
+                if(this.isShowBtn)
+                    this.initData()
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     }
 }
 </script>

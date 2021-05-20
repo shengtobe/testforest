@@ -602,7 +602,6 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                     }
                 }).catch(err => {
                     console.log(err)

@@ -76,7 +76,6 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj: ", obj);
             this.id = obj.EndangerCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -89,8 +88,6 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.saveUserGroup(res.data.GroupData)
-                    console.log("userData: ", this.userData);
-                    console.log("groupData: ", this.groupData);
                     this.isShowBtn = this.groupData.RoleLv2 == "T";
                 }
             }).catch( err => {
@@ -112,7 +109,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
@@ -143,7 +139,6 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                     }
                 }).catch(err => {
                     console.log(err)
@@ -155,7 +150,6 @@ export default {
         },
     },
     created() {
-        console.log("created: this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
     }
 }

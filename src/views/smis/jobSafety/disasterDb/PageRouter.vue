@@ -51,11 +51,13 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("router res.data: ", res.data);
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.AccidentStatus  // 狀態
                     // 設定下面的欄位資料
+                    console.log("1");
                     let bottomItems = [
                         { dataType: 'text', oneline: true, icon: 'none', title: '作業名稱', text: res.data.JobName },
                         { dataType: 'text', oneline: true, icon: 'none', title: '操作工作內容', text: res.data.JobContent },
@@ -78,6 +80,7 @@ export default {
                         { dataType: 'text', oneline: true, icon: 'none', title: '風險等級', text: jobLevelOpts.find(item => item.value == res.data.RiskLevel).text },
                         { dataType: 'text', oneline: true, icon: 'none', title: '控制後風險等級', text: jobLevelOpts.find(item => item.value == res.data.RiskLevelC).text },
                     ]
+                    console.log("2");
 
                     // if (this.status > 1) {
                     //     bottomItems.push({ oneline: true, title: '公傷假', text: `${res.data.injuryLeaveStart} ~ ${res.data.injuryLeaveEnd}` })

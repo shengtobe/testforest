@@ -881,7 +881,6 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
-						console.log("👻 obj: ", obj);
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
             this.id = obj.EndangerID  // 危害通報編號
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -894,10 +893,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("🦋 res.data.GroupData", res.data.GroupData);
-                    console.log("🦋🦋 (brfore)groupData: ", this.groupData);
                     this.saveUserGroup(res.data.GroupData)
-                    console.log("🦋🦋🦋 (after))groupData: ", this.groupData);
                     this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
                 }
             }).catch( err => {

@@ -258,8 +258,6 @@ export default {
         }).then(res => {
             if (res.data.ErrorCode == 0) {
                 this.saveUserGroup(res.data.GroupData)
-                console.log("userData: ", this.userData);
-                console.log("groupData: ", this.groupData);
                 this.isShowBtn = this.groupData.RoleLv2 == "T";
 
                 if(this.isShowBtn){

@@ -177,6 +177,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
@@ -189,6 +190,7 @@ export default {
     props: ['id'],  //路由參數
     data: () => ({
         valid: true,  // 表單是否驗證欄位
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         isEdit: false,  // 是否為編輯
         ipt: {},
         defaultIpt: {
@@ -227,6 +229,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -241,6 +244,9 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 初始化資料
         async initData() {
@@ -451,7 +457,26 @@ export default {
         },
     },
     created() {
-        this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv2 == "T"
+
+                if(this.isShowBtn){
+                    this.initData()
+                }
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     }
 }
 </script>

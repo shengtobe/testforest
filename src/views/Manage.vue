@@ -333,7 +333,6 @@ export default {
         ]),
         FShow(FID){ // 是否有這個訪問權限
             // return (this.userFunc.find(item => item == FID) == null)
-            console.log("userFunc: ", this.userFunc);
             return (!this.userFunc.find(item => item == FID))
         },
         // 登出
@@ -356,7 +355,6 @@ export default {
         // 檢查 localStorage
         checkLocalStorage() {
             // 檢查是否有 jwt、使用者資訊、權限資訊
-            console.log("✍️groupData: ", this.groupData);
             if (
                 localStorage.getItem('jwt') == null ||
                 localStorage.getItem('userData') == null ||
@@ -369,10 +367,7 @@ export default {
             try {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
-                console.log("UData: ", UData);
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
-                console.log("funcShow:", this.funcShow);
-                console.log("DeptList:", UData.DeptList);
                 this.saveUserProfile(UData)
                 
                 // 儲存權限資訊
@@ -380,29 +375,22 @@ export default {
                 //
                 this.saveFuncIdList(UData.FunctionsAuthorData)
 
-                console.log("✍️✍userFunc: ", this.userFunc)
-                console.log("✍️✍️✍️groupData: ", this.groupData)
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
-                console.log("Manage頁: role: ", this.role)
             } catch (e) {
                 this.logout()
             }
         },
     },
     created() {
-        console.log("🎬🎬🎬Manage in");
         
-        // console.log("🎬🎬user: ", store.state.user.userData.FunctionsAuthorData);
-        
-        // console.log("🎬🎬user.userData: ", store.state.user.userData.FunctionsAuthorData);
-        // console.log("show?: ", store.state.user.userData.FunctionsAuthorData.find(item => item == 'SMS_1'));
         // store.state.user.groupData
         // ------------ 已寫好的登入功能，先備註掉 -------------
         // if(!this.groupData){
         //     this.checkLocalStorage()
         // }
+        console.log("Manage %% this.userFunc: ", this.userFunc);
         this.checkLocalStorage()
     },
 }

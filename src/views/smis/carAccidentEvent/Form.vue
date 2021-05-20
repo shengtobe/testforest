@@ -654,7 +654,6 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.evtTypeOpts = JSON.parse(res.data.order_list)
-                    console.log("evtTypeOpts", this.evtTypeOpts);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -666,7 +665,6 @@ export default {
             }).finally(() => {
                 // this.chLoadingShow()
             })
-            console.log("行安編輯/新增 初始:", this.id);
             if (this.id != undefined) {
                 // -------------- 編輯前先詢問有無權限 -------------- 
                 
@@ -679,7 +677,6 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        console.log("/sms/event/detail: ", res.data)
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
@@ -934,15 +931,11 @@ export default {
             OperatorID: this.userData.UserId,  // 操作人id
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                console.log("🚓 res.data.GroupData", res.data.GroupData);
-                console.log("🚓🚓 (brfore)groupData: ", this.groupData);
                 this.saveUserGroup(res.data.GroupData)
-                console.log("🚓🚓🚓 (after)groupData: ", this.groupData);
                 this.isShowBtn = this.groupData.RoleLv2 == "T"
 
-                if(this.isShowBtn){
+                if(this.isShowBtn)
                     this.initData()
-                }
                 else{
                     alert("無權限做此操作")
                     this.$router.push('/')

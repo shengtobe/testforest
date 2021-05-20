@@ -428,6 +428,7 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         ipt: {
             accidents: [],  // 衍生事故(給組件的預設值)
         },
@@ -746,10 +747,7 @@ export default {
             OperatorID: this.userData.UserId,  // 操作人id
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                console.log("🚓 res.data.GroupData", res.data.GroupData);
-                console.log("🚓🚓 (brfore)groupData: ", this.groupData);
                 this.saveUserGroup(res.data.GroupData)
-                console.log("🚓🚓🚓 (after)groupData: ", this.groupData);
                 this.isShowBtn = this.groupData.RoleLv2 == "T"
 
                 if(this.isShowBtn){

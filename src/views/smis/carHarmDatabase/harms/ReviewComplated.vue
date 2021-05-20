@@ -400,7 +400,6 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                     }
                 }).catch(err => {
                     console.log(err)
@@ -424,7 +423,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
@@ -552,7 +550,6 @@ export default {
         },
     },
     created() {
-        console.log("src\views\smis\carHarmDatabase\harms\ReviewComplated.vue");
         this.setShowData(this.itemData)
     }
 }

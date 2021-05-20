@@ -347,7 +347,6 @@ export default {
                                 }
                             }
                         });
-                        console.log("勾選X 關鍵字√ tableItems", this.tableItems)
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -425,7 +424,6 @@ export default {
         searchAllEndanger() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -466,7 +464,6 @@ export default {
         searchHighRisk() { 
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -501,8 +498,6 @@ export default {
                         this.tableItems.push(element)
                     }
                 });
-                console.log("tempTableItems", this.tempTableItems)
-                console.log("tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -514,7 +509,6 @@ export default {
         caseFetch() { //caseFetch
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -549,8 +543,6 @@ export default {
                         this.tableItems.push(element)
                     }
                 });
-                console.log("已立案tempTableItems", this.tempTableItems)
-                console.log("已立案tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -562,7 +554,6 @@ export default {
         checkFetch() { //checkFetch
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -601,8 +592,6 @@ export default {
                             break;
                     }
                 });
-                console.log("已立案tempTableItems", this.tempTableItems)
-                console.log("已立案tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -656,8 +645,6 @@ export default {
         }).then(res => {
             if (res.data.ErrorCode == 0) {
                 this.saveUserGroup(res.data.GroupData)
-                console.log("userData: ", this.userData);
-                console.log("groupData: ", this.groupData);
                 this.isShowBtn = this.groupData.RoleLv2 == "T";
             }
         }).catch( err => {

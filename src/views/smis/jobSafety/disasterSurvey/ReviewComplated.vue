@@ -99,27 +99,27 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="showDialog(true)"
-                    v-if="status == 2"
+                    v-if="status == 2 && isShowBtn"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="save"
-                    v-if="status == 2"
+                    v-if="status == 2 && isShowBtn"
                 >同意措施執行</v-btn>
 
                 <v-btn dark  class="ma-2 btn-memo"
                     @click="rerun"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn"
                 >重提事故事件</v-btn>
 
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="closeCase"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn"
                 >申請結案</v-btn>
             </template>
         </v-col>
@@ -165,6 +165,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
@@ -177,6 +178,7 @@ export default {
         id: '',  // 編號
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 上傳的檔案
@@ -198,6 +200,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -206,6 +209,9 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         setShowData(obj) {
             this.id = obj.AccidentCode  // 編號
@@ -213,6 +219,23 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.FileCount ]  // 檔案附件
+
+            //敲門
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    if(this.status == 2) // 需主管同意
+                        this.isShowBtn = this.groupData.RoleLv4 == "T";
+                    else if(this.status == 3) // 行安人員 
+                        this.isShowBtn = this.groupData.RoleLv3 == "T";
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
 
             // 危害通報連結 (依通報狀態連至不同頁面)
             // let arr = obj.notifyLinks.map(item => {
