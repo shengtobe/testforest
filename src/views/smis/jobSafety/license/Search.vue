@@ -71,7 +71,7 @@
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small class="btn-delete"
+                        <v-btn fab small dark class="btn-delete"
                             @click="godel(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
