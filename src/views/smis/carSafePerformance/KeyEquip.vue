@@ -8,7 +8,7 @@
       </v-btn>
     </v-col>
     <v-col cols="12" md="8" class="text-center">
-      <h2 class="label-title mb-4">{{decodeURIComponent(acdname)}}安全關鍵設備可靠度</h2>
+      <h2 class="label-title mb-4">安全關鍵設備可靠度</h2>
     </v-col>
     <v-col cols="12" class="text-center align-center">
       <v-row>
@@ -66,7 +66,6 @@ import Pagination from '@/components/Pagination.vue'
 import { accidentResonQueryList } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
-  props:['acdname'],
   data: () => ({
     yearSelect:[],
     Chart:{

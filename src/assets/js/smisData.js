@@ -490,3 +490,137 @@ export const jobUrineOpts = [
     { text: '++++', value: "6" },
     { text: '未選擇', value: '' },
 ]
+
+//行安績效 - 三層原因
+export const carAccReason = {
+    ReasonLv1: [
+        {
+            text: '內部因素',
+            value: 'IC'
+        },
+        {
+            text: '外部因素',
+            value: 'EC'
+        },
+        {
+            text: '未查明原因或其他',
+            value: 'Other'
+        },
+    ],
+    ReasonLv2: {
+        'IC': [
+            {
+                text: '人為因素',
+                value: '2_HF'
+            },
+            {
+                text: '車輛',
+                value: '2_RS'
+            },
+            {
+                text: '路線設施',
+                value: '2_INF'
+            },
+            {
+                text: '使用者',
+                value: '2_RU'
+            },
+        ],
+        'EC': [
+            {
+                text: '第三方',
+                value: '2_TrdP'
+            },
+            {
+                text: '天氣與環境',
+                value: '2_WE'
+            },
+        ]
+    },
+    ReasonLv3: {
+        '2_HF': [
+            {
+                text: '維修人員',
+                value: '3_TSM'
+            },
+            {
+                text: '調度員及號誌員',
+                value: '3_TOSS'
+            },
+            {
+                text: '司機員',
+                value: '3_TD'
+            },
+            {
+                text: '其他人為因素',
+                value: '3_HFOther'
+            },
+        ],
+        '2_RS': [
+            {
+                text: '車輪',
+                value: '3_RG'
+            },
+            {
+                text: '其他車輛因素',
+                value: '3_RSOther'
+            },
+        ],
+        '2_INF': [
+            {
+                text: '軌道與相關構造',
+                value: '3_TS'
+            },
+            {
+                text: '電力系統',
+                value: '3_ES'
+            },
+            {
+                text: '其他路線因素',
+                value: '3_INFOther'
+            },
+        ],
+        '2_RU': [
+            {
+                text: '乘客',
+                value: '3_P'
+            },
+            {
+                text: '其他使用者因素',
+                value: '3_RUOther'
+            },
+        ],
+        '2_TrdP': [
+            {
+                text: '入侵路線',
+                value: '3_Tre'
+            },
+            {
+                text: '車輛入侵平交道',
+                value: '3_VLC'
+            },
+            {
+                text: '人員入侵平交道',
+                value: '3_PLC'
+            },
+            {
+                text: '人員在公共區域',
+                value: '3_PRA'
+            },
+            {
+                text: '其他第三方因素',
+                value: '3_TrdPOther'
+            },
+        ],
+        '2_WE': [
+            {
+                text: '環境',
+                value: '3_Env'
+            },
+            {
+                text: '天氣',
+                value: '3_Wea'
+            },
+        ]
+    }
+}

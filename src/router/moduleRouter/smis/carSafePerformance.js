@@ -13,27 +13,26 @@ export const CarSafePerformanceRouter = [
     //-------- 第一、二層 -------
     {
         linkText: '趨勢圖',
-        path: '/smis/car-safe-performance/:acdname/accident-trend',
+        path: '/smis/car-safe-performance/:acdcode/accident-trend/:acdname',
         props: true,
         component: () => import('@/views/smis/carSafePerformance/AccidentTrend.vue')
     },
     {
         linkText: '趨勢分析',
-        path: '/smis/car-safe-performance/:acdname/accident-analysis',
+        path: '/smis/car-safe-performance/:acdcode/accident-analysis/:acdname',
         props: true,
         component: () => import('@/views/smis/carSafePerformance/AccidentReasonAnaly.vue')
     },
     {
         linkText: '年分析',
-        path: '/smis/car-safe-performance/:acdname/year-analysis',
+        path: '/smis/car-safe-performance/:acdcode/year-analysis/:acdname',
         props: true,
         component: () => import('@/views/smis/carSafePerformance/AccidentYearAnaly.vue')
     },
     //----- 第三層 -----
     {
         linkText: '安全關鍵設備可靠度',
-        path: '/smis/car-safe-performance/:acdname/key-equip',
-        props: true,
+        path: '/smis/car-safe-performance/key-equip',
         component: () => import('@/views/smis/carSafePerformance/KeyEquip.vue')
     },
     {
