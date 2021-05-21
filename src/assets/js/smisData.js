@@ -526,3 +526,10 @@ export const jobUrineOpts = [
     { text: '++++', value: "6" },
     { text: '未選擇', value: '' },
 ]
+// 行車安全資訊 慢行通報
+export const crawlReportLineOpts = [
+    { text: '本線', value: "1" },
+    { text: '祝山線', value: "2" },
+    { text: '眠月線', value: "3" },
+    { text: '山水線', value: "4" },
+]

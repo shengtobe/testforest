@@ -87,9 +87,9 @@
                                     <strong class="black--text">管理系統</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/access">功能清單權限管理</v-list-item>
+                                <v-list-item :disabled="(FShow('SMS_33'))" @click="showNav = false" to="/access">功能清單權限管理</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/access/userManage">人員權限管理</v-list-item>
+                                <v-list-item :disabled="(FShow('SMS_33'))" @click="showNav = false" to="/access/userManage">人員權限管理</v-list-item>
                                 <v-divider></v-divider>
                             </v-list>
                         </v-card>
@@ -390,7 +390,6 @@ export default {
         // if(!this.groupData){
         //     this.checkLocalStorage()
         // }
-        console.log("Manage %% this.userFunc: ", this.userFunc);
         this.checkLocalStorage()
     },
 }
