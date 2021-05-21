@@ -41,26 +41,26 @@
             <template v-if="!done">
                 <v-btn class="ma-2" dark
                     color="brown"
-                    @click="excel"
+                    @click="excel" v-if="isShowBtn"
                 >竣工單</v-btn>
 
                 <v-btn class="ma-2" dark
                     color="purple"
-                    @click="delay.dialogShow = true"
+                    @click="delay.dialogShow = true" v-if="isShowBtn"
                 >延後驗收</v-btn>
 
                 <v-btn class="ma-2"
-                    color="error"
+                    color="error" v-if="isShowBtn"
                     @click="showDialog(true)"
                 >退回</v-btn>
 
                 <v-btn class="ma-2" dark
-                    color="yellow darken-2"
+                    color="yellow darken-2" v-if="isShowBtn"
                     @click="showDialog(false)"
                 >徹銷</v-btn>
 
                 <v-btn dark class="ma-2"
-                    color="success"
+                    color="success" v-if="isShowBtn"
                     @click="save"
                 >同意驗收</v-btn>
             </template>
@@ -191,6 +191,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 工單編號
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         isLoading: false,  // 是否讀取中
         valid: false,  // 是否驗證欄位 (方便測試先取消)
@@ -235,6 +236,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            this.isShowBtn = obj.CreatorID == this.userData.UserId
             this.id = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料

@@ -137,37 +137,37 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="dialog = true"
-                    v-if="status == 4 || status == 7"
+                    v-if="(status == 4 || status == 7) && isShowBtn"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="save"
-                    v-if="status == 4"
+                    v-if="status == 4  && isShowBtn"
                 >同意結案</v-btn>
 
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="del"
-                    v-if="status == 5 && version.nowId == version.lasterId"
+                    v-if="status == 5 && version.nowId == version.lasterId && isShowBtn"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2 btn-detail"
                     @click="rerun"
-                    v-if="status == 5 && version.nowId == version.lasterId"
+                    v-if="status == 5 && version.nowId == version.lasterId && isShowBtn"
                 >重提危害</v-btn>
 
                 <v-btn dark  class="ma-2 btn-expansion"
                     @click="showVersion"
-                    v-if="status == 5"
+                    v-if="status == 5 && isShowBtn"
                 >編修歷程紀錄</v-btn>
 
                 <v-btn dark  class="ma-2 btn-modify"
                     :to="`/smis/car-harmdb/harms/${id}/update`"
-                    v-if="status == 5 && version.nowId == version.lasterId"
+                    v-if="status == 5 && version.nowId == version.lasterId && isShowBtn"
                 >危害更新</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="agreeDel"
-                    v-if="status == 7"
+                    v-if="status == 7 && isShowBtn"
                 >同意作廢</v-btn>
             </template>
         </v-col>
@@ -270,6 +270,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
@@ -280,6 +281,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         topItems: [],  // 上面的欄位
@@ -323,6 +325,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -338,9 +341,11 @@ export default {
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj::", obj)
             this.id = obj.EndangerCode  // 編號
             this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -348,6 +353,24 @@ export default {
             this.tableItems = [ ...obj.controls ]  // 控制措施
             //tableItems是多個控制措施
             this.files = [];
+            //敲門
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    if (this.status == 4) {
+                        this.isShowBtn = (this.groupData.RoleLv4 == "T");
+                    } else if(this.status == 5) {
+                        this.isShowBtn = (this.groupData.RoleLv2 == "T");
+                    }
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
+            //
             this.tableItems.forEach(control => {
                 let aa = {FileFullPath: control.regul_file_path, FileName: control.regul_file_path_name, FileType: (control.regul_file_path_name.split('.'))[1]}
                 this.files.push(aa)
@@ -369,14 +392,11 @@ export default {
                     const path = element.file_path[index];
                     const name = element.file_path_name[index];
                     let aa = {FileFullPath: path, FileName: name, FileType: (name.split('.'))[1]} //目前證據
-                    console.log("aa: ", aa)
                     temp.push(aa) //把目前證據丟進去
                 }
-                console.log("temp: ", temp)
                 this.evidenceGroup.push(temp);
             });
             
-            console.log("this.evidenceGroup: ", this.evidenceGroup)
             this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
         },
         // 退回
@@ -418,7 +438,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
@@ -443,7 +462,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {

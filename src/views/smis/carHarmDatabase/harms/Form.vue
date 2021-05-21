@@ -413,6 +413,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
 import { departOptions } from '@/assets/js/departOption'
 import { operateModes, riskSerious, riskFrequency } from '@/assets/js/smisData'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
@@ -427,6 +428,7 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         ipt: {
             accidents: [],  // 衍生事故(給組件的預設值)
         },
@@ -504,6 +506,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     // watch: {
@@ -517,6 +520,9 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 初始化資料
         async initData() {
@@ -736,7 +742,26 @@ export default {
         },
     },
     created() {
-        this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv2 == "T"
+
+                if(this.isShowBtn){
+                    this.initData()
+                }
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     }
 }
 </script>

@@ -289,6 +289,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchOrderList, fetchWorkOrderOne } from '@/apis/workList/maintain'
+import { checkEnter } from '@/apis/access'
 import Pagination from '@/components/Pagination.vue'
 
 export default {
@@ -339,6 +340,7 @@ export default {
         ]),
         // 查詢資料
         search() {
+            
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
 

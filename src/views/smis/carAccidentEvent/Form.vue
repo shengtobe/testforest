@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px" class="label-header">
-    <h2 class="mb-4 label-title">
+    <h2 class="mb-4 label-title" >
         {{ (this.isEdit)? `行車事故事件編輯 (編號：${ id })` : '行車事故事件新增' }}
     </h2>
 
@@ -545,17 +545,19 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { evtTypes, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '@/assets/js/smisData'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import { createData, fetchOne, updateData, updateFile, deleteFile } from '@/apis/smis/carAccidentEvent'
+import { createData, fetchOne, updateData, updateFile, deleteFile, fetchEvtTypes } from '@/apis/smis/carAccidentEvent'
 
 export default {
     props: ['id'],  //路由參數
     data: () => ({
         routeId: '',  // 編號
+        isShowBtn: false,
         isEdit: false,  // 是否為編輯狀態
         ipt: {},
         defaultIpt: {
@@ -568,7 +570,7 @@ export default {
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
-            evtType: 'M1', // 事故類型
+            evtType: '', // 事故類型
             slope: '',  // 路線坡度
             curve: '',  // 曲線半徑
             loadType: [],  // 路段型態
@@ -605,7 +607,7 @@ export default {
             fenceEq: ['圍籬', '監視設備', '其他'],  // 鐵路設施設備及圍籬之
             accidentFactors1: AccidentFactors1,  // 第一層因素
         },
-        evtTypeOpts: evtTypes,  // 事故類型下拉選單
+        evtTypeOpts: [],  // 事故類型下拉選單
         showFiles: [],  // 要顯示的縮圖
     }),
     components: {
@@ -615,6 +617,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
         accidentFOpts2() {
             return AccidentFactors2.filter(item => item.parent == this.ipt.accidentFactors1)
@@ -638,11 +641,33 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單欄位
-
+            // 初始化事故類型 fetchEvtTypes
+            fetchEvtTypes({
+                OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.evtTypeOpts = JSON.parse(res.data.order_list)
+                } else {
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，事故類型讀取失敗')
+            }).finally(() => {
+                // this.chLoadingShow()
+            })
             if (this.id != undefined) {
+                // -------------- 編輯前先詢問有無權限 -------------- 
+                
                 // -------------- 編輯時 -------------- 
                 this.chLoadingShow()
                 this.isEdit = true
@@ -901,7 +926,25 @@ export default {
         },
     },
     created() {
-        this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv2 == "T"
+
+                if(this.isShowBtn)
+                    this.initData()
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     }
 }
 </script>

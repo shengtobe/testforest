@@ -13,8 +13,8 @@
     <!-- 檔案列表 -->
     <FileListShow :fileList="files" title="檔案列表" />
     
-    <v-row class="mt-8 mb-4 label-header">
-        <v-col cols="12">
+    <v-row class="mt-8 mb-4 label-header" >
+        <v-col cols="12" v-if="isShowBtn">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>回覆處理
             </h3>
@@ -44,10 +44,15 @@
                 ></v-text-field>
             </v-sheet>
         </v-col>
+				
 
         <v-col cols="12" class="text-center" v-if="status == 1">
+						<v-btn dark class="mr-4 btn-close"
+                @click="closeWindow"
+            >關閉視窗</v-btn>
+						
             <v-btn dark class="btn-add"
-                @click="sendReplay"
+                @click="sendReplay" v-if="isShowBtn"
             >送出回覆</v-btn>
         </v-col>
     </v-row>
@@ -153,7 +158,7 @@
             </v-row>
         </v-sheet> -->
 
-        <v-col cols="12" sm="4" md="3" v-if="status == 2">
+        <v-col cols="12" sm="4" md="3" v-if="(status == 2) && isShowBtn">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>以行安立案
             </h3>
@@ -167,7 +172,7 @@
             <p class="red--text mt-n6">{{ pick1 }}</p>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3" v-if="status == 2">
+        <v-col cols="12" sm="4" md="3" v-if="(status == 2) && isShowBtn">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>以職安立案
             </h3>
@@ -440,11 +445,11 @@
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="mr-4 btn-delete"
+                <v-btn dark class="mr-4 btn-delete" v-if="isShowBtn"
                     @click="pressSave(true)"
                 >不立案</v-btn>
 
-                <v-btn dark class="btn-add"
+                <v-btn dark class="btn-add" v-if="isShowBtn"
                     @click="pressSave(false)"
                 >確定立案</v-btn>
             </template>
@@ -499,6 +504,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carAccidentEventStatus, jobDisasterSurveyStatus, carHarmDbStatus, operateModes, riskSerious, riskFrequency, riskLevel, arAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
 import TopBasicTable from '@/components/TopBasicTable.vue'
@@ -518,6 +524,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 危害通報編號
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         NoRecord: 'F',
         status: '',  // 狀態
@@ -699,6 +706,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -707,8 +715,10 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         click1(){
-            console.log("cccccccccccclick")
         },
         selector1Changed(){
             this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
@@ -742,7 +752,6 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("tableItems", this.tableItems)
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -774,7 +783,6 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("D tableItems", this.tableItems)
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -819,7 +827,6 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("D2_2 tableItems", this.tableItems)
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -859,7 +866,6 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("tableItems", this.tableItems)
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -881,6 +887,21 @@ export default {
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.FileCount ]  // 檔案附件
             this.replayMsg = obj.ReplyMsg  // 回覆訊息
+
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
+
+            
         },
         // 連結行車事故事件
         // connCarEvt() {

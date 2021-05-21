@@ -47,6 +47,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { canInUpdate } from '@/apis/access'
 
 export default {
     data: () => ({
@@ -68,6 +69,9 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 向後端取得資料
         fetchData() {

@@ -504,6 +504,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { departOptions } from '@/assets/js/departOption'
 import AccidentCheckbox from '@/components/smis/AccidentCheckbox.vue'
@@ -519,6 +520,7 @@ export default {
     data: () => ({
         test13:'test13',
         valid: true,  // 表單是否驗證欄位
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         searchTemp: {},  // 關聯子系統 dialog 暫存資料用
         eqCodeShow: false,  // 關聯子系統 dialog 是否顯示
@@ -619,6 +621,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     watch: {
@@ -634,6 +637,9 @@ export default {
             'chViewDialog',  // 檢視內容 dialog
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         initData() {
 
@@ -645,7 +651,6 @@ export default {
                     EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
-                    console.log("fetchOne OK")
                     if (res.data.ErrorCode == 0) {
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
@@ -745,7 +750,6 @@ export default {
             this.eqCodeShow = false
         },
         setInitDate(obj) {
-            console.log("obj~~~~~: ", obj)
             this.ipt.desc = obj.EndangerDesp // 危害說明
             this.ipt.reason = obj.EndangerReason  // 危害直接成因
             this.ipt.indirectReason = obj.EndangerIndirect  // 可能的危害間接原因
@@ -763,7 +767,6 @@ export default {
             this.ipt.accidents = [ ...obj.DeriveAccident ]  // 衍生事故
             this.ipt.controlChoose = [ ...obj.controls ]  // 已選控制措施 
             this.controlIdOpts = [ ...obj.controls.map(item => item.ProcCode) ]  // 已選控制措施 ProcCode
-            console.log("this.controlIdOpts: ", this.controlIdOpts)
 
             // // 重組上傳檔案的控制措施編號下拉選單、檔案列表
             // obj.controls.forEach(item => {
@@ -783,7 +786,6 @@ export default {
             this.pageOpt.page = n
         },
         test(value){
-            console.log("value: ", value)
         },
         // 申請更新
         save() {
@@ -795,7 +797,6 @@ export default {
                     EndangerCode: '',
                     ProcCode: item.ProcCode
                 }))
-                console.log("chooseControlData: ", chooseControlData)
                 sendUpdateData({
                     EndangerCode: this.id,  // 危害編號
                     EndangerDesp: this.ipt.desc,  // 危害說明
@@ -846,8 +847,6 @@ export default {
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
             if(!bool){
-                console.log("this.ipt.files: ", this.ipt.files)
-                console.log("this.showFiles: ", this.showFiles)
             }
         },
         // 移除要上傳的檔案 (組件用)
@@ -855,8 +854,6 @@ export default {
             this.showFiles.splice(idx, 1)
             this.ipt.files.splice(idx, 1)
 
-            console.log("this.ipt.files: ", this.ipt.files)
-            console.log("this.showFiles: ", this.showFiles)
         },
         // 搜尋控制措施
         search() {
@@ -881,9 +878,7 @@ export default {
                     // 'Remark',
                 ],
             }).then(res => {
-                console.log("res.data.order_list: ", res.data.order_list)
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("tableItems: ", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -893,16 +888,12 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            console.log("txt:: ", txt)
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
         },
         // 顯示證據
         showEvidences(item) {
-            console.log("item: ", item)
             this.evidences = [ ...item.file_path ]  // 指派證據檔案路徑
             this.evidencesName = [ ...item.file_path_name ]  // 指派證據檔案名稱
-            console.log("evidences: ", this.evidences)
-            console.log("evidencesName: ", this.evidencesName)
             this.dialogShow = true
         },
         // 增加已選的控制措施
@@ -916,7 +907,6 @@ export default {
         },
         // 刪除已選的控制措施
         delControl(id) {
-            console.log("id: ", id)
             let idx = this.ipt.controlChoose.findIndex(ele => ele.ProcCode == id)
             if(idx != -1){
                 this.ipt.controlChoose.splice(idx, 1)
@@ -927,7 +917,6 @@ export default {
             if(idx2 != -1){
                 this.controlIdOpts.splice(idx2, 1)
             }
-            console.log("this.uploads: ", this.uploads)
             return
 
             // 移除檔案列表
@@ -974,6 +963,27 @@ export default {
         },
     },
     created() {
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv2 == "T"
+
+                if(this.isShowBtn){
+                    this.initData()
+                }
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
+
         this.initData()
     }
 }

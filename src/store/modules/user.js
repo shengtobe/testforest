@@ -1,12 +1,14 @@
 import { 
     SET_USER_PROFILE,
-    SET_USER_GROUP
+    SET_USER_GROUP,
+    SET_FUNCID_LIST
 } from '../mutation-types'
 
 // state
 const state = {
     userData: null,  // 使用者基本資料
     groupData: null,  // 使用者權限(群組)資料
+    funcIdList: [], // 可訪問功能之清單
     key: [ 15, 21, 3, 45, 5, 206, 137, 98, 59, 110, 121, 212, 13, 14, 215, 176 ],  // 128 位元的金鑰(數字限制 0~255)
 }
 
@@ -25,6 +27,10 @@ const mutations = {
     [SET_USER_GROUP] (state, payload) {
         state.groupData = payload  //是否顯示
     },
+    // 設定可訪問功能之清單
+    [SET_FUNCID_LIST] (state, payload) {
+        state.funcIdList = payload  //是否顯示
+    },
 }
 
 // actions
@@ -37,6 +43,10 @@ const actions = {
     saveUserGroup ({ commit }, payload) {
         commit('SET_USER_GROUP', payload)
     },
+    // 儲存可訪問功能之清單
+    saveFuncIdList ({ commit }, payload) {
+        commit('SET_FUNCID_LIST', payload)
+    }
 }
 
 export default {

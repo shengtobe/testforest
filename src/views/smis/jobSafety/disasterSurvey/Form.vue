@@ -622,6 +622,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 // import { createWorkOrder } from '@/apis/workList/maintain'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
@@ -637,6 +638,7 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否編輯中
+        isShowBtn: false,
         evidences: [],  // 改善措施證據
         showFiles: [],  // 要顯示的縮圖
         ipt: {},
@@ -751,6 +753,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
         vehicleLv2opts() {
             return vehicleOpts[this.ipt.vehicleLv1]
@@ -774,6 +777,9 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 初始化資料
         initData() {
@@ -1132,7 +1138,25 @@ export default {
         },
     },
     created() {
-        this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv3 == "T"
+
+                if(this.isShowBtn)
+                    this.initData()
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     }
 }
 </script>

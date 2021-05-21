@@ -11,7 +11,7 @@
           hide-default-footer
           disable-pagination
           disable-sort
-          dense
+          dense class="theme-table"
           :items="methodList"
           :headers="headers">
           <template v-slot:item.UserLv1="{ item }">
@@ -70,7 +70,7 @@
       <v-spacer></v-spacer>
       <v-col cols="10"/>
       <v-col cols="2" class="text-right">
-        <v-btn color=primary @click="save">
+        <v-btn class="btn-memo white--text" @click="save">
           <v-icon>mdi-content-save</v-icon>存檔    
         </v-btn>
       </v-col>
@@ -79,7 +79,7 @@
 </template>
 <script>
   import { fetchOrganization } from '@/apis/organization' 
-  import { fetchGroupAuth, groupAuthUpdate } from '@/apis/access'
+  import { fetchGroupAuth, groupAuthUpdate, canInUpdate } from '@/apis/access'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { mapState, mapActions } from 'vuex'
 
@@ -91,13 +91,13 @@ export default {
         departList: [],
         departSelect: '',
         headers:[
-            { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '登入用戶', value: 'UserLv1', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '行安幕僚', value: 'UserLv2', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '職安幕僚', value: 'UserLv3', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '高階主管', value: 'UserLv4', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '系統管理員', value: 'UserLv5', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '登入用戶', value: 'UserLv1', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '行安幕僚', value: 'UserLv2', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '職安幕僚', value: 'UserLv3', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '高階主管', value: 'UserLv4', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '系統管理員', value: 'UserLv5', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
         ]
         }),
         components: {
@@ -109,18 +109,20 @@ export default {
         computed: {
             ...mapState ('user', {
                 userData: state => state.userData,  // 使用者基本資料
+                userFunc: state => state.funcIdList,
             }),
-            compute_name:function() {
-
-            }
         },
         methods: {
             ...mapActions('system', [
                 'chMsgbar',  // messageBar
-                'chLoadingShow'  // 切換 loading 圖顯示
+                'chLoadingShow',  // 切換 loading 圖顯示
+            ]),
+            ...mapActions('user', [
+                'saveFuncIdList'
             ]),
             
             save() {
+
               if (confirm('你確定要儲存此權限設定嗎?')){
                 this.chLoadingShow()
 
@@ -148,6 +150,23 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '送出成功' })
+
+
+                        //更新 FunIdlist
+                        canInUpdate({
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                        }).then(res => {
+                            if (res.data.ErrorCode == 0) {
+                              this.saveFuncIdList(res.data.FunctionsAuthorData)
+                            }
+                        }).catch( err => {
+                            console.log(err)
+                        }).finally(() => {
+                        })
+
+
+                        // this.tableItems.map(item => item.FunctionName )
                     } else {
                         this.$router.push({ path: '/error' })
                     }
@@ -273,6 +292,20 @@ export default {
             }).finally(() => {
                 this.deptLoading = false
             })
+
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                  console.log("🏆🏆res.data: ", res.data)
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
+
+            
         }
 }
 </script>

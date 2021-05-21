@@ -16,22 +16,22 @@
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn class="ma-2 btn-modify"
+                <v-btn class="ma-2 btn-modify" v-if="isShowBtn"
                     color="primary"
                     :to="`/worklist/maintain/${workNumber}/editList`"
                 >編輯</v-btn>
 
-                <v-btn class="ma-2 btn-delete"
+                <v-btn class="ma-2 btn-delete" v-if="isShowBtn"
                     color="error"
                     @click="deleteItem"
                 >刪除</v-btn>
 
-                <v-btn dark class="ma-2 btn-memo"
+                <v-btn dark class="ma-2 btn-memo" v-if="isShowBtn"
                     color="amber darken-1"
                     @click="closeWork"
                 >結案</v-btn>
 
-                <v-btn dark class="ma-2 btn-add"
+                <v-btn dark class="ma-2 btn-add" v-if="isShowBtn"
                     color="success"
                     :to="`/worklist/maintain/${workNumber}/newWork`"
                 >派工</v-btn>
@@ -59,6 +59,8 @@ export default {
     props: ['itemData'],
     data: () => ({
         workNumber: '',  // 工單編號
+        finishMan: '',
+        isShowBtn: false,
         done: false,  // 是否完成頁面操作
         newDispatcher: '',  // 轉單後的新派工人
         topItems: [],  // 上面的欄位
@@ -89,10 +91,10 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            this.isShowBtn = obj.CreatorID == this.userData.UserId || obj.DispatchID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            console.log("this.bottomItems: ",this.bottomItems)
         },
         // 刪除
         deleteItem() {

@@ -13,6 +13,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOne } from '@/apis/smis/carAccidentEvent'
 import { carAccidentEventStatus, evtTypes, locationOpts, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '@/assets/js/smisData'
@@ -48,8 +49,6 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.AccidentStatus  // 狀態
-                        console.log("res.data~~~")
-                        console.log(res.data)
                         let hurtPeoples = []  // 死傷人數資料
                         let controls = []  // 已選控制措施
                         
@@ -132,7 +131,6 @@ export default {
                             hurtPeoples = JSON.parse(res.data.order_list_hurt_people)  // 死傷人數資料
                             controls = JSON.parse(res.data.order_list)  // 已選控制措施
                         }
-
                         this.itemData = { ...res.data, topItems, bottomItems, otherInfo, hurtPeoples, controls }
                     }
                 } else {

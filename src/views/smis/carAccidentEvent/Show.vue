@@ -70,16 +70,16 @@
             >關閉視窗</v-btn>
 
             <template v-if="!done">
-                <v-btn dark class="ma-2 btn-modify"
+                <v-btn dark class="ma-2 btn-modify" v-if="isShowBtn"
                     :to="`/smis/car-accident-event/${id}/edit`"
                 >編輯</v-btn>
 
                 <v-btn dark  class="ma-2 btn-delete"
-                    @click="del"
+                    @click="del" v-if="isShowBtn"
                 >作廢</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
-                    @click="save"
+                    @click="save" v-if="isShowBtn"
                 >申請審核資料</v-btn>
             </template>
         </v-col>
@@ -89,7 +89,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
+import { getNowFullTime, knock } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
@@ -100,6 +101,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         files: [],  // 上傳的檔案
         finishDeath: false,  // 是否完成人員傷亡名單
@@ -118,6 +120,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -126,20 +129,31 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("=========初始化資料========")
-            console.log(obj)
             
             this.id = obj.AccidentCode  // 編號
-            // console.log("this.id", this.id)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.otherItems = obj.otherInfo  // 其他資訊
             this.files = [ ...obj.FileCount ]  // 檔案附件
-            console.log("this.files: ", this.files)
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    this.isShowBtn = this.groupData.RoleLv2 == "T"
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
 
             // 危害通報連結 (依通報狀態連至不同頁面)
             // let arr = obj.notifyLinks.map(item => {
@@ -226,8 +240,6 @@ export default {
         },
     },
     created() {
-        console.log("========created=========")
-        console.log(this.itemData)
         this.setShowData(this.itemData)
     }
 }

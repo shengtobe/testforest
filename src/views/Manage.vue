@@ -41,7 +41,6 @@
       <v-icon>mdi-export</v-icon>
     </v-btn>
   </v-app-bar>
-
     <!-- fullscreen nav -->
     <transition>
         <div id="main-nav" v-if="showNav">
@@ -105,29 +104,29 @@
                                 <v-list-item :class="titleColor2" disabled>
                                     <strong class="black--text">危害通報管理</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
+                                <v-list-item  :disabled="FShow('SMS_1')" @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_2')" @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
+                                <v-divider />
 
                                 <!-- 行車事故事件 -->
-                                <v-list-item :class="titleColor2" disabled>
+                                <v-list-item :class="titleColor2">
                                     <strong class="black--text">行車事故事件</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/car-accident-event">行車事故事件</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_3')" @click="showNav = false" to="/smis/car-accident-event">行車事故事件</v-list-item>
+                                <v-divider />
 
                                 <!-- 行車危害資料庫 -->
                                 <v-list-item :class="titleColor2" disabled>
                                     <strong class="black--text">行車危害資料庫</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/car-harmdb/harms">行車危害</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/car-harmdb/control-measures">控制措施</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
+                                <v-list-item :disabled="(FShow('SMS_7'))" @click="showNav = false" to="/smis/car-harmdb/harms">行車危害</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_8')" @click="showNav = false" to="/smis/car-harmdb/control-measures">控制措施</v-list-item>
+                                <v-divider />
                             </v-list>
                         </v-card>
                     </v-col>
@@ -139,30 +138,30 @@
                                 <v-list-item :class="titleColor2" disabled>
                                     <strong class="black--text">行車安全資訊</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/car-safeinfo/info">安全資訊</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">安全資訊</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
+                                <v-divider />
 
                                 <!-- 安全文件 -->
                                 <v-list-item :class="titleColor2" disabled>
                                     <strong class="black--text">安全文件</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/safefile/meeting">安全會議文件</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/safefile/driving-annex">行車事故事件附件</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/safefile/regulations">規章文件</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_15')" @click="showNav = false" to="/smis/safefile/meeting">安全會議文件</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_18')" @click="showNav = false" to="/smis/safefile/driving-annex">行車事故事件附件</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_16')" @click="showNav = false" to="/smis/safefile/regulations">規章文件</v-list-item>
+                                <v-divider />
 
                                 <!-- 行車安全績效 -->
                                 <v-list-item :class="titleColor2" disabled>
                                     <strong class="black--text">行車安全績效</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/car-safe-performance">行車安全績效</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance">行車安全績效</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>
@@ -174,18 +173,18 @@
                                 <v-list-item :class="titleColor2_3" disabled>
                                     <strong class="black--text">職安管理</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey">職災事故事件管理</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disasterdb">職災危害資料庫</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/jobsafety/performance">職安績效</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/jobsafety/physical">健檢管理</v-list-item>
-                                <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/smis/jobsafety/license">證照管理</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_24')" @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_23')" @click="showNav = false" to="/smis/jobsafety/disaster-survey">職災事故事件管理</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_25')" @click="showNav = false" to="/smis/jobsafety/disasterdb">職災危害資料庫</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_26')" @click="showNav = false" to="/smis/jobsafety/performance">職安績效</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_27')" @click="showNav = false" to="/smis/jobsafety/physical">健檢管理</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_31')" @click="showNav = false" to="/smis/jobsafety/license">證照管理</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>
@@ -199,29 +198,29 @@
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">設備資料管理</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/train-track-lane">列車、軌道、車道設備</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/radio">無線電設備管理</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/material">料件管理</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
 
                                 <!-- 設備維修管理 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">設備維修管理</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/periodicity-job">週期性工作提醒</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/work-shift">工班管理</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
 
                                 <!-- 維修外包管理 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">維修外包管理</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/outsourc-data">維修外包管理</v-list-item>
                             </v-list>
                         </v-card>
@@ -234,30 +233,30 @@
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">統計分析</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/analy/mttr">MTTR 分析</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/analy/mtbf">MTBF 分析</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/analy/mkbf">MKBF 分析</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
 
                                 <!-- 報表管理 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">報表管理</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/repair-time-history">維修工時履歷</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/material-history">料件履歷</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <!-- 報表管理 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">測試區域</strong>
                                 </v-list-item>
-                                <v-divider></v-divider>
+                                <v-divider />
                                 <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item>
                             </v-list>
                         </v-card>
@@ -300,6 +299,7 @@ import MessageBar from '@/components/MessageBar.vue'
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',
+        funcShow: [],
         role: null,
         mainColor: 'top-nav',
         showNav: false,  // 導覽列是否顯示
@@ -312,7 +312,12 @@ export default {
         ...mapState ('user', {
             key: state => state.key,  // 加密金鑰
             userData: state => state.userData,  // 使用者基本資料
-        })
+            groupData: state => state.groupData,  // 使用者基本資料
+            userFunc: state => state.funcIdList,  // 
+        }),
+        FuncShow(){
+            
+        }
     },
     components: {
         SystemDialog,  // 系統重要訊息 Dialog
@@ -324,7 +329,12 @@ export default {
         ...mapActions('user', [
             'saveUserProfile',  // 儲存使用者基本資料
             'saveUserGroup',  // 儲存使用者權限(群組)資料
+            'saveFuncIdList',  // 
         ]),
+        FShow(FID){ // 是否有這個訪問權限
+            // return (this.userFunc.find(item => item == FID) == null)
+            return (!this.userFunc.find(item => item == FID))
+        },
         // 登出
         logout() {
             localStorage.clear()  // 清除所有 localstorage
@@ -356,21 +366,31 @@ export default {
 
             try {
                 // 儲存使用者資訊
-                let a1 = this.saveUserProfile(JSON.parse(this.decode(localStorage.getItem('userData'), this.key)))
+                let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
+                this.funcShow = UData.FunctionsAuthorData; // DeptList
+                this.saveUserProfile(UData)
                 
                 // 儲存權限資訊
-                let a2 = this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+                this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
+                //
+                this.saveFuncIdList(UData.FunctionsAuthorData)
+
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
-                console.log("Manage頁: role: ", this.role)
             } catch (e) {
                 this.logout()
             }
         },
     },
     created() {
+        
+        // store.state.user.groupData
         // ------------ 已寫好的登入功能，先備註掉 -------------
+        // if(!this.groupData){
+        //     this.checkLocalStorage()
+        // }
+        console.log("Manage %% this.userFunc: ", this.userFunc);
         this.checkLocalStorage()
     },
 }

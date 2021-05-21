@@ -23,7 +23,7 @@
             </v-btn>
 
             <v-btn dark large class="mb-1 btn-add"
-                to="/smis/car-harmdb/harms/add"
+                to="/smis/car-harmdb/harms/add" v-if="isShowBtn"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -209,6 +209,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
 import { carHarmDbStatus, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
 import { carHarmDBHarms } from '@/assets/js/smisTestData'
@@ -218,6 +219,7 @@ export default {
     data: () => ({
         keyword: '',  // 關鍵字
         chooses: [],  // 查詢項目(checkbox 勾選的項目)
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         searchType: 'normal', // 'normal'/'allEndanger'/
@@ -243,11 +245,15 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 簡易搜尋
         search() {
@@ -341,7 +347,6 @@ export default {
                                 }
                             }
                         });
-                        console.log("勾選X 關鍵字√ tableItems", this.tableItems)
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -419,7 +424,6 @@ export default {
         searchAllEndanger() {
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -460,7 +464,6 @@ export default {
         searchHighRisk() { 
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -495,8 +498,6 @@ export default {
                         this.tableItems.push(element)
                     }
                 });
-                console.log("tempTableItems", this.tempTableItems)
-                console.log("tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -508,7 +509,6 @@ export default {
         caseFetch() { //caseFetch
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -543,8 +543,6 @@ export default {
                         this.tableItems.push(element)
                     }
                 });
-                console.log("已立案tempTableItems", this.tempTableItems)
-                console.log("已立案tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -556,7 +554,6 @@ export default {
         checkFetch() { //checkFetch
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
-            console.log("this.userData", this.userData)
 
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -595,8 +592,6 @@ export default {
                             break;
                     }
                 });
-                console.log("已立案tempTableItems", this.tempTableItems)
-                console.log("已立案tableItems", this.tableItems)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -642,5 +637,20 @@ export default {
             window.open(routeData.href, '_blank')
         },
     },
+    created(){
+        //敲門
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv2 == "T";
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
+    }
 }
 </script>

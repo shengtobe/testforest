@@ -468,7 +468,7 @@ export default {
             }).then(res => {
                 console.log("初始請求:res.data:", res.data)
                 // 檢查是否有權限編輯
-                if (res.data.CreatorID != this.userData.UserId && res.data.CreatorID != this.userData.UserId) {
+                if (res.data.CreatorID != this.userData.UserId && res.data.DispatchID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
                 }
 

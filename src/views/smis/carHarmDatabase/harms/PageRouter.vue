@@ -56,7 +56,6 @@ export default {
                         this.status = res.data.EndangerStatus  // 狀態
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
 
-            
                         // 組合影響、運轉影響情形字串
                         let affectsArr = []
                         if (res.data.EffectTraveler == 'T') affectsArr.push('影響旅客')
@@ -64,6 +63,7 @@ export default {
                         if (res.data.EffectPeople == 'T') affectsArr.push('影響大眾')
                         if (res.data.ServiceCarError == 'T') affectsArr.push('列車誤點')
                         if (res.data.ServiceStopError == 'T') affectsArr.push('中斷營運')
+
 
                         // 組合衍生事故字串
                         let accidentsTxt = '<lu>'

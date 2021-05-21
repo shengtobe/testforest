@@ -45,24 +45,19 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("Page Router res.data: ", res.data)
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.ReportStatus  // 狀態
 
                         // 組合發現地點
-                        console.log("組合發現地點")
-                        console.log("FindLine: ", res.data.FindLine)
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
-                        console.log("findLocationText: ", findLocationText)
                         
                         if (['l1', 'l2', 'l3', 'l4'].includes(res.data.FindLine)) {
                             findLocationText += ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`  // 本線、祝山線、眠月線、水山線
                         } else if(res.data.FindLine == 'other') {
                             findLocationText += ` (${res.data.FindLineOther})`  // 其他地點
                         }
-                        console.log("2findLocationText: ", findLocationText)
 
                         
 
