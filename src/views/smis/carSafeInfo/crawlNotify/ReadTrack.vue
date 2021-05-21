@@ -61,10 +61,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { readTrack } from '@/apis/smis/carSafeInfo'
+import { getNowFullTime } from '@/assets/js/commonFun'
 
 export default {
+    props: ['id'],
     data: () => ({
         routeId: '',
         keyword: '',  // 關鍵字
@@ -89,6 +92,11 @@ export default {
             if (val != oldval) this.chPage(1)
         },
     },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -98,53 +106,78 @@ export default {
             this.chLoadingShow()
             this.routeId = this.$route.params.id
 
-            // 新增測試用資料
-            setTimeout(() => {
-                let data = [
-                    {
-                        depart: '鐵路維護科',
-                        name: '陳弘宇',
-                        isRead: true,
-                        time: '2020-01-05 14:22:00'
-                    },
-                    {
-                        depart: '鐵路維護科',
-                        name: '王世得',
-                        isRead: true,
-                        time: '2020-01-05 15:17:00'
-                    },
-                    {
-                        depart: '鐵路維護科',
-                        name: '林捷元',
-                        isRead: false,
-                        time: ''
-                    },
-                    {
-                        depart: '鐵路維護科',
-                        name: '趙遠龍',
-                        isRead: true,
-                        time: '2020-01-05 13:42:00'
-                    },
-                    {
-                        depart: '鐵路維護科',
-                        name: '楊耀信',
-                        isRead: false,
-                        time: ''
-                    },
-                ]
-
-                this.tableItems = data.map((item, idx) => {
-                    return {
-                        num: idx + 1,
-                        depart: item.depart,
-                        name: item.name,
-                        isRead: (item.isRead)? '已讀' : '未讀',
-                        time: item.time,
-                    }
+            readTrack({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        let data = JSON.parse(res.data.order_list)
+                        console.log("追蹤回傳資料 data: ", data);
+                        this.tableItems = data.map((item, idx) => {
+                        return {
+                                num: idx + 1,
+                                depart: item.DepartName,
+                                name: item.PeopleName,
+                                isRead: (item.RecReadStatus == 'T')? '已讀' : '未讀',
+                                time: (item.RecReadStatus == 'T')?item.UpdateDTime:'',
+                            }
+                        })
+                    } 
+                    
+                }).catch(err => {
+                     this.chMsgbar({ success: false, msg: '儲存成功'})
+                }).finally(() => {
+                    this.chLoadingShow()
                 })
 
-                this.chLoadingShow()
-            }, 1000)
+            // 新增測試用資料
+            // setTimeout(() => {
+            //     let data = [
+            //         {
+            //             depart: '鐵路維護科',
+            //             name: '陳弘宇',
+            //             isRead: true,
+            //             time: '2020-01-05 14:22:00'
+            //         },
+            //         {
+            //             depart: '鐵路維護科',
+            //             name: '王世得',
+            //             isRead: true,
+            //             time: '2020-01-05 15:17:00'
+            //         },
+            //         {
+            //             depart: '鐵路維護科',
+            //             name: '林捷元',
+            //             isRead: false,
+            //             time: ''
+            //         },
+            //         {
+            //             depart: '鐵路維護科',
+            //             name: '趙遠龍',
+            //             isRead: true,
+            //             time: '2020-01-05 13:42:00'
+            //         },
+            //         {
+            //             depart: '鐵路維護科',
+            //             name: '楊耀信',
+            //             isRead: false,
+            //             time: ''
+            //         },
+            //     ]
+
+            //     this.tableItems = data.map((item, idx) => {
+            //         return {
+            //             num: idx + 1,
+            //             depart: item.depart,
+            //             name: item.name,
+            //             isRead: (item.isRead)? '已讀' : '未讀',
+            //             time: item.time,
+            //         }
+            //     })
+
+            //     this.chLoadingShow()
+            // }, 1000)
         },
         // 更換頁數
         chPage(n) {
