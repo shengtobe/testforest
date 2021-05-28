@@ -81,12 +81,12 @@
             <template v-if="!done">
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="dialog = true"
-                    v-if="status == 2"
+                    v-if="status == 2 && isShowBtn"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
                     @click="save"
-                    v-if="status == 2"
+                    v-if="status == 2 && isShowBtn"
                 >同意發布</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
@@ -230,6 +230,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
@@ -241,6 +242,7 @@ export default {
         id: '',  // 編號
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 檔案附件
@@ -283,6 +285,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -291,7 +294,9 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
-        
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 初始化資料
         setShowData(obj) {
             console.log(obj)
@@ -303,6 +308,42 @@ export default {
             //this.files = [ ...obj.files ]  // 檔案附件
             //this.opinionList = [ ...obj.opinionList ]  // 加會意見列表
             this.opinionList = [ ...obj.JoinPeople ]  // 加會意見列表
+
+            if(this.status == 2){
+                //敲門
+                canInUpdate({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.saveUserGroup(res.data.GroupData)
+                        this.isShowBtn = this.groupData.RoleLv4 == "T";
+                    }
+                }).catch( err => {
+                    console.log(err)
+                }).finally(() => {
+                })
+            }
+
+            
+            
+            // if(this.status == 2){
+            //     //敲門
+            //     canInUpdate({
+            //         ClientReqTime: getNowFullTime(),  // client 端請求時間
+            //         OperatorID: this.userData.UserId,  // 操作人id
+            //     }).then(res => {
+            //         if (res.data.ErrorCode == 0) {
+            //             this.saveUserGroup(res.data.GroupData)
+            //             this.isShowBtn = this.groupData.RoleLv4 == "T";
+            //         }
+            //     }).catch( err => {
+            //         console.log(err)
+            //     }).finally(() => {
+            //     })
+            // }
+
+
             this.chLoadingShow()
             //     safetyinfodetail({
             //             ClientReqTime: getNowFullTime(),  // client 端請求時間

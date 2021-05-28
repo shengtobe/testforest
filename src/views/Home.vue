@@ -32,9 +32,10 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail">
+                        <v-btn small dark fab class="btn-detail" v-if="!item.isRead" @click="personClick(item)">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
+                        <v-icon v-if="item.isRead">mdi-checkbox-marked-circle-outline</v-icon>
                     </template>
                     
                     <!-- 頁碼 -->
@@ -104,6 +105,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { fetchPersonalInfo, fetchPersonalInfoRead } from '@/apis/login'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { departOptions } from '@/assets/js/departOption'
 
@@ -122,7 +125,7 @@ export default {
                 { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
                 { text: '部門', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
                 { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                { text: '已讀', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             ],
             todo: [
                 { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
@@ -147,27 +150,70 @@ export default {
         initData() {
             this.chLoadingShow()
 
+            //詢問個人資訊
+            fetchPersonalInfo({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // this.tableItems = JSON.parse(res.data.order_list)
+                    let tb = JSON.parse(res.data.order_list)
+                    console.log("Manage 詢問個人資訊: ", tb)
+                    if(tb.length != 0)
+                    console.log("Manage 詢問個人資訊: ", tb[0].DelStatus)
+                    // 個人訊息
+                    let psnal = tb.map(item => ({
+                        id: item.ModuleItemID,
+                        depart: item.DepartCode, 
+                        title: item.ModTitle,
+                        date: item.InsertDTime.substr(0, 10),
+                        isRead: item.RecReadStatus == 'T',
+                        ModuleItemID: item.ModuleItemID,
+                        MsgType: item.MsgType,
+                        InfoBelongMod: item.InfoBelongMod,
+                    }))
+                    this.tableItems.personal = [...psnal]
+
+                    // 待辦事項
+                    this.tableItems.todo = [
+                        {
+                            id: '789',
+                            title: '維修、養護科工單',
+                            date: '2020-09-01',
+                        },
+                        {
+                            id: '2222',
+                            title: '行車事故事件',
+                            date: '2020-08-26',
+                        },
+                    ]
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
+
             setTimeout(() => {
-                this.tableItems.personal = [
-                    {
-                        id: '789',
-                        depart: 'ARCO001', 
-                        title: '資訊安全相關注意事項',
-                        date: '2020-05-01',
-                    },
-                    {
-                        id: '658',
-                        depart: 'ARCO015', 
-                        title: '補休作業調整',
-                        date: '2020-04-21',
-                    },
-                    {
-                        id: '447',
-                        depart: 'ARCO026', 
-                        title: '慢行通報',
-                        date: '2020-03-11',
-                    },
-                ]
+                // this.tableItems.personal = [
+                //     {
+                //         id: '789',
+                //         depart: 'ARCO001', 
+                //         title: '資訊安全相關注意事項',
+                //         date: '2020-05-01',
+                //     },
+                //     {
+                //         id: '658',
+                //         depart: 'ARCO015', 
+                //         title: '補休作業調整',
+                //         date: '2020-04-21',
+                //     },
+                //     {
+                //         id: '447',
+                //         depart: 'ARCO026', 
+                //         title: '慢行通報',
+                //         date: '2020-03-11',
+                //     },
+                // ]
 
                 this.tableItems.todo = [
                     {
@@ -192,6 +238,24 @@ export default {
         // 更換頁數-待辦事項
         chPageTodo(n) {
             this.pageOpt.todo.page = n
+        },
+        personClick(item){
+            //改為已讀
+            fetchPersonalInfoRead({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                ModuleItemID: item.ModuleItemID,
+                InfoBelongMod: item.InfoBelongMod,
+                MsgType: item.MsgType,
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // item.isRead = false
+                    this.tableItems.personal.find(item => item.id == item.ModuleItemID).isRead = true;
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
         },
         // 轉換部門文字
         transferDepartTxt(val) {

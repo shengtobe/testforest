@@ -364,7 +364,8 @@ export default {
                 return
             }
 
-            try {
+            try 
+            {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
@@ -378,8 +379,10 @@ export default {
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
-            } catch (e) {
-                this.logout()
+            } 
+            catch (e) 
+            {
+                console.log(e);
             }
         },
     },
