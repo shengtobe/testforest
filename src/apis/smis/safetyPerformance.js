@@ -14,7 +14,7 @@ export function indexLevelList(data) {
 export function accidentResonQueryList(data) {
     return axios(
         {
-            url: 'sms/sp/accidentresonquerylist',
+            url: 'sms/sp/accidentlevelquerylist',
             method: 'post',
             data,
         }
@@ -213,6 +213,27 @@ export function accidentYearQueryList(data) {
     return axios(
         {
             url: 'sms/sp/accidentyearquerylist',
+            method: 'post',
+            data,
+        }
+    )
+}
+// -- 第三層 --
+//查詢關鍵設備清單
+export function keyEquipList(data) {
+    return axios(
+        {
+            url: 'sms/sp/keyequiplist',
+            method: 'post',
+            data,
+        }
+    )
+}
+//查詢關鍵設備MKBF績效
+export function keyEquipMKBFList(data) {
+    return axios(
+        {
+            url: 'sms/sp/keyequipmkbflist',
             method: 'post',
             data,
         }

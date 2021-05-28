@@ -53,14 +53,14 @@
                     <v-row>
                         <v-col cols="8">
                             <v-select
-                                :items="selectOptions.Lv1"
+                                :items="getLvOptions.Lv1"
                                 v-model="selectValues.Lv1"
                                 solo
                                 hide-details
                             ></v-select>
                         </v-col>
                         <v-col cols="4">
-                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv1)}/accident-trend`">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv1)}/accident-trend/${encodeURIComponent(getLvText.Lv1)}`">
                                 <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
@@ -91,7 +91,7 @@
                             </v-select>
                         </v-col>
                         <v-col cols="4">
-                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv2)}/accident-trend`">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv2)}/accident-trend/${encodeURIComponent(getLvText.Lv2)}`">
                                 <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
@@ -153,7 +153,7 @@
                             </v-select>
                         </v-col>
                         <v-col cols="4">
-                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv4)}/work-effectiveness`">
+                            <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${encodeURIComponent(selectValues.Lv4)}/work-effectiveness/${encodeURIComponent(getLvText.Lv4)}`">
                                 <v-icon class="mr-2">mdi-magnify</v-icon>
                                 查詢
                             </v-btn>
@@ -172,247 +172,10 @@ import { indexLevelList } from '@/apis/smis/safetyPerformance'
 export default {
   data: () => ({
     selectOptions:{
-        // Lv1:['A01正線衝撞率','A02正線出軌率','A03正線火災率','B04平交道事故率','其他'],
-        // Lv2:[
-        //     {
-        //         region:"A01正線衝撞率",
-        //         Options:[
-        //             "B01側線衝撞率",
-        //             "B06設備損害率",
-        //             "C01列車或車輛分離",
-        //             "C02進入錯線",
-        //             "C03冒進號誌",
-        //             "C04列車或車輛溜逸",
-        //             "C05違反閉塞運轉",
-        //             "C06違反號誌運轉",
-        //             "C08車輛故障",
-        //             "C11運轉保安裝置故障",
-        //             "C14駕駛失能",
-        //         ]
-        //     },
-        //     {
-        //         region:"A02正線出軌率",
-        //         Options:[
-        //             "B02側線出軌率",
-        //             "B06設備損害率",
-        //             "B07運轉中斷率",
-        //             "C04列車或車輛溜逸",
-        //             "C06違反號誌運轉",
-        //             "C07號誌處理錯誤(含轉轍器操作)",
-        //             "C08車輛故障",
-        //             "C09路線障礙",
-        //             "C11運轉保安裝置故障",
-        //             "C12外物入侵",
-        //             "C14駕駛失能",
-        //             "C15天然災變",
-        //         ]
-        //     },
-        //     {
-        //         region:"A03正線火災率",
-        //         Options:[
-        //             "B03側線火災率",
-        //             "B06設備損害率",
-        //             "C08車輛故障",
-        //             "C13危險品洩漏",
-        //         ]
-        //     },
-        //     {
-        //         region:"B04平交道事故率",
-        //         Options:[
-        //             "C11運轉保安裝置故障",
-        //         ]
-        //     },
-        //     {
-        //         region:"其他",
-        //         Options:[
-        //             "B05死傷事故率",
-        //             "C10電力設備故障",
-        //             "C16列車取消",
-        //             "C17其他事件",
-        //         ]
-        //     },
-        // ],
-        // Lv3:[
-        //     {
-        //         region:"A01正線衝撞率",
-        //         Options:[
-        //             "車輛-蒸汽機車頭-聯結器系統-聯結器",
-        //             "車輛-25噸機車頭-聯結器系統-聯結器",
-        //             "車輛-28噸機車頭-聯結器系統-聯結器",
-        //             "車輛-29噸機車頭-聯結器系統-聯結器",
-        //             "無線電-北門車站-手提台-無線電",
-        //             "無線電-交力坪車站-手提台-無線電",
-        //             "無線電-竹崎車站-手提台-無線電",
-        //             "無線電-阿里山車站-手提台-無線電",
-        //             "無線電-奮起湖車站-手提台-無線電",
-        //             "無線電-竹崎監工區-手提台-無線電",
-        //             "無線電-車輛養護科-手提台-無線電",
-        //             "無線電-車輛養護科神木車站-車裝台-無線電",
-        //             "無線電-車輛養護科備用機-車裝台-無線電",
-        //             "無線電-阿里山車庫-手提台-無線電",
-        //             "無線電-阿里山車庫機關車-車裝台-無線電",
-        //             "無線電-修理工廠-手提台-無線電",
-        //             "無線電-嘉義車庫-手提台-無線電",
-        //             "無線電-嘉義車庫守車-車裝台-無線電",
-        //             "無線電-嘉義車庫機關車-車裝台-無線電",
-        //             "無線電-奮起湖監工區-手提台-無線電",
-        //             "無線電-鐵路服務科-手提台-無線電",
-        //         ]
-        //     },
-        //     {
-        //         region:"A02正線出軌率",
-        //         Options:[
-        //             "軌道-竹崎監工區-軌道組件故障率",
-        //             "軌道-竹崎監工區-道岔故障率",
-        //             "軌道-竹崎監工區-橋梁故障率",
-        //             "軌道-竹崎監工區-隧道故障率",
-        //             "軌道-奮起湖監工區-軌道組件故障率",
-        //             "軌道-奮起湖監工區-道岔故障率",
-        //             "軌道-奮起湖監工區-橋梁故障率",
-        //             "軌道-奮起湖監工區-隧道故障率",
-        //             "軌道-阿里山監工區-軌道組件故障率",
-        //             "軌道-阿里山監工區-道岔故障率",
-        //             "軌道-阿里山監工區-橋梁故障率",
-        //             "軌道-阿里山監工區-隧道故障率",
-        //             "車輛-中興號客車-轉向架系統-車輪故障率",
-        //             "車輛-中興號客車-轉向架系統-車軸故障率",
-        //             "車輛-中興號客車-轉向架系統-轉向架故障率",
-        //             "車輛-中興號客車-軔機系統-轉向架煞車裝置",
-        //             "車輛-中興號客車-軔機系統-手軔機各機件",
-        //             "車輛-中興號客車-聯結器系統-聯結器",
-        //             "車輛-祝客車-轉向架系統-車輪故障率",
-        //             "車輛-祝客車-轉向架系統-車軸故障率",
-        //             "車輛-祝客車-轉向架系統-轉向架故障率",
-        //             "車輛-祝客車-軔機系統-轉向架煞車裝置",
-        //             "車輛-祝客車-軔機系統-手軔機各機件",
-        //             "車輛-祝客車-聯結器系統-聯結器",
-        //             "車輛-阿里山號客車-轉向架系統-車輪故障率",
-        //             "車輛-阿里山號客車-轉向架系統-車軸故障率",
-        //             "車輛-阿里山號客車-轉向架系統-轉向架故障率",
-        //             "車輛-阿里山號客車-軔機系統-轉向架煞車裝置",
-        //             "車輛-阿里山號客車-軔機系統-手軔機各機件",
-        //             "車輛-阿里山號客車-聯結器系統-聯結器",
-        //             "車輛-臺檜客車-轉向架系統-車輪故障率",
-        //             "車輛-臺檜客車-轉向架系統-車軸故障率",
-        //             "車輛-臺檜客車-轉向架系統-轉向架故障率",
-        //             "車輛-臺檜客車-軔機系統-轉向架煞車裝置",
-        //             "車輛-臺檜客車-軔機系統-手軔機各機件",
-        //             "車輛-臺檜客車-聯結器系統-聯結器",
-        //             "車輛-工程車-轉向架系統-車輪故障率",
-        //             "車輛-工程車-轉向架系統-車軸故障率",
-        //             "車輛-工程車-轉向架系統-轉向架故障率",
-        //             "車輛-工程車-軔機系統-轉向架煞車裝置",
-        //             "車輛-工程車-軔機系統-手軔機各機件",
-        //             "車輛-蒸汽機車頭-轉向架系統-轉向架",
-        //             "車輛-蒸汽機車頭-轉向架系統-撒砂裝置",
-        //             "車輛-蒸汽機車頭-軔機系統-軔機",
-        //             "車輛-蒸汽機車頭-軔機系統-基礎軔機",
-        //             "車輛-蒸汽機車頭-軔機系統-空氣配管",
-        //             "車輛-蒸汽機車頭-聯結器系統-排障器",
-        //             "車輛-蒸汽機車頭-聯結器系統-聯結器",
-        //             "車輛-蒸汽機車頭-電氣系統-儀表",
-        //             "車輛-25噸機車頭-轉向架系統-轉向架",
-        //             "車輛-25噸機車頭-轉向架系統-撒砂裝置",
-        //             "車輛-25噸機車頭-轉向架系統-軔機",
-        //             "車輛-25噸機車頭-轉向架系統-基礎軔機",
-        //             "車輛-25噸機車頭-轉向架系統-空氣配管",
-        //             "車輛-25噸機車頭-聯結器系統-排障器",
-        //             "車輛-25噸機車頭-聯結器系統-聯結器",
-        //             "車輛-25噸機車頭-電氣系統-儀表",
-        //             "車輛-28噸機車頭-轉向架系統-轉向架",
-        //             "車輛-28噸機車頭-轉向架系統-撒砂裝置",
-        //             "車輛-28噸機車頭-轉向架系統-軔機",
-        //             "車輛-28噸機車頭-轉向架系統-基礎軔機",
-        //             "車輛-28噸機車頭-轉向架系統-空氣配管",
-        //             "車輛-28噸機車頭--聯結器系統-排障器",
-        //             "車輛-28噸機車頭-聯結器系統-聯結器",
-        //             "車輛-28噸機車頭-電氣系統-儀表",
-        //             "車輛-29噸機車頭-轉向架系統-轉向架",
-        //             "車輛-29噸機車頭-轉向架系統-撒砂裝置",
-        //             "車輛-29噸機車頭-轉向架系統-軔機",
-        //             "車輛-29噸機車頭-轉向架系統-基礎軔機",
-        //             "車輛-29噸機車頭-轉向架系統-空氣配管",
-        //             "車輛-29噸機車頭--聯結器系統-排障器",
-        //             "車輛-29噸機車頭-聯結器系統-聯結器",
-        //             "車輛-29噸機車頭-電氣系統-儀表",
-        //         ]
-        //     },
-        //     {
-        //         region:"A03正線火災率",
-        //         Options:[
-        //             "車輛-中興號客車-空調系統-空調機",
-        //             "車輛-阿里山號客車-空調系統-空調機",
-        //             "車輛-蒸汽機車頭-電氣系統-發電機",
-        //             "車輛-蒸汽機車頭-電氣系統-起動馬達",
-        //             "車輛-25噸機車頭-電氣系統-發電機",
-        //             "車輛-25噸機車頭-電氣系統-起動馬達",
-        //             "車輛-25噸機車頭-空調系統-空調機",
-        //             "車輛-28噸機車頭-電氣系統-發電機",
-        //             "車輛-28噸機車頭-電氣系統-起動馬達",
-        //             "車輛-28噸機車頭-空調系統-空調機",
-        //             "車輛-29噸機車頭-電氣系統-發電機",
-        //             "車輛-29噸機車頭-電氣系統-起動馬達",
-        //             "車輛-29噸機車頭-空調系統-空調機",
-        //         ]
-        //     },
-        //     {
-        //         region:"B04平交道事故率",
-        //         Options:[
-        //             "防護設備-平交道-平交道-邏輯控制系統",
-        //             "防護設備-平交道-平交道-警報系統",
-        //             "防護設備-平交道-平交道-遮斷機系統",
-        //             "防護設備-平交道-平交道-線圈感應系統",
-        //             "防護設備-平交道-平交道-車踏感應系統",
-        //             "防護設備-平交道-平交道-無線射頻(RFID)系統",
-        //         ]
-        //     },
-        //     {
-        //         region:"其他",
-        //         Options:[
-        //             "車站-嘉義車站-廣播設備故障率",
-        //             "車站-北門車站-廣播設備故障率",
-        //             "車站-竹崎車站-廣播設備故障率",
-        //             "車站-奮起湖車站-廣播設備故障率",
-        //             "車站-二萬平車站-廣播設備故障率",
-        //             "車站-神木車站-廣播設備故障率",
-        //             "車站-阿里山車站-廣播設備故障率",
-        //             "車站-沼平車站-廣播設備故障率",
-        //             "車站-祝山車站-廣播設備故障率",
-        //             "車輛-中興號客車-車體總成-車廂內部設備(車門)故障率",
-        //             "車輛-中興號客車-電氣系統-播音系統",
-        //             "車輛-祝客車-車體總成-車廂內部設備(車門)故障率",
-        //             "車輛-祝客車-電氣系統-播音系統",
-        //             "車輛-阿里山號客車-車體總成-車廂內部設備(車門)故障率",
-        //             "車輛-阿里山號客車-電氣系統-播音系統",
-        //             "車輛-臺檜客車-車體總成-車廂內部設備(車門)故障率",
-        //             "車輛-臺檜客車-電氣系統-播音系統",
-        //         ]
-        //     },
-        // ],
-        // Lv4:[
-        //     {
-        //         region:"A01正線衝撞率",
-        //         Options:[
-        //             "酒精及血壓量測異常率",
-        //         ]
-        //     },
-        //     {
-        //         region:"A02正線出軌率",
-        //         Options:[
-        //             "列車開車前軔機異常率",
-        //             "車速異常率",
-        //             "酒精及血壓量測異常率",
-        //             "慢行路段分析",
-        //             "雨量異常",
-        //         ]
-        //     },
-        //     {
-        //         region:"A03正線火災率",
-        //         Options:[
-        //             "列車開車前軔機異常率",
-        //         ]
-        //     },
-        // ]
+        Lv1:[],
+        Lv2:[],
+        Lv3:[],
+        Lv4:[],
     },
     selectValues:{
         Lv1:'',
@@ -430,9 +193,20 @@ export default {
     getLvOptions:function() {
         const that = this
         let rtnObj = {
-            Lv2: that.selectOptions?.Lv2?.find(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code)) || [],
-            Lv3: that.selectOptions?.Lv3?.find(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code)) || [],
-            Lv4: that.selectOptions?.Lv4?.find(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code)) || [],
+            Lv1: that.selectOptions.Lv1,
+            Lv2: that.selectOptions?.Lv2?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:ele.text,value:ele.value})) || [],
+            Lv3: that.selectOptions?.Lv3?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:ele.text,value:ele.value})) || [],
+            Lv4: that.selectOptions?.Lv4?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:ele.text,value:ele.value})) || [],
+        }
+        return rtnObj
+    },
+    getLvText: function() {
+        const that = this
+        let rtnObj = {
+            Lv1: that.selectOptions?.Lv1?.find(e=>e.value == that.selectValues?.Lv1||'')?.text||"",
+            Lv2: that.selectOptions?.Lv2?.find(e=>e.value == that.selectValues?.Lv2||'')?.text||"",
+            Lv3: that.selectOptions?.Lv3?.find(e=>e.value == that.selectValues?.Lv3||'')?.text||"",
+            Lv4: that.selectOptions?.Lv4?.find(e=>e.value == that.selectValues?.Lv4||'')?.text||"",
         }
         return rtnObj
     }
@@ -449,11 +223,12 @@ export default {
         }).then(res=>{
             console.log(res.data)
             const resdata = res.data.DataList
-            this.selectOptions.Lv1 = resdata?.find(element=>element.Level=='1')?.map(ele=>({text:ele.Name,value:ele.Code}))||[]
-            this.selectOptions.Lv2 = resdata?.find(element=>element.Level=='2')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
-            this.selectOptions.Lv3 = resdata?.find(element=>element.Level=='3')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
-            this.selectOptions.Lv4 = resdata?.find(element=>element.Level=='4')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
+            this.selectOptions.Lv1 = resdata?.filter(element=>element.Level=='1')?.map(ele=>({text:ele.Name,value:ele.Code}))||[]
+            this.selectOptions.Lv2 = resdata?.filter(element=>element.Level=='2')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
+            this.selectOptions.Lv3 = resdata?.filter(element=>element.Level=='3')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
+            this.selectOptions.Lv4 = resdata?.filter(element=>element.Level=='4')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
         }).catch( err => {
+            console.log('err',err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
         })
     }

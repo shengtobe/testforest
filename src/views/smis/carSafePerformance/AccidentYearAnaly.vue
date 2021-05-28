@@ -79,7 +79,7 @@
           <h3 class="label-header">第三層原因</h3>
         </v-col>
         <v-col cols="12">
-          <ChartPie :chartdata="Lv2Chart.chartdata" :options="Lv2Chart.options" :key="Lv2Chart.componentKey" />
+          <ChartPie :chartdata="Lv3Chart.chartdata" :options="Lv3Chart.options" :key="Lv3Chart.componentKey" />
         </v-col>
         <v-col cols="12">
           <v-row>
@@ -183,7 +183,7 @@
 import { mapState, mapActions } from 'vuex'
 import ChartPie from '@/components/chartPie'
 import Pagination from '@/components/Pagination.vue'
-import { accidentYearQuery, accidentYearQueryList } from '@/apis/smis/safetyPerformance'
+import { accidentYearQuery, accidentYearQueryList, accidentResonQueryList } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carAccReason } from '@/assets/js/smisData'
 export default {
@@ -194,12 +194,11 @@ export default {
     Lv1Chart:{
       componentKey: 1,
       chartdata: {
-        labels: ['未查明原因或其他','內部因素','外部因素'],
+        labels: [],
         datasets: [
           {
-            data: [10,40,50],
-            backgroundColor:['green','lightblue','blue'],
-            // borderColor:['green','lightblue','blue']
+            data: [],
+            backgroundColor:[],
           }
         ]
       },
@@ -254,12 +253,11 @@ export default {
     Lv2Chart:{
       componentKey: 1,
       chartdata: {
-        labels: ['未查明原因或其他','內部因素','外部因素'],
+        labels: [],
         datasets: [
           {
-            data: [40,30,30],
-            backgroundColor:['green','lightblue','blue'],
-            // borderColor:['green','lightblue','blue']
+            data: [],
+            backgroundColor:[],
           }
         ]
       },
@@ -308,12 +306,11 @@ export default {
     Lv3Chart:{
       componentKey: 1,
       chartdata: {
-        labels: ['未查明原因或其他','內部因素','外部因素'],
+        labels: [],
         datasets: [
           {
-            data: [20,40,40],
-            backgroundColor:['green','lightblue','blue'],
-            // borderColor:['green','lightblue','blue']
+            data: [],
+            backgroundColor:[],
           }
         ]
       },
@@ -474,20 +471,20 @@ export default {
     }),
     ReasonLv1: function() {
       // const thisLevel = carAccReason.ReasonLv1
-      const thisLevel = this.allReasonList.map(element=>({text:element.Lv1Name,value:element,Lv1Code}))
+      const thisLevel = this.allReasonList?.map(element=>({text:element.Lv1Name,value:element.Lv1Code}))||[]
       return thisLevel
     },
     ReasonLv2: function() {
       const Lv1Value = this.reasonSelect.Lv1
       // const thisLevel = carAccReason.ReasonLv2[Lv1Value]||[]
-      const thisLevel = this.allReasonList.find(element=>element.Lv1Code == Lv1Value)?.map(element=>({text:element.Lv2Name,value:element,Lv2Code}))||[]
+      const thisLevel = this.allReasonList?.find(element=>element.Lv1Code == Lv1Value)?.Lv2DataList?.map(element=>({text:element.Lv2Name,value:element.Lv2Code}))||[]
       return thisLevel
     },
     ReasonLv3: function() {
       const Lv1Value = this.reasonSelect.Lv1
       const Lv2Value = this.reasonSelect.Lv2
       // const thisLevel = carAccReason.ReasonLv3[Lv2Value]||[]
-      const thisLevel = this.allReasonList.find(element=>element.Lv1Code == Lv1Value)?.find(element=>element.Lv2Code == Lv2Value)?.map(element=>({text:element.Lv3Name,value:element,Lv3Code}))||[]
+      const thisLevel = this.allReasonList?.find(element=>element.Lv1Code == Lv1Value)?.Lv2DataList?.find(element=>element.Lv2Code == Lv2Value)?.Lv3DataList?.map(element=>({text:element.Lv3Name,value:element.Lv3Code}))||[]
       return thisLevel 
     }
   },
@@ -504,8 +501,9 @@ export default {
         this.yearSelect.push(i)
       }
       this.selectYear = today.getFullYear() - 1
-      this.AccidentYearQuery()
       this.AccidentResonQueryList()
+      this.AccidentYearQuery()
+      
     },
     //圖表資料
     AccidentYearQuery() {
@@ -516,44 +514,43 @@ export default {
         DTime_End: this.selectYear,
         AcdOption: this.acdcode,
       }).then(res=>{
-        console.log(res.data)
         if (res.data.ErrorCode == 0) {
           this.Lv1Chart.chartdata.labels = []
           this.Lv1Chart.chartdata.datasets[0].data = []
           this.Lv1Chart.chartdata.datasets[0].backgroundColor = []
-          res.data.DateListLv1.forEach((element,index)=>{
+          res.data.DataListLv1.forEach((element,index)=>{
             this.Lv1Chart.chartdata.labels.push(element.Name)
-            this.allReasonList.Lv1DataList.push({
-              Lv1Code: element.Code,
-              Lv1Name: element.Name
-            })
-            this.Lv1Chart.chartdata.datasets[0].data.push(elelment.Value)
+            // this.allReasonList.Lv1DataList.push({
+            //   Lv1Code: element.Code,
+            //   Lv1Name: element.Name
+            // })
+            this.Lv1Chart.chartdata.datasets[0].data.push(parseFloat(element.Value.replace(/%/g,'')))
             this.Lv1Chart.chartdata.datasets[0].backgroundColor.push(this.colorSet[index])
           })
           this.Lv1Chart.componentKey ++
           this.Lv2Chart.chartdata.labels = []
           this.Lv2Chart.chartdata.datasets[0].data = []
           this.Lv2Chart.chartdata.datasets[0].backgroundColor = []
-          res.data.DateListLv2.forEach((element,index)=>{
+          res.data.DataListLv2.forEach((element,index)=>{
             this.Lv2Chart.chartdata.labels.push(element.Name)
-            this.allReasonList.Lv2DataList.push({
-              Lv2Code: element.Code,
-              Lv2Name: element.Name
-            })
-            this.Lv2Chart.chartdata.datasets[0].data.push(elelment.Value)
+            // this.allReasonList.Lv2DataList.push({
+            //   Lv2Code: element.Code,
+            //   Lv2Name: element.Name
+            // })
+            this.Lv2Chart.chartdata.datasets[0].data.push(parseFloat(element.Value.replace(/%/g,'')))
             this.Lv2Chart.chartdata.datasets[0].backgroundColor.push(this.colorSet[index])
           })
           this.Lv2Chart.componentKey ++
           this.Lv3Chart.chartdata.labels = []
           this.Lv3Chart.chartdata.datasets[0].data = []
           this.Lv3Chart.chartdata.datasets[0].backgroundColor = []
-          res.data.DateListLv3.forEach((element,index)=>{
+          res.data.DataListLv3.forEach((element,index)=>{
             this.Lv3Chart.chartdata.labels.push(element.Name)
-            this.allReasonList.Lv3DataList.push({
-              Lv3Code: element.Code,
-              Lv3Name: element.Name
-            })
-            this.Lv3Chart.chartdata.datasets[0].data.push(elelment.Value)
+            // this.allReasonList.Lv3DataList.push({
+            //   Lv3Code: element.Code,
+            //   Lv3Name: element.Name
+            // })
+            this.Lv3Chart.chartdata.datasets[0].data.push(parseFloat(element.Value.replace(/%/g,'')))
             this.Lv3Chart.chartdata.datasets[0].backgroundColor.push(this.colorSet[index])
           })
           this.Lv3Chart.componentKey ++
@@ -562,6 +559,7 @@ export default {
           // this.$router.push({ path: '/error' })
         }
       }).catch( err => {
+        console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       })
     },
@@ -570,7 +568,7 @@ export default {
         ClientReqTime: getNowFullTime(),
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        this.allReasonList = res.data.DataList.Lv1DataList
+        this.allReasonList = res.data.DataList
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
       })
@@ -593,7 +591,8 @@ export default {
         DTime_Start: this.selectYear,
         DTime_End: this.selectYear,
         AcdOption: this.acdcode,
-        LevelOptionLv1: this.reasonSelect.Lv1,
+        LevelOption: '1', 
+        LevelCode: this.reasonSelect.Lv1,
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
           this.accidentTableLv1.item = res.data.DataList
@@ -611,7 +610,8 @@ export default {
         DTime_Start: this.selectYear,
         DTime_End: this.selectYear,
         AcdOption: this.acdcode,
-        LevelOptionLv2: this.reasonSelect.Lv2,
+        LevelOption: '2', 
+        LevelCode: this.reasonSelect.Lv2,
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
           this.accidentTableLv2.item = res.data.DataList
@@ -629,7 +629,8 @@ export default {
         DTime_Start: this.selectYear,
         DTime_End: this.selectYear,
         AcdOption: this.acdcode,
-        LevelOptionLv3: this.reasonSelect.Lv3,
+        LevelOption: '3', 
+        LevelCode: this.reasonSelect.Lv3,
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
           this.accidentTableLv3.item = res.data.DataList

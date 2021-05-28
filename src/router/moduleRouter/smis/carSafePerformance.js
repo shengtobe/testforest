@@ -44,7 +44,7 @@ export const CarSafePerformanceRouter = [
     //----- 第四層 -----
     {
         linkText: '執行成效',
-        path: '/smis/car-safe-performance/:acdname/work-effectiveness',
+        path: '/smis/car-safe-performance/:acdcode/work-effectiveness/:acdname',
         props: true,
         component: () => import('@/views/smis/carSafePerformance/WorkEffectiveness.vue')
     },

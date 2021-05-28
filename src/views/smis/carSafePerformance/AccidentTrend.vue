@@ -184,8 +184,10 @@ export default {
         DTime_End: this.yearSelect[0],
         Option: this.acdcode,
       }
+      console.log('send',getGraphData)
       accidentQuery(getGraphData)
         .then(res=>{
+          console.log('return',res.data)
           res.data.DataList.forEach(element=>{
             that.chartdata.labels.push(element.Year)
             that.chartdata.datasets[0].data.push(element.Value)
@@ -197,6 +199,7 @@ export default {
         })
       accidentQueryList(getGraphData)
         .then(res=>{
+          console.log('table',res.data)
           that.accidentTable.item = res.data.DataList
         })
         .catch( err => {
