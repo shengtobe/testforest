@@ -2,7 +2,7 @@
 <v-container style="max-width: 1200px">
   <v-row>
     <v-col cols="4">
-      <v-btn class="btn-close white--text" large :to="`/smis/car-safe-performance/${encodeURIComponent(acdname)}/accident-trend`">
+      <v-btn class="btn-close white--text" large :to="`/smis/car-safe-performance/${acdcode}/accident-trend/${acdname}`">
         回上一頁
       </v-btn>
     </v-col>
@@ -12,6 +12,7 @@
         hide-details
         :items="yearSelect"
         v-model="selectYear"
+        @change="AccidentYearQuery"
       ></v-select>
     </v-col>
     <v-col cols="4">
@@ -78,7 +79,7 @@
           <h3 class="label-header">第三層原因</h3>
         </v-col>
         <v-col cols="12">
-          <ChartPie :chartdata="Lv2Chart.chartdata" :options="Lv2Chart.options" :key="Lv2Chart.componentKey" />
+          <ChartPie :chartdata="Lv3Chart.chartdata" :options="Lv3Chart.options" :key="Lv3Chart.componentKey" />
         </v-col>
         <v-col cols="12">
           <v-row>
@@ -182,22 +183,22 @@
 import { mapState, mapActions } from 'vuex'
 import ChartPie from '@/components/chartPie'
 import Pagination from '@/components/Pagination.vue'
-import { accidentResonQueryList } from '@/apis/smis/safetyPerformance'
+import { accidentYearQuery, accidentYearQueryList, accidentResonQueryList } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import { carAccReason } from '@/assets/js/smisData'
 export default {
-  props:['acdname'],
+  props:['acdcode','acdname'],
   data: () => ({
     selectYear:'',
     yearSelect:[],
     Lv1Chart:{
       componentKey: 1,
       chartdata: {
-        labels: ['未查明原因或其他','內部因素','外部因素'],
+        labels: [],
         datasets: [
           {
-            data: [10,40,50],
-            backgroundColor:['green','lightblue','blue'],
-            // borderColor:['green','lightblue','blue']
+            data: [],
+            backgroundColor:[],
           }
         ]
       },
@@ -252,12 +253,11 @@ export default {
     Lv2Chart:{
       componentKey: 1,
       chartdata: {
-        labels: ['未查明原因或其他','內部因素','外部因素'],
+        labels: [],
         datasets: [
           {
-            data: [40,30,30],
-            backgroundColor:['green','lightblue','blue'],
-            // borderColor:['green','lightblue','blue']
+            data: [],
+            backgroundColor:[],
           }
         ]
       },
@@ -306,12 +306,11 @@ export default {
     Lv3Chart:{
       componentKey: 1,
       chartdata: {
-        labels: ['未查明原因或其他','內部因素','外部因素'],
+        labels: [],
         datasets: [
           {
-            data: [20,40,40],
-            backgroundColor:['green','lightblue','blue'],
-            // borderColor:['green','lightblue','blue']
+            data: [],
+            backgroundColor:[],
           }
         ]
       },
@@ -440,7 +439,27 @@ export default {
       Lv1: '',
       Lv2: '',
       Lv3: ''
-    }
+    },
+    colorSet: [
+      'red',
+      'pink',
+      'purple',
+      'deep-purple',
+      'indigo',
+      'blue',
+      'light-blue',
+      'cyan',
+      'teal',
+      'green',
+      'light-green',
+      'lime',
+      'yellow',
+      'amber',
+      'orange',
+      'deep-orange',
+      'brown',
+      'blue-grey'
+    ]
   }),
   components: { 
     ChartPie,
@@ -451,28 +470,22 @@ export default {
       userData: state => state.userData,  // 使用者基本資料
     }),
     ReasonLv1: function() {
-      const thisLevel = this.allReasonList.Lv1DataList
-      return thisLevel?.map(e=>({
-        value:e.Lv1Code,
-        text:e.Lc1Name
-      }))||[]
+      // const thisLevel = carAccReason.ReasonLv1
+      const thisLevel = this.allReasonList?.map(element=>({text:element.Lv1Name,value:element.Lv1Code}))||[]
+      return thisLevel
     },
     ReasonLv2: function() {
       const Lv1Value = this.reasonSelect.Lv1
-      const thisLevel = this.allReasonList.Lv1DataList?.find(el=>el.Lv1Code==Lv1Value).Lv2DataList||[]
-      return thisLevel?.map(e=>({
-        value:e.Lv2Code,
-        text:e.Lc2Name
-      }))||[]
+      // const thisLevel = carAccReason.ReasonLv2[Lv1Value]||[]
+      const thisLevel = this.allReasonList?.find(element=>element.Lv1Code == Lv1Value)?.Lv2DataList?.map(element=>({text:element.Lv2Name,value:element.Lv2Code}))||[]
+      return thisLevel
     },
     ReasonLv3: function() {
       const Lv1Value = this.reasonSelect.Lv1
       const Lv2Value = this.reasonSelect.Lv2
-      const thisLevel = this.allReasonList.Lv1DataList?.find(el=>el.Lv1Code==Lv1Value).Lv2DataList?.find(e=>e.Lv2Code==Lv2Value).Lv3DataList||[]
-      return thisLevel?.map(e=>({
-        value:e.Lv3Code,
-        text:e.Lc3Name
-      }))||[]
+      // const thisLevel = carAccReason.ReasonLv3[Lv2Value]||[]
+      const thisLevel = this.allReasonList?.find(element=>element.Lv1Code == Lv1Value)?.Lv2DataList?.find(element=>element.Lv2Code == Lv2Value)?.Lv3DataList?.map(element=>({text:element.Lv3Name,value:element.Lv3Code}))||[]
+      return thisLevel 
     }
   },
   methods: {
@@ -482,26 +495,82 @@ export default {
       'chViewDialog',  // 檢視內容 dialog
     ]),
     dataInit() {
-      this.Lv1Chart.componentKey ++
-      this.Lv2Chart.componentKey ++
-      this.Lv3Chart.componentKey ++
+      
       const today = new Date() 
       for( let i = today.getFullYear()-1 ; i >= (today.getFullYear() - 10) && i >= 2012 ; i--){
         this.yearSelect.push(i)
       }
       this.selectYear = today.getFullYear() - 1
-      accidentResonQueryList({
+      this.AccidentResonQueryList()
+      this.AccidentYearQuery()
+      
+    },
+    //圖表資料
+    AccidentYearQuery() {
+      accidentYearQuery({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
+        DTime_Start: this.selectYear,
+        DTime_End: this.selectYear,
+        AcdOption: this.acdcode,
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
-          this.allReasonList = res.data.DataList
+          this.Lv1Chart.chartdata.labels = []
+          this.Lv1Chart.chartdata.datasets[0].data = []
+          this.Lv1Chart.chartdata.datasets[0].backgroundColor = []
+          res.data.DataListLv1.forEach((element,index)=>{
+            this.Lv1Chart.chartdata.labels.push(element.Name)
+            // this.allReasonList.Lv1DataList.push({
+            //   Lv1Code: element.Code,
+            //   Lv1Name: element.Name
+            // })
+            this.Lv1Chart.chartdata.datasets[0].data.push(parseFloat(element.Value.replace(/%/g,'')))
+            this.Lv1Chart.chartdata.datasets[0].backgroundColor.push(this.colorSet[index])
+          })
+          this.Lv1Chart.componentKey ++
+          this.Lv2Chart.chartdata.labels = []
+          this.Lv2Chart.chartdata.datasets[0].data = []
+          this.Lv2Chart.chartdata.datasets[0].backgroundColor = []
+          res.data.DataListLv2.forEach((element,index)=>{
+            this.Lv2Chart.chartdata.labels.push(element.Name)
+            // this.allReasonList.Lv2DataList.push({
+            //   Lv2Code: element.Code,
+            //   Lv2Name: element.Name
+            // })
+            this.Lv2Chart.chartdata.datasets[0].data.push(parseFloat(element.Value.replace(/%/g,'')))
+            this.Lv2Chart.chartdata.datasets[0].backgroundColor.push(this.colorSet[index])
+          })
+          this.Lv2Chart.componentKey ++
+          this.Lv3Chart.chartdata.labels = []
+          this.Lv3Chart.chartdata.datasets[0].data = []
+          this.Lv3Chart.chartdata.datasets[0].backgroundColor = []
+          res.data.DataListLv3.forEach((element,index)=>{
+            this.Lv3Chart.chartdata.labels.push(element.Name)
+            // this.allReasonList.Lv3DataList.push({
+            //   Lv3Code: element.Code,
+            //   Lv3Name: element.Name
+            // })
+            this.Lv3Chart.chartdata.datasets[0].data.push(parseFloat(element.Value.replace(/%/g,'')))
+            this.Lv3Chart.chartdata.datasets[0].backgroundColor.push(this.colorSet[index])
+          })
+          this.Lv3Chart.componentKey ++
         }else{
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-          this.$router.push({ path: '/error' })
+          // this.$router.push({ path: '/error' })
         }
       }).catch( err => {
+        console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      })
+    },
+    AccidentResonQueryList() {
+      accidentResonQueryList({
+        ClientReqTime: getNowFullTime(),
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res=>{
+        this.allReasonList = res.data.DataList
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
       })
     },
     // 更換頁數
@@ -516,13 +585,61 @@ export default {
     },
     //查詢事件清單
     searchLv1() {
-      this.accidentTableLv1.showYN = !this.accidentTableLv1.showYN
+      accidentYearQueryList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        DTime_Start: this.selectYear,
+        DTime_End: this.selectYear,
+        AcdOption: this.acdcode,
+        LevelOption: '1', 
+        LevelCode: this.reasonSelect.Lv1,
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          this.accidentTableLv1.item = res.data.DataList
+          this.accidentTableLv1.showYN = true
+        }else{
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      })
     },
     searchLv2() {
-      this.accidentTableLv2.showYN = !this.accidentTableLv2.showYN
+      accidentYearQueryList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        DTime_Start: this.selectYear,
+        DTime_End: this.selectYear,
+        AcdOption: this.acdcode,
+        LevelOption: '2', 
+        LevelCode: this.reasonSelect.Lv2,
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          this.accidentTableLv2.item = res.data.DataList
+          this.accidentTableLv2.showYN = true
+        }else{
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      })
     },
     searchLv3() {
-      this.accidentTableLv3.showYN = !this.accidentTableLv3.showYN
+      accidentYearQueryList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        DTime_Start: this.selectYear,
+        DTime_End: this.selectYear,
+        AcdOption: this.acdcode,
+        LevelOption: '3', 
+        LevelCode: this.reasonSelect.Lv3,
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          this.accidentTableLv3.item = res.data.DataList
+          this.accidentTableLv3.showYN = true
+        }else{
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      })
     }
   },
   mounted() {
