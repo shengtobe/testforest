@@ -104,10 +104,10 @@
 import { mapState, mapActions } from 'vuex'
 import ChartBar from '@/components/chartBar'
 import Pagination from '@/components/Pagination.vue'
-import { accidentResonQueryList } from '@/apis/smis/safetyPerformance'
+import { accidentResonQueryList, Lv4_1 } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
-  props:['acdname'],
+  props:['acdcode','acdname'],
   data: () => ({
     yearSelect:[],
     Chart:{
@@ -173,10 +173,10 @@ export default {
       showYN: false,
       pageOpt: { page: 1 },
       header:[
-        { text: '工單編號', value: 'FlowId', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '故障主旨', value: 'Title', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '處理階段', value: 'Level', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
-        { text: '檢視內容', value: 'Extend', align: 'center', class: 'subtitle-1 white--text font-weight-bold light-blue darken-1', width: '110' },
+        { text: '工單編號', value: 'FlowId', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '故障主旨', value: 'Title', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '處理階段', value: 'Level', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '檢視內容', value: 'Extend', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
       items:[
         {FlowId:'TEST0001',Title:'測試工單',Level:'報修階段'}
@@ -227,12 +227,12 @@ export default {
       const thisMonth = today.getMonth() + 1    //月份要加一
       let yearMonth
       for(let i = 36; i >= 1 ; i--){
-        let getMonth = 12 - Math.abs(thisMonth - i)%12
-        if(getMonth > 12){
+        let getMonth = (thisMonth - i<=0)?12 - Math.abs(thisMonth - i)%12:thisMonth - i;
+        if(getMonth == 12){
+          yearMonth = thisYear.toString()+'-'+((getMonth)>=10?'':'0')+(getMonth).toString()
           thisYear+=1
-          yearMonth = thisYear.toString()+'/0'+(getMonth-12).toString()
         }else{
-          yearMonth = thisYear.toString()+'/'+((getMonth)>=10?'':'0')+(getMonth).toString()
+          yearMonth = thisYear.toString()+'-'+((getMonth)>=10?'':'0')+(getMonth).toString()
         }
         this.Chart.chartdata.datasets[0].data.push((Math.random() * Math.floor(100)).toFixed(2))
         this.Chart.chartdata.labels.push(yearMonth)
@@ -241,6 +241,39 @@ export default {
     },
     dataInit() {
       this.getPast3YearPerMonth()
+      switch(this.acdcode){
+      //   case 'O4':
+
+      //     break;
+        case 'O5':
+            Lv4_1({
+              ClientReqTime: getNowFullTime(),  // client 端請求時間
+              OperatorID: this.userData.UserId,  // 操作人id
+              DTime_Start: this.selectItem[0],
+              DTime_End: this.selectItem[this.selectItem.length - 1],
+              Option: 'T'
+            }).then(res=>{
+              if (res.data.ErrorCode == 0) {
+                console.log(res.data)
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+      //   case 'O6':
+
+      //     break;
+      //   case 'O7':
+
+      //     break;
+      //   case 'O8':
+
+      //     break;
+      }
+      
       this.Chart.componentKey ++
     },
     chPage(n) {
