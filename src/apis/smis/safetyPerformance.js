@@ -239,3 +239,35 @@ export function keyEquipMKBFList(data) {
         }
     )
 }
+//查詢關鍵設備MKBF數值
+export function keyEquipMKBF(data) {
+    return axios(
+        {
+            url: 'sms/sp/keyequipmkbf',
+            method: 'post',
+            data,
+        }
+    )
+}
+//查詢關鍵設備趨勢-工單列表
+export function keyEquipQueryList(data) {
+    return axios(
+        {
+            url: 'sms/sp/keyequipquerylist',
+            method: 'post',
+            data,
+        }
+    )
+}
+
+// -- 第四層 --
+//查詢列車開車前軔機異常率
+export function Lv4_1(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_1',
+            method: 'post',
+            data,
+        }
+    )
+}
