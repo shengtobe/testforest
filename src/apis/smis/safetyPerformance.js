@@ -271,3 +271,57 @@ export function Lv4_1(data) {
         }
     )
 }
+export function Lv4_2(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_2',
+            method: 'post',
+            data,
+        }
+    )
+}
+export function Lv4_3(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_3',
+            method: 'post',
+            data,
+        }
+    )
+}
+export function Lv4_4(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_4',
+            method: 'post',
+            data,
+        }
+    )
+}
+export function Lv4_1List(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_1list',
+            method: 'post',
+            data,
+        }
+    )
+}
+export function Lv4_2List(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_2list',
+            method: 'post',
+            data,
+        }
+    )
+}
+export function Lv4_3List(data) {
+    return axios(
+        {
+            url: 'sms/sp/lv4_3list',
+            method: 'post',
+            data,
+        }
+    )
+}

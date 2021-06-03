@@ -10,6 +10,14 @@
     <v-col cols="12" md="8" class="text-center">
       <h2 class="label-title mb-4">{{decodeURIComponent(acdname)}}控制措施執行成效</h2>
     </v-col>
+    <v-col offset-sm="6" offset-md="10" cols="12" sm="6" md="2">
+         <v-select
+          :items="TypeSelect"
+          v-model="selectedType"
+          solo
+          @change="initChart"
+        ></v-select>
+      </v-col>
     <template v-if="decodeURIComponent(acdname)!='慢行路段分析'">
       <v-col cols="12" class="text-center align-center">
         <ChartBar :chartdata="Chart.chartdata" :options="Chart.options" :key="Chart.componentKey" />
@@ -19,11 +27,13 @@
           <v-col cols="6" md="3">
             <v-select
               solo
-              :items="Chart.chartdata.labels">
+              :items="selectItem"
+              v-model="selectedYM"
+              >
             </v-select>
           </v-col>
           <v-col cols="6" md="3">
-            <v-btn class="btn-memo" dark large @click="workOrderTable.showYN = true">
+            <v-btn class="btn-memo" dark large @click="initTable">
               異常列表
             </v-btn>
           </v-col>
@@ -32,7 +42,7 @@
         <v-row v-if="workOrderTable.showYN">
           <v-col cols="12">
             <v-data-table
-              :headers="workOrderTable.header"
+              :headers="TabeleField"
               :items="workOrderTable.items"  
               hide-default-footer
               class="theme-table"
@@ -44,9 +54,19 @@
               <template v-slot:loading>
                 <span class="red--text subtitle-1">資料讀取中...</span>
               </template>
+            
+              <template v-slot:item.OverSpeedStatus="{ item }">
+                {{ item.OverSpeedStatus }}級
+              </template>
 
-              <template v-slot:item.Extend="{ item }">
-                <v-btn class="btn-add" rounded dark>
+              <template v-slot:item.ErrorDesp="{ item }">
+                <v-btn class="btn-add" rounded dark @click="goOpen('異常說明',item.ErrorDesp)">
+                  <v-icon dark>mdi-clipboard-outline</v-icon>
+                </v-btn>
+              </template>
+
+              <template v-slot:item.ErrorCheckStatus="{ item }">
+                <v-btn class="btn-add" rounded dark @click="goOpen('異常處理情形',item.ErrorCheckStatus)">
                   <v-icon dark>mdi-clipboard-outline</v-icon>
                 </v-btn>
               </template>
@@ -59,6 +79,23 @@
                 />
               </template>
             </v-data-table>
+            <v-dialog v-model="ShowDetail.Dialog" max-width="600px">
+              <v-card class="theme-card">
+                <v-card-title class="white--text px-4 py-1">
+                  {{ ShowDetail.Title }}
+                  <v-spacer></v-spacer>
+                  <v-btn dark fab small text @click="ShowDetail.Dialog = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-card-title>
+                {{ ShowDetail.Detail }}
+                <v-card-actions class="px-5 pb-5">
+                  <v-btn class="mr-2 btn-close white--text" elevation="4" @click="ShowDetail.Dialog = false"
+                    >關閉</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-col>
         </v-row>
       </v-col>
@@ -104,7 +141,8 @@
 import { mapState, mapActions } from 'vuex'
 import ChartBar from '@/components/chartBar'
 import Pagination from '@/components/Pagination.vue'
-import { accidentResonQueryList, Lv4_1 } from '@/apis/smis/safetyPerformance'
+import { accidentResonQueryList, Lv4_1, Lv4_2, Lv4_3, Lv4_4, Lv4_1List, Lv4_2List, Lv4_3List } from '@/apis/smis/safetyPerformance'
+import { fetchOrganization } from '@/apis/organization'
 import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
   props:['acdcode','acdname'],
@@ -157,7 +195,7 @@ export default {
           xAxes: [{
             scaleLabel:{
               display: true,
-              labelString: '年/月',
+              labelString: '年-月',
             },
             ticks: {
               suggestedMin: 0,
@@ -204,7 +242,15 @@ export default {
         rangeMin: 0,
         rangeMax: 1.6
       },
-    ]
+    ],
+    selectedType: 'T',
+    selectedYM: '',
+    ShowDetail:{
+      Dialog: false,
+      Title: '',
+      Detail: ''
+    },
+    orgList: []
   }),
   components: { 
     ChartBar,
@@ -214,6 +260,82 @@ export default {
     ...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    TypeSelect() {
+      let rtnObj = []
+      switch(this.acdcode){
+        case 'O4':
+          rtnObj = [
+            { value:'T', text:'總計'},
+            ...this.orgList.map(e=>({value: e.value,text:e.text}))
+          ]
+          break;
+        case 'O5':
+          rtnObj = [
+            { value: 'T', text:'總計'},
+            { value: '1', text:'機車'},
+            { value: '2', text:'客車'}
+          ]
+          break;
+        case 'O6':
+          rtnObj = [
+            { value:'T', text:'總計' },
+            { value:'1', text:'1級' },
+            { value:'2', text:'2級' },
+            { value:'3', text:'其他' },
+          ]
+          break;
+        case 'O7':
+          rtnObj = [
+            { value:'T', text:'總計' },
+            { value:'1', text:'1級' },
+            { value:'2', text:'2級' },
+            { value:'3', text:'其他' },
+          ]
+          break;
+      }
+      return rtnObj
+    },
+    TabeleField() {
+      let rtnObj = []
+      switch(this.acdcode){
+        case 'O4':
+          rtnObj = [
+            { text: '日期', value: 'CheckDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '車次', value: 'CarVersion', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '車類型', value: 'CarType', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '車號', value: 'CarCode', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常說明', value: 'ErrorDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常處理情形', value: 'ErrorCheckStatus', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+          ]
+          break;
+        case 'O5':
+          rtnObj = [
+            { text: '檢查日期', value: 'CheckDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '車次', value: 'CarVersion', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常單位名稱', value: 'ErrorDepart', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常人員', value: 'ErrorPeopleName', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常說明', value: 'ErrorDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常處理情形', value: 'ErrorCheckStatus', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+          ]
+          break;
+        case 'O6':
+          rtnObj = [
+            { text: '檢查日期', value: 'CheckDate', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '車次', value: 'CarVersion', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '人員單位名稱', value: 'ErrorDepart', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '人員姓名', value: 'ErrorPeopleName', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '時間範圍', value: 'CarTimeRange', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '平均車速', value: 'AverageSpeed', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '每小時超出公里數', value: 'OverSpeed', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '超速狀態', value: 'OverSpeedStatus', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '異常概況', value: 'ErrorTitle', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '處理情形', value: 'ErrorCheckStatus', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+            { text: '附件', value: 'ErrorDesp', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+          ]
+          break;
+      }
+      return rtnObj
+    }
   },
   methods: {
     ...mapActions('system', [
@@ -226,7 +348,7 @@ export default {
       let thisYear = today.getFullYear() - 3  //先抓三年前
       const thisMonth = today.getMonth() + 1    //月份要加一
       let yearMonth
-      for(let i = 36; i >= 1 ; i--){
+      for(let i = 37; i > 1 ; i--){
         let getMonth = (thisMonth - i<=0)?12 - Math.abs(thisMonth - i)%12:thisMonth - i;
         if(getMonth == 12){
           yearMonth = thisYear.toString()+'-'+((getMonth)>=10?'':'0')+(getMonth).toString()
@@ -234,25 +356,96 @@ export default {
         }else{
           yearMonth = thisYear.toString()+'-'+((getMonth)>=10?'':'0')+(getMonth).toString()
         }
-        this.Chart.chartdata.datasets[0].data.push((Math.random() * Math.floor(100)).toFixed(2))
-        this.Chart.chartdata.labels.push(yearMonth)
         this.selectItem.push(yearMonth)
       }
     },
     dataInit() {
       this.getPast3YearPerMonth()
-      switch(this.acdcode){
-      //   case 'O4':
-
-      //     break;
-        case 'O5':
-            Lv4_1({
+      if(this.acdcode == 'O4'){
+        this._getOrg()
+      }
+      this.initChart()
+    },
+    chPage(n) {
+      this.workOrderTable.pageOpt.page = n
+    },
+    initChart() {
+      this.Chart.chartdata.datasets[0].data = []
+      this.Chart.chartdata.labels = []
+      const reqData = {
               ClientReqTime: getNowFullTime(),  // client 端請求時間
               OperatorID: this.userData.UserId,  // 操作人id
               DTime_Start: this.selectItem[0],
               DTime_End: this.selectItem[this.selectItem.length - 1],
-              Option: 'T'
-            }).then(res=>{
+            }
+      switch(this.acdcode){
+        case 'O4':
+          Lv4_2({
+            ...reqData,
+            Option: (this.selectedType=='T'?'T':'1'),
+            DepartCode: this.selectedType!='T'?this.selectedType:null
+          })
+            .then(res=>{
+              if (res.data.ErrorCode == 0) {
+                res.data.DataList.forEach(e=>{
+                  this.Chart.chartdata.labels.push(e.Year + '-' + e.Month)
+                  this.Chart.chartdata.datasets[0].data.push(e.Value)
+                })
+                this.Chart.componentKey ++
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+        case 'O5':
+          Lv4_1({
+            ...reqData,
+            Option: this.selectedType,
+          })
+            .then(res=>{
+              if (res.data.ErrorCode == 0) {
+                res.data.DataList.forEach(e=>{
+                  this.Chart.chartdata.labels.push(e.Year + '-' + e.Month)
+                  this.Chart.chartdata.datasets[0].data.push(e.Value)
+                })
+                this.Chart.componentKey ++
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+        case 'O6':
+          Lv4_3({
+            ...reqData,
+            Option: this.selectedType
+          })
+            .then(res=>{
+              if (res.data.ErrorCode == 0) {
+                res.data.DataList.forEach(e=>{
+                  this.Chart.chartdata.labels.push(e.Year + '-' + e.Month)
+                  this.Chart.chartdata.datasets[0].data.push(e.Value)
+                })
+                this.Chart.componentKey ++
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+        case 'O7':
+          Lv4_4({
+            ...reqData,
+            Option: this.selectedType
+          })
+            .then(res=>{
               if (res.data.ErrorCode == 0) {
                 console.log(res.data)
               }else{
@@ -263,21 +456,77 @@ export default {
               this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             })
           break;
-      //   case 'O6':
-
-      //     break;
-      //   case 'O7':
-
-      //     break;
-      //   case 'O8':
-
-      //     break;
       }
-      
-      this.Chart.componentKey ++
     },
-    chPage(n) {
-      this.workOrderTable.pageOpt.page = n
+    initTable() {
+      this.workOrderTable.items = []
+      const reqData = {
+              ClientReqTime: getNowFullTime(),  // client 端請求時間
+              OperatorID: this.userData.UserId,  // 操作人id
+              DTime_Start: this.selectedYM,
+              DTime_End: this.selectedYM,
+            }
+      switch(this.acdcode){
+        case 'O4':
+          Lv4_2List({
+            ...reqData,
+            Option: (this.selectedType=='T'?'T':'1'),
+            DepartCode: this.selectedType!='T'?this.selectedType:null
+          }).then(res=>{
+              if (res.data.ErrorCode == 0) {
+                console.log(res.data)
+                this.workOrderTable.items = res.data.DataList
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+        case 'O5':
+          Lv4_1List({
+            ...reqData,
+            Option: this.selectedType
+          })
+            .then(res=>{
+              if (res.data.ErrorCode == 0) {
+                console.log(res.data)
+                this.workOrderTable.items = res.data.DataList
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+        case 'O6':
+          Lv4_3List({
+            ...reqData,
+            Option: this.selectedType
+          })
+            .then(res=>{
+              if (res.data.ErrorCode == 0) {
+                console.log(res.data)
+                this.workOrderTable.items = res.data.DataList
+              }else{
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            })
+          break;
+      }
+      this.workOrderTable.showYN = true
+    },
+    goOpen(title,detail) {
+      this.ShowDetail = {
+        Dialog: true,
+        Title: title,
+        Detail: detail
+      }
     },
     //------
     _getTotalRowCol(item) {
@@ -294,7 +543,64 @@ export default {
         countRow.push(countCol)
       }
       return countRow
-    }
+    },
+    _getOrg() { //抓單位
+      fetchOrganization({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          let rtndata = res.data
+          console.log('data',rtndata)
+          const dept3 = rtndata.user_depart_list_group_3.map(ele => {
+            let rtnObj3 = {}
+            rtnObj3.value = ele.DepartCode
+            rtnObj3.text = ele.DepartName
+            rtnObj3.group = ele.DepartParentName
+            return rtnObj3
+          })
+          let dept2 = rtndata.user_depart_list_group_2.map(ele => {
+            let rtnObj2 = {}
+            rtnObj2.value = ele.DepartCode
+            rtnObj2.text = ele.DepartName
+            rtnObj2.group = ele.DepartParentName
+            return rtnObj2
+          })
+          let dept1 = rtndata.user_depart_list_group_1.map(ele => {
+            let rtnObj1 = {}
+            rtnObj1.value = ele.DepartCode
+            rtnObj1.text = ele.DepartName
+            rtnObj1.group = ele.DepartName
+            return rtnObj1
+          })
+          const that = this
+          dept1.forEach(ele => {
+            that.orgList.push(ele)
+            let rtnArr2 = dept2.filter(element => {
+              return element.group == ele.text
+            })
+            rtnArr2.forEach(element => {
+              that.orgList.push(element)
+              let rtnArr3 = []
+              rtnArr3 = dept3.filter(item => {
+                return item.group == element.text
+              })
+              rtnArr3.forEach(items => {
+                that.orgList.push(items)
+              })
+            })
+          })
+        }else{
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        console.warn(err)
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.orgIsLoading = false
+      })
+    },
   },
   mounted() {
     this.dataInit()

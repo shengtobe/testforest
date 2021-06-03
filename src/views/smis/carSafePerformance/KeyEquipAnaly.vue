@@ -39,11 +39,13 @@
         <v-col cols="6" md="3">
           <v-select
             solo
-            :items="BarChart.chartdata.labels">
+            :items="getYm"
+            v-model="selectTableData"
+            >
           </v-select>
         </v-col>
         <v-col cols="6" md="3">
-          <v-btn class="btn-memo" dark large @click="workOrderTable.showYN = true">
+          <v-btn class="btn-memo" dark large @click="getTableData">
             工單列表
           </v-btn>
         </v-col>
@@ -53,7 +55,7 @@
         <v-col cols="12">
           <v-data-table
             :headers="workOrderTable.header"
-            :items="workOrderTable.items"  
+            :items="dataTableItem"  
             hide-default-footer
             class="theme-table"
             >
@@ -65,8 +67,20 @@
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
 
-            <template v-slot:item.Extend="{ item }">
-              <v-btn class="btn-add" rounded dark>
+            <template v-slot:item.Malfunction="{ item }">
+              <v-btn class="btn-add" rounded dark @click="goOpen('故障描述',item.Malfunction)">
+                <v-icon dark>mdi-clipboard-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <template v-slot:item.MaintainMemo="{ item }">
+              <v-btn class="btn-add" rounded dark @click="goOpen('維修情況描述',item.MaintainMemo)">
+                <v-icon dark>mdi-clipboard-outline</v-icon>
+              </v-btn>
+            </template>
+
+            <template v-slot:item.DelayReason="{ item }">
+              <v-btn class="btn-add" rounded dark @click="goOpen('延後驗收原因',item.DelayReason)">
                 <v-icon dark>mdi-clipboard-outline</v-icon>
               </v-btn>
             </template>
@@ -79,6 +93,23 @@
               />
             </template>
           </v-data-table>
+          <v-dialog v-model="ShowDetail.Dialog" max-width="600px">
+            <v-card class="theme-card">
+              <v-card-title class="white--text px-4 py-1">
+                {{ ShowDetail.Title }}
+                <v-spacer></v-spacer>
+                <v-btn dark fab small text @click="ShowDetail.Dialog = false" class="mr-n2">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              {{ ShowDetail.Detail }}
+              <v-card-actions class="px-5 pb-5">
+                <v-btn class="mr-2 btn-close white--text" elevation="4" @click="ShowDetail.Dialog = false"
+                  >關閉</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
       </v-row>
     </v-col>
@@ -234,17 +265,31 @@ export default {
       showYN: false,
       pageOpt: { page: 1 },
       header:[
-        { text: '工單編號', value: 'FlowId', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
-        { text: '故障主旨', value: 'Title', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
-        { text: '處理階段', value: 'Level', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
-        { text: '檢視內容', value: 'Extend', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '工單類型', value: 'CreateType', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '工單狀態', value: 'Status', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '設備報修碼', value: 'MaintainCode', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '立單主旨', value: 'WorkSubject', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '故障描述', value: 'Malfunction', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '工作地點', value: 'WorkPlace', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '實際人數', value: 'RealWorkerCount', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '維修情況描述', value: 'MaintainMemo', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '代理人姓名', value: 'AgentMan', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '總工時 (單位:小時)', value: 'TotalWorkTime', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '缺料狀態', value: 'Shortage', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '延後驗收狀態', value: 'DelayStatus', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '延後驗收原因', value: 'DelayReason', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
+        { text: '驗收時間', value: 'AcceptDTime', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
-      items:[
-        {FlowId:'TEST0001',Title:'測試工單',Level:'報修階段'}
-      ],
+      item:[]
     },
     demoData:[], //展示用資料
     YMData:[],
+    selectTableData: '',
+    ShowDetail:{
+      Dialog: false,
+      Title: '',
+      Detail: ''
+    },
   }),
   components: { 
     ChartLine,
@@ -255,6 +300,20 @@ export default {
     ...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    getYm: function() {
+      return [{value:'',text:'---請選擇---'},...this.BarChart.chartdata.labels.map(e=>({value:e, text:e}))]
+    },
+    dataTableItem: function() {
+      const dataitem = this.workOrderTable.item
+      if(dataitem.length > 0){
+        return dataitem.map(e=>({
+          ...e,
+          MaintainCode: e.MaintainCode_System	+'-'+e.MaintainCode_Loc+'-'+e.MaintainCode_Eqp+'-'+e.MaintainCode_Seq
+        }))
+      } else {
+        return []
+      }
+    }
   },
   methods: {
     ...mapActions('system', [
@@ -318,6 +377,38 @@ export default {
     },
     chPage(n) {
       this.workOrderTable.pageOpt.page = n
+    },
+    getTableData() {
+      let getYmArr = this.selectTableData.split('~')
+      console.log(getYmArr)
+      keyEquipQueryList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        DTime_Start: getYmArr[0],
+        DTime_End: getYmArr[1],
+        LevelOption: '3',
+        LevelCode: this.eqcode,
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          console.log(res.data)
+          this.workOrderTable.item = res.data.DataList
+        }else{
+          console.error(res.data.Msg)
+          // sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          // this.$router.push({ path: '/error' })
+        }
+        this.workOrderTable.showYN = true
+      }).catch( err => {
+        console.error('err',err)
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      })
+    },
+    goOpen(title,detail) {
+      this.ShowDetail = {
+        Dialog: true,
+        Title: title,
+        Detail: detail
+      }
     },
   },
   mounted() {
