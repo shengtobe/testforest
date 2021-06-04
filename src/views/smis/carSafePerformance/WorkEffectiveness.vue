@@ -10,7 +10,10 @@
     <v-col cols="12" md="8" class="text-center">
       <h2 class="label-title mb-4">{{decodeURIComponent(acdname)}}控制措施執行成效</h2>
     </v-col>
-    <v-col offset-sm="6" offset-md="10" cols="12" sm="6" md="2">
+  </v-row>
+  <v-row>
+    <template v-if="decodeURIComponent(acdname)!='慢行路段分析'">
+      <v-col offset-sm="6" offset-md="10" cols="12" sm="6" md="2">
          <v-select
           :items="TypeSelect"
           v-model="selectedType"
@@ -18,7 +21,6 @@
           @change="initChart"
         ></v-select>
       </v-col>
-    <template v-if="decodeURIComponent(acdname)!='慢行路段分析'">
       <v-col cols="12" class="text-center align-center">
         <ChartBar :chartdata="Chart.chartdata" :options="Chart.options" :key="Chart.componentKey" />
       </v-col>
@@ -101,12 +103,20 @@
       </v-col>
     </template>
     <template v-else>
-      <v-expansion-panels focusable>
+      <v-col cols="1" class="text-center grey"></v-col>
+      <v-col cols="2">無資料</v-col>
+      <v-col cols="1" class="text-center green"></v-col>
+      <v-col cols="2">過去1年慢行天數30天以下</v-col>
+      <v-col cols="1" class="text-center yellow"></v-col>
+      <v-col cols="2">過去1年慢行天數31~90天</v-col>
+      <v-col cols="1" class="text-center red"></v-col>
+      <v-col cols="2">過去1年慢行天數91天以上</v-col>
+      <v-expansion-panels focusable class="mt-1">
         <v-expansion-panel
           v-for="(item,i) in trainSpeed"
           :key="i"
         >
-          <v-expansion-panel-header>{{item.lineName}}</v-expansion-panel-header>
+          <v-expansion-panel-header class="metal-dark-yellow-top white--text font-weight-bold text-subtitle-1">{{item.lineName}}</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-row>
               <v-col cols="1"></v-col>
@@ -125,7 +135,7 @@
             <v-row v-for="(cols,ind) in _getTotalRowCol(item)" :key="i+'R'+ind">
               <v-col cols="1" class="text-right"><sup>{{cols[0]}}K</sup></v-col>
               <v-col cols="1" v-for="(col,index) in cols" :key="i+'R'+ind+'C'+index">
-                <div :class="'some_element '+(Math.floor(Math.random() * Math.floor(3))>0?'red':Math.floor(Math.random() * Math.floor(2))>0?'green':'yellow')"></div>
+                <div :class="'some_element '+getColor(item.lineCode,col)"></div>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -143,7 +153,7 @@ import ChartBar from '@/components/chartBar'
 import Pagination from '@/components/Pagination.vue'
 import { accidentResonQueryList, Lv4_1, Lv4_2, Lv4_3, Lv4_4, Lv4_1List, Lv4_2List, Lv4_3List } from '@/apis/smis/safetyPerformance'
 import { fetchOrganization } from '@/apis/organization'
-import { getNowFullTime } from '@/assets/js/commonFun'
+import { getNowFullTime, groupBy } from '@/assets/js/commonFun'
 export default {
   props:['acdcode','acdname'],
   data: () => ({
@@ -224,21 +234,25 @@ export default {
     trainSpeed:[
       { 
         lineName:'本線',
+        lineCode:'l1',
         rangeMin: 0,
         rangeMax: 71.350
       },
       { 
         lineName:'眠月線',
+        lineCode:'l2',
         rangeMin: 0,
         rangeMax: 2.84
       },
       { 
         lineName:'祝山線',
+        lineCode:'l3',
         rangeMin: 0,
         rangeMax: 3.247
       },
       { 
         lineName:'水山線',
+        lineCode:'l4',
         rangeMin: 0,
         rangeMax: 1.6
       },
@@ -250,7 +264,8 @@ export default {
       Title: '',
       Detail: ''
     },
-    orgList: []
+    orgList: [],
+    SpeedList:{}
   }),
   components: { 
     ChartBar,
@@ -360,8 +375,11 @@ export default {
       }
     },
     dataInit() {
+      if(this.acdcode == 'O8') {
+        this.$router.push({path:'/monitor/rainfall-monitor'})
+      }
       this.getPast3YearPerMonth()
-      if(this.acdcode == 'O4'){
+      if(this.acdcode == 'O4') {
         this._getOrg()
       }
       this.initChart()
@@ -384,8 +402,7 @@ export default {
             ...reqData,
             Option: (this.selectedType=='T'?'T':'1'),
             DepartCode: this.selectedType!='T'?this.selectedType:null
-          })
-            .then(res=>{
+          }).then(res=>{
               if (res.data.ErrorCode == 0) {
                 res.data.DataList.forEach(e=>{
                   this.Chart.chartdata.labels.push(e.Year + '-' + e.Month)
@@ -404,8 +421,7 @@ export default {
           Lv4_1({
             ...reqData,
             Option: this.selectedType,
-          })
-            .then(res=>{
+          }).then(res=>{
               if (res.data.ErrorCode == 0) {
                 res.data.DataList.forEach(e=>{
                   this.Chart.chartdata.labels.push(e.Year + '-' + e.Month)
@@ -424,8 +440,7 @@ export default {
           Lv4_3({
             ...reqData,
             Option: this.selectedType
-          })
-            .then(res=>{
+          }).then(res=>{
               if (res.data.ErrorCode == 0) {
                 res.data.DataList.forEach(e=>{
                   this.Chart.chartdata.labels.push(e.Year + '-' + e.Month)
@@ -441,13 +456,17 @@ export default {
             })
           break;
         case 'O7':
+          const today = new Date
+          let thisYear = today.getFullYear()
           Lv4_4({
-            ...reqData,
-            Option: this.selectedType
-          })
-            .then(res=>{
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+            DTime_Start: thisYear,
+            DTime_End: thisYear-1
+          }).then(res=>{
               if (res.data.ErrorCode == 0) {
-                console.log(res.data)
+                console.log(res.data.DataList)
+                this.SpeedList = groupBy(res.data.DataList,'ReportLine')
               }else{
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                 this.$router.push({ path: '/error' })
@@ -528,10 +547,23 @@ export default {
         Detail: detail
       }
     },
+    getColor(line,col) {
+      const getValue = this.SpeedList[line]?.find(e=>e.LimitStart==col)?.Value||''
+      switch(getValue){
+        case '1':
+          return 'green'
+        case '2':
+          return 'yellow'
+        case '3':
+          return 'red'
+        default:
+          return 'grey'
+      }
+    },
     //------
     _getTotalRowCol(item) {
       let thisMin = Math.floor(item.rangeMin)
-      let thisMax = Math.ceil(item.rangeMax)
+      let thisMax = Math.floor(item.rangeMax)
       let rowMax = Math.floor(thisMax/10)
       let countRow = []
       let countCol = []

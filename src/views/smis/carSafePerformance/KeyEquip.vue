@@ -224,7 +224,7 @@ export default {
       userData: state => state.userData,  // 使用者基本資料
     }),
     locEquip: function() {
-      return this.allReasonList?.find(ele=>ele.LocKey == this.reasonSelect.location)?.EquipList?.map(e=>({ value: e.EquipKey , text: e.EquipName}))||[]
+      return [{value:'',text:'---請選擇---'},...this.allReasonList?.find(ele=>ele.LocKey == this.reasonSelect.location)?.EquipList?.map(e=>({ value: e.EquipKey , text: e.EquipName}))||[]]
     },
     reasonSelectEmpty: function() {
       return !(this.reasonSelect.location||this.reasonSelect.equip)
