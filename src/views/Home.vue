@@ -77,7 +77,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail">
+                        <v-btn small dark fab class="btn-detail" @click="redirect(item)">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
                     </template>
@@ -230,6 +230,9 @@ export default {
 
                 this.chLoadingShow()
             }, 1000)
+        },
+        redirect(item) {
+            console.log(":::", item)
         },
         // 更換頁數-個人訊息
         chPage(n) {
