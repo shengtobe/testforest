@@ -78,7 +78,7 @@
 
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab class="btn-detail" @click="redirect(item)">
-                            <v-icon dark>mdi-file-document</v-icon>
+                            <v-icon dark>mdi-arrow-collapse-right</v-icon>
                         </v-btn>
                     </template>
                     
@@ -109,6 +109,7 @@ import { fetchPersonalInfo, fetchPersonalInfoRead } from '@/apis/login'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { departOptions } from '@/assets/js/departOption'
+import { InfoBelongMod } from '@/assets/js/smisData'
 
 export default {
     data: () => ({
@@ -130,7 +131,7 @@ export default {
             todo: [
                 { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
                 { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                { text: '前往操作', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             ],
         }
             
@@ -159,8 +160,7 @@ export default {
                     // this.tableItems = JSON.parse(res.data.order_list)
                     let tb = JSON.parse(res.data.order_list)
                     console.log("Manage 詢問個人資訊: ", tb)
-                    if(tb.length != 0)
-                    console.log("Manage 詢問個人資訊: ", tb[0].DelStatus)
+                    
                     // 個人訊息
                     let psnal = tb.map(item => ({
                         id: item.ModuleItemID,
@@ -171,65 +171,75 @@ export default {
                         ModuleItemID: item.ModuleItemID,
                         MsgType: item.MsgType,
                         InfoBelongMod: item.InfoBelongMod,
-                    }))
-                    this.tableItems.personal = [...psnal]
+                    }));
+                    psnal.forEach(element => {
+                        console.log("element:", element)
+                        if(element.MsgType == 1){
+                            this.tableItems.personal.push(element);
+                        }
+                        else{
+                            // this.tableItems.personal.push(element);
+                            this.tableItems.todo.push(element);
+                        }
+                    });
+                    // this.tableItems.personal = [...psnal]
 
                     // 待辦事項
-                    this.tableItems.todo = [
-                        {
-                            id: '789',
-                            title: '維修、養護科工單',
-                            date: '2020-09-01',
-                        },
-                        {
-                            id: '2222',
-                            title: '行車事故事件',
-                            date: '2020-08-26',
-                        },
-                    ]
+                //     this.tableItems.todo = [
+                //         {
+                //             id: '789',
+                //             title: '維修、養護科工單',
+                //             date: '2020-09-01',
+                //         },
+                //         {
+                //             id: '2222',
+                //             title: '行車事故事件',
+                //             date: '2020-08-26',
+                //         },
+                //     ]
                 }
             }).catch( err => {
                 console.log(err)
             }).finally(() => {
             })
 
-            setTimeout(() => {
-                // this.tableItems.personal = [
-                //     {
-                //         id: '789',
-                //         depart: 'ARCO001', 
-                //         title: '資訊安全相關注意事項',
-                //         date: '2020-05-01',
-                //     },
-                //     {
-                //         id: '658',
-                //         depart: 'ARCO015', 
-                //         title: '補休作業調整',
-                //         date: '2020-04-21',
-                //     },
-                //     {
-                //         id: '447',
-                //         depart: 'ARCO026', 
-                //         title: '慢行通報',
-                //         date: '2020-03-11',
-                //     },
-                // ]
+            // setTimeout(() => {
+            //     // this.tableItems.personal = [
+            //     //     {
+            //     //         id: '789',
+            //     //         depart: 'ARCO001', 
+            //     //         title: '資訊安全相關注意事項',
+            //     //         date: '2020-05-01',
+            //     //     },
+            //     //     {
+            //     //         id: '658',
+            //     //         depart: 'ARCO015', 
+            //     //         title: '補休作業調整',
+            //     //         date: '2020-04-21',
+            //     //     },
+            //     //     {
+            //     //         id: '447',
+            //     //         depart: 'ARCO026', 
+            //     //         title: '慢行通報',
+            //     //         date: '2020-03-11',
+            //     //     },
+            //     // ]
 
-                this.tableItems.todo = [
-                    {
-                        id: '789',
-                        title: '維修、養護科工單',
-                        date: '2020-09-01',
-                    },
-                    {
-                        id: '2222',
-                        title: '行車事故事件',
-                        date: '2020-08-26',
-                    },
-                ]
+            //     this.tableItems.todo = [
+            //         {
+            //             id: '789',
+            //             title: '維修、養護科工單',
+            //             date: '2020-09-01',
+            //         },
+            //         {
+            //             id: '2222',
+            //             title: '行車事故事件',
+            //             date: '2020-08-26',
+            //         },
+            //     ]
 
+            // }, 1000)
                 this.chLoadingShow()
-            }, 1000)
         },
         redirect(item) {
             console.log(":::", item)

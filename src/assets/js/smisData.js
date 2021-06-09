@@ -1,5 +1,26 @@
 // -------------- smis 相關 -------------
-
+// 首頁 個人資訊/代辦事項 所屬模組
+export const InfoBelongMod = [
+    { text: '不限', value: '' },
+    { text: '危害通報頁面', value: '1' },
+    { text: '事故事件管理頁面', value: '2' },
+    { text: '行安改善措施檢討頁面', value: '3' },
+    { text: '危害控制措施頁面', value: '4' },
+    { text: '安全資訊發布頁面', value: '5' },
+    { text: '安全會議文件管理頁面', value: '6' },
+    { text: '規章文件管理頁面', value: '7' },
+    { text: '軔機檢查異常填報頁面', value: '8' },
+    { text: '酒測、健康檢查異常填報頁面', value: '9' },
+    { text: '車速異常填報頁面', value: '10' },
+    { text: '職業災害事故調查表頁面', value: '11' },
+    { text: '改善對策頁面', value: '12' },
+    { text: '慢行通報', value: '13' },
+    { text: '行車危害資料庫', value: '14' },
+    { text: '職災危害資料庫', value: '15' },
+    { text: '維修養護科工單', value: '16' },
+    { text: '服務科工單', value: '17' },
+    { text: '設備維修管理', value: '18' },
+]
 // 行車事故事件狀態
 export const carAccidentEventStatus = [
     { text: '不限', value: '' },
