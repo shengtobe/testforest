@@ -37,7 +37,7 @@ export const CarSafePerformanceRouter = [
     },
     {
         linkText: '安全關鍵設備可靠度趨勢分析',
-        path: '/smis/car-safe-performance/:acdname/key-equip/:eqname/key-analysis',
+        path: '/smis/car-safe-performance/:acdcode/key-equip/:eqcode/key-analysis/:eqName',
         props: true,
         component: () => import('@/views/smis/carSafePerformance/KeyEquipAnaly.vue')
     },

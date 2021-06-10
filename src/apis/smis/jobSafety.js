@@ -191,3 +191,20 @@ export function closeData(data) { return axios(
 //         data,
 //     }
 // )}
+
+// 職災傷害類型統計
+export function analyDanger(data) { return axios(
+    {
+        url: '/sms/profession/danger/analydanger',
+        method: 'post',
+        data,
+    }
+)}
+// 科室職災事故統計
+export function analyDangerByDepart(data) { return axios(
+    {
+        url: '/sms/profession/danger/analydangerbydepart',
+        method: 'post',
+        data,
+    }
+)}

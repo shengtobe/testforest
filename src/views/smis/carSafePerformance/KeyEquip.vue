@@ -17,7 +17,9 @@
           <v-select
             solo
             hide-details
-            :items="['25T','28T','29T','蒸汽機車']"
+            :items="locationList"
+            v-model="reasonSelect.location"
+            @change="initChart"
           ></v-select>
         </v-col>
         <v-col cols="8" md="3" class="d-flex text-left align-center">
@@ -29,17 +31,13 @@
               <v-select
                 solo
                 hide-details
-                :items="[
-                  '轉向架',
-                  '撒砂裝置',
-                  '軔機',
-                  '空氣配管',
-                ]"
-                v-model="eqname"
+                :items="locEquip"
+                v-model="reasonSelect.equip"
+                @change="geteqName"
               ></v-select>
             </v-col>
             <v-col cols="6" class="d-flex text-left align-center">
-              <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${acdname}/key-equip/${eqname}/key-analysis`">
+              <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${reasonSelect.location}/key-equip/${reasonSelect.equip}/key-analysis/${reasonSelect.eqName}`" :disabled="reasonSelectEmpty">
                 趨勢分析
               </v-btn>
             </v-col>
@@ -50,7 +48,7 @@
     <v-col cols="0" md="3" />
     <v-col cols="12" md="6">
       <div>
-          <ChartBubble :chartdata="Chart.chartdata" :options="Chart.options" :plugins="Chart.plugins" :key="Chart.componentKey" />
+          <ChartBubble :chartdata="Chart.chartdata" :options="Chart.options" :plugins="Chart.plugins" :key="Chart.componentKey"/>
       </div>
     </v-col>
     <v-col cols="0" md="3" />
@@ -63,7 +61,7 @@
 import { mapState, mapActions } from 'vuex'
 import ChartBubble from '@/components/chartBubble'
 import Pagination from '@/components/Pagination.vue'
-import { accidentResonQueryList } from '@/apis/smis/safetyPerformance'
+import { accidentResonQueryList, keyEquipList, keyEquipMKBFList } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
   data: () => ({
@@ -101,49 +99,6 @@ export default {
             radius: 0,
             borderColor: 'green',
             borderDash:[5,5]
-          },
-          //點點
-          {   
-            label:'設備A',
-            borderColor: 'black',
-            backgroundColor:'black',
-            data: [{x:20,y:30,r:3}],
-            type:'bubble'
-          },
-          {   
-            label:'設備B',
-            borderColor: 'black',
-            backgroundColor:'black',
-            data: [{x:42,y:36,r:3}],
-            type:'bubble'
-          },
-          {   
-            label:'設備C',
-            borderColor: 'black',
-            backgroundColor:'black',
-            data: [{x:90,y:60,r:3}],
-            type:'bubble'
-          },
-          {   
-            label:'設備D',
-            borderColor: 'black',
-            backgroundColor:'black',
-            data: [{x:40,y:62,r:3}],
-            type:'bubble'
-          },
-          {   
-            label:'設備E',
-            borderColor: 'black',
-            backgroundColor:'black',
-            data: [{x:50,y:37,r:3}],
-            type:'bubble'
-          },
-          {   
-            label:'設備F',
-            borderColor: 'black',
-            backgroundColor:'black',
-            data: [{x:60,y:97,r:3}],
-            type:'bubble'
           },
         ]
       },
@@ -219,14 +174,46 @@ export default {
 					backgroundColor: 'rgba(251, 85, 85, 0.4)'
 				}
       },
+      defaultLine:[
+        {   //45度持平線
+          data: [
+            {x:0,y:0},
+            {x:100,y:100}
+          ],
+          type: 'line',
+          radius: 0,
+          borderColor: 'black',
+          borderDash:[5,5]
+        },
+        {   //惡化線
+          data: [
+            {x: 0, y:0}, 
+            {x: 100, y:80}
+          ],
+          type: 'line',
+          radius: 0,
+          borderColor: 'red',
+          borderDash:[5,5]
+        },
+        {   //改善線
+          data: [
+            { x: 0, y:0}, 
+            { x: 80, y:100}, 
+          ],
+          type: 'line',
+          radius: 0,
+          borderColor: 'green',
+          borderDash:[5,5]
+        },
+      ],
     },
     allReasonList: [],
     reasonSelect: {
-      Lv1: '',
-      Lv2: '',
-      Lv3: ''
+      location: '',
+      equip: '',
+      eqName: ''
     },
-    eqname:''
+    locationList: [],
   }),
   components: { 
     ChartBubble,
@@ -236,6 +223,12 @@ export default {
     ...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    locEquip: function() {
+      return [{value:'',text:'---請選擇---'},...this.allReasonList?.find(ele=>ele.LocKey == this.reasonSelect.location)?.EquipList?.map(e=>({ value: e.EquipKey , text: e.EquipName}))||[]]
+    },
+    reasonSelectEmpty: function() {
+      return !(this.reasonSelect.location||this.reasonSelect.equip)
+    }
   },
   methods: {
     ...mapActions('system', [
@@ -245,12 +238,14 @@ export default {
     ]),
     dataInit() {
       this.Chart.componentKey ++
-      accidentResonQueryList({
+      keyEquipList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
-          this.allReasonList = res.data.DataList
+          this.allReasonList = res.data.LocList
+          this.locationList = [{value: "",text:'---請選擇---'}]
+          this.locationList.push(...res.data.LocList.map(ele=>({value: ele.LocKey, text: ele.LocName})))
         }else{
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
@@ -259,9 +254,49 @@ export default {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       })
     },
+    initChart() {
+      let today = new Date
+      let thisYear = today.getFullYear()
+      let thisMonth = today.getMonth() + 1
+      thisMonth = (thisMonth < 10)? '0'+thisMonth:thisMonth.toString()
+      keyEquipMKBFList({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        EquipCodeLv1: this.reasonSelect.location,
+      }).then(res=>{
+        if (res.data.ErrorCode == 0) {
+          console.log(res.data)
+          this.Chart.chartdata.datasets = this.Chart.defaultLine
+          if(res.data.MKBFList.length > 0){
+            res.data.MKBFList.forEach(e=>{
+            this.Chart.chartdata.datasets.push(
+              {   
+                label: e.EquipName,
+                borderColor: 'black',
+                backgroundColor:'black',
+                data: [{x: parseFloat(e.History_MKBF_Value), y: parseFloat(e.Recent_MKBF_Value), r:3}],
+                type:'bubble'
+              }
+              )
+            })
+          }
+          this.Chart.componentKey ++
+        }else{
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        console.error('err',err)
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      })
+    },
+    geteqName() {
+      this.reasonSelect.eqName = this.locEquip.find(e=>this.reasonSelect.equip==e.value).text
+    }
   },
   mounted() {
-    // this.dataInit()
+    this.dataInit()
+    //this.initChart()
   }
 }
 </script>

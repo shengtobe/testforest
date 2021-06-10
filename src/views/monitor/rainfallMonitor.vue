@@ -265,7 +265,6 @@ export default {
       };
       fetchList(sendData)
         .then((res) => {
-          console.log(res.data)
           this.hourRain.chartdata.labels = ['' + today.getFullYear() + (((today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1))];
           this.hourRain.chartdata.datasets = res.data.DataListHr.map((element,index) => ({
             label: element.Location,
@@ -275,6 +274,7 @@ export default {
             backgroundColor: "rgba(" + this.colorArr[index] + ",0.3)",
             data: [element.Count]
           }));
+          this.hourRain.options.title.text = `時雨量異常次數(門檻值： ${this.ipt.alarmHour} mm)`;
           this.hourRain.componentKey++;
           this.dayRain.chartdata.labels = ['' + today.getFullYear() + (( (today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1))];
           this.dayRain.chartdata.datasets = res.data.DataListDay.map((element,index) => ({
@@ -285,6 +285,7 @@ export default {
             backgroundColor: "rgba(" + this.colorArr[index] + ",0.3)",
             data: [element.Count]
           }));
+          this.dayRain.options.title.text = `24小時累積雨量異常次數(門檻值： ${this.ipt.alarmDay} mm)`;
           this.dayRain.componentKey++;
         });
       // fetchList({
