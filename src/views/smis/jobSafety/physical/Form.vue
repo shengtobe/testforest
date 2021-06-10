@@ -525,6 +525,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { jobUrineOpts } from '@/assets/js/smisData'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { login } from '@/apis/login'
 import PeopleSelect from '@/components/PeopleSelect'
@@ -533,6 +534,7 @@ export default {
     props:['id','sid'],
     data: () => ({
       valid: true,  // 表單是否驗證欄位
+      isShowBtn: false,
       isEdit: false,  // 是否為編輯
       pdata: {
         pid: '',
@@ -618,6 +620,7 @@ export default {
     computed: {
       ...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
+      groupData: state => state.groupData,
       }),
     },
     methods: {
@@ -625,6 +628,9 @@ export default {
         'chMsgbar',  // 改變 messageBar
         'chLoadingShow',  // 切換 loading 圖顯示
         'chViewDialog',  // 檢視內容 dialog
+      ]),
+      ...mapActions('user', [
+        'saveUserGroup',  // 儲存使用者權限(群組)資料
       ]),
       // 初始化資料
       initData() {
@@ -689,6 +695,11 @@ export default {
       },
       // 送出
       save() {
+          if(this.ipt.ID == ''){
+              alert("尚未輸入人名/員工編號或單位名稱")
+              return;
+          }
+          
         this.chLoadingShow()
         let sendData = {
           FlowID: (this.isEdit)?this.sid:'',
@@ -729,7 +740,26 @@ export default {
       },
     },
     created() {
-      this.initData()
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                this.isShowBtn = this.groupData.RoleLv3 == "T"
+
+                if(this.isShowBtn)
+                    this.initData()
+                else{
+                    alert("無權限做此操作")
+                    this.$router.push('/')
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
+        // this.initData()
     }
 }
 </script>

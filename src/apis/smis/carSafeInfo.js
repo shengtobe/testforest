@@ -48,6 +48,15 @@ export function deleteRegul(data) { return axios(
     }
 )}
 
+// 追蹤讀取
+export function readTrack(data) { return axios(
+    {
+        url: '/sms/slowspeed/read/query',
+        method: 'post',
+        data,
+    }
+)}
+
 
 // ------------------ 安全資訊文件 ---------------------
 // 搜尋

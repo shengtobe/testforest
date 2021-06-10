@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">慢行通報新增</h2>
+    <h2 class="mb-4 label-title" @click="ccc">慢行通報新增</h2>
 
     <v-row class="px-2 label-header">
         <v-col cols="12" sm="4" md="3">
@@ -9,7 +9,7 @@
             </h3>
             <v-select
                 v-model="ipt.line"
-                :items="['本線', '祝山線', '眠月線', '水山線']"
+                :items="lineList"
                 solo
             ></v-select>
         </v-col>
@@ -19,7 +19,7 @@
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限起點(km)
             </h3>
             <v-text-field
-                v-model.trim="ipt.pointStart"
+                v-model.trim="ipt.pointStart" type="number" step=0.1
                 solo
             ></v-text-field>
         </v-col>
@@ -29,7 +29,7 @@
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限終點(km)
             </h3>
             <v-text-field
-                v-model.trim="ipt.pointEnd"
+                v-model.trim="ipt.pointEnd" type="number" step=0.1
                 solo
             ></v-text-field>
         </v-col>
@@ -53,7 +53,7 @@
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>慢行速限(km/h)
             </h3>
             <v-text-field
-                v-model.trim="ipt.slow"
+                v-model.trim="ipt.slow" type="number"
                 solo
             ></v-text-field>
         </v-col>
@@ -231,6 +231,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { dapartOptsForMember } from '@/assets/js/departOption'
 import PeopleSelect from '@/components/PeopleSelect'
@@ -239,8 +240,11 @@ import { CreateCarSafelnfo } from '@/apis/smis/carSafeInfo'
 export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
+        lineList: locationOpts.slice(0, 4), // 地點的list
         ipt: {
             line: '本線',  // 通報路線
+            // lineList: locationOpts.map(item => item.text), // 地點的list
+            
             pointStart: '',  // 速限起點
             pointEnd: '',  // 速限終點
             normal: '',  // 常態速限
@@ -335,6 +339,9 @@ export default {
         // 移除全部收件人
         delAll() {
             this.ipt.recipients = [ ...[] ]
+        },
+        ccc(){
+            console.log("lineList: ", this.lineList);
         },
         // 送出
         save() {

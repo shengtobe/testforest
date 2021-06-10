@@ -17,12 +17,12 @@
             >回上層</v-btn>
 
             <v-btn dark class="btn-modify ma-2"
-                color="indigo"
+                color="indigo" v-if="isShowBtn"
                 :to="`/smis/jobsafety/physical/${id}/form/${sid}`"
             >編輯</v-btn>
 
             <v-btn dark  class="btn-delete ma-2" color="error"
-                @click="delDialog=true"
+                @click="delDialog=true" v-if="isShowBtn"
             >作廢</v-btn>
         </v-col>
     </v-row>
@@ -44,6 +44,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { healthCdList, healthUpdate } from '@/apis/smis/health'
@@ -53,6 +54,7 @@ import { jobUrineOpts } from '@/assets/js/smisData'
 export default {
     props:['id','sid'],
     data: () => ({
+        isShowBtn: false, // 按鈕是否顯示(依權限)
         topItems: {  // 上面的欄位
             
         },
@@ -79,6 +81,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
     },
     methods: {
@@ -86,16 +89,33 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
+        ]),
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow()
+            //敲門
+            canInUpdate({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.saveUserGroup(res.data.GroupData)
+                    this.isShowBtn = this.groupData.RoleLv3 == "T"
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
+            //
             healthCdList({
                 ID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
-                   const Fdata = decodeObject(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
+                                   const Fdata = decodeObject(res.data.HealthDataList.find(e=>e.FlowID==this.sid))
                    this.topItems = {
                         depart: { icon: 'mdi-bank', title: '部門', text: Fdata.Depart },
                         name: { icon: 'mdi-account', title: '姓名', text: Fdata.Name },

@@ -32,9 +32,10 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail">
+                        <v-btn small dark fab class="btn-detail" v-if="!item.isRead" @click="personClick(item)">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
+                        <v-icon v-if="item.isRead">mdi-checkbox-marked-circle-outline</v-icon>
                     </template>
                     
                     <!-- 頁碼 -->
@@ -76,8 +77,8 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail">
-                            <v-icon dark>mdi-file-document</v-icon>
+                        <v-btn small dark fab class="btn-detail" @click="redirect(item)">
+                            <v-icon dark>mdi-arrow-collapse-right</v-icon>
                         </v-btn>
                     </template>
                     
@@ -104,8 +105,11 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { fetchPersonalInfo, fetchPersonalInfoRead } from '@/apis/login'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { departOptions } from '@/assets/js/departOption'
+import { InfoBelongMod } from '@/assets/js/smisData'
 
 export default {
     data: () => ({
@@ -122,12 +126,12 @@ export default {
                 { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
                 { text: '部門', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
                 { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                { text: '已讀', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             ],
             todo: [
                 { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '110' },
                 { text: '標題', value: 'title', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                { text: '前往操作', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             ],
         }
             
@@ -141,49 +145,166 @@ export default {
     components: { Pagination },  // 頁碼
     methods: {
         ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 初始化資料
         initData() {
             this.chLoadingShow()
 
-            setTimeout(() => {
-                this.tableItems.personal = [
-                    {
-                        id: '789',
-                        depart: 'ARCO001', 
-                        title: '資訊安全相關注意事項',
-                        date: '2020-05-01',
-                    },
-                    {
-                        id: '658',
-                        depart: 'ARCO015', 
-                        title: '補休作業調整',
-                        date: '2020-04-21',
-                    },
-                    {
-                        id: '447',
-                        depart: 'ARCO026', 
-                        title: '慢行通報',
-                        date: '2020-03-11',
-                    },
-                ]
+            //詢問個人資訊
+            fetchPersonalInfo({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // this.tableItems = JSON.parse(res.data.order_list)
+                    let tb = JSON.parse(res.data.order_list)
+                    console.log("Manage 詢問個人資訊: ", tb)
+                    
+                    // 個人訊息
+                    let psnal = tb.map(item => ({
+                        id: item.ModuleItemID,
+                        depart: item.DepartCode, 
+                        title: item.ModTitle,
+                        date: item.InsertDTime.substr(0, 10),
+                        isRead: item.RecReadStatus == 'T',
+                        ModuleItemID: item.ModuleItemID,
+                        MsgType: item.MsgType,
+                        InfoBelongMod: item.InfoBelongMod,
+                    }));
+                    psnal.forEach(element => {
+                        console.log("element:", element)
+                        if(element.MsgType == 1){
+                            this.tableItems.personal.push(element);
+                        }
+                        else{
+                            // this.tableItems.personal.push(element);
+                            this.tableItems.todo.push(element);
+                        }
+                    });
+                    // this.tableItems.personal = [...psnal]
 
-                this.tableItems.todo = [
-                    {
-                        id: '789',
-                        title: '維修、養護科工單',
-                        date: '2020-09-01',
-                    },
-                    {
-                        id: '2222',
-                        title: '行車事故事件',
-                        date: '2020-08-26',
-                    },
-                ]
+                    // 待辦事項
+                //     this.tableItems.todo = [
+                //         {
+                //             id: '789',
+                //             title: '維修、養護科工單',
+                //             date: '2020-09-01',
+                //         },
+                //         {
+                //             id: '2222',
+                //             title: '行車事故事件',
+                //             date: '2020-08-26',
+                //         },
+                //     ]
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
 
+            // setTimeout(() => {
+            //     // this.tableItems.personal = [
+            //     //     {
+            //     //         id: '789',
+            //     //         depart: 'ARCO001', 
+            //     //         title: '資訊安全相關注意事項',
+            //     //         date: '2020-05-01',
+            //     //     },
+            //     //     {
+            //     //         id: '658',
+            //     //         depart: 'ARCO015', 
+            //     //         title: '補休作業調整',
+            //     //         date: '2020-04-21',
+            //     //     },
+            //     //     {
+            //     //         id: '447',
+            //     //         depart: 'ARCO026', 
+            //     //         title: '慢行通報',
+            //     //         date: '2020-03-11',
+            //     //     },
+            //     // ]
+
+            //     this.tableItems.todo = [
+            //         {
+            //             id: '789',
+            //             title: '維修、養護科工單',
+            //             date: '2020-09-01',
+            //         },
+            //         {
+            //             id: '2222',
+            //             title: '行車事故事件',
+            //             date: '2020-08-26',
+            //         },
+            //     ]
+
+            // }, 1000)
                 this.chLoadingShow()
-            }, 1000)
+        },
+        redirect(item) {
+            console.log("item:::", item.InfoBelongMod)
+            //test
+            item.InfoBelongMod = '18';
+            //
+            if (confirm('確定要離開目前頁面至指定頁面操作?')) {
+                switch(item.InfoBelongMod){
+                    case '1':
+                        this.$router.push({ path: '/smis/harmnotify/audit' })
+                        break;
+                    case '2':
+                        this.$router.push({ path: '/smis/car-accident-event' })
+                        break;
+                    case '3':
+                    case '4':
+                        this.$router.push({ path: '/smis/car-harmdb/control-measures' })
+                        break;
+                    case '5':
+                        this.$router.push({ path: '/smis/car-safeinfo/info' })
+                        break;
+                    case '6':
+                        this.$router.push({ path: '/smis/safefile/meeting' })
+                        break;
+                    case '7':
+                        this.$router.push({ path: '/smis/safefile/regulations' })
+                        break;
+                    case '8':
+                        this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal/add' })
+                        break;
+                    case '9':
+                        this.$router.push({ path: '/smis/jobsafety/physical/form' })
+                        break;
+                    case '10':
+                        this.$router.push({ path: '/smis/car-safe-performance/speed-abnormal/add' })
+                        break;
+                    case '11':
+                        this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                        break;
+                    case '12':
+                        // this.$router.push({ path: 'XXXXXXXXXXXXXXX' })
+                        break;
+                    case '13':
+                        this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
+                        break;
+                    case '14':
+                        this.$router.push({ path: '/smis/car-harmdb/harms' })
+                        break;
+                    case '15':
+                        this.$router.push({ path: '/smis/jobsafety/disasterdb' })
+                        break;
+                    case '16':
+                        this.$router.push({ path: '/worklist/maintain' })
+                        break;
+                    case '17':
+                        this.$router.push({ path: '/worklist/serve' })
+                        break;
+                    case '18':
+                        this.$router.push({ path: '/mmis/periodicity-job' })
+                        break;
+                }
+                this.chMsgbar({ success: true, msg: '成功轉跳至操作頁面' })
+            }
+            
         },
         // 更換頁數-個人訊息
         chPage(n) {
@@ -192,6 +313,24 @@ export default {
         // 更換頁數-待辦事項
         chPageTodo(n) {
             this.pageOpt.todo.page = n
+        },
+        personClick(item){
+            //改為已讀
+            fetchPersonalInfoRead({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                ModuleItemID: item.ModuleItemID,
+                InfoBelongMod: item.InfoBelongMod,
+                MsgType: item.MsgType,
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    // item.isRead = false
+                    this.tableItems.personal.find(item => item.id == item.ModuleItemID).isRead = true;
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
         },
         // 轉換部門文字
         transferDepartTxt(val) {

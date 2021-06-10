@@ -87,9 +87,9 @@
                                     <strong class="black--text">管理系統</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/access">功能清單權限管理</v-list-item>
+                                <v-list-item :disabled="(FShow('SMS_33'))" @click="showNav = false" to="/access">功能清單權限管理</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/access/userManage">人員權限管理</v-list-item>
+                                <v-list-item :disabled="(FShow('SMS_33'))" @click="showNav = false" to="/access/userManage">人員權限管理</v-list-item>
                                 <v-divider></v-divider>
                             </v-list>
                         </v-card>
@@ -364,7 +364,8 @@ export default {
                 return
             }
 
-            try {
+            try 
+            {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
@@ -378,8 +379,10 @@ export default {
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
-            } catch (e) {
-                this.logout()
+            } 
+            catch (e) 
+            {
+                console.log(e);
             }
         },
     },
@@ -390,7 +393,6 @@ export default {
         // if(!this.groupData){
         //     this.checkLocalStorage()
         // }
-        console.log("Manage %% this.userFunc: ", this.userFunc);
         this.checkLocalStorage()
     },
 }

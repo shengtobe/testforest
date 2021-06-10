@@ -47,8 +47,6 @@ export default {
     methods: {
         // 選擇
         checked() {
-            console.log("this.accidents: ", this.accidents);
-            return
             this.$emit('checkAccident', this.accidents)
         }
     },
@@ -60,8 +58,6 @@ export default {
             if (res.data.ErrorCode == 0) {
                 console.log("🐝🐝 res: ", res.data.AccidentCount);
                 this.groups = res.data.AccidentCount;
-                
-
                 // this.evtTypeOpts = JSON.parse(res.data.order_list)
                 // console.log("套件內的evtTypeOpts", this.evtTypeOpts);
 
