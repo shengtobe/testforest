@@ -145,6 +145,7 @@ export default {
     components: { Pagination },  // 頁碼
     methods: {
         ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 初始化資料
@@ -242,7 +243,68 @@ export default {
                 this.chLoadingShow()
         },
         redirect(item) {
-            console.log(":::", item)
+            console.log("item:::", item.InfoBelongMod)
+            //test
+            item.InfoBelongMod = '18';
+            //
+            if (confirm('確定要離開目前頁面至指定頁面操作?')) {
+                switch(item.InfoBelongMod){
+                    case '1':
+                        this.$router.push({ path: '/smis/harmnotify/audit' })
+                        break;
+                    case '2':
+                        this.$router.push({ path: '/smis/car-accident-event' })
+                        break;
+                    case '3':
+                    case '4':
+                        this.$router.push({ path: '/smis/car-harmdb/control-measures' })
+                        break;
+                    case '5':
+                        this.$router.push({ path: '/smis/car-safeinfo/info' })
+                        break;
+                    case '6':
+                        this.$router.push({ path: '/smis/safefile/meeting' })
+                        break;
+                    case '7':
+                        this.$router.push({ path: '/smis/safefile/regulations' })
+                        break;
+                    case '8':
+                        this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal/add' })
+                        break;
+                    case '9':
+                        this.$router.push({ path: '/smis/jobsafety/physical/form' })
+                        break;
+                    case '10':
+                        this.$router.push({ path: '/smis/car-safe-performance/speed-abnormal/add' })
+                        break;
+                    case '11':
+                        this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                        break;
+                    case '12':
+                        // this.$router.push({ path: 'XXXXXXXXXXXXXXX' })
+                        break;
+                    case '13':
+                        this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
+                        break;
+                    case '14':
+                        this.$router.push({ path: '/smis/car-harmdb/harms' })
+                        break;
+                    case '15':
+                        this.$router.push({ path: '/smis/jobsafety/disasterdb' })
+                        break;
+                    case '16':
+                        this.$router.push({ path: '/worklist/maintain' })
+                        break;
+                    case '17':
+                        this.$router.push({ path: '/worklist/serve' })
+                        break;
+                    case '18':
+                        this.$router.push({ path: '/mmis/periodicity-job' })
+                        break;
+                }
+                this.chMsgbar({ success: true, msg: '成功轉跳至操作頁面' })
+            }
+            
         },
         // 更換頁數-個人訊息
         chPage(n) {

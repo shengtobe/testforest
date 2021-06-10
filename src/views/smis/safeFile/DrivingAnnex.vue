@@ -33,13 +33,13 @@
                     </template>
 
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small class="mr-2 btn-modify"
+                        <v-btn fab small class="mr-2 btn-modify white--text"
                             @click="edit(item)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
-                        <v-btn fab small class="btn-delete"
+                        <v-btn fab small class="btn-delete white--text"
                             @click="del(item)"
                         >
                             <v-icon>mdi-delete</v-icon>
