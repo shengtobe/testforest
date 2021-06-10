@@ -14,7 +14,7 @@ export function indexLevelList(data) {
 export function accidentResonQueryList(data) {
     return axios(
         {
-            url: 'sms/sp/accidentreasonquerylist',
+            url: 'sms/sp/accidentlevelquerylist',
             method: 'post',
             data,
         }
