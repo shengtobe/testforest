@@ -164,7 +164,7 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "單位",
+        text: "單位名稱",
         value: "DepartParentName",
         align: "center",
         divider: true,
