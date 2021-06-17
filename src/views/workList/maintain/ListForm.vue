@@ -496,7 +496,7 @@ export default {
                 // 向後端請求資料
                 this.fetchOrderOne()
                 // 向後端請求證照人員資料
-                this.fetchLicenseMan()
+                // this.fetchLicenseMan()
             } else {
                 // 新增的情況
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇

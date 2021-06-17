@@ -119,7 +119,25 @@
     <v-sheet class="white px-4 mt-1 mb-3 mx-2"
         v-if="crossShow"
     >
-        <v-row>
+        <v-row no-gutters v-for="(group, gIndex) in groups" :key="'G_'+gIndex">
+            <v-col cols="12" sm="12" md="12">
+                <h3 class="pt-3 mb-n2 error--text">{{group.MaintainName}}</h3>
+            </v-col>
+            <v-row no-gutters >
+                <v-col cols="12" sm="4" md="3" v-for="(item, iIndex) in group.ItemList" :key="'G_' + gIndex + '_i_' + iIndex">
+                    <v-checkbox
+                        v-model="accidents"
+                        :label="item.Text"
+                        color="info"
+                        hide-details
+                        :value="item.Text + ' ' + item.Value"
+                        @change="checked"
+                    ></v-checkbox>
+                </v-col>
+            </v-row>
+            
+        </v-row>
+        <!-- <v-row>
             <v-col cols="12">
                 <h3>車種</h3>
                 <v-row no-gutters>
@@ -381,7 +399,7 @@
                     </v-col>
                 </v-row>
             </v-col>
-        </v-row>
+        </v-row> -->
     </v-sheet>
 
     <v-row class="mt-8">
@@ -548,12 +566,14 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { acceptanceOrder, withdrawOrder, cancelOrder, delayOrder } from '@/apis/workList/maintain'
+import { acceptanceOrder, withdrawOrder, cancelOrder, delayOrder, railroadrepairList } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
     data: () => ({
         isShowBtn: false,
+        groups: [], //
+        accidents: [],
         done: false,  // 是否完成頁面操作
         totalHourValid: true,  // 總工時是否驗證欄位
         isLoading: false,  // 是否讀取中
@@ -656,6 +676,11 @@ export default {
             }
         },
     },
+    watch: {
+        checkArr(val) {
+            this.accidents = [ ...val ]
+        }
+    },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -672,6 +697,11 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
+        // 選擇
+        checked() {
+            console.log("👻check item:", this.accidents)
+            // this.$emit('checkAccident', this.accidents)
+        },
         isRealNum(val){
             // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除，
             
@@ -696,6 +726,24 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
+
+            // 要求 平交道項目清單
+            railroadrepairList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    console.log("🚃🚃res.data: ", res.data)
+                    this.groups = res.data.RailRepairCount;
+                    console.log("🚃🚃groups: ", this.groups)
+                } else {
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+            }).finally(() => {
+                this.isLoading = this.delay.dialogShow = false
+            })
         },
         // 顯示金額Dialog
         showMoneyDialog(item) {
@@ -770,6 +818,15 @@ export default {
         save() {
             if (confirm('你確定要驗收嗎?')) {
                 this.chLoadingShow()
+                // 整理平交道項目
+                let resultCrossItem = [];
+                this.accidents.forEach(ele => {
+                    let words = ele.split(' ');
+                    // var obj = new Object();
+                    // obj.DescName = words[0];
+                    // obj.DescCode = words[1];
+                    resultCrossItem.push({DescName:words[0], DescCode:words[1]})
+                });
 
                 acceptanceOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
@@ -778,6 +835,7 @@ export default {
                     WorkTimeData: this.tableItems,  // 工時統計資料
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    Railroadrepair: resultCrossItem,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '送出成功' })
