@@ -32,14 +32,15 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
+          <!-- <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          </h3> -->
+          <UploadOneFileAdd @joinFile="select" />
+          <!-- <v-text-field solo placeholder="點此選擇檔案" /> -->
         </v-form>
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end ">
+        <v-btn dark large class="mb-sm-8 mb-md-11 btn-fileup ">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
@@ -134,6 +135,7 @@ import {
   decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { fetchFormOrderList } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
@@ -196,6 +198,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd,
   },
   computed: {
     ...mapState("user", {
@@ -213,6 +216,9 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.ipt.upload = file
+    },
     newOne() {
       console.log("newOne23");
       this.Add = true;
