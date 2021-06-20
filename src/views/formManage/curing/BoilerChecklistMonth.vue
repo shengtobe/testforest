@@ -132,6 +132,7 @@ import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import dateSelect from "@/components/forManage/dateSelect";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import deptSelect from "@/components/forManage/deptSelect";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";

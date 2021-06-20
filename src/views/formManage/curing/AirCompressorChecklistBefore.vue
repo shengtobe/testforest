@@ -133,6 +133,7 @@ import {
   unique,
   decodeObject,
 } from "@/assets/js/commonFun";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";

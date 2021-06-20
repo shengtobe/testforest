@@ -283,6 +283,7 @@ import {
   unique,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import {
   fetchFormOrderList,
   fetchFormOrderOne,
@@ -425,7 +426,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, deptSelect },
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料

@@ -134,6 +134,7 @@ import {
   decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { fetchFormOrderList } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";

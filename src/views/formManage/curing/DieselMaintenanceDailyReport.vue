@@ -127,6 +127,7 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { getNowFullTime, getTodayDateString, unique, decodeObject} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
