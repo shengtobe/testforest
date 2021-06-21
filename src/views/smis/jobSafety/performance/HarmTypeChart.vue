@@ -63,6 +63,18 @@ export default {
                 },
                 tooltips: {  // 圖表上的資訊題示
                     intersect: false,  // 滑鼠移到 x 軸上就顯示
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            var label = data.labels[tooltipItem.index] || '';
+
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]+'%';
+                            label += '<br>件數: '+data.datasets[tooltipItem.datasetIndex].count[tooltipItem.index]+'件'
+                            return label;
+                        }
+                    }
                 },
             },
             chartdata:{
@@ -71,6 +83,7 @@ export default {
                         {
                             backgroundColor: [],  // 節點的顏色
                             data: [],
+                            count: [],
                         },
                     ]
             }
@@ -115,6 +128,7 @@ export default {
                         this.chart.chartdata.labels.push(e.Name)
                         this.chart.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
                         this.chart.chartdata.datasets[0].data.push(parseFloat(e.Value.replace(/'%'/g,'')))
+                        this.chart.chartdata.datasets[0].count.push(e.Count)
                     })
                     this.chart.componentKey++
                 }else{
