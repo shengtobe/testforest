@@ -145,6 +145,7 @@ export default {
       title: "堆高機每日作業前檢點表(作業前)",
       newText: "檢點表",
       pageOpt: { page: 1 }, // 目前頁數
+      file: null,
       //---api---
       DB_Table: "RP067",
       headers: [
@@ -217,6 +218,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -231,6 +233,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

@@ -32,10 +32,7 @@
     <v-row class="label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -144,6 +141,7 @@ export default {
     return {
       title: "空氣壓縮機定期檢查表(年)",
       newText: "檢查表",
+      file: null,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP042",
@@ -199,6 +197,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -213,6 +212,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

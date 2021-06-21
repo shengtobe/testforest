@@ -152,6 +152,7 @@ export default {
       actions: Actions,
       isLoading: false,
       disabled: false,
+      file: null,
       // controls for dialog
       ShowDetailDialog: false,
       dialogDel: false, // model off
@@ -197,6 +198,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState("user", {
@@ -210,6 +212,9 @@ export default {
     this.search();
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示

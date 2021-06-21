@@ -150,6 +150,7 @@ export default {
       newText:"檢查表",
       action: Actions.add,
       actions: Actions,
+      file: null,
       isLoading: false,
       disabled: false,
       // controls for dialog
@@ -197,6 +198,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState("user", {
@@ -214,6 +216,9 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     newOne() {
       console.log("newOne23");
       this.Add = true;

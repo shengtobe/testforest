@@ -411,6 +411,7 @@ export default {
       newText: "申請書",
       isLoading: false,
       disabled: false,
+      file: null,
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -517,7 +518,7 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -540,6 +541,9 @@ export default {
       this.z = this.df = this.nowTime
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();

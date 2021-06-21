@@ -148,6 +148,7 @@ export default {
       title: "重力機械使用前檢查表",
       newText: "檢查表",
       actions: Actions,
+      file: null,
       isLoading: false,
       disabled: false,
       // controls for dialog
@@ -206,6 +207,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState("user", {
@@ -219,6 +221,9 @@ export default {
     this.search();
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示

@@ -281,6 +281,7 @@ export default {
     return {
       title:"心理健康量表",
       newText:"",
+      file: null,
       action: Actions.add,
       actions: Actions,
       isLoading: false,
@@ -428,6 +429,7 @@ export default {
     deptSelect,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -462,6 +464,9 @@ export default {
       this.z = this.df = this.nowTime
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;

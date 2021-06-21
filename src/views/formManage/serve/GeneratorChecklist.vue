@@ -153,6 +153,7 @@ export default {
       actions: Actions,
       isLoading: false,
       disabled: false,
+      file: null,
       // controls for dialog
       ShowDetailDialog: false,
       dialogDel: false, // model off
@@ -212,12 +213,15 @@ export default {
     this.search();
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     select(file) {
-        this.ipt.upload = file
+        this.file = file
     },
     newOne() {
       console.log("newOne23");

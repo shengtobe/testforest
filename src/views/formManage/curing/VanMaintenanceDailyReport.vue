@@ -147,6 +147,7 @@ export default {
     return {
       title: "客、貨車使用前後檢修記錄表",
       newText: "記錄表",
+      file: null,
       actions: Actions,
       isLoading: false,
       disabled: false,
@@ -229,6 +230,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState("user", {
@@ -246,6 +248,9 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     newOne() {
       console.log("newOne23");
       this.Add = true;

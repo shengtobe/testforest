@@ -145,6 +145,7 @@ export default {
       title: "堆高機定期檢查表(年)",
       newText: "檢查表",
       pageOpt: { page: 1 }, // 目前頁數
+      file: null,
       //---api---
       DB_Table: "RP069",
       headers: [
@@ -199,6 +200,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
  computed: {
     ...mapState ('user', {
@@ -213,6 +215,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

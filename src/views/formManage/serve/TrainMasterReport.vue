@@ -528,6 +528,7 @@ export default {
       newText: "報告",
       isLoading: false,
       disabled: false,
+      file: null,
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -658,7 +659,7 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
   created() {
       // for(let i = 0; i < 76; i++){
       //   this.item.push
@@ -697,6 +698,9 @@ export default {
     }
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput(){
       console.log("init create window form")
       // console.log("this.userData.UserName: " + this.userData.UserName)

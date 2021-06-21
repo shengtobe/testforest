@@ -144,6 +144,7 @@ export default {
       title: "吊掛用具定期檢查表(三個月)",
       newText: "檢查表",
       pageOpt: { page: 1 }, // 目前頁數
+      file: null,
       //---api---
       DB_Table: "RP071",
       headers: [
@@ -211,6 +212,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -225,6 +227,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

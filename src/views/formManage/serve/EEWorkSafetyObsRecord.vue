@@ -321,6 +321,7 @@ export default {
     actions: Actions,
     isLoading: false,
     disabled: false,
+    file: null,
     Add: false,
     dialog3: false,
     ShowDetailDialog: false,
@@ -474,6 +475,7 @@ export default {
     ToolBar,
     formDepartOptions,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -497,6 +499,9 @@ export default {
   },
 
   methods: {
+    select(file) {
+        this.file = file
+    },
     // 更新資料
     update() {
       this.$emit("chLocation", {});

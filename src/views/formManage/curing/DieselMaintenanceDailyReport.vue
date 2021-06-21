@@ -146,6 +146,7 @@ export default {
     return {
       title: "_____柴油液力機車行車紀錄表",
       newText: "紀錄表",
+      file: null,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP086",
@@ -198,6 +199,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
  computed: {
     ...mapState ('user', {
@@ -212,6 +214,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

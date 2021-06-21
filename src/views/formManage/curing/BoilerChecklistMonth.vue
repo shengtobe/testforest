@@ -144,6 +144,7 @@ export default {
     return {
       title:"鍋爐定期檢查表(月)",
       newText:"檢查表",
+      file: null,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP073",
@@ -199,6 +200,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -213,6 +215,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

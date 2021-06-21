@@ -148,6 +148,7 @@ export default {
     return {
       title:"電焊機定期檢查表(月)",
       newText:"檢查表",
+      file: null,
       action: Actions.add,
       actions: Actions,
       isLoading: false,
@@ -197,6 +198,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState("user", {
@@ -214,6 +216,9 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     newOne() {
       console.log("newOne23");
       this.Add = true;

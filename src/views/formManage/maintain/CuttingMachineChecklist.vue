@@ -388,6 +388,7 @@ export default {
       title: "切割機定期檢查表(三個月)",
       action: Actions.add,
       actions: Actions,
+      file: null,
       newText: "檢查表",
       isLoading: false,
       disabled: false,
@@ -523,7 +524,7 @@ export default {
       contentType: "",
     };
   },
-  components: { Pagination, dateSelect, deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -538,6 +539,9 @@ export default {
     this.doMan.departId = this.userData.DeptList[0].DeptId;
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput() {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;
