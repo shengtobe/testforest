@@ -721,10 +721,10 @@ export default {
         click1(){
         },
         selector1Changed(){
-            this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
-            if(this.pick2 == '' && this.ipt.code1 == '' && this.ipt.code2 == ''){
-                this.jobSafeType = '';
-            }
+            this.shwoPick1_1Form = this.shwoPick1_2Form = false
+            // if(this.pick2 == '' && this.ipt.code1 == '' && this.ipt.code2 == ''){
+            //     this.jobSafeType = '';
+            // }
             switch(this.carSafeType){
                 case 'B': // 以行安立案 選擇 既有行安事故
                     this.shwoPick1_1Form = true;
@@ -796,10 +796,10 @@ export default {
             }
         },
         selector2Changed(){
-            this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
-            if(this.pick1 == ''){
-                this.carSafeType = '';
-            }
+            this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
+            // if(this.pick1 == ''){
+            //     this.carSafeType = '';
+            // }
             switch(this.jobSafeType){
                 case 'B': // 以職安立案 選擇 既有職災事故
                     this.shwoPick2_1Form = true;
