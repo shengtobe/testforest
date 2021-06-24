@@ -653,7 +653,11 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    //抽離 其他
+                    // let tempList
+                    console.log("this.evtTypeOpts", this.evtTypeOpts);
                     this.evtTypeOpts = JSON.parse(res.data.order_list)
+                    console.log("this.evtTypeOpts", this.evtTypeOpts);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

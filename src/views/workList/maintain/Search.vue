@@ -387,6 +387,7 @@ export default {
         },
         // 檢視內容
         viewPage(item) {
+            console.log("item: ", item);
             let routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/show` })
             window.open(routeData.href, '_blank')
         },

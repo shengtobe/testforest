@@ -387,7 +387,7 @@
             <v-select
                 hide-details
                 v-model="ipt.indirectReason"
-                :items="['不安全行為', '不可抗力', '不安全環境', '其他']"
+                :items="['不安全行為', '不可抗力']"
                 solo
             ></v-select>
             <p class="red--text mt-2">* 間接原因：由於不安全行為或不安全環境引起</p>

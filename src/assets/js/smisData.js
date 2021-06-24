@@ -137,6 +137,7 @@ export const evtTypes = [
     { text: '異常事件-列車取消', value: 'C16' },
     { text: '異常事件-其他事件', value: 'C17' },
     { text: '未選擇', value: '' },
+    { text: '其他', value: 'Other' },
 ]
 
 // 職災危害類型

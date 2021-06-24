@@ -371,7 +371,7 @@ export default {
         "研究所博士班",
         "自修",
       ],
-      indirectCause: ["不安全行為", "不可抗力", "不安全環境", "其他"],
+      indirectCause: ["不安全行為", "不可抗力"],
       AddData: {
         // 新增表單資料
         MaintenanceDay: "", // 保養日
