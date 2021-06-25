@@ -496,6 +496,7 @@ export default {
         },
         // 判斷新增或編輯
         initFetchData() {
+            console.log("判斷新增或編輯 id = ", this.id);
             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
 
             if (this.id != undefined) {
@@ -503,6 +504,7 @@ export default {
                 this.isEdit = true
 
                 // 向後端請求資料
+                console.log("ready to 向後端請求資料");
                 this.fetchOrderOne()
                 // 向後端請求證照人員資料
                 // this.fetchLicenseMan()
@@ -515,6 +517,7 @@ export default {
         },
         // 向後端請求資料
         fetchOrderOne() {
+            console.log("向後端請求資料");
             this.chLoadingShow()
 
             fetchWorkOrderOne({
@@ -522,7 +525,7 @@ export default {
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data
-
+                console.log("維護工單第一個編輯 obj: ", obj)
                 // 檢查是否有權限編輯 (僅立案人、派工人可編輯)
                 if (obj.CreatorID != this.userData.UserId && obj.CreatorID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
@@ -540,8 +543,8 @@ export default {
                 // this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號(設備)2
                 // this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號(序號)
                 this.nowEqCode = obj.MaintainCode_System + '-' 
-                               + obj.MaintainCode_Loc + obj.MaintainCode_Loc2
-                               + obj.MaintainCode_Eqp + obj.MaintainCode_Eqp2
+                               + (obj.MaintainCode_Loc2 == '')?obj.MaintainCode_Loc:obj.MaintainCode_Loc2 + '-'
+                               + (obj.MaintainCode_Eqp2 == '')?obj.MaintainCode_Eqp:obj.MaintainCode_Eqp2 + '-'
                                + obj.MaintainCode_Seq
                 this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
                 this.ipt.createType = obj.CreateType  // 立案類型
@@ -559,22 +562,22 @@ export default {
             })
         },
         // 向後端請求證照人員資料
-        fetchOrderOne() {
-            this.chLoadingShow()
+        // fetchOrderOne() {
+        //     this.chLoadingShow()
 
-            fetchLicenseManData({
-                ClientReqTime: getNowFullTime()  // client 端請求時間
-            }).then(res => {
-                let obj = res.data
-                console.log("obj: ", obj)
+        //     fetchLicenseManData({
+        //         ClientReqTime: getNowFullTime()  // client 端請求時間
+        //     }).then(res => {
+        //         let obj = res.data
+        //         console.log("obj: ", obj)
                 
-            }).catch(err => {
-                console.log(err)
-                alert('資料讀取失敗')
-            }).finally(() => {
-                this.chLoadingShow()
-            })
-        },
+        //     }).catch(err => {
+        //         console.log(err)
+        //         alert('資料讀取失敗')
+        //     }).finally(() => {
+        //         this.chLoadingShow()
+        //     })
+        // },
         // 初始化設備標示編號
         // codeArr: 後端傳的報修碼陣列, opt: 要設定在哪一組下拉選單(op1~4)
         setEqCodeOption(codeArr, opt) {
@@ -624,7 +627,8 @@ export default {
         save() {
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 this.chLoadingShow()
-
+                let tempCodeArr = this.combineCode.split('-')
+                console.log("tempCodeArr: ", tempCodeArr)
                 if (this.isEdit) {
                     // -------- 編輯時 -------
                     updateListOrder({
@@ -666,10 +670,10 @@ export default {
                         CreateType: this.ipt.createType,  // 立案類型
                         CreateDDay: this.ipt.date,  // 立案日期
                         CreateDTime: this.ipt.hour,  // 立案時間 (小時)
-                        MaintainCode_System: this.ipt.eqNumber1,  // 設備標示編號(系統)
-                        MaintainCode_Loc: (this.ipt.eqNumber22 == '')? this.ipt.eqNumber2 : `${this.ipt.eqNumber2}_${this.ipt.eqNumber22}`,  // 設備標示編號(位置)
-                        MaintainCode_Eqp: (this.ipt.eqNumber32 == '')? this.ipt.eqNumber3 : `${this.ipt.eqNumber3}_${this.ipt.eqNumber32}`,  // 設備標示編號(設備)
-                        MaintainCode_Seq: this.ipt.eqNumber4,  // 設備標示編號(序號)
+                        MaintainCode_System: tempCodeArr[0],  // 設備標示編號(系統)
+                        MaintainCode_Loc: tempCodeArr[1],  // 設備標示編號(位置)
+                        MaintainCode_Eqp: tempCodeArr[2],  // 設備標示編號(設備)
+                        MaintainCode_Seq: tempCodeArr[3],  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id

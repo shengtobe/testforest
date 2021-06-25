@@ -109,7 +109,7 @@
       </v-card>
     </v-dialog>
     <!-- 新增/編輯自動檢點表 modal -->
-    <v-dialog v-model="ShowDetailDialog" max-width="700px">
+    <v-dialog v-model="ShowDetailDialog" persistent max-width="700px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           {{ action }}{{ title }}

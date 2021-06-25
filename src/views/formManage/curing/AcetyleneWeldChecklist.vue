@@ -123,7 +123,7 @@
       </v-card>
     </v-col>
     <!-- 刪除確認視窗 -->
-    <v-dialog v-model="dialogDel" persistent max-width="290">
+    <v-dialog v-model="dialogDel" persistent max-width="290" >
       <v-card class="theme-del-card">
         <v-card-title class="red white--text px-4 py-1 headline"
           >確認是否刪除?</v-card-title
@@ -150,7 +150,7 @@
       </v-card>
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="ShowDetailDialog" max-width="600px">
+    <v-dialog v-model="ShowDetailDialog" persistent max-width="600px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           {{ action }}{{ title }}

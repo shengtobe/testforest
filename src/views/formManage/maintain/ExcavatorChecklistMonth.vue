@@ -106,7 +106,7 @@
       />
     </v-dialog>
     <!-- 新增挖掘機定期檢查表(月) modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <EditPage
         @close="close"
         @search="search"

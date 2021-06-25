@@ -92,6 +92,7 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.isShowBtn = obj.CreatorID == this.userData.UserId || obj.DispatchID == this.userData.UserId
+            console.log(obj.CreatorID + '==' + this.userData.UserId + '||' + obj.DispatchID + '==' + this.userData.UserId);
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -147,6 +148,7 @@ export default {
         },
     },
     created() {
+        console.log("ListShow itemData: ", this.itemData);
         this.setShowData(this.itemData)
     }
 }

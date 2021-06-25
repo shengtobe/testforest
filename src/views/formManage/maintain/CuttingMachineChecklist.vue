@@ -150,7 +150,7 @@
       </v-card>
     </v-dialog>
     <!-- 新增/修改切割機定期檢查表(三個月) modal -->
-    <v-dialog v-model="ShowDetailDialog" max-width="900px">
+    <v-dialog v-model="ShowDetailDialog" persistent max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           {{ contentType | editStatus }}{{ title }}

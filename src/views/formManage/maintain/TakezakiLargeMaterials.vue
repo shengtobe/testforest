@@ -100,7 +100,7 @@
       />
     </v-dialog>
     <!-- 新增竹崎監工區大型物料存放位置表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           新增{{ title }}

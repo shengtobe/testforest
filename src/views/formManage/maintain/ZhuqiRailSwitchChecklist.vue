@@ -94,7 +94,7 @@
       />
     </v-dialog>
     <!-- 新增搶修車設備定期保養紀錄表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <EditPage
         @close="close"
         @search="search"

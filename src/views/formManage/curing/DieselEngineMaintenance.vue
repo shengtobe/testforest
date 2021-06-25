@@ -85,7 +85,7 @@
         </v-btn>
       </v-col>
       <!-- 新增/修改保養資料 modal -->
-      <v-dialog v-model="ShowDetailDialog" max-width="600px">
+      <v-dialog v-model="ShowDetailDialog" persistent max-width="600px">
         <v-card class="theme-card">
           <v-card-title class="white--text px-4 py-1">
             {{ action }}{{ title }}

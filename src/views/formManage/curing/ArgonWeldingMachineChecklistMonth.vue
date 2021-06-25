@@ -81,7 +81,7 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <v-dialog v-model="editLog.dealogEdit" max-width="900px">
+    <v-dialog v-model="editLog.dealogEdit" persistent max-width="900px">
       <EditPage 
         @close="close"
         @search="search"
