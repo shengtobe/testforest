@@ -15,37 +15,31 @@
                 <tbody>
                   <tr class="metal-dark-yellow-top white--text shadowText">
                     <th>地點</th>
-                    <th colspan="2" class="text-center text-h6">二萬平主站-第一分道</th>
+                    <th :colspan="toptable.LocationList.length" class="text-center text-h6">二萬平主站-第一分道</th>
                   </tr>
                   <tr class="lime lighten-4">
                     <th>監控位置</th>
-                    <td class="text-center">{{ `${toptable.LocationList[0].LocName}(${toptable.LocationList[0].LocID})` }}</td>
-                    <td class="text-center">{{ `${toptable.LocationList[1].LocName}(${toptable.LocationList[1].LocID})` }}</td>
+                    <td class="text-center" v-for="i in toptable.LocationList.length" :key="'LocName'+i">{{ `${toptable.LocationList[i].LocName}(${toptable.LocationList[i].LocID})` }}</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>更新時間</th>
-                    <td>{{ toptable.LocationList[0].DataDTime }}</td>
-                    <td>{{ toptable.LocationList[1].DataDTime }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'DTime'+i">{{ toptable.LocationList[i].DataDTime }}</td>
                   </tr>
                   <tr class="lime lighten-4">
                     <th>座標位置</th>
-                    <td>{{`(${toptable.LocationList[0].GPSValue_X},${toptable.LocationList[0].GPSValue_Y})`}}</td>
-                    <td>{{`(${toptable.LocationList[1].GPSValue_X},${toptable.LocationList[1].GPSValue_Y})`}}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'GPS'+i">{{`(${toptable.LocationList[i].GPSValue_X},${toptable.LocationList[i].GPSValue_Y})`}}</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>初始值</th>
-                    <td>{{ toptable.LocationList[0].InitValue }}</td>
-                    <td>{{ toptable.LocationList[1].InitValue }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'Init'+i">{{ toptable.LocationList[i].InitValue }}</td>
                   </tr>
                   <tr  class="lime lighten-4">
                     <th>監測值</th>
-                    <td>{{ toptable.LocationList[0].Value }}</td>
-                    <td>{{ toptable.LocationList[1].Value }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'Value'+i">{{ toptable.LocationList[i].Value }}</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>變異值</th>
-                    <td>{{ toptable.LocationList[0].DiffValue }}</td>
-                    <td>{{ toptable.LocationList[1].DiffValue }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'Diff'+i">{{ toptable.LocationList[i].DiffValue }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -70,10 +64,7 @@
       <v-col cols="12" md="2">
         <h3 class="mb-1"><v-icon class="mr-1">mdi-city-variant-outline</v-icon>監控位置</h3>
         <v-select 
-          :items="[
-            {text:'測試地點',value:'65K_600_A'},
-            {text:'測試地點1',value:'65K_600_B'}
-          ]" 
+          :items="['TI-01X','TI-01Y','TI-02X',' TI-02Y']" 
           v-model="Location"
           solo />
       </v-col>
@@ -183,8 +174,10 @@ export default {
         CreateDTime_End: '',
         Option: '1',
         LocationList:[
-          {LocID:'65K_600_A'},
-          {LocID:'65K_600_B'},
+          {LocID:'TI-01X'},
+          {LocID:'TI-01Y'},
+          {LocID:'TI-02X'},
+          {LocID:'TI-02Y'},
         ],
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
