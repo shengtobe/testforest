@@ -41,6 +41,12 @@
                     <th>變異值</th>
                     <td v-for="i in toptable.LocationList.length" :key="'Diff'+i">{{ toptable.LocationList[i].DiffValue }}</td>
                   </tr>
+                  <tr class="lime lighten-5">
+                    <th>燈號</th>
+                    <td v-for="i in toptable.LocationList.length" :key="'Light'+i">
+                      <img :src="'/images/light-'+getLightColor(toptable.LocationList[i].Status)+'.svg'">
+                    </td>
+                  </tr>
                 </tbody>
               </template>
             </v-simple-table>
@@ -132,7 +138,6 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchList } from '@/apis/monitor/slope'
 import DateSelect from '@/components/forManage/dateSelect'
 import Pagination from '@/components/Pagination'
-
 export default {
   data: () => ({
     imgUrl1: require("../../assets/images/slope1.jpg"),
@@ -216,6 +221,26 @@ export default {
     chPage(n) {
       this.pageOpt.page = n
     },
+    getLightColor(input) {
+      let rtnColor = ''
+      switch(input){
+        case '0':
+          rtnColor = 'green'
+          break;
+        case '1':
+          rtnColor = 'red'
+          break;
+        case '2':
+          rtnColor = 'orange'
+          break;
+        case '3':
+          rtnColor = 'yellow'
+          break;
+        case '4':
+          rtnColor = 'gray'
+          break;
+      }
+    }
   },
   mounted() {
     this.callback()
