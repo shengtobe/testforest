@@ -43,7 +43,7 @@
                   </tr>
                   <tr class="lime lighten-5">
                     <th>燈號</th>
-                    <td v-for="i in toptable.LocationList.length" :key="'Light'+i">
+                    <td v-for="i in toptable.LocationList.length" :key="'Light'+i" class="text-center">
                       <img :src="'/images/light-'+getLightColor(toptable.LocationList[i].Status)+'.svg'">
                     </td>
                   </tr>
