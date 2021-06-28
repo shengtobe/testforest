@@ -9,7 +9,7 @@
             <v-spacer />
             <v-simple-table
               dense
-              v-if="toptable.LocationList.length"
+              v-if="toptable.LocationList.length>0"
               >
               <template v-slot:default>
                 <tbody>
@@ -19,33 +19,43 @@
                   </tr>
                   <tr class="lime lighten-4">
                     <th>監控位置</th>
-                    <td class="text-center" v-for="i in toptable.LocationList.length" :key="'LocName'+i">{{ `${toptable.LocationList[i].LocName}(${toptable.LocationList[i].LocID})` }}</td>
+                    <td class="text-center" v-for="i in toptable.LocationList.length" :key="'LocName'+i">{{ toptable.LocationList[i-1].LocName }}({{toptable.LocationList[i-1].LocID}})</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>更新時間</th>
-                    <td v-for="i in toptable.LocationList.length" :key="'DTime'+i">{{ toptable.LocationList[i].DataDTime }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'DTime'+i">{{ toptable.LocationList[i-1].DataDTime }}</td>
                   </tr>
                   <tr class="lime lighten-4">
                     <th>座標位置</th>
-                    <td v-for="i in toptable.LocationList.length" :key="'GPS'+i">{{`(${toptable.LocationList[i].GPSValue_X},${toptable.LocationList[i].GPSValue_Y})`}}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'GPS'+i">{{`(${toptable.LocationList[i-1].GPSValue_X},${toptable.LocationList[i-1].GPSValue_Y})`}}</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>初始值</th>
-                    <td v-for="i in toptable.LocationList.length" :key="'Init'+i">{{ toptable.LocationList[i].InitValue }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'Init'+i">{{ toptable.LocationList[i-1].InitValue }}</td>
                   </tr>
                   <tr  class="lime lighten-4">
                     <th>監測值</th>
-                    <td v-for="i in toptable.LocationList.length" :key="'Value'+i">{{ toptable.LocationList[i].Value }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'Value'+i">{{ toptable.LocationList[i-1].Value }}</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>變異值</th>
-                    <td v-for="i in toptable.LocationList.length" :key="'Diff'+i">{{ toptable.LocationList[i].DiffValue }}</td>
+                    <td v-for="i in toptable.LocationList.length" :key="'Diff'+i">{{ toptable.LocationList[i-1].DiffValue }}</td>
                   </tr>
-                  <tr class="lime lighten-5">
+                  <tr class="lime lighten-4">
                     <th>燈號</th>
                     <td v-for="i in toptable.LocationList.length" :key="'Light'+i" class="text-center">
-                      <img :src="'/images/light-'+getLightColor(toptable.LocationList[i].Status)+'.svg'">
+                      <img :src="'/images/light-'+getLightColor(toptable.LocationList[i-1].Status)+'.svg'">
                     </td>
+                  </tr>
+                  <tr class="lime lighten-5">
+                    <th :colspan="toptable.LocationList.length+1">
+                      燈號說明：<br>
+                      <img src="/images/light-green.svg">正常<br>
+                      <img src="/images/light-yellow.svg">第三級警戒:±412秒(arcSec)<br>
+                      <img src="/images/light-orange.svg">第二級警戒:±573秒(arcSec)<br>
+                      <img src="/images/light-red.svg">第一級警戒:±825秒(arcSec)<br>
+                      <img src="/images/light-gray.svg">故障<br>
+                    </th>
                   </tr>
                 </tbody>
               </template>
@@ -141,7 +151,9 @@ import Pagination from '@/components/Pagination'
 export default {
   data: () => ({
     imgUrl1: require("../../assets/images/slope1.jpg"),
-    toptable:{},
+    toptable:{
+      LocationList: []
+    },
     q_datestart:'',
     q_dateend:'',
     Location:'',
@@ -187,7 +199,8 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        this.toptable = res.data
+        console.log(res.data.LocationList)
+        this.toptable.LocationList = res.data.LocationList
       }).catch( err => {
         console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
@@ -239,7 +252,11 @@ export default {
         case '4':
           rtnColor = 'gray'
           break;
+        default:
+          rtnColor = 'gray'
+          break;
       }
+      return rtnColor
     }
   },
   mounted() {
