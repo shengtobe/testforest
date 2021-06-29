@@ -219,6 +219,7 @@ export default {
                 this.tableItems = JSON.parse(res.data.order_list)
                 //injurySiteOpts.find(item => item.value == res.data.HurtPart).text
                 this.tableItems.forEach(element => {
+                    if(element.HurtPart == null) element.HurtPart = '';
                     element.HurtPart = injurySiteOpts.find(item => item.value == element.HurtPart).text
                     element.HurtDateStart = element.HurtDateStart.substr(0, 10)
                     element.HurtDateEnd = element.HurtDateEnd.substr(0, 10)
