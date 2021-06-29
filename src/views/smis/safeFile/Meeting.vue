@@ -125,7 +125,7 @@
 
                     <template v-slot:item.download="{ item }">
                         <v-btn fab small dark class="btn-detail"
-                            v-if="item.file_path != ''"
+                            v-if="item.file_name != '' && item.file_path != ''"
                             :href="item.file_path"
                             :download="item.file_name"
                         >
@@ -357,6 +357,7 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("tableItems: ", this.tableItems);
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -384,9 +385,9 @@ export default {
                     MeetingDateMin: this.ipt.min,  // 會議時間(分)
                     MeetingTitle: this.ipt.title,  // 會議主題
                     Remark: this.ipt.note,  // 備註
-                    FileName: this.ipt.upload.fileName,  // 檔案名稱
-                    FileType: this.ipt.upload.fileType,  // 檔案類型
-                    UnitData: this.ipt.upload.unitData,  // 檔案內容
+                    FileName: (this.ipt.upload != null)?this.ipt.upload.fileName:'',  // 檔案名稱
+                    FileType: (this.ipt.upload != null)?this.ipt.upload.fileType:'',  // 檔案類型
+                    UnitData: (this.ipt.upload != null)?this.ipt.upload.unitData:'',  // 檔案內容
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
