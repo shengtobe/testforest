@@ -23,7 +23,7 @@
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1">材料編號</h3>
-              <v-text-field solo v-model="materDetail.Material"  @focus="dialogShow = true" :disabled="DType=='edit'"/>
+              <v-text-field solo v-model="materDetail.Material"  @click="dialogShow = true" :disabled="DType=='edit'"/>
             </v-col>
             <v-col cols="12">
               <h3 class="mb-1">材料名稱</h3>

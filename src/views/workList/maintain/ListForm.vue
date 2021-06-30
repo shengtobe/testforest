@@ -542,15 +542,13 @@ export default {
                 // this.ipt.eqNumber3 = obj.MaintainCode_Eqp  // 設備標示編號(設備)
                 // this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號(設備)2
                 // this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號(序號)
-                this.nowEqCode = obj.MaintainCode_System + '-' 
-                               + (obj.MaintainCode_Loc2 == '')?obj.MaintainCode_Loc:obj.MaintainCode_Loc2 + '-'
-                               + (obj.MaintainCode_Eqp2 == '')?obj.MaintainCode_Eqp:obj.MaintainCode_Eqp2 + '-'
-                               + obj.MaintainCode_Seq
+                this.nowEqCode = obj.MaintainCode
                 this.ipt.malfunctionDes = obj.Malfunction  // 故障描述
                 this.ipt.createType = obj.CreateType  // 立案類型
                 this.ipt.date = obj.CreateDDay  // 立案日期
                 this.ipt.hour = obj.CreateDTime  // 立即派工的小時
                 this.ipt.subject = obj.WorkSubject  // 故障主旨
+                console.log("this.nowEqCode: ", this.nowEqCode);
 
                 // 將派工人資料寫入 vuex(組織表)
                 this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })

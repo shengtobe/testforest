@@ -9,7 +9,7 @@
           lazy-validation>
           <v-col cols="12">
             <h3 class="mb-1">設備標示編號<span class="red--text">*</span></h3>
-            <v-text-field solo value v-model="detailItems.MaintainCodeName" @focus="openDialog" :rules="[v => (!!v && /[^\s]/.test(v) && !(/---/.test(v))) || '項目請勿空白']"/> 
+            <v-text-field solo value v-model="detailItems.MaintainCodeName" @click="openDialog" :rules="[v => (!!v && /[^\s]/.test(v) && !(/---/.test(v))) || '項目請勿空白']"/> 
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1">設備名稱<span class="red--text">*</span></h3>

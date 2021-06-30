@@ -77,8 +77,8 @@ export default {
 
                         // 設定下面的欄位資料
                         let bottomItems = [
-                            { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: res.data.WorkSubject },
-                            { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '故障描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '工單主旨', text: res.data.WorkSubject },
+                            { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '工單描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
                         ]
                         let bottomItems2 = []
                         let aa = []
