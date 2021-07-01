@@ -594,7 +594,12 @@ export default {
         // 儲存工作表單
         saveJob() {
             // 反查工作項名稱
-            this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
+            if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
+                this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
+            }
+            else{
+                this.jobForm.JobName = ''
+            }
             
             if (this.jobHour.isEdit == false) {
                 // 反查姓名

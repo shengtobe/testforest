@@ -173,7 +173,7 @@ export default {
           class: "subtitle-1 white--text font-weight-bold",
         },
         {
-          text: "保養日期",
+          text: "紀錄日期",
           value: "CheckDay",
           align: "center",
           divider: true,
@@ -279,6 +279,7 @@ export default {
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          console.log("tableItems: ", this.tableItems);
         })
         .catch((err) => {
           console.log(err);

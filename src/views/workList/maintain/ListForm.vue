@@ -154,7 +154,7 @@
         </v-row>
         
         <!-- 設備標示編號 -->
-        <v-row class="px-2 mb-6">
+        <v-row class="px-2 mb-6" v-if="showEq">
             <v-col cols="12">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
@@ -165,7 +165,7 @@
                     {{ combineCode }}
 
                     <v-btn
-                        v-if="isEdit"
+                        v-if="isEdit" v-show="false"
                         class="ml-3 mb-1"
                         color="primary"
                         @click="editEqCode"
@@ -318,6 +318,7 @@ export default {
         combineCode: '', //合併後的設備編碼
         nowEqCode: '', //編輯時 預設帶入的combineCode
         isEdit: false,  // 是否為編輯
+        showEq: false,
         workNumber: '',  // 工單編號
         creater: '',  // 立案人名稱
         createrId: 'K10744389',  // 立案人員工編號
@@ -510,7 +511,7 @@ export default {
                 // this.fetchLicenseMan()
             } else {
                 // 新增的情況
-                this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
+                this.canModifyEqCode = this.showEq = true  // 讓設備標示編號下拉選單能選擇
                 this.creater = this.userData.UserName  // 立案人名稱
                 this.fixUnit = this.userData.DeptList[0].DeptDesc  // 立案單位(之後api結構會改掉)
             }
@@ -549,6 +550,7 @@ export default {
                 this.ipt.hour = obj.CreateDTime  // 立即派工的小時
                 this.ipt.subject = obj.WorkSubject  // 故障主旨
                 console.log("this.nowEqCode: ", this.nowEqCode);
+                this.showEq = true
 
                 // 將派工人資料寫入 vuex(組織表)
                 this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
@@ -647,6 +649,7 @@ export default {
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '編輯成功' })
+                            console.log("送出編輯");
                             // 為避免使用者選立即派工，導致input的不會同步改變，所以重新向後端請求資料
                             this.fetchOrderOne()
                         } else {
@@ -704,12 +707,12 @@ export default {
             }
         },
         // 編輯
-        editEqCode() {
-            if (confirm('編輯設備標示編號會需要重新選擇，你確定嗎?')) {
-                this.ipt.eqNumber1 = this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
-                this.canModifyEqCode = true
-            }
-        },
+        // editEqCode() {
+        //     if (confirm('編輯設備標示編號會需要重新選擇，你確定嗎?')) {
+        //         this.ipt.eqNumber1 = this.ipt.eqNumber2 = this.ipt.eqNumber22 = this.ipt.eqNumber3 = this.ipt.eqNumber32 = this.ipt.eqNumber4 = ''
+        //         this.canModifyEqCode = true
+        //     }
+        // },
         // 清空必填欄位背景色
         clearErrIpt() {
             this.errorIpt.dispatchID = ''
