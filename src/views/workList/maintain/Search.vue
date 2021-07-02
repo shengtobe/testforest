@@ -11,6 +11,7 @@
                 <v-text-field
                     v-model.trim="ipt.createrId"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -21,6 +22,7 @@
                 <v-text-field
                     v-model.trim="ipt.dispatcherId"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -89,6 +91,7 @@
                 <v-text-field
                     v-model.trim="ipt.workNumber"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -132,6 +135,7 @@
                 <v-text-field
                     v-model.trim="ipt.subject"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -143,6 +147,7 @@
                     v-model.trim="ipt.moneyStart"
                     placeholder="請輸入最小金額"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -179,6 +184,7 @@
                             hide-details
                             v-model="ipt.eqNumber1"
                             solo
+                            readonly
                             placeholder="系統"
                             @click="pickEqNumber_show"
                             clearable
@@ -191,6 +197,7 @@
                             v-model="ipt.eqNumber2"
                             ref="eqNumber2"
                             solo
+                            readonly
                             placeholder="位置"
                             @click="pickEqNumber_show"
                             clearable
@@ -203,6 +210,7 @@
                             v-model="ipt.eqNumber3"
                             ref="eqNumber3"
                             solo
+                            readonly
                             placeholder="設備"
                             @click="pickEqNumber_show"
                             clearable
@@ -215,6 +223,7 @@
                             v-model="ipt.eqNumber4"
                             ref="eqNumber4"
                             solo
+                            readonly
                             placeholder="序號"
                             @click="pickEqNumber_show"
                             clearable
