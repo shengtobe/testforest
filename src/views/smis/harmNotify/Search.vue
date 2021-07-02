@@ -127,7 +127,7 @@
         </v-col>
 
         <!-- 趨勢圖 -->
-        <v-col cols="12">
+        <v-col cols="12" v-if="false">
             <v-card class="mx-auto">
                 <v-card-title class="gradual-bg-darken-wood py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>

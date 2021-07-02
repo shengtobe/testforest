@@ -174,7 +174,6 @@ export default {
                         InfoBelongMod: item.InfoBelongMod,
                     }));
                     psnal.forEach(element => {
-                        console.log("element:", element)
                         if(element.MsgType == 1){
                             this.tableItems.personal.push(element);
                         }

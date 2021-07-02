@@ -27,6 +27,7 @@
           solo
           v-model="formData.searchItem.trainNo"
           key="trainNo"
+          clearable
         />
       </v-col>
     </v-row>

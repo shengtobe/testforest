@@ -10,7 +10,7 @@
           :items="depOpts"
           solo
           hide-details
-          @change="chPage"
+          @change="chPage(1)"
         ></v-select>
       </v-col>
 
@@ -170,15 +170,14 @@ export default {
     // 更換頁數
     chPage(n) {
       console.log("更換頁數: ", n);
-      setGDep(n);
-      // this.pageOpt.page = n;
+      setGDep(this.department);
+      this.pageOpt.page = n;
     },
     rowclick(item){
       this.$router.push({path:item.path})
     }
   },
   created() {
-    console.log("表單搜尋 gDep: ", gDep)
     this.department = gDep
     this.initData();
   },
