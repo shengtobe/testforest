@@ -549,7 +549,6 @@ export default {
                 this.ipt.date = obj.CreateDDay  // 立案日期
                 this.ipt.hour = obj.CreateDTime  // 立即派工的小時
                 this.ipt.subject = obj.WorkSubject  // 故障主旨
-                console.log("this.nowEqCode: ", this.nowEqCode);
                 this.showEq = true
 
                 // 將派工人資料寫入 vuex(組織表)

@@ -181,6 +181,12 @@
                     <template v-slot:item.status="{ item }">
                         <span>{{ opts.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
                     </template>
+                    <!-- headers 的 content 欄位 (危害說明) -->
+                    <template v-slot:item.harmDesp="{ item }">
+                        <v-btn class="btn-memo" dark
+                            @click="showContent(item.EndangerDesp)"
+                        >檢視</v-btn>
+                    </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
@@ -230,6 +236,7 @@ export default {
             { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         isLoading: false,  // 是否讀取中
@@ -251,6 +258,7 @@ export default {
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
@@ -273,6 +281,7 @@ export default {
                         ],
                         QyName: [    // 欲回傳的欄位資料
                             'EndangerCode',
+                            'EndangerDesp',
                             'EndangerStatus',
                             'OperationMode',
                             'RiskSerious',
@@ -284,6 +293,7 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("tableItems: ", this.tableItems);
                         this.tableItems.forEach(element => {
                             for(let ele in element){
                                 if(element[ele] == null){
@@ -494,7 +504,7 @@ export default {
                             element[ele] = '';
                         }
                     }
-                    if(element.RiskSerious == 'S1' || element.RiskSerious == 'S2'){
+                    if(element.RiskLevel == 'R1' || element.RiskLevel == 'R2'){
                         this.tableItems.push(element)
                     }
                 });
@@ -602,6 +612,11 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            console.log("txt: ", txt);
+            this.chViewDialog({ show: true, content: txt })
         },
         // 轉換事故事件狀態文字
         transferStatusText(status) {
