@@ -248,7 +248,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-deatil"
+                        <v-btn small dark fab class="btn-detail"
                             @click="pick1Event(item)"
                         >
                             <v-icon dark>mdi-gesture-tap</v-icon>
@@ -310,9 +310,10 @@
                     </template>
                     <!-- headers 的 content 欄位 (危害說明) -->
                     <template v-slot:item.harmDesp="{ item }">
-                        <v-btn class="btn-memo" dark
+                        <span>{{ item.EndangerDesp }}</span>
+                        <!-- <v-btn class="btn-memo" dark
                             @click="showContent(item.EndangerDesp)"
-                        >檢視</v-btn>
+                        >檢視</v-btn> -->
                     </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
@@ -578,14 +579,14 @@ export default {
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         headers1_2: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 260 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
         ],
         headers2_1: [  // 表格顯示的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -893,6 +894,7 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
+            console.log("status: ", this.status);
             this.id = obj.EndangerID  // 危害通報編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料

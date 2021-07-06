@@ -183,9 +183,10 @@
                     </template>
                     <!-- headers 的 content 欄位 (危害說明) -->
                     <template v-slot:item.harmDesp="{ item }">
-                        <v-btn class="btn-memo" dark
+                        <span>{{ item.EndangerDesp }}</span>
+                        <!-- <v-btn class="btn-memo" dark
                             @click="showContent(item.EndangerDesp)"
-                        >檢視</v-btn>
+                        >檢視</v-btn> -->
                     </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
@@ -230,14 +231,14 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         searchType: 'normal', // 'normal'/'allEndanger'/
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 260 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
         ],
         isLoading: false,  // 是否讀取中
         opts: {
