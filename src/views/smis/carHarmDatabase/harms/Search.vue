@@ -138,6 +138,14 @@
             >已立案</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="cpltPaper"
+            >已完備資料</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="riskAllow"
+            >風險已可接受</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="checkFetch"
             >審核中</v-btn>
         </v-col>
@@ -561,6 +569,95 @@ export default {
                 this.chLoadingShow()
             })
         }, 
+
+        cpltPaper() { //已完備資料
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.EndangerStatus == '3'){
+                        this.tableItems.push(element)
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
+        riskAllow() { //風險可接受
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.EndangerStatus == '5'){
+                        this.tableItems.push(element)
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
         // 審核中
         checkFetch() { //checkFetch
             this.chLoadingShow()

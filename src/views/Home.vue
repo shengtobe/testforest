@@ -161,12 +161,13 @@ export default {
                     // this.tableItems = JSON.parse(res.data.order_list)
                     let tb = JSON.parse(res.data.order_list)
                     console.log("Manage 詢問個人資訊: ", tb)
-                    
                     // 個人訊息
                     let psnal = tb.map(item => ({
                         id: item.ModuleItemID,
                         depart: item.DepartCode, 
+                        // title: ((item.title == null)?'':item.title) + '(' + item.ModTitle + ')',
                         title: item.ModTitle,
+                        sourceTitle: item.Title,
                         date: item.InsertDTime.substr(0, 10),
                         isRead: item.RecReadStatus == 'T',
                         ModuleItemID: item.ModuleItemID,
@@ -178,6 +179,7 @@ export default {
                             this.tableItems.personal.push(element);
                         }
                         else{
+                            element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
                             // this.tableItems.personal.push(element);
                             this.tableItems.todo.push(element);
                         }
