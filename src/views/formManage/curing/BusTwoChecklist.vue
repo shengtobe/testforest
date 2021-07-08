@@ -27,6 +27,7 @@
           solo
           v-model="formData.searchItem.trainNo"
           key="trainNo"
+          clearable
         />
       </v-col>
     </v-row>
@@ -95,7 +96,7 @@
       />
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <EditPage
         @close="close"
         @search="search"
@@ -173,7 +174,7 @@ export default {
           class: "subtitle-1 white--text font-weight-bold",
         },
         {
-          text: "保養日期",
+          text: "紀錄日期",
           value: "CheckDay",
           align: "center",
           divider: true,
@@ -279,6 +280,7 @@ export default {
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          console.log("tableItems: ", this.tableItems);
         })
         .catch((err) => {
           console.log(err);

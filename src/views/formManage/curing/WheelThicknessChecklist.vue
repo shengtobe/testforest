@@ -90,7 +90,7 @@
       />
     </v-dialog>
     <!-- 新增車輪輪緣高度、厚度檢查紀錄表 modal -->
-    <v-dialog v-model="Add" max-width="1200px">
+    <v-dialog v-model="Add" persistent max-width="1200px">
       <EditPage
         @close="close"
         @search="search"

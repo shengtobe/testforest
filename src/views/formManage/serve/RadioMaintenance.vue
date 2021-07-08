@@ -150,7 +150,7 @@
         </v-card>
       </v-dialog>
       <!-- 新增/修改保養項目 modal -->
-      <v-dialog v-model="ShowDetailDialog" max-width="600px">
+      <v-dialog v-model="ShowDetailDialog" persistent max-width="600px">
         <v-card class="theme-card">
           <!-- 標題 -->
           <v-card-title class="white--text px-4 py-1">

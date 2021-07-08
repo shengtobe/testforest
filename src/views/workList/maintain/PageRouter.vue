@@ -77,9 +77,15 @@ export default {
 
                         // 設定下面的欄位資料
                         let bottomItems = [
-                            { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '故障主旨', text: res.data.WorkSubject },
-                            { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '故障描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '工單主旨', text: res.data.WorkSubject },
+                            { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '工單描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
                         ]
+                        let bottomItems2 = []
+                        let aa = []
+                        res.data.Railroadrepair.forEach(ele => {
+                            aa.push(ele.DescName);
+                        });
+                        bottomItems2.push({dataType: 'text', icon: 'mdi-checkbox-multiple-marked', title: '平交道項目', text: aa.join(', ')})
 
                         if (this.status > 1) {
                             topItems.push({ icon: 'mdi-calendar-text', title: '預計驗收日期', text: res.data.ExpectedDT })
@@ -104,7 +110,7 @@ export default {
                             bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '延後驗收原因', text: res.data.DelayReason.replace(/\n/g, '<br>') })
                         }
 
-                        this.itemData = { ...res.data, topItems, bottomItems }
+                        this.itemData = { ...res.data, topItems, bottomItems, bottomItems2 }
                     }
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面

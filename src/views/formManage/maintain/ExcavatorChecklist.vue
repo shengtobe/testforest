@@ -32,10 +32,7 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -113,7 +110,7 @@
       />
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <EditPage
         @close="close"
         @search="search"
@@ -135,6 +132,7 @@ import {
   unique,
   decodeObject,
 } from "@/assets/js/commonFun";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
@@ -152,6 +150,7 @@ export default {
       newText: "檢點表",
       action: Actions.add,
       actions: Actions,
+      file: null,
       isLoading: false,
       disabled: false,
       // controls for dialog
@@ -212,6 +211,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
         ...mapState ('user', {
@@ -222,6 +222,9 @@ export default {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     newOne() {
       console.log("newOne23");
       this.Add = true;

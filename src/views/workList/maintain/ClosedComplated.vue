@@ -40,6 +40,10 @@
             </v-card>
         </v-col>
 
+        <v-col cols="12">
+            <BottomTable :items="bottomItems2" />
+        </v-col>
+
         <v-col cols="12" class="text-center">
             <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
@@ -149,6 +153,7 @@ export default {
         ],
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        bottomItems2: [],  // 下面的欄位2
     }),
     components: {
         TopBasicTable,
@@ -166,10 +171,12 @@ export default {
             'closeWindow',  // 關閉視窗
         ]),
         setShowData(obj) {
+            console.log("In ClosedComplated:obj:", obj)
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.status = obj.Status  // 處理階段(值)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            this.bottomItems2 = obj.bottomItems2  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額

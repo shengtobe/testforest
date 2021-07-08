@@ -32,10 +32,7 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -126,7 +123,7 @@
       </v-card>
     </v-col>
     <!-- 刪除確認視窗 -->
-    <v-dialog v-model="dialogDel" persistent max-width="290">
+    <v-dialog v-model="dialogDel" persistent max-width="290" >
       <v-card class="theme-del-card">
         <v-card-title class="red white--text px-4 py-1 headline"
           >確認是否刪除?</v-card-title
@@ -153,7 +150,7 @@
       </v-card>
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="ShowDetailDialog" max-width="600px">
+    <v-dialog v-model="ShowDetailDialog" persistent max-width="600px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           {{ action }}{{ title }}
@@ -283,6 +280,7 @@ import {
   unique,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import {
   fetchFormOrderList,
   fetchFormOrderOne,
@@ -309,6 +307,7 @@ export default {
       title: "乙炔熔接裝置每日作業前檢點表(作業前)",
       action: Actions.add,
       actions: Actions,
+      file: null,
       newText: "檢點表",
       isLoading: false,
       disabled: false,
@@ -425,7 +424,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, deptSelect },
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -440,6 +439,9 @@ export default {
     this.doMan.departId = this.userData.DeptList[0].DeptId;
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput() {
       this.Name = this.doMan.name;
       this.DepartName = this.doMan.depart;

@@ -87,6 +87,7 @@ import { FormServeRouter } from "@/router/moduleRouter/form/serve";
 import { FormMaintainRouter } from "@/router/moduleRouter/form/maintain";
 import { FormCuringRouter } from "@/router/moduleRouter/form/curing";
 import { FormLaborRouter } from "@/router/moduleRouter/form/labor";
+import { gDep, setGDep } from '@/assets/js/actions'
 import Pagination from "@/components/Pagination.vue";
 
 export default {
@@ -168,6 +169,8 @@ export default {
     },
     // 更換頁數
     chPage(n) {
+      console.log("更換頁數: ", n);
+      setGDep(this.department);
       this.pageOpt.page = n;
     },
     rowclick(item){
@@ -175,6 +178,7 @@ export default {
     }
   },
   created() {
+    this.department = gDep
     this.initData();
   },
 };

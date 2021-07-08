@@ -206,7 +206,7 @@
                     </template> -->
                     
                     <template v-slot:item.type="{ item }">
-                        {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}
+                        {{ evtTypeOpts.find(ele => ele.Code == item.AccidentType).Name }}
                     </template>
 
                     <template v-slot:item.hurtPeople="{ item }">
@@ -278,7 +278,7 @@ import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
-import { fetchList } from '@/apis/smis/carAccidentEvent'
+import { fetchList, fetchEvtTypes } from '@/apis/smis/carAccidentEvent'
 
 export default {
     data: () => ({
@@ -301,7 +301,7 @@ export default {
             start: false,
             end: false,
         },
-        evtTypeOpts: evtTypes,  // 事故類型
+        evtTypeOpts: [],  // 事故類型
         locationOpts: locationOpts,  // 事故發生地點
         statusOpts: [  // 事故事件狀態下拉選單 (審核中有二個，故傳中文值讓後端判斷)
             { text: '不限', value: '' },
@@ -371,28 +371,40 @@ export default {
             }).then(res => {
                 console.log("go")
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("tableItems", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
                             element[ele] = '';
                         }
                     }
+                    // 解決AccidentType有空字串問題:
+                    // if(element.AccidentType == '') element.AccidentType = 'Other'
+
                     // 組合發現地點文字 AccidentCode
+                    console.log("1 element.AccidentType: ", element.AccidentType);
                     let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
                     
                     if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {
                         findLocationText += ` (${element.LineK}K+${element.LineM}M)`  // 本線、祝山線、眠月線、水山線
+                        console.log("3 1 findLocationText", findLocationText);
                         
                     } else if(element.FindLine == 'other') {
                         findLocationText += ` (${element.FindLineOther})`  // 其他地點
+                        console.log("3 2 findLocationText", findLocationText);
                     }
+                    console.log("4 findLocationText", findLocationText);
                     element.FindLine = findLocationText
                 });
+                //splice
+                // this.tableItems.splice(1, 3);
+                // console.log("this.tableItems[0].AccidentType:", this.tableItems[0].AccidentType)
 
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
+                console.log("S OK");
                 this.chLoadingShow()
             })
         },
@@ -418,6 +430,29 @@ export default {
         }).catch( err => {
             console.log(err)
         }).finally(() => {
+        })
+
+        // 初始化事故類型 fetchEvtTypes
+        fetchEvtTypes({
+            OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                //抽離 其他
+                // let tempList
+                console.log("this.evtTypeOpts", this.evtTypeOpts);
+                this.evtTypeOpts = JSON.parse(res.data.order_list)
+                console.log("this.evtTypeOpts", this.evtTypeOpts);
+            } else {
+                // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+            }
+        }).catch(err => {
+            console.log(err)
+            alert('伺服器發生問題，事故類型讀取失敗')
+        }).finally(() => {
+            // this.chLoadingShow()
         })
 
         this.reset()

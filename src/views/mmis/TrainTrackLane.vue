@@ -115,8 +115,8 @@
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab class="btn-delete" @click="confirmDelete(item.FlowId)">
-                <v-icon dark>mdi-delete</v-icon>
+              <v-btn title="停用" small dark fab class="btn-delete" @click="confirmDelete(item.FlowId)">
+                <v-icon dark>mdi-sim-off</v-icon>
               </v-btn>
             </template>
             <template v-slot:footer="footer">
@@ -221,7 +221,7 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "修改、刪除",
+        text: "修改、停用",
         value: "a8",
         align: "center",
         divider: true,

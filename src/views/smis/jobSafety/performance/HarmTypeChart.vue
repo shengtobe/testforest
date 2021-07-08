@@ -71,7 +71,7 @@ export default {
                                 label += ': ';
                             }
                             label += data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]+'%';
-                            label += '<br>件數: '+data.datasets[tooltipItem.datasetIndex].count[tooltipItem.index]+'件'
+                            label += '\n 件數: '+data.datasets[tooltipItem.datasetIndex].count[tooltipItem.index]+'件'
                             return label;
                         }
                     }

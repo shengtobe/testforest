@@ -112,7 +112,7 @@
       </v-card>
     </v-dialog>
     <!-- 新增機動道班台車使用申請書 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1 label-title">
           新增{{ title }}

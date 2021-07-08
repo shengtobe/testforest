@@ -32,10 +32,7 @@
     <v-row class="label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -97,7 +94,7 @@
       </v-card>
     </v-col>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="editLog.dealogEdit" max-width="900px">
+    <v-dialog v-model="editLog.dealogEdit" persistent max-width="900px">
       <EditPage 
         @close="close"
         @search="search"
@@ -129,6 +126,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique, decodeObject} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import dateSelect from "@/components/forManage/dateSelect";
@@ -144,6 +142,7 @@ export default {
       title: "吊掛用具每日作業檢點表(作業前)",
       newText: "檢點表",
       pageOpt: { page: 1 }, // 目前頁數
+      file: null,
       //---api---
       DB_Table: "RP070",
       headers: [
@@ -198,6 +197,7 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -212,6 +212,9 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    select(file) {
+        this.file = file
+    },
     reset(){
       this.formData.searchItem = {...this.formData.default}
     },

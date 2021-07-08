@@ -251,7 +251,7 @@
                                         ></v-select>
                                     </v-col>
 
-                                    <v-col cols="12" sm="4">
+                                    <v-col cols="12" sm="12">
                                         <h3 class="mb-1">
                                             <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>地點
                                             <span class="red--text">*</span>
@@ -263,7 +263,7 @@
                                         ></v-text-field>
                                     </v-col>
 
-                                    <v-col cols="12" sm="4">
+                                    <v-col cols="12" sm="12" v-if="false">
                                         <h3 class="mb-1">
                                             <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
                                         </h3>
@@ -273,8 +273,15 @@
                                             solo
                                         ></v-select>
                                     </v-col>
+                                    <v-col cols="12" sm="12" v-if="true">
+                                        <h3 class="mb-5">
+                                            <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
+                                        </h3>
+                                        <EquipRepairCode :key="0" :toLv="5" :nowEqCode="nowEqCode" :disableToLv="2" @getWorkName="getTempCode" />
+                                    </v-col>
 
-                                    <v-col cols="12" sm="4">
+
+                                    <v-col cols="12" sm="12">
                                         <h3 class="mb-1">
                                             <v-icon class="mr-1 mb-1">mdi-calculator</v-icon>工作量(hr)
                                             <span class="red--text">*</span>
@@ -383,6 +390,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import EquipRepairCode from '@/components/EquipRepairCode'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
@@ -391,6 +399,9 @@ import { maintainOrder, fetchJobName, withdrawOrder } from '@/apis/workList/main
 export default {
     props: ['itemData'],
     data: () => ({
+        nowEqCode: '', //編輯時 預設帶入的combineCode
+        combineCode: '', //合併後的設備編碼
+        Lv5Name: '', //工作項中文
         isShowBtn: false,
         done: false,  // 是否完成頁面操作
         valid: false,  // 表單是否驗證欄位 (demo先取消掉)
@@ -451,6 +462,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        EquipRepairCode
     },
     computed: {
         ...mapState ('user', {
@@ -458,6 +470,11 @@ export default {
         }),
     },
     methods: {
+        //抓取未確認的設備標示編碼
+        getTempCode(value) {
+            this.Lv5Name = value
+            console.log('Lv5Name: ', this.Lv5Name);
+        },
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -471,6 +488,15 @@ export default {
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             console.log("this.bottomItems: ",this.bottomItems)
             this.defaultJobForm.Location = obj.WorkPlace  // 工作地點預設值
+            console.log("obj.MaintainCode: ", obj.MaintainCode);
+            let codearr = obj.MaintainCode.split('-')
+            console.log("codearr: ", codearr);
+            codearr[2] = ''
+            codearr[3] = ''
+            
+            this.nowEqCode = codearr.join('-') + '-'
+            console.log("this.nowEqCode: ", this.nowEqCode);
+            // this.nowEqCode = obj.MaintainCode
 
             // 組合所有林鐵人員下拉選單(用於選工作項)
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
@@ -502,6 +528,8 @@ export default {
                     text: item.JobName,
                     value: item.JobCode,
                 }))
+                console.log("res.data: ", res.data);
+                console.log("jobNameIpts: ", this.jobNameIpts);
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，工作項查詢失敗' })
             })
@@ -594,7 +622,15 @@ export default {
         // 儲存工作表單
         saveJob() {
             // 反查工作項名稱
-            this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
+            // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
+            if(this.Lv5Name != '' && this.Lv5Name != null){
+                // this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
+                let len = this.Lv5Name.length
+                this.jobForm.JobName = this.Lv5Name.substr(0, this.Lv5Name.length - 4)
+            }
+            else{
+                this.jobForm.JobName = ''
+            }
             
             if (this.jobHour.isEdit == false) {
                 // 反查姓名

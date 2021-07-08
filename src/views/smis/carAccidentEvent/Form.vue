@@ -436,6 +436,7 @@
             <v-select
                 v-model="ipt.accidentFactors1"
                 :items="opts.accidentFactors1"
+                @change="chgeLv1"
                 solo
             ></v-select>
         </v-col>
@@ -620,6 +621,8 @@ export default {
             groupData: state => state.groupData,
         }),
         accidentFOpts2() {
+            console.log("AccidentFactors2: ", AccidentFactors2);
+            console.log("this.ipt.accidentFactors1: ", this.ipt.accidentFactors1);
             return AccidentFactors2.filter(item => item.parent == this.ipt.accidentFactors1)
         },
         accidentFOpts3() {
@@ -653,7 +656,11 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    //抽離 其他
+                    // let tempList
+                    console.log("this.evtTypeOpts", this.evtTypeOpts);
                     this.evtTypeOpts = JSON.parse(res.data.order_list)
+                    console.log("this.evtTypeOpts", this.evtTypeOpts);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -680,6 +687,7 @@ export default {
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
+                            console.log("res.data: ", res.data);
                             this.setInitDate(res.data)
                         }
                     } else {
@@ -738,6 +746,9 @@ export default {
             setTimeout(() => {
                 this.ipt.accidentFactors3 = obj.SaftyCodeLv3  // 第三層因素
             }, 300)
+        },
+        chgeLv1(){
+            console.log("CCC this.ipt.accidentFactors1: ", this.ipt.accidentFactors1);
         },
         // 送出
         save() {

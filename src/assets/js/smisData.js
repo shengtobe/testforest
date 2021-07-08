@@ -137,6 +137,7 @@ export const evtTypes = [
     { text: '異常事件-列車取消', value: 'C16' },
     { text: '異常事件-其他事件', value: 'C17' },
     { text: '未選擇', value: '' },
+    { text: '其他', value: 'Other' },
 ]
 
 // 職災危害類型
@@ -213,42 +214,43 @@ export const locationOpts = [
 // 行車事故 - 第一層因素
 export const AccidentFactors1 = [ 
     { text: '未選擇', value: '' },
-    { text: '內部因素', value: '1' },
-    { text: '外部因素', value: '2' },
+    { text: '內部因素', value: 'IC' },
+    { text: '外部因素', value: 'EC' },
+    { text: '未查明原因或其他', value: 'Other' },
 ]
 
 // 行車事故 - 第二層因素
 export const AccidentFactors2 = [ 
     { text: '未選擇', value: '' },
-    { parent: '1', text: '人為因素', value: '1' },
-    { parent: '1', text: '車輛', value: '2' },
-    { parent: '1', text: '路線設施', value: '3' },
-    { parent: '1', text: '使用者', value: '4' },
-    { parent: '2', text: '第三方', value: '5' },
-    { parent: '2', text: '天氣與環境', value: '6' },
+    { parent: 'IC', text: '人為因素', value: '2_HF' },
+    { parent: 'IC', text: '車輛', value: '2_RS' },
+    { parent: 'IC', text: '路線設施', value: '2_INF' },
+    { parent: 'IC', text: '使用者', value: '2_RU' },
+    { parent: 'EC', text: '第三方', value: '2_TrdP' },
+    { parent: 'EC', text: '天氣與環境', value: '2_WE' },
 ]
 
 // 行車事故 - 第三層因素
 export const AccidentFactors3 = [ 
     { text: '未選擇', value: '' },
-    { parent: '1', text: '維修人員', value: '1' },
-    { parent: '1', text: '調度員及號誌員', value: '2' },
-    { parent: '1', text: '司機員', value: '3' },
-    { parent: '1', text: '其他人為因素', value: '4' },
-    { parent: '2', text: '車輪', value: '5' },
-    { parent: '2', text: '其他車輛因素', value: '6' },
-    { parent: '3', text: '軌道與相關構造', value: '7' },
-    { parent: '3', text: '電力系統', value: '8' },
-    { parent: '3', text: '其他路線因素', value: '9' },
-    { parent: '4', text: '乘客', value: '10' },
-    { parent: '4', text: '其他使用者因素', value: '11' },
-    { parent: '5', text: '入侵路線', value: '12' },
-    { parent: '5', text: '車輛入侵平交道', value: '13' },
-    { parent: '5', text: '人員入侵平交道', value: '14' },
-    { parent: '5', text: '人員在公共區域', value: '15' },
-    { parent: '5', text: '其他第三方因素', value: '16' },
-    { parent: '6', text: '環境', value: '17' },
-    { parent: '6', text: '天氣', value: '18' },
+    { parent: '2_HF', text: '維修人員', value: '3_TSM' },
+    { parent: '2_HF', text: '調度員及號誌員', value: '3_TOSS' },
+    { parent: '2_HF', text: '司機員', value: '3_TD' },
+    { parent: '2_HF', text: '其他人為因素', value: '3_HFOther' },
+    { parent: '2_RS', text: '車輪', value: '3_RG' },
+    { parent: '2_RS', text: '其他車輛因素', value: '3_RSOther' },
+    { parent: '2_INF', text: '軌道與相關構造', value: '3_TS' },
+    { parent: '2_INF', text: '電力系統', value: '3_ES' },
+    { parent: '2_INF', text: '其他路線因素', value: '3_INFOther' },
+    { parent: '2_RU', text: '乘客', value: '3_P' },
+    { parent: '2_RU', text: '其他使用者因素', value: '3_RUOther' },
+    { parent: '2_TrdP', text: '入侵路線', value: '3_Tre' },
+    { parent: '2_TrdP', text: '車輛入侵平交道', value: '3_VLC' },
+    { parent: '2_TrdP', text: '人員入侵平交道', value: '3_PLC' },
+    { parent: '2_TrdP', text: '人員在公共區域', value: '3_PRA' },
+    { parent: '2_TrdP', text: '其他第三方因素', value: '3_TrdPOther' },
+    { parent: '2_WE', text: '環境', value: '3_Env' },
+    { parent: '2_WE', text: '天氣', value: '3_Wea' },
 ]
 
 // 危害資料庫 - 營運模式

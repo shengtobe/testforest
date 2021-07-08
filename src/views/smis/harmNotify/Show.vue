@@ -248,7 +248,7 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-deatil"
+                        <v-btn small dark fab class="btn-detail"
                             @click="pick1Event(item)"
                         >
                             <v-icon dark>mdi-gesture-tap</v-icon>
@@ -307,6 +307,13 @@
                     
                     <template v-slot:item.status="{ item }">
                         <span>{{ opts1_2.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
+                    </template>
+                    <!-- headers 的 content 欄位 (危害說明) -->
+                    <template v-slot:item.harmDesp="{ item }">
+                        <span>{{ item.EndangerDesp }}</span>
+                        <!-- <v-btn class="btn-memo" dark
+                            @click="showContent(item.EndangerDesp)"
+                        >檢視</v-btn> -->
                     </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
@@ -572,13 +579,14 @@ export default {
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
         headers1_2: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 260 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
         ],
         headers2_1: [  // 表格顯示的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -714,6 +722,7 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
@@ -721,10 +730,11 @@ export default {
         click1(){
         },
         selector1Changed(){
-            this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
-            if(this.pick2 == '' && this.ipt.code1 == '' && this.ipt.code2 == ''){
-                this.jobSafeType = '';
-            }
+            this.shwoPick1_1Form = this.shwoPick1_2Form = false
+            // if(this.pick2 == '' && this.ipt.code1 == '' && this.ipt.code2 == ''){
+            //     this.jobSafeType = '';
+            // }
+            console.log("this.carSafeType: ", this.carSafeType);
             switch(this.carSafeType){
                 case 'B': // 以行安立案 選擇 既有行安事故
                     this.shwoPick1_1Form = true;
@@ -771,18 +781,20 @@ export default {
                             // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                         ],
                         QyName: [    // 欲回傳的欄位資料
-                            // 'EndangerCode',
-                            // 'EndangerStatus',
-                            // 'OperationMode',
-                            // 'RiskSerious',
-                            // 'RiskFreq',
-                            // 'RiskLevel',
-                            // 'DelStatus',
-                            // 'CancelStatus',
-                            // 'InsertDTime',
+                            'EndangerCode',
+                            'EndangerDesp',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("既有行安危害: ", this.tableItems);
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -796,10 +808,10 @@ export default {
             }
         },
         selector2Changed(){
-            this.shwoPick1_1Form = this.shwoPick1_2Form = this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
-            if(this.pick1 == ''){
-                this.carSafeType = '';
-            }
+            this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
+            // if(this.pick1 == ''){
+            //     this.carSafeType = '';
+            // }
             switch(this.jobSafeType){
                 case 'B': // 以職安立案 選擇 既有職災事故
                     this.shwoPick2_1Form = true;
@@ -882,6 +894,7 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
+            console.log("status: ", this.status);
             this.id = obj.EndangerID  // 危害通報編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -1006,6 +1019,11 @@ export default {
             }
             this.NoRecord = (IsNoRecord)?'T':'F';
             this.save();
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            console.log("txt: ", txt);
+            this.chViewDialog({ show: true, content: txt })
         },
         // 確定立案(用在立案處理是連結跟不予處理的情況)
         save() {

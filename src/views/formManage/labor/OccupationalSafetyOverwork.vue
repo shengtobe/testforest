@@ -100,7 +100,7 @@
       />
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="680px">
+    <v-dialog v-model="Add" persistent max-width="680px">
       <v-card class="thmem-card">
         <v-card-title class="white--text px-4 py-1">
           新增{{ title }}

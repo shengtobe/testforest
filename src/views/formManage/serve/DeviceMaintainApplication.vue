@@ -28,10 +28,7 @@
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -389,6 +386,7 @@ import {
   updateFormOrder,
   deleteFormOrder,
 } from "@/apis/formManage/serve";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
@@ -410,6 +408,7 @@ export default {
       newText: "申請書",
       isLoading: false,
       disabled: false,
+      file: null,
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -516,7 +515,7 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -539,6 +538,9 @@ export default {
       this.z = this.df = this.nowTime
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();

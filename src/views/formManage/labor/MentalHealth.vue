@@ -32,10 +32,7 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -109,7 +106,7 @@
       />
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" max-width="680px" >
+    <v-dialog v-model="Add" persistent max-width="680px" >
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
@@ -269,6 +266,7 @@ import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun
 import { maintainStatusOpts } from '@/assets/js/workList'
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
@@ -280,6 +278,7 @@ export default {
     return {
       title:"心理健康量表",
       newText:"",
+      file: null,
       action: Actions.add,
       actions: Actions,
       isLoading: false,
@@ -427,6 +426,7 @@ export default {
     deptSelect,
     ToolBar,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -461,6 +461,9 @@ export default {
       this.z = this.df = this.nowTime
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;

@@ -111,7 +111,7 @@
       </v-card>
     </v-col>
     <!-- 新增車裝台、基地台無線電機檢查紀錄表 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           新增{{ title }}

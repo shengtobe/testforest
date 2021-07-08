@@ -26,6 +26,7 @@
           hide-details
           v-on="on"
           readonly
+          clearable
         ></v-text-field>
       </template>
       <v-date-picker

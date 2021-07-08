@@ -127,7 +127,7 @@
         </v-col>
 
         <!-- 趨勢圖 -->
-        <v-col cols="12">
+        <v-col cols="12" v-if="false">
             <v-card class="mx-auto">
                 <v-card-title class="gradual-bg-darken-wood py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>
@@ -202,6 +202,7 @@ export default {
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {
             this.chLoadingShow()
+            console.log("進入危害查詢動作");
             this.pageOpt.page = 1  // 頁碼初始化
             // 如果null要改空字串
             if(this.ipt.dateStart == null) this.ipt.dateStart = ''
@@ -233,6 +234,7 @@ export default {
                         }
                     }
                 });
+                console.log("危害通報查詢 搜尋 table填完");
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -251,6 +253,7 @@ export default {
         },
     },
     created() {
+        console.log("進入危害通報查詢");
         this.search(true)
     },
 }

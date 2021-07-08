@@ -72,9 +72,18 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          that.deptOptions = res.data.user_depart_list_group_1.map((item) => {
-            return {key:item.DepartCode,value:item.DepartName}
-          })
+          // that.deptOptions = res.data.user_depart_list_group_1.map((item) => {
+          //   return {key:item.DepartCode,value:item.DepartName}
+          // })
+          res.data.user_depart_list_group_1.forEach(item => {
+            that.deptOptions.push({key:item.DepartCode,value:item.DepartName})
+          });
+          res.data.user_depart_list_group_2.forEach(item => {
+            that.deptOptions.push({key:item.DepartCode,value:item.DepartName})
+          });
+          res.data.user_depart_list_group_3.forEach(item => {
+            that.deptOptions.push({key:item.DepartCode,value:item.DepartName})
+          });
           that.deptOptions = [{key:"",value:"不限"},...that.deptOptions]
         }else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

@@ -28,10 +28,7 @@
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+         <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -76,7 +73,7 @@
       </v-card>
     </v-col>
     <!-- 新增保安裝置保修工作申請書 modal -->
-    <v-dialog v-model="Add" max-width="900px">
+    <v-dialog v-model="Add" persistent max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
             新增{{ title }}
@@ -498,6 +495,7 @@ import {
   decodeObject,
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import {
   fetchFormOrderList,
   fetchFormOrderOne,
@@ -527,6 +525,7 @@ export default {
       newText: "報告",
       isLoading: false,
       disabled: false,
+      file: null,
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -657,7 +656,7 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
   created() {
       // for(let i = 0; i < 76; i++){
       //   this.item.push
@@ -696,6 +695,9 @@ export default {
     }
   },
   methods: {
+    select(file) {
+        this.file = file
+    },
     initInput(){
       console.log("init create window form")
       // console.log("this.userData.UserName: " + this.userData.UserName)

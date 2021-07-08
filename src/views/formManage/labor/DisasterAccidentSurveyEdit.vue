@@ -547,8 +547,8 @@ export default {
     indirectCause: [
       { text: "不安全行為", value: "1" },
       { text: "不可抗力", value: "2" },
-      { text: "不安全環境", value: "3" },
-      { text: "其他", value: "4" },
+      // { text: "不安全環境", value: "3" },
+      // { text: "其他", value: "4" },
     ],
     inputData: {
       RPFlowNo: "",

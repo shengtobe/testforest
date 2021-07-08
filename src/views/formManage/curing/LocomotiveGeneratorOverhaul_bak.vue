@@ -167,7 +167,7 @@
         </span>
       </v-col>
       <!-- 新增保養資料 modal -->
-      <v-dialog v-model="Add" max-width="600px">
+      <v-dialog v-model="Add" persistent max-width="600px">
         <v-card>
           <!-- 標題 -->
           <v-card-title class=" white--text px-4 py-1">

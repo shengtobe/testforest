@@ -601,6 +601,7 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newPage() {
+      // this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
@@ -830,6 +831,7 @@ export default {
       this.$emit("search");
     },
     save() {
+      this.inputData.editableData.CheckDay = this.inputData.editableData.BgChkDay;
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
@@ -839,6 +841,7 @@ export default {
       encodeObject(rtnObj);
 
       if (this.editType == this.actions.add) {
+        //====新增=====
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
           OperatorID: this.userData.UserId, // 操作人id

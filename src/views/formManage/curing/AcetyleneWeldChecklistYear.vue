@@ -29,10 +29,7 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
@@ -122,7 +119,7 @@
       </v-card>
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="ShowDetailDialog" max-width="900px">
+    <v-dialog v-model="ShowDetailDialog" persistent max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           {{ action }}{{ title }}
@@ -282,6 +279,7 @@ import {
   updateFormOrder,
   deleteFormOrder,
 } from "@/apis/formManage/serve";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { formDepartOptions } from "@/assets/js/departOption";
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
@@ -302,6 +300,7 @@ export default {
     return {
       title: "乙炔熔接裝置定期檢查表(年)",
       action: Actions.add,
+      file: null,
       actions: Actions,
       newText: "檢查表",
       isLoading: false,
@@ -423,7 +422,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, dialogDelete, ToolBar }, // 頁碼
+  components: { Pagination, dateSelect, dialogDelete, ToolBar, UploadOneFileAdd }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -455,6 +454,9 @@ export default {
       this.Memo_11 = "";
       this.Memo_12 = "";
       this.Memo_13 = "";
+    },
+    select(file) {
+        this.file = file
     },
     newOne() {
       this.action = Actions.add;

@@ -11,6 +11,7 @@
                 <v-text-field
                     v-model.trim="ipt.createrId"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -21,6 +22,7 @@
                 <v-text-field
                     v-model.trim="ipt.dispatcherId"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -41,6 +43,7 @@
                             solo
                             v-on="on"
                             readonly
+                            clearable
                         ></v-text-field>
                     </template>
                     <v-date-picker
@@ -69,6 +72,7 @@
                             solo
                             v-on="on"
                             readonly
+                            clearable
                         ></v-text-field>
                     </template>
                     <v-date-picker
@@ -87,6 +91,7 @@
                 <v-text-field
                     v-model.trim="ipt.workNumber"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -130,6 +135,7 @@
                 <v-text-field
                     v-model.trim="ipt.subject"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -141,6 +147,7 @@
                     v-model.trim="ipt.moneyStart"
                     placeholder="請輸入最小金額"
                     solo
+                    clearable
                 ></v-text-field>
             </v-col>
 
@@ -169,6 +176,7 @@
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
                 </h3>
+                <!-- <EquipRepairCode :key="0" :toLv="4" @getEqCode="getTempCode"/> -->
 
                 <v-row no-gutters>
                     <v-col cols="12" sm="3" class="mb-3 mb-sm-0 pr-sm-3">
@@ -176,7 +184,10 @@
                             hide-details
                             v-model="ipt.eqNumber1"
                             solo
+                            readonly
                             placeholder="系統"
+                            @click="pickEqNumber_show"
+                            clearable
                         ></v-text-field> 
                     </v-col>
 
@@ -186,7 +197,10 @@
                             v-model="ipt.eqNumber2"
                             ref="eqNumber2"
                             solo
+                            readonly
                             placeholder="位置"
+                            @click="pickEqNumber_show"
+                            clearable
                         ></v-text-field>
                     </v-col>
 
@@ -196,7 +210,10 @@
                             v-model="ipt.eqNumber3"
                             ref="eqNumber3"
                             solo
+                            readonly
                             placeholder="設備"
+                            @click="pickEqNumber_show"
+                            clearable
                         ></v-text-field>
                     </v-col>
 
@@ -206,7 +223,10 @@
                             v-model="ipt.eqNumber4"
                             ref="eqNumber4"
                             solo
+                            readonly
                             placeholder="序號"
+                            @click="pickEqNumber_show"
+                            clearable
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -232,6 +252,25 @@
                 </v-btn>
             </v-col>
         </v-row>
+        <!-- 必填欄位空白提醒視窗 -->
+        <v-dialog v-model="pickEqNumber" max-width="350">
+        <v-card class="theme-card">
+            <v-card-title class="red white--text px-4 py-1 headline">
+                請選擇設備
+                <v-spacer></v-spacer>
+                <v-btn dark fab small text @click="pickEqNumber = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-card-title>
+            <v-col class="mt-5" v-if="pickEqNumber">
+                <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" @getEqCode="getTempCode"/>
+            </v-col>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn class="btn-add white--text" @click="pickEqNumber_click">確定</v-btn>
+            </v-card-actions>
+        </v-card>
+        </v-dialog>
 
         <!-- 表格資料 -->
         <v-row class="px-2">
@@ -286,6 +325,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import EquipRepairCode from '@/components/EquipRepairCode'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchOrderList, fetchWorkOrderOne } from '@/apis/workList/maintain'
@@ -294,6 +334,9 @@ import Pagination from '@/components/Pagination.vue'
 
 export default {
     data: () => ({
+        combineCode: '', //合併後的設備編碼
+        nowEqCode: '', //編輯時 預設帶入的combineCode
+        pickEqNumber: false, // 設備標示編號選擇視窗
         ipt: {},
         defaultIpt: {  // 預設的欄位值
             createrId: '',  // 立案人
@@ -328,13 +371,57 @@ export default {
         ],
         isLoading: false,  // 是否讀取中
     }),
-    components: { Pagination },  // 頁碼
+    components: { Pagination, EquipRepairCode },  // 頁碼
+    watch: {
+        // 路由參數變化時，重新向後端取資料
+        $route(to, from) {
+            // … 
+        },
+        'ipt.eqNumber1': function(val, oldval) {
+            if(val == null){
+                this.ipt.eqNumber1 = '';
+                this.ipt.eqNumber2 = '';
+                this.ipt.eqNumber3 = '';
+                this.ipt.eqNumber4 = '';
+            }
+        },
+        'ipt.eqNumber2': function(val, oldval) {
+            if(val == null){
+                this.ipt.eqNumber2 = '';
+                this.ipt.eqNumber3 = '';
+                this.ipt.eqNumber4 = '';
+            }
+        },
+        'ipt.eqNumber3': function(val, oldval) {
+            if(val == null){
+                this.ipt.eqNumber3 = '';
+                this.ipt.eqNumber4 = '';
+            }
+        },
+    },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
     methods: {
+        pickEqNumber_show(){
+            this.nowEqCode = `${this.ipt.eqNumber1}-${this.ipt.eqNumber2}-${this.ipt.eqNumber3}-${this.ipt.eqNumber4}`
+            console.log("nowEqCode: ", this.nowEqCode);
+            this.pickEqNumber = true
+        },
+        pickEqNumber_click(){
+            this.pickEqNumber = false
+            let tempCodeArr = this.combineCode.split('-')
+            this.ipt.eqNumber1 = tempCodeArr[0],  // 設備標示編號(系統)
+            this.ipt.eqNumber2 = tempCodeArr[1],  // 設備標示編號(位置)
+            this.ipt.eqNumber3 = tempCodeArr[2],  // 設備標示編號(設備)
+            this.ipt.eqNumber4 = tempCodeArr[3]  // 設備標示編號(序號)
+        },
+        //抓取未確認的設備標示編碼
+        getTempCode(value) {
+            this.combineCode = value
+        },
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
@@ -343,6 +430,8 @@ export default {
             
             this.chLoadingShow()
             this.pageOpt.page = 1  // 頁碼初始化
+            if(this.ipt.eqNumber3 == null) this.ipt.eqNumber3 = ''
+            if(this.ipt.eqNumber4 == null) this.ipt.eqNumber4 = ''
 
             fetchOrderList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -387,6 +476,7 @@ export default {
         },
         // 檢視內容
         viewPage(item) {
+            console.log("item: ", item);
             let routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/show` })
             window.open(routeData.href, '_blank')
         },

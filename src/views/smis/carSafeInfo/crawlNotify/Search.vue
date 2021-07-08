@@ -95,6 +95,10 @@
                     <template v-slot:loading>
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
+                    
+                    <template v-slot:item.line="{ item }">
+                        {{ ReportLineList.find(ele => ele.value == item.ReportLine).text }}
+                    </template>
 
                     <template v-slot:item.location="{ item }">
                         {{ `${item.LimitStart} ~ ${item.LimitEnd} km` }}
@@ -151,6 +155,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { fetchList, deleteRegul } from '@/apis/smis/carSafeInfo'
@@ -165,11 +170,12 @@ export default {
             start: false,
             end: false,
         },
+        ReportLineList: locationOpts,
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'SlowReportCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '路線', value: 'ReportLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '路線', value: 'line', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -224,6 +230,7 @@ export default {
                         }
                     }
                 });
+                console.log("this.tableItems: ", this.tableItems);
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')

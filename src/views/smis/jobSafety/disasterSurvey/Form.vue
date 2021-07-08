@@ -132,12 +132,24 @@
                 ></v-date-picker>
             </v-menu>
         </v-col>
+        <v-col cols="12" sm="6" md="3"/>
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-format-title</v-icon>職稱
             </h3>
-            <v-text-field
+            <v-select class="text--black"
+                @change="jobSelectChange"
+                v-model="ipt.jobTitle0" 
+                :items="['(空)','行政助理','站務士','工程士','站務員','助理管理師','助理工程師','行政專員','安全衛生管理員','司機員','列車長','管理師','工程師','調度員','資深管理師','資深工程師','其他']"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1" >
+                <v-icon class="mr-1 mb-1"></v-icon>
+            </h3>
+            <v-text-field v-if="ipt.jobTitle0 == '其他'"
                 v-model.trim="ipt.jobTitle"
                 solo
                 placeholder="請輸入職稱"
@@ -375,7 +387,7 @@
             <v-select
                 hide-details
                 v-model="ipt.indirectReason"
-                :items="['不安全行為', '不可抗力', '不安全環境', '其他']"
+                :items="['不安全行為', '不可抗力']"
                 solo
             ></v-select>
             <p class="red--text mt-2">* 間接原因：由於不安全行為或不安全環境引起</p>
@@ -651,6 +663,7 @@ export default {
             old: '',  // 年齡
             workDepart: '嘉義車站',  // 工作部門
             startWorkDate: new Date().toISOString().substr(0, 10),  // 到職日期
+            jobTitle0: '',  // 職稱
             jobTitle: '',  // 職稱
             education: '大學畢業',  // 教育程度
             address: '',  // 住址
@@ -927,6 +940,11 @@ export default {
             this.ipt.note = obj.Memo // 備註
             this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
         },
+        jobSelectChange(){
+            if(this.ipt.jobTitle0 == '(空)'){
+                this.ipt.jobTitle0 = '';
+            }
+        },
         // 送出
         save() {
             if (confirm('你確定要送出嗎?')) {
@@ -942,6 +960,8 @@ export default {
                 //     }
                 //     this.chLoadingShow()
                 // }, 1000)
+                let finalJobTitle = '';
+                finalJobTitle = (this.ipt.jobTitle == '其他') ? this.ipt.jobTitle : this.ipt.jobTitle0;
                 if (this.isEdit) {
                 // ---------- 編輯時---------- 
                 updateData({
@@ -952,7 +972,7 @@ export default {
                     PeopleAge: this.ipt.old, //5年齡
                     PeopleSex: this.ipt.sex, //6性別
                     PeopleDepart: this.ipt.workDepart, //7工作部門
-                    JobTitle: this.ipt.jobTitle, //8職稱
+                    JobTitle: finalJobTitle, //8職稱
                     PeopleAddress: this.ipt.address, //9住址
                     WorkDate: this.ipt.startWorkDate, //10到職日期
                     WorkExp: this.ipt.workYear, //11參加本項工作經驗年數

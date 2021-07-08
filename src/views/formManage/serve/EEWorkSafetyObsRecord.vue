@@ -142,7 +142,7 @@
       />
     </v-dialog>
       <!-- 新增保養資料 modal -->
-      <v-dialog v-model="Add" max-width="800px">
+      <v-dialog v-model="Add" persistent max-width="800px">
         <v-card class="theme-card">
           <!-- 標題 -->
           <v-card-title class="white--text px-4 py-1">
@@ -304,6 +304,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
@@ -320,6 +321,7 @@ export default {
     actions: Actions,
     isLoading: false,
     disabled: false,
+    file: null,
     Add: false,
     dialog3: false,
     ShowDetailDialog: false,
@@ -473,6 +475,7 @@ export default {
     ToolBar,
     formDepartOptions,
     dialogDelete,
+    UploadOneFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -496,6 +499,9 @@ export default {
   },
 
   methods: {
+    select(file) {
+        this.file = file
+    },
     // 更新資料
     update() {
       this.$emit("chLocation", {});

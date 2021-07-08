@@ -138,6 +138,14 @@
             >已立案</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="cpltPaper"
+            >已完備資料</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="riskAllow"
+            >風險已可接受</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="checkFetch"
             >審核中</v-btn>
         </v-col>
@@ -180,6 +188,13 @@
                     
                     <template v-slot:item.status="{ item }">
                         <span>{{ opts.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
+                    </template>
+                    <!-- headers 的 content 欄位 (危害說明) -->
+                    <template v-slot:item.harmDesp="{ item }">
+                        <span>{{ item.EndangerDesp }}</span>
+                        <!-- <v-btn class="btn-memo" dark
+                            @click="showContent(item.EndangerDesp)"
+                        >檢視</v-btn> -->
                     </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
@@ -224,13 +239,14 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         searchType: 'normal', // 'normal'/'allEndanger'/
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
+            { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '風險頻率', value: 'frequency', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 260 },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
         ],
         isLoading: false,  // 是否讀取中
         opts: {
@@ -251,6 +267,7 @@ export default {
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chViewDialog',  // 檢視內容 dialog
         ]),
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
@@ -273,6 +290,7 @@ export default {
                         ],
                         QyName: [    // 欲回傳的欄位資料
                             'EndangerCode',
+                            'EndangerDesp',
                             'EndangerStatus',
                             'OperationMode',
                             'RiskSerious',
@@ -284,6 +302,7 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("tableItems: ", this.tableItems);
                         this.tableItems.forEach(element => {
                             for(let ele in element){
                                 if(element[ele] == null){
@@ -494,7 +513,7 @@ export default {
                             element[ele] = '';
                         }
                     }
-                    if(element.RiskSerious == 'S1' || element.RiskSerious == 'S2'){
+                    if(element.RiskLevel == 'R1' || element.RiskLevel == 'R2'){
                         this.tableItems.push(element)
                     }
                 });
@@ -550,6 +569,95 @@ export default {
                 this.chLoadingShow()
             })
         }, 
+
+        cpltPaper() { //已完備資料
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.EndangerStatus == '3'){
+                        this.tableItems.push(element)
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
+        riskAllow() { //風險可接受
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.tableItems = [...[]];
+                this.tempTableItems = JSON.parse(res.data.order_list)
+                this.tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.EndangerStatus == '5'){
+                        this.tableItems.push(element)
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+        },
         // 審核中
         checkFetch() { //checkFetch
             this.chLoadingShow()
@@ -602,6 +710,11 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
+        },
+        // 顯示檢視內容
+        showContent(txt) {
+            console.log("txt: ", txt);
+            this.chViewDialog({ show: true, content: txt })
         },
         // 轉換事故事件狀態文字
         transferStatusText(status) {
