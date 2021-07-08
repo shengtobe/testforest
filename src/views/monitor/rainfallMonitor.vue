@@ -42,7 +42,7 @@
           </v-col>
           <v-col cols="12" md="4">
             <h3 class="mb-1">
-              <v-icon class="mr-1 mb-1">mdi-alert</v-icon>時雨量門檻
+              <v-icon class="mr-1 mb-1">mdi-alert</v-icon>1小時雨量門檻
             </h3>
             <v-text-field
               solo
@@ -55,7 +55,7 @@
           </v-col>
           <v-col cols="12" md="4">
             <h3 class="mb-1">
-              <v-icon class="mr-1 mb-1">mdi-alert</v-icon>日雨量門檻
+              <v-icon class="mr-1 mb-1">mdi-alert</v-icon>24小時雨量門檻
             </h3>
             <v-text-field
               solo
@@ -113,7 +113,7 @@ export default {
         options: {
           title: {
             display: true,
-            text: "時雨量異常次數(門檻值：  mm)",
+            text: "1小時雨量異常次數(門檻值：  mm)",
             fontSize: 20,
             position: "top",
             color: "#617a60",
@@ -151,8 +151,8 @@ export default {
                 },
                 ticks: {
                   autoSkip: false,
-                  maxRotation: 50,
-                  minRotation: 50,
+                  // maxRotation: 50,
+                  // minRotation: 50,
                   fontSize: 16,
                 },
               },
@@ -204,8 +204,8 @@ export default {
                 },
                 ticks: {
                   autoSkip: false,
-                  maxRotation: 50,
-                  minRotation: 50,
+                  // maxRotation: 50,
+                  // minRotation: 50,
                   fontSize: 16,
                 },
               },
@@ -265,7 +265,8 @@ export default {
       };
       fetchList(sendData)
         .then((res) => {
-          this.hourRain.chartdata.labels = ['' + today.getFullYear() + (((today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1))];
+          let preDay = new Date(today.getTime() - 1000 * 60 * 60)
+          this.hourRain.chartdata.labels = [this.getTimeFull(preDay) + ' ' + (preDay.getHours()<10?'0'+preDay.getHours():preDay.getHours()) + ':00' + ' ~ ' + this.getTimeFull(today) + ' ' + (today.getHours()<10?'0'+today.getHours():today.getHours()) + ':00'];
           this.hourRain.chartdata.datasets = res.data.DataListHr.map((element,index) => ({
             label: element.Location,
             borderWidth: "1",
@@ -274,9 +275,10 @@ export default {
             backgroundColor: "rgba(" + this.colorArr[index] + ",0.3)",
             data: [element.Count]
           }));
-          this.hourRain.options.title.text = `時雨量異常次數(門檻值： ${this.ipt.alarmHour} mm)`;
+          this.hourRain.options.title.text = `1小時雨量異常次數(門檻值： ${this.ipt.alarmHour} mm)`;
           this.hourRain.componentKey++;
-          this.dayRain.chartdata.labels = ['' + today.getFullYear() + (( (today.getMonth()+1) < 10)?'0'+(today.getMonth()+1):(today.getMonth()+1))];
+          preDay.setTime(today.getTime() - 1000 * 60 * 60 * 24)
+          this.dayRain.chartdata.labels = [this.getTimeFull(preDay) + ' ' + (preDay.getHours()<10?'0'+preDay.getHours():preDay.getHours()) + ':00' + ' ~ ' + this.getTimeFull(today) + ' ' + (today.getHours()<10?'0'+today.getHours():today.getHours()) + ':00'];
           this.dayRain.chartdata.datasets = res.data.DataListDay.map((element,index) => ({
             label: element.Location,
             borderWidth: "1",
@@ -288,78 +290,9 @@ export default {
           this.dayRain.options.title.text = `24小時累積雨量異常次數(門檻值： ${this.ipt.alarmDay} mm)`;
           this.dayRain.componentKey++;
         });
-      // fetchList({
-      //   ...sendData,
-      //   Option: "1",
-      //   AlarmCount: this.ipt.alarmHour,
-      // })
-      //   .then((res) => {
-      //     const loc = groupBy(res.data.DataList, "Location");
-      //     const locations = this.ipt.Location;
-      //     const yms = Object.keys(groupBy(res.data.DataList, "YM"));
-      //     this.hourRain.chartdata.labels = yms;
-      //     this.hourRain.chartdata.datasets = locations.map((element, ind) => {
-      //       const thisArr = loc[element];
-      //       const thisColor = this.colorArr[ind];
-      //       let rtnObj = {
-      //         label: element,
-      //         borderWidth: "1",
-      //         barPercentage: 1,
-      //         borderColor: "rgba(" + thisColor + ",0.7)",
-      //         backgroundColor: "rgba(" + thisColor + ",0.3)",
-      //         data: yms.map((ele) => {
-      //           return thisArr?.find((e) => e.YM == ele)?.Count || "0";
-      //         }),
-      //       };
-      //       return rtnObj;
-      //     });
-      //     this.hourRain.options.title.text = `時雨量異常次數(門檻值： ${this.ipt.alarmHour} mm)`;
-      //     this.hourRain.componentKey++;
-      //   })
-      //   .catch((err) => {
-      //     console.warn(err);
-      //     this.chMsgbar({
-      //       success: false,
-      //       msg: "伺服器發生問題，資料讀取失敗",
-      //     });
-      //   })
-      //   .finally(() => {});
-      // fetchList({
-      //   ...sendData,
-      //   Option: "2",
-      //   AlarmCount: this.ipt.alarmDay,
-      // })
-      //   .then((res) => {
-      //     const loc = groupBy(res.data.DataList, "Location");
-      //     const locations = this.ipt.Location;
-      //     const yms = Object.keys(groupBy(res.data.DataList, "YM"));
-      //     this.dayRain.chartdata.labels = yms;
-      //     this.dayRain.chartdata.datasets = locations.map((element, ind) => {
-      //       const thisArr = loc[element];
-      //       const thisColor = this.colorArr[ind];
-      //       let rtnObj = {
-      //         label: element,
-      //         borderWidth: "1",
-      //         barPercentage: 1,
-      //         borderColor: "rgba(" + thisColor + ",0.7)",
-      //         backgroundColor: "rgba(" + thisColor + ",0.3)",
-      //         data: yms.map((ele) => {
-      //           return thisArr?.find((e) => e.YM == ele)?.Count || "0";
-      //         }),
-      //       };
-      //       return rtnObj;
-      //     });
-      //     this.dayRain.options.title.text = `24小時累積雨量異常次數(門檻值： ${this.ipt.alarmDay} mm)`;
-      //     this.dayRain.componentKey++;
-      //   })
-      //   .catch((err) => {
-      //     console.warn(err);
-      //     this.chMsgbar({
-      //       success: false,
-      //       msg: "伺服器發生問題，資料讀取失敗",
-      //     });
-      //   })
-      //   .finally(() => {});
+    },
+    getTimeFull(day) {
+      return day.getFullYear() + '/' + (((day.getMonth()+1) < 10)?'0'+(day.getMonth()+1):(day.getMonth()+1)) + '/' + ((day.getDate() < 10)?'0'+day.getDate():day.getDate())
     },
     // 關閉 dialog
     close() {

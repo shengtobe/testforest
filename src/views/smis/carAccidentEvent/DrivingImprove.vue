@@ -16,18 +16,25 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    show-select
+                    item-key="ProcCode"
                     class="theme-table"
+                    v-model="selected"
+                    checkbox-color="orange"
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
-                    <template v-slot:item.action="{ item }">
+                    <!-- <template v-slot:item.action="{ item }">
                         <v-checkbox
                             class="mr-n3 ml-2"
                             v-model="selected"
                             :value="item.ProcCode"
                         ></v-checkbox>
+                    </template> -->
+                    <template v-slot:header.data-table-select>
+                        <span class="subtitle-1 white--text font-weight-bold">連結</span>
                     </template>
 
                     <template v-slot:item.DeviceDesp="{ item }">
@@ -125,7 +132,7 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
+            // { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
             { text: '措施編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '措施說明', value: 'DeviceDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
@@ -151,8 +158,9 @@ export default {
             groupData: state => state.groupData,
         }),
         selectedMsg() {
+            let selected = this.selected.map(e=>e.ProcCode)
             // 重新排序
-            let arr = this.selected.sort(function(a, b) {
+            let arr = selected.sort(function(a, b) {
                 return a - b
             })
             return arr.join('、')
