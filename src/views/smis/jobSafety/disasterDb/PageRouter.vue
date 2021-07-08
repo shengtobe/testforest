@@ -4,10 +4,10 @@
     <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、已完備資料 -->
-    <!-- <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" /> -->
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
 
     <!-- 審核中、改善措施已落實 -->
-    <!-- <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" /> -->
+    <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 </div>
 </template>
 
@@ -91,12 +91,17 @@ export default {
                     // }
 
                     this.itemData = { ...res.data, bottomItems }  // demo 用時 ...res.data 先改為 obj
+                    console.log("3");
                     }
                 } else {
+                    console.log("4");
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    console.log("5");
                     this.$router.push({ path: '/error' })
+                    console.log("6");
                 }
+                    console.log("7");
             }).catch(err => {
                 console.log(err)
                 alert('伺服器發生問題，資料讀取失敗')

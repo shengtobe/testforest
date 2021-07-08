@@ -127,29 +127,28 @@
             
             <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="searchAllEndanger"
-            >全部危害</v-btn>
+            >全部危害{{ '(' + searchAllEndangerCount + ')' }}</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="searchHighRisk"
-            >高風險</v-btn>
+            >高風險{{ '(' + searchHighRiskCount + ')' }}</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="caseFetch"
-            >已立案</v-btn>
+            >已立案{{ '(' + caseFetchCount + ')' }}</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="cpltPaper"
-            >已完備資料</v-btn>
+            >已完備資料{{ '(' + cpltPaperCount + ')' }}</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="riskAllow"
-            >風險已可接受</v-btn>
+            >風險已可接受{{ '(' + riskAllowCount + ')' }}</v-btn>
 
             <v-btn class="mb-2 mr-3 btn-memo white--text"
                 @click="checkFetch"
-            >審核中</v-btn>
+            >審核中{{ '(' + checkFetchCount + ')' }}</v-btn>
         </v-col>
-
         <!-- 表格資料 -->
         <v-col cols="12" class="mt-8">
             <v-card>
@@ -233,6 +232,12 @@ import { fetchList } from '@/apis/smis/carHarmDatabase/harms'
 export default {
     data: () => ({
         keyword: '',  // 關鍵字
+        searchAllEndangerCount: 0,
+        searchHighRiskCount: 0,
+        caseFetchCount: 0,
+        cpltPaperCount: 0,
+        riskAllowCount: 0,
+        checkFetchCount: 0,
         chooses: [],  // 查詢項目(checkbox 勾選的項目)
         isShowBtn: false, // 按鈕是否顯示(依權限)
         tableItems: [],  // 表格資料
@@ -358,14 +363,31 @@ export default {
                             'InsertDTime',
                         ],
                     }).then(res => {
-                        this.tableItems = JSON.parse(res.data.order_list)
-                        this.tableItems.forEach(element => {
+                        // this.tableItems = JSON.parse(res.data.order_list)
+                        this.tempItems = JSON.parse(res.data.order_list)
+                        this.tableItems = [...[]];
+                        console.log("this.tempItems: ", this.tempItems);
+                        this.tempItems.forEach(element => {
                             for(let ele in element){
                                 if(element[ele] == null){
                                     element[ele] = '';
                                 }
+                                //篩 危害說明 
+                                if(ele == 'EndangerDesp'){
+                                    if((element.EndangerDesp.indexOf(this.keyword)) > -1){
+                                        this.tableItems.push(element)
+                                    }
+                                }
+                                //篩 危害直接成因
+                                if(ele == 'EndangerReason'){
+                                    if((element.EndangerReason.indexOf(this.keyword)) > -1){
+                                        this.tableItems.push(element)
+                                    }
+                                }
                             }
                         });
+                        
+
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -439,6 +461,76 @@ export default {
 
             
         },
+        // 預設先執行一次搜尋
+        initSearch() {
+            this.chLoadingShow()
+            this.pageOpt.page = 1  // 頁碼初始化
+            
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_EndangerData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerCode',
+                    'EndangerDesp',
+                    'EndangerStatus',
+                    'OperationMode',
+                    'RiskSerious',
+                    'RiskFreq',
+                    'RiskLevel',
+                    'DelStatus',
+                    'CancelStatus',
+                    'InsertDTime',
+                ],
+            }).then(res => {
+                
+                this.searchHighRiskCount= 0
+                this.caseFetchCount= 0
+                this.cpltPaperCount= 0
+                this.riskAllowCount= 0
+                this.checkFetchCount= 0
+
+                let tempTb = JSON.parse(res.data.order_list)
+                this.searchAllEndangerCount= tempTb.length
+                tempTb.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.RiskLevel == 'R1' || element.RiskLevel == 'R2'){
+                        this.searchHighRiskCount++
+                    }
+                    if(element.EndangerStatus == '1'){
+                        this.caseFetchCount++
+                    }
+                    if(element.EndangerStatus == '3'){
+                        this.cpltPaperCount++
+                    }
+                    if(element.EndangerStatus == '5'){
+                        this.riskAllowCount++
+                    }
+                    switch(element.EndangerStatus){
+                        case '2':
+                        case '4':
+                        case '6':
+                            this.checkFetchCount++
+                            break;
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow()
+            })
+
+            
+        },
         // 全部危害
         searchAllEndanger() {
             this.chLoadingShow()
@@ -505,6 +597,7 @@ export default {
                 ],
             }).then(res => {
                 let tempTableItems = [];
+                this.searchHighRiskCount = 0;
                 this.tableItems = [...[]];
                 this.tempTableItems = JSON.parse(res.data.order_list)
                 this.tempTableItems.forEach(element => {
@@ -515,6 +608,7 @@ export default {
                     }
                     if(element.RiskLevel == 'R1' || element.RiskLevel == 'R2'){
                         this.tableItems.push(element)
+                        this.searchHighRiskCount++
                     }
                 });
             }).catch(err => {
@@ -550,6 +644,7 @@ export default {
                 ],
             }).then(res => {
                 let tempTableItems = [];
+                this.caseFetchCount= 0
                 this.tableItems = [...[]];
                 this.tempTableItems = JSON.parse(res.data.order_list)
                 this.tempTableItems.forEach(element => {
@@ -560,6 +655,7 @@ export default {
                     }
                     if(element.EndangerStatus == '1'){
                         this.tableItems.push(element)
+                        this.caseFetchCount++
                     }
                 });
             }).catch(err => {
@@ -595,6 +691,7 @@ export default {
                 ],
             }).then(res => {
                 let tempTableItems = [];
+                this.cpltPaperCount= 0
                 this.tableItems = [...[]];
                 this.tempTableItems = JSON.parse(res.data.order_list)
                 this.tempTableItems.forEach(element => {
@@ -605,6 +702,7 @@ export default {
                     }
                     if(element.EndangerStatus == '3'){
                         this.tableItems.push(element)
+                        this.cpltPaperCount++
                     }
                 });
             }).catch(err => {
@@ -639,6 +737,7 @@ export default {
                 ],
             }).then(res => {
                 let tempTableItems = [];
+                this.riskAllowCount = 0;
                 this.tableItems = [...[]];
                 this.tempTableItems = JSON.parse(res.data.order_list)
                 this.tempTableItems.forEach(element => {
@@ -649,6 +748,7 @@ export default {
                     }
                     if(element.EndangerStatus == '5'){
                         this.tableItems.push(element)
+                        this.riskAllowCount++
                     }
                 });
             }).catch(err => {
@@ -684,6 +784,7 @@ export default {
                 ],
             }).then(res => {
                 let tempTableItems = [];
+                this.checkFetchCount= 0
                 this.tableItems = [...[]];
                 this.tempTableItems = JSON.parse(res.data.order_list)
                 this.tempTableItems.forEach(element => {
@@ -697,6 +798,7 @@ export default {
                         case '4':
                         case '6':
                             this.tableItems.push(element)
+                            this.checkFetchCount++
                             break;
                     }
                 });
@@ -764,6 +866,9 @@ export default {
             console.log(err)
         }).finally(() => {
         })
+
+
+        this.initSearch();
     }
 }
 </script>
