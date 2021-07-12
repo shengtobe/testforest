@@ -8,7 +8,7 @@
             <v-toolbar dark flat
               class="metal-dark-yellow-top"
             >
-              <v-toolbar-title>林鐵資訊管理系統</v-toolbar-title>
+              <v-toolbar-title>林鐵<span @dblclick="submit(false)">資</span>訊管理系統</v-toolbar-title>
             </v-toolbar>
 
             <v-card-text>
@@ -47,7 +47,7 @@
               </v-form>
               
               <v-row>
-                <v-col sm="6">
+                <v-col sm="12">
                   <v-btn block dark large
                     class="my-3 metal-dark-yellow-top"
                     :loading="isLoading"
@@ -55,7 +55,7 @@
                   >Login</v-btn>
                 </v-col>
 
-                <v-col sm="6">
+                <v-col sm="6" v-if="false">
                   <v-btn block dark large
                     class="my-3 metal-dark-yellow-top"
                     :loading="isLoading"

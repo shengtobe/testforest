@@ -549,6 +549,8 @@ export default {
             lineTension: 0
           })
         })
+        console.log("Lv1Chart.chartdata: " , this.Lv1Chart.chartdata);
+        console.log("Lv1Chart.options: " , this.Lv1Chart.options);
         const Lv2pointStyle = [
           {
             pointStyle:'rectRot',
@@ -765,6 +767,6 @@ export default {
   },
   mounted() {
     this.dataInit()
-  }
+  },
 }
 </script>

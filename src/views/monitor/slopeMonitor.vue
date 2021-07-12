@@ -90,8 +90,10 @@
         </v-btn>
       </v-col>
     </v-row>
+    <!-- chart -->
     <v-row>
         <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px">
+            <!-- <ChartLine :chartdata="Lv1Chart.chartdata"/> -->
         </v-col>
         <v-col cols="12" sm="10">
             <v-spacer/>
@@ -144,6 +146,7 @@
 </style>
 <script>
 import { mapState, mapActions } from 'vuex'
+import ChartLine from '@/components/chartLine'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchList } from '@/apis/monitor/slope'
 import DateSelect from '@/components/forManage/dateSelect'
@@ -172,7 +175,8 @@ export default {
   }),
   components: {
     DateSelect,
-    Pagination
+    Pagination,
+    ChartLine
   },
   computed: {
     ...mapState ('user', {
@@ -223,6 +227,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
         this.tableItems = res.data.LocationList
+        console.log("邊坡歷史紀錄: ", this.tableItems);
       }).catch( err => {
         console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
