@@ -48,6 +48,7 @@ export default {
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
+                        console.log("Status: ", res.data.AccidentStatus);
                         this.status = res.data.AccidentStatus  // 狀態
                         let hurtPeoples = []  // 死傷人數資料
                         let controls = []  // 已選控制措施

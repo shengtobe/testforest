@@ -192,6 +192,7 @@ export default {
             that.chartdata.labels.push(element.Year)
             that.chartdata.datasets[0].data.push(element.Value)
           })
+          console.log("trend chartdata: " , this.chartdata);
           that.chartKey ++
         })
         .catch( err => {

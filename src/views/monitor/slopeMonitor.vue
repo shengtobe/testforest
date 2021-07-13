@@ -92,9 +92,11 @@
     </v-row>
     <!-- chart -->
     <v-row>
-        <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px">
-            <!-- <ChartLine :chartdata="Lv1Chart.chartdata"/> -->
+        <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px"/>
+        <v-col cols="12" sm="10" class="indigo--text" style="margin-left:-5px">
+            <ChartLine :chartdata="Lv1Chart.chartdata" :options="Lv1Chart.options" :key="Lv1Chart.componentKey"/>
         </v-col>
+        <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px"/>
         <v-col cols="12" sm="10">
             <v-spacer/>
             <v-card>
@@ -157,6 +159,60 @@ export default {
     toptable:{
       LocationList: []
     },
+    Lv1Chart:{
+      componentKey: 1,
+      chartdata: {
+        labels: [],
+        datasets: []
+      },
+      options: {
+        title:{
+          display: false,
+        },
+        legend:{
+          display:true,
+          // labels:{
+          //   usePointStyle:false
+          // }
+        },
+        plugins: {
+          datalabels: {
+            align: "top",
+            anchor: "end",
+            color: 'blue',
+            display: false
+          },
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel:{
+              display: true,
+              labelString: '監測值',
+            },
+            ticks: {
+              suggestedMax: 100,
+            }
+          }],
+          xAxes: [{
+            scaleLabel:{
+              display: true,
+              labelString: '時間',
+            },
+            ticks: {
+              autoSkip: false
+            }
+          }]
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        elements:{
+          line:{
+            fill:false,
+          }
+        },
+      },
+    },
+    
     q_datestart:'',
     q_dateend:'',
     Location:'',
@@ -203,7 +259,7 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        console.log(res.data.LocationList)
+        console.log("LocationList: ", res.data.LocationList)
         this.toptable.LocationList = res.data.LocationList
       }).catch( err => {
         console.warn(err)
@@ -215,6 +271,10 @@ export default {
       })
     },
     goSearch(){
+      let data1 = []
+      let data2 = []
+      let data3 = []
+      let data4 = []
       this.chLoadingShow()
       fetchList({
         CreateDTime_Start:this.q_datestart,
@@ -226,8 +286,77 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
+        this.tableItems = [...[]]
+        this.Lv1Chart.chartdata.datasets = [...[]]
+        this.Lv1Chart.chartdata.labels = [...[]]
         this.tableItems = res.data.LocationList
         console.log("邊坡歷史紀錄: ", this.tableItems);
+        let hour = '0';// 上一筆小時數字為
+        // this.tableItems = this.tableItems.splice(0, 80)
+        let tempArr = [];
+        this.tableItems = this.tableItems.reverse()
+        this.tableItems.forEach(element=>{
+          // 取出這一筆小時數字
+          let newHour = element.DataDTime.substr(element.DataDTime.indexOf(' ')+1, 2);
+          
+          switch(element.LocID){
+            case 'TI-01X':
+              data1.push(element.Value)
+              tempArr.push(element.DataDTime)
+              // this.Lv1Chart.chartdata.labels.push(element.DataDTime) // 塞時間
+              break;
+            case 'TI-01Y':
+              data2.push(element.Value)
+              break;
+            case 'TI-02X':
+              data3.push(element.Value)
+              break;
+            case 'TI-02Y':
+              data4.push(element.Value)
+              break;
+          }
+        })//forEach end
+        this.Lv1Chart.chartdata.labels = tempArr.map((e, i)=> i % Math.ceil(tempArr.length / 18) == 0? e : '')
+
+        this.Lv1Chart.chartdata.datasets.push({
+          label:'TI-01X',
+          // pointStyle: "circle",
+          pointRadius: 0,
+          borderColor: "red",
+          // backgroundColor: "white",
+          data: data1,
+          lineTension: 0
+        })
+        this.Lv1Chart.chartdata.datasets.push({
+          label:'TI-01Y',
+          // pointStyle: "circle",
+          pointRadius: 0,
+          borderColor: "blue",
+          // backgroundColor: "white",
+          data: data2,
+          lineTension: 0
+        })
+        this.Lv1Chart.chartdata.datasets.push({
+          label:'TI-02X',
+          // pointStyle: "circle",
+          pointRadius: 0,
+          borderColor: "green",
+          // backgroundColor: "white",
+          data: data3,
+          lineTension: 0
+        })
+        this.Lv1Chart.chartdata.datasets.push({
+          label:'TI-02Y',
+          // pointStyle: "circle",
+          pointRadius: 0,
+          borderColor: "yellow",
+          // backgroundColor: "white",
+          data: data4,
+          lineTension: 0
+        })
+        this.Lv1Chart.componentKey ++
+        console.log("chartdata: ", this.Lv1Chart.chartdata);
+
       }).catch( err => {
         console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
