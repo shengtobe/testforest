@@ -443,9 +443,9 @@ export default {
                     //
 
                     if (obj.MODE == 'dev') {
-                        wsIP = `${obj.DEV_WS_HOST}:${obj.DEV_WS_PORT}/Notify`
+                        wsIP = `${obj.DEV_WS_HOST}:${obj.DEV_WS_PORT}/global/inner/alarmmsg`
                     } else if (obj.MODE == 'prod') {
-                        wsIP = `${obj.PROD_WS_HOST}:${obj.PROD_WS_PORT}/Notify`
+                        wsIP = `${obj.PROD_WS_HOST}:${obj.PROD_WS_PORT}/global/inner/alarmmsg`
                     }
                     else{
                     }
@@ -453,7 +453,7 @@ export default {
                     wsc.onopen = function () {
                         console.log("connected")
                     }
-                    wsc.onclose = function () {
+                    wsc.onclose = function (e) {
                         console.log("closed")
                     }
                     wsc.onmessage = function (e) {
@@ -477,6 +477,7 @@ export default {
                             }
                         }
                     }
+                    this.ws = wsc
                 })
             } catch(err) {
                 console.log(err)
