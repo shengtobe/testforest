@@ -4,7 +4,7 @@
   <SystemLoading />
   <SystemViewDialog />
   <MessageBar />
-
+  
   <!-- app-bar -->
   <v-app-bar app clipped-left :color="mainColor" dense dark
     id="main-bar"
@@ -270,6 +270,29 @@
   <v-main>
     <router-view></router-view>
   </v-main>
+
+  <!-- 雨量/邊坡 監測警告通知 -->
+  <v-overlay
+    absolute
+    :value="wsShow.overlay"
+    z-index="65535"
+  >
+    <v-snackbar
+        :timeout="-1"
+        :value="true"
+        color="red"
+        absolute
+        centered
+    >
+        <h2>
+            <v-icon dark @click="wsShow.overlay=false">mdi-close</v-icon>
+            {{ wsShow.title }}
+        </h2>
+        <span>
+            {{ wsShow.memo }}
+        </span>
+    </v-snackbar>
+  </v-overlay>
 </v-app>
 </template>
 <style>
@@ -307,6 +330,12 @@ export default {
         titleColor2: 'amber lighten-4',
         titleColor2_3: 'light-green accent-1',
         titleColor3: 'red lighten-4',
+        ws: null,
+        wsShow: {
+            overlay: false,
+            title: '',
+            memo: '',
+        }
     }),
     computed: {
         ...mapState ('user', {
@@ -375,7 +404,7 @@ export default {
                 this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
                 //
                 this.saveFuncIdList(UData.FunctionsAuthorData)
-
+                this.createWSC()
 
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
@@ -385,6 +414,74 @@ export default {
                 console.log(e);
             }
         },
+        createWSC() {
+            let wsc = this.ws
+            const that = this
+            let obj = {}
+            let wsIP = ''
+            try {
+                fetch('/env.txt')
+                .then(res => res.text())
+                .then((res) =>{
+                    res.replace("\r\n", "\n")  // 統一換行字串
+                    let arr = res.split("\n")
+                    
+                    let dot = 0
+                    let left = ''
+                    let right = ''
+
+                    arr.forEach(item => {
+                        if (/^#.+/.test(item)) return  // 開頭為 # 的為備註，不處理
+
+                        dot = item.indexOf('=')
+                        if(dot > 0) {
+                            left = item.substr(0, dot).trim()
+                            right = item.substr(dot+1).trim()
+                            obj[left] = right
+                        }
+                    })
+                    //
+
+                    if (obj.MODE == 'dev') {
+                        wsIP = `${obj.DEV_WS_HOST}:${obj.DEV_WS_PORT}/Notify`
+                    } else if (obj.MODE == 'prod') {
+                        wsIP = `${obj.PROD_WS_HOST}:${obj.PROD_WS_PORT}/Notify`
+                    }
+                    else{
+                    }
+                    wsc = new WebSocket(wsIP)
+                    wsc.onopen = function () {
+                        console.log("connected")
+                    }
+                    wsc.onclose = function () {
+                        console.log("closed")
+                    }
+                    wsc.onmessage = function (e) {
+                        var data = JSON.parse(e.data)
+                        console.log(data)
+                        const aType = [
+                            {
+                                value: '1',
+                                text: '雨量通知'
+                            },
+                            {
+                                value: '2',
+                                text: '邊坡通知'
+                            },
+                        ]
+                        if(data.Type=='1'||(data.Type=='2'&&data.IDArray.findIndex(e=>e.ID==that.userData.UserId)>-1)){
+                            that.wsShow = {
+                                overlay: true,
+                                title: aType.find(e=>e.value==data.AlarmType).text,
+                                memo: data.Msg,
+                            }
+                        }
+                    }
+                })
+            } catch(err) {
+                console.log(err)
+            }
+        }
     },
     created() {
         
@@ -395,5 +492,8 @@ export default {
         // }
         this.checkLocalStorage()
     },
+    beforeDestroy() {
+        this.ws.close()
+    }
 }
 </script>
