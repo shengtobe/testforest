@@ -183,10 +183,13 @@ export default {
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
+                // KeyName: 'SMS_ImproveProc',  // DB table
                 KeyName: 'SMS_EndangerProc',  // DB table
                 KeyItem: [
                     // { tableColumn: 'DeviceDepart', columnValue: this.depart },  // 管控單位
                     // { tableColumn: 'DeviceTitle', columnValue: this.subject },  // 措施簡述
+                    { tableColumn: 'AccidentCode', columnValue: this.id },  // 措施簡述
+                    // { tableColumn: 'ProcCode', columnValue: this.id },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'PolicyCode',
@@ -198,7 +201,15 @@ export default {
                     'Remark',
                 ],
             }).then(res => {
+                // this.tableItems = JSON.parse(res.data.order_list)
                 this.tableItems = JSON.parse(res.data.order_list)
+                let HookArr = res.data.CheckedProcCode
+                // let HookArr = ['ARCO01520210707030', 'ARCO01520210707031']
+                HookArr.forEach(element => {
+                    this.selected.push(this.tableItems.find(ele => ele.ProcCode == element))
+                    this.tableItems.splice(this.tableItems.map(e => e.ProcCode).indexOf(element), 1)
+                });
+                this.tableItems = [...this.selected, ...this.tableItems]
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -216,13 +227,12 @@ export default {
                 alert('請選擇要連結的控制措施')
                 return
             }
-
             this.chLoadingShow()
 
             procUpdateData({
                 AccidentCode: this.id,  // 事故事件編號
                 ProcTitle: this.summary,  // 改善措施摘要
-                ProcCode: this.selected,  //改善措施編號
+                ProcCode: this.selected.map(item => item.ProcCode ),  //改善措施編號
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {

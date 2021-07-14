@@ -520,6 +520,10 @@ export default {
         let Lv1Temp = groupBy(res.data.DataListLv1,'Code')
         let Lv2Temp = groupBy(res.data.DataListLv2,'Code')
         let Lv3Temp = groupBy(res.data.DataListLv3,'Code')
+        console.log("res.data.DataListLv1: ", res.data.DataListLv1);
+        console.log(">>>>");
+        console.log("Lv1Temp: ", Lv1Temp);
+
         const Lv1pointStyle = [
           {
             pointStyle:'circle',
@@ -549,6 +553,8 @@ export default {
             lineTension: 0
           })
         })
+        console.log("Lv1Chart.chartdata: " , this.Lv1Chart.chartdata);
+        console.log("Lv1Chart.options: " , this.Lv1Chart.options);
         const Lv2pointStyle = [
           {
             pointStyle:'rectRot',
@@ -765,6 +771,6 @@ export default {
   },
   mounted() {
     this.dataInit()
-  }
+  },
 }
 </script>

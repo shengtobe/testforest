@@ -312,6 +312,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import { radioQueryList } from '@/apis/materialManage/radioManage'
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -495,7 +496,7 @@ export default {
     reset() {
       this.input = { ...this.defaultIpt };
     },
-    // 更換頁數
+    // 初始化新增/編輯視窗
     initInput() {
       console.log("init create window form");
       this.CheckDay = getTodayDateString();
@@ -508,6 +509,46 @@ export default {
       this.mainLocation4 = "";
       this.mainLocation5 = "";
       this.addItem.content = "";
+      // 更新 無線電清單
+      const that = this
+      this.chLoadingShow()
+      radioQueryList({
+        DepartCode: '', 
+        Man: '',
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          //that.chMsgbar({ success: true, msg: '送出成功' })
+          let tempArr = [...res.data.query_list]
+          let tempArr2 = [];
+          if(tempArr.length > 0){
+            this.MachineID = [...[]]
+            tempArr.forEach(element => {
+              if(element.ManID == this.userData.UserId){
+                tempArr2.push(element.SerialNo)
+              }
+            });
+            this.MachineID = ['', ...tempArr2]
+          }
+          
+          // that.MachineID = that.tableItem
+          // that.tableItem.forEach(function(e,i){
+          //   e.id=i+1
+          //   var indexFind = that.typeData.findIndex((ele) => ele.key == e.Type)
+          //   e.Type = that.typeData[indexFind].value
+          // })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          that.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，無線電清單查詢失敗' })
+      }).finally(() => {
+        that.chLoadingShow()
+        // that.tableItem = decodeObject(that.tableItem)
+      })
+      // 更新 無線電清單 END
     },
     newOne() {
       this.readonly = false;

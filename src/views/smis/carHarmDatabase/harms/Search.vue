@@ -384,6 +384,12 @@ export default {
                                         this.tableItems.push(element)
                                     }
                                 }
+                                //篩 可能的危害間接原因
+                                if(ele == 'EndangerIndirect'){
+                                    if((element.EndangerIndirect.indexOf(this.keyword)) > -1){
+                                        this.tableItems.push(element)
+                                    }
+                                }
                             }
                         });
                         

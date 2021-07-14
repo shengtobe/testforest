@@ -2,7 +2,7 @@
 
 export const MonitorRouter = [
     {
-        linkText: '顛坡監控',
+        linkText: '邊坡監控',
         path: '/monitor/slope-monitor',
         component: () => import('@/views/monitor/slopeMonitor.vue')
     },

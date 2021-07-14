@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">通報編號：{{ routeId }}</h2>
+    <h2 class="mb-4 label-title">通報編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
     <TopBasicTable :items="topItems" />
@@ -251,7 +251,8 @@ export default {
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow()
-            this.routeId = this.$route.params.id
+            // this.routeId = this.$route.params.id
+            this.routeId = this.id
 
             // 新增測試用資料
             // setTimeout(() => {
@@ -399,6 +400,7 @@ export default {
     },
     created() {
         // this.fetchData()
+        console.log("DDD this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
     },
 }

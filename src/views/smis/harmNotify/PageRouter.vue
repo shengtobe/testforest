@@ -49,7 +49,7 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.ReportStatus  // 狀態
-                        console.log("status: ", this.status);
+                        console.log("status: ", res.data.ReportStatus);
                         // 組合發現地點
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
                         

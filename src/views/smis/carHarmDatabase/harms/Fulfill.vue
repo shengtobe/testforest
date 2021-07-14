@@ -17,7 +17,7 @@
             <v-card flat>
                 <v-data-table
                     :headers="headers"
-                    :items="tableItems"
+                    :items="tableItems0"
                     disable-sort
                     disable-filtering
                     hide-default-footer
@@ -54,7 +54,7 @@
         </v-col>
 
         <!-- 已選的控制措施 -->
-        <ShowControlsTable :tableItems="tableItems" />
+        <ShowControlsTable :tableItems="tableItems0" />
 
         
 
@@ -128,6 +128,56 @@
                 </v-col>
             </v-row>
         </v-col> -->
+
+        <!-- 表格資料 -->
+        <v-col cols="12" class="text-center mt-2 mb-1" v-if="tableItems.length > 0"/>
+        <v-col cols="12" v-if="tableItems.length > 0">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-2">mdi-alarm-light</v-icon>危害通報
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headersNotify"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.ReportStatus="{ item }">
+                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                        </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            :loading="isLoading"
+                            @click="viewPage(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <!-- 頁碼 -->
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2 btn-close"
@@ -274,8 +324,10 @@ import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import ShowControlsTable from '@/views/smis/carHarmDatabase/harms/ShowControlsTable.vue'
+import { harmNotifyStatus } from '@/assets/js/smisData'
 import BottomTable from '@/components/BottomTable.vue'
 import { deleteData, sendCheckData, sendPassData, sendRetuenData, sendResetData, sendCloseData} from '@/apis/smis/carHarmDatabase/harms'
+import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
     props: ['itemData'],
@@ -284,8 +336,10 @@ export default {
         isShowBtn: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
+        statusOpts: harmNotifyStatus,  // 狀態下拉選單
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        tableItems0: [],  // 表格資料
         tableItems: [],  // 表格資料
         evidenceGroup: [],
         controlsName: [],
@@ -298,7 +352,15 @@ export default {
             { text: '證據', value: 'file_path', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
             { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
         ],
+        headersNotify: [  // 表格顯示的欄位
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
         evidences: [],  // 控制措施證據
+        pageOpt: { page: 1 },  // 目前頁數
         dialogShow: false,  // 控制措施證據 dialog 是否顯示
         isLoading: false,  // 是否讀取中
         dialog: false,  // 退回 dialog 是否顯示
@@ -350,7 +412,8 @@ export default {
             this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.tableItems = [ ...obj.controls ]  // 控制措施
+            this.tableItems0 = [ ...obj.controls ]  // 控制措施
+            this.pageOpt.page = 1  // 頁碼初始化
             //tableItems是多個控制措施
             this.files = [];
             //敲門
@@ -371,7 +434,7 @@ export default {
             }).finally(() => {
             })
             //
-            this.tableItems.forEach(control => {
+            this.tableItems0.forEach(control => {
                 let aa = {FileFullPath: control.regul_file_path, FileName: control.regul_file_path_name, FileType: (control.regul_file_path_name.split('.'))[1]}
                 this.files.push(aa)
                 // this.files.push(control.map(item => ({
@@ -398,6 +461,48 @@ export default {
             });
             
             this.version.nowId = this.version.lasterId = obj.versionId  // 初始化版本
+            // 危害通報要資料
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportData',  // DB table
+                IsFirstLoad: 'F',
+                KeyItem: [
+                    { tableColumn: 'EndangerCode', columnValue: this.id },  // 通報日期(起)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerID',
+                    'EndangerFindDate',
+                    'PeopleName',
+                    'ReportTitle',
+                    'ReportStatus',
+                ],
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    console.log("res.data: ", res.data);
+                    this.tableItems = JSON.parse(res.data.order_list)
+                    this.tableItems.forEach(element => {
+                        for(let ele in element){
+                            if(element[ele] == null){
+                                element[ele] = '';
+                            }
+                        }
+                    });
+                }
+                
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+            })
+        },
+        // 檢視內容
+        viewPage(item) {
+            this.$router.push({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
         },
         // 退回
         withdraw() {
@@ -547,7 +652,7 @@ export default {
                     },
                 ]
 
-                this.verTableItems = [ ...arr ]
+                this.verTableItems0 = [ ...arr ]
                 this.chLoadingShow()
                 this.verDialogShow = true
             }, 1000)

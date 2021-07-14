@@ -38,7 +38,7 @@
                                     >
                                         {{ (finishDeath)? '已填寫' : '未填寫' }}
                                     </v-btn>
-                                    人員傷亡名單
+                                    {{ (finishDeath == true && hurt_people_count == 0)? '無人員傷亡' : '人員傷亡名單' }}
                                 </v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
@@ -64,6 +64,57 @@
             </v-card>
         </v-col>
 
+        <v-col cols="12" class="text-center mt-2 mb-8" v-if="tableItems.length > 0"/>
+
+        <!-- 表格資料 -->
+        <v-col cols="12" v-if="tableItems.length > 0">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-2">mdi-alarm-light</v-icon>危害通報
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.ReportStatus="{ item }">
+                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                        </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            :loading="isLoading"
+                            @click="viewPage(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <!-- 頁碼 -->
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
@@ -84,6 +135,11 @@
             </template>
         </v-col>
     </v-row>
+
+    <v-row class="px-2 mb-8">
+        
+    </v-row>
+    
 </v-container>
 </template>
 
@@ -92,10 +148,12 @@ import { mapState, mapActions } from 'vuex'
 import { canInUpdate } from '@/apis/access'
 import { getNowFullTime, knock } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
+import { harmNotifyStatus } from '@/assets/js/smisData'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import OtherInfoShow from '@/views/smis/carAccidentEvent/OtherInfoShow.vue'
 import { applyData, deleteData } from '@/apis/smis/carAccidentEvent'
+import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
     props: ['itemData'],
@@ -105,11 +163,22 @@ export default {
         done: false,  // 是否完成頁面操作
         files: [],  // 上傳的檔案
         finishDeath: false,  // 是否完成人員傷亡名單
+        hurt_people_count: null, // 傷亡人數
         finishImprove: false,  // 是否完成改善措施
+        statusOpts: harmNotifyStatus,  // 狀態下拉選單
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
+        tableItems: [],  // 表格資料
         otherItems: [],  // 其他資訊
         notifyLinks: [],  // 連結的通報
+        pageOpt: { page: 1 },  // 目前頁數
+        headers: [  // 表格顯示的欄位
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
     }),
     components: {
         TopBasicTable,
@@ -132,6 +201,14 @@ export default {
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
+        // 檢視內容
+        viewPage(item) {
+            this.$router.push({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
         // 初始化資料
         setShowData(obj) {
             
@@ -142,6 +219,9 @@ export default {
             this.files = [ ...obj.FileCount ]  // 檔案附件
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
+            this.hurt_people_count = obj.hurt_people_count
+            console.log("finishDeath: ", this.finishDeath);
+            console.log("hurt_people_count: ", this.hurt_people_count);
             canInUpdate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
@@ -152,6 +232,39 @@ export default {
                 }
             }).catch( err => {
                 console.log(err)
+            }).finally(() => {
+            })
+            this.pageOpt.page = 1  // 頁碼初始化
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportData',  // DB table
+                IsFirstLoad: 'F',
+                KeyItem: [
+                    { tableColumn: 'AccidentCode', columnValue: this.id },  // 通報日期(起)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerID',
+                    'EndangerFindDate',
+                    'PeopleName',
+                    'ReportTitle',
+                    'ReportStatus',
+                ],
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    this.tableItems = JSON.parse(res.data.order_list)
+                    this.tableItems.forEach(element => {
+                        for(let ele in element){
+                            if(element[ele] == null){
+                                element[ele] = '';
+                            }
+                        }
+                    });
+                }
+                
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
 
