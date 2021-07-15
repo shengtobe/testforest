@@ -469,7 +469,7 @@ export default {
                                 text: '邊坡通知'
                             },
                         ]
-                        if(data.Type=='1'||(data.Type=='2'&&data.IDArray.findIndex(e=>e.ID==that.userData.UserId)>-1)){
+                        if(data.Type=='1'||(data.Type=='2'&&data.IDArray.findIndex(e=>e==that.userData.UserId)>-1)){
                             that.wsShow = {
                                 overlay: true,
                                 title: aType.find(e=>e.value==data.AlarmType).text,
