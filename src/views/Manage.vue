@@ -161,7 +161,9 @@
                                     <strong class="black--text">行車安全績效</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance">行車安全績效</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance">表單填報</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance/analysis">統計趨勢圖</v-list-item>
                             </v-list>
                         </v-card>
                     </v-col>

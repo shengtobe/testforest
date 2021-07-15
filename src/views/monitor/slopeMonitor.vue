@@ -2,10 +2,10 @@
   <v-container style="max-width: 1200px" class="label-header">
     <h2 class="label-title mb-4">邊坡監測</h2>
     <v-row>
-        <v-col cols="12" sm="2" class="info--text" >
+        <v-col cols="12" sm="12" class="info--text" >
             <h2 class="label-title" align="center"> 即時資料</h2>
         </v-col>
-        <v-col cols="12" sm="10" >
+        <v-col cols="12" sm="12" >
             <v-spacer />
             <v-simple-table
               dense
@@ -44,7 +44,7 @@
                   <tr class="lime lighten-4">
                     <th>燈號</th>
                     <td v-for="i in toptable.LocationList.length" :key="'Light'+i" class="text-center">
-                      <img :src="'/images/light-'+getLightColor(toptable.LocationList[i-1].Status)+'.svg'">
+                      <img class="mt-1" :src="'/images/light-'+getLightColor(toptable.LocationList[i-1].Status)+'.svg'">
                     </td>
                   </tr>
                   <tr class="lime lighten-5">
@@ -68,9 +68,10 @@
 
     <v-row style="margin-top:-2%">
       <!-- 控制措施 -->
-      <v-col cols="12" sm="2" class="info--text">
+      <v-col cols="12" sm="12" class="info--text">
             <h2 class="label-title" align="center"> 歷史資料</h2>
         </v-col>
+        <v-col cols="12" sm="1"/>
       <v-col cols="12" sm="3">
         <DateSelect label="查詢日期(起)" v-model="q_datestart" key="dateStart" :showIcon="true"/>
       </v-col>
@@ -92,12 +93,11 @@
     </v-row>
     <!-- chart -->
     <v-row>
-        <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px"/>
-        <v-col cols="12" sm="10" class="indigo--text" style="margin-left:-5px">
+        <v-col cols="12" sm="12" class="indigo--text" style="margin-left:-5px">
             <ChartLine :chartdata="Lv1Chart.chartdata" :options="Lv1Chart.options" :key="Lv1Chart.componentKey"/>
         </v-col>
-        <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px"/>
-        <v-col cols="12" sm="10">
+        <!-- <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px"/> -->
+        <v-col cols="12" sm="12">
             <v-spacer/>
             <v-card>
                 <v-data-table
@@ -316,7 +316,7 @@ export default {
               break;
           }
         })//forEach end
-        this.Lv1Chart.chartdata.labels = tempArr.map((e, i)=> i % Math.ceil(tempArr.length / 18) == 0? e : '')
+        this.Lv1Chart.chartdata.labels = tempArr.map((e, i)=> i % Math.ceil(tempArr.length / 24) == 0? e : '')
 
         this.Lv1Chart.chartdata.datasets.push({
           label:'TI-01X',
