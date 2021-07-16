@@ -37,7 +37,7 @@
               ></v-select>
             </v-col>
             <v-col cols="6" class="d-flex text-left align-center">
-              <v-btn class="btn-memo" dark large :to="`/smis/car-safe-performance/${reasonSelect.location}/key-equip/${reasonSelect.equip}/key-analysis/${reasonSelect.eqName}`" :disabled="reasonSelectEmpty">
+              <v-btn class="btn-memo" dark large @click="anClick" :disabled="reasonSelectEmpty">
                 趨勢分析
               </v-btn>
             </v-col>
@@ -66,6 +66,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
   data: () => ({
     yearSelect:[],
+    reasonSelectEmpty: true,
     Chart:{
       componentKey: 1,
       chartdata: {
@@ -226,9 +227,9 @@ export default {
     locEquip: function() {
       return [{value:'',text:'---請選擇---'},...this.allReasonList?.find(ele=>ele.LocKey == this.reasonSelect.location)?.EquipList?.map(e=>({ value: e.EquipKey , text: e.EquipName}))||[]]
     },
-    reasonSelectEmpty: function() {
-      return !(this.reasonSelect.location||this.reasonSelect.equip)
-    }
+    // reasonSelectEmpty: function() {
+    //   return !(this.reasonSelect.location||this.reasonSelect.equip)
+    // }
   },
   methods: {
     ...mapActions('system', [
@@ -236,6 +237,16 @@ export default {
       'chLoadingShow',  // 切換 loading 圖顯示
       'chViewDialog',  // 檢視內容 dialog
     ]),
+    anClick(){
+      console.log("disable: ", this.reasonSelectEmpty)
+      if(this.reasonSelect.location != '' && this.reasonSelect.equip != '' && this.reasonSelect.eqName != ''){
+        console.log("reasonSelect.location: ", this.reasonSelect.location);
+        console.log("reasonSelect.equip: ", this.reasonSelect.equip);
+        console.log("reasonSelect.eqName: ", this.reasonSelect.eqName);
+        this.$router.push({ path: `/smis/car-safe-performance/${this.reasonSelect.location}/key-equip/${this.reasonSelect.equip}/key-analysis/${this.reasonSelect.eqName}` })
+      }
+      // :to="`/smis/car-safe-performance/${reasonSelect.location}/key-equip/${reasonSelect.equip}/key-analysis/${reasonSelect.eqName}`"
+    },
     dataInit() {
       this.Chart.componentKey ++
       keyEquipList({
@@ -255,6 +266,7 @@ export default {
       })
     },
     initChart() {
+      this.reasonSelect.equip = ''
       let today = new Date
       let thisYear = today.getFullYear()
       let thisMonth = today.getMonth() + 1
@@ -265,7 +277,6 @@ export default {
         EquipCodeLv1: this.reasonSelect.location,
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
-          console.log(res.data)
           this.Chart.chartdata.datasets = this.Chart.defaultLine
           if(res.data.MKBFList.length > 0){
             res.data.MKBFList.forEach(e=>{
@@ -289,9 +300,11 @@ export default {
         console.error('err',err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       })
+      this.reasonSelectEmpty = (this.reasonSelect.location == '' ||this.reasonSelect.equip == '')
     },
     geteqName() {
       this.reasonSelect.eqName = this.locEquip.find(e=>this.reasonSelect.equip==e.value).text
+      this.reasonSelectEmpty = (this.reasonSelect.location == '' ||this.reasonSelect.equip == '')
     }
   },
   mounted() {
