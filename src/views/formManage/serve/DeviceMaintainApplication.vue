@@ -261,8 +261,8 @@
                         </v-col>
                         <v-col cols="12">
                           <h3>施工地點：站外</h3>
-                          <input class="newinput widtha" type="number" v-model="BgStation"/>站至
-                          <input class="newinput widtha" type="number" v-model="EndStation"/>站間
+                          <input class="newinput widtha" v-model="BgStation"/>站至
+                          <input class="newinput widtha" v-model="EndStation"/>站間
                           <br />
                           <input class="newinput widthb" type="number" v-model="BgKm"/>公里
                           <input class="newinput widthb" type="number" v-model="BgM"/>公尺 至

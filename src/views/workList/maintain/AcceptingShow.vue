@@ -75,7 +75,7 @@
                         <v-divider></v-divider>
 
                         <p class="py-2 text-center">
-                            總金額： <span class="red--text">{{ new Intl.NumberFormat().format(totalMoney) }}</span>
+                            總工時： <span class="red--text">{{ new Intl.NumberFormat().format(totalMoney) }}</span>
                         </p>
                     </template>
                 </v-data-table>
