@@ -4,6 +4,7 @@
       //ifLV5:是否也要選工作項? true為是，false為否
       nowEqCode:現在已選擇好的設備報修碼，預設空
       nowWorkCode:現在已選擇好的工作項，預設空
+      rtnStartLv:從第幾層開始回傳(可選，預設和toLv相同)
       toLv: 顯示到第幾層，同時也在第幾層回傳，預設5(到工作項)
       needIcon: 是否顯示icon，預設否
       disableToLv: 第幾層前隱藏，需要先傳入值，預設0
@@ -12,6 +13,8 @@
       getWorkCode:回傳選擇的工作項
       getEqName:回傳設備報修碼中文
       getWorkName:回傳工作項中文
+      getEqCh:回傳設備報修碼純中文
+      getWorkCh:回傳設備報修碼純中文
 -->
 <template>
   <v-row class="px-2 mb-6 label-header">
@@ -177,6 +180,8 @@
       newWorkCode: '',   //工作項目
       newEqName: '',
       newWorkName: '',
+      newEqCh: '',
+      newWorkCh: '',
     }),
     //渲染完成後
     mounted: function() {
@@ -489,21 +494,27 @@
         await that.$emit('getEqCode',that.newEqCode)
         if(that.toLv >= 1){
           that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + ((that.toLv == 1)?'':'-')
+          that.newEqCh = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).EquipName + ((that.toLv == 1)?'':'-')
         }
         if(that.toLv >= 2){
           that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + ((that.toLv == 2)?'':'-')
+          that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).EquipName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).EquipName) + ((that.toLv == 2)?'':'-')
         }
         if(that.toLv >= 3){
           that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + ((that.toLv == 3)?'':'-')
+          that.newEqCh += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).EquipName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).EquipName:'') + ((that.toLv == 3)?'':'-')
         }
         if(that.toLv >= 4){
           that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).FullShowName
+          that.newEqCh += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).EquipName
         }
         await that.$emit('getEqName',that.newEqName)
+        await that.$emit('getEqCh',that.newEqCh)
       },
       async _returnWorkCode() {
         await this.$emit('getWorkCode',this.newWorkCode)
         await this.$emit('getWorkName',this.eqCodes.eqCodeListLv5.find(ele => ele.EquipCode == this.selectItem.Lv5).FullShowName)
+        await this.$emit('getWorkCh',this.eqCodes.eqCodeListLv5.find(ele => ele.EquipCode == this.selectItem.Lv5).EquipName)
       }
     },
     //過濾
