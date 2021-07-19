@@ -1,9 +1,10 @@
 <template>
 <v-container style="max-width: 1200px;">
-    <h2 class="mb-4">行車安全績效</h2>
+    <h2 class="mb-4"> </h2>
     <v-row class="px-2 mb-8">
         <!-- 表單填報 -->
-        <v-col cols="12" md="6" class="mb-8">
+        <v-col cols="12" md="2" class="mb-8"/>
+        <v-col cols="12" md="8" class="mb-8">
             <v-card class="mx-auto">
                 <v-card-title class="green accent-1 py-2 px-3">
                     <v-icon class="mr-2">mdi-pen</v-icon>
@@ -33,9 +34,10 @@
                 </v-list>
             </v-card>
         </v-col>
+        <v-col cols="12" md="2" class="mb-8"/>
 
         <!-- 趨勢圖 -->
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" v-if="false">
             <v-card class="mx-auto">
                 <v-card-title class="yellow lighten-3 py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>

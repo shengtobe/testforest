@@ -200,7 +200,7 @@
                 :to="`/smis/car-safeinfo/info/${this.routeId}/show`"
             >回上層</v-btn>
 
-            <v-btn dark class="btn-add"
+            <v-btn dark class="btn-add" v-if="saveBtnShow"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
@@ -234,6 +234,7 @@ import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupda
 export default {
     data: () => ({
         getOrg_objneed: {},
+        saveBtnShow: true, // 送出按鈕顯示
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         ipt: {},
@@ -530,28 +531,29 @@ export default {
                 console.log(RParr)
                 console.log(RCarr)
                 console.log(JParr)
-                    safetyinfocreate({
-                        ClientReqTime: getNowFullTime(),  // client 端請求時間
-                        OperatorID: this.userData.UserId,  // 操作人id
-                        InfoTitle: this.ipt.title, //通報主題
-                        InfoContent: this.ipt.desc,  //發布內容
-                        RecPeople: RParr, 
-                        RecCopy: RCarr, 
-                        JoinPeople: JParr, 
-                        FileCount: this.ipt.files,  // 附件檔案          
-                    }).then(res => {
-                        if (res.data.ErrorCode == 0) {
-                            this.chMsgbar({ success: true, msg: '建立成功'})
-                            this.status = '1'  // 狀態改為已回覆
-                        } else {
-                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                            this.$router.push({ path: '/error' })
-                        }
-                    }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '建立成功'})
-                    }).finally(() => {
-                        this.chLoadingShow()
-                    })
+                safetyinfocreate({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    InfoTitle: this.ipt.title, //通報主題
+                    InfoContent: this.ipt.desc,  //發布內容
+                    RecPeople: RParr, 
+                    RecCopy: RCarr, 
+                    JoinPeople: JParr, 
+                    FileCount: this.ipt.files,  // 附件檔案          
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '建立成功'})
+                        this.status = '1'  // 狀態改為已回覆
+                        this.saveBtnShow = false
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '建立成功'})
+                }).finally(() => {
+                    this.chLoadingShow()
+                })
 
                 // 測試用資料
                 // setTimeout(() => {
