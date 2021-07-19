@@ -100,7 +100,7 @@
             </v-btn>
 
             <v-btn dark large class="mr-3 mb-3 btn-add"
-                to="/smis/car-safeinfo/info/add"
+                to="/smis/car-safeinfo/info/add" v-if="false"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>

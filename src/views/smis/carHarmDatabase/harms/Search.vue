@@ -349,7 +349,8 @@ export default {
                         KeyName: 'SMS_EndangerData',  // DB table
                         KeyItem: [
                             // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
-                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                            { tableColumn: 'EndangerDesp', columnValue: this.keyword },  // 危害說明 
+                            // { tableColumn: 'EndangerReason', columnValue: this.keyword },  // 危害直接成因 
                         ],
                         QyName: [    // 欲回傳的欄位資料
                             'EndangerCode',
@@ -364,38 +365,38 @@ export default {
                         ],
                     }).then(res => {
                         // this.tableItems = JSON.parse(res.data.order_list)
-                        this.tempItems = JSON.parse(res.data.order_list)
-                        this.tableItems = [...[]];
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        // this.tableItems = [...[]];
                         console.log("this.tempItems: ", this.tempItems);
-                        this.tempItems.forEach(element => {
-                            for(let ele in element){
-                                if(element[ele] == null){
-                                    element[ele] = '';
-                                }
-                                //篩 危害說明 
-                                if(ele == 'EndangerDesp'){
-                                    if((element.EndangerDesp.indexOf(this.keyword)) > -1){
-                                        this.tableItems.push(element)
-                                        break
-                                    }
-                                }
-                                //篩 危害直接成因
-                                if(ele == 'EndangerReason'){
-                                    if((element.EndangerReason.indexOf(this.keyword)) > -1){
-                                        this.tableItems.push(element)
-                                        break
-                                    }
-                                }
-                                //篩 可能的危害間接原因
-                                if(ele == 'EndangerIndirect'){
-                                    if((element.EndangerIndirect.indexOf(this.keyword)) > -1){
-                                        this.tableItems.push(element)
-                                        break
-                                    }
-                                }
+                        // this.tempItems.forEach(element => {
+                        //     for(let ele in element){
+                        //         if(element[ele] == null){
+                        //             element[ele] = '';
+                        //         }
+                        //         //篩 危害說明 
+                        //         if(ele == 'EndangerDesp'){
+                        //             if((element.EndangerDesp.indexOf(this.keyword)) > -1){
+                        //                 this.tableItems.push(element)
+                        //                 break
+                        //             }
+                        //         }
+                        //         //篩 危害直接成因
+                        //         if(ele == 'EndangerReason'){
+                        //             if((element.EndangerReason.indexOf(this.keyword)) > -1){
+                        //                 this.tableItems.push(element)
+                        //                 break
+                        //             }
+                        //         }
+                        //         //篩 可能的危害間接原因
+                        //         if(ele == 'EndangerIndirect'){
+                        //             if((element.EndangerIndirect.indexOf(this.keyword)) > -1){
+                        //                 this.tableItems.push(element)
+                        //                 break
+                        //             }
+                        //         }
                                 
-                            }
-                        });
+                        //     }
+                        // });
                         
 
                     }).catch(err => {

@@ -139,7 +139,9 @@
                                     <strong class="black--text">行車安全資訊</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">安全資訊</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info/add">新增安全資訊</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">查詢安全資訊</v-list-item>
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
                                 <v-divider />

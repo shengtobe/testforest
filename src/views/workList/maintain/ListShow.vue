@@ -26,12 +26,12 @@
                     @click="deleteItem"
                 >刪除</v-btn>
 
-                <v-btn dark class="ma-2 btn-memo" v-if="isShowBtn"
+                <v-btn dark class="ma-2 btn-memo" v-if="isShowBtn2"
                     color="amber darken-1"
                     @click="closeWork"
                 >結案</v-btn>
 
-                <v-btn dark class="ma-2 btn-add" v-if="isShowBtn"
+                <v-btn dark class="ma-2 btn-add" v-if="isShowBtn2"
                     color="success"
                     :to="`/worklist/maintain/${workNumber}/newWork`"
                 >派工</v-btn>
@@ -61,6 +61,7 @@ export default {
         workNumber: '',  // 工單編號
         finishMan: '',
         isShowBtn: false,
+        isShowBtn2: false,
         done: false,  // 是否完成頁面操作
         newDispatcher: '',  // 轉單後的新派工人
         topItems: [],  // 上面的欄位
@@ -92,6 +93,7 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.isShowBtn = obj.CreatorID == this.userData.UserId || obj.DispatchID == this.userData.UserId
+            this.isShowBtn2 = obj.DispatchID == this.userData.UserId
             console.log(obj.CreatorID + '==' + this.userData.UserId + '||' + obj.DispatchID + '==' + this.userData.UserId);
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料

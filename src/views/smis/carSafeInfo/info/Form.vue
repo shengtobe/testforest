@@ -13,7 +13,8 @@
             <v-text-field
                 v-model.trim="ipt.title"
                 solo
-                placeholder="請輸入關鍵字"
+                placeholder="請輸入通報主題"
+                :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
             ></v-text-field>
         </v-col>
 

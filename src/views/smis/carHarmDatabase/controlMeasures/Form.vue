@@ -56,7 +56,7 @@
         <v-col cols="12" class="mb-5">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>規章文件
-                <span class="red--text">*</span>
+                <!-- <span class="red--text">*</span> -->
             </h3>
             <v-card>
                 <v-data-table
@@ -112,8 +112,8 @@
                     </template>
                 </v-data-table>
             </v-card>
-            <span class="error--text" v-if="ipt.docId == ''">*你尚未選擇安全文件!</span>
-            <span v-else>
+            <!-- <span class="error--text" v-if="ipt.docId == ''">*你尚未選擇安全文件!</span> -->
+            <span v-if="ipt.docId != ''">
                 <v-icon class="mb-2 mr-1">mdi-lightbulb-on</v-icon>
                 你選擇了編號 {{ ipt.docId }} 的安全文件
             </span>
@@ -140,7 +140,7 @@
             >回搜尋頁</v-btn>
             
             <v-btn
-                class="btn-add white--text"
+                class="btn-add white--text" v-if="saveBtnShow"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
@@ -157,7 +157,7 @@
                 @deleteFile="deleteFile"
                 class="mb-10"
             /> -->
-            <UploadFileEdit title="檔案管理"
+            <UploadFileEdit title="證據上傳"
                 @uploadFile="uploadFile"
                 @deleteFile="deleteFile"
                 class="mb-10"
@@ -192,6 +192,7 @@ export default {
         valid: true,  // 表單是否驗證欄位
         isShowBtn: false, // 按鈕是否顯示(依權限)
         isEdit: false,  // 是否為編輯
+        saveBtnShow: true,
         ipt: {},
         defaultIpt: {
             depart: 'ARCO001',  // 管控單位
@@ -330,10 +331,10 @@ export default {
         },
         // 送出
         save() {
-            if (this.ipt.docId == '') {
-                alert('請選擇要連結的安全文件')
-                return
-            }
+            // if (this.ipt.docId == '') {
+            //     alert('請選擇要連結的安全文件')
+            //     return
+            // }
 
             this.chLoadingShow()
 
@@ -359,6 +360,7 @@ export default {
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                     }).finally(() => {
+                        this.saveBtnShow = false
                         this.chLoadingShow()
                     })
                 }
@@ -386,6 +388,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
                 }).finally(() => {
+                        this.saveBtnShow = false
                     this.chLoadingShow()
                 })
             }

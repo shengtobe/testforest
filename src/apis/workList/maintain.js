@@ -182,3 +182,12 @@ export function railroadrepairList(data) { return axios(
     }
 )}
 
+//  查詢員工所屬的部門主管資料
+export function fetchSupervisor(data) { return axios(
+    {
+        url: '/global/depart/supervisor',
+        method: 'post',
+        data,
+    }
+)}
+
