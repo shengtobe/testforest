@@ -308,33 +308,33 @@ export default {
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
                         console.log("tableItems: ", this.tableItems);
-                        this.tableItems.forEach(element => {
-                            for(let ele in element){
-                                if(element[ele] == null){
-                                    element[ele] = '';
-                                }
-                                else{
-                                    switch(ele){
-                                        case 'EndangerDesp'://危害說明
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                        case 'AAAAAA'://AAAAA
-                                            break;
-                                    }
-                                }
-                            }
-                        });
+                        // this.tableItems.forEach(element => {
+                        //     for(let ele in element){
+                        //         if(element[ele] == null){
+                        //             element[ele] = '';
+                        //         }
+                        //         else{
+                        //             switch(ele){
+                        //                 case 'EndangerDesp'://危害說明
+                        //                     break;
+                        //                 case 'EndangerReason'://危害直接成因
+                        //                     break;
+                        //                 case 'EndangerIndirect'://可能的危害間接原因
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //             }
+                        //         }
+                        //     }
+                        // });
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -376,20 +376,24 @@ export default {
                                 if(ele == 'EndangerDesp'){
                                     if((element.EndangerDesp.indexOf(this.keyword)) > -1){
                                         this.tableItems.push(element)
+                                        break
                                     }
                                 }
                                 //篩 危害直接成因
                                 if(ele == 'EndangerReason'){
                                     if((element.EndangerReason.indexOf(this.keyword)) > -1){
                                         this.tableItems.push(element)
+                                        break
                                     }
                                 }
                                 //篩 可能的危害間接原因
                                 if(ele == 'EndangerIndirect'){
                                     if((element.EndangerIndirect.indexOf(this.keyword)) > -1){
                                         this.tableItems.push(element)
+                                        break
                                     }
                                 }
+                                
                             }
                         });
                         
@@ -405,7 +409,40 @@ export default {
             else{
                 //勾選√
                 if(this.keyword == ''){ //勾選√ 關鍵字X
-
+                    fetchList({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'EndangerCode',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        this.tableItems.forEach(element => {
+                            for(let ele in element){
+                                if(element[ele] == null){
+                                    element[ele] = '';
+                                }
+                            }
+                        });
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow()
+                    })
                 }
                 else{ //勾選√ 關鍵字√
                     fetchList({
