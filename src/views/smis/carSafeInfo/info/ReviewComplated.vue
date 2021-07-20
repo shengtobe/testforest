@@ -84,6 +84,10 @@
                     v-if="status == 2 && isShowBtn"
                 >退回</v-btn>
 
+                <v-btn dark class="ma-2 btn-modify"
+                    :to="`/smis/car-safeinfo/info/${id}/edit`"
+                >編輯</v-btn>
+
                 <v-btn dark  class="ma-2 btn-add"
                     @click="save"
                     v-if="status == 2 && isShowBtn"

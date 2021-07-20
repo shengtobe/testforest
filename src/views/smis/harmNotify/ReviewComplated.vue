@@ -384,14 +384,14 @@ export default {
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.chMsgbar({ success: true, msg: '變更立案成功'})
                         this.done = true  // 隱藏按鈕
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '立案成功'})
+                        this.chMsgbar({ success: false, msg: '變更立案成功'})
                 }).finally(() => {
                     this.chLoadingShow()
                 })

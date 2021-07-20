@@ -660,6 +660,7 @@ export default {
                     // let tempList
                     console.log("this.evtTypeOpts", this.evtTypeOpts);
                     this.evtTypeOpts = JSON.parse(res.data.order_list)
+                    console.log("this.evtTypeOpts: ", this.evtTypeOpts);
                     console.log("this.evtTypeOpts", this.evtTypeOpts);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面

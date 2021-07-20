@@ -64,12 +64,12 @@
 
                                 <!-- 故障、保養工單 -->
                                 <v-list-item :class="titleColor1" disabled>
-                                    <strong class="black--text">故障、保養工單</strong>
+                                    <strong class="black--text">設備維修及保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/maintain">維修養護科類工單</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/worklist/serve">服務科類工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/serve">車站營運設備維修工單</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 監控系統 -->
@@ -139,7 +139,7 @@
                                     <strong class="black--text">行車安全資訊</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info/add">新增安全資訊</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info-add">新增安全資訊</v-list-item>
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">查詢安全資訊</v-list-item>
                                 <v-divider />
@@ -165,7 +165,8 @@
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance">表單填報</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance/analysis">統計趨勢圖</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance-analysis">統計趨勢圖</v-list-item>
+                                <v-divider />
                             </v-list>
                         </v-card>
                     </v-col>
