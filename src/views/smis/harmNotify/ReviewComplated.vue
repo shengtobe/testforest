@@ -400,7 +400,6 @@ export default {
     },
     created() {
         // this.fetchData()
-        console.log("DDD this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
     },
 }

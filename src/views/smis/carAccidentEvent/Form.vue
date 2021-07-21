@@ -8,7 +8,9 @@
         <v-col cols="12" md="8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-tag</v-icon>事故摘要
+                <span class="red--text">*</span>
             </h3>
+            
             <v-text-field
                 v-model.trim="ipt.subject"
                 solo
@@ -82,8 +84,18 @@
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
             </h3>
             <v-select
-                v-model="ipt.evtType"
+                v-model="ipt.evtType1"
+                :items="['重大事故', '一般事故', '異常事件', '其他']"
+                @change="evtTypeChange"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mt-1" ><br/></h3>
+            <v-select
+                v-model="ipt.evtType2"
                 :items="evtTypeOpts"
+                :disabled="ipt.evtType1=='其他'"
                 solo
             ></v-select>
         </v-col>
@@ -436,7 +448,6 @@
             <v-select
                 v-model="ipt.accidentFactors1"
                 :items="opts.accidentFactors1"
-                @change="chgeLv1"
                 solo
             ></v-select>
         </v-col>
@@ -522,7 +533,7 @@
                 :to="`/smis/car-accident-event/${this.id}/show`"
             >回上層</v-btn>
 
-            <v-btn dark class="btn-add"
+            <v-btn dark class="btn-add" v-if="saveBtnShow"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
@@ -559,7 +570,12 @@ export default {
     data: () => ({
         routeId: '',  // 編號
         isShowBtn: false,
+        opsList: '', // 完整事故類型清單
         isEdit: false,  // 是否為編輯狀態
+        saveBtnShow: true, // 送出按鈕顯示
+        arr1: [], // 重大事故
+        arr2: [], // 一般事故
+        arr3: [], // 異常事件
         ipt: {},
         defaultIpt: {
             subject: '',  // 事故摘要
@@ -571,7 +587,8 @@ export default {
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
-            evtType: '', // 事故類型
+            evtType1: '', // 事故類型1
+            evtType2: '', // 事故類型2
             slope: '',  // 路線坡度
             curve: '',  // 曲線半徑
             loadType: [],  // 路段型態
@@ -621,8 +638,6 @@ export default {
             groupData: state => state.groupData,
         }),
         accidentFOpts2() {
-            console.log("AccidentFactors2: ", AccidentFactors2);
-            console.log("this.ipt.accidentFactors1: ", this.ipt.accidentFactors1);
             return AccidentFactors2.filter(item => item.parent == this.ipt.accidentFactors1)
         },
         accidentFOpts3() {
@@ -657,11 +672,27 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     //抽離 其他
-                    // let tempList
-                    console.log("this.evtTypeOpts", this.evtTypeOpts);
-                    this.evtTypeOpts = JSON.parse(res.data.order_list)
-                    console.log("this.evtTypeOpts: ", this.evtTypeOpts);
-                    console.log("this.evtTypeOpts", this.evtTypeOpts);
+                    this.opsList = JSON.parse(res.data.order_list)
+                    let tempOps = this.opsList.map(e=>e.text)
+                    tempOps.forEach(e => {
+                        if(e.indexOf("-") >= 0){
+                            let arr = e.split('-')
+                            arr[1] = arr[1].replace('率', '')
+                            if(arr[0] == "重大事故"){
+                                this.arr1.push(arr[1])
+                            }
+                            else if(arr[0] == "一般事故"){
+                                this.arr2.push(arr[1])
+                            }
+                            else if(arr[0] == "異常事件"){
+                                this.arr3.push(arr[1])
+                            }
+                        }
+                        // evtTypeOpts
+                    });
+                    console.log("1: ", this.arr1);
+                    console.log("2: ", this.arr2);
+                    console.log("3: ", this.arr3);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -748,17 +779,34 @@ export default {
                 this.ipt.accidentFactors3 = obj.SaftyCodeLv3  // 第三層因素
             }, 300)
         },
-        chgeLv1(){
-            console.log("CCC this.ipt.accidentFactors1: ", this.ipt.accidentFactors1);
+        evtTypeChange(){
+            if(this.ipt.evtType1 == "重大事故"){
+                this.evtTypeOpts = this.arr1
+            }
+            else if(this.ipt.evtType1 == "一般事故"){
+                this.evtTypeOpts = this.arr2
+            }
+            else if(this.ipt.evtType1 == "異常事件"){
+                this.evtTypeOpts = this.arr3
+            }
+            else{
+                this.ipt.evtType2 = ''
+            }
         },
         // 送出
         save() {
+            if(this.ipt.subject == ''){
+                alert("事故摘要未填")
+                return
+            }
             this.chLoadingShow()
             if(this.ipt.locationK == '') this.ipt.locationK = '0'
             if(this.ipt.locationM == '') this.ipt.locationM = '0'
 
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
+                let s = this.ipt.evtType1 + '-' + this.ipt.evtType2
+                let tempType = this.opsList.find(e => e.text = s).Code
                 updateData({
                     AccidentCode: this.id,  // 行車事故事件編號
                     FindDDay: this.ipt.date,  // 發現日期
@@ -769,7 +817,7 @@ export default {
                     FindMLine: this.ipt.locationM,  // 發現地點M路段
                     FindLineOther: this.ipt.locationOther,  // 發現地點其他路段
                     ReportTitle: this.ipt.subject,  // 事故摘要
-                    AccidentType: this.ipt.evtType,  // 事故類型
+                    AccidentType: (this.ipt.evtType1 != '其他')?this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2 + '率').value:'Other' ,  // 事故類型
                     EventWeather: this.ipt.climate,  // 氣候
                     RoadSlope: this.ipt.slope,  // 路線坡度
                     CurveRadius: this.ipt.curve,  // 曲線半徑
@@ -802,6 +850,7 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '更新成功' })
+                        this.saveBtnShow = false
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -822,7 +871,7 @@ export default {
                     FindMLine: this.ipt.locationM,  // 發現地點M路段
                     FindLineOther: this.ipt.locationOther,  // 發現地點其他路段
                     ReportTitle: this.ipt.subject,  // 事故摘要
-                    AccidentType: this.ipt.evtType,  // 事故類型
+                    AccidentType: (this.ipt.evtType1 != '其他')?this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2 + '率').value:'Other' ,  // 事故類型
                     EventWeather: this.ipt.climate,  // 氣候
                     RoadSlope: this.ipt.slope,  // 路線坡度
                     CurveRadius: this.ipt.curve,  // 曲線半徑
@@ -869,6 +918,7 @@ export default {
                     this.chLoadingShow()
                 })
             }
+            this.saveBtnShow = false
         },
         // 加入檔案 (組件用)
         // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列

@@ -41,7 +41,7 @@
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <template v-if="!done">
+            <template v-if="!done && isBtnShow">
                 <v-btn dark class="ma-2 btn-modify"
                     :to="`/smis/car-safeinfo/info/${id}/edit`"
                 >編輯</v-btn>
@@ -71,6 +71,7 @@ export default {
     props: ['itemData'],
     data: () => ({
         id: '',  // 編號
+        isBtnShow: false, // 按鈕是否顯示(依權限)
         done: false,  // 是否完成頁面操作
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
@@ -101,6 +102,8 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("Auth: ", obj.PeopleId + '=' + this.userData.UserId);
+            this.isBtnShow = obj.PeopleId == this.userData.UserId
             
             this.id = obj.SaftyInfoCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料

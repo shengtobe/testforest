@@ -331,10 +331,11 @@ export default {
         },
         // 送出
         save() {
-            // if (this.ipt.docId == '') {
-            //     alert('請選擇要連結的安全文件')
-            //     return
-            // }
+            if (this.ipt.subject == '' || this.ipt.desc == '' ) {
+                alert('必填欄位未填')
+                window.scroll(0,0)
+                return
+            }
 
             this.chLoadingShow()
 
