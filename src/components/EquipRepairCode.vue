@@ -144,11 +144,30 @@
     //外部傳入資料
     props: {
       //ifLV5: Boolean,
-      nowEqCode: String,
-      nowWorkCode: String,
-      toLv: Number,
-      needIcon: Boolean,
-      disableToLv: Number,
+      nowEqCode: {
+        type: String,
+        required: false
+      },
+      nowWorkCode: {
+        type: String,
+        required: false
+      },
+      toLv: {
+        type: Number,
+        required: true,
+      },
+      needIcon: {
+        type:Boolean,
+        required: true
+      },
+      disableToLv: {
+        type: Number,
+        required: true
+      },
+      rtnStartLv: {
+        type: Number,
+        required: false
+      }
     },
     //內部變數
     data: () => ({
@@ -182,6 +201,7 @@
       newWorkName: '',
       newEqCh: '',
       newWorkCh: '',
+      rtnStart: 2,
     }),
     //渲染完成後
     mounted: function() {
@@ -244,6 +264,8 @@
           Lv5: ''
         }
         this.ifIcon = (!this.needIcon)?false:this.needIcon
+        this.rtnStart=this.rtnStartLv==undefined?this.toLv:this.rtnStartLv
+        console.log(this.rtnStart)
         if(this.nowEqCode == '' || !this.nowEqCode){ //沒有帶值進來
           this._getEqList('SYS','SYS_%','1','1')
         }else{  //有帶值進來
@@ -338,9 +360,10 @@
             if(that.toLv > 1){
               that.eqCodes.eqCodeListLv2 = []
               await that._goChange('2')
-            }else{
+            }
+            if(that.rtnStart<=1){
               that.newEqCode = that.selectItem.Lv1 
-              that._returnEqCode()
+              that._returnEqCode(1)
             }
             break;
           case '2':
@@ -350,9 +373,10 @@
               if(that.toLv > 2){
                 that.eqCodes.eqCodeListLv3 = []
                 await that._goChange('3')
-              }else{
+              }
+              if(this.rtnStart<=2){
                 that.newEqCode = that.selectItem.Lv1 + '-' + that.selectItem.Lv2
-                that._returnEqCode()
+                that._returnEqCode(2)
               }
             }
             break;
@@ -360,9 +384,10 @@
             if(that.toLv > 2){
               that.eqCodes.eqCodeListLv3 = []
               await that._goChange('3')
-            }else{
+            }
+            if(this.rtnStart<=2){
               that.newEqCode = that.selectItem.Lv1 + '-' + (that._show22?that.selectItem.Lv22:that.selectItem.Lv2)
-              that._returnEqCode()
+              that._returnEqCode(2)
             }
             break;
           case '3':
@@ -372,9 +397,10 @@
               if(that.toLv > 3){
                 that.eqCodes.eqCodeListLv4 = []
                 await that._goChange('4')
-              }else{
+              }
+              if(this.rtnStart<=3){
                 that.newEqCode = that.selectItem.Lv1 + '-' + (that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3
-                that._returnEqCode()
+                that._returnEqCode(3)
               }
             }
             break;
@@ -382,9 +408,10 @@
             if(that.toLv > 3){
               that.eqCodes.eqCodeListLv4 = []
               await that._goChange('4')
-            }else{
+            }
+            if(this.rtnStart<=3){
               that.newEqCode = that.selectItem.Lv1 + '-' + (that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'') 
-              that._returnEqCode()
+              that._returnEqCode(3)
             }
             break;
           case '4':
@@ -393,7 +420,7 @@
               await that._goChange('5')
             }
             that.newEqCode = that.selectItem.Lv1 + '-' + ((that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3 )+ (that._show32?'/'+that.selectItem.Lv32:'')  + '-' + that.selectItem.Lv4
-            that._returnEqCode()
+            that._returnEqCode(4)
             break;
           case '5':
             if(that.toLv == 5){
@@ -489,22 +516,22 @@
             break;  
         }
       },
-      async _returnEqCode() {
+      async _returnEqCode(toLevel) {
         const that = this
         await that.$emit('getEqCode',that.newEqCode)
-        if(that.toLv >= 1){
-          that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + ((that.toLv == 1)?'':'-')
-          that.newEqCh = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).EquipName + ((that.toLv == 1)?'':'-')
+        if(toLevel >= 1){
+          that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + ((toLevel == 1)?'':'-')
+          that.newEqCh = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).EquipName + ((toLevel == 1)?'':'-')
         }
-        if(that.toLv >= 2){
-          that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + ((that.toLv == 2)?'':'-')
-          that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).EquipName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).EquipName) + ((that.toLv == 2)?'':'-')
+        if(toLevel >= 2){
+          that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + ((toLevel == 2)?'':'-')
+          that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).EquipName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).EquipName) + ((toLevel == 2)?'':'-')
         }
-        if(that.toLv >= 3){
-          that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + ((that.toLv == 3)?'':'-')
-          that.newEqCh += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).EquipName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).EquipName:'') + ((that.toLv == 3)?'':'-')
+        if(toLevel >= 3){
+          that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + ((toLevel == 3)?'':'-')
+          that.newEqCh += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).EquipName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).EquipName:'') + ((toLevel == 3)?'':'-')
         }
-        if(that.toLv >= 4){
+        if(toLevel >= 4){
           that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).FullShowName
           that.newEqCh += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).EquipName
         }
