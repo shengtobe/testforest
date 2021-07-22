@@ -337,7 +337,7 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteData({
                     AccidentCode: this.id,  // 編號
@@ -354,7 +354,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -367,12 +367,12 @@ export default {
 
             //     if (this.finishDeath && this.finishImprove) {  // 都有填寫
             //         if (confirm('你確定要申請審核嗎?')) {
-            //             this.chLoadingShow()
+            //             this.chLoadingShow({show:true})
 
             //             setTimeout(() => {
             //                 this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
             //                 this.chMsgbar({ success: true, msg: '申請審核成功'})
-            //                 this.chLoadingShow()
+            //                 this.chLoadingShow({show:true})
             //             }, 1000)
             //         }
             //     } else {
@@ -382,24 +382,24 @@ export default {
             // } else {
             //     // -------------- 未鎖定 -------------- 
             //     if (confirm('你確定要鎖定嗎?')) {
-            //         this.chLoadingShow()
+            //         this.chLoadingShow({show:true})
 
             //         // 向後端更新鎖定、覆核的欄位
             //         setTimeout(() => {
             //             // this.topItems.isReview.text = '已複核'
             //             this.isLocked = true
-            //             this.chLoadingShow()
+            //             this.chLoadingShow({show:true})
             //         }, 1000)
             //     }
             // }
             if (confirm('你確定要申請審核嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 // setTimeout(() => {
                 //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                 //     this.chMsgbar({ success: true, msg: '申請審核成功'})
                 //     this.done = true
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
                 //-----call申請審核api------
                 sendCheckData({
@@ -416,7 +416,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
 
                 setTimeout(() => {

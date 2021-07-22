@@ -251,7 +251,7 @@ export default {
         ]),
         // 初始化資料
         async initData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             // fetch 規章文件的資料
@@ -306,11 +306,11 @@ export default {
                     console.log(err)
                     alert('查詢時發生問題，請重新查詢!')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             } else {
                 // ------- 新增時 ---------
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }
         },
         // 設定資料(編輯時)
@@ -337,7 +337,7 @@ export default {
                 return
             }
 
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
@@ -362,7 +362,7 @@ export default {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                     }).finally(() => {
                         this.saveBtnShow = false
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
             } else {
@@ -390,7 +390,7 @@ export default {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
                 }).finally(() => {
                         this.saveBtnShow = false
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -410,7 +410,7 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(fileArr) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             updateFile({
                 ProcCode: this.id,  // 措施編號
                 FileCount: fileArr,  // 新檔案
@@ -431,13 +431,13 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 刪除檔案 (編輯時)
         deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteFile({
                     ProcCode: this.id,  // 編號
@@ -455,7 +455,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

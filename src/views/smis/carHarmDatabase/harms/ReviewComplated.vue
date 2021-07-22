@@ -497,7 +497,7 @@ export default {
         // 同意措施執行
         save() {
             if (confirm('你確定要同意措施執行嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 sendPassData({
                     EndangerCode: this.id,  // 編號
@@ -512,14 +512,14 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteData({
                     EndangerCode: this.id,  // 編號
@@ -536,14 +536,14 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 申請結案
         closeCase() {
             if (confirm('你確定要申請結案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 sendCloseData({
                     EndangerCode: this.id,  // 事故事件編號
@@ -562,7 +562,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -578,7 +578,7 @@ export default {
         // 重提危害
         rerun() {
             if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 sendResetData({
                     EndangerCode: this.id,  // 事故事件編號
@@ -595,7 +595,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，重提失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

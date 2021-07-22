@@ -428,7 +428,7 @@ export default {
         // 查詢資料
         search() {
             
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             if(this.ipt.eqNumber3 == null) this.ipt.eqNumber3 = ''
             if(this.ipt.eqNumber4 == null) this.ipt.eqNumber4 = ''
@@ -474,7 +474,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 檢視內容

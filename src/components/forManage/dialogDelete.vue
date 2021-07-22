@@ -55,7 +55,7 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     deleteRecord() {
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       deleteFormOrder({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.id, // 操作人id
@@ -72,7 +72,7 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {
-          this.chLoadingShow();
+          this.chLoadingShow({show:false});
           this.success();
         });
     },

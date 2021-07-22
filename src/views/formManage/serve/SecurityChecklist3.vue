@@ -583,7 +583,7 @@ export default {
       var today = new Date();
 
       console.log("1609")
-      this.chLoadingShow()
+      this.chLoadingShow({show:false})
 
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -615,8 +615,7 @@ export default {
     },
     // 存
     save() {
-      console.log('送出click! 0222')
-      this.chLoadingShow()
+      this.chLoadingShow({show:false})
       createFormOrder({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
@@ -712,9 +711,7 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
-      console.log("RPFlowNo: " + item.RPFlowNo)
-      this.chLoadingShow()
+      this.chLoadingShow({show:false})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間

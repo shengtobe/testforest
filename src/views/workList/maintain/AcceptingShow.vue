@@ -815,7 +815,7 @@ export default {
         // 送出 (同意驗收)
         save() {
             if (confirm('你確定要驗收嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 // 整理平交道項目
                 let resultCrossItem = [];
                 this.accidents.forEach(ele => {
@@ -845,7 +845,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                     // this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                 })
             }

@@ -295,7 +295,7 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 
                 deleteData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -313,7 +313,7 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，作廢失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -325,7 +325,7 @@ export default {
 
             if (this.finishDeath && this.finishImprove) {  // 都有填寫
                 if (confirm('你確定要申請措施審核嗎?')) {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     
                     applyData({
                         AccidentCode: this.id,  // 事故事件編號
@@ -343,7 +343,7 @@ export default {
                         console.log(err)
                         alert('伺服器發生問題，申請失敗')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
             } else {

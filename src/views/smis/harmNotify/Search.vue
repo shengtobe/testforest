@@ -201,7 +201,7 @@ export default {
         },
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             console.log("進入危害查詢動作");
             this.pageOpt.page = 1  // 頁碼初始化
             // 如果null要改空字串
@@ -239,7 +239,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 檢視內容

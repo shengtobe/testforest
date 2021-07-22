@@ -292,7 +292,7 @@ export default {
       let data2 = []
       let data3 = []
       let data4 = []
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       fetchList({
         CreateDTime_Start:this.q_datestart,
         CreateDTime_End: this.q_dateend,

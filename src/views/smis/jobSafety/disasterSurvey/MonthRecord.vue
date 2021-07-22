@@ -201,7 +201,7 @@ export default {
         ]),
         // 搜尋
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             searchData({
@@ -231,7 +231,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
 
             // 新增測試用資料
@@ -272,7 +272,7 @@ export default {
             //             note: '備註文字備註文字備註文字備註文字備註文字備註文字備註文字備註文字備註文字',  // 備註
             //         },
             //     ]
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
 
             //     this.totalLossDate = 15  // 累計損失日數
             // }, 1000)
@@ -299,7 +299,7 @@ export default {
             if (confirm('你確定要匯出搜尋結果嗎?')) {
                 // "TestStrArr":[["發生日期","發生地點","發生單位",...],["2020-08-23 09:45","工具間","阿里山車站",...],["2020-08-12 13:24","45K+600M","奮起湖監工區",...]]
                 if(this.tableItems.length > 0){
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     let sendArr = []
                     let excelContent1 = []
                     this.headers.forEach(element => {
@@ -358,7 +358,7 @@ export default {
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
                 else{

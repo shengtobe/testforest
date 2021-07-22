@@ -535,7 +535,7 @@ export default {
         return;
       }
 
-      console.log("送出!!");
+      ;
       this.chLoadingShow({show:true});
 
       var data = {

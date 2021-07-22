@@ -303,7 +303,7 @@ export default {
     // 搜尋
     search() {
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
-        this.chLoadingShow()
+        this.chLoadingShow({show:true})
         const wbs = this.searchIpt.wbs.split('-')
         const sendData = {
           CreateDTime_Start: this.searchIpt.StartDay,
@@ -339,7 +339,7 @@ export default {
           console.warn(err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
-          this.chLoadingShow()
+          this.chLoadingShow({show:false})
         })
       }else{
         this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })
@@ -406,7 +406,7 @@ export default {
     },
     // 顯示詳細資訊
     view(woID) {
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       this.content = {}
       costQuery({
         WorkerOrderID: woID,

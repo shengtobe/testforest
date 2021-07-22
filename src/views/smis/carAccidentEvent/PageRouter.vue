@@ -44,7 +44,7 @@ export default {
         ]),
         // 向後端取資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 初始化事故類型 fetchEvtTypes
             fetchEvtTypes({
@@ -63,7 +63,7 @@ export default {
                 console.log(err)
                 alert('伺服器發生問題，事故類型讀取失敗')
             }).finally(() => {
-                // this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
 
             fetchOne({
@@ -169,7 +169,7 @@ export default {
                 console.log(err)
                 alert('伺服器發生問題，資料讀取失敗')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
     },

@@ -356,7 +356,7 @@ export default {
         save() {
             // if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
 
                     maintainOrder({
                         WorkOrderID: this.id,  // 工單編號
@@ -383,7 +383,7 @@ export default {
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                     })
                 }

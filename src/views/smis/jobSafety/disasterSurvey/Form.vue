@@ -804,7 +804,7 @@ export default {
 
             if (this.id != undefined) {
                 // -------------- 編輯時 -------------- 
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 // this.id = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
 
@@ -828,7 +828,7 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
 
                 // 範例效果
@@ -878,7 +878,7 @@ export default {
                 //     }
                     
                 //     this.setInitDate(obj)
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000
                 // )
 
@@ -948,7 +948,7 @@ export default {
         // 送出
         save() {
             if (confirm('你確定要送出嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 // 新增測試用資料
                 // setTimeout(() => {
@@ -958,7 +958,7 @@ export default {
                 //         this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                 //         this.chMsgbar({ success: true, msg: '資料新增成功' })
                 //     }
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
                 let finalJobTitle = '';
                 finalJobTitle = (this.ipt.jobTitle == '其他') ? this.ipt.jobTitle : this.ipt.jobTitle0;
@@ -1019,7 +1019,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             } else {
                 // ---------- 新增時---------- 
@@ -1080,7 +1080,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
             }
@@ -1106,7 +1106,7 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(fileArr) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             fileUpdateData({
                 AccidentCode: this.id,  // 措施編號
@@ -1128,13 +1128,13 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 刪除檔案 (編輯時)
         deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow() // fileDeleteData
+                this.chLoadingShow({show:true}) // fileDeleteData
 
                 fileDeleteData({
                     AccidentCode: this.id,  // 編號
@@ -1152,7 +1152,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

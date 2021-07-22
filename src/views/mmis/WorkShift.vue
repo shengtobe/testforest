@@ -159,7 +159,7 @@ export default {
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
     getOrg() {
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       fetchOrganization({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -178,7 +178,7 @@ export default {
       })
     },
     goSearch() {
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       classQueryList({
         DepartName: this.searchItem,
         ClientReqTime: getNowFullTime(),  // client 端請求時間

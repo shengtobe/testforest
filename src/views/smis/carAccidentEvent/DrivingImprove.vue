@@ -177,7 +177,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -214,7 +214,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -227,7 +227,7 @@ export default {
                 alert('請選擇要連結的控制措施')
                 return
             }
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             procUpdateData({
                 AccidentCode: this.id,  // 事故事件編號
@@ -245,7 +245,7 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 顯示措施說明

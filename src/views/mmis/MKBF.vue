@@ -187,7 +187,7 @@ export default {
     // 搜尋
     search() {
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) ){
-        this.chLoadingShow()
+        this.chLoadingShow({show:true})
         const begMonth = this.searchIpt.StartDay.split('-')
         const endMonth = this.searchIpt.EndDay.split('-')
         const wbs = this.searchIpt.wbs.split('-')
@@ -239,7 +239,7 @@ export default {
           console.error(err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
-          this.chLoadingShow()
+          this.chLoadingShow({show:false})
           this.componentKey ++
         })
       }else if(this.searchIpt.EndDay == "" || this.searchIpt.StartDay== ""){

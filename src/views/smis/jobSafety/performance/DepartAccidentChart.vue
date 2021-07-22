@@ -158,7 +158,7 @@ export default {
             this.getData()
         },
         getData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             analyDangerByDepart({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
@@ -185,7 +185,7 @@ export default {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
                 }
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }).catch( err => {
                 console.error(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })

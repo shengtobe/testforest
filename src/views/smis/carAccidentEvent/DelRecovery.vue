@@ -75,7 +75,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 新增測試用資料
             setTimeout(() => {
@@ -89,7 +89,7 @@ export default {
                     },
                 ]
 
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 更換頁數
@@ -101,12 +101,12 @@ export default {
             let index = this.tableItems.indexOf(item)
             console.log(index)
             if (confirm(`你確定要復原編號「${item.id}」的資料嗎?`)) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 setTimeout(() => {
                     this.tableItems.splice(index, 1)
                     this.chMsgbar({ success: true, msg: '復原成功'})
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 }, 1000)
             }
         },

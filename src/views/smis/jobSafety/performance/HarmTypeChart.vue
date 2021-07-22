@@ -123,7 +123,7 @@ export default {
             this.getData()
         },
         getData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             let mode = (this.includTraf)?'1':'2'
             analyDanger({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -150,7 +150,7 @@ export default {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
                 }
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 console.log("this.chart.chartdata: ", this.chart.chartdata);
             }).catch( err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })

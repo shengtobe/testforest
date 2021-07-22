@@ -257,7 +257,7 @@ export default {
         // 確定結案
         save() {
             if (confirm('你確定要結案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 closeOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
@@ -274,7 +274,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，結案失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

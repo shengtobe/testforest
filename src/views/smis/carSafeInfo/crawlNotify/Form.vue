@@ -302,12 +302,12 @@ export default {
         ]),
         // 切換部門成員
         changeDepart() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 範例效果
             setTimeout(() => {
                 this.checkboxs = [ ...this.members ]  // 測試用先不過慮部門全列出
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
             
         },
@@ -345,7 +345,7 @@ export default {
         },
         // 送出
         save() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             let arr = this.ipt.recipients.map(item => ({
                 PeopleId: item
             }))
@@ -371,7 +371,7 @@ export default {
                 }).catch(err => {
                      this.chMsgbar({ success: false, msg: '回覆成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
                 // console.log(this.ipt.line)
                 // console.log(this.ipt.pointStart)
@@ -389,7 +389,7 @@ export default {
             // setTimeout(() => {
             //     this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
             //     this.chMsgbar({ success: true, msg: '資料新增成功'})
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
     },

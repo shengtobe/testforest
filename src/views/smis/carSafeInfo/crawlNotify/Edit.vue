@@ -224,7 +224,7 @@ export default {
         
         initData() {
           if (this.id != undefined) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 //  let arr = this.recipients.map(item => ({
                 //  PeopleId: item
                 //  }))
@@ -249,7 +249,7 @@ export default {
                 //     this.setShowData(obj)
 
                 //     this.recipients = ['2', '3', '5', '7']
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
                 
             
@@ -280,7 +280,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
              })
             }
          },
@@ -315,12 +315,12 @@ export default {
         
         // 切換部門成員
         // changeDepart() {
-        //     this.chLoadingShow()
+        //     this.chLoadingShow({show:true})
 
         //     // 範例效果
         //     setTimeout(() => {
         //         this.checkboxs = [ ...this.members ]  // 測試用先不過慮部門全列出
-        //         this.chLoadingShow()
+        //         this.chLoadingShow({show:true})
         //     }, 1000)
             
         // },
@@ -356,7 +356,7 @@ export default {
         // 延長日期
         // save() {
         //     if (confirm('你確定要延長日期嗎?')) {
-        //         this.chLoadingShow()
+        //         this.chLoadingShow({show:true})
                 
         //         let arr = this.ipt.recipients.map(item => ({
         //         PeopleId: item
@@ -385,20 +385,20 @@ export default {
         //         }).catch(err => {
         //              this.chMsgbar({ success: false, msg: '延長成功'})
         //         }).finally(() => {
-        //             this.chLoadingShow()
+        //             this.chLoadingShow({show:true})
         //         })
 
         //         // 測試用資料
         //         setTimeout(() => {
         //             this.chMsgbar({ success: true, msg: '延長日期成功'})
-        //             this.chLoadingShow()
+        //             this.chLoadingShow({show:true})
         //         }, 1000)
         //     }
         // },
         // 儲存
         update() {
             if (confirm('你確定要儲存嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 console.log(this.id)
                 console.log(this.ipt.line)
@@ -441,13 +441,13 @@ export default {
                 }).catch(err => {
                      this.chMsgbar({ success: false, msg: '儲存成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
 
                 // 測試用資料
                 // setTimeout(() => {
                 //     this.chMsgbar({ success: true, msg: '更新收件人成功'})
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },

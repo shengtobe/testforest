@@ -511,7 +511,7 @@ export default {
       this.addItem.content = "";
       // 更新 無線電清單
       const that = this
-      this.chLoadingShow()
+      this.chLoadingShow({show:false})
       radioQueryList({
         DepartCode: '', 
         Man: '',

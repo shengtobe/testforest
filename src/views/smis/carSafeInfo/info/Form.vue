@@ -322,7 +322,7 @@ export default {
 
             // -------------- 編輯時 -------------- 
             if (this.$route.params.id != undefined) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 this.routeId = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
              safetyinfodetail({
@@ -356,7 +356,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
              })
                 // 範例效果
                 // setTimeout(() => {
@@ -378,7 +378,7 @@ export default {
                 //     }
                     
                 //     this.setInitDate(obj)
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },
@@ -423,12 +423,12 @@ export default {
         },
         // 切換部門成員
         changeDepart() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 範例效果
             setTimeout(() => {
                 this.checkboxs = [ ...this.members ]  // 測試用先不過慮部門全列出
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
             
         },
@@ -492,7 +492,7 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             safetyinfofileupdate({
                         SaftyInfoCode: this.routeId,  // 措施編號
                         FileCount: file,  // 新檔案
@@ -513,7 +513,7 @@ export default {
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
         },
         // 刪除檔案 (編輯時)
@@ -521,7 +521,7 @@ export default {
             if (confirm('你確定要刪除嗎?')) {
                 console.log(this.ipt.files)
                 console.log(idx)
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 safetyinfofiledelete({
                     SaftyInfoCode: this.routeId,   // 編號
                     FileName: this.ipt.files[idx].FileName,  // 檔案名稱
@@ -538,13 +538,13 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
                 // setTimeout(() => {
                 //     // 後端請求後，移除檔案列表
                 //     this.ipt.files.splice(idx, 1)
                 //     this.chMsgbar({ success: true, msg: '檔案刪除成功'})
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },
@@ -557,7 +557,7 @@ export default {
                         window.scroll(0,0)
                         return
                     }
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     let RParr = this.ipt.recipients.map(item => ({
                         PeopleId: item
                     }))
@@ -593,7 +593,7 @@ export default {
                         this.chMsgbar({ success: false, msg: '建立成功'})
                         this.clearErrIpt()
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                     })
 
@@ -602,10 +602,10 @@ export default {
                     //     let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
                     //     if (!this.isEdit) this.$router.push({ path: '/smis/car-safeinfo/info' })
                     //     this.chMsgbar({ success: true, msg: txt })
-                    //     this.chLoadingShow()
+                    //     this.chLoadingShow({show:true})
                     // }, 1000)
                 } else {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     let RParr = this.ipt.recipients.map(item => ({
                         PeopleId: item
                     }))
@@ -642,7 +642,7 @@ export default {
                             this.chMsgbar({ success: false, msg: '修改成功'})
                             this.clearErrIpt()
                         }).finally(() => {
-                            this.chLoadingShow()
+                            this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                         })
                 }

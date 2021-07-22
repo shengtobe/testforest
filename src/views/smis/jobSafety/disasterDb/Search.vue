@@ -144,7 +144,7 @@ export default {
         },
         // 搜尋
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             searchDataDb({
@@ -179,7 +179,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
 
             // 新增測試用資料
@@ -196,7 +196,7 @@ export default {
             //             level: 'R2',  // 風險等級
             //         },
             //     ]
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
         // 更換頁數

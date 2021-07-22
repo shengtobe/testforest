@@ -532,7 +532,7 @@ export default {
             // 已跑到最後流程的作廢之後要請長官同意
 
             if (confirm('已結案的危害需經長官同意後才正式作廢，你確定要申請作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteData({
                     EndangerCode: this.id,  // 編號
@@ -549,14 +549,14 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 同意作廢
         agreeDel() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteData({
                     EndangerCode: this.id,  // 編號
@@ -573,14 +573,14 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 結案
         save() {
             if (confirm('你確定要結案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 sendPassData({
                     EndangerCode: this.id,  // 事故事件編號
@@ -597,7 +597,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -613,7 +613,7 @@ export default {
         // 重提危害
         rerun() {
             if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 sendResetData({
                     EndangerCode: this.id,  // 事故事件編號
@@ -630,13 +630,13 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，重提失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 顯示版本清單 dialog
         showVersion() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             setTimeout(() => {
                 let arr = [
@@ -653,7 +653,7 @@ export default {
                 ]
 
                 this.verTableItems0 = [ ...arr ]
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.verDialogShow = true
             }, 1000)
         },

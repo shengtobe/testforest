@@ -451,7 +451,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            // this.chLoadingShow()
+            // this.chLoadingShow({show:true})
             this.id = this.itemData.EndangerCode
             let tableItems
             let maxIndex
@@ -503,7 +503,7 @@ export default {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題' })
             }).finally(() => {
                 this.setShowData(tableItems[0], this.itemData)
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
             
             // this.setShowData(this.itemData, old)
@@ -592,7 +592,7 @@ export default {
         // 同意更新
         save() {
             if (confirm('你確定要更新嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 updatePassData({
                     EndangerCode: this.id,  // 編號
@@ -607,7 +607,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

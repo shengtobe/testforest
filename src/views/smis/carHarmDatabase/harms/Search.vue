@@ -279,7 +279,7 @@ export default {
         ]),
         // 簡易搜尋
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             
             if(this.chooses.length == 0){
@@ -339,7 +339,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
                 else{//勾選X 關鍵字√ 就搜尋全部欄位 有任一欄位符合就列出
@@ -403,7 +403,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
             }
@@ -442,7 +442,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
                 else{ //勾選√ 關鍵字√
@@ -498,7 +498,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
             }
@@ -507,7 +507,7 @@ export default {
         },
         // 預設先執行一次搜尋
         initSearch() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             
             fetchList({
@@ -570,14 +570,14 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
 
             
         },
         // 全部危害
         searchAllEndanger() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -612,12 +612,12 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         }, 
         // 高風險
         searchHighRisk() { 
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -659,12 +659,12 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         }, 
         // 已立案
         caseFetch() { //caseFetch
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -706,12 +706,12 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         }, 
 
         cpltPaper() { //已完備資料
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -753,11 +753,11 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         riskAllow() { //風險可接受
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -799,12 +799,12 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 審核中
         checkFetch() { //checkFetch
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -850,7 +850,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         }, 
         // 更換頁數

@@ -236,7 +236,7 @@ export default {
     },
     setDataList() {
       const that = this
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       radioQueryList({
         DepartCode: that.ipt.depart, 
         Man: that.ipt.man,

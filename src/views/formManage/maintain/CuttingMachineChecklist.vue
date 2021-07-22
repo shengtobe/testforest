@@ -613,7 +613,7 @@ export default {
     },
     // 存
     save() {
-      console.log("送出!!");
+      ;
       this.chLoadingShow({show:true});
 
       var data = {

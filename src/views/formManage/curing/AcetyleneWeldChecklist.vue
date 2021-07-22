@@ -511,13 +511,12 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
-          console.log("search final");
           this.chLoadingShow({ show: false});
         });
     },
     // 存
     save() {
-      console.log("送出!!");
+      ;
       this.chLoadingShow({ show: true});
 
       var data = {

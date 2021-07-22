@@ -702,13 +702,13 @@ export default {
                 console.log(err)
                 alert('伺服器發生問題，事故類型讀取失敗')
             }).finally(() => {
-                // this.chLoadingShow()
+                // this.chLoadingShow({show:true})
             })
             if (this.id != undefined) {
                 // -------------- 編輯前先詢問有無權限 -------------- 
                 
                 // -------------- 編輯時 -------------- 
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 this.isEdit = true
 
                 fetchOne({
@@ -731,7 +731,7 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             } 
         },
@@ -799,7 +799,7 @@ export default {
                 alert("事故摘要未填")
                 return
             }
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             if(this.ipt.locationK == '') this.ipt.locationK = '0'
             if(this.ipt.locationM == '') this.ipt.locationM = '0'
 
@@ -858,7 +858,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             } else {
                 // ---------- 新增時---------- 
@@ -915,7 +915,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
             this.saveBtnShow = false
@@ -936,7 +936,7 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(fileArr) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             updateFile({
                 AccidentCode: this.id,  // 措施編號
@@ -958,13 +958,13 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，上傳失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 刪除檔案 (編輯時)
         deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 
                 deleteFile({
                     AccidentCode: this.id,  // 編號
@@ -982,7 +982,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
