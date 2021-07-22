@@ -1,5 +1,7 @@
 <template>
 <!-- 
+  傳入參數：
+    defDeptId: 預設的單位
   回傳function：
     peopleId: 員編
     peopleName: 姓名
@@ -64,7 +66,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
 export default {
-  props:[],
+  props:['defDeptId'],
   data: () => ({
     select: {
       lv1: '',
@@ -114,25 +116,44 @@ export default {
   watch: {
   },
   methods: {
-      // 向後端取得資料
-      async fetchDdata() {
-        try {
-          let res = await fetchOrganization({ ClientReqTime: getNowFullTime() })  // 取得組織表所有資料
-          console.log(res.data)
-          this.opts.lv1 = res.data.user_depart_list_group_1.map(e=>({value: e.DepartCode,text:e.DepartName}))
-          this.opts.lv2 = res.data.user_depart_list_group_2.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
-          this.opts.lv3 = res.data.user_depart_list_group_3.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
-          this.users = res.data.user_list_group_4.map(e=>({value: e.UserId,text:e.UserName,DepartCode:e.DepartCode}))
-        } catch (err) {
-          console.error("err",err)
-          alert('組職表資料取得失敗')
-        }
-      },
-      // 選擇員工
-      choseUser(item) {
-        this.$emit('peopleId',item.value)
-        this.$emit('peopleName',item.text)
-      },
+    // 向後端取得資料
+    async fetchDdata() {
+      try {
+        let res = await fetchOrganization({ ClientReqTime: getNowFullTime() })  // 取得組織表所有資料
+        console.log(res.data)
+        this.opts.lv1 = res.data.user_depart_list_group_1.map(e=>({value: e.DepartCode,text:e.DepartName}))
+        this.opts.lv2 = res.data.user_depart_list_group_2.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
+        this.opts.lv3 = res.data.user_depart_list_group_3.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
+        this.users = res.data.user_list_group_4.map(e=>({value: e.UserId,text:e.UserName,DepartCode:e.DepartCode}))
+        this.getDefaultSelect()
+      } catch (err) {
+        console.error("err",err)
+        alert('組職表資料取得失敗')
+      }
+    },
+    // 選擇員工
+    choseUser(item) {
+      this.$emit('peopleId',item.value)
+      this.$emit('peopleName',item.text)
+    },
+    getDefaultSelect() {
+      //defDeptId
+      if(this.opts.lv1.findIndex(e=>e.value==this.defDeptId)>-1){
+        this.select.lv1 = this.defDeptId
+      }
+      if(this.opts.lv2.findIndex(e=>e.value==this.defDeptId)>-1){
+        this.select.lv2 = this.defDeptId
+        let parentName = this.opts.lv2.find(e=>e.value==this.defDeptId).parent
+        this.select.lv1 = this.opts.lv1.find(e=>e.text==parentName).value
+      }
+      if(this.opts.lv3.findIndex(e=>e.value==this.defDeptId)>-1){
+        this.select.lv3 = this.defDeptId
+        let lv2Name = this.opts.lv3.find(e=>e.value==this.defDeptId).parent
+        this.select.lv2 = this.opts.lv2.find(e=>e.text==parentName).value
+        let lv1Name = this.opts.lv2.find(e=>e.value==this.select.lv2).parent
+        this.select.lv1 = this.opts.lv1.find(e=>e.text==parentName).value
+      }
+    }
   },
   created() {
       this.fetchDdata()
