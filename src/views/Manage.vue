@@ -259,11 +259,11 @@
                                 <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
                                 <v-divider />
                                 <!-- 報表管理 -->
-                                <v-list-item :class="titleColor3" disabled>
+                                <!-- <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">測試區域</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item>
+                                <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item> -->
                             </v-list>
                         </v-card>
                     </v-col>
