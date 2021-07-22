@@ -105,9 +105,9 @@
                                     <strong class="black--text">危害通報管理</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item  :disabled="FShow('SMS_1')" @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
+                                <v-list-item  :disabled="FShow('SMS_1')" @click="showNav = false" to="/smis/harmnotify/notify">新增危害通報</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_2')" @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_2')" @click="showNav = false" to="/smis/harmnotify/audit">管理危害通報</v-list-item>
                                 <v-divider />
 
                                 <!-- 行車事故事件 -->
@@ -141,7 +141,7 @@
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info-add">新增安全資訊</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">查詢安全資訊</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">管理安全資訊</v-list-item>
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
                                 <v-divider />

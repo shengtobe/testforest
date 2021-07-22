@@ -48,8 +48,8 @@ const mutations = {
         state.msgbar.msg = (payload.msg == undefined) ? '' : payload.msg  // 沒內容就設為空字串
     },
     // 切換 loading 圖顯示
-    [TOGGLE_SYSTEM_LOADING](state) {
-        state.loading.show = !state.loading.show
+    [TOGGLE_SYSTEM_LOADING](state, payload) {
+        state.loading.show = payload.show
     },
     // 設定檢視內容 dialog
     [SET_SYSTEM_VIEW_DIALOG](state, payload) {
@@ -68,9 +68,9 @@ const actions = {
     chMsgbar({ commit }, payload) {
         commit('SET_SYSTEM_MSGBAR', payload)
     },
-    // 切換 loading 圖顯示
-    chLoadingShow({ commit }) {
-        commit('TOGGLE_SYSTEM_LOADING')
+    // 切換 loading 圖顯示 是否顯示
+    chLoadingShow({ commit }, payload) {
+        commit('TOGGLE_SYSTEM_LOADING', payload)
     },
     // 改變檢視內容 dialog 內容及顯示
     chViewDialog({ commit }, payload) {

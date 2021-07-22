@@ -985,7 +985,7 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
@@ -1018,8 +1018,7 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
-          console.log("search final");
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     },
     // 關閉刪除確認dialod

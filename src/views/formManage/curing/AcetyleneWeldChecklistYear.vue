@@ -478,7 +478,7 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow();
+      this.chLoadingShow({ show: true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
@@ -515,13 +515,13 @@ export default {
         })
         .finally(() => {
           console.log("search final");
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     },
     // 存
     save() {
       console.log("送出!!");
-      this.chLoadingShow();
+      this.chLoadingShow({ show: true});
 
       var data = {
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -570,7 +570,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
-            this.chLoadingShow();
+            this.chLoadingShow({ show: false});
           });
       } else {
         // 新增
@@ -584,7 +584,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
-            this.chLoadingShow();
+            this.chLoadingShow({ show: false});
             this.search();
           });
       }
@@ -609,7 +609,7 @@ export default {
       this.action = Actions.edit;
       console.log("item: " + item);
       console.log("RPFlowNo: " + item.RPFlowNo);
-      this.chLoadingShow();
+      this.chLoadingShow({ show: true});
       // 依業主要求變更檢式頁面的方式，所以改為另開分頁
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -678,7 +678,7 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     }, //viewPage
   },

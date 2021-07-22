@@ -8,6 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>通報主題
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="ipt.title"
                 solo
                 placeholder="請輸入關鍵字"
@@ -234,7 +235,7 @@ export default {
             // console.log(this.ipt.title)
             // console.log(this.ipt.status)
             // console.log(this.ipt.depart)
-            this.chLoadingShow()
+            this.chLoadingShow({ show: true})
             this.pageOpt.page = 1  // 頁碼初始化
             safetyinfoquery({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -268,7 +269,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({ show: false})
             })
             // 新增測試用資料
             // setTimeout(() => {

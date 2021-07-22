@@ -468,7 +468,7 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
       }).finally(() => {
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
         this.searchData()
         this.close()
       })

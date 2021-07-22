@@ -226,10 +226,10 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       this.$router.push("/form-manage/curing/railway-worklog-add?editType=1");
       setTimeout(() => {
-        this.chLoadingShow();
+        this.chLoadingShow({show:false});
       }, 300);
     },
     reset() {
@@ -243,7 +243,7 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
@@ -273,8 +273,7 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
-          console.log("search final");
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     },
     // 關閉刪除確認dialod
@@ -292,12 +291,12 @@ export default {
       this.RPFlowNo = RPFlowNo;
     },
     viewPage(input) {
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       this.$router.push(
         "/form-manage/curing/railway-worklog-add?editType=2&RPFlowNo=" + input
       );
       setTimeout(() => {
-        this.chLoadingShow();
+        this.chLoadingShow({show:false});
       }, 300);
     },
   },

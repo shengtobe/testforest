@@ -138,7 +138,7 @@ export default {
             
             save() {
               if (confirm('你確定要儲存此權限設定嗎?')){
-                this.chLoadingShow()
+                this.chLoadingShow({ show: true})
 
                 userAuthUpdate({
                     AccidentCode: this.id,  // 事故事件編號
@@ -199,7 +199,7 @@ export default {
                     console.log(err);
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({ show: false})
                 })
               }
             },

@@ -240,6 +240,7 @@ import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import PeopleSelect from '@/components/PeopleSelect'
 import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
+import DangerousFlammableChecklistSeasonVue from '../../../formManage/serve/DangerousFlammableChecklistSeason.vue'
 
 export default {
     data: () => ({
@@ -345,10 +346,11 @@ export default {
                                   
                 ],
              }).then(res => {
-                console.log(res.data)
-                console.log(res.data.RecPeople)
-                //this.tableItems = JSON.parse(res.data.order_list)
-                //console.log(this.tableItems)
+                // console.log(res.data)
+                // console.log(res.data.RecPeople)
+                if(res.data.PeopleId != this.userData.UserId){ // 檢查登入者是否為可編輯者
+                    this.$router.push({ path: '/no-permission' })
+                }
                 this.setShowDataint(res.data)
              }).catch(err => {
                 console.log(err)

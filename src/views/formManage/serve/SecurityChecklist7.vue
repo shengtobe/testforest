@@ -514,7 +514,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
       })
     },
     // 存
@@ -550,7 +550,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
       })
       this.Add = false;
 
@@ -638,7 +638,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
       })
     },//viewPage
   },

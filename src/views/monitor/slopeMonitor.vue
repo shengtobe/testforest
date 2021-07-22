@@ -361,7 +361,7 @@ export default {
         console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
       })
     },
     // 更換頁數

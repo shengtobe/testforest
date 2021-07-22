@@ -150,7 +150,7 @@ export default {
         ]),
         // 初始化資料
         initData() {
-            this.chLoadingShow()
+            this.chLoadingShow({ show: true})
 
             //詢問個人資訊
             fetchPersonalInfo({
@@ -241,7 +241,7 @@ export default {
             //     ]
 
             // }, 1000)
-                this.chLoadingShow()
+                this.chLoadingShow({ show: false})
         },
         redirect(item) {
             console.log("item:::", item.InfoBelongMod)

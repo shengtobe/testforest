@@ -94,7 +94,7 @@
                 >同意發布</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
-                    v-if="status == 3"
+                    v-if="status == 3 && isShowBtn_edit"
                     @click="sendSuggestion"
                 >送出意見</v-btn>
             </template>
@@ -239,6 +239,7 @@ import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { safetyinfodelete, safetyinforeturn, safetyinfojoincheck, safetyinfocheck } from '@/apis/smis/carSafeInfo'
+import { fetchSupervisor } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -247,6 +248,7 @@ export default {
         done: false,  // 是否完成頁面操作
         status: '',  // 處理狀態
         isShowBtn: false, // 按鈕是否顯示(依權限)
+        isShowBtn_edit: false, // 按鈕是否顯示(依權限)
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 檔案附件
@@ -303,7 +305,9 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log(obj)
+            // this.chLoadingShow()
+            this.chLoadingShow({ show: true})
+            console.log("安全資訊 審核中 obj: ", obj)
             this.id = obj.SaftyInfoCode  // 編號
             this.status = obj.SaftyInfoStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -312,23 +316,46 @@ export default {
             //this.files = [ ...obj.files ]  // 檔案附件
             //this.opinionList = [ ...obj.opinionList ]  // 加會意見列表
             this.opinionList = [ ...obj.JoinPeople ]  // 加會意見列表
-
+            console.log("status: ", this.status)
             if(this.status == 2){
                 //敲門
-                canInUpdate({
+                // canInUpdate({
+                //     ClientReqTime: getNowFullTime(),  // client 端請求時間
+                //     OperatorID: this.userData.UserId,  // 操作人id
+                // }).then(res => {
+                //     if (res.data.ErrorCode == 0) {
+                //         this.saveUserGroup(res.data.GroupData)
+                //         this.isShowBtn = this.groupData.RoleLv4 == "T";
+                //     }
+                // }).catch( err => {
+                //     console.log(err)
+                // }).finally(() => {
+                // })
+                //查詢員工所屬的部門主管資料
+                fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    ReqID: obj.PeopleId,  // 立單人id
                 }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.saveUserGroup(res.data.GroupData)
-                        this.isShowBtn = this.groupData.RoleLv4 == "T";
+                    // this.isShowBtn = res.data == this.userData.UserId
+                    // console.log("主管測試: ", res.data + "=" + this.userData.UserId);
+                    if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
+                        this.isShowBtn = this.isShowBtn_edit = true
                     }
-                }).catch( err => {
-                    console.log(err)
+                    else if(this.userData.UserId == obj.PeopleId){ // 如果登入者是通報人
+                        this.isShowBtn_edit = true
+                    }
+                    else{ // 都不是
+                        this.$router.push({ path: '/no-permission' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
                 }).finally(() => {
+                    // this.isLoading = this.dialog = false
                 })
+                
             }
-
+            this.chLoadingShow({ show: false})
             
             
             // if(this.status == 2){
@@ -348,7 +375,7 @@ export default {
             // }
 
 
-            this.chLoadingShow()
+            // this.chLoadingShow()
             //     safetyinfodetail({
             //             ClientReqTime: getNowFullTime(),  // client 端請求時間
             //            OperatorID: this.userData.UserId,  // 操作人id
@@ -450,7 +477,7 @@ export default {
         },
         // 退回
         withdraw() {
-            this.isLoading = true
+            this.chLoadingShow({ show: true})
 //console.log(this.backReason)
             setTimeout(() => {
 
@@ -465,7 +492,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '退回成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                         this.dialog = false
-                    this.chLoadingShow()
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -474,15 +500,15 @@ export default {
                      console.log(err)
                      alert('退回時發生問題，請重新執行!')
                  }).finally(() => {
-                     this.chLoadingShow()
                 })
               
             }, 1000)
+            this.chLoadingShow({ show: false})
         },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({ show: true})
 
                 setTimeout(() => {
                     safetyinfodelete({
@@ -495,7 +521,6 @@ export default {
                         
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
-                    this.chLoadingShow()
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -504,16 +529,14 @@ export default {
                 console.log(err)
                 alert('作廢時發生問題，請重新執行!')
              }).finally(() => {
-                this.chLoadingShow()
-             })
-                    
-                }, 1000)
+                this.chLoadingShow({ show: false})
+             })}, 1000)
             }
         },
         // 同意發布
         save() {
             if (confirm('你確定要發布嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({ show: true})
 
                 setTimeout(() => {
 
@@ -528,7 +551,6 @@ export default {
                         this.chMsgbar({ success: true, msg: '發布成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                         //this.dialog = false
-                        this.chLoadingShow()
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -537,19 +559,18 @@ export default {
                      console.log(err)
                      alert('發布時發生問題，請重新執行!')
                  }).finally(() => {
-                     this.chLoadingShow()
+                     this.chLoadingShow({ show: false})
                 })
 
                     this.chMsgbar({ success: true, msg: '同意發布成功'})
                     this.done = true  // 隱藏頁面操作按鈕
-                    this.chLoadingShow()
                 }, 1000)
             }
         },
         // 送出意見
         sendSuggestion() {
             if (confirm('你確定要送出意見嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({ show: true})
 
                 setTimeout(() => {
 //console.log(this.opinion)
@@ -564,7 +585,7 @@ export default {
                         this.chMsgbar({ success: true, msg: '同意送出意見成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                         this.dialog = false
-                        this.chLoadingShow()
+
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -573,20 +594,20 @@ export default {
                      console.log(err)
                      alert('同意送出意見時發生問題，請重新執行!')
                  }).finally(() => {
-                     this.chLoadingShow()
+                     this.chLoadingShow({ show: false})
                 })
                     this.chMsgbar({ success: true, msg: '同意送出意見成功'})
                     this.done = true  // 隱藏頁面操作按鈕
-                    this.chLoadingShow()
+
                 }, 1000)
             }
         },
         // 列印
         print() {
-            this.chLoadingShow()
+            this.chLoadingShow({ show: true})
 
             setTimeout(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({ show: false})
             }, 1000)
         },
     },
