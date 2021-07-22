@@ -3,8 +3,7 @@
   傳入參數：
     defDeptId: 預設的單位
   回傳function：
-    peopleId: 員編
-    peopleName: 姓名
+    getPeople: 員編
  -->
 <!-- 下拉選單 -->
   <v-row no-gutters class="mt-5">
@@ -87,7 +86,8 @@ export default {
       uid: '',
       name: '',
     },
-    dialogShow: false
+    dialogShow: false,
+    userDataFull: []//員工列表大全
   }),
   computed: {
     ...mapState ('user', {
@@ -125,6 +125,7 @@ export default {
         this.opts.lv2 = res.data.user_depart_list_group_2.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
         this.opts.lv3 = res.data.user_depart_list_group_3.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
         this.users = res.data.user_list_group_4.map(e=>({value: e.UserId,text:e.UserName,DepartCode:e.DepartCode}))
+        this.userDataFull = res.data.user_list_group_4
         this.getDefaultSelect()
       } catch (err) {
         console.error("err",err)
@@ -133,8 +134,7 @@ export default {
     },
     // 選擇員工
     choseUser(item) {
-      this.$emit('peopleId',item.value)
-      this.$emit('peopleName',item.text)
+      this.$emit('getPeople',this.userDataFull.find(e=>e.UserId==item.value))
     },
     getDefaultSelect() {
       //defDeptId
