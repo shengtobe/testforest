@@ -154,15 +154,15 @@
       },
       toLv: {
         type: Number,
-        required: true,
+        required: false,
       },
       needIcon: {
         type:Boolean,
-        required: true
+        required: false
       },
       disableToLv: {
         type: Number,
-        required: true
+        required: false
       },
       rtnStartLv: {
         type: Number,

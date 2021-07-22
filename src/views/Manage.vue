@@ -1,5 +1,6 @@
 <template>
 <v-app>
+ <div v-on:mousemove.capture="reCalculate">
   <SystemDialog />
   <SystemLoading />
   <SystemViewDialog />
@@ -298,6 +299,7 @@
         </span>
     </v-snackbar>
   </v-overlay>
+ </div>
 </v-app>
 </template>
 <style>
@@ -340,7 +342,8 @@ export default {
             overlay: false,
             title: '',
             memo: '',
-        }
+        },
+        OtimeOut: null,
     }),
     computed: {
         ...mapState ('user', {
@@ -409,8 +412,10 @@ export default {
                 this.saveUserGroup(JSON.parse(this.decode(localStorage.getItem('groupData'), this.key)))
                 //
                 this.saveFuncIdList(UData.FunctionsAuthorData)
+                //建立全域警告
                 this.createWSC()
-
+                //建立無動作登出計時
+                this.reCalculate()
                 // 使用者權限
                 this.role = JSON.parse(this.decode(localStorage.getItem('groupData'), this.key))
             } 
@@ -419,6 +424,7 @@ export default {
                 console.log(e);
             }
         },
+        //全域警告
         createWSC() {
             let wsc = this.ws
             const that = this
@@ -487,6 +493,15 @@ export default {
             } catch(err) {
                 console.log(err)
             }
+        },
+        //無動作登出
+        whenTimnmeout() {
+            this.logout()
+        },
+        reCalculate() {
+            const that = this
+            clearTimeout(that.OtimeOut)
+            this.OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
         }
     },
     created() {
