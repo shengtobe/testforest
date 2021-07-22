@@ -637,7 +637,7 @@ export default {
         this.ipt = { ...this.defaultIpt }  // 初始化表單
         // -------------- 編輯時(看sid) -------------- 
         if (this.sid != undefined) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.isEdit = true
             this.ipt.ID = this.id
             healthCdList({
@@ -654,7 +654,7 @@ export default {
           }).catch( err => {
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
           }).finally(() => {
-            this.chLoadingShow()
+            this.chLoadingShow({show:false})
           })
         } else {
           // -------------- 新增時 --------------
@@ -700,7 +700,7 @@ export default {
               return;
           }
           
-        this.chLoadingShow()
+        this.chLoadingShow({show:true})
         let sendData = {
           FlowID: (this.isEdit)?this.sid:'',
           Option: (this.isEdit)?'2':'1',
@@ -723,7 +723,7 @@ export default {
             const errMsg = '伺服器發生問題，資料' + ((this.isEdit)?'更新':'新增') + '失敗'
           this.chMsgbar({ success: false, msg: errMsg })
         }).finally(() => {
-          this.chLoadingShow()
+          this.chLoadingShow({show:false})
           this.$router.push({ path: `/smis/jobsafety/physical/${this.ipt.ID}/list` })
         })
       },

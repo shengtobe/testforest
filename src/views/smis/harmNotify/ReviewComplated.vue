@@ -250,7 +250,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             // this.routeId = this.$route.params.id
             this.routeId = this.id
 
@@ -289,7 +289,7 @@ export default {
             //     }
 
             //     this.setShowData(obj)
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
         // 初始化資料
@@ -332,7 +332,7 @@ export default {
         // 同意不立案
         save() {
             if (confirm('你確定要不立案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 recordNotify({
                     EndangerID: this.id,  // 通報編號
@@ -358,7 +358,7 @@ export default {
                 }).catch(err => {
                         this.chMsgbar({ success: false, msg: '立案成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -367,7 +367,7 @@ export default {
             // 請後端更改危害狀態為2 (已回覆尚未立案)
             // 收到後端回應後，重新導向回 show 的路由
             if (confirm('你確定要變更立案類型嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 recordNotify({
                     EndangerID: this.id,  // 通報編號
@@ -393,7 +393,7 @@ export default {
                 }).catch(err => {
                         this.chMsgbar({ success: false, msg: '變更立案成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

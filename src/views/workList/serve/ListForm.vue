@@ -646,7 +646,7 @@ export default {
         ]),
         // 初始化
         async initData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.initFetchData()  // 判斷新增或編輯
 
             // 向後端請求第一層設備標示編號
@@ -657,7 +657,7 @@ export default {
                 alert('設備報修資料取得失敗')
             }
 
-            this.chLoadingShow()
+            this.chLoadingShow({show:false})
         },
         // 判斷新增或編輯
         initFetchData() {
@@ -678,7 +678,7 @@ export default {
         },
         // 向後端請求資料(編輯時用)
         fetchOrderOne() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             fetchWorkOrderOne({
                 WorkOrderID: this.id,  // 工單編號
@@ -714,7 +714,7 @@ export default {
                 console.log(err)
                 alert('資料讀取失敗')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 關閉 dialog
@@ -790,7 +790,7 @@ export default {
                 return
             }
             // if (this.$refs.form.validate()) {  // 表單驗證欄位
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 if (this.isEdit) {
                     // -------- 編輯時 -------
@@ -827,7 +827,7 @@ export default {
                     }).catch(err => {
                         this.chDialog({ show: true, msg: '伺服器發生問題，更新失敗' })
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 } else {
                     // -------- 新增時 -------
@@ -865,7 +865,7 @@ export default {
                     }).catch(err => {
                         this.chDialog({ show: true, msg: '伺服器發生問題，新增失敗' })
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
                     })
                 }
@@ -894,7 +894,7 @@ export default {
         // 向後端請求設備標示編號
         // 參數說明：val => 上層所選的值, lv => 要向後端取得的層數 (2~4)
         async fetchEqCodes(val, lv, parentVal='', subVal='') {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             let codeRes = {}
             switch(lv) {
                 case 2:
@@ -924,7 +924,7 @@ export default {
             }
             
             this.setEqCodeOption(codeRes.data.device_query, 'opt'+ lv)
-            this.chLoadingShow()
+            this.chLoadingShow({show:false})
         },
         // 編輯
         editEqCode() {

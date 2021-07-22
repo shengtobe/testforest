@@ -104,7 +104,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.routeId = this.$route.params.id
 
             // 新增測試用資料
@@ -123,16 +123,16 @@ export default {
                 this.basicReason = obj.basicReason
                 this.improve = obj.improveStrategy  // 改善措施的預設值
 
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 送出
         save() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             setTimeout(() => {
                 this.chMsgbar({ success: true, msg: '更新成功'})
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
     },

@@ -270,7 +270,7 @@ export default {
         },
          // 查詢
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             carspeedQueryList({
                 ...this.searchIpt,
@@ -289,7 +289,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，清單查詢失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
             
         },
@@ -307,7 +307,7 @@ export default {
             this.Delete = true
         },
         goDelete() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             carspeedUpdate({
                 FlowID:this.DeleteItem,
                 Option: 'D',
@@ -325,7 +325,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.Delete = false
                 this.search()
             })

@@ -738,7 +738,7 @@ export default {
             switch(this.carSafeType){
                 case 'B': // 以行安立案 選擇 既有行安事故
                     this.shwoPick1_1Form = true;
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     fetchListEvent({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
@@ -766,12 +766,12 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                     break;
                 case 'D': // 以行安立案 選擇 既有行安危害
                     this.shwoPick1_2Form = true;
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     fetchListDb({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
@@ -799,7 +799,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                     break;
                 default:
@@ -816,7 +816,7 @@ export default {
                 case 'B': // 以職安立案 選擇 既有職災事故
                     this.shwoPick2_1Form = true;
                     this.ipt.code1 = this.ipt.code2 = '';
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     
                     searchData({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -843,7 +843,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                     break;
                 case 'C': // 以職安立案 選擇 新增職災事故
@@ -855,7 +855,7 @@ export default {
                 case 'D': // 以職安立案 選擇 既有職災危害
                     this.shwoPick2_2Form = true;
                     this.ipt.code1 = this.ipt.code2 = '';
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     
                     searchDataDb({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -882,7 +882,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                     break;
                 default:
@@ -919,13 +919,13 @@ export default {
         // 連結行車事故事件
         // connCarEvt() {
         //     this.noActionShow = false  // 關閉不予處理原因欄位
-        //     this.chLoadingShow()
+        //     this.chLoadingShow({show:true})
 
         //     // 向後端請求資料
         //     setTimeout(() => {
         //         this.dialogTableItems.carEvt = [ ...carEventItems ]
         //         this.dialogShow.carEvt = true
-        //         this.chLoadingShow()
+        //         this.chLoadingShow({show:true})
         //     }, 1000)
         // },
         // 連結行車危害
@@ -936,13 +936,13 @@ export default {
         // 連結職災事故
         // connJobEvt() {
         //     this.noActionShow = false  // 關閉不予處理原因欄位
-        //     this.chLoadingShow()
+        //     this.chLoadingShow({show:true})
 
         //     // 向後端請求資料
         //     setTimeout(() => {
         //         this.dialogTableItems.jobEvt = [ ...jobEventItems ]
         //         this.dialogShow.jobEvt = true
-        //         this.chLoadingShow()
+        //         this.chLoadingShow({show:true})
         //     }, 1000)
         // },
         // 連結職災危害
@@ -987,7 +987,7 @@ export default {
         // 送出回覆
         sendReplay() {
             if (confirm('送出後無法再修改內容，你確定要送出回覆嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 this.replayMsg = (this.ipt.reply == '自訂訊息')? this.ipt.replyOther : this.ipt.reply
                 
                 replyNotify({
@@ -1006,7 +1006,7 @@ export default {
                 }).catch(err => {
                      this.chMsgbar({ success: false, msg: '回覆成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -1034,7 +1034,7 @@ export default {
             let askMsg = (this.NoRecord == 'F')?'你確定要立案嗎?':'你確定要不立案嗎?';
             if (confirm(askMsg)) {
 
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 // 判斷行安、職安的立案類型及種類 (依下拉選單所選的值判斷，不選擇就維持空值)
                 let carType = ''  // 行安立案類型
@@ -1114,7 +1114,7 @@ export default {
                 }).catch(err => {
                         this.chMsgbar({ success: false, msg: '立案成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -1125,7 +1125,7 @@ export default {
         // 不立案
         nocreate() {
             if (confirm('你確定要不立案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 // 判斷行安、職安的立案類型及種類 (依下拉選單所選的值判斷，不選擇就維持空值)
                 let carType = ''  // 行安立案類型
@@ -1205,7 +1205,7 @@ export default {
                 }).catch(err => {
                         this.chMsgbar({ success: false, msg: '立案成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

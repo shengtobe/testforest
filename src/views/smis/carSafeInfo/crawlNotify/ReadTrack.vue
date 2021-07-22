@@ -103,7 +103,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.routeId = this.$route.params.id
 
             readTrack({
@@ -128,7 +128,7 @@ export default {
                 }).catch(err => {
                      this.chMsgbar({ success: false, msg: '儲存成功'})
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
 
             // 新增測試用資料
@@ -176,7 +176,7 @@ export default {
             //         }
             //     })
 
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
         // 更換頁數

@@ -279,7 +279,7 @@ export default {
         },
         // 查詢
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             brakeQueryList({
                 ...this.searchIpt,
@@ -299,7 +299,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，清單查詢失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -316,7 +316,7 @@ export default {
             this.Delete = true
         },
         goDelete() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             brakeUpdate({
                 FlowID: this.DeleteItem,
                 Option: 'D',
@@ -334,7 +334,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.Delete = false
                 this.search()
             })

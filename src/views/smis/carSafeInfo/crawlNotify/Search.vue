@@ -197,7 +197,7 @@ export default {
         ]),
         // 搜尋
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             if(this.ipt.dateStart == null) this.ipt.dateStart = '';
             if(this.ipt.dateEnd == null) this.ipt.dateEnd = '';
@@ -235,7 +235,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
             // 新增測試用資料
             // setTimeout(() => {
@@ -277,7 +277,7 @@ export default {
             //             isStop: false,  // 是否解除
             //         },
             //     ]
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
         // 更換頁數
@@ -287,7 +287,7 @@ export default {
         // 解除
         stop(SlowReportCode) {
             if (confirm('解除會發通知給所有收件人，並且之後無法再編輯，你確定要解除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 deleteRegul({
                     SlowSpeedCode: SlowReportCode,  // 編號
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -305,14 +305,14 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
 
                 // setTimeout(() => {
                 //     let idx = this.tableItems.findIndex(item => item.id == id)
                 //     this.tableItems[idx].isStop = true  // 把解除按鈕 disabled 掉
                 //     this.chMsgbar({ success: true, msg: '解除成功'})
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },

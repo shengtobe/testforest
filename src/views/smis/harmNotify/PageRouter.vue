@@ -38,7 +38,7 @@ export default {
         ]),
         // 向後端取資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             fetchNotifyOne({
                 EndangerID: this.id,  // 危害通報編號 (從路由參數抓取)
@@ -114,7 +114,7 @@ export default {
                 console.log(err)
                 alert('伺服器發生問題，資料讀取失敗')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
     },

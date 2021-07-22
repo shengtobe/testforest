@@ -113,7 +113,7 @@ export default {
             
             this.files = [ ...obj.FileCount ]  // 檔案附件
             //console.log(...obj.files)
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
                
             
             //     safetyinfodetail({
@@ -146,7 +146,7 @@ export default {
             //     console.log(err)
             //     alert('查詢時發生問題，請重新查詢!')
             //  }).finally(() => {
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             //  })
         },
         // 設定上方資料
@@ -186,7 +186,7 @@ export default {
         // 作廢
         del(obj) {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 safetyinfodelete({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -206,20 +206,20 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
              })
 
                 // setTimeout(() => {
                 //     this.chMsgbar({ success: true, msg: '作廢成功'})
                 //     this.done = true  // 隱藏頁面操作按鈕
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },
         // 申請審核
         save(obj) {
             if (confirm('你確定要申請審核嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 safetyinfoupdate({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -238,13 +238,13 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
              })
 
                 // setTimeout(() => {
                 //     this.chMsgbar({ success: true, msg: '申請審核成功'})
                 //     this.done = true  // 隱藏頁面操作按鈕
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },

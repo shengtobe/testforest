@@ -160,7 +160,7 @@ export default {
         ]),
         // 查詢
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             licenseRcdQuery({
                 License: this.licenseName,
@@ -188,7 +188,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -220,7 +220,7 @@ export default {
         },
         // 刪除
         del(item) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             licenseRcdOption({
                 ...item,
                 Option: '3',
@@ -237,7 +237,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.delDialog = false
                 this.search()
             })

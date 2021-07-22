@@ -453,7 +453,7 @@ export default {
       this.Delete = true
     },
     goDelete() {
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       materialDelete({
         MaterialCode: this.deleteKey,
         ClientReqTime: getNowFullTime(),  // client 端請求時間

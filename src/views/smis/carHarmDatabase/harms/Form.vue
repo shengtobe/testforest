@@ -528,7 +528,7 @@ export default {
             // -------------- 編輯時 -------------- 
             if (this.id != undefined) {
                 this.isEdit = true
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 
                 fetchOne({
                     EndangerCode: this.id,  // 工單編號 (從路由參數抓取)
@@ -550,7 +550,7 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -587,7 +587,7 @@ export default {
                 alert("危害說明未填")
                 return
             }
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 組合要傳至後端的已選控制措施資料
             let chooseControlData = this.ipt.controlChoose.map(item => ({
@@ -629,7 +629,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             } else {
                 // ---------- 新增時---------- 
@@ -667,14 +667,14 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
             this.saveBtnShow = false
         },
         // 搜尋控制措施
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -700,7 +700,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 顯示檢視內容

@@ -195,7 +195,7 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteData({
                     EndangerCode: this.id,  // 編號
@@ -212,7 +212,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -227,13 +227,13 @@ export default {
         // 申請審核
         save() {
             if (confirm('你確定要申請審核嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 // setTimeout(() => {
                 //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                 //     this.chMsgbar({ success: true, msg: '申請審核成功'})
                 //     this.done = true
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
                 //-----call申請審核api------
                 sendCheckData({
@@ -249,7 +249,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

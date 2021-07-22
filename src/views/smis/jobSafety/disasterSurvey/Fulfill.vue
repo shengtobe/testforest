@@ -291,7 +291,7 @@ export default {
         // 同意結案
         save() {
             if (confirm('你確定要結案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 passData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -308,7 +308,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -316,7 +316,7 @@ export default {
         del() {
             if (confirm('你確定要作廢嗎?')) {
                 console.log("欲刪除的資料ID:" + this.id)
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteData({
                     AccidentCode: this.id,  // 編號
@@ -334,7 +334,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

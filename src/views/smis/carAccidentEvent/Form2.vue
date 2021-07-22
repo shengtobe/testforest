@@ -276,7 +276,7 @@ export default {
 
             if (this.$route.params.id != undefined) {
                 // -------------- 編輯時 -------------- 
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 this.routeId = this.$route.params.id  // 路由參數(id)
                 this.isEdit = true
 
@@ -304,7 +304,7 @@ export default {
                     }
                     
                     this.setInitDate(obj)
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 }, 1000)
             
             } else {
@@ -373,7 +373,7 @@ export default {
         },
         // 送出
         save() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 新增測試用資料
             setTimeout(() => {
@@ -382,7 +382,7 @@ export default {
                 let txt = (this.isEdit)? '資料更新成功' :  '資料新增成功'
                 if (!this.isEdit) this.$router.push({ path: '/smis/car-accident-event' })
                 this.chMsgbar({ success: true, msg: txt })
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 加入要上傳的檔案 (新增時)
@@ -395,25 +395,25 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             setTimeout(() => {
                 // 後端請求後，回傳檔案資料 (id、filename、link)
                 // this.ipt.files.push(fileData)
                 this.chMsgbar({ success: true, msg: '檔案新增成功'})
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 刪除檔案 (編輯時)
         deleteFile(id, idx) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 setTimeout(() => {
                     // 後端請求後，移除檔案列表
                     this.ipt.files.splice(idx, 1)
                     this.chMsgbar({ success: true, msg: '檔案刪除成功'})
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 }, 1000)
             }
         },

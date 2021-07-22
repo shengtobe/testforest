@@ -344,7 +344,7 @@ export default {
         },
         // 搜尋
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -404,8 +404,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                console.log("S OK");
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -433,6 +432,7 @@ export default {
         })
 
         // 初始化事故類型 fetchEvtTypes
+        this.chLoadingShow({show:true})
         fetchEvtTypes({
             OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
             ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -452,7 +452,7 @@ export default {
             console.log(err)
             alert('伺服器發生問題，事故類型讀取失敗')
         }).finally(() => {
-            // this.chLoadingShow()
+            this.chLoadingShow({show:false})
         })
 
         this.reset()

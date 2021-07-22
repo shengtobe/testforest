@@ -102,7 +102,7 @@ export default {
         // 刪除
         deleteItem() {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 
                 deleteOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
@@ -120,14 +120,14 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，刪除失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 結案
         closeWork() {
             if (confirm('你確定要結案嗎?')) {
-               this.chLoadingShow()
+               this.chLoadingShow({show:true})
                 
                 closeOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
@@ -144,7 +144,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，結案失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

@@ -32,14 +32,14 @@ export default {
         ]),
         // 初始化資料
         initData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 測試用資料
             setTimeout(() => {
                 // 向後端取得資料後
                 this.createChart(departChartData)  // 繪製圖表
                 this.show = true
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 繪製圖表

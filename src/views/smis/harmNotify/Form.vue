@@ -265,7 +265,7 @@ export default {
                 alert("必填欄位未填")
                 return
             }
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             createNotify({
                 FindDDay: this.ipt.date,  // 發現日期
@@ -293,7 +293,7 @@ export default {
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 加入檔案 (組件用)

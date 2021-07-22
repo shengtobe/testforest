@@ -492,7 +492,7 @@ export default {
         ]),
         // 搜尋
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             // 新增測試用資料
@@ -537,7 +537,7 @@ export default {
                         note: '',
                     },
                 ]
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 清除搜尋內容
@@ -581,13 +581,13 @@ export default {
         // 刪除
         del(id) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 setTimeout(() => {
                     let idx = this.tableItems.findIndex(item => item.id == id)
                     this.tableItems.splice(idx, 1)
                     this.chMsgbar({ success: true, msg: '刪除成功'})
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 }, 1000)
             }
         },

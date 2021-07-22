@@ -246,7 +246,7 @@ export default {
     },
     getQueryList() { //抓清單
       if(parseInt(this.datestart.replace(/-/g,"")) <= parseInt(this.dateend.replace(/-/g,"")) || (this.dateend == "" && this.datestart== "")){
-        this.chLoadingShow()
+        this.chLoadingShow({show:true})
         jobQueryList({
           CreateDTime_Start: this.datestart,
           CreateDTime_End: this.dateend,
@@ -267,7 +267,7 @@ export default {
         }).catch( err => {
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
         }).finally(() => {
-          this.chLoadingShow()
+          this.chLoadingShow({show:false})
         })
       }else{
         this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })

@@ -131,7 +131,7 @@ export default {
         ]),
         // 初始化資料 (搜尋所有資料)
         initData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             drivingfetchList({
@@ -155,7 +155,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -197,7 +197,7 @@ export default {
         // 刪除
         del(item) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 this.editIdx = this.tableItems.indexOf(item)  // 取得索引值
 
@@ -218,7 +218,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

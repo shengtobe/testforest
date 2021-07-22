@@ -136,7 +136,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.routeId = this.$route.params.id
 
             // 新增測試用資料
@@ -207,7 +207,7 @@ export default {
                     }
                 })
 
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 更換頁數

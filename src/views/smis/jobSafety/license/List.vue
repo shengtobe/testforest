@@ -161,7 +161,7 @@ export default {
         ]),
         // 初始化資料
         initData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             licenseQuery({
                 FlowID: this.id,
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -186,7 +186,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -220,7 +220,7 @@ export default {
         },
         // 刪除
         del(item) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             licenseOption({
                 ...item,
                 Option: '3',
@@ -237,7 +237,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.initData()
                 this.delDialog = false
             })

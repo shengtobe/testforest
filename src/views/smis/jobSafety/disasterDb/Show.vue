@@ -68,7 +68,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // // 新增測試用資料
             // setTimeout(() => {
@@ -99,7 +99,7 @@ export default {
             //     }
 
             //     this.setShowData(obj)
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
         // 初始化資料
@@ -132,7 +132,7 @@ export default {
         del() {
             if (confirm('你確定要作廢嗎?')) {
                 console.log("欲刪除的資料ID:" + this.id)
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 deleteDataDb({
                     EndangerCode: this.id,  // 編號
@@ -150,7 +150,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

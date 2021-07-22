@@ -174,7 +174,7 @@ export default {
         ]),
         // 查詢
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({
@@ -208,7 +208,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -222,7 +222,7 @@ export default {
         // 刪除控制措施
         delControl(id) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 deleteData({
                     ProcCode: id,  // 編號
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -238,7 +238,7 @@ export default {
                     console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

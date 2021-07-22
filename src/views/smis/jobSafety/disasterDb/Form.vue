@@ -345,7 +345,7 @@ export default {
         initData() {
             // -------------- 編輯時 -------------- 
             if (this.$route.params.id != undefined) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 this.id = this.$route.params.id  // 路由參數(id) routeId
                 this.isEdit = true
 
@@ -371,7 +371,7 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
 
                 // 範例效果
@@ -400,7 +400,7 @@ export default {
                 //     }
                     
                 //     this.setInitDate(obj)
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
             }
         },
@@ -460,7 +460,7 @@ export default {
         // 送出
         save() {
             if (confirm('你確定要送出嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 this.ipt.EndangerCode = this.ipt.code1 + "-" + this.ipt.code2
 
@@ -472,7 +472,7 @@ export default {
                 //         this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
                 //         this.chMsgbar({ success: true, msg: '資料新增成功' })
                 //     }
-                //     this.chLoadingShow()
+                //     this.chLoadingShow({show:true})
                 // }, 1000)
                 if (this.isEdit) {
                 // ---------- 編輯時---------- 
@@ -510,7 +510,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             } else {
                 console.log("---------- 新增時---------- ")
@@ -552,7 +552,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
             }

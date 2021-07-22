@@ -94,7 +94,7 @@ export default {
         ]),
         // 向後端取得資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             //敲門
             canInUpdate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -168,12 +168,12 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 作廢
         del() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             let sendData = {
                 Option: '3',
                 FlowID: this.sid,
@@ -192,7 +192,7 @@ export default {
             }).catch( err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料作廢失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.$router.push({ path: `/smis/jobsafety/physical/${this.id}/list` })
             })
         },

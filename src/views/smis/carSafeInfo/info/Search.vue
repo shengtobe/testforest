@@ -307,7 +307,7 @@ export default {
             //             status: 4,
             //         },
             //     ]
-            //     this.chLoadingShow()
+            //     this.chLoadingShow({show:true})
             // }, 1000)
         },
         // 更換頁數

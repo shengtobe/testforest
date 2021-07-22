@@ -357,7 +357,7 @@ export default {
         // 同意措施執行
         save() {
             if (confirm('你確定要同意措施執行嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 passData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -374,7 +374,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -403,7 +403,7 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 
                 deleteData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -421,14 +421,14 @@ export default {
                     console.log(err)
                     alert('伺服器發生問題，作廢失敗')
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 申請結案
         closeCase() {
             if (confirm('你確定要申請結案嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 closeData({
                     AccidentCode: this.id,  // 事故事件編號
                     ReviewTitle: this.controlReview,  // 措施檢討摘要
@@ -446,14 +446,14 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
         // 重提事故事件
         rerun() {
             if (confirm('重提後，資料會要重新跑流程，你確定嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 resetData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -470,7 +470,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，重提失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },

@@ -86,6 +86,7 @@
 
                 <v-btn dark class="ma-2 btn-modify"
                     :to="`/smis/car-safeinfo/info/${id}/edit`"
+                    v-if="isShowBtn_edit"
                 >編輯</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
@@ -94,7 +95,7 @@
                 >同意發布</v-btn>
 
                 <v-btn dark  class="ma-2 btn-add"
-                    v-if="status == 3 && isShowBtn_edit"
+                    v-if="status == 3 && isShowBtn_add"
                     @click="sendSuggestion"
                 >送出意見</v-btn>
             </template>
@@ -249,6 +250,7 @@ export default {
         status: '',  // 處理狀態
         isShowBtn: false, // 按鈕是否顯示(依權限)
         isShowBtn_edit: false, // 按鈕是否顯示(依權限)
+        isShowBtn_add: false, // 加會送出建議是否顯示(依權限)
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
         files: [],  // 檔案附件
@@ -305,7 +307,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            // this.chLoadingShow()
+            // this.chLoadingShow({show:true})
             this.chLoadingShow({ show: true})
             console.log("安全資訊 審核中 obj: ", obj)
             this.id = obj.SaftyInfoCode  // 編號
@@ -355,6 +357,11 @@ export default {
                 })
                 
             }
+            else if(this.status == 3){
+                this.isShowBtn_edit = false
+                // if(this.userData.UserId)
+                this.isShowBtn_add = true
+            }
             this.chLoadingShow({ show: false})
             
             
@@ -375,7 +382,7 @@ export default {
             // }
 
 
-            // this.chLoadingShow()
+            // this.chLoadingShow({show:true})
             //     safetyinfodetail({
             //             ClientReqTime: getNowFullTime(),  // client 端請求時間
             //            OperatorID: this.userData.UserId,  // 操作人id
@@ -408,7 +415,7 @@ export default {
             //             console.log(err)
             //             alert('查詢時發生問題，請重新查詢!')
             //            }).finally(() => {
-            //              this.chLoadingShow()
+            //              this.chLoadingShow({show:true})
             //            })
 
             // // 讀取追蹤-加會人

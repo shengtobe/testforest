@@ -345,7 +345,7 @@ export default {
         },
         // 查詢
         search() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             healthList({
                 ...this.searchIpt,
@@ -367,7 +367,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 清除搜尋內容
@@ -393,7 +393,7 @@ export default {
             this.dialog = true
         },
         gosave() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             let sendData = {
                 FlowID: this.ipt.FlowID,
                 HealthChkStatus: this.ipt.HealthChkStatus?'T':'F',
@@ -415,7 +415,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料修改失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.dialog = false
                 this.search()
             })
@@ -426,7 +426,7 @@ export default {
         },
         // 作廢
         godel() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             let sendData = {
                 Option: '3',
                 ...this.sid,
@@ -446,7 +446,7 @@ export default {
                 console.warn(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料作廢失敗' })
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
                 this.delDialog = false
                 this.search()
             })

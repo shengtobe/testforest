@@ -355,7 +355,7 @@ export default {
         },
         // 向後端查詢資料
         fetchList() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             hurtFetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -384,7 +384,7 @@ export default {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         // 更換頁數
@@ -413,7 +413,7 @@ export default {
         deleteItem (item) {
             let index = this.tableItems.indexOf(item)
             if (confirm(`你確定要刪除此筆資料嗎?`)) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 hurtDeleteData({
                     AccidentCode: this.id,  // 行車事故事件編號
@@ -431,7 +431,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -530,7 +530,7 @@ export default {
         // 設為無人傷亡
         noDeath() {
             if (confirm(`你確定要設為無人傷亡嗎?  (確定後會刪除所有人員傷亡資料)`)) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 hurtCreateData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -548,7 +548,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，設定失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                     this.close()
                 })
             }

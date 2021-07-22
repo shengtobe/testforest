@@ -301,7 +301,7 @@ export default {
     //抓顯示清單
     setShowData(){
       const that = this
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       largeQueryList({
         DepartCode: that.ipt.depart, 
         MaintainCode: '%' + that.ipt.maintain + '%',
@@ -337,7 +337,7 @@ export default {
     },
     //存檔
     save(){
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       const that = this
       // const dataKeys = Object.keys(that.detailItems)
       // dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])=="string")?escapeHtml(that.detailItems[e]):that.detailItems[e])
@@ -356,7 +356,7 @@ export default {
       }).finally(() => {
         that.close()
         that.setShowData()
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
       })
       
     },
@@ -365,7 +365,7 @@ export default {
       const FID = flowId
       const that = this
       this.dialog_title = "編輯資料"
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       largeQueryDetail({
         FlowId: FID,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -382,7 +382,7 @@ export default {
       }).catch(err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
       })
       this.Edit=true
     },
@@ -411,7 +411,7 @@ export default {
     },
     //確認刪除
     goDelete() {
-      this.chLoadingShow()
+      this.chLoadingShow({show:true})
       const that = this
       largeQueryDelete({
         FlowId: this.deleteFlowId,
@@ -429,7 +429,7 @@ export default {
       }).finally(() => {
         that.close()
         that.setShowData()
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
       })
     },
   },

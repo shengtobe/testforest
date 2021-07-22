@@ -278,7 +278,7 @@ export default {
 
             // -------------- 編輯時 -------------- 
             if (this.id) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
                 this.routeId = this.id  // 路由參數(id)
                 this.isEdit = true
                 carspeedQuery({
@@ -297,7 +297,7 @@ export default {
                     console.warn(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }else{
                 this.ipt.PeopleId = this.userData.UserId
@@ -312,7 +312,7 @@ export default {
         },
         // 送出
         save() {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
             // this.ipt.CheckDate = this.ipt.CheckDate
             if(this.isEdit){
                 carspeedUpdate({
@@ -332,7 +332,7 @@ export default {
                     console.warn(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }else{
                 carspeedInsert({
@@ -350,7 +350,7 @@ export default {
                     console.warn(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
                 }).finally(() => {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 })
             }
         },
@@ -396,25 +396,25 @@ export default {
         },
         // 上傳檔案 (編輯時)
         uploadFile(file) {
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             setTimeout(() => {
                 // 後端請求後，回傳檔案資料 (id、filename、link)
                 // this.ipt.files.push(fileData)
                 this.chMsgbar({ success: true, msg: '檔案上傳成功'})
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             }, 1000)
         },
         // 刪除檔案 (編輯時)
         deleteFile(id, idx) {
             if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow()
+                this.chLoadingShow({show:true})
 
                 setTimeout(() => {
                     // 後端請求後，移除檔案列表
                     // this.ipt.files.splice(idx, 1)
                     this.chMsgbar({ success: true, msg: '檔案刪除成功'})
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:false})
                 }, 1000)
             }
         },

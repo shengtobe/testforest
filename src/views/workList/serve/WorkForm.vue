@@ -272,9 +272,7 @@ export default {
         ]),
         // 初始化資料
         initDate() {
-            console.log("money: ", this.money)
-            return
-            this.chLoadingShow()
+            this.chLoadingShow({show:true})
 
             // 因為要檢查是否有權限編輯，向後端請求資料
             fetchWorkOrderOne({
@@ -290,13 +288,13 @@ export default {
             }).catch(err => {
                 alert('資料讀取失敗')
             }).finally(() => {
-                this.chLoadingShow()
+                this.chLoadingShow({show:false})
             })
         },
         save() {
             // if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('你確定要送出嗎?')) {
-                    this.chLoadingShow()
+                    this.chLoadingShow({show:true})
                     
                     dispatchOrder({
                         WorkOrderID: this.id,  // 工單編號
@@ -321,7 +319,7 @@ export default {
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，派工失敗' })
                     }).finally(() => {
-                        this.chLoadingShow()
+                        this.chLoadingShow({show:false})
                     })
                 }
             // }
