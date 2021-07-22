@@ -321,7 +321,7 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，設備查詢失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
         if(that.selectItem==''){
           that.selectItem.push({key:'',value:'全部單位'})
           var listDepart = that.tableItem.map((item) => {

@@ -339,7 +339,7 @@ export default {
       const that = this
       const departName = '%' + that.searchDepartName + '%'
       const materialName = '%' + that.searchMaterialName + '%'
-      that.chLoadingShow()
+      that.chLoadingShow({show:true})
       materialQueryList({
         DepartCode: departName,
         MaterialName: materialName,
@@ -375,14 +375,14 @@ export default {
       }).catch( err => {
         that.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
         that.tableItem = decodeObject(that.tableItem)
       })
     },
     //詳細查詢
     getDetail(matCode) {
       const that = this
-      that.chLoadingShow()
+      that.chLoadingShow({show:true})
       materialQuery({
         MaterialCode: matCode,  
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -409,7 +409,7 @@ export default {
       }).catch( err => {
         that.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
         that.detailItem = decodeObject(that.detailItem)
         this.contentShow = true;
       })
@@ -426,7 +426,7 @@ export default {
     save(rtnObj) {
       const that = this
       const editObject = encodeObject(rtnObj)
-      that.chLoadingShow()
+      that.chLoadingShow({show:true})
       materialEdit({
         ...editObject,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -440,7 +440,7 @@ export default {
       }).catch( err => {
         that.chMsgbar({ success: false, msg: '伺服器發生問題，資料編輯失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
         that.searchData()
       })
     },

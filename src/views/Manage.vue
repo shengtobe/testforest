@@ -405,6 +405,7 @@ export default {
             {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
+                console.log("儲存使用者資訊 UData: ", UData);
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
                 this.saveUserProfile(UData)
                 
