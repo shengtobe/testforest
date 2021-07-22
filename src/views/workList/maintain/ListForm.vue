@@ -164,17 +164,17 @@
                 <p class="pl-8 mb-0">
                     {{ combineCode }}
 
-                    <v-btn
+                    <!-- <v-btn
                         v-if="isEdit" v-show="false"
                         class="ml-3 mb-1"
                         color="primary"
                         @click="editEqCode"
-                    >編輯</v-btn>
+                    >編輯</v-btn> -->
                 </p>
                 
             </v-col>
           <!-- <EquipRepairCode :key="componentKey" :toLv="2" :nowEqCode="ipt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>RST-8304-COP-02 -->
-          <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" @getEqCode="getTempCode"/>
+          <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" @getEqCode="getTempCode" @getEqCh="getTempCh"/>
 
             <v-col cols="12" class="mt-n4">
                 <!-- <v-row>
@@ -316,6 +316,7 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         combineCode: '', //合併後的設備編碼
+        combineCh: '', //合併後的設備中文名稱
         nowEqCode: '', //編輯時 預設帶入的combineCode
         isEdit: false,  // 是否為編輯
         showEq: false,
@@ -470,6 +471,9 @@ export default {
         getTempCode(value) {
             this.combineCode = value
         },
+        getTempCh(value) {
+            this.combineCh = value
+        },
         ...mapActions('system', [
             'chDialog',  // 改變 dialog
             'chMsgbar',  // 改變 messageBar
@@ -528,7 +532,7 @@ export default {
                 let obj = res.data
                 console.log("維護工單第一個編輯 obj: ", obj)
                 // 檢查是否有權限編輯 (僅立案人、派工人可編輯)
-                if (obj.CreatorID != this.userData.UserId && obj.CreatorID != this.userData.UserId) {
+                if (obj.CreatorID != this.userData.UserId && obj.DispatchID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
                 }
 
@@ -645,6 +649,7 @@ export default {
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
+                        MaintainCode_AllName: this.combineCh,
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '編輯成功' })
@@ -677,8 +682,10 @@ export default {
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
+                        MaintainCode_AllName: this.combineCh,
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
+                            console.log("新增工單 res.data: ", res.data);
                             this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
                             this.clearErrIpt()
                             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單

@@ -12,10 +12,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { fetchOne } from '@/apis/smis/carAccidentEvent'
+import { fetchOne, fetchEvtTypes } from '@/apis/smis/carAccidentEvent'
 import { carAccidentEventStatus, evtTypes, locationOpts, AccidentFactors1, AccidentFactors2, AccidentFactors3 } from '@/assets/js/smisData'
 import Show from '@/views/smis/carAccidentEvent/Show.vue'
 import ReviewComplated from '@/views/smis/carAccidentEvent/ReviewComplated.vue'
@@ -27,10 +27,16 @@ export default {
         itemData: {},  // 工單資料
         status: '',  // 狀態
     }),
+    opsList: null, 
     components: {
         Show,
         ReviewComplated,
         Fulfill,
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -39,6 +45,26 @@ export default {
         // 向後端取資料
         fetchData() {
             this.chLoadingShow()
+
+            // 初始化事故類型 fetchEvtTypes
+            fetchEvtTypes({
+                OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    //抽離 其他
+                    this.opsList = JSON.parse(res.data.order_list)
+                } else {
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，事故類型讀取失敗')
+            }).finally(() => {
+                // this.chLoadingShow()
+            })
 
             fetchOne({
                 AccidentCode: this.id,  // 事故事件編號 (從路由參數抓取)
@@ -93,7 +119,7 @@ export default {
                             { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == res.data.AccidentStatus).text },
                             { icon: 'mdi-calendar-text', title: '發現日期', text: res.data.FindDDate },
                             { icon: 'mdi-cloud-outline', title: '天候', text: res.data.EventWeather },
-                            { icon: 'mdi-snowflake', title: '事故類型', text: evtTypes.find(item => item.value == res.data.AccidentType).text },
+                            { icon: 'mdi-snowflake', title: '事故類型', text: this.opsList.find(item => item.value == res.data.AccidentType).text.replace('率', '') },
                             { icon: 'mdi-stairs', title: '路線坡度', text: res.data.RoadSlope },
                             { icon: 'mdi-image-filter-tilt-shift', title: '曲線半徑', text: res.data.CurveRadius },
                             { icon: 'mdi-alert', title: '事發速限', text: res.data.IncidentLimit },

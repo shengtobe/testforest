@@ -169,7 +169,7 @@ export default {
       const that = this;
       console.log("item: " + item);
       console.log("RPFlowNo: " + item.RPFlowNo);
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
@@ -220,7 +220,7 @@ export default {
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     },
     close() {

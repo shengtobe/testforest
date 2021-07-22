@@ -7,7 +7,7 @@ export const CarSafePerformanceRouter = [
     },
     {
         linkText: '行車安全績效趨勢',  // 各表單及統計圖的入口
-        path: '/smis/car-safe-performance/analysis',
+        path: '/smis/car-safe-performance-analysis',
         component: () => import('@/views/smis/carSafePerformance/AnalysisIndex.vue')
     },
     //-------- 第一、二層 -------

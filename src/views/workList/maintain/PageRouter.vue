@@ -72,6 +72,7 @@ export default {
                             { icon: 'mdi-calendar-text', title: '立案時間', text: `${res.data.CreateDDay} ${res.data.CreateDTime}時` },
                             { icon: 'mdi-apps', title: '維修單位', text: res.data.DispatchDepart },
                             { icon: 'mdi-account', title: '派工人', text: res.data.DispatchMan },
+                            { icon: 'mdi-account', title: '代理人', text: res.data.AgentName },
                             { icon: 'mdi-source-branch', title: '維修類型', text: (res.data.Type == '1')? '故障檢修' : ((res.data.Type == '2')? '例行保養' : '') },
                         ]
 

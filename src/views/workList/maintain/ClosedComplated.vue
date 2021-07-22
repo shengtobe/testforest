@@ -125,7 +125,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { closeOrder, withdrawOrder, cancelOrder } from '@/apis/workList/maintain'
+import { closeOrder, withdrawOrder, cancelOrder, fetchSupervisor } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -182,10 +182,24 @@ export default {
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
             if(this.status == "4"){
                 this.isShowBtn = obj.AllDepartorID == this.userData.UserId
+                //查詢員工所屬的部門主管資料
+                fetchSupervisor({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    ReqID: obj.CreatorID,  // 立單人id
+                }).then(res => {
+                    // this.isShowBtn = res.data == this.userData.UserId
+                    // console.log("主管測試: ", res.data + "=" + this.userData.UserId);
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    // this.isLoading = this.dialog = false
+                })
             }
             else{
 
             }
+            
         },
         // 顯示 dialog
         showDialog(bool) {

@@ -3,7 +3,7 @@
     <h2 class="mb-4 label-title">控制措施查詢</h2>
 
     <v-row class="px-2 label-header">
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="4" md="3" class="mb-n7">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-bank</v-icon>管控單位
             </h3>
@@ -14,7 +14,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="8" md="3">
+        <v-col cols="12" sm="8" md="3" class="mb-n7">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
             </h3>
@@ -25,7 +25,7 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="6" align-self="center">
+        <v-col cols="12" md="6" align-self="center" class="mb-n7">
             <v-btn dark large class="mr-3 btn-search"
                 @click="search"
             >
@@ -38,9 +38,9 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
         </v-col>
-
+        <v-col v-if="msg">共計{{ tableItems.length }}個結果</v-col>
         <!-- 表格資料 -->
-        <v-col cols="12" class="mt-5 mt-md-0">
+        <v-col cols="12" class="mt-md-0">
             <v-card>
                 <v-data-table
                     :headers="headers"
@@ -139,6 +139,7 @@ export default {
     data: () => ({
         depart: '',  // 管控單位
         isShowBtn: false, // 按鈕是否顯示(依權限)
+        msg: false,
         departOpts: [  // 管控單位下拉選單
             { text: '不限', value: '' },
             ...departOptions,
@@ -202,6 +203,7 @@ export default {
                         }
                     }
                 });
+                this.msg = true
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -220,6 +222,7 @@ export default {
         // 刪除控制措施
         delControl(id) {
             if (confirm('你確定要刪除嗎?')) {
+                this.chLoadingShow()
                 deleteData({
                     ProcCode: id,  // 編號
                     ClientReqTime: getNowFullTime(),  // client 端請求時間

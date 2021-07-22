@@ -206,7 +206,7 @@
                     </template> -->
                     
                     <template v-slot:item.type="{ item }">
-                        {{ evtTypeOpts.find(ele => ele.Code == item.AccidentType).Name }}
+                        {{ evtTypeOpts.find(ele => ele.Code == item.AccidentType).Name.replace('率', '') }}
                     </template>
 
                     <template v-slot:item.hurtPeople="{ item }">

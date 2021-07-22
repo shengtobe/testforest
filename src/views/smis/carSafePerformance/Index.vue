@@ -45,7 +45,7 @@
                 </v-card-title>
 
                 <v-list class="pa-0">
-                    <v-list-item to="/smis/car-safe-performance/analysis">
+                    <v-list-item to="/smis/car-safe-performance-analysis">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         行車安全績效趨勢
                     </v-list-item>

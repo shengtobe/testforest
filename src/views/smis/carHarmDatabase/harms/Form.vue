@@ -11,7 +11,6 @@
                 <span class="red--text">*</span>
             </h3>
             <v-textarea
-                auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入危害說明"
@@ -25,7 +24,6 @@
                 <span class="red--text">*</span>
             </h3>
             <v-textarea
-                auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入危害直接成因"
@@ -38,7 +36,6 @@
                 <v-icon class="mr-1 mb-1">mdi-pen</v-icon>可能的危害間接原因
             </h3>
             <v-textarea
-                auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入間接原因"
@@ -51,7 +48,6 @@
                 <v-icon class="mr-1 mb-1">mdi-note</v-icon>備註
             </h3>
             <v-textarea
-                auto-grow
                 solo
                 rows="6"
                 placeholder="請輸入備註"
@@ -367,7 +363,7 @@
             >回上層</v-btn>
             
             <v-btn
-                class="btn-add white--text"
+                class="btn-add white--text" v-if="saveBtnShow"
                 @click="save"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
@@ -429,6 +425,7 @@ export default {
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否為編輯
         isShowBtn: false, // 按鈕是否顯示(依權限)
+        saveBtnShow: true,  // 送出按鈕是否顯示
         ipt: {
             accidents: [],  // 衍生事故(給組件的預設值)
         },
@@ -586,6 +583,10 @@ export default {
         },
         // 送出
         save() {
+            if(this.ipt.desc == ''){
+                alert("危害說明未填")
+                return
+            }
             this.chLoadingShow()
 
             // 組合要傳至後端的已選控制措施資料
@@ -669,6 +670,7 @@ export default {
                     this.chLoadingShow()
                 })
             }
+            this.saveBtnShow = false
         },
         // 搜尋控制措施
         search() {

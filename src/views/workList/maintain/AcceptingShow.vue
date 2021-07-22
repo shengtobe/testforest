@@ -721,7 +721,7 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
-            this.isShowBtn = obj.CreatorID == this.userData.UserId
+            this.isShowBtn = obj.AgentID == this.userData.UserId || obj.DispatchID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -733,9 +733,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("🚃🚃res.data: ", res.data)
                     this.groups = res.data.RailRepairCount;
-                    console.log("🚃🚃groups: ", this.groups)
                 } else {
                     this.$router.push({ path: '/error' })
                 }

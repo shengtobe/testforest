@@ -45,7 +45,7 @@ export default {
         ]),
         // 向後端取資料
         fetchData() {
-            this.chLoadingShow()
+            this.chLoadingShow({ show: true})
             
             // fetchWorkOrderOne({
             //     WorkOrderID: this.$route.params.id,  // 工單編號
@@ -157,7 +157,7 @@ export default {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                        }).finally(() => {
-                         this.chLoadingShow()
+                         this.chLoadingShow({ show: false})
                        })
                 //       let stry = 'err'
                 //  switch(this.tableItems.SaftyInfoStatus) {
@@ -201,7 +201,6 @@ export default {
                 //     this.itemData = { ...res.data, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
                 }
 
-                this.chLoadingShow()
             }, 1000)
         },
         setShowDataint(obj) {

@@ -16,6 +16,13 @@
             >查詢</v-btn>
         </v-col>
     </v-row>
+    <v-row >
+        <v-col class="mt-n9 "><v-checkbox
+            v-model="includTraf"
+            label="包含交通"
+            @change="getData"
+        ></v-checkbox></v-col>
+    </v-row>
     <p class="label-warning">* 此圖各數字的單位為「%」</p>
 
     <!-- 圖表 -->
@@ -42,6 +49,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
     data: () => ({
         show: false,  // canvas 是否隱藏(在還沒有資料時會變小)
+        includTraf: true,
         chart:{
             componentKey: 1,
             options: {
@@ -79,13 +87,13 @@ export default {
             },
             chartdata:{
                 labels: [],
-                    datasets: [
-                        {
-                            backgroundColor: [],  // 節點的顏色
-                            data: [],
-                            count: [],
-                        },
-                    ]
+                datasets: [
+                    {
+                        backgroundColor: [],  // 節點的顏色
+                        data: [],
+                        count: [],
+                    },
+                ]
             }
         },
         input:{
@@ -116,13 +124,20 @@ export default {
         },
         getData() {
             this.chLoadingShow()
+            let mode = (this.includTraf)?'1':'2'
             analyDanger({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 CreateDTime_Start:this.input.dateStart,
-                CreateDTime_End:this.input.dateEnd
+                CreateDTime_End:this.input.dateEnd,
+                Mode:mode
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
+                    this.chart.chartdata.labels = [...[]]
+                    this.chart.chartdata.datasets[0].backgroundColor = [...[]]
+                    this.chart.chartdata.datasets[0].data = [...[]]
+                    this.chart.chartdata.datasets[0].count = [...[]]
+                    // this.chart = this.initChart
                     console.log(res.data.DataList)
                     res.data.DataList.forEach(e=>{
                         this.chart.chartdata.labels.push(e.Name)
@@ -136,6 +151,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
                 this.chLoadingShow()
+                console.log("this.chart.chartdata: ", this.chart.chartdata);
             }).catch( err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             })

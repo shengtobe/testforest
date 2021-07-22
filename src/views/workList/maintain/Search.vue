@@ -460,6 +460,7 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("維護工單搜尋結果this.tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -467,6 +468,8 @@ export default {
                         }
                     }
                 });
+                let dd = this.tableItems.map(e => e.CreateDTime)
+                console.log("time: ", dd)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -491,6 +494,7 @@ export default {
     },
     created() {
         this.ipt = { ...this.defaultIpt }
+        this.search();
     },
 }
 </script>

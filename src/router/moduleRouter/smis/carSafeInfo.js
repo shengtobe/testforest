@@ -8,7 +8,7 @@ export const CarSafeInfoRouter = [
     },
     {
         linkText: '新增', 
-        path: '/smis/car-safeinfo/info/add',
+        path: '/smis/car-safeinfo/info-add',
         component: () => import('@/views/smis/carSafeInfo/info/Form.vue')
     },
     {

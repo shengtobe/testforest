@@ -512,7 +512,7 @@ export default {
     // 搜尋
     search() {
       console.log("Search click");
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
@@ -548,8 +548,7 @@ export default {
           alert("查詢時發生問題，請重新查詢!");
         })
         .finally(() => {
-          console.log("search final");
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     },
     // 存
@@ -568,7 +567,7 @@ export default {
     viewPage(item) {
       console.log("item: " + item);
       console.log("RPFlowNo: " + item.RPFlowNo);
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       // 依業主要求變更檢式頁面的方式，所以改為另開分頁
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -627,7 +626,7 @@ export default {
           alert("查詢時發生問題，請重新查詢!");
         })
         .finally(() => {
-          this.chLoadingShow();
+          this.chLoadingShow({ show: false});
         });
     }, //viewPage
   },

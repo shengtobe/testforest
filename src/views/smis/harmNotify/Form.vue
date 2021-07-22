@@ -261,6 +261,10 @@ export default {
         ]),
         // 送出
         save() {
+            if(this.ipt.subject == '' || this.ipt.content == ''){
+                alert("必填欄位未填")
+                return
+            }
             this.chLoadingShow()
 
             createNotify({

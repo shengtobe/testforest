@@ -256,7 +256,7 @@ export default {
         this.chMsgbar({ success: false, msg: Constrant.query.failed });
       }).finally(() => {
         console.log("search final")
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
       })
     },
     // 關閉 dialog

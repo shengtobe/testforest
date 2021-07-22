@@ -4998,7 +4998,7 @@ export default {
     // 存
     save() {
       console.log("送出!!");
-      this.chLoadingShow();
+      this.chLoadingShow({show:true});
       console.log(this.valShow);
       switch(this.valShow){
         case "100":
@@ -5058,7 +5058,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
-            this.chLoadingShow();
+            this.chLoadingShow({ show: false});
           });
       } else {
         // 新增
@@ -5072,7 +5072,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
-            this.chLoadingShow();
+            this.chLoadingShow({ show: false});
             this.search();
           });
       }
@@ -5146,7 +5146,7 @@ export default {
         console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
-        this.chLoadingShow()
+        this.chLoadingShow({ show: false})
       })
     },//viewPage
   },

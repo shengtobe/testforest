@@ -103,7 +103,18 @@
                 </v-col>
             </v-row>
         </v-sheet>
-        
+        <v-row class="px-2 mb-6 mt-6" v-if="showEq">
+            <v-col cols="12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-codepen</v-icon>設備標示編號
+                    <span class="red--text">*</span>
+                </h3>
+                <p class="pl-8 mb-0 ml-5">
+                    {{ combineCode }}
+                </p>
+            </v-col>
+            <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" @getEqCode="getTempCode" @getEqCh="getTempCh"/>
+        </v-row>
         <v-row class="px-2 mt-8"> 
             <v-col cols="12">
                 <h3 class="mb-2">
@@ -286,7 +297,7 @@
                         <v-card-actions class="px-5 pb-5">
                             <v-spacer></v-spacer>
                             <v-btn class="mr-2" elevation="4" @click="vendorDialog = false">取消</v-btn>
-                            <v-btn color="success" elevation="4" @click="addVendor">送出</v-btn>
+                            <v-btn color="success" elevation="4" @click="addVendor" >送出</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
@@ -328,6 +339,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
+import EquipRepairCode from '@/components/EquipRepairCode'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchWorkOrderOne, dispatchOrder, fetchLicenseManData, fetchFirmList } from '@/apis/workList/maintain'
 
@@ -352,7 +364,11 @@ export default {
     data: () => ({
         done: false,  // 是否完成頁面操作
         valid: true,  // 表單是否驗證欄位
+        combineCh: '', //合併後的設備中文名稱
+        showEq: false,
         isLoading: false,  // 是否讀取中
+        combineCode: '', //合併後的設備編碼
+        nowEqCode: '', //編輯時 預設帶入的combineCode
         hasLicenseOptLv1: [],
         hasLicenseOptLv2: [],
         licenseItems: [],
@@ -410,7 +426,7 @@ export default {
         },
         allLicenseArr: [],  // 所有證照人員
     }),
-    components: { OrganizeDialog },
+    components: { OrganizeDialog, EquipRepairCode },
     computed: {
         ...mapState ('organization', {  // 組織表資料
             memberID: state => state.chose.uid,
@@ -447,6 +463,13 @@ export default {
         },
     },
     methods: {
+        //抓取未確認的設備標示編碼
+        getTempCode(value) {
+            this.combineCode = value
+        },
+        getTempCh(value) {
+            this.combineCh = value
+        },
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -474,8 +497,9 @@ export default {
 
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
                 this.ipt.malfunctionDes = res.data.Malfunction  // 故障描述
+                this.nowEqCode = res.data.MaintainCode
 
-                
+                this.showEq = true
 
                 // 初始化外包人員的表單
                 this.vendorForm = Object.assign({}, this.defaultVendorForm)
@@ -596,6 +620,7 @@ export default {
             }
             if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow()
+                let tempCodeArr = this.combineCode.split('-')
                 
                 dispatchOrder({
                     WorkOrderID: this.ipt.workNumber,  // 工單編號
@@ -608,11 +633,16 @@ export default {
                     WorkSafety: (this.ipt.safeDanger)? 'T' : 'F',  // 安全危害作業
                     Malfunction: this.ipt.malfunctionDes,  // 故障描述
                     Memo: this.ipt.note,  // 備註
+                    MaintainCode_System: tempCodeArr[0],  // 設備標示編號(系統)
+                    MaintainCode_Loc: tempCodeArr[1],  // 設備標示編號(位置)
+                    MaintainCode_Eqp: tempCodeArr[2],  // 設備標示編號(設備)
+                    MaintainCode_Seq: tempCodeArr[3],  // 設備標示編號(序號)
                     PeopleLicense: this.ipt.licensedMembersValue,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
                     PeopleNoLicense: this.ipt.commonMembers,  // 林鐵人員統計(無證照)
                     OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    MaintainCode_AllName: this.combineCh,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '派工成功' })

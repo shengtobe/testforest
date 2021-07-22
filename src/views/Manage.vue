@@ -65,12 +65,12 @@
 
                                 <!-- 故障、保養工單 -->
                                 <v-list-item :class="titleColor1" disabled>
-                                    <strong class="black--text">故障、保養工單</strong>
+                                    <strong class="black--text">設備維修及保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/maintain">維修養護科類工單</v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/worklist/serve">服務科類工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/serve">車站營運設備維修工單</v-list-item>
                                 <v-divider></v-divider>
 
                                 <!-- 監控系統 -->
@@ -106,9 +106,9 @@
                                     <strong class="black--text">危害通報管理</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item  :disabled="FShow('SMS_1')" @click="showNav = false" to="/smis/harmnotify/notify">危害通報</v-list-item>
+                                <v-list-item  :disabled="FShow('SMS_1')" @click="showNav = false" to="/smis/harmnotify/notify">新增危害通報</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_2')" @click="showNav = false" to="/smis/harmnotify/audit">危害通報查詢</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_2')" @click="showNav = false" to="/smis/harmnotify/audit">管理危害通報</v-list-item>
                                 <v-divider />
 
                                 <!-- 行車事故事件 -->
@@ -140,7 +140,9 @@
                                     <strong class="black--text">行車安全資訊</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">安全資訊</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info-add">新增安全資訊</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">管理安全資訊</v-list-item>
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
                                 <v-divider />
@@ -164,7 +166,8 @@
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance">表單填報</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance/analysis">統計趨勢圖</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_19')" @click="showNav = false" to="/smis/car-safe-performance-analysis">統計趨勢圖</v-list-item>
+                                <v-divider />
                             </v-list>
                         </v-card>
                     </v-col>
