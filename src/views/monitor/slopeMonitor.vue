@@ -50,11 +50,28 @@
                   <tr class="lime lighten-5">
                     <th :colspan="toptable.LocationList.length+1">
                       燈號說明：<br>
-                      <img src="/images/light-green.svg">正常<br>
-                      <img src="/images/light-yellow.svg">第三級警戒:±412秒(arcSec)<br>
-                      <img src="/images/light-orange.svg">第二級警戒:±573秒(arcSec)<br>
-                      <img src="/images/light-red.svg">第一級警戒:±825秒(arcSec)<br>
-                      <img src="/images/light-gray.svg">故障<br>
+                      <v-row cols="5">
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-green.svg"/>
+                          <span>正常</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-yellow.svg"/>
+                          <span>第三級警戒:±412秒(arcSec)</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-orange.svg"/>
+                          <span>第二級警戒:±573秒(arcSec)</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-red.svg"/>
+                          <span>第一級警戒:±825秒(arcSec)</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-gray.svg"/>
+                          <span>故障</span>
+                        </v-col>
+                      </v-row>
                     </th>
                   </tr>
                 </tbody>
