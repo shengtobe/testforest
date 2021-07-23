@@ -151,6 +151,14 @@
         Cycle: "",
         PeopleList: []
       },
+      defaultQueryItem: {
+        DepartName: "",
+        Memo: "",
+        AlarmDTime: "",
+        AlarmEndDTime: "",
+        Cycle: "",
+        PeopleList: []
+      },
       SelectPeople: false
     }),
     mounted: function() {
@@ -170,6 +178,16 @@
           rtnObj.PeopleName = this.people.find(ele => ele.value == e).text
           return rtnObj
         })
+      },
+      queryItemNull:function() {
+        let keys = Object.keys(this.queryItem)
+        let errArr = []
+        keys.forEach(e=>{
+          if(this.queryItem[e] == this.defaultQueryItem[e]) {
+            errArr.push(e)
+          }
+        })
+        return errArr
       }
     },
     methods: {
@@ -345,43 +363,47 @@
         this.isLoading = true
         //先處理人事資料部分
         this.queryItem.PeopleList = this.selectedPeople
-        if(this.inType == 'edit') {
-          jobUpdate({
-            ...encodeObject(this.queryItem),
-            AlarmFlowID: this.flowId,
-            ClientReqTime: getNowFullTime(),  // client 端請求時間
-            OperatorID: this.userData.UserId,  // 操作人id
-          }).then(res => {
-            if (res.data.ErrorCode == 0) {
-              this.chMsgbar({ success: true, msg: '資料更新成功' })
-            } else {
-              sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-              this.$router.push({ path: '/error' })
-            }
-          }).catch( err => {
-            this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
-          }).finally(() => {
-            this.isLoading = false
-            this._close()
-          })
-        }else if(this.inType == 'add'){
-          jobInsert({
-            ...encodeObject(this.queryItem),
-            ClientReqTime: getNowFullTime(),  // client 端請求時間
-            OperatorID: this.userData.UserId,  // 操作人id
-          }).then(res => {
-            if (res.data.ErrorCode == 0) {
-              this.chMsgbar({ success: true, msg: '資料新增成功' })
-            } else {
-              sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-              this.$router.push({ path: '/error' })
-            }
-          }).catch( err => {
-            this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
-          }).finally(() => {
-            this.isLoading = false
-            this._close()
-          })
+        if(this.queryItemNull==[]){
+          if(this.inType == 'edit') {
+            jobUpdate({
+              ...encodeObject(this.queryItem),
+              AlarmFlowID: this.flowId,
+              ClientReqTime: getNowFullTime(),  // client 端請求時間
+              OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+              if (res.data.ErrorCode == 0) {
+                this.chMsgbar({ success: true, msg: '資料更新成功' })
+              } else {
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
+            }).finally(() => {
+              this.isLoading = false
+              this._close()
+            })
+          }else if(this.inType == 'add'){
+            jobInsert({
+              ...encodeObject(this.queryItem),
+              ClientReqTime: getNowFullTime(),  // client 端請求時間
+              OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res => {
+              if (res.data.ErrorCode == 0) {
+                this.chMsgbar({ success: true, msg: '資料新增成功' })
+              } else {
+                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                this.$router.push({ path: '/error' })
+              }
+            }).catch( err => {
+              this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
+            }).finally(() => {
+              this.isLoading = false
+              this._close()
+            })
+          }
+        } else {
+          this.chMsgbar({ success: true, msg: `${this.queryItemNull.join()}欄位尚未填寫` })
         }
       }
     },

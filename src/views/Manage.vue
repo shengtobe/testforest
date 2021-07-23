@@ -1,6 +1,6 @@
 <template>
 <v-app>
- <div v-on:mousemove.capture="reCalculate" style="height:100vh;">
+ <div v-on:mousemove.capture="reCalculate" style="min-height:100vh;">
   <SystemDialog />
   <SystemLoading />
   <SystemViewDialog />
@@ -505,7 +505,7 @@ export default {
             const that = this
             clearTimeout(OtimeOut)
             OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
-            console.log(OtimeOut)
+            // console.log(OtimeOut)
         }
     },
     created() {
