@@ -1,6 +1,6 @@
 <template>
 <v-app>
- <div v-on:mousemove.capture="reCalculate">
+ <div v-on:mousemove.capture="reCalculate" style="height:100vh;">
   <SystemDialog />
   <SystemLoading />
   <SystemViewDialog />
@@ -325,7 +325,7 @@ import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
-
+var OtimeOut;
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',
@@ -343,7 +343,7 @@ export default {
             title: '',
             memo: '',
         },
-        OtimeOut: null,
+        // OtimeOut: null,
     }),
     computed: {
         ...mapState ('user', {
@@ -500,8 +500,9 @@ export default {
         },
         reCalculate() {
             const that = this
-            clearTimeout(that.OtimeOut)
-            this.OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
+            clearTimeout(OtimeOut)
+            OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
+            console.log(OtimeOut)
         }
     },
     created() {
