@@ -7,6 +7,7 @@
               <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>部門
           </h3>
           <v-select
+              clearable
               v-model="departSelect"
               :items="departList"
               solo @change="departSelectChange"
@@ -232,10 +233,11 @@ export default {
               this.methodList.find(e=>e.methodId===itemId)[itemCol] = !this.methodList.find(e=>e.methodId===itemId)[itemCol]
             },
             departSelectChange(){
+              console.log("變更this.departSelect:", this.departSelect);
               // this.methodList = [...[]]
               this.methodList = []
               this.tableItems.forEach(element => {
-                if(element.DepartName == this.departSelect){
+                if(element.DepartName == this.departSelect || this.departSelect == null){
                   this.methodList.push({
                       methodName: element.PeopleName,
                       methodId: element.PeopleId,

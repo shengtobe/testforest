@@ -585,6 +585,13 @@ export default {
                             this.status = '1'  // 狀態改為已回覆
                             this.saveBtnShow = false
                             this.clearErrIpt()
+
+                            //直接進下步驟
+                            setTimeout(() => {
+                                this.chLoadingShow({show:false})
+                                this.$router.push({ path: `/smis/car-safeinfo/info/${res.data.SaftyInfoCode}/show` })
+                            }, 1500)
+                            
                         } else {
                             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                             this.$router.push({ path: '/error' })

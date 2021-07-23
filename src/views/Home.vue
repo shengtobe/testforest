@@ -175,11 +175,12 @@ export default {
                         InfoBelongMod: item.InfoBelongMod,
                     }));
                     psnal.forEach(element => {
+                        element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
                         if(element.MsgType == 1){
                             this.tableItems.personal.push(element);
                         }
                         else{
-                            element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
+                            // element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
                             // this.tableItems.personal.push(element);
                             this.tableItems.todo.push(element);
                         }

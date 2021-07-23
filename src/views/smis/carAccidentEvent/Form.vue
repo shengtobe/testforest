@@ -3,7 +3,30 @@
     <h2 class="mb-4 label-title" >
         {{ (this.isEdit)? `行車事故事件編輯 (編號：${ id })` : '行車事故事件新增' }}
     </h2>
-
+    <v-row class="px-2">
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型分類
+                <span class="red--text">*</span>
+            </h3>
+            <v-select
+                v-model="ipt.evtType1"
+                :items="['重大事故', '一般事故', '異常事件', '其他']"
+                @change="evtTypeChange"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="3" v-if="ipt.evtType1!='其他'">
+            <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故類型
+            <span class="red--text">*</span></h3>
+            <v-select
+                v-model="ipt.evtType2"
+                :items="evtTypeOpts"
+                solo
+            ></v-select>
+        </v-col>
+    </v-row>
+        
     <v-row class="px-2">
         <v-col cols="12" md="8">
             <h3 class="mb-1">
@@ -69,7 +92,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="3" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-cloud-outline</v-icon>天候
             </h3>
@@ -79,26 +102,8 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
-            </h3>
-            <v-select
-                v-model="ipt.evtType1"
-                :items="['重大事故', '一般事故', '異常事件', '其他']"
-                @change="evtTypeChange"
-                solo
-            ></v-select>
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mt-1" ><br/></h3>
-            <v-select
-                v-model="ipt.evtType2"
-                :items="evtTypeOpts"
-                :disabled="ipt.evtType1=='其他'"
-                solo
-            ></v-select>
-        </v-col>
+        
+        
     </v-row>
 
     <!-- 發現地點 -->
@@ -206,14 +211,15 @@
         </v-row>
     </v-sheet>
 
-    <v-row class="px-2">
+    <v-row class="px-2" v-if="isUsual">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-stairs</v-icon>路線坡度
             </h3>
             <v-text-field
                 v-model.trim="ipt.slope"
-                solo
+                solo type="number"
+                suffix="‰"
             ></v-text-field>
         </v-col>
 
@@ -223,17 +229,18 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.curve"
-                solo
+                solo type="number"
+                suffix="m"
             ></v-text-field>
         </v-col>
     </v-row>
 
     <!-- 路段型態 -->
-    <h3 class="mb-1 ml-2">
+    <h3 class="mb-1 ml-2" v-if="isUsual">
         <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>路段型態
     </h3>
 
-    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3">
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3" v-if="isUsual">
         <v-row>
             <v-col cols="12" sm="2" md="1" v-for="item in opts.loadType" :key="item">
                 <v-checkbox
@@ -257,11 +264,11 @@
     </v-sheet>
 
     <!-- 周邊環境 -->
-    <h3 class="mb-1 ml-2">
+    <h3 class="mb-1 ml-2" v-if="isUsual">
         <v-icon class="mr-1 mb-1">mdi-terrain</v-icon>周邊環境
     </h3>
 
-    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3">
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3" v-if="isUsual">
         <v-row>
             <v-col cols="12" sm="4" md="2" v-for="item in opts.aroundEnv" :key="item">
                 <v-checkbox
@@ -285,11 +292,11 @@
     </v-sheet>
 
     <!-- 鐵路設施設備及圍籬之設置 -->
-    <h3 class="mb-1 ml-2">
+    <h3 class="mb-1 ml-2" v-if="isUsual">
         <v-icon class="mr-1 mb-1">mdi-tower-fire</v-icon>鐵路設施設備及圍籬之設置
     </h3>
 
-    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3">
+    <v-sheet elevation="2" class="mx-2 mb-8 px-3 pb-3" v-if="isUsual">
         <v-row>
             <v-col cols="12" sm="4" md="2"  v-for="item in opts.fenceEq" :key="item">
                 <v-checkbox
@@ -313,14 +320,15 @@
         </v-row>
     </v-sheet>
 
-    <v-row class="px-2">
+    <v-row class="px-2" v-if="isUsual">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-alert</v-icon>事發速限
             </h3>
             <v-text-field
                 v-model.trim="ipt.speedLimit"
-                solo
+                solo type="number"
+                suffix="Km/h"
             ></v-text-field>
         </v-col>
 
@@ -330,7 +338,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.carSpeed"
-                solo
+                solo type="number"
+                suffix="Km/h"
             ></v-text-field>
         </v-col>
     </v-row>
@@ -356,7 +365,7 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>列車運行計劃及運轉情形
             </h3>
@@ -368,7 +377,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>關係者之職務、資歷、操作情形及訪談紀要
             </h3>
@@ -380,7 +389,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>現場作業規定與落實情形
             </h3>
@@ -392,7 +401,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>事故設施設備或車輛之型式、功能運作、檢修養護及後續檢測情形
             </h3>
@@ -404,7 +413,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>現場相關量測
             </h3>
@@ -416,7 +425,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>天然災害偵測資訊
             </h3>
@@ -428,7 +437,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="isUsual">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>民眾或旅客行為說明
             </h3>
@@ -510,6 +519,18 @@
             ></v-textarea>
         </v-col>
 
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>處置過程
+            </h3>
+            <v-textarea
+                auto-grow
+                solo
+                rows="6"
+                v-model.trim="ipt.FixProcess"
+            ></v-textarea>
+        </v-col>
+
         <!-- 上傳檔案 (新增時) -->
         <template v-if="!isEdit">
             <UploadFileAdd
@@ -573,6 +594,7 @@ export default {
         opsList: '', // 完整事故類型清單
         isEdit: false,  // 是否為編輯狀態
         saveBtnShow: true, // 送出按鈕顯示
+        isUsual: true, // 異常時為false
         arr1: [], // 重大事故
         arr2: [], // 一般事故
         arr3: [], // 異常事件
@@ -614,6 +636,7 @@ export default {
             accidentFactors3: '',  // 第三層因素
             reason: '', // 原因分析
             note: '', // 備註說明
+            FixProcess: '',  // 處置過程
             files: [],  // 附件檔案
         },
         dateMenuShow: false,  // 日曆是否顯示
@@ -690,9 +713,6 @@ export default {
                         }
                         // evtTypeOpts
                     });
-                    console.log("1: ", this.arr1);
-                    console.log("2: ", this.arr2);
-                    console.log("3: ", this.arr3);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -780,6 +800,8 @@ export default {
             }, 300)
         },
         evtTypeChange(){
+            this.ipt.evtType2 = ''
+            this.isUsual = true
             if(this.ipt.evtType1 == "重大事故"){
                 this.evtTypeOpts = this.arr1
             }
@@ -788,6 +810,7 @@ export default {
             }
             else if(this.ipt.evtType1 == "異常事件"){
                 this.evtTypeOpts = this.arr3
+                this.isUsual = false
             }
             else{
                 this.ipt.evtType2 = ''
@@ -797,7 +820,21 @@ export default {
         save() {
             if(this.ipt.subject == ''){
                 alert("事故摘要未填")
+                window.scroll(0,0)
                 return
+            }
+            else if(this.ipt.evtType1 != '' && this.ipt.evtType2 == ''){
+                if(this.ipt.evtType1 != '其他'){
+                    alert("事故類型不完整")
+                    window.scroll(0,0)
+                    return
+                }
+                else{
+                    // OK save
+                }
+            }
+            else{
+                // OK save
             }
             this.chLoadingShow({show:true})
             if(this.ipt.locationK == '') this.ipt.locationK = '0'
@@ -838,7 +875,7 @@ export default {
                     PeopleMemo: this.ipt.behaviorDesc,  // 民眾或旅客行為說明
                     DeviceLost: this.ipt.eqLoss,  // 設備損失
                     OperationLost: this.ipt.serviceShock,  // 運轉影響情形
-                    FixProcess: '',  // 處置過程(預留的欄位，目前用不到)
+                    FixProcess: this.ipt.FixProcess,  // 處置過程(預留的欄位，目前用不到)
                     ReviewProcess: this.ipt.review,  // 檢討過程
                     CauseAnaly: this.ipt.reason,  // 原因分析
                     RemarkDesp: this.ipt.note,  // 備註說明
@@ -892,7 +929,7 @@ export default {
                     PeopleMemo: this.ipt.behaviorDesc,  // 民眾或旅客行為說明
                     DeviceLost: this.ipt.eqLoss,  // 設備損失
                     OperationLost: this.ipt.serviceShock,  // 運轉影響情形
-                    FixProcess: '',  // 處置過程(預留的欄位，目前用不到)
+                    FixProcess: this.ipt.FixProcess,  // 處置過程(預留的欄位，目前用不到)
                     ReviewProcess: this.ipt.review,  // 檢討過程
                     CauseAnaly: this.ipt.reason,  // 原因分析
                     RemarkDesp: this.ipt.note,  // 備註說明

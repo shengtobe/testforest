@@ -69,8 +69,8 @@
                 <v-icon>mdi-magnify</v-icon>查詢
             </v-btn>
 
-            <v-btn class="btn-add" dark large
-                to="/smis/car-safeinfo/crawl-notify/add"
+            <v-btn class="btn-add" dark large v-if="false"
+                to="/smis/car-safeinfo/crawl-notify-add"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -230,7 +230,7 @@ export default {
                         }
                     }
                 });
-                console.log("this.tableItems: ", this.tableItems);
+                console.log("this.tableItems: ", this.tableItems.map(e => e.ReportLine));
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
