@@ -62,7 +62,7 @@
             </v-col>
             <v-col cols="12" sm="6">
               <h3 class="mb-1">提醒多人</h3>
-              <v-autocomplete
+              <!-- <v-autocomplete
                 :items="orgList"
                 :filter="aFilter"
                 label="輸入人名或單位名稱進行搜尋"
@@ -73,8 +73,37 @@
                 small-chips
                 :loading="orgIsLoading"
                 v-model="queryItem.PeopleList"
-              />
+              /> -->
               <!-- <PeopleSelect v-model="queryItem.PeopleList" :isMuti="true" /> -->
+              <v-chip v-for="(item) in selectedPeople" :key="'P_'+item.PeopleId" close @click:close="deleteSelectedPeople(item.PeopleId)" class="ma-1"> {{ item.PeopleName }} </v-chip>
+              <v-btn
+                class="mx-2 btn-add"
+                fab
+                dark
+                small
+                @click="SelectPeople=true"
+              >
+                <v-icon dark>
+                  mdi-plus
+                </v-icon>
+              </v-btn>
+              <v-dialog v-model="SelectPeople" max-width="900px">
+                <v-card class="theme-card">
+                  <v-card-title class="white--text px-4 py-1">選擇人員
+                    <v-spacer></v-spacer>
+                    <v-btn dark fab small text @click="cancelSelectPeople" class="mr-n2">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <v-lazy>
+                    <getPeople :defDeptId="userData.DeptList[0].DeptId" @getPeople="saveSelectPeople"/>
+                  </v-lazy>
+                  <v-card-actions class="px-5 pb-5">
+                    <v-spacer></v-spacer>
+                    <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancelSelectPeople">取消</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-col>
             <v-col cols="12" sm="6">
               <h3 class="mb-1">工作提醒事項</h3>
@@ -97,7 +126,7 @@
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { fetchOrganization } from '@/apis/organization'
   import { jobQuery,jobInsert,jobUpdate } from '@/apis/materialManage/routine'
-  import PeopleSelect from '@/components/PeopleSelect'
+  import getPeople from '@/components/GetOrganizePeople'
   export default {
     props: {
       flowId: String,
@@ -121,19 +150,27 @@
         AlarmEndDTime: "",
         Cycle: "",
         PeopleList: []
-      }
+      },
+      SelectPeople: false
     }),
     mounted: function() {
       this.componentInit()
     },
     components: {
-      PeopleSelect
+      getPeople
     },
     computed: {
       ...mapState ('user', {
         userData: state => state.userData,  // 使用者基本資料
       }),
-
+      selectedPeople:function() {
+        return this.queryItem.PeopleList.map(e => {
+          let rtnObj = {}
+          rtnObj.PeopleId = e
+          rtnObj.PeopleName = this.people.find(ele => ele.value == e).text
+          return rtnObj
+        })
+      }
     },
     methods: {
       ...mapActions('system', [
@@ -143,6 +180,9 @@
       _close() {
         this.$emit('close')
       },
+      
+      /* 抓人 */
+      /*
       _getOrg() { //抓單位
         this.orgIsLoading = true
         fetchOrganization({
@@ -240,8 +280,37 @@
         const value = (item.value.toLocaleLowerCase().indexOf(queryText.toLocaleLowerCase()) > -1)
         return text || group || child || value
       },
+      */
+      fetchOrganization() {
+        fetchOrganization({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res=>{
+          this.people = res.data.user_list_group_4.map(element=>{
+              let rtnObj = {}
+              rtnObj.text = element.UserName
+              rtnObj.value = element.UserId
+              rtnObj.group = element.DepartName 
+              rtnObj.child = ""
+              return rtnObj
+            })
+        })
+      },
+      cancelSelectPeople(){
+        this.SelectPeople = false
+      },
+      saveSelectPeople(peopleData) {
+        if(this.queryItem.PeopleList.findIndex(e=>e==peopleData.UserId)==-1){
+          this.queryItem.PeopleList.push(peopleData.UserId)
+        }
+        this.cancelSelectPeople()
+      },
+      deleteSelectedPeople(peopleId) {
+        this.queryItem.PeopleList.splice(this.queryItem.PeopleList.findIndex(e=>e==peopleId),1)
+      },
       componentInit() {
-        this._getOrg()
+        // this._getOrg()
+        this.fetchOrganization()
         if(this.inType == 'edit') {
           this.titleShow = "編輯"
           this.isLoading = true
@@ -275,12 +344,7 @@
         const that = this
         this.isLoading = true
         //先處理人事資料部分
-        this.queryItem.PeopleList = this.queryItem.PeopleList.map(e => {
-          let rtnObj = {}
-          rtnObj.PeopleId = e
-          rtnObj.PeopleName = that.people.find(ele => ele.value == e).text
-          return rtnObj
-        })
+        this.queryItem.PeopleList = this.selectedPeople
         if(this.inType == 'edit') {
           jobUpdate({
             ...encodeObject(this.queryItem),

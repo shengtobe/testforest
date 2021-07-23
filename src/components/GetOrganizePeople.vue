@@ -6,8 +6,8 @@
     getPeople: 員編
  -->
 <!-- 下拉選單 -->
-  <v-row no-gutters class="mt-5">
-    <v-col cols="12" sm="6" md="3" class="px-4">
+  <v-row no-gutters class="mt-5" cols="3">
+    <v-col class="px-4">
       <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-account</v-icon>科室
       </h3>
@@ -18,7 +18,7 @@
       ></v-select>
     </v-col>
 
-    <v-col cols="12" sm="6" md="3" class="px-4">
+    <v-col class="px-4">
       <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-account</v-icon>車站、工廠、車庫、監工區
       </h3>
@@ -30,7 +30,7 @@
       ></v-select>
     </v-col>
 
-    <v-col cols="12" sm="6" md="3" class="px-4">
+    <v-col class="px-4">
       <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-account</v-icon>班、組
       </h3>
