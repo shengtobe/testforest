@@ -1,6 +1,6 @@
 <template>
 <v-app>
- <div v-on:mousemove.capture="reCalculate">
+ <div v-on:mousemove.capture="reCalculate" style="height:100vh;">
   <SystemDialog />
   <SystemLoading />
   <SystemViewDialog />
@@ -261,11 +261,11 @@
                                 <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
                                 <v-divider />
                                 <!-- 報表管理 -->
-                                <v-list-item :class="titleColor3" disabled>
+                                <!-- <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">測試區域</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item>
+                                <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item> -->
                             </v-list>
                         </v-card>
                     </v-col>
@@ -327,7 +327,7 @@ import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
 import SystemViewDialog from '@/components/SystemViewDialog.vue'
 import MessageBar from '@/components/MessageBar.vue'
-
+var OtimeOut;
 export default {
     data: () => ({
         // mainColor: 'light-blue darken-1',
@@ -345,7 +345,7 @@ export default {
             title: '',
             memo: '',
         },
-        OtimeOut: null,
+        // OtimeOut: null,
     }),
     computed: {
         ...mapState ('user', {
@@ -503,8 +503,9 @@ export default {
         },
         reCalculate() {
             const that = this
-            clearTimeout(that.OtimeOut)
-            this.OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
+            clearTimeout(OtimeOut)
+            OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
+            console.log(OtimeOut)
         }
     },
     created() {

@@ -50,11 +50,28 @@
                   <tr class="lime lighten-5">
                     <th :colspan="toptable.LocationList.length+1">
                       燈號說明：<br>
-                      <img src="/images/light-green.svg">正常<br>
-                      <img src="/images/light-yellow.svg">第三級警戒:±412秒(arcSec)<br>
-                      <img src="/images/light-orange.svg">第二級警戒:±573秒(arcSec)<br>
-                      <img src="/images/light-red.svg">第一級警戒:±825秒(arcSec)<br>
-                      <img src="/images/light-gray.svg">故障<br>
+                      <v-row cols="5">
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-green.svg"/>
+                          <span>正常</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-yellow.svg"/>
+                          <span>第三級警戒:±412秒(arcSec)</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-orange.svg"/>
+                          <span>第二級警戒:±573秒(arcSec)</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-red.svg"/>
+                          <span>第一級警戒:±825秒(arcSec)</span>
+                        </v-col>
+                        <v-col class="d-flex align-center">
+                          <img src="/images/light-gray.svg"/>
+                          <span>故障</span>
+                        </v-col>
+                      </v-row>
                     </th>
                   </tr>
                 </tbody>
@@ -98,44 +115,48 @@
         </v-col>
         <!-- <v-col cols="12" sm="2" class="indigo--text" style="margin-left:-5px"/> -->
         <v-col cols="12" sm="12">
-            <v-spacer/>
-            <v-card>
-                <v-data-table
-                  light
-                  :headers="headers"
-                  :items="tableItems"
-                  :options.sync="pageOpt"
-                  disable-sort
-                  disable-filtering
-                  hide-default-footer
-                  class="theme-table"
-                >
-                    <template v-slot:no-data>
-                        <span class="red--text subtitle-1">沒有資料</span>
-                    </template>
+          <v-spacer/>
+          <v-card>
+            <v-data-table
+              light
+              :headers="headers"
+              :items="tableItems"
+              :options.sync="pageOpt"
+              disable-sort
+              disable-filtering
+              hide-default-footer
+              class="theme-table"
+            >
+                <template v-slot:no-data>
+                    <span class="red--text subtitle-1">沒有資料</span>
+                </template>
 
-                    <template v-slot:loading>
-                        <span class="red--text subtitle-1">資料讀取中...</span>
-                    </template>
+                <template v-slot:loading>
+                    <span class="red--text subtitle-1">資料讀取中...</span>
+                </template>
 
-                    <template v-slot:item.LocID="{item}">
-                      {{'二萬坪主站-第一分道'}}
-                    </template>
+                <template v-slot:item.LocID="{item}">
+                  {{'二萬坪主站-第一分道'}}
+                </template>
 
-                    <template v-slot:item.LocName="{item}">
-                      {{ `${item.LocName}(${item.LocID})` }}
-                    </template>
+                <template v-slot:item.Status="{item}">
+                  <img class="mt-1" :src="'/images/light-'+getLightColor(item.Status)+'.svg'">
+                </template>
 
-                    <template v-slot:footer="footer">
-                        <Pagination
-                            :footer="footer"
-                            :pageOpt="pageOpt"
-                            @chPage="chPage"
-                        />
-                    </template>
-                </v-data-table>
-            </v-card>
-            <v-spacer />
+                <template v-slot:item.LocName="{item}">
+                  {{ `${item.LocName}(${item.LocID})` }}
+                </template>
+
+                <template v-slot:footer="footer">
+                    <Pagination
+                        :footer="footer"
+                        :pageOpt="pageOpt"
+                        @chPage="chPage"
+                    />
+                </template>
+            </v-data-table>
+          </v-card>
+          <v-spacer />
         </v-col>
     </v-row>
   </v-container>
@@ -223,10 +244,11 @@ export default {
       { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
       { text: '監控位置', value: 'LocName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
       { text: '更新時間', value: 'DataDTime', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
-      { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
-      { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
+      // { text: '座標位置', value: 'GPSValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
+      // { text: '初始值', value: 'InitValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
       { text: '監測值', value: 'Value', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
       { text: '變異值', value: 'DiffValue', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '13' },
+      { text: '燈號', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
     ]
   }),
   components: {
@@ -294,29 +316,30 @@ export default {
         let hour = '0';// 上一筆小時數字為
         // this.tableItems = this.tableItems.splice(0, 80)
         let tempArr = [];
-        this.tableItems = this.tableItems.reverse()
+        this.tableItems = this.tableItems
         this.tableItems.forEach(element=>{
           // 取出這一筆小時數字
           let newHour = element.DataDTime.substr(element.DataDTime.indexOf(' ')+1, 2);
           
           switch(element.LocID){
             case 'TI-01X':
-              data1.push(element.Value)
+              data1.push(element.DiffValue)
               tempArr.push(element.DataDTime)
               // this.Lv1Chart.chartdata.labels.push(element.DataDTime) // 塞時間
               break;
             case 'TI-01Y':
-              data2.push(element.Value)
+              data2.push(element.DiffValue)
               break;
             case 'TI-02X':
-              data3.push(element.Value)
+              data3.push(element.DiffValue)
               break;
             case 'TI-02Y':
-              data4.push(element.Value)
+              data4.push(element.DiffValue)
               break;
           }
         })//forEach end
-        this.Lv1Chart.chartdata.labels = tempArr.map((e, i)=> i % Math.ceil(tempArr.length / 24) == 0? e : '')
+        tempArr = tempArr.reverse()
+        this.Lv1Chart.chartdata.labels = tempArr.map((e, i)=> i % Math.ceil(tempArr.length / 24) == 0||i==tempArr.length-1? e : '')
 
         this.Lv1Chart.chartdata.datasets.push({
           label:'TI-01X',
