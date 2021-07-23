@@ -340,7 +340,7 @@ export default {
                     ReqID: obj.PeopleId,  // 立單人id
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
-                    // console.log("主管測試: ", res.data + "=" + this.userData.UserId);
+                    console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
                     if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
                         this.isShowBtn = this.isShowBtn_edit = true
                     }
@@ -357,10 +357,15 @@ export default {
                 })
                 
             }
-            else if(this.status == 3){
-                this.isShowBtn_edit = false
-                // if(this.userData.UserId)
-                this.isShowBtn_add = true
+            else if(this.status == 3){ // 加會中
+                this.isShowBtn_edit = this.isShowBtn = false
+                // 驗證登入者是否為加會人
+                let joinerIdArr = obj.JoinPeople.map(e => e.PeopleId)
+                console.log("加會人們: ", joinerIdArr);
+                if(joinerIdArr.includes(this.userData.UserId)){
+                    this.isShowBtn_add = true
+                }
+                
             }
             this.chLoadingShow({ show: false})
             
@@ -576,7 +581,12 @@ export default {
         },
         // 送出意見
         sendSuggestion() {
+            if(this.opinion == ''){
+                alert("確實填寫加會意見")
+                return
+            }
             if (confirm('你確定要送出意見嗎?')) {
+                
                 this.chLoadingShow({ show: true})
 
                 setTimeout(() => {

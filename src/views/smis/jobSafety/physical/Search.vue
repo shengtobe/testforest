@@ -280,7 +280,7 @@ export default {
             job: [  // 職務
                 { text: '不限', value: '' },
                 { text:'駕駛員', value:'1' }, 
-                { text:'車長', value:'2' }, 
+                { text:'行車人員', value:'2' }, 
                 { text:'一般員工', value:'3' }
             ],
             onJob: [  // 是否在職

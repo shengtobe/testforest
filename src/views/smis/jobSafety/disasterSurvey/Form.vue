@@ -604,7 +604,7 @@
 
             <v-btn
                 class="btn-add white--text"
-                @click="save"
+                @click="save" v-if="saveBtnShow"
             >{{ (isEdit)? '儲存變更': '送出' }}</v-btn>
         </v-col>
 
@@ -650,6 +650,7 @@ export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否編輯中
+        saveBtnShow: true, // 送出按鈕隱藏
         isShowBtn: false,
         evidences: [],  // 改善措施證據
         showFiles: [],  // 要顯示的縮圖
@@ -1012,6 +1013,7 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '更新成功' })
+                        this.saveBtnShow = false
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -1073,6 +1075,7 @@ export default {
                         this.ipt = { ...this.defaultIpt }  // 初始化新增表單
                         this.ipt.controlChoose = [ ...[]]
                         this.tableItems = [ ...[]]
+                        this.saveBtnShow = false
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })

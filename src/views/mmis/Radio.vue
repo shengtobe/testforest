@@ -258,7 +258,7 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，設備查詢失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
         that.tableItem = decodeObject(that.tableItem)
         this._getOrg()
       })
@@ -283,7 +283,7 @@ export default {
     },
     goDelete() {
       const that = this
-      that.chLoadingShow()
+      that.chLoadingShow({show:true})
       radioDelete({
         FlowId: that.nowFlow,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -298,7 +298,7 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        that.chLoadingShow({show:false})
         that.close()
       })
     }

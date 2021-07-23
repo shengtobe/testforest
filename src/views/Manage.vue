@@ -144,7 +144,9 @@
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_10')" @click="showNav = false" to="/smis/car-safeinfo/info">管理安全資訊</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">慢行通報</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify-add">新增慢行通報</v-list-item>
+                                <v-divider />
+                                <v-list-item :disabled="FShow('SMS_14')" @click="showNav = false" to="/smis/car-safeinfo/crawl-notify">管理慢行通報</v-list-item>
                                 <v-divider />
 
                                 <!-- 安全文件 -->
@@ -405,6 +407,7 @@ export default {
             {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
+                console.log("儲存使用者資訊 UData: ", UData);
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
                 this.saveUserProfile(UData)
                 

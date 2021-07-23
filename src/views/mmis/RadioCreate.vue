@@ -150,7 +150,7 @@
             FlowId: -1
           }
         }else{
-          that.chLoadingShow()
+          that.chLoadingShow({show:true})
           radioDetail({
             FlowId: flow,
             ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -165,7 +165,7 @@
           }).catch( err => {
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
           }).finally(() => {
-            that.chLoadingShow()
+            that.chLoadingShow({show:false})
             if(that.detailItem != {}){
               that.detailItem = decodeObject(that.detailItem)
             }

@@ -69,13 +69,24 @@
                 ></v-date-picker>
             </v-menu>
         </v-col>
-
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="6" md="3"/>
+        <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型分類
+                <span class="red--text">*</span>
             </h3>
-            <v-select
-                v-model="ipt.evtType"
+            <v-select clearable
+                v-model="ipt.evtType1"
+                :items="['重大事故', '一般事故', '異常事件', '其他']"
+                @change="evtTypeChange"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6" md="3" v-if="ipt.evtType1!='其他'">
+            <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故類型
+            <span class="red--text">*</span></h3>
+            <v-select clearable
+                v-model="ipt.evtType2"
                 :items="evtTypeOpts"
                 solo
             ></v-select>
@@ -283,12 +294,17 @@ import { fetchList, fetchEvtTypes } from '@/apis/smis/carAccidentEvent'
 export default {
     data: () => ({
         ipt: {},
+        arr1: [], // 重大事故
+        arr2: [], // 一般事故
+        arr3: [], // 異常事件
+        opsList: '', // 完整事故類型清單
         isShowBtn: false, // 按鈕是否顯示(依權限)
         defaultIpt: {
             location: '', // 發生地點
             dateStart:  '',  // 發生日期(起)
             dateEnd: '',  // 發生日期(迄)
-            evtType: '', // 事故類型
+            evtType1: '', // 事故類型1
+            evtType2: '', // 事故類型2
             eqLoss: '',// 設備受損情形
             serviceShock: '', // 運轉影響情形
             handle: '', // 處置過程
@@ -341,6 +357,21 @@ export default {
         // 清除搜尋內容
         reset() {
             this.ipt = { ...this.defaultIpt }
+        },
+        evtTypeChange(){
+            this.ipt.evtType2 = ''
+            if(this.ipt.evtType1 == "重大事故"){
+                this.evtTypeOpts = this.arr1
+            }
+            else if(this.ipt.evtType1 == "一般事故"){
+                this.evtTypeOpts = this.arr2
+            }
+            else if(this.ipt.evtType1 == "異常事件"){
+                this.evtTypeOpts = this.arr3
+            }
+            else{
+                this.ipt.evtType2 = ''
+            }
         },
         // 搜尋
         search() {
@@ -438,12 +469,26 @@ export default {
             ClientReqTime: getNowFullTime(),  // client 端請求時間
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                //抽離 其他
-                // let tempList
-                console.log("this.evtTypeOpts", this.evtTypeOpts);
-                this.evtTypeOpts = JSON.parse(res.data.order_list)
-                console.log("this.evtTypeOpts", this.evtTypeOpts);
-            } else {
+                    //抽離 其他
+                    this.opsList = JSON.parse(res.data.order_list)
+                    let tempOps = this.opsList.map(e=>e.text)
+                    tempOps.forEach(e => {
+                        if(e.indexOf("-") >= 0){
+                            let arr = e.split('-')
+                            arr[1] = arr[1].replace('率', '')
+                            if(arr[0] == "重大事故"){
+                                this.arr1.push(arr[1])
+                            }
+                            else if(arr[0] == "一般事故"){
+                                this.arr2.push(arr[1])
+                            }
+                            else if(arr[0] == "異常事件"){
+                                this.arr3.push(arr[1])
+                            }
+                        }
+                        // evtTypeOpts
+                    });
+                } else {
                 // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                 this.$router.push({ path: '/error' })

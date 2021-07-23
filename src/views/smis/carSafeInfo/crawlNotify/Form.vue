@@ -118,6 +118,7 @@
         <v-col cols="12" class="mt-12">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
+                <span class="red--text">*</span>
             </h3>
             <PeopleSelect v-model="ipt.recipients" :isMuti="true" /> 
             <!-- <v-row>
@@ -198,7 +199,7 @@
             >回搜尋頁</v-btn>
             
             <v-btn
-                class="btn-add white--text"
+                class="btn-add white--text" v-if="saveBtnShow"
                 @click="save"
             >送出</v-btn>
         </v-col>
@@ -240,9 +241,10 @@ import { CreateCarSafelnfo } from '@/apis/smis/carSafeInfo'
 export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
+        saveBtnShow: true, // 送出按鈕隱藏
         lineList: locationOpts.slice(0, 4), // 地點的list
         ipt: {
-            line: '本線',  // 通報路線
+            line: '',  // 通報路線
             // lineList: locationOpts.map(item => item.text), // 地點的list
             
             pointStart: '',  // 速限起點
@@ -345,6 +347,10 @@ export default {
         },
         // 送出
         save() {
+            if(this.ipt.recipients.length == 0){
+                alert("收件人未填")
+                return
+            }
             this.chLoadingShow({show:true})
             let arr = this.ipt.recipients.map(item => ({
                 PeopleId: item
@@ -364,6 +370,7 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '回覆成功'})
                         this.status = '2'  // 狀態改為已回覆
+                        this.saveBtnShow = false
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -372,6 +379,7 @@ export default {
                      this.chMsgbar({ success: false, msg: '回覆成功'})
                 }).finally(() => {
                     this.chLoadingShow({show:false})
+                    
                 })
                 // console.log(this.ipt.line)
                 // console.log(this.ipt.pointStart)

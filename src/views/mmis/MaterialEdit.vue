@@ -196,7 +196,7 @@ export default {
     getDetail(matCode) {
       const that = this
       if(that.materCode != ''){
-        that.chLoadingShow()
+        that.chLoadingShow({show:true})
         materialQuery({
           MaterialCode: matCode,  
           ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -225,7 +225,7 @@ export default {
         }).catch( err => {
           that.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
         }).finally(() => {
-          that.chLoadingShow()
+          that.chLoadingShow({show:false})
           that.materDetail = decodeObject(that.materDetail)
           this.contentShow = true;
         })
