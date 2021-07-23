@@ -404,6 +404,7 @@
           }
         } else {
           this.chMsgbar({ success: true, msg: `${this.queryItemNull.join()}欄位尚未填寫` })
+          this.isLoading = false
         }
       }
     },
