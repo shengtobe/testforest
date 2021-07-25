@@ -581,27 +581,31 @@ export default {
                         FileCount: this.ipt.files,  // 附件檔案          
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
-                            this.chMsgbar({ success: true, msg: '建立成功'})
+                            this.chMsgbar({ success: true, msg: '建立成功，自動轉跳中...'})
                             this.status = '1'  // 狀態改為已回覆
                             this.saveBtnShow = false
                             this.clearErrIpt()
 
                             //直接進下步驟
                             setTimeout(() => {
+                                console.log("直接進下步驟 res.data.SaftyInfoCode: ", res.data.SaftyInfoCode);
                                 this.chLoadingShow({show:false})
+                                console.log("chLoadingShow({show:false})");
                                 this.$router.push({ path: `/smis/car-safeinfo/info/${res.data.SaftyInfoCode}/show` })
-                            }, 1500)
+                                console.log("EE");
+                            }, 2000)
                             
                         } else {
                             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                             this.$router.push({ path: '/error' })
                         }
                     }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '建立成功'})
+                        this.chMsgbar({ success: false, msg: 'catch建立成功'})
                         this.clearErrIpt()
                     }).finally(() => {
                         this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
+                        console.log("Form final");
                     })
 
                     // 測試用資料

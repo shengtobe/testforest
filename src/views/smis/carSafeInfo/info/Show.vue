@@ -250,6 +250,7 @@ export default {
         },
     },
     created() {
+        console.log("Enter show");
         this.setShowData(this.itemData)
     }
 }

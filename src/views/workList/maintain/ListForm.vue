@@ -171,10 +171,10 @@
                         @click="editEqCode"
                     >編輯</v-btn> -->
                 </p>
-                
+            
             </v-col>
           <!-- <EquipRepairCode :key="componentKey" :toLv="2" :nowEqCode="ipt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>RST-8304-COP-02 -->
-          <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" @getEqCode="getTempCode" @getEqCh="getTempCh"/>
+          <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" :rtnStartLv="2" @getEqCode="getTempCode" @getEqCh="getTempCh" />
 
             <v-col cols="12" class="mt-n4">
                 <!-- <v-row>

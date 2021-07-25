@@ -352,6 +352,7 @@ export default {
                     break
             }
 
+            // this.$router.push({ path: `/smis/car-safeinfo/info/${item.SaftyInfoCode}/show` })
             let routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.SaftyInfoCode}/show` })
             window.open(routeData.href, '_blank')
         },
