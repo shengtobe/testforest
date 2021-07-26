@@ -109,8 +109,8 @@ export default {
               return element.group == ele.text
             })
             if(rtnArrP1.length > 0 || rtnArr2.length > 0){
-              ele.child = rtnArrP1.map(t=>t.text).toString()
-              ele.value = rtnArrP1.map(t=>t.value).toString()
+              ele.child = rtnArrP1.map(t=>t.text).toString()+','
+              ele.value = rtnArrP1.map(t=>t.value).toString()+','
               that.orgList.push(ele)
             }
             that.orgList.push(...rtnArrP1)
@@ -123,8 +123,8 @@ export default {
                 return item.group == element.text
               })
               if(rtnArrP2.length > 0 || rtnArr3.length > 0){
-                element.child = rtnArrP2.map(t=>t.text).toString()
-                element.value = rtnArrP2.map(t=>t.value).toString()
+                element.child = rtnArrP2.map(t=>t.text).toString()+','
+                element.value = rtnArrP2.map(t=>t.value).toString()+','
                 that.orgList.push(element)
               }
               that.orgList.push(...rtnArrP2)
@@ -133,8 +133,8 @@ export default {
                   return e.group == items.text
                 })
                 if(rtnArrP3.length > 0){
-                  items.child = rtnArrP3.map(t=>t.text).toString()
-                  items.value = rtnArrP3.map(t=>t.value).toString()
+                  items.child = rtnArrP3.map(t=>t.text).toString()+','
+                  items.value = rtnArrP3.map(t=>t.value).toString()+','
                   that.orgList.push(items)
                 }
                 that.orgList.push(...rtnArrP3)
@@ -149,7 +149,6 @@ export default {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         this.orgIsLoading = false
-        this.inputValue = this.value
       })
     },
     aFilter(item, queryText, itemText) { //選人的filter
