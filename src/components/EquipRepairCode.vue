@@ -399,7 +399,7 @@
                 await that._goChange('4')
               }
               if(this.rtnStart<=3){
-                that.newEqCode = that.selectItem.Lv1 + '-' + (that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3
+                that.newEqCode = that.selectItem.Lv1 + '-' + ((that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3)
                 that._returnEqCode(3)
               }
             }
@@ -410,7 +410,7 @@
               await that._goChange('4')
             }
             if(this.rtnStart<=3){
-              that.newEqCode = that.selectItem.Lv1 + '-' + (that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3 + (that._show32?'/'+that.selectItem.Lv32:'') 
+              that.newEqCode = that.selectItem.Lv1 + '-' + ((that.selectItem.Lv3.indexOf('-')==-1)?((that._show22?that.selectItem.Lv22:that.selectItem.Lv2) + '-' + that.selectItem.Lv3):that.selectItem.Lv3) + (that._show32?'/'+that.selectItem.Lv32:'') 
               that._returnEqCode(3)
             }
             break;
