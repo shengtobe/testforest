@@ -93,7 +93,7 @@ export default {
       this.SelectPeople = false
     },
     saveSelectPeople(peopleData) {
-      if(this.isSolo){
+      if(this.isSolo) {
         this.PeopleList = [...[]]
         this.$emit('getPeople',peopleData)
         this.PeopleList.push(peopleData)
@@ -106,7 +106,12 @@ export default {
       this.cancelSelectPeople()
     },
     deleteSelectedPeople(peopleId) {
-      this.PeopleList.splice(this.PeopleList.findIndex(e=>e==peopleId),1)
+      this.PeopleList.splice(this.PeopleList.findIndex(e=>e.UserId==peopleId),1)
+      if(this.isSolo) {
+        this.$emit('getPeople',undefined)
+      } else {
+        this.$emit('getPeople',this.PeopleList)
+      }
     },
 	},
 	filters: {
