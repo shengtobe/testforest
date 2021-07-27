@@ -149,6 +149,14 @@ export function safetyinfojoincheck(data) { return axios(
     }
 )}
 
+export function safetyinfoexcel(data) { return axios(
+    {
+        url: '/sms/safety/info/saftyinfoexcel',
+        method: 'post',
+        data,
+    }
+)}
+
 // // ------------------ 行車事故事件附件 ---------------------
 // // 搜尋
 // export function drivingfetchList(data) { return axios(

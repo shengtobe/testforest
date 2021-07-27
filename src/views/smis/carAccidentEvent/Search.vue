@@ -72,7 +72,7 @@
         <v-col cols="12" sm="6" md="3"/>
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型分類
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型
                 <span class="red--text">*</span>
             </h3>
             <v-select clearable
@@ -83,7 +83,7 @@
             ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="3" v-if="ipt.evtType1!='其他'">
-            <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故類型
+            <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故種類
             <span class="red--text">*</span></h3>
             <v-select clearable
                 v-model="ipt.evtType2"

@@ -207,6 +207,7 @@ import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { deleteData, sendCheckData} from '@/apis/smis/jobSafety'
+import { serveNewListExecl } from '@/apis/workList/serve'
 
 export default {
     props: ['itemData'],

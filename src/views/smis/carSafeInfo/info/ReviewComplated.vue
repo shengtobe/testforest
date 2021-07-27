@@ -101,7 +101,6 @@
             </template>
 
             <v-btn dark class="ma-2 btn-modify"
-                v-if="status == 4"
                 @click="print"
             >列印</v-btn>
         </v-col>
@@ -239,8 +238,9 @@ import { canInUpdate } from '@/apis/access'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
-import { safetyinfodelete, safetyinforeturn, safetyinfojoincheck, safetyinfocheck } from '@/apis/smis/carSafeInfo'
+import { safetyinfodelete, safetyinforeturn, safetyinfojoincheck, safetyinfocheck, safetyinfoexcel } from '@/apis/smis/carSafeInfo'
 import { fetchSupervisor } from '@/apis/workList/maintain'
+import { serveNewListExecl } from '@/apis/workList/serve'
 
 export default {
     props: ['itemData'],
@@ -684,11 +684,21 @@ export default {
         },
         // 列印
         print() {
-            this.chLoadingShow({ show: true})
-
-            setTimeout(() => {
-                this.chLoadingShow({ show: false})
-            }, 1000)
+            safetyinfoexcel({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: this.id
+            }).then(res => {
+                console.log("res.data: ", res.data);
+                let link = document.createElement('a')
+                console.log("link: ", link);
+                link.href = `/downloads/${res.data.file_name}`
+                link.setAttribute('download', res.data.file_name)
+                document.body.appendChild(link)
+                link.click()
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
         },
     },
     created() {
