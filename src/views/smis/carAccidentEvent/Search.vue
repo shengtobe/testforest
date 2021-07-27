@@ -412,7 +412,7 @@ export default {
                     // 解決AccidentType有空字串問題:
                     // if(element.AccidentType == '') element.AccidentType = 'Other'
 
-                    // 組合發現地點文字 AccidentCode
+                    // 組合發生地點文字 AccidentCode
                     console.log("1 element.AccidentType: ", element.AccidentType);
                     let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
                     

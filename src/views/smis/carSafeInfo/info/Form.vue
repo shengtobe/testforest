@@ -201,7 +201,7 @@
                 <v-btn dark class="mr-4 btn-close"
                     v-if="!isEdit"
                     to="/smis/car-safeinfo/info"
-                >回搜尋頁</v-btn>
+                >回管理頁面</v-btn>
 
                 <v-btn dark class="mr-4 btn-close"
                     v-else
@@ -241,6 +241,7 @@ import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import PeopleSelect from '@/components/PeopleSelect'
 import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
 import DangerousFlammableChecklistSeasonVue from '../../../formManage/serve/DangerousFlammableChecklistSeason.vue'
+import { fetchSupervisor } from '@/apis/workList/maintain'
 
 export default {
     data: () => ({
@@ -346,18 +347,58 @@ export default {
                                   
                 ],
              }).then(res => {
-                // console.log(res.data)
+                console.log("編輯時 res.data: ", res.data)
                 // console.log(res.data.RecPeople)
-                if(res.data.PeopleId != this.userData.UserId){ // 檢查登入者是否為可編輯者
-                    this.$router.push({ path: '/no-permission' })
+                if(res.data.SaftyInfoStatus == '1'){ // 已立案
+                    if(res.data.PeopleId != this.userData.UserId){ // 
+                        this.$router.push({ path: '/no-permission' })
+                    }
                 }
-                this.setShowDataint(res.data)
-             }).catch(err => {
+                else if(res.data.SaftyInfoStatus == '2' || res.data.SaftyInfoStatus == '3' || res.data.SaftyInfoStatus == '4'){ // 審核中 加會中 已發布
+                    let sup = ''
+                    let joinerIdArr = res.data.JoinPeople.map(e => e.PeopleId) // 加會人
+                    let ccArr = res.data.RecCopy.map(e => e.PeopleId) // 副本人
+                    let recArr = res.data.RecPeople.map(e => e.PeopleId) // 收件人
+                    fetchSupervisor({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        ReqID: res.data.PeopleId,  // 立單人id
+                    }).then(res => {
+                        // this.isShowBtn = res.data == this.userData.UserId
+                        console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
+                        sup = res.data.ID
+                        if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
+                            if(res.data.SaftyInfoStatus == '2'){
+                                this.$router.push({ path: '/no-permission' })
+                            }
+                        }
+                        else if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
+                        }
+                        else if(this.userData.UserId == res.data.PeopleId){ // 如果登入者是通報人
+                        }
+                        else if(ccArr.includes(this.userData.UserId) || recArr.includes(this.userData.UserId)){ // 如果登入者是副本人或收件人
+                            if(res.data.SaftyInfoStatus != '4'){
+                                this.$router.push({ path: '/no-permission' })
+                            }
+                        }
+                        else{ // 都不是
+                            this.$router.push({ path: '/no-permission' })
+                        }
+                        console.log("sup end this.ipt.recipients: ", this.ipt.recipients);
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                    }).finally(() => {
+                        // this.isLoading = this.dialog = false
+                    })
+                }// 審核中 加會中 已發布 END
+                
+                    this.setShowDataint(res.data)
+            }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
-             }).finally(() => {
+            }).finally(() => {
                 this.chLoadingShow({show:false})
-             })
+            })
                 // 範例效果
                 // setTimeout(() => {
                 //     let obj = {
@@ -405,11 +446,12 @@ export default {
             this.ipt.title = obj.InfoTitle // 通報主題
             this.ipt.desc = obj.InfoContent // 發布內容RecCopy: RCarr, JoinPeople: JParr, 
             this.ipt.recipients = obj.RecPeople.map(item => item.PeopleId)
+            console.log("this.ipt.recipients: ", this.ipt.recipients);
             this.ipt.cc = obj.RecCopy.map(item => item.PeopleId)
             this.ipt.joiners = obj.JoinPeople.map(item => item.PeopleId)
-            //this.ipt.recipients = [ ...obj.RecPeople ] // 收件人
-            //this.ipt.cc = [ ...obj.RecCopy ] // 副本
-            //this.ipt.joiners = [ ...obj.JoinPeople ] // 加會人
+            // this.ipt.recipients = [ ...obj.RecPeople ] // 收件人
+            // this.ipt.cc = [ ...obj.RecCopy ] // 副本
+            // this.ipt.joiners = [ ...obj.JoinPeople ] // 加會人
             this.ipt.files = [ ...obj.FileCount ] // 附件檔案
         },
         // 設定資料
@@ -550,6 +592,8 @@ export default {
         },
         // 送出
         save() {
+            console.log("this.ipt.recipients: ", this.ipt.recipients);
+            return
             if (this.$refs.form.validate()){
                 if (this.$route.params.id == undefined) {
                     if(this.ipt.recipients == ''){
@@ -629,6 +673,7 @@ export default {
                     console.log(RParr)
                     console.log(RCarr)
                     console.log(JParr)
+                    console.log("call safetyinfoupdate");
                         safetyinfoupdate({
                             ClientReqTime: getNowFullTime(),  // client 端請求時間
                             OperatorID: this.userData.UserId,  // 操作人id

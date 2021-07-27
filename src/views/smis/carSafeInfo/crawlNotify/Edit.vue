@@ -294,6 +294,7 @@ export default {
             this.ipt.slow = obj.SlowLimit // 慢行速限
             this.ipt.dateStart = obj.LimitStartDate // 限制日期(起)
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
+            this.date = obj.LimitEndDate
             // console.log(obj.RecPeople)
             // console.log(obj.ReportLine)
             // console.log(obj.LimitStart)

@@ -328,6 +328,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 let link = document.createElement('a')
+                console.log("link: ", link);
                 link.href = `/downloads/${res.data.file_name}`
                 link.setAttribute('download', res.data.file_name)
                 document.body.appendChild(link)

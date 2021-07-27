@@ -196,7 +196,7 @@
         <v-col cols="12" class="text-center my-8">
             <v-btn dark class="mr-4 btn-close"
                 to="/smis/car-safeinfo/crawl-notify"
-            >回搜尋頁</v-btn>
+            >回管理頁</v-btn>
             
             <v-btn
                 class="btn-add white--text" v-if="saveBtnShow"

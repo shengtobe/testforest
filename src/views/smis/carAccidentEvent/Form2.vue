@@ -7,7 +7,7 @@
     <v-row class="px-2 label-header">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發現日期
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發生日期
             </h3>
             <v-menu
                 v-model="dateMenuShow"
@@ -35,7 +35,7 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發現時間 (小時)
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發生時間 (小時)
             </h3>
             <v-select
                 v-model="ipt.hour"
@@ -46,7 +46,7 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發現時間 (分)
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發生時間 (分)
             </h3>
             <v-select
                 v-model="ipt.min"
@@ -67,7 +67,7 @@
         </v-col>
     </v-row>
 
-    <!-- 發現地點 -->
+    <!-- 發生地點 -->
     <LocationSelect
         @chLocation="setLocation"
         :location="ipt.location"
@@ -219,16 +219,16 @@ export default {
         routeId: '',  // 編號
         isEdit: false,  // 是否為編輯狀態
         ipt: {  // 給地點組件的預設值要先設
-            location: 'l1',  // 發現地點
+            location: 'l1',  // 發生地點
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
         },
         defaultIpt: {
-            date: new Date().toISOString().substr(0, 10),  // 發現日期
+            date: new Date().toISOString().substr(0, 10),  // 發生日期
             hour: '00',  // 發現時間(小時)
             min: '00',  // 發現時間(分)
-            location: 'l1',  // 發現地點
+            location: 'l1',  // 發生地點
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
@@ -283,10 +283,10 @@ export default {
                 // 範例效果
                 setTimeout(() => {
                     let obj = {
-                        date: '2017-01-25',  // 發現日期
+                        date: '2017-01-25',  // 發生日期
                         hour: '15',  // 發現時間(小時)
                         min: '56',  // 發現時間(分)
-                        location: 'l1',  // 發現地點
+                        location: 'l1',  // 發生地點
                         locationK: 20,  // 路線k
                         locationM: 445,　// 路線m
                         locationOther: '',　// 其他地點
@@ -316,11 +316,11 @@ export default {
                 //     this.notify.id = obj.id,  // 通報id
                 //     this.notify.files = [ ...obj.files ]  // 通報附件
                 //     this.notify.isNew = true  // 是否為危害通報的新登錄
-                //     this.ipt.date = obj.date  // 發現日期
+                //     this.ipt.date = obj.date  // 發生日期
                 //     this.ipt.hour = obj.hour  // 發現時間(小時)
                 //     this.ipt.min = obj.min  // 發現時間(分)
                 //     this.ipt.note = obj.content // 備註說明
-                //     this.ipt.location = obj.location  // 發現地點
+                //     this.ipt.location = obj.location  // 發生地點
                 //     this.ipt.locationK = obj.locationK  // 路線k
                 //     this.ipt.locationM = obj.locationM　// 路線m
                 //     this.ipt.locationOther = obj.locationOther　// 其他地點
@@ -330,10 +330,10 @@ export default {
                 // }
 
                 // demo 用資料
-                this.ipt.date = '2017-01-25'  // 發現日期
+                this.ipt.date = '2017-01-25'  // 發生日期
                 this.ipt.hour = '15'  // 發現時間(小時)
                 this.ipt.min = '56'  // 發現時間(分)
-                this.ipt.location = 'l1'  // 發現地點
+                this.ipt.location = 'l1'  // 發生地點
                 this.ipt.locationK = 20  // 路線k
                 this.ipt.locationM = 445　// 路線m
                 this.ipt.locationOther = ''　// 其他地點
@@ -346,7 +346,7 @@ export default {
                 this.ipt.note = '本事故由鐵道局( 鐵路營運監理小組) 及 5位具軌道、力學、車輛及營運等專業之外聘專案委員組成團隊進行專案調查，並由本部鐵路行車事故調查小組 定期委員開會確認調查結果。' // 備註說明
             }
         },
-        // 設定發現地點
+        // 設定發生地點
         setLocation(payload) {
             this.ipt.location = payload.location
             this.ipt.locationK = payload.locationK
@@ -355,10 +355,10 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            this.ipt.date = obj.date  // 發現日期
+            this.ipt.date = obj.date  // 發生日期
             this.ipt.hour = obj.hour  // 發現時間(小時)
             this.ipt.min = obj.min  // 發現時間(分)
-            this.ipt.location = obj.location  // 發現地點
+            this.ipt.location = obj.location  // 發生地點
             this.ipt.locationK = obj.locationK  // 路線k
             this.ipt.locationM = obj.locationM　// 路線m
             this.ipt.locationOther = obj.locationOther　// 其他地點

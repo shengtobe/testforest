@@ -44,7 +44,7 @@
     <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發現日期
+                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>發生日期
             </h3>
             <v-menu
                 v-model="dateMenuShow"
@@ -72,7 +72,7 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發現時間 (小時)
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發生時間 (小時)
             </h3>
             <v-select
                 v-model="ipt.hour"
@@ -83,7 +83,7 @@
 
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發現時間 (分)
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發生時間 (分)
             </h3>
             <v-select
                 v-model="ipt.min"
@@ -106,9 +106,9 @@
         
     </v-row>
 
-    <!-- 發現地點 -->
+    <!-- 發生地點 -->
     <h3 class="mb-1 ml-2">
-        <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發現地點
+        <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點
     </h3>
 
     <v-sheet elevation="2" class="mx-2 mb-8 px-3">
@@ -601,11 +601,11 @@ export default {
         ipt: {},
         defaultIpt: {
             subject: '',  // 事故摘要
-            date: new Date().toISOString().substr(0, 10),  // 發現日期
+            date: new Date().toISOString().substr(0, 10),  // 發生日期
             hour: '00',  // 發現時間(小時)
             min: '00',  // 發現時間(分)
             climate: '',  // 天候
-            location: 'l1',  // 發現地點
+            location: 'l1',  // 發生地點
             locationK: '',  // 路線k
             locationM: '',　// 路線m
             locationOther: '',　// 其他地點
@@ -758,12 +758,12 @@ export default {
         // 設定資料(編輯時)
         setInitDate(obj) {
             this.ipt.subject = obj.ReportTitle  // 事故摘要
-            this.ipt.date = obj.FindDDay  // 發現日期
+            this.ipt.date = obj.FindDDay  // 發生日期
             this.ipt.hour = obj.FindDHour  // 發現時間(小時)
             this.ipt.min = obj.FindDMin  // 發現時間(分)
             this.ipt.climate = obj.EventWeather  // 天候
             this.ipt.evtType = obj.AccidentType // 事故類型
-            this.ipt.location = obj.FindLine // 發現地點
+            this.ipt.location = obj.FindLine // 發生地點
             this.ipt.locationK = obj.FindKLine // 路線k
             this.ipt.locationM = obj.FindMLine // 路線m
             this.ipt.locationOther = obj.FindLineOther // 其他地點
@@ -846,13 +846,13 @@ export default {
                 let tempType = this.opsList.find(e => e.text = s).Code
                 updateData({
                     AccidentCode: this.id,  // 行車事故事件編號
-                    FindDDay: this.ipt.date,  // 發現日期
-                    FindDHour: this.ipt.hour,  //發現時間 (小時)
-                    FindDMin: this.ipt.min,  // 發現時間 (分)
-                    FindLine: this.ipt.location,  // 發現地點
-                    FindKLine: this.ipt.locationK,  // 發現地點K路段
-                    FindMLine: this.ipt.locationM,  // 發現地點M路段
-                    FindLineOther: this.ipt.locationOther,  // 發現地點其他路段
+                    FindDDay: this.ipt.date,  // 發生日期
+                    FindDHour: this.ipt.hour,  //發生時間 (小時)
+                    FindDMin: this.ipt.min,  // 發生時間 (分)
+                    FindLine: this.ipt.location,  // 發生地點
+                    FindKLine: this.ipt.locationK,  // 發生地點K路段
+                    FindMLine: this.ipt.locationM,  // 發生地點M路段
+                    FindLineOther: this.ipt.locationOther,  // 發生地點其他路段
                     ReportTitle: this.ipt.subject,  // 事故摘要
                     AccidentType: (this.ipt.evtType1 != '其他')?this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2 + '率').value:'Other' ,  // 事故類型
                     EventWeather: this.ipt.climate,  // 氣候
@@ -900,13 +900,13 @@ export default {
             } else {
                 // ---------- 新增時---------- 
                 createData({
-                    FindDDay: this.ipt.date,  // 發現日期
-                    FindDHour: this.ipt.hour,  //發現時間 (小時)
-                    FindDMin: this.ipt.min,  // 發現時間 (分)
-                    FindLine: this.ipt.location,  // 發現地點
-                    FindKLine: this.ipt.locationK,  // 發現地點K路段
-                    FindMLine: this.ipt.locationM,  // 發現地點M路段
-                    FindLineOther: this.ipt.locationOther,  // 發現地點其他路段
+                    FindDDay: this.ipt.date,  // 發生日期
+                    FindDHour: this.ipt.hour,  //發生時間 (小時)
+                    FindDMin: this.ipt.min,  // 發生時間 (分)
+                    FindLine: this.ipt.location,  // 發生地點
+                    FindKLine: this.ipt.locationK,  // 發生地點K路段
+                    FindMLine: this.ipt.locationM,  // 發生地點M路段
+                    FindLineOther: this.ipt.locationOther,  // 發生地點其他路段
                     ReportTitle: this.ipt.subject,  // 事故摘要
                     AccidentType: (this.ipt.evtType1 != '其他')?this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2 + '率').value:'Other' ,  // 事故類型
                     EventWeather: this.ipt.climate,  // 氣候
