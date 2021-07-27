@@ -79,7 +79,7 @@ export default {
                         let hurtPeoples = []  // 死傷人數資料
                         let controls = []  // 已選控制措施
                         
-                        // 組合發現地點文字
+                        // 組合發生地點文字
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
                         
                         if (['l1', 'l2', 'l3', 'l4'].includes(res.data.FindLine)) {
@@ -117,7 +117,7 @@ export default {
 
                         let topItems = [  // 上面的欄位
                             { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == res.data.AccidentStatus).text },
-                            { icon: 'mdi-calendar-text', title: '發現日期', text: res.data.FindDDate },
+                            { icon: 'mdi-calendar-text', title: '發生日期', text: res.data.FindDDate },
                             { icon: 'mdi-cloud-outline', title: '天候', text: res.data.EventWeather },
                             { icon: 'mdi-snowflake', title: '事故類型', text: this.opsList.find(item => item.value == res.data.AccidentType).text.replace('率', '') },
                             { icon: 'mdi-stairs', title: '路線坡度', text: res.data.RoadSlope },
@@ -129,7 +129,7 @@ export default {
                         // 設定下面的欄位資料
                         let bottomItems = [
                             { dataType: 'text', oneline: true, icon: 'mdi-tag', title: '事故摘要', text: res.data.ReportTitle },
-                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發現地點', text: findLocationText },
+                            { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發生地點', text: findLocationText },
                             { dataType: 'text', oneline: true, icon: 'mdi-cellphone-link-off', title: '設備受損情形', text: res.data.DeviceLost },
                             { dataType: 'text', oneline: true, icon: 'mdi-alert-decagram', title: '運轉影響情形', text: res.data.OperationLost },
                             { dataType: 'text', oneline: true, icon: 'mdi-snowflake', title: '第一層因素', text: AccidentFactors1.find(item => item.value == res.data.SaftyCodeLv1).text },

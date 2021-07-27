@@ -102,8 +102,23 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj: ", obj);
             console.log("Auth: ", obj.PeopleId + '=' + this.userData.UserId);
+            // 檢查檢視權限
+            if(obj.SaftyInfoStatus = '1' && obj.PeopleId != this.userData.UserId){ //已立案 如果非通報人 則不能檢視此頁
+                this.$router.push({ path: '/no-permission' })
+            }
+            else if(obj.SaftyInfoStatus = '2'){// 審核中
+                
+            }
+            else if(obj.SaftyInfoStatus = '3'){// 加會中
+                
+            }
+            else if(obj.SaftyInfoStatus = '4'){// 已發布
+                
+            }
             this.isBtnShow = obj.PeopleId == this.userData.UserId
+            
             
             this.id = obj.SaftyInfoCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -250,6 +265,7 @@ export default {
         },
     },
     created() {
+        console.log("Enter show");
         this.setShowData(this.itemData)
     }
 }

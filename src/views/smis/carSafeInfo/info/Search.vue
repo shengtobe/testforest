@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px" class="label-header">
-    <h2 class="mb-4 label-title">安全資訊查詢</h2>
+    <h2 class="mb-4 label-title">管理安全資訊</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="8" md="3">
@@ -352,6 +352,7 @@ export default {
                     break
             }
 
+            // this.$router.push({ path: `/smis/car-safeinfo/info/${item.SaftyInfoCode}/show` })
             let routeData = this.$router.resolve({ path: `/smis/car-safeinfo/info/${item.SaftyInfoCode}/show` })
             window.open(routeData.href, '_blank')
         },

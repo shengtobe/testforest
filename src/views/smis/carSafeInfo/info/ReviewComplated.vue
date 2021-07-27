@@ -295,6 +295,7 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
             groupData: state => state.groupData,
         }),
+        
     },
     methods: {
         ...mapActions('system', [
@@ -310,6 +311,8 @@ export default {
             // this.chLoadingShow({show:true})
             this.chLoadingShow({ show: true})
             console.log("安全資訊 審核中 obj: ", obj)
+            
+            
             this.id = obj.SaftyInfoCode  // 編號
             this.status = obj.SaftyInfoStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -319,7 +322,12 @@ export default {
             //this.opinionList = [ ...obj.opinionList ]  // 加會意見列表
             this.opinionList = [ ...obj.JoinPeople ]  // 加會意見列表
             console.log("status: ", this.status)
-            if(this.status == 2){
+            if(this.status == 1){
+                if(this.userData.UserId == obj.PeopleId){
+                    
+                }
+            }
+            else if(this.status == 2){
                 //敲門
                 // canInUpdate({
                 //     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -333,6 +341,7 @@ export default {
                 //     console.log(err)
                 // }).finally(() => {
                 // })
+                let sup = ''
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -341,6 +350,7 @@ export default {
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
                     console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
+                    sup = res.data.ID
                     if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
                         this.isShowBtn = this.isShowBtn_edit = true
                     }
@@ -362,10 +372,62 @@ export default {
                 // 驗證登入者是否為加會人
                 let joinerIdArr = obj.JoinPeople.map(e => e.PeopleId)
                 console.log("加會人們: ", joinerIdArr);
-                if(joinerIdArr.includes(this.userData.UserId)){
-                    this.isShowBtn_add = true
-                }
+                //查詢員工所屬的部門主管資料
+                fetchSupervisor({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    ReqID: obj.PeopleId,  // 立單人id
+                }).then(res => {
+                    // this.isShowBtn = res.data == this.userData.UserId
+                    console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
+                    if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
+                        this.isShowBtn_add = true
+                    }
+                    else if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
+                    }
+                    else if(this.userData.UserId == obj.PeopleId){ // 如果登入者是通報人
+                    }
+                    else{ // 都不是
+                        this.$router.push({ path: '/no-permission' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    // this.isLoading = this.dialog = false
+                })
                 
+                
+            }
+            else if(this.status == 4){ // 已發布
+                this.isShowBtn_edit = this.isShowBtn = isShowBtn_add = false
+                let joinerIdArr = obj.JoinPeople.map(e => e.PeopleId) // 加會人
+                let ccArr = obj.RecCopy.map(e => e.PeopleId) // 副本人
+                let recArr = obj.RecPeople.map(e => e.PeopleId) // 收件人
+                console.log("加會人們: ", joinerIdArr);
+                //查詢員工所屬的部門主管資料
+                fetchSupervisor({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    ReqID: obj.PeopleId,  // 立單人id
+                }).then(res => {
+                    // this.isShowBtn = res.data == this.userData.UserId
+                    console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
+                    if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
+                    }
+                    else if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
+                    }
+                    else if(this.userData.UserId == obj.PeopleId){ // 如果登入者是通報人
+                    }
+                    else if(ccArr.includes(this.userData.UserId) || recArr.includes(this.userData.UserId)){ // 如果登入者是副本人或收件人
+                    }
+                    else{ // 都不是
+                        this.$router.push({ path: '/no-permission' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    // this.isLoading = this.dialog = false
+                })
             }
             this.chLoadingShow({ show: false})
             
@@ -442,6 +504,7 @@ export default {
             //     time: item.time,
             // }))
         },
+        
         setShowDataint(obj) {
             this.status = obj.SaftyInfoStatus
             
