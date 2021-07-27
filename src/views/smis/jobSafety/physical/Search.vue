@@ -268,7 +268,7 @@ export default {
             Depart: '',
             Name: '',  // 姓名
             ID: '',
-            JobName: '',  // 職務
+            JobName: '1',  // 職務
             Onduty: 'N',  // 是否在職
             CheckStatus: 'N',  // 健檢提醒
             CheckYear: '',  // 年度
@@ -278,10 +278,11 @@ export default {
                 { text: '不限', value: '' },
             ],
             job: [  // 職務
-                { text: '不限', value: '' },
-                { text:'駕駛員', value:'1' }, 
-                { text:'行車人員', value:'2' }, 
-                { text:'一般員工', value:'3' }
+                { text: '不限', value: '1' },
+                { text:'駕駛(60歲以上)', value:'2' }, 
+                { text:'駕駛(未滿60歲)', value:'3' }, 
+                { text:'行車人員(非駕駛)', value:'4' },
+                { text:'一般人員(非行車人員)', value:'5' }
             ],
             onJob: [  // 是否在職
                 { text: '不限', value: 'N' },

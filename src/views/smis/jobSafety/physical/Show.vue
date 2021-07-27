@@ -63,7 +63,10 @@ export default {
             urineProtein: jobUrineOpts,
             urineBlood: jobUrineOpts,
         },
-        jobs: [{text:'駕駛員',value:'1'}, {text:'車長',value:'2'}, {text:'一般員工',value:'3'}],
+        jobs: [{ text:'駕駛(60歲以上)', value:'2' }, 
+                { text:'駕駛(未滿60歲)', value:'3' }, 
+                { text:'行車人員(非駕駛)', value:'4' },
+                { text:'一般人員(非行車人員)', value:'5' }],
         sex: [{text:'男',value:'M'}, {text:'女',value:'F'}, {text:'無',value:'X'}],
         InspectionType: [{ text: '受雇', value: '1' },{ text: '定期', value: '2' }],
         delDialog: false

@@ -55,6 +55,17 @@
         ></v-text-field>
       </v-col>
 
+      <v-col cols="12" sm="4">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>是否須回訓
+        </h3>
+        <v-select
+          v-model="ipt.ReTrainStatus"
+          :items="YnSelect"
+          solo
+        ></v-select>
+      </v-col>
+
       <v-col cols="12">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註
@@ -89,9 +100,11 @@ export default {
         InitTrainingTime: '',
         ReTrainingTime: '',
         ValidityPeriod: '',
+        ReTrainStatus: 'Y',
         Memo: '',
       },
       isLoading: false,
+      YnSelect: [{value:'Y',text:'須回訓'},{value:'N',text:'不須回訓'}]
     }),
     computed: {
       ...mapState ('user', {
