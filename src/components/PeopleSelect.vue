@@ -37,10 +37,15 @@ export default {
     if(this.outData){
       this.orgList = this.outdata.orgList
       this.people = this.outdata.people
-      this.inputValue = this.value
     }else{
       this._getOrg()
     }
+    if(this.isMuti){
+      this.inputValue = []  
+    } else {
+      this.inputValue = ""
+    }
+    this.inputValue = this.value
 	},
 	computed: {
 		...mapState ('user', {
@@ -160,6 +165,9 @@ export default {
     },
 	},
   watch: {
+    value: function(value){
+      this.inputValue = value
+    },
     inputValue: function(value){
       this.$emit('input',value)
       this.$emit('getName',this.selectName)
