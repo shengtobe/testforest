@@ -289,6 +289,7 @@ export default {
     },
     created() {
         this.searchIpt = { ...this.searchDefault }
+        this.search()
     },
 }
 </script>

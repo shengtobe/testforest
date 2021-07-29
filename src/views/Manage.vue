@@ -68,7 +68,7 @@
                                     <strong class="black--text">設備維修及保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修養護科類工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修、養護科工單</v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/serve">車站營運設備維修工單</v-list-item>
                                 <v-divider></v-divider>

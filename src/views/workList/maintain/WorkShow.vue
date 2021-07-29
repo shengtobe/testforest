@@ -279,6 +279,28 @@
                                         </h3>
                                         <EquipRepairCode :key="0" :toLv="5" :nowEqCode="nowEqCode" :disableToLv="2" @getWorkName="getTempCode" />
                                     </v-col>
+                                    <!-- 已選工作項 -->
+                                    <v-col cols="12">
+                                        <h3 class="mb-1 mt-n3">
+                                            <v-icon class="mr-1 mb-1">mdi-briefcase-check</v-icon>已選工作項
+                                        </h3>
+
+                                        <v-chip
+                                            v-for="(item, idx) in selectWorkArr"
+                                            :key="item"
+                                            class="mr-3 mt-2"
+                                            label
+                                            color="green dark-2"
+                                            dark
+                                            large
+                                        >
+                                            {{ item }}
+                                            <v-icon right
+                                                @click="rmSelectWork(idx)"
+                                            >mdi-close-circle</v-icon>
+                                        </v-chip>
+                                        
+                                    </v-col>
 
 
                                     <v-col cols="12" sm="12">
@@ -402,6 +424,7 @@ export default {
         nowEqCode: '', //編輯時 預設帶入的combineCode
         combineCode: '', //合併後的設備編碼
         Lv5Name: '', //工作項中文
+        selectWorkArr: [],
         isShowBtn: false,
         done: false,  // 是否完成頁面操作
         valid: false,  // 表單是否驗證欄位 (demo先取消掉)
@@ -473,6 +496,9 @@ export default {
         //抓取未確認的設備標示編碼
         getTempCode(value) {
             this.Lv5Name = value
+            if(this.selectWorkArr.includes(value) == false){
+                this.selectWorkArr.push(value)
+            }
             console.log('Lv5Name: ', this.Lv5Name);
         },
         ...mapActions('system', [
@@ -601,6 +627,7 @@ export default {
         },
         // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
         setJobHour(isEdit, item) {
+            this.selectWorkArr = [...[]]
             if (!isEdit) {
                 // 新增時
                 this.jobHour.isEdit = false
@@ -620,30 +647,54 @@ export default {
             let idx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
             this.jobHour.items.splice(idx, 1)
         },
+        //刪除已選工作項
+        rmSelectWork(idx) {
+            this.selectWorkArr.splice(idx, 1)
+        },
         // 儲存工作表單
         saveJob() {
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
             if(this.Lv5Name != '' && this.Lv5Name != null){
                 // this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
-                let len = this.Lv5Name.length
                 this.jobForm.JobName = this.Lv5Name.substr(0, this.Lv5Name.length - 4)
             }
             else{
                 this.jobForm.JobName = ''
             }
-            
-            if (this.jobHour.isEdit == false) {
+            if (this.jobHour.isEdit == false) { 
+                // +新增
+                let tempJobHour = []
+                this.selectWorkArr.forEach(work => {
+                    let tempJobForm = {...this.jobForm}
+                    // 反查姓名
+                    tempJobForm.PeopleName = this.allLicenseMembers.find(item => item.value == tempJobForm.PeopleId).text
+                    tempJobForm.JobName = work.substr(0, work.length - 4)
+                    tempJobHour.push(tempJobForm)
+                    tempJobForm = {}
+                });
+                this.jobHour.items.push(...tempJobHour)
                 // 反查姓名
-                this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
+                // this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
                 // 新增時 (照林鐵人員要求，新增後不關閉視窗)
-                this.jobHour.items.push(this.jobForm)
+                // this.jobHour.items.push(this.jobForm)
                 this.jobForm = { ...this.defaultJobForm }
+                this.jobHour.dialogShow = false
             } else {
                 // 編輯時
-                Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
+                let tempJobHour = []
+                this.selectWorkArr.forEach(work => {
+                    let tempJobForm = {...this.jobForm}
+                    tempJobForm.JobName = work.substr(0, work.length - 4)
+                    tempJobHour.push(tempJobForm)
+                    tempJobForm = {}
+                });
+                this.jobHour.items.splice(this.jobHour.editIdx + 1, 0, ...tempJobHour) //先插入點擊編輯的那行後面
+                this.jobHour.items.splice(this.jobHour.editIdx, 1) // 再刪除點擊編輯的那行
+                // Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
                 this.jobHour.dialogShow = false
             }
+            this.selectWorkArr = [...[]]
         },
     },
     created() {

@@ -147,8 +147,9 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.PeopleHeight"
-                solo
+                solo max="3" maxlength="3"
                 placeholder="請輸入身高"
+                type="number"
                 suffix="cm"
             ></v-text-field>
         </v-col>
@@ -159,7 +160,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.PeopleWeight"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="kg"
                 placeholder="請輸入體重"
             ></v-text-field>
@@ -171,7 +173,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.BloodShrink"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="mmHg"
                 placeholder="請輸入血壓收縮壓"
             ></v-text-field>
@@ -183,7 +186,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.BloodDiastole"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="mmHg"
                 placeholder="請輸入血壓舒張壓"
             ></v-text-field>
@@ -195,7 +199,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.Pulse"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="次/分鐘"
                 placeholder="請輸入脈搏"
             ></v-text-field>
@@ -207,7 +212,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.Waistline"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="cm"
                 placeholder="請輸入腰圍"
             ></v-text-field>
@@ -219,7 +225,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.Sight"
-                solo
+                solo maxlength="3"
+                type="number"
                 placeholder="請輸入視力"
             ></v-text-field>
         </v-col>
@@ -230,7 +237,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.Hearing"
-                solo
+                solo maxlength="3"
+                type="number"
                 placeholder="請輸入聽力"
             ></v-text-field>
         </v-col>
@@ -263,7 +271,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.WhiteBlood"
-                solo
+                solo maxlength="6"
+                type="number"
                 suffix="個/ul"
                 placeholder="請輸入白血球數"
             ></v-text-field>
@@ -275,7 +284,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.BloodPigment"
-                solo
+                solo maxlength="6"
+                type="number"
                 suffix="g/dL"
                 placeholder="請輸入血色素"
             ></v-text-field>
@@ -298,7 +308,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.GPTValue"
-                solo
+                solo maxlength="4"
+                type="number"
                 suffix="U/L"
                 placeholder="請輸入GPT"
             ></v-text-field>
@@ -321,43 +332,24 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.UricAcid"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="mg/dL"
                 placeholder="請輸入尿酸"
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-database</v-icon>肌酸酐
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.Creatinine"
-                solo
-                suffix="mg/dL"
-                placeholder="請輸入肌酸酐"
-            ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="4" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-database</v-icon>膽固醇
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.Cholesterol"
-                solo
-                suffix="mg/dL"
-                placeholder="請輸入膽固醇"
-            ></v-text-field>
-        </v-col>
+        
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>HDL
             </h3>
             <v-text-field
+            color="red"
                 v-model.trim="ipt.HDLValue"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="mg/dL"
                 placeholder="請輸入HDL"
             ></v-text-field>
@@ -369,7 +361,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.LDLValue"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="mg/dL"
                 placeholder="請輸入LDL"
             ></v-text-field>
@@ -381,7 +374,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.Triglyceride"
-                solo
+                solo maxlength="3"
+                type="number"
                 suffix="mg/dL"
                 placeholder="請輸入三酸甘油酯"
             ></v-text-field>
@@ -389,12 +383,41 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-database</v-icon>總膽固醇
+            </h3>
+            <!-- :v-model="ipt.Cholesterol" -->
+            <!-- placeholder="請輸入膽固醇" -->
+            <v-text-field 
+                v-model="ipt.Cholesterol"
+                solo maxlength="3" readonly
+                suffix="mg/dL"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-database</v-icon>肌酸酐
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.Creatinine"
+                solo maxlength="4"
+                suffix="mg/dL"
+                type="number"
+                placeholder="請輸入肌酸酐"
+            ></v-text-field>
+        </v-col>
+
+        
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>飯前血糖
             </h3>
             <v-text-field
                 v-model.trim="ipt.BloodSugar"
-                solo
+                solo maxlength="4"
                 suffix="mg/dL"
+                type="number"
                 placeholder="請輸入飯前血糖"
             ></v-text-field>
         </v-col>
@@ -615,10 +638,25 @@ export default {
       PeopleSelect
     },
     watch: {
-      // 路由參數變化時，重新向後端取資料
-      $route(to, from) {
-          // … 
-      },
+        // 路由參數變化時，重新向後端取資料
+        $route(to, from) {
+            // … 
+        },
+        "ipt.Triglyceride": function(){
+            if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
+                this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
+            }
+        },
+        "ipt.LDLValue": function(){
+            if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
+                this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
+            }
+        },
+        "ipt.HDLValue": function(){
+            if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
+                this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
+            }
+        },
     },
     computed: {
       ...mapState ('user', {

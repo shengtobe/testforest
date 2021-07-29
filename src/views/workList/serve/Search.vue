@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4">服務科工單查詢</h2>
+    <h2 class="mb-4">車站營運設備維修工單查詢</h2>
 
     <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
