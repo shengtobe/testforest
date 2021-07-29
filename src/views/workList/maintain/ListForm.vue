@@ -176,8 +176,8 @@
           <!-- <EquipRepairCode :key="componentKey" :toLv="2" :nowEqCode="ipt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>RST-8304-COP-02 -->
           <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" :rtnStartLv="2" @getEqCode="getTempCode" @getEqCh="getTempCh" />
 
-            <v-col cols="12" class="mt-n4">
-                <!-- <v-row>
+            <!-- <v-col cols="12" class="mt-n4">
+                <v-row>
                     <v-col cols="12" md="1" align-self="center">
                         <h3 class="ml-md-6">系統</h3>
                     </v-col>
@@ -191,11 +191,11 @@
                             :disabled="!canModifyEqCode"
                         ></v-select>
                     </v-col>
-                </v-row> -->
+                </v-row>
             </v-col>
 
             <v-col cols="12">
-                <!-- <v-row>
+                <v-row>
                     <v-col cols="12" md="1" align-self="center">
                         <h3 class="ml-md-6">位置</h3>
                     </v-col>
@@ -217,11 +217,11 @@
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                         ></v-select>
                     </v-col>
-                </v-row> -->
+                </v-row>
             </v-col>
 
             <v-col cols="12">
-                <!-- <v-row>
+                <v-row>
                     <v-col cols="12" md="1" align-self="center">
                         <h3 class="ml-md-6">設備</h3>
                     </v-col>
@@ -243,11 +243,11 @@
                             :disabled="disableLv3"
                         ></v-select>
                     </v-col>
-                </v-row> -->
+                </v-row>
             </v-col>
 
             <v-col cols="12">
-                <!-- <v-row>
+                <v-row>
                     <v-col cols="12" md="1" align-self="center">
                         <h3 class="ml-md-6">序號</h3>
                     </v-col>
@@ -260,7 +260,246 @@
                             :rules="[v => (!!v && /[^\s]/.test(v)) || '請選擇項目']"
                         ></v-select>
                     </v-col>
-                </v-row> -->
+                </v-row> 
+            </v-col>-->
+        </v-row>
+
+        <!-- 故障狀況 -->
+        <v-row class="px-2 mb-8">
+            <v-col cols="12">
+                <h3 class="mb-2">
+                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
+                </h3>
+                <v-checkbox
+                    class="mx-2 mt-sm-10"
+                    v-model="crossShow"
+                    label="選擇平交道項目"
+                    color="success"
+                    hide-details
+                ></v-checkbox>
+                <v-sheet class="white px-4 mt-1 mb-3 mx-2"
+                    v-if="crossShow"
+                >
+                    <v-row>
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">車種</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="客車編組"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="檜木車編組"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="工程車編組"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="台車"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="機關車"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">方向</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12" sm="7" md="4">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="上行" value="top" color="red"></v-radio>
+                                        <v-radio label="下行" value="down" color="red"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+
+                                <v-col cols="12" sm="5" md="3">
+                                    <v-text-field
+                                        dense
+                                        label="車次"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">遮斷機</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="兩側皆無上升"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="兩側皆無下降"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="南側無上升"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="南側無下降"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="北側無上升"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+
+                                <v-col cols="12" sm="6" md="3">
+                                    <v-checkbox
+                                        class="mt-0"
+                                        label="北側無下降"
+                                        color="primary"
+                                        hide-details
+                                    ></v-checkbox>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">閃光燈</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12" md="6">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="兩則" value="all" color="primary"></v-radio>
+                                        <v-radio label="南" value="south" color="primary"></v-radio>
+                                        <v-radio label="北" value="north" color="primary"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+
+                                <v-col cols="12" md="6">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="不亮" value="noactive" color="red"></v-radio>
+                                        <v-radio label="不滅" value="noend" color="red"></v-radio>
+                                        <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">駕駛燈</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12" md="6">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="紅" value="red" color="primary"></v-radio>
+                                        <v-radio label="綠" value="green" color="primary"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+
+                                <v-col cols="12" md="6">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="不亮" value="noactive" color="red"></v-radio>
+                                        <v-radio label="不滅" value="noend" color="red"></v-radio>
+                                        <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">旋轉燈</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12" md="6">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="兩則" value="all" color="primary"></v-radio>
+                                        <v-radio label="南" value="south" color="primary"></v-radio>
+                                        <v-radio label="北" value="north" color="primary"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+
+                                <v-col cols="12" md="6">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="不亮" value="noactive" color="red"></v-radio>
+                                        <v-radio label="不滅" value="noend" color="red"></v-radio>
+                                        <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <h3 class="pt-3 mb-n2 error--text">警音</h3>
+                            <v-row no-gutters>
+                                <v-col cols="12">
+                                    <v-radio-group row
+                                        class="mt-1"
+                                    >
+                                        <v-radio label="無聲音" value="no" color="primary"></v-radio>
+                                        <v-radio label="太小聲" value="small" color="primary"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                </v-sheet>
             </v-col>
         </v-row>
 
@@ -371,6 +610,7 @@ export default {
             opt32: false,  // 第3組-2
         },
         canModifyEqCode: false,  // 是否能選擇設備標示編號下拉選單
+        crossShow: false,
     }),
     components: { OrganizeDialog, EquipRepairCode },
     computed: {
