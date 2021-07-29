@@ -35,7 +35,7 @@
                         <v-btn small dark fab class="btn-detail" v-if="!item.isRead" @click="personClick(item)">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                        <v-icon v-if="item.isRead">mdi-checkbox-marked-circle-outline</v-icon>
+                        <v-icon v-if="item.isRead" @click="personClick(item)">mdi-checkbox-marked-circle-outline</v-icon>
                     </template>
                     
                     <!-- 頁碼 -->
@@ -245,9 +245,9 @@ export default {
                 this.chLoadingShow({ show: false})
         },
         redirect(item) {
-            console.log("item:::", item.InfoBelongMod)
+            console.log("item:::", item)
             //test
-            item.InfoBelongMod = '18';
+            // item.InfoBelongMod = '18';
             //
             if (confirm('確定要離開目前頁面至指定頁面操作?')) {
                 switch(item.InfoBelongMod){
@@ -262,7 +262,8 @@ export default {
                         this.$router.push({ path: '/smis/car-harmdb/control-measures' })
                         break;
                     case '5':
-                        this.$router.push({ path: '/smis/car-safeinfo/info' })
+                        // this.$router.push({ path: '/smis/car-safeinfo/info' })
+                        this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
                         break;
                     case '6':
                         this.$router.push({ path: '/smis/safefile/meeting' })
@@ -326,8 +327,16 @@ export default {
                 MsgType: item.MsgType,
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("首頁個人資訊已讀 item: ", item);
+                    console.log("首頁個人資訊已讀 res.data: ", res.data);
+                    console.log("首頁個人資訊已讀 this.tableItems.personal: ", this.tableItems.personal);
                     // item.isRead = false
-                    this.tableItems.personal.find(item => item.id == item.ModuleItemID).isRead = true;
+                    this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
+
+                    setTimeout(() => {
+                        this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
+                    }, 300)
+
                 }
             }).catch( err => {
                 console.log(err)

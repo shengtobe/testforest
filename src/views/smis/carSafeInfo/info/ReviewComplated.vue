@@ -399,7 +399,7 @@ export default {
                 
             }
             else if(this.status == 4){ // 已發布
-                this.isShowBtn_edit = this.isShowBtn = isShowBtn_add = false
+                this.isShowBtn_edit = this.isShowBtn = this.isShowBtn_add = false
                 let joinerIdArr = obj.JoinPeople.map(e => e.PeopleId) // 加會人
                 let ccArr = obj.RecCopy.map(e => e.PeopleId) // 副本人
                 let recArr = obj.RecPeople.map(e => e.PeopleId) // 收件人
