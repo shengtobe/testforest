@@ -49,6 +49,7 @@ import getPeople from '@/components/GetOrganizePeople'
 export default {
 	props: ['solo','peopleList'],
 	data: () => ({
+    defPeopleList:[],
     people: [],
     PeopleList: [],
     PrepeopleList: [],
@@ -62,6 +63,9 @@ export default {
 	mounted() {
     if(this.solo){
       this.isSolo = this.solo
+      this.defPeopleList = [this.peopleList]
+    } else {
+      this.defPeopleList = [...this.peopleList]
     }
     this.fetchOrganization()
 	},
@@ -85,7 +89,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
         this.people = res.data.user_list_group_4
-        this.PeopleList = this.people.filter(e=>this.peopleList.findIndex(el=>el==e.UserId)!=-1)
+        this.PeopleList = this.people.filter(e=>this.defPeopleList.findIndex(el=>el==e.UserId)!=-1)
         this.PrepeopleList = [...this.PeopleList]
       })
     },
