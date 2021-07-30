@@ -265,8 +265,8 @@
         </v-row>
 
         <!-- 故障狀況 -->
-        <v-row class="px-2 mb-8" v-if="!isEdit">
-            <v-col cols="12">
+        <v-row class="px-2 mb-8">
+            <v-col cols="12" v-if="!isEdit">
                 <h3 class="mb-2">
                     <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
                 </h3>
@@ -555,9 +555,7 @@
                     </v-row>
                 </v-sheet>
             </v-col>
-        </v-row>
-        <v-row class="px-2 mb-8" v-else>
-            <v-col cols="12">
+            <v-col cols="12" v-else>
                 <h3 class="mb-2">
                     <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
                 </h3>
