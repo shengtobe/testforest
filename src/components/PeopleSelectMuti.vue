@@ -1,18 +1,19 @@
 <!--
   input:
     solo: boolean 是否單選
+    peopleList: string array 預設人員清單，員編陣列
   output:
     getPeople: object|array solo為true時回傳人員物件{DepartCode:單位代碼,DepartName:單位名稱,UserId:員工編號,UserName:員工姓名}，false的話回傳object array
 -->
 <template>
   <div>
-    <v-chip v-for="(item) in selectedPeople" :key="'P_'+item.PeopleId" close @click:close="deleteSelectedPeople(item.PeopleId)" class="ma-1"> {{ item.PeopleName }} </v-chip>
+    <v-chip v-for="(item) in PeopleList" :key="'P_'+item.UserId" close @click:close="deleteSelectPeople(item.UserId)" class="ma-1"> {{ item.UserName }} </v-chip>
     <v-btn
       class="mx-2 btn-add"
       fab
       dark
       small
-      @click="SelectPeople=true"
+      @click="openSelectPeople"
       v-show="(solo&&PeopleList.length==0)||(!solo)"
     >
       <v-icon dark>
@@ -28,11 +29,13 @@
           </v-btn>
         </v-card-title>
         <v-lazy>
-          <getPeople :defDeptId="userData.DeptList[0].DeptId" @getPeople="saveSelectPeople"/>
+          <getPeople :defDeptId="userData.DeptList[0].DeptId" :peopleList="PrepeopleList.map(e=>e.UserId)" :key="'PK_'+peopleKey" @getPeople="saveSelectPeople"/>
         </v-lazy>
+        <v-chip v-for="(item) in PrepeopleList" :key="'PP_'+item.UserId" close @click:close="deletePreselectPeople(item.UserId)" class="ma-1"> {{ item.UserName }} </v-chip>
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancelSelectPeople">取消</v-btn>
+          <v-btn class="mr-2 btn-add white--text" elevation="4" @click="saveSelectedPeople">確認</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -44,12 +47,15 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
 import getPeople from '@/components/GetOrganizePeople'
 export default {
-	props: ['solo'],
+	props: ['solo','peopleList'],
 	data: () => ({
+    defPeopleList:[],
     people: [],
     PeopleList: [],
+    PrepeopleList: [],
     SelectPeople: false,
-    isSolo: false
+    isSolo: false,
+    peopleKey: 0
 	}),
 	components: {
     getPeople
@@ -57,6 +63,9 @@ export default {
 	mounted() {
     if(this.solo){
       this.isSolo = this.solo
+      this.defPeopleList = [this.peopleList]
+    } else {
+      this.defPeopleList = [...this.peopleList]
     }
     this.fetchOrganization()
 	},
@@ -79,33 +88,39 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        this.people = res.data.user_list_group_4.map(element=>{
-            let rtnObj = {}
-            rtnObj.text = element.UserName
-            rtnObj.value = element.UserId
-            rtnObj.group = element.DepartName 
-            rtnObj.child = ""
-            return rtnObj
-          })
+        this.people = res.data.user_list_group_4
+        this.PeopleList = this.people.filter(e=>this.defPeopleList.findIndex(el=>el==e.UserId)!=-1)
+        this.PrepeopleList = [...this.PeopleList]
       })
+    },
+    openSelectPeople() {
+      this.PrepeopleList = [...this.PeopleList]
+      this.peopleKey++
+      this.SelectPeople=true
     },
     cancelSelectPeople(){
       this.SelectPeople = false
     },
     saveSelectPeople(peopleData) {
       if(this.isSolo) {
-        this.PeopleList = [...[]]
-        this.$emit('getPeople',peopleData)
-        this.PeopleList.push(peopleData)
+        this.PrepeopleList = [...[]]
+        this.PrepeopleList.push(peopleData)
       } else {
-        if(this.PeopleList.findIndex(e=>e.UserId==peopleData.UserId)==-1){
-          this.PeopleList.push(peopleData)
+        if(this.PrepeopleList.findIndex(e=>e.UserId==peopleData.UserId)==-1){
+          this.PrepeopleList.push(peopleData)
         }
+      }
+    },
+    saveSelectedPeople(){
+      this.PeopleList = this.PrepeopleList
+      if(this.isSolo){
+        this.$emit('getPeople',this.PeopleList[0])
+      } else {
         this.$emit('getPeople',this.PeopleList)
       }
       this.cancelSelectPeople()
     },
-    deleteSelectedPeople(peopleId) {
+    deleteSelectPeople(peopleId) {
       this.PeopleList.splice(this.PeopleList.findIndex(e=>e.UserId==peopleId),1)
       if(this.isSolo) {
         this.$emit('getPeople',undefined)
@@ -113,10 +128,16 @@ export default {
         this.$emit('getPeople',this.PeopleList)
       }
     },
+    deletePreselectPeople(peopleId) {
+      this.PrepeopleList.splice(this.PrepeopleList.findIndex(e=>e.UserId==peopleId),1)
+    }
 	},
 	filters: {
 	},
 	watch: {
+    PeopleList: function(value) {
+      this.PrepeopleList = [...value]
+    }
 	}
 }
 </script>

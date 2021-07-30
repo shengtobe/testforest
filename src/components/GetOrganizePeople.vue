@@ -2,6 +2,7 @@
 <!-- 
   傳入參數：
     defDeptId: 預設的單位
+    peopleList: 預設人員清單，string array員編陣列
   回傳function：
     getPeople: 員編
  -->
@@ -52,6 +53,7 @@
         :key="item.value"
         @click="choseUser(item)"
         outlined
+        :disabled="peopleList.findIndex(e=>e==item.value)!=-1"
         large
         tile
         color="brown"
@@ -65,7 +67,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
 export default {
-  props:['defDeptId'],
+  props:['defDeptId','peopleList'],
   data: () => ({
     select: {
       lv1: '',
@@ -134,6 +136,7 @@ export default {
     },
     // 選擇員工
     choseUser(item) {
+      this.peopleList.push(item.value)
       this.$emit('getPeople',this.userDataFull.find(e=>e.UserId==item.value))
     },
     getDefaultSelect() {
@@ -156,7 +159,7 @@ export default {
     }
   },
   created() {
-      this.fetchDdata()
+    this.fetchDdata()
   },
 }
 </script>
