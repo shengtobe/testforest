@@ -80,6 +80,7 @@ export default {
                         let bottomItems = [
                             { dataType: 'text', oneline: true, icon: 'mdi-file-document', title: '工單主旨', text: res.data.WorkSubject },
                             { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '工單描述', text: res.data.Malfunction.replace(/\n/g, '<br>') },
+                            { dataType: 'text', oneline: false, icon: 'mdi-pen', title: '故障狀況', text: res.data.Condition.replace(/\n/g, '<br>') },
                         ]
                         let bottomItems2 = []
                         let aa = []

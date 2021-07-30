@@ -265,7 +265,7 @@
         </v-row>
 
         <!-- 故障狀況 -->
-        <v-row class="px-2 mb-8">
+        <v-row class="px-2 mb-8" v-if="!isEdit">
             <v-col cols="12">
                 <h3 class="mb-2">
                     <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
@@ -290,6 +290,8 @@
                                         label="客車編組"
                                         color="primary"
                                         hide-details
+                                        value="客車編組"
+                                        v-model="condition.carType"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -299,6 +301,8 @@
                                         label="檜木車編組"
                                         color="primary"
                                         hide-details
+                                        value="檜木車編組"
+                                        v-model="condition.carType"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -308,6 +312,8 @@
                                         label="工程車編組"
                                         color="primary"
                                         hide-details
+                                        value="工程車編組"
+                                        v-model="condition.carType"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -317,6 +323,8 @@
                                         label="台車"
                                         color="primary"
                                         hide-details
+                                        value="台車"
+                                        v-model="condition.carType"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -326,6 +334,8 @@
                                         label="機關車"
                                         color="primary"
                                         hide-details
+                                        value="機關車"
+                                        v-model="condition.carType"
                                     ></v-checkbox>
                                 </v-col>
                             </v-row>
@@ -337,9 +347,10 @@
                                 <v-col cols="12" sm="7" md="4">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.direction"
                                     >
-                                        <v-radio label="上行" value="top" color="red"></v-radio>
-                                        <v-radio label="下行" value="down" color="red"></v-radio>
+                                        <v-radio label="上行" value="上行" color="red"></v-radio>
+                                        <v-radio label="下行" value="下行" color="red"></v-radio>
                                     </v-radio-group>
                                 </v-col>
 
@@ -347,9 +358,20 @@
                                     <v-text-field
                                         dense
                                         label="車次"
+                                        v-model="condition.carNum"
                                     ></v-text-field>
                                 </v-col>
                             </v-row>
+                        </v-col>
+
+                        <v-col cols="12">
+                            <v-checkbox
+                                class="mt-0"
+                                label="平交道防護設施皆無動作"
+                                color="primary"
+                                hide-details
+                                v-model="condition.allDisable"
+                            ></v-checkbox>
                         </v-col>
 
                         <v-col cols="12">
@@ -361,6 +383,9 @@
                                         label="兩側皆無上升"
                                         color="primary"
                                         hide-details
+                                        value="兩側皆無上升"
+                                        v-model="condition.interceptor"
+                                        :disabled="condition.allDisable"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -370,6 +395,9 @@
                                         label="兩側皆無下降"
                                         color="primary"
                                         hide-details
+                                        value="兩側皆無下降"
+                                        v-model="condition.interceptor"
+                                        :disabled="condition.allDisable"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -379,6 +407,9 @@
                                         label="南側無上升"
                                         color="primary"
                                         hide-details
+                                        value="南側無上升"
+                                        v-model="condition.interceptor"
+                                        :disabled="condition.allDisable"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -388,6 +419,9 @@
                                         label="南側無下降"
                                         color="primary"
                                         hide-details
+                                        value="南側無下降"
+                                        v-model="condition.interceptor"
+                                        :disabled="condition.allDisable"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -397,6 +431,9 @@
                                         label="北側無上升"
                                         color="primary"
                                         hide-details
+                                        value="北側無上升"
+                                        v-model="condition.interceptor"
+                                        :disabled="condition.allDisable"
                                     ></v-checkbox>
                                 </v-col>
 
@@ -406,6 +443,9 @@
                                         label="北側無下降"
                                         color="primary"
                                         hide-details
+                                        value="北側無下降"
+                                        v-model="condition.interceptor"
+                                        :disabled="condition.allDisable"
                                     ></v-checkbox>
                                 </v-col>
                             </v-row>
@@ -417,20 +457,24 @@
                                 <v-col cols="12" md="6">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.lighting"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="兩則" value="all" color="primary"></v-radio>
-                                        <v-radio label="南" value="south" color="primary"></v-radio>
-                                        <v-radio label="北" value="north" color="primary"></v-radio>
+                                        <v-radio label="兩側" value="兩側" color="primary"></v-radio>
+                                        <v-radio label="南側" value="南側" color="primary"></v-radio>
+                                        <v-radio label="北側" value="北側" color="primary"></v-radio>
                                     </v-radio-group>
                                 </v-col>
 
                                 <v-col cols="12" md="6">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.lightingStatus"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="不亮" value="noactive" color="red"></v-radio>
-                                        <v-radio label="不滅" value="noend" color="red"></v-radio>
-                                        <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                                        <v-radio label="不亮" value="不亮" color="red"></v-radio>
+                                        <v-radio label="不滅" value="不滅" color="red"></v-radio>
+                                        <v-radio label="亮度異常" value="亮度異常" color="red"></v-radio>
                                     </v-radio-group>
                                 </v-col>
                             </v-row>
@@ -442,19 +486,23 @@
                                 <v-col cols="12" md="6">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.drivingLight"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="紅" value="red" color="primary"></v-radio>
-                                        <v-radio label="綠" value="green" color="primary"></v-radio>
+                                        <v-radio label="紅" value="紅" color="primary"></v-radio>
+                                        <v-radio label="綠" value="綠" color="primary"></v-radio>
                                     </v-radio-group>
                                 </v-col>
 
                                 <v-col cols="12" md="6">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.drivingLightStatus"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="不亮" value="noactive" color="red"></v-radio>
-                                        <v-radio label="不滅" value="noend" color="red"></v-radio>
-                                        <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                                        <v-radio label="不亮" value="不亮" color="red"></v-radio>
+                                        <v-radio label="不滅" value="不滅" color="red"></v-radio>
+                                        <v-radio label="亮度異常" value="亮度異常" color="red"></v-radio>
                                     </v-radio-group>
                                 </v-col>
                             </v-row>
@@ -466,20 +514,24 @@
                                 <v-col cols="12" md="6">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.turningLight"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="兩則" value="all" color="primary"></v-radio>
-                                        <v-radio label="南" value="south" color="primary"></v-radio>
-                                        <v-radio label="北" value="north" color="primary"></v-radio>
+                                        <v-radio label="兩側" value="兩側" color="primary"></v-radio>
+                                        <v-radio label="南側" value="南側" color="primary"></v-radio>
+                                        <v-radio label="北側" value="北側" color="primary"></v-radio>
                                     </v-radio-group>
                                 </v-col>
 
                                 <v-col cols="12" md="6">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.turningLightStatus"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="不亮" value="noactive" color="red"></v-radio>
-                                        <v-radio label="不滅" value="noend" color="red"></v-radio>
-                                        <v-radio label="亮度異常" value="err" color="red"></v-radio>
+                                        <v-radio label="不亮" value="不亮" color="red"></v-radio>
+                                        <v-radio label="不滅" value="不滅" color="red"></v-radio>
+                                        <v-radio label="亮度異常" value="亮度異常" color="red"></v-radio>
                                     </v-radio-group>
                                 </v-col>
                             </v-row>
@@ -491,15 +543,25 @@
                                 <v-col cols="12">
                                     <v-radio-group row
                                         class="mt-1"
+                                        v-model="condition.alarm"
+                                        :disabled="condition.allDisable"
                                     >
-                                        <v-radio label="無聲音" value="no" color="primary"></v-radio>
-                                        <v-radio label="太小聲" value="small" color="primary"></v-radio>
+                                        <v-radio label="無聲音" value="無聲音" color="primary"></v-radio>
+                                        <v-radio label="太小聲" value="太小聲" color="primary"></v-radio>
                                     </v-radio-group>
                                 </v-col>
                             </v-row>
                         </v-col>
                     </v-row>
                 </v-sheet>
+            </v-col>
+        </v-row>
+        <v-row class="px-2 mb-8" v-else>
+            <v-col cols="12">
+                <h3 class="mb-2">
+                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
+                </h3>
+                {{ ipt.Condition }}
             </v-col>
         </v-row>
 
@@ -611,6 +673,20 @@ export default {
         },
         canModifyEqCode: false,  // 是否能選擇設備標示編號下拉選單
         crossShow: false,
+        condition: {               //故障狀況
+            carType: [],            //車種
+            direction: '',          //方向
+            carNum: '',             //車次
+            allDisable: false,      //全無動作
+            interceptor: [],        //遮斷機
+            lighting: '',           //閃光燈
+            lightingStatus: '',           //閃光燈
+            drivingLight: '',       //駕駛燈
+            drivingLightStatus: '',       //駕駛燈
+            turningLight: '',       //轉向燈
+            turningLightStatus: '',       //轉向燈
+            alarm: '',              //警音
+        }
     }),
     components: { OrganizeDialog, EquipRepairCode },
     computed: {
@@ -621,6 +697,17 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        conditionText:function() {
+            return this.condition.direction+
+                (this.condition.carNum!=''?this.condition.carNum+'車次'+'<br>':'')+
+                this.condition.carType.join()+'<br>'+
+                (this.condition.allDisable?'平交道防護設施皆無動作':'')+
+                (this.condition.interceptor!=''?'遮斷機'+this.condition.interceptor+'<br>':'')+
+                (this.condition.lighting!=''?this.condition.lighting+'閃光燈'+this.condition.lightingStatus+'<br>':'')+
+                (this.condition.drivingLight!=''?this.condition.drivingLight+'駕駛燈'+this.condition.drivingLightStatus+'<br>':'')+
+                (this.condition.turningLight!=''?this.condition.turningLight+'轉向燈'+this.condition.turningLightStatus+'<br>':'')+
+                (this.condition.alarm!=''?'警音'+this.condition.alarm:'')
+        }
     },
     watch: {
         // ------- 切換選項時，向後端抓下一層的報修碼 --------
@@ -793,6 +880,7 @@ export default {
                 this.ipt.date = obj.CreateDDay  // 立案日期
                 this.ipt.hour = obj.CreateDTime  // 立即派工的小時
                 this.ipt.subject = obj.WorkSubject  // 故障主旨
+                this.ipt.Condition = obj.Condition  //故障狀況
                 this.showEq = true
 
                 // 將派工人資料寫入 vuex(組織表)
@@ -890,6 +978,7 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                         MaintainCode_AllName: this.combineCh,
+                        Condition: this.ipt.Condition.replace(/<br>/g, '\n')
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '編輯成功' })
@@ -923,6 +1012,7 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                         MaintainCode_AllName: this.combineCh,
+                        Condition: this.conditionText.replace(/<br>/g, '\n')
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             console.log("新增工單 res.data: ", res.data);
