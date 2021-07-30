@@ -249,6 +249,30 @@ export default {
             //test
             // item.InfoBelongMod = '18';
             //
+            //改為已讀
+            fetchPersonalInfoRead({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                ModuleItemID: item.ModuleItemID,
+                InfoBelongMod: item.InfoBelongMod,
+                MsgType: item.MsgType,
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    console.log("首頁代辦事項已讀 item: ", item);
+                    console.log("首頁代辦事項已讀 res.data: ", res.data);
+                    console.log("首頁代辦事項已讀 this.tableItems.personal: ", this.tableItems.personal);
+                    // item.isRead = false
+                    // this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
+
+                    // setTimeout(() => {
+                    //     this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
+                    // }, 300)
+
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
             if (confirm('確定要離開目前頁面至指定頁面操作?')) {
                 switch(item.InfoBelongMod){
                     case '1':
