@@ -504,8 +504,16 @@ export default {
             this.queryItem.PeopleList = peopleData.map(e=>e.UserId)
 
             // 作業人員
-            this.ipt.commonMemArr = peopleData.map(e=>e.UserName)  // 顯示用，只放入姓名
-            this.ipt.commonMembers = peopleData.map(e=>e.UserId)  // 後端上傳用
+            // this.jobNameIpts = res.data.device_jobname.map(item => ({
+            //     text: item.JobName,
+            //     value: item.JobCode,
+            // }))
+            this.ipt.commonMemArr = peopleData.map(item => ({ // 顯示用，只放入姓名
+                PeopleId: item.UserName,
+            }))  
+            this.ipt.commonMembers = peopleData.map(item => ({ 
+                PeopleId: item.UserId,
+            }))  
         },
         // 初始化資料
         initDate() {
@@ -643,7 +651,6 @@ export default {
         save() {
             console.log("this.ipt.commonMemArr: ", this.ipt.commonMemArr);
             console.log("this.ipt.commonMembers: ", this.ipt.commonMembers); 
-            return
             if(this.ipt.agent.name == ''){
                 alert("代理人未填")
                 return
