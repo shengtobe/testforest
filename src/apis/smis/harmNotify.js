@@ -46,3 +46,21 @@ export function recordNotify(data) { return axios(
         data,
     }
 )}
+
+//
+export function analysis1(data) { return axios(
+    {
+        url: '/sms/dangernotify/analysis1',
+        method: 'post',
+        data,
+    }
+)}
+
+//
+export function analysis2(data) { return axios(
+    {
+        url: '/sms/dangernotify/analysis2',
+        method: 'post',
+        data,
+    }
+)}

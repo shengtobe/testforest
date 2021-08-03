@@ -1,132 +1,125 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">各部門通報次數趨勢圖</h2>
+    <v-row>
+        <v-col>
+            <h2 class="mb-4 label-title">各部門通報次數趨勢圖</h2>
     
-    <p class="error--text">* 可點擊圖表上方色塊旁的名稱來隱藏該記錄</p>
-
-    <!-- 圖表 -->
-    <canvas ref="canvas" style="background-color: white;"
-        v-show="show"
-    ></canvas>
-
-    <v-btn
-        dark
-        class="mr-4 my-8 btn-close"
-        to="/smis/harmnotify/audit"
-    >回搜尋頁</v-btn>
+            <p class="error--text">* 可點擊圖表上方色塊旁的名稱來隱藏該記錄</p>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col class="white">
+            <ChartLine :options="chart.options" :chartdata="chart.data" :key="chart.componentKey"/>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col>
+            <v-btn
+                dark
+                class="mr-4 my-8 btn-close"
+                to="/smis/harmnotify/audit"
+            >回搜尋頁</v-btn>
+        </v-col>
+    </v-row>
 </v-container>
 </template>
 
 <script>
-import Chart from 'chart.js'
-import { mapActions } from 'vuex'
-import { departChartData } from '@/assets/js/smisTestData'
-
+import { mapState, mapActions } from 'vuex'
+import ChartLine from '@/components/chartLine'
+import { analysis2 } from '@/apis/smis/harmNotify'
+import { getNowFullTime, groupBy } from '@/assets/js/commonFun'
 export default {
     data: () => ({
         show: false,  // canvas 是否隱藏(在還沒有資料時會變小)
+        chart: {
+            componentKey: 0,
+            options: {
+                scales: {  // 側邊訊息
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,  // y 軸最小數字從 0 開始
+                            stepSize: 1
+                        }
+                    }]
+                },
+                layout: {
+                    padding: {
+                        left: 15,
+                        right: 20,
+                        top: 20,
+                        bottom: 20,
+                    }
+                }
+            },
+            data: {
+                labels: [],
+                datasets: []
+            },
+
+        }
     }),
+    components:{
+        ChartLine
+    },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+        }),
+    },
     methods: {
         ...mapActions('system', [
+            'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         // 初始化資料
         initData() {
+            const that = this
             this.chLoadingShow({show:true})
-
-            // 測試用資料
-            setTimeout(() => {
-                // 向後端取得資料後
-                this.createChart(departChartData)  // 繪製圖表
-                this.show = true
-                this.chLoadingShow({show:false})
-            }, 1000)
-        },
-        // 繪製圖表
-        createChart(data) {
-            let ctx = this.$refs.canvas
-            let myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: [
-                        {
-                            label: '綜合企劃科',
-                            backgroundColor: '#FFB300',  // 節點的顏色
-                            borderColor: '#FFB300',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.planning,
-                        },
-                        {
-                            label: '鐵路服務科',
-                            backgroundColor: '#00E676',  // 節點的顏色
-                            borderColor: '#00E676',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.serve,
-                        },
-                        {
-                            label: '鐵路維護科',
-                            backgroundColor: '#FF4081',  // 節點的顏色
-                            borderColor: '#FF4081',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.maintain,
-                        },
-                        {
-                            label: '車輛養護科',
-                            backgroundColor: '#E040FB',  // 節點的顏色
-                            borderColor: '#E040FB',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.curing,
-                        },
-                        {
-                            label: '祕書室',
-                            backgroundColor: '#3949AB',  // 節點的顏色
-                            borderColor: '#3949AB',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.secretary,
-                        },
-                        {
-                            label: '人事室',
-                            backgroundColor: '#00796B',  // 節點的顏色
-                            borderColor: '#00796B',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.personnel,
-                        },
-                        {
-                            label: '主計室',
-                            backgroundColor: '#F4511E',  // 節點的顏色
-                            borderColor: '#F4511E',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.accountant,
-                        },
-                        {
-                            label: '政風室',
-                            backgroundColor: '#5D4037',  // 節點的顏色
-                            borderColor: '#5D4037',  // 線的顏色
-                            fill: false,  // 不要有下方填滿
-                            data: data.political,
-                        },
-                    ]
-                },
-                options: {
-                    scales: {  // 側邊訊息
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true  // y 軸最小數字從 0 開始
-                            }
-                        }]
-                    },
-                    layout: {
-                        padding: {
-                            left: 15,
-                            right: 20,
-                            top: 20,
-                            bottom: 20,
+            analysis2({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+            }).then(res=>{
+                if (res.data.ErrorCode == 0) {
+                    let DataList = res.data.DataCountList
+                    let YMGroupData = groupBy(DataList,'YM')
+                    let YM = Object.keys(YMGroupData)
+                    that.chart.data.labels = YM
+                    let DepartGroupData = groupBy(DataList,'DepartName')
+                    for( let DepartData in DepartGroupData ) {
+                        let rtnObject = {}
+                        rtnObject.label = DepartData
+                        let randColor = that.getRandomColor()
+                        rtnObject.backgroundColor = randColor
+                        rtnObject.borderColor = randColor
+                        rtnObject.fill = false
+                        rtnObject.data = []
+                        let DepartDataDetail = DepartGroupData[DepartData]
+                        for( let YMValue of YM ) {
+                            rtnObject.data.push(DepartDataDetail.find(e=>e.YM==YMValue).Count)
                         }
+                        that.chart.data.datasets.push(rtnObject)
                     }
+                    this.chart.componentKey ++
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
                 }
+            }).catch( err => {
+                console.error(err)
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+            }).finally(()=>{
+                this.chLoadingShow({show:false})
             })
         },
+        getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
     },
     mounted() {
         this.initData()
