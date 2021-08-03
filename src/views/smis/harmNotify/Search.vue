@@ -127,7 +127,7 @@
         </v-col>
 
         <!-- 趨勢圖 -->
-        <v-col cols="12" v-if="false">
+        <v-col cols="12">
             <v-card class="mx-auto">
                 <v-card-title class="gradual-bg-darken-wood py-2 px-3">
                     <v-icon class="mr-2">mdi-chart-areaspline</v-icon>
@@ -144,11 +144,11 @@
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         各部門通報次數趨勢圖
                     </v-list-item>
-                    <v-divider></v-divider>
+                    <!-- <v-divider></v-divider>
                     <v-list-item to="/smis/harmnotify/type-notify">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         各類通報趨勢圖
-                    </v-list-item>
+                    </v-list-item> -->
                 </v-list>
             </v-card>
         </v-col>
