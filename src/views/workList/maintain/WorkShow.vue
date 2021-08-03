@@ -223,12 +223,12 @@
 
             <!-- 表格最上面插入 toolbar 及 dialog -->
             <template v-slot:top>
-                <v-dialog v-model="jobHour.dialogShow" max-width="600px">
+                <v-dialog v-model="jobHour.dialogShow" max-width="600px" >
                     <v-card>
                         <v-card-title class="btn-expansion white--text px-4 py-1">
                             {{ jobHour.titleName }}
                             <v-spacer></v-spacer>
-                            <v-btn dark fab small text @click="jobHour.dialogShow = false" class="mr-n2">
+                            <v-btn dark fab small text @click="jobHour.dialogShow = false, eqShow = false" class="mr-n2">
                                 <v-icon>mdi-close</v-icon>
                             </v-btn>
                         </v-card-title>
@@ -273,11 +273,11 @@
                                             solo
                                         ></v-select>
                                     </v-col>
-                                    <v-col cols="12" sm="12" v-if="true">
+                                    <v-col cols="12" sm="12" v-if="eqShow">
                                         <h3 class="mb-5">
                                             <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
                                         </h3>
-                                        <EquipRepairCode :key="0" :toLv="5" :rtnStartLv="5" :nowEqCode="nowEqCode" :disableToLv="2" @getWorkName="getTempName" @getEqCode="getEqCode"/>
+                                        <EquipRepairCode :key="0" :toLv="5" :rtnStartLv="5" :nowEqCode="nowEqCode" :nowWorkCode="nowWorkCode" :disableToLv="2" @getWorkName="getTempName" @getEqCode="getEqCode"/>
                                     </v-col>
                                     <v-col cols="12" sm="12">
                                         <h3 class="mb-1">
@@ -338,7 +338,7 @@
                         
                         <v-card-actions class="px-5 pb-5">
                             <v-spacer></v-spacer>
-                            <v-btn class="mr-2 btn-clear" elevation="4" @click="jobHour.dialogShow = false">取消</v-btn>
+                            <v-btn class="mr-2 btn-clear" elevation="4" @click="jobHour.dialogShow = false, eqShow = false">取消</v-btn>
                             <v-btn class="btn-add" color="success" elevation="4" @click="saveJob">送出</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -439,14 +439,17 @@ import { maintainOrder, fetchJobName, withdrawOrder } from '@/apis/workList/main
 export default {
     props: ['itemData'],
     data: () => ({
-        nowEqCode: '', //編輯時 預設帶入的combineCode
+        nowEqCode: '', //編輯時 預設帶入的combineCode 
+        nowWorkCode: '', //編輯時 預設帶入的工作項
         combineCode: '', //合併後的設備編碼
         Lv5Name: '', //工作項中文
         Lv5Code: '', //工作項編碼
+        initCode: '', //最初始的code
         selectWorkArr0: [],
         selectWorkArr: [],
         selectWorkArr_eqCode: [],
         isShowBtn: false,
+        eqShow: false,
         done: false,  // 是否完成頁面操作
         valid: false,  // 表單是否驗證欄位 (demo先取消掉)
         isLoading: false,  // 是否讀取中
@@ -514,9 +517,20 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
+    watch: {
+        // ------- 切換選項時，向後端抓下一層的報修碼 --------
+        // 系統
+        'jobHour.dialogShow': function(newVal) {
+            if (newVal == false) {
+                    console.log("v: ", newVal);
+                    this.eqShow = newVal
+                }
+        },
+    },
     methods: {
         //抓取未確認的設備標示編碼
         getTempName(value) {
+            console.log("this.Lv5Name: ", value);
             this.Lv5Name = value
         },
         getEqCode(value){
@@ -524,8 +538,10 @@ export default {
             this.Lv5Code = value
         },
         addWork(){
+            if(this.Lv5Name == '') return
             let v = this.Lv5Name + ' - ' + this.jobForm.Count + 'hr'
             console.log("this.Lv5Code: ", this.Lv5Code);
+            console.log("this.Lv5Name: ", this.Lv5Name);
             if(this.selectWorkArr0.includes(this.Lv5Name) == false){
                 this.selectWorkArr0.push(this.Lv5Name)
                 this.selectWorkArr_eqCode.push(this.Lv5Code)
@@ -565,8 +581,8 @@ export default {
             console.log("codearr: ", codearr);
             codearr[2] = ''
             codearr[3] = ''
-            
-            this.nowEqCode = codearr.join('-') + '-'
+            this.initCode = codearr.join('-') + '-'
+            this.nowEqCode = this.initCode
             console.log("this.nowEqCode: ", this.nowEqCode);
             // this.nowEqCode = obj.MaintainCode
 
@@ -633,7 +649,6 @@ export default {
         // 送出
         save() {
             console.log("this.jobHour.items: ", this.jobHour.items);
-            return
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
                     this.chLoadingShow({show:true})
@@ -676,11 +691,13 @@ export default {
         // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
         setJobHour(isEdit, item) {
             this.selectWorkArr = [...[]]
+            this.eqShow = false
             if (!isEdit) {
                 // 新增時
                 this.jobHour.isEdit = false
                 this.jobForm = { ...this.defaultJobForm }
                 this.jobHour.titleName = '新增資料'
+                this.nowEqCode = this.initCode
             } else {
                 // 編輯時
                 this.jobHour.isEdit = true
@@ -688,10 +705,15 @@ export default {
                 this.jobForm = { ...item }  // 現有值帶入表單
                 console.log("this.jobForm: ", this.jobForm);
                 this.jobHour.titleName = `編輯資料 - ${item.PeopleName}`
+                this.nowWorkCode = this.jobForm.JobCode
+                console.log("this.nowWorkCode: ", this.nowWorkCode);
                 console.log("this.jobForm.eqCode: ", this.jobForm.eqCode);
                 if(this.jobForm.eqCode != ''){
                     this.nowEqCode = this.jobForm.eqCode
                     console.log("this.nowEqCode: ", this.nowEqCode);
+                }
+                else{
+                    this.nowEqCode = this.initCode
                 }
                 if(this.jobForm.JobName != ''){
                     this.selectWorkArr.push(`${this.jobForm.JobName}(${this.jobForm.JobCode}) - ${this.jobForm.Count}hr`)
@@ -699,6 +721,7 @@ export default {
                 }
             }
             this.jobHour.dialogShow = true
+            this.eqShow = true
         },
         // 刪除工作項
         del(item) {
@@ -708,9 +731,12 @@ export default {
         //刪除已選工作項
         rmSelectWork(idx) {
             this.selectWorkArr.splice(idx, 1)
+            this.selectWorkArr0.splice(idx, 1)
+            this.selectWorkArr_eqCode.splice(idx, 1)
         },
         // 儲存工作表單
         saveJob() {
+            if(this.Lv5Name == '') return
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
             if(this.Lv5Name != '' && this.Lv5Name != null){
@@ -724,15 +750,17 @@ export default {
                 // +新增
                 let tempJobHour = []
                 let i = 0
+                console.log("新增時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
                 this.selectWorkArr.forEach(work => {
                     console.log("work: ", work);
                     let tempJobForm = {...this.jobForm}
                     // 反查姓名
                     tempJobForm.PeopleName = this.allLicenseMembers.find(item => item.value == tempJobForm.PeopleId).text
-                    tempJobForm.JobName = work.substr(0, work.length - 4)
+                    tempJobForm.JobName = work.substr(0, work.indexOf('('))
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
                     tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
                     tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
+                    console.log("新增 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
                     i++
@@ -748,7 +776,7 @@ export default {
                 // 編輯時
                 let tempJobHour = []
                 let i = 0
-                console.log("selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
+                console.log("編輯時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
                 this.selectWorkArr.forEach(work => {
                     console.log("work: ", work);
                     console.log("this.jobForm: ", this.jobForm);
@@ -757,6 +785,7 @@ export default {
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
                     tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
                     tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
+                    console.log("編輯 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
                     i++
@@ -767,6 +796,7 @@ export default {
                 this.jobHour.dialogShow = false
             }
             this.selectWorkArr = [...[]]
+            this.eqShow = false
         },
     },
     created() {
