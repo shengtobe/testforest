@@ -53,7 +53,7 @@
             <!-- 本月結存數量小於安全庫存量時，系統會特以紅色底色標註提醒使用者 -->
             <!--  style="background: #ff9999;" -->
             <template v-slot:item.ViewTicket="{ item }">
-              <v-btn fab small dark color="teal" @click="getDetail(item.Material)">
+              <v-btn fab small dark class="btn-detail" @click="getDetail(item.Material)">
                 <v-icon>mdi-file-document</v-icon>
               </v-btn>
             </template>
@@ -64,11 +64,11 @@
             </template>
 
             <template v-slot:item.a8="{ item }">
-              <v-btn fab small class="mr-2 btn-modify" @click="goEdit(item.Material)">
+              <v-btn fab small dark class="mr-2 btn-modify" @click="goEdit(item.Material)">
                 <v-icon>mdi-pen</v-icon>
               </v-btn>
 
-              <v-btn fab small class="btn-delete" @click="wantDelete(item.Material)">
+              <v-btn fab small dark class="btn-delete" @click="wantDelete(item.Material)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
