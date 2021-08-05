@@ -79,6 +79,8 @@ export default {
                 tooltips: {  // 圖表上的資訊題示
                     intersect: false,  // 滑鼠移到 x 軸上就顯示
                 },  
+                responsive: true,
+                maintainAspectRatio: false
             },
             chartdata:{
                 labels: [],
@@ -121,7 +123,9 @@ export default {
                 },
                 tooltips: {  // 圖表上的資訊題示
                     intersect: false,  // 滑鼠移到 x 軸上就顯示
-                },  
+                },
+                responsive: true,
+                maintainAspectRatio: false  
             },
             chartdata:{
                 labels: [],
