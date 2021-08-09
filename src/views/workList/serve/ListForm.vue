@@ -316,7 +316,7 @@
                         </template>
 
                         <!-- 插入 action 欄位做刪除 -->
-                        <template v-slot:item.action="{ item }">
+                        <template v-slot:item.action="{ item, idx }">
                             <v-btn fab small dark class="mr-2 btn-modify" @click="editItem(item)">
                                 <v-icon>mdi-pen</v-icon>
                             </v-btn>
@@ -476,6 +476,7 @@ export default {
         nowEqCode: '', //編輯時 預設帶入的combineCode
         isEdit: false,  // 是否為編輯
         showEq: false,
+        nowEditIdx: null,
         saveBtnShow: true,
         // id: '',  // 工單編號
         ipt: {
@@ -518,7 +519,7 @@ export default {
             { text: '預估數量', value: 'ServiceCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
             { text: '單價', value: 'ServicePrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
             { text: '總價', value: 'total', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
-            { text: '刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
+            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold ' },
         ],
         dialog: false,  // dialog 是否顯示
         addValid: true,  // dialog 表單是否驗證
@@ -755,7 +756,13 @@ export default {
         },
         // 新增請修項目
         add() {
-            this.ipt.items.push(this.dialogForm)
+            if(this.nowEditIdx != null){ //如果是編輯
+                this.ipt.items.splice(this.nowEditIdx, 1, this.dialogForm)
+                this.nowEditIdx = null
+            }
+            else{ // 新增
+                this.ipt.items.push(this.dialogForm)
+            }
             this.close()
         },
         // 刪除請修項目
@@ -768,7 +775,10 @@ export default {
         },
         // 編輯記錄
         editItem (item) {
+            let idx = this.ipt.items.indexOf(item)  // 取得該筆資料索引值
+            this.nowEditIdx = idx
             console.log("編輯記錄 item: ", item);
+            console.log("編輯記錄 idx: ", idx);
             this.dialog = true
             this.dialogForm.ServiceItem = item.ServiceItem //工項(項目)
             this.dialogForm.ServiceSpec = item.ServiceSpec//規格

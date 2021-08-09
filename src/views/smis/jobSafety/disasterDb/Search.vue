@@ -152,7 +152,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'SMS_JobAccidentData',  // DB table
                 KeyItem: [
-                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    { tableColumn: 'JobName', columnValue: this.searchIpt.name },  //
                     // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料
