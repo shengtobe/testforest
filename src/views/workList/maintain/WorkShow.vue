@@ -277,7 +277,7 @@
                                         <h3 class="mb-5">
                                             <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
                                         </h3>
-                                        <EquipRepairCode :key="0" :toLv="5" :rtnStartLv="5" :nowEqCode="nowEqCode" :nowWorkCode="nowWorkCode" :disableToLv="2" @getWorkName="getTempName" @getEqCode="getEqCode"/>
+                                        <EquipRepairCode :key="0" :toLv="5" :rtnStartLv="5" :nowEqCode="nowEqCode" :nowWorkCode="nowWorkCode" :disableToLv="2" @getWorkName="getTempName" @getEqCode="getEqCode" @getEqName="getEqName"/>
                                     </v-col>
                                     <v-col cols="12" sm="12">
                                         <h3 class="mb-1">
@@ -444,10 +444,12 @@ export default {
         combineCode: '', //合併後的設備編碼
         Lv5Name: '', //工作項中文
         Lv5Code: '', //工作項編碼
+        LvAllName: '', // 中文
         initCode: '', //最初始的code
         selectWorkArr0: [],
         selectWorkArr: [],
         selectWorkArr_eqCode: [],
+        selectWorkArr_AllName: [],
         isShowBtn: false,
         eqShow: false,
         done: false,  // 是否完成頁面操作
@@ -503,6 +505,9 @@ export default {
             JobName: '',
             Count: 1, 
             eqCode: '',
+            MaintainCode_AllName: '',
+            MaintainCode_Eqp: '',
+            MaintainCode_Seq: '',
         },
         jobNameIpts: [],  // 工作項下拉選單
         jobFormIsEdit: false,  // 工時表單是否為編輯模式
@@ -528,7 +533,7 @@ export default {
         },
     },
     methods: {
-        //抓取未確認的設備標示編碼
+        //抓取未確認的設備標示編碼 getEqName
         getTempName(value) {
             console.log("this.Lv5Name: ", value);
             this.Lv5Name = value
@@ -537,14 +542,20 @@ export default {
             console.log("this.Lv5Code: ", value);
             this.Lv5Code = value
         },
+        getEqName(value){
+            console.log("this.LvAllName: ", value);
+            this.LvAllName = value
+        },
         addWork(){
             if(this.Lv5Name == '') return
             let v = this.Lv5Name + ' - ' + this.jobForm.Count + 'hr'
             console.log("this.Lv5Code: ", this.Lv5Code);
             console.log("this.Lv5Name: ", this.Lv5Name);
+            console.log("this.LvAllName: ", this.LvAllName);
             if(this.selectWorkArr0.includes(this.Lv5Name) == false){
                 this.selectWorkArr0.push(this.Lv5Name)
                 this.selectWorkArr_eqCode.push(this.Lv5Code)
+                this.selectWorkArr_AllName.push(this.LvAllName)
                 this.selectWorkArr.push(v)
             }
             else{
@@ -554,6 +565,7 @@ export default {
                 this.selectWorkArr0.splice(rmIdx, 1)
                 this.selectWorkArr0.push(this.Lv5Name)
                 this.selectWorkArr_eqCode.push(this.Lv5Code)
+                this.selectWorkArr_AllName.push(this.LvAllName)
                 this.selectWorkArr.push(v)
             }
         },
@@ -604,6 +616,9 @@ export default {
                 JobName: '',
                 Count: 1, 
                 eqCode: '',
+                MaintainCode_AllName: '',
+                MaintainCode_Eqp: '',
+                MaintainCode_Seq: '',
             }))
             console.log("this.jobHour.items: ", this.jobHour.items)
 
@@ -668,6 +683,9 @@ export default {
                         WorkTimeData: this.jobHour.items,  // 工時統計資料
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
+                        MaintainCode_Eqp: '',
+                        MaintainCode_Seq: '',
+                        MaintainCode_AllName: '',
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '送出成功' })
@@ -733,9 +751,12 @@ export default {
             this.selectWorkArr.splice(idx, 1)
             this.selectWorkArr0.splice(idx, 1)
             this.selectWorkArr_eqCode.splice(idx, 1)
+            this.selectWorkArr_AllName.splice(idx, 1)
         },
         // 儲存工作表單
         saveJob() {
+            console.log("selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
+            console.log("selectWorkArr_AllName: ", this.selectWorkArr_AllName);
             if(this.Lv5Name == '') return
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
@@ -760,6 +781,9 @@ export default {
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
                     tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
                     tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
+                    tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
+                    tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
+                    tempJobForm.MaintainCode_Seq = (this.selectWorkArr_eqCode[i].split('-'))[3]
                     console.log("新增 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
@@ -785,6 +809,9 @@ export default {
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
                     tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
                     tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
+                    tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
+                    tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
+                    tempJobForm.MaintainCode_Seq = (this.selectWorkArr_eqCode[i].split('-'))[3]
                     console.log("編輯 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
@@ -797,6 +824,7 @@ export default {
             }
             this.selectWorkArr = [...[]]
             this.eqShow = false
+            console.log("jobHour: ", this.jobHour);
         },
     },
     created() {

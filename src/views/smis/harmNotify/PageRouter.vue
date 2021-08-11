@@ -77,6 +77,7 @@ export default {
                             { dataType: 'text', oneline: true, icon: 'mdi-calendar-text', title: '回覆日期', text: res.data.ReplyDTime.substr(0,10) },
                             { dataType: 'text', oneline: true, icon: 'mdi-message-processing', title: '回覆訊息', text: res.data.ReplyMsg },
                             { dataType: 'text', oneline: true, icon: 'mdi-ray-vertex', title: '立案狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
+                            { dataType: 'text', oneline: true, icon: 'mdi-note-outline', title: '備註', text: res.data.Memo },
                         ]
 
                             // 設定下面的欄位資料
