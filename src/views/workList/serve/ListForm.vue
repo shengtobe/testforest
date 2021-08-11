@@ -694,6 +694,7 @@ export default {
                 // 新增的情況
                 this.canModifyEqCode = true  // 讓設備標示編號下拉選單能選擇
                 this.ipt.money = this.money
+                this.showEq = true
             }
         },
         // 向後端請求資料(編輯時用)

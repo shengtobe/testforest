@@ -2,7 +2,7 @@
 <v-app id="app">
   <v-main>
     <v-container class="fill-height" fluid>
-      <v-row align="center" justify="center">
+      <v-row align="center" justify="center" >
         <v-col cols="12" sm="8" md="4">
           <v-card class="elevation-12 theme-card">
             <v-toolbar dark flat
@@ -36,6 +36,7 @@
                   label="帳號"
                   v-model.trim="ipt.account"
                   prepend-icon="mdi-account"
+                  @keydown.enter.native="keyDown"
                 />
 
                 <v-text-field
@@ -105,6 +106,13 @@ export default {
     })
   },
   methods: {
+    keyDown(e){
+      if(e.altKey && e.keyCode==13) {   //用户点击了ctrl+enter触发
+        this.submit(false)
+      }else { //用户点击了enter触发
+        // this.sendMessage();
+      }  
+    },
     // 送出
     submit(bool) {
       // if (this.$refs.form.validate()) {  // 驗證欄位

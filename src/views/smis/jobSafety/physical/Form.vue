@@ -146,11 +146,11 @@
                 <v-icon class="mr-1 mb-1">mdi-format-align-center</v-icon>身高
             </h3>
             <v-text-field
-                v-model.trim="ipt.PeopleHeight"
-                solo max="3" maxlength="3"
+                v-model="ipt.PeopleHeight"
+                solo 
                 placeholder="請輸入身高"
-                type="number"
                 suffix="cm"
+                type="number"
             ></v-text-field>
         </v-col>
 

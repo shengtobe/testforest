@@ -161,6 +161,7 @@ export default {
                     // this.tableItems = JSON.parse(res.data.order_list)
                     let tb = JSON.parse(res.data.order_list)
                     console.log("Manage 詢問個人資訊: ", tb)
+                    console.log("Manage 詢問個人資訊: ", tb.map(e=>e.MsgType))
                     // 個人訊息
                     let psnal = tb.map(item => ({
                         id: item.ModuleItemID,
@@ -177,6 +178,7 @@ export default {
                     psnal.forEach(element => {
                         element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
                         if(element.MsgType == 1){
+                            console.log("element.MsgType: ", element.MsgType);
                             this.tableItems.personal.push(element);
                         }
                         else{
@@ -369,6 +371,8 @@ export default {
         },
         // 轉換部門文字
         transferDepartTxt(val) {
+            console.log("departOptions: ", departOptions.map(e=>e.value));
+            console.log("val: ", val);
             return departOptions.find(item => item.value == val).text
         },
     },
