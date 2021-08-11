@@ -50,7 +50,9 @@ export default {
                         top: 20,
                         bottom: 20,
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             },
             data: {
                 labels: [],

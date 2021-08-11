@@ -107,6 +107,8 @@ export default {
                         }
                     }
                 },
+                responsive: true,
+                maintainAspectRatio: false
             },
             chartdata:{
                 labels: [],

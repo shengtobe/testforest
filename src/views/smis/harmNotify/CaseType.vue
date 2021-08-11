@@ -7,7 +7,7 @@
             <p class="error--text">* 可點擊圖表上方色塊旁的名稱來隱藏該記錄</p>
         </v-col>
     </v-row>
-    <v-row>
+    <v-row style="height:70vh">
         <!-- 圖表 -->
         <v-col class="white">
             <ChartLine :options="chart.options" :chartdata="chart.data" :key="chart.componentKey"/>
@@ -52,7 +52,9 @@ export default {
                         top: 20,
                         bottom: 20,
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             },
             data: {
                 labels: [],
