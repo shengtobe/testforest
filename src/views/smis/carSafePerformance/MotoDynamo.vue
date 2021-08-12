@@ -29,7 +29,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file</v-icon>機車型號
             </h3>
-            <v-text-field solo @click="eqCode=true" readonly v-model="searchIpt.type" />
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchIpt.MaintainCode_Loc" />
             <v-dialog v-model="eqCode" max-width="700px">
                 <v-card class="theme-card">
                     <v-card-title class="px-4 py-1">
@@ -40,7 +40,7 @@
                         </v-btn>
                     </v-card-title>
                     <div class="px-4 py-3">
-                        <EquipCode :nowEqCode="searchIpt.type" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" />
+                        <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" />
                     </div>
                     <v-card-actions class="px-5 pb-5">
                         <v-spacer></v-spacer>
@@ -255,7 +255,8 @@ export default {
         searchIpt: {  // 搜尋欄位
             year: new Date().getFullYear(),
             month: '',  // 月
-            type: 'RST',  // 類型
+            MaintainCode_System: 'RST',  // 類型
+            MaintainCode_Loc: ''
         },
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
@@ -296,6 +297,16 @@ export default {
         dialogTitle () {
             return this.itemIndex === -1 ? '新增資料' : '編輯資料'
         },
+        com_equipCode: {
+            get: function() {
+                return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+            },
+            set: function(value) {
+                let splitArr = value.split('-')
+                this.searchIpt.MaintainCode_System = splitArr[0]
+                this.searchIpt.MaintainCode_Loc = splitArr[1]
+            }
+        }
     },
     methods: {
         ...mapActions('system', [
@@ -318,15 +329,12 @@ export default {
                 eDate = new Date(this.searchIpt.year+1 + '-01')
                 eDate.setDate(eDate.getDate()-1)
             }
-            let srr = this.searchIpt.type.split('-')
             let keyItem = []
             keyItem.push({ Column: "StartDayVlaue", Value: sDate.getFullYear()+'-'+(sDate.getMonth()+1)+'-'+sDate.getDate() })
             keyItem.push({ Column: "EndDayVlaue", Value: eDate.getFullYear()+'-'+(eDate.getMonth()+1)+'-'+eDate.getDate() })
             keyItem.push({ Column: "DepartCode", Value: this.userData.DeptList[0].DeptId })
-            if(srr.length>1){
-                keyItem.push({ Column: "MaintainCode_System", Value: srr[0] })
-                keyItem.push({ Column: "MaintainCode_Loc", Value: srr[1] })
-            }
+            keyItem.push({ Column: "MaintainCode_System", Value: this.searchIpt.MaintainCode_System })
+            keyItem.push({ Column: "MaintainCode_Loc", Value: this.searchIpt.MaintainCode_Loc })
             this.tableItems = []
             fetchFormOrderList({
                 ClientReqTime: getNowFullTime(),
@@ -453,7 +461,7 @@ export default {
         },
         //機車送出按鈕
         selectEQ() {
-            this.searchIpt.type = this.preSetEqcode
+            this.com_equipCode = this.preSetEqcode
             this.eqCode = false
         }
     },
