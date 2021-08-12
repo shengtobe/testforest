@@ -630,9 +630,12 @@ export default {
             { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         headers_fee: [  // 工時標題
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            // { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '單價', value: 'UnitPrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '數量', value: 'Amount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '小計', value: 'Subtotal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編輯費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         jobPrice: '', // 工作項金額
         moneyDialog: false,  // 金額 dialog 是否顯示
