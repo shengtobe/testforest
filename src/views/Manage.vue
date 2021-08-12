@@ -504,7 +504,7 @@ export default {
         reCalculate() {
             const that = this
             clearTimeout(OtimeOut)
-            OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 10 * 60 * 1000)
+            OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 90 * 60 * 1000)
             // console.log(OtimeOut)
         }
     },
