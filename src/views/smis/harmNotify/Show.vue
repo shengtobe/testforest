@@ -207,12 +207,40 @@
         </v-col>
 
         <!-- 既有行安事故 -->
-       <v-col cols="12" v-if="shwoPick1_1Form">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有行車事件事故列表
-            </h3>
-            <v-card>
-                <v-data-table
+        <v-row class="mt-1 ml-1 mr-1" v-if="showPick1_1Form">
+            <v-col cols="12">
+                <h3>
+                    <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有行車事件事故列表
+                </h3>
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型分類
+                </h3>
+                <v-select clearable
+                    v-model="ipt1_1.evtType1"
+                    :items="['重大事故', '一般事故', '異常事件', '其他']"
+                    @change="evtTypeChange"
+                    solo
+                ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6" md="3" v-if="ipt1_1.evtType1!='其他'">
+                <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故種類</h3>
+                <v-select clearable
+                    v-model="ipt1_1.evtType2"
+                    :items="evtTypeOpts"
+                    solo
+                ></v-select>
+            </v-col>
+            <v-col cols="12" md="3" align-self="end">
+                <v-btn dark large class="mb-8 mr-3 btn-search"
+                    @click="search1_1">
+                    <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+                </v-btn>
+            </v-col>
+            <v-col cols="12">
+                <v-card>
+                    <v-data-table
                     :headers="headers1_1"
                     :items="tableItems"
                     :options.sync="pageOpt"
@@ -229,14 +257,14 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.location="{ item }">
+                    <!-- <template v-slot:item.location="{ item }">
                         {{ locationOpts.find(ele => ele.value == item.FindLine).text }}
                         {{ (item.FindLine == 'other')? `(${item.FindLineOther})` : '' }}
                         {{ (['l1', 'l2', 'l3', 'l4'].includes(item.FindLine))? `(${item.LineK}K+${item.LineM}M)` : '' }}
-                    </template>
+                    </template> -->
                     
                     <template v-slot:item.type="{ item }">
-                        {{ evtTypeOpts.find(ele => ele.value == item.AccidentType).text }}
+                        {{ opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '') }}
                     </template>
 
                     <template v-slot:item.hurtPeople="{ item }">
@@ -263,186 +291,241 @@
                         />
                     </template>
                 </v-data-table>
-            </v-card>
-        </v-col>
+                </v-card>
+            </v-col>
+        </v-row>
 
         <!-- 既有行安危害 -->
-        <v-col cols="12" class="mt-8" v-if="shwoPick1_2Form">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有行車危害列表
-            </h3>
-            <v-card>
-                <v-data-table
-                    :headers="headers1_2"
-                    :items="tableItems"
-                    :options.sync="pageOpt"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
-                    class="theme-table"
-                >
-                    <template v-slot:no-data>
-                        <span class="red--text subtitle-1">沒有資料</span>
-                    </template>
+        <v-row class="mt-1 ml-1 mr-1" v-if="showPick1_2Form">
+            <v-col cols="12" md="12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有行車危害列表
+                </h3>
+            </v-col>
+            <v-col cols="12" md="5">
+                <v-text-field
+                    hide-details
+                    v-model.trim="keyword1_2"
+                    solo
+                    placeholder="請輸入查詢關鍵字"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="3" align-self="end">
+                <v-btn dark large class="mb-1 mr-3 btn-search"
+                    @click="search1_2">
+                    <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+                </v-btn>
+            </v-col>
+            <v-col cols="12" class="mt-2">
+                <v-card>
+                    <v-data-table
+                        :headers="headers1_2"
+                        :items="tableItems"
+                        :options.sync="pageOpt"
+                        disable-sort
+                        disable-filtering
+                        hide-default-footer
+                        class="theme-table"
+                    >
+                        <template v-slot:no-data>
+                            <span class="red--text subtitle-1">沒有資料</span>
+                        </template>
 
-                    <template v-slot:loading>
-                        <span class="red--text subtitle-1">資料讀取中...</span>
-                    </template>
+                        <template v-slot:loading>
+                            <span class="red--text subtitle-1">資料讀取中...</span>
+                        </template>
 
-                    <template v-slot:item.mode="{ item }">
-                        <span>{{ opts1_2.mode.find(ele => ele.value == item.OperationMode).text }}</span>
-                    </template>
+                        <template v-slot:item.mode="{ item }">
+                            <span>{{ opts1_2.mode.find(ele => ele.value == item.OperationMode).text }}</span>
+                        </template>
 
-                    <template v-slot:item.serious="{ item }">
-                        <span>{{ opts1_2.serious.find(ele => ele.value == item.RiskSerious).text }}</span>
-                    </template>
+                        <template v-slot:item.serious="{ item }">
+                            <span>{{ opts1_2.serious.find(ele => ele.value == item.RiskSerious).text }}</span>
+                        </template>
 
-                    <template v-slot:item.frequency="{ item }">
-                        <span>{{ opts1_2.frequency.find(ele => ele.value == item.RiskFreq).text }}</span>
-                    </template>
+                        <template v-slot:item.frequency="{ item }">
+                            <span>{{ opts1_2.frequency.find(ele => ele.value == item.RiskFreq).text }}</span>
+                        </template>
 
-                    <template v-slot:item.level="{ item }">
-                        <span>{{ opts1_2.riskLevel.find(ele => ele.value == item.RiskLevel).text }}</span>
-                    </template>
-                    
-                    <template v-slot:item.status="{ item }">
-                        <span>{{ opts1_2.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
-                    </template>
-                    <!-- headers 的 content 欄位 (危害說明) -->
-                    <template v-slot:item.harmDesp="{ item }">
-                        <span>{{ item.EndangerDesp }}</span>
-                        <!-- <v-btn class="btn-memo" dark
-                            @click="showContent(item.EndangerDesp)"
-                        >檢視</v-btn> -->
-                    </template>
+                        <template v-slot:item.level="{ item }">
+                            <span>{{ opts1_2.riskLevel.find(ele => ele.value == item.RiskLevel).text }}</span>
+                        </template>
+                        
+                        <template v-slot:item.status="{ item }">
+                            <span>{{ opts1_2.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
+                        </template>
+                        <!-- headers 的 content 欄位 (危害說明) -->
+                        <template v-slot:item.harmDesp="{ item }">
+                            <span>{{ item.EndangerDesp }}</span>
+                            <!-- <v-btn class="btn-memo" dark
+                                @click="showContent(item.EndangerDesp)"
+                            >檢視</v-btn> -->
+                        </template>
 
-                    <!-- headers 的 content 欄位 (檢視內容) -->
-                    <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail"
-                            @click="pick1Event(item)"
-                        >
-                            <v-icon dark>mdi-gesture-tap</v-icon>
-                        </v-btn>
-                    </template>
+                        <!-- headers 的 content 欄位 (檢視內容) -->
+                        <template v-slot:item.content="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                @click="pick1Event(item)"
+                            >
+                                <v-icon dark>mdi-gesture-tap</v-icon>
+                            </v-btn>
+                        </template>
 
-                    <template v-slot:footer="footer">
-                        <Pagination
-                            :footer="footer"
-                            :pageOpt="pageOpt"
-                            @chPage="chPage"
-                        />
-                    </template>
-                </v-data-table>
-            </v-card>
-        </v-col>
+                        <template v-slot:footer="footer">
+                            <Pagination
+                                :footer="footer"
+                                :pageOpt="pageOpt"
+                                @chPage="chPage"
+                            />
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
+        </v-row>
 
         <!-- 既有職災事件事故 -->
-         <v-col cols="12" class="mt-8" v-if="shwoPick2_1Form">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有職災事件列表
-            </h3>
-            <v-card>
-                <v-data-table
-                    :headers="headers2_1"
-                    :items="tableItems"
-                    :options.sync="pageOpt"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
-                    class="theme-table"
-                >
-                    <template v-slot:no-data>
-                        <span class="red--text subtitle-1">沒有資料</span>
-                    </template>
+        <v-row class="mt-1 ml-1 mr-1" v-if="shwoPick2_1Form">
+            <v-col cols="12">
+                <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有職災事件列表
+                </h3>
+            </v-col>
+            <v-col cols="5">
+                <v-text-field
+                    hide-details
+                    v-model.trim="keyword2_1"
+                    solo
+                    placeholder="請輸入編號關鍵字"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="3" align-self="end">
+                <v-btn dark large class="mb-1 mr-3 btn-search"
+                    @click="search2_1">
+                    <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+                </v-btn>
+            </v-col>
+            <v-col cols="12" class="mt-2" >
+                <v-card>
+                    <v-data-table
+                        :headers="headers2_1"
+                        :items="tableItems"
+                        :options.sync="pageOpt"
+                        disable-sort
+                        disable-filtering
+                        hide-default-footer
+                        class="theme-table"
+                    >
+                        <template v-slot:no-data>
+                            <span class="red--text subtitle-1">沒有資料</span>
+                        </template>
 
-                    <template v-slot:loading>
-                        <span class="red--text subtitle-1">資料讀取中...</span>
-                    </template>
+                        <template v-slot:loading>
+                            <span class="red--text subtitle-1">資料讀取中...</span>
+                        </template>
 
-                    <!-- <template v-slot:item.status="{ item }">
-                        {{ transferStatusText(item.status) }}
-                    </template> -->
+                        <!-- <template v-slot:item.status="{ item }">
+                            {{ transferStatusText(item.status) }}
+                        </template> -->
 
-                    <template v-slot:item.status="{ item }">
-                        <span>{{ opts.status.find(ele => ele.value == item.AccidentStatus).text }}</span>
-                    </template>
+                        <template v-slot:item.status="{ item }">
+                            <span>{{ opts.status.find(ele => ele.value == item.AccidentStatus).text }}</span>
+                        </template>
 
-                    <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail"
-                            @click="pick2Event(item)"
-                        >
-                            <v-icon dark>mdi-gesture-tap</v-icon>
-                        </v-btn>
-                    </template>
+                        <template v-slot:item.content="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                @click="pick2Event(item)"
+                            >
+                                <v-icon dark>mdi-gesture-tap</v-icon>
+                            </v-btn>
+                        </template>
 
-                    <template v-slot:footer="footer">
-                        <Pagination
-                            :footer="footer"
-                            :pageOpt="pageOpt"
-                            @chPage="chPage"
-                        />
-                    </template>
-                </v-data-table>
-            </v-card>
-        </v-col>
+                        <template v-slot:footer="footer">
+                            <Pagination
+                                :footer="footer"
+                                :pageOpt="pageOpt"
+                                @chPage="chPage"
+                            />
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
+        </v-row>
 
         <!-- 既有職災危害 -->
-        <v-col cols="12" class="mt-8" v-if="shwoPick2_2Form">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有職災危害列表
-            </h3>
-            <v-card>
-                <v-data-table
-                    :headers="headers2_2"
-                    :items="tableItems"
-                    :options.sync="pageOpt"
-                    disable-sort
-                    disable-filtering
-                    hide-default-footer
-                    class="theme-table"
-                >
-                    <template v-slot:no-data>
-                        <span class="red--text subtitle-1">沒有資料</span>
-                    </template>
+        <v-row class="ml-1 mr-1" v-if="shwoPick2_2Form">
+            <v-col cols="12">
+                <h3 >
+                    <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有職災危害列表
+                </h3>
+            </v-col>
+            <v-col cols="5">
+                <v-text-field
+                    hide-details
+                    v-model.trim="keyword2_2"
+                    solo
+                    placeholder="請輸入作業名稱關鍵字"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="3" align-self="end">
+                <v-btn dark large class="mb-1 mr-3 btn-search"
+                    @click="search2_2">
+                    <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+                </v-btn>
+            </v-col>
+            <v-col cols="12" class="mt-2" >
+                <v-card>
+                    <v-data-table
+                        :headers="headers2_2"
+                        :items="tableItems"
+                        :options.sync="pageOpt"
+                        disable-sort
+                        disable-filtering
+                        hide-default-footer
+                        class="theme-table"
+                    >
+                        <template v-slot:no-data>
+                            <span class="red--text subtitle-1">沒有資料</span>
+                        </template>
 
-                    <template v-slot:loading>
-                        <span class="red--text subtitle-1">資料讀取中...</span>
-                    </template>codes
+                        <template v-slot:loading>
+                            <span class="red--text subtitle-1">資料讀取中...</span>
+                        </template>codes
 
-                    <template v-slot:item.codes="{ item }">
-                        {{ item.code1 }}-{{ item.code2 }}-{{ item.code3 }}
-                    </template>
+                        <template v-slot:item.codes="{ item }">
+                            {{ item.code1 }}-{{ item.code2 }}-{{ item.code3 }}
+                        </template>
 
-                    <template v-slot:item.serious="{ item }">
-                        {{ transferSeriousText(item.serious) }}
-                    </template>
+                        <template v-slot:item.serious="{ item }">
+                            {{ transferSeriousText(item.serious) }}
+                        </template>
 
-                    <template v-slot:item.possibility="{ item }">
-                        {{ transferPossibilityText(item.possibility) }}
-                    </template>
+                        <template v-slot:item.possibility="{ item }">
+                            {{ transferPossibilityText(item.possibility) }}
+                        </template>
 
-                    <template v-slot:item.level="{ item }">
-                        {{ transferLevelText(item.level) }}
-                    </template>
+                        <template v-slot:item.level="{ item }">
+                            {{ transferLevelText(item.level) }}
+                        </template>
 
-                    <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail"
-                            @click="pick2Event(item)"
-                        >
-                            <v-icon dark>mdi-gesture-tap</v-icon>
-                        </v-btn>
-                    </template>
+                        <template v-slot:item.content="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                @click="pick2Event(item)"
+                            >
+                                <v-icon dark>mdi-gesture-tap</v-icon>
+                            </v-btn>
+                        </template>
 
-                    <template v-slot:footer="footer">
-                        <Pagination
-                            :footer="footer"
-                            :pageOpt="pageOpt"
-                            @chPage="chPage"
-                        />
-                    </template>
-                </v-data-table>
-            </v-card>
-        </v-col>
+                        <template v-slot:footer="footer">
+                            <Pagination
+                                :footer="footer"
+                                :pageOpt="pageOpt"
+                                @chPage="chPage"
+                            />
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-col>
+        </v-row>
 
         
 
@@ -523,6 +606,7 @@ import { searchData, searchDataDb } from '@/apis/smis/jobSafety'
 import { dapartOptsBrief } from '@/assets/js/departOption'
 import { fetchList as fetchListDb } from '@/apis/smis/carHarmDatabase/harms'
 import { fetchList as fetchListEvent } from '@/apis/smis/carAccidentEvent'
+import { fetchEvtTypes } from '@/apis/smis/carAccidentEvent'
 // import NotifyEvtDialog from '@/components/smis/NotifyEvtDialog.vue'
 // import NotifyHarmDialog from '@/components/smis/NotifyHarmDialog.vue'
 // import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
@@ -533,15 +617,22 @@ export default {
         id: '',  // 危害通報編號
         isShowBtn: false,
         done: false,  // 是否完成頁面操作
+        opsList: '', // 完整事故類型清單
         NoRecord: 'F',
+        arr1: [], // 重大事故
+        arr2: [], // 一般事故
+        arr3: [], // 異常事件
         status: '',  // 狀態
         pick1: '', // 既有行安事故編號
         pick2: '', // 既有行安事故編號
         pick1_2: '', // 既有行安危害編號
         pick2_1: '', // 既有職災事故編號
         pick2_2: '', // 既有職安危害編號
-        shwoPick1_1Form: false, // 顯示既有行安事故表格
-        shwoPick1_2Form: false, // 顯示既有行安事故表格
+        keyword1_2: '',
+        keyword2_1: '',
+        keyword2_2: '',
+        showPick1_1Form: false, // 顯示既有行安事故表格
+        showPick1_2Form: false, // 顯示既有行安事故表格
         shwoPick2_1Form: false, // 顯示既有行安事故表格
         shwoPick2_2Form: false, // 顯示既有行安事故表格
         shwoPick2_3Form: false, // 顯示既有行安事故表格
@@ -558,8 +649,22 @@ export default {
             replyOther: '',  // 回覆處理-自訂訊息
             // caseChose: '',  // 立案處理選擇的方式
         },
+        ipt1_1: {
+            location: '', // 發生地點
+            dateStart:  '',  // 發生日期(起)
+            dateEnd: '',  // 發生日期(迄)
+            evtType1: '', // 事故類型1
+            evtType2: '', // 事故類型2
+            eqLoss: '',// 設備受損情形
+            serviceShock: '', // 運轉影響情形
+            handle: '', // 處置過程
+            review: '', // 檢討過程
+            reason: '', // 原因分析
+            note: '', // 備註
+            status: '',  // 事故事件狀態
+        },
         accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
-        evtTypeOpts: evtTypes,  // 事故類型
+        evtTypeOpts: [],  // 事故類型
         locationOpts: locationOpts,  // 事故發生地點
         replyRadios: [
             '感謝通報，已通知相關單位處理',
@@ -572,7 +677,7 @@ export default {
         headers1_1: [  // 表格顯示的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
             { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
             { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
@@ -730,14 +835,14 @@ export default {
         click1(){
         },
         selector1Changed(){
-            this.shwoPick1_1Form = this.shwoPick1_2Form = false
+            this.showPick1_1Form = this.showPick1_2Form = false
             // if(this.pick2 == '' && this.ipt.code1 == '' && this.ipt.code2 == ''){
             //     this.jobSafeType = '';
             // }
             console.log("this.carSafeType: ", this.carSafeType);
             switch(this.carSafeType){
                 case 'B': // 以行安立案 選擇 既有行安事故
-                    this.shwoPick1_1Form = true;
+                    this.showPick1_1Form = true;
                     this.chLoadingShow({show:true})
                     fetchListEvent({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -761,7 +866,35 @@ export default {
                             // 'CancelStatus',
                         ],
                     }).then(res => {
-                        this.tableItems = JSON.parse(res.data.order_list)
+                        // this.tableItems = JSON.parse(res.data.order_list)
+                        this.tableItems = [...[]]
+                        let tempTable = JSON.parse(res.data.order_list)
+                        console.log("tempTable", tempTable.map(e => e.AccidentType));
+                        tempTable.forEach(element => {
+                            for(let ele in element){
+                                if(element[ele] == null){
+                                    element[ele] = '';
+                                }
+                            }
+                            // 解決AccidentType有空字串問題:
+                            // if(element.AccidentType == '') element.AccidentType = 'Other'
+
+                            // 組合發生地點文字 AccidentCode
+                            
+                            let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
+                            
+                            if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {
+                                findLocationText += ` (${element.LineK}K+${element.LineM}M)`  // 本線、祝山線、眠月線、水山線
+                                
+                            } else if(element.FindLine == 'other') {
+                                findLocationText += ` (${element.FindLineOther})`  // 其他地點
+                            }
+                            // console.log("4 findLocationText", findLocationText);
+                            element.FindLine = findLocationText
+
+                            this.tableItems.push(element)
+                            // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
+                        });
                     }).catch(err => {
                         console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -770,7 +903,7 @@ export default {
                     })
                     break;
                 case 'D': // 以行安立案 選擇 既有行安危害
-                    this.shwoPick1_2Form = true;
+                    this.showPick1_2Form = true;
                     this.chLoadingShow({show:true})
                     fetchListDb({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -806,6 +939,256 @@ export default {
                     this.pick1 = "";
                     break;
             }
+        },
+        search1_2(){
+            //無勾選
+                if(this.keyword1_2 == ''){//勾選X 關鍵字X 就搜尋全部
+                    fetchListDb({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            { tableColumn: 'EndangerDesp', columnValue: this.keyword1_2 },  // 危害說明 
+                            { tableColumn: 'EndangerCode', columnValue: this.keyword1_2 },  // 危害編號
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'EndangerCode',
+                            'EndangerDesp',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("tableItems: ", this.tableItems);
+                        // this.tableItems.forEach(element => {
+                        //     for(let ele in element){
+                        //         if(element[ele] == null){
+                        //             element[ele] = '';
+                        //         }
+                        //         else{
+                        //             switch(ele){
+                        //                 case 'EndangerDesp'://危害說明
+                        //                     break;
+                        //                 case 'EndangerReason'://危害直接成因
+                        //                     break;
+                        //                 case 'EndangerIndirect'://可能的危害間接原因
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //                 case 'AAAAAA'://AAAAA
+                        //                     break;
+                        //             }
+                        //         }
+                        //     }
+                        // });
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                }
+                else{//勾選X 關鍵字√ 就搜尋全部欄位 有任一欄位符合就列出
+                    fetchListDb({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        KeyName: 'SMS_EndangerData',  // DB table
+                        KeyItem: [
+                            // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                            { tableColumn: 'EndangerDesp', columnValue: this.keyword1_2 },  // 危害說明 
+                            { tableColumn: 'EndangerCode', columnValue: this.keyword1_2 },  // 危害編號
+                            // { tableColumn: 'EndangerReason', columnValue: this.keyword1_2 },  // 危害直接成因 
+                        ],
+                        QyName: [    // 欲回傳的欄位資料
+                            'EndangerCode',
+                            'EndangerStatus',
+                            'OperationMode',
+                            'RiskSerious',
+                            'RiskFreq',
+                            'RiskLevel',
+                            'DelStatus',
+                            'CancelStatus',
+                            'InsertDTime',
+                        ],
+                    }).then(res => {
+                        this.tableItems = JSON.parse(res.data.order_list)
+                        console.log("this.tempItems: ", this.tempItems);
+                    }).catch(err => {
+                        console.log(err)
+                        alert('查詢時發生問題，請重新查詢!')
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                }
+        },
+        search1_1(){
+            console.log("locationOpts: ", this.locationOpts);
+            fetchListEvent({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_AccidentEventData',  // DB table
+                KeyItem: [
+                    // { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 發生日期(起)
+                    // { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd },  // 發生日期(迄)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'AccidentCode',
+                    'AccidentFindDate',
+                    'FindLine',
+                    'LineK',
+                    'LineM',
+                    'FindLineOther',
+                    'AccidentType',
+                    'HurtPeopleCount',
+                    'AccidentStatus',
+                    'DelStatus',
+                    'CancelStatus',
+                ],
+            }).then(res => {
+                if(this.ipt1_1.evtType1 == undefined) this.ipt1_1.evtType1 = ''
+                if(this.ipt1_1.evtType2 == undefined) this.ipt1_1.evtType2 = ''
+                this.tableItems = [...[]]
+                let tempTable = JSON.parse(res.data.order_list)
+                tempTable.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    // console.log("5 element.AccidentType: ", element.AccidentType);
+                    // 解決AccidentType有空字串問題:
+                    // if(element.AccidentType == '') element.AccidentType = 'Other'
+
+                    // 組合發生地點文字 AccidentCode
+                    
+                    let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
+                    
+                    if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {
+                        findLocationText += ` (${element.LineK}K+${element.LineM}M)`  // 本線、祝山線、眠月線、水山線
+                        
+                    } else if(element.FindLine == 'other') {
+                        findLocationText += ` (${element.FindLineOther})`  // 其他地點
+                    }
+                    // console.log("4 findLocationText", findLocationText);
+                    element.FindLine = findLocationText
+
+                    console.log("this.ipt1_1.evtType1 + '-' + this.ipt1_1.evtType2: ", this.ipt1_1.evtType1 + '-' + this.ipt1_1.evtType2);
+
+                    // 事故類型篩選
+                    if(this.ipt1_1.evtType1 == '' && this.ipt1_1.evtType2 == ''){ // 無篩選
+                        this.tableItems.push(element)
+                    }
+                    else if(this.ipt1_1.evtType1 != '' && this.ipt1_1.evtType2 == ''){ // 篩選只選第一個
+                        let type1 = this.opsList.find(ele => ele.Code == element.AccidentType).Name.replace('率', '')
+                        type1 = type1.substr(0, type1.indexOf('-'))
+                        if(type1 == this.ipt1_1.evtType1){
+                            this.tableItems.push(element)
+                        }
+                    }
+                    else{ // 篩選都有選
+                        let type2 = this.opsList.find(ele => ele.Code == element.AccidentType).Name.replace('率', '')
+                        console.log("type2: ", type2);
+                        if(type2 == this.ipt1_1.evtType1 + '-' + this.ipt1_1.evtType2){
+                            this.tableItems.push(element)
+                        }
+                    }
+                    // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
+                });
+                //splice
+                // this.tableItems.splice(1, 3);
+                // console.log("this.tableItems[0].AccidentType:", this.tableItems[0].AccidentType)
+
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
+        search2_1(){
+            searchData({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                IsFirstLoad: false,
+                KeyName: 'SMS_JobAccidentSurvey',  // DB table
+                KeyItem: [
+                    { tableColumn: 'AccidentCode', columnValue: this.keyword2_1 },  //
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    // 'EndangerCode',
+                    // 'EndangerStatus',
+                    // 'OperationMode',
+                    // 'RiskSerious',
+                    // 'RiskFreq',
+                    // 'RiskLevel',
+                    // 'DelStatus',
+                    // 'CancelStatus',
+                    // 'InsertDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
+        search2_2(){
+            searchDataDb({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_JobAccidentData',  // DB table
+                KeyItem: [
+                    { tableColumn: 'JobName', columnValue: this.keyword2_2 },  //
+                    // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    // 'EndangerCode',
+                    // 'EndangerStatus',
+                    // 'OperationMode',
+                    // 'RiskSerious',
+                    // 'RiskFreq',
+                    // 'RiskLevel',
+                    // 'DelStatus',
+                    // 'CancelStatus',
+                    // 'InsertDTime',
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
         },
         selector2Changed(){
             this.shwoPick2_1Form = this.shwoPick2_3Form = this.shwoPick2_2Form = false
@@ -891,6 +1274,21 @@ export default {
                     break;
             }
         },
+        evtTypeChange(){
+            this.ipt1_1.evtType2 = ''
+            if(this.ipt1_1.evtType1 == "重大事故"){
+                this.evtTypeOpts = this.arr1
+            }
+            else if(this.ipt1_1.evtType1 == "一般事故"){
+                this.evtTypeOpts = this.arr2
+            }
+            else if(this.ipt1_1.evtType1 == "異常事件"){
+                this.evtTypeOpts = this.arr3
+            }
+            else{
+                this.ipt1_1.evtType2 = ''
+            }
+        },
         // 初始化資料
         setShowData(obj) {
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
@@ -914,7 +1312,44 @@ export default {
             }).finally(() => {
             })
 
-            
+            // 初始化事故類型 fetchEvtTypes
+            this.chLoadingShow({show:true})
+            fetchEvtTypes({
+                OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    //抽離 其他
+                    this.opsList = JSON.parse(res.data.order_list)
+                    console.log("opsList: ", this.opsList);
+                    let tempOps = this.opsList.map(e=>e.text)
+                    tempOps.forEach(e => {
+                        if(e.indexOf("-") >= 0){
+                            let arr = e.split('-')
+                            arr[1] = arr[1].replace('率', '')
+                            if(arr[0] == "重大事故"){
+                                this.arr1.push(arr[1])
+                            }
+                            else if(arr[0] == "一般事故"){
+                                this.arr2.push(arr[1])
+                            }
+                            else if(arr[0] == "異常事件"){
+                                this.arr3.push(arr[1])
+                            }
+                        }
+                        // evtTypeOpts
+                    });
+                } else {
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，事故類型讀取失敗')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
         },
         // 連結行車事故事件
         // connCarEvt() {
@@ -1212,11 +1647,11 @@ export default {
         pick1Event(item) {
             switch(this.carSafeType){
                 case 'B':
-                    this.shwoPick1_1Form = false;
+                    this.showPick1_1Form = false;
                     this.pick1 = item.AccidentCode
                     break;
                 case 'D':
-                    this.shwoPick1_2Form = false;
+                    this.showPick1_2Form = false;
                     this.pick1 = item.EndangerCode
                     break;
             }
@@ -1237,6 +1672,8 @@ export default {
     },
     created() {
         this.setShowData(this.itemData)
+
+        
     },
 }
 </script>

@@ -644,7 +644,7 @@ export default {
             hour: hourOptions,  // 小時
             min: minOptions,  // 分
             loadType: ['高架', '隧道', '平面', '地下', '其他' ],  // 路段型態
-            aroundEnv: ['平交道', '車站', '遂路或便道', '民宅', '河川', '隧道', '橋梁', '邊坡', '逃生出口', '其他' ],  // 周邊環境
+            aroundEnv: ['平交道', '車站', '道路或便道', '民宅', '河川', '隧道', '橋梁', '邊坡', '逃生出口', '其他' ],  // 周邊環境
             fenceEq: ['圍籬', '監視設備', '其他'],  // 鐵路設施設備及圍籬之
             accidentFactors1: AccidentFactors1,  // 第一層因素
         },

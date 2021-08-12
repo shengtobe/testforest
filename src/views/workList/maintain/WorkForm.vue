@@ -151,10 +151,11 @@
                             v-model="hasLicenLv2Select"
                             :items="hasLicenseOptLv2"
                             solo
+                            @change="addMember(hasLicenLv2Select, true)"
                         ></v-select>
                     </v-col>
 
-                    <v-col cols="2">
+                    <v-col cols="2" v-if="false">
                         <v-btn fab dark small color="indigo"
                             @click="addMember(hasLicenLv2Select, true)"
                         >
@@ -168,8 +169,9 @@
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-account</v-icon>作業人員
                 </h3>
-                <v-row>
-                    <!-- <v-col cols="10" sm="4" md="6">
+                <peopleSelect @getPeople="saveSelectPeople" :peopleList="queryItem.PeopleList"/>
+                <!-- <v-row>
+                    <v-col cols="10" sm="4" md="6">
                         <v-text-field
                             :value="ipt.commonNowIpt.name"
                             solo
@@ -184,54 +186,22 @@
                         >
                             <v-icon dark>mdi-plus</v-icon>
                         </v-btn>
-                    </v-col> -->
-                    <v-col cols="10" sm="4" md="6">
-                        <v-chip v-for="(item) in selectedPeople" :key="'P_'+item.PeopleId" close @click:close="deleteSelectedPeople(item.PeopleId)" class="ma-1"> {{ item.PeopleName }} </v-chip>
-                        <v-btn
-                            class="mx-2 btn-add"
-                            fab
-                            dark
-                            small
-                            @click="SelectPeople=true"
-                        >
-                            <v-icon dark>
-                            mdi-plus
-                            </v-icon>
-                        </v-btn>
                     </v-col>
-                    
-                    <v-dialog v-model="SelectPeople" max-width="900px">
-                        <v-card class="theme-card">
-                        <v-card-title class="white--text px-4 py-1">選擇作業人員
-                            <v-spacer></v-spacer>
-                            <v-btn dark fab small text @click="cancelSelectPeople" class="mr-n2">
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </v-card-title>
-                        <v-lazy>
-                            <getPeople :defDeptId="userData.DeptList[0].DeptId" @getPeople="saveSelectPeople"/>
-                        </v-lazy>
-                        <v-card-actions class="px-5 pb-5">
-                            <v-spacer></v-spacer>
-                            <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancelSelectPeople">取消</v-btn>
-                        </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </v-row>
+                </v-row> -->
             </v-col>
 
             <v-col cols="12">
-                <h3 class="mb-1 mt-n3">
+                <!-- <h3 class="mb-1 mt-n3">
                     <v-icon class="mr-1 mb-1">mdi-account</v-icon>林鐵人員統計
-                </h3>
+                </h3> -->
 
                 <!-- 有證照 -->
                 <v-chip
                     v-for="(item, idx) in ipt.licensedArr"
                     :key="item"
-                    class="mr-3 mt-2"
+                    class="mr-3 mt-n6"
                     label
-                    color="green dark-2"
+                    color="blue darken-2"
                     dark
                     large
                 >
@@ -248,7 +218,7 @@
                     class="mr-3 mt-2"
                     label
                     dark
-                    large
+                    large v-if="false"
                 >
                     {{ item }}
                     <v-icon right
@@ -371,11 +341,10 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import OrganizeDialog from '@/components/OrganizeDialog.vue'
-import { fetchOrganization } from '@/apis/organization'
 import EquipRepairCode from '@/components/EquipRepairCode'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchWorkOrderOne, dispatchOrder, fetchLicenseManData, fetchFirmList } from '@/apis/workList/maintain'
-import getPeople from '@/components/GetOrganizePeople'
+import peopleSelect from '@/components/PeopleSelectMuti'
 
 // 需證照人員名單 (demo用)
 // let hasLicense = {
@@ -399,23 +368,6 @@ export default {
         done: false,  // 是否完成頁面操作
         valid: true,  // 表單是否驗證欄位
         combineCh: '', //合併後的設備中文名稱
-        queryItem: {
-            DepartName: "",
-            Memo: "",
-            AlarmDTime: "",
-            AlarmEndDTime: "",
-            Cycle: "",
-            PeopleList: []
-        },
-        defaultQueryItem: {
-            DepartName: "",
-            Memo: "",
-            AlarmDTime: "",
-            AlarmEndDTime: "",
-            Cycle: "",
-            PeopleList: []
-        },
-        SelectPeople: false,
         showEq: false,
         isLoading: false,  // 是否讀取中
         combineCode: '', //合併後的設備編碼
@@ -427,6 +379,22 @@ export default {
         vendorList: [],
         manValueList: [], //人員value陣列
         manTextList: [], //人員text陣列
+        queryItem: {
+        DepartName: "",
+        Memo: "",
+        AlarmDTime: "",
+        AlarmEndDTime: "",
+        Cycle: "",
+        PeopleList: []
+      },
+      defaultQueryItem: {
+        DepartName: "",
+        Memo: "",
+        AlarmDTime: "",
+        AlarmEndDTime: "",
+        Cycle: "",
+        PeopleList: []
+      },
         hasLicense: {
             '固定式起重機': [
                 { text: '潘學文', value: '15741' },
@@ -477,10 +445,7 @@ export default {
         },
         allLicenseArr: [],  // 所有證照人員
     }),
-    mounted: function() {
-      this.componentInit()
-    },
-    components: { OrganizeDialog, EquipRepairCode, getPeople },
+    components: { OrganizeDialog, EquipRepairCode, peopleSelect },
     computed: {
         ...mapState ('organization', {  // 組織表資料
             memberID: state => state.chose.uid,
@@ -490,26 +455,6 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
-        selectedPeople:function() {
-            return this.queryItem.PeopleList.map(e => {
-            let rtnObj = {}
-            rtnObj.PeopleId = e
-            console.log("e: ", e)
-            console.log("this.people: ", this.people);
-            rtnObj.PeopleName = this.people.find(ele => ele.value == e).text
-            return rtnObj
-            })
-        },
-        queryItemNull:function() {
-            let keys = Object.keys(this.queryItem)
-            let errArr = []
-            keys.forEach(e=>{
-            if(this.queryItem[e] == this.defaultQueryItem[e]) {
-                errArr.push(e)
-            }
-            })
-            return errArr
-        },
         // 設備報修
         eqNumbers() {
             return `${this.ipt.eqNumber1}-${this.ipt.eqNumber2}-${this.ipt.eqNumber3}-${this.ipt.eqNumber4}`
@@ -554,6 +499,22 @@ export default {
             'chChose',  // 改變所選的組職表員工資料
             'chIptName',  // 改變目前欄位
         ]),
+        /* 抓人 */
+        saveSelectPeople(peopleData) {
+            this.queryItem.PeopleList = peopleData.map(e=>e.UserId)
+
+            // 作業人員
+            // this.jobNameIpts = res.data.device_jobname.map(item => ({
+            //     text: item.JobName,
+            //     value: item.JobCode,
+            // }))
+            this.ipt.commonMemArr = peopleData.map(item => ({ // 顯示用，只放入姓名
+                PeopleId: item.UserName,
+            }))  
+            this.ipt.commonMembers = peopleData.map(item => ({ 
+                PeopleId: item.UserId,
+            }))  
+        },
         // 初始化資料
         initDate() {
             this.chLoadingShow({show:true})
@@ -688,6 +649,8 @@ export default {
             }
         },
         save() {
+            console.log("this.ipt.commonMemArr: ", this.ipt.commonMemArr);
+            console.log("this.ipt.commonMembers: ", this.ipt.commonMembers); 
             if(this.ipt.agent.name == ''){
                 alert("代理人未填")
                 return
@@ -747,114 +710,6 @@ export default {
                 this.ipt.commonMembers.splice(idx, 1)  // 後端上傳用
             }
             
-        },
-        fetchOrganization() {
-            fetchOrganization({
-            ClientReqTime: getNowFullTime(),  // client 端請求時間
-            OperatorID: this.userData.UserId,  // 操作人id
-            }).then(res=>{
-            this.people = res.data.user_list_group_4.map(element=>{
-                let rtnObj = {}
-                rtnObj.text = element.UserName
-                rtnObj.value = element.UserId
-                rtnObj.group = element.DepartName 
-                rtnObj.child = ""
-                return rtnObj
-                })
-            })
-        },
-        cancelSelectPeople(){
-            this.SelectPeople = false
-        },
-        saveSelectPeople(peopleData) {
-            if(this.queryItem.PeopleList.findIndex(e=>e==peopleData.UserId)==-1){
-            this.queryItem.PeopleList.push(peopleData.UserId)
-            }
-            this.cancelSelectPeople()
-        },
-        deleteSelectedPeople(peopleId) {
-            this.queryItem.PeopleList.splice(this.queryItem.PeopleList.findIndex(e=>e==peopleId),1)
-        },
-        componentInit() {
-            // this._getOrg()
-            this.fetchOrganization()
-            if(this.inType == 'edit') {
-            this.titleShow = "編輯"
-            this.isLoading = true
-            jobQuery({
-                AlarmFlowID: this.flowId,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            }).then(res => {
-                if (res.data.ErrorCode == 0) {
-                this.queryItem.DepartName = res.data.DepartName
-                this.queryItem.Memo = res.data.Memo
-                this.queryItem.AlarmDTime = res.data.AlarmDTime.split(' ')[0].replace(/\//g, "-")
-                this.queryItem.AlarmEndDTime = res.data.AlarmEndDTime.split(' ')[0].replace(/\//g, "-")
-                this.queryItem.Cycle = res.data.Cycle
-                this.queryItem.PeopleList = res.data.PeopleList.map(item=>item.PeopleId)
-                this.queryItem = decodeObject(this.queryItem)
-                } else {
-                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                this.$router.push({ path: '/error' })
-                }
-            }).catch( err => {
-                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
-            }).finally(() => {
-                this.isLoading = false
-            })
-            }else if(this.inType == 'add'){
-            this.titleShow = "新增"
-            }
-        },
-        goSave() {
-            const that = this
-            this.isLoading = true
-            //先處理人事資料部分
-            this.queryItem.PeopleList = this.selectedPeople
-            if(this.queryItemNull==[]){
-            if(this.inType == 'edit') {
-                jobUpdate({
-                ...encodeObject(this.queryItem),
-                AlarmFlowID: this.flowId,
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                if (res.data.ErrorCode == 0) {
-                    this.chMsgbar({ success: true, msg: '資料更新成功' })
-                } else {
-                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                    this.$router.push({ path: '/error' })
-                }
-                }).catch( err => {
-                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料更新失敗' })
-                }).finally(() => {
-                this.isLoading = false
-                this._close()
-                })
-            }else if(this.inType == 'add'){
-                jobInsert({
-                ...encodeObject(this.queryItem),
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                if (res.data.ErrorCode == 0) {
-                    this.chMsgbar({ success: true, msg: '資料新增成功' })
-                } else {
-                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                    this.$router.push({ path: '/error' })
-                }
-                }).catch( err => {
-                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料新增失敗' })
-                }).finally(() => {
-                this.isLoading = false
-                this._close()
-                })
-            }
-            } else {
-            this.chMsgbar({ success: true, msg: `${this.queryItemNull.join()}欄位尚未填寫` })
-            this.isLoading = false
-            }
         },
         addVendor() {
             if (!this.ipt.vendors.includes(this.vendorForm)) {

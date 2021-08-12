@@ -29,7 +29,13 @@
     <!-- <canvas ref="canvas" style="background-color: white;"
         v-show="show"
     ></canvas> -->
-    <chart v-if="chart.componentKey>1" :chartdata="chart.chartdata" :options="chart.options" :key="chart.componentKey"/>
+    <v-row >
+        <v-col cols="12" sm="3"/>
+        <v-col cols="12" sm="4">
+            <chart v-if="chart.componentKey>1" :chartdata="chart.chartdata" :options="chart.options" :key="chart.componentKey"/>
+        </v-col>
+        <v-col cols="12" sm="4"/>
+    </v-row>
     <v-btn
         dark
         class="my-8 btn-close"
@@ -53,6 +59,13 @@ export default {
         chart:{
             componentKey: 1,
             options: {
+                legend: {  // 上方的題示小色塊(又稱圖例，在 title 下方)
+                        // display: true,
+                        labels: {
+                        // This more specific font property overrides the global property
+                            fontSize: 18
+                        }
+                    },
                 scales: {  // 側邊訊息
                     yAxes: [{
                         display: false,  // 不顯示 Y 軸
@@ -66,9 +79,19 @@ export default {
                         bottom: 20,
                     }
                 }, 
-                legend: {  // 上方的題示小色塊(又稱圖例，在 title 下方)
-                    
+                plugins:{
+                    datalabels: {
+                        labels: {
+                            value: {
+                                font: {
+                                    size: 18
+                                }
+                            },
+                        }
+                    }
                 },
+                // legend: {  // 上方的題示小色塊(又稱圖例，在 title 下方)
+                // },
                 tooltips: {  // 圖表上的資訊題示
                     intersect: false,  // 滑鼠移到 x 軸上就顯示
                     callbacks: {

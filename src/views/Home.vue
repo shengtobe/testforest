@@ -35,7 +35,7 @@
                         <v-btn small dark fab class="btn-detail" v-if="!item.isRead" @click="personClick(item)">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                        <v-icon v-if="item.isRead">mdi-checkbox-marked-circle-outline</v-icon>
+                        <v-icon v-if="item.isRead" @click="personClick(item)">mdi-checkbox-marked-circle-outline</v-icon>
                     </template>
                     
                     <!-- 頁碼 -->
@@ -161,6 +161,7 @@ export default {
                     // this.tableItems = JSON.parse(res.data.order_list)
                     let tb = JSON.parse(res.data.order_list)
                     console.log("Manage 詢問個人資訊: ", tb)
+                    console.log("Manage 詢問個人資訊: ", tb.map(e=>e.MsgType))
                     // 個人訊息
                     let psnal = tb.map(item => ({
                         id: item.ModuleItemID,
@@ -177,6 +178,7 @@ export default {
                     psnal.forEach(element => {
                         element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
                         if(element.MsgType == 1){
+                            console.log("element.MsgType: ", element.MsgType);
                             this.tableItems.personal.push(element);
                         }
                         else{
@@ -245,10 +247,34 @@ export default {
                 this.chLoadingShow({ show: false})
         },
         redirect(item) {
-            console.log("item:::", item.InfoBelongMod)
+            console.log("item:::", item)
             //test
-            item.InfoBelongMod = '18';
+            // item.InfoBelongMod = '18';
             //
+            //改為已讀
+            fetchPersonalInfoRead({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                ModuleItemID: item.ModuleItemID,
+                InfoBelongMod: item.InfoBelongMod,
+                MsgType: item.MsgType,
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    console.log("首頁代辦事項已讀 item: ", item);
+                    console.log("首頁代辦事項已讀 res.data: ", res.data);
+                    console.log("首頁代辦事項已讀 this.tableItems.personal: ", this.tableItems.personal);
+                    // item.isRead = false
+                    // this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
+
+                    // setTimeout(() => {
+                    //     this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
+                    // }, 300)
+
+                }
+            }).catch( err => {
+                console.log(err)
+            }).finally(() => {
+            })
             if (confirm('確定要離開目前頁面至指定頁面操作?')) {
                 switch(item.InfoBelongMod){
                     case '1':
@@ -262,7 +288,8 @@ export default {
                         this.$router.push({ path: '/smis/car-harmdb/control-measures' })
                         break;
                     case '5':
-                        this.$router.push({ path: '/smis/car-safeinfo/info' })
+                        // this.$router.push({ path: '/smis/car-safeinfo/info' })
+                        this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
                         break;
                     case '6':
                         this.$router.push({ path: '/smis/safefile/meeting' })
@@ -326,8 +353,16 @@ export default {
                 MsgType: item.MsgType,
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("首頁個人資訊已讀 item: ", item);
+                    console.log("首頁個人資訊已讀 res.data: ", res.data);
+                    console.log("首頁個人資訊已讀 this.tableItems.personal: ", this.tableItems.personal);
                     // item.isRead = false
-                    this.tableItems.personal.find(item => item.id == item.ModuleItemID).isRead = true;
+                    this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
+
+                    setTimeout(() => {
+                        this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
+                    }, 300)
+
                 }
             }).catch( err => {
                 console.log(err)
@@ -336,6 +371,8 @@ export default {
         },
         // 轉換部門文字
         transferDepartTxt(val) {
+            console.log("departOptions: ", departOptions.map(e=>e.value));
+            console.log("val: ", val);
             return departOptions.find(item => item.value == val).text
         },
     },

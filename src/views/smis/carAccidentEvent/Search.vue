@@ -73,7 +73,6 @@
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>事故類型分類
-                <span class="red--text">*</span>
             </h3>
             <v-select clearable
                 v-model="ipt.evtType1"
@@ -83,8 +82,7 @@
             ></v-select>
         </v-col>
         <v-col cols="12" sm="6" md="3" v-if="ipt.evtType1!='其他'">
-            <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故類型
-            <span class="red--text">*</span></h3>
+            <h3 class="mt-1" ><v-icon class="mr-1 mb-1">mdi-chevron-right</v-icon>事故種類</h3>
             <v-select clearable
                 v-model="ipt.evtType2"
                 :items="evtTypeOpts"
@@ -217,7 +215,7 @@
                     </template> -->
                     
                     <template v-slot:item.type="{ item }">
-                        {{ evtTypeOpts.find(ele => ele.Code == item.AccidentType).Name.replace('率', '') }}
+                        {{ opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')}}
                     </template>
 
                     <template v-slot:item.hurtPeople="{ item }">
@@ -317,6 +315,7 @@ export default {
             start: false,
             end: false,
         },
+        evtTypeOptsForm: evtTypes, // 對照表事故類型
         evtTypeOpts: [],  // 事故類型
         locationOpts: locationOpts,  // 事故發生地點
         statusOpts: [  // 事故事件狀態下拉選單 (審核中有二個，故傳中文值讓後端判斷)
@@ -375,6 +374,8 @@ export default {
         },
         // 搜尋
         search() {
+            if(this.ipt.evtType1 == undefined) this.ipt.evtType1 = ''
+            if(this.ipt.evtType2 == undefined) this.ipt.evtType2 = ''
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
@@ -400,10 +401,9 @@ export default {
                     'CancelStatus',
                 ],
             }).then(res => {
-                console.log("go")
-                this.tableItems = JSON.parse(res.data.order_list)
-                console.log("tableItems", this.tableItems);
-                this.tableItems.forEach(element => {
+                this.tableItems = [...[]]
+                let tempTable = JSON.parse(res.data.order_list)
+                tempTable.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
                             element[ele] = '';
@@ -413,19 +413,37 @@ export default {
                     // if(element.AccidentType == '') element.AccidentType = 'Other'
 
                     // 組合發生地點文字 AccidentCode
-                    console.log("1 element.AccidentType: ", element.AccidentType);
+                    
                     let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
                     
                     if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {
                         findLocationText += ` (${element.LineK}K+${element.LineM}M)`  // 本線、祝山線、眠月線、水山線
-                        console.log("3 1 findLocationText", findLocationText);
                         
                     } else if(element.FindLine == 'other') {
                         findLocationText += ` (${element.FindLineOther})`  // 其他地點
-                        console.log("3 2 findLocationText", findLocationText);
                     }
-                    console.log("4 findLocationText", findLocationText);
+                    // console.log("4 findLocationText", findLocationText);
                     element.FindLine = findLocationText
+
+                    // console.log("5 element.AccidentType: ", element.AccidentType);
+                    // 事故類型篩選
+                    if(this.ipt.evtType1 == '' && this.ipt.evtType2 == ''){ // 無篩選
+                        this.tableItems.push(element)
+                    }
+                    else if(this.ipt.evtType1 != '' && this.ipt.evtType2 == ''){ // 篩選只選第一個
+                        let type1 = this.opsList.find(ele => ele.Code == element.AccidentType).Name.replace('率', '')
+                        type1 = type1.substr(0, type1.indexOf('-'))
+                        if(type1 == this.ipt.evtType1){
+                            this.tableItems.push(element)
+                        }
+                    }
+                    else{ // 篩選都有選
+                        let type2 = this.opsList.find(ele => ele.Code == element.AccidentType).Name.replace('率', '')
+                        if(type2 == this.ipt.evtType1 + '-' + this.ipt.evtType2){
+                            this.tableItems.push(element)
+                        }
+                    }
+                    // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                 });
                 //splice
                 // this.tableItems.splice(1, 3);
@@ -471,6 +489,7 @@ export default {
             if (res.data.ErrorCode == 0) {
                     //抽離 其他
                     this.opsList = JSON.parse(res.data.order_list)
+                    console.log("opsList: ", this.opsList);
                     let tempOps = this.opsList.map(e=>e.text)
                     tempOps.forEach(e => {
                         if(e.indexOf("-") >= 0){

@@ -313,11 +313,16 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-google-assistant</v-icon>傷害部位
             </h3>
-            <v-select
+            <v-text-field
+                v-model.trim="ipt.injurySite"
+                solo
+                placeholder="請輸入傷害部位"
+            ></v-text-field>
+            <!-- <v-select
                 v-model="ipt.injurySite"
                 :items="opts.injurySite"
                 solo
-            ></v-select>
+            ></v-select> -->
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -598,9 +603,8 @@
 
         <v-col cols="12" class="text-center mb-8">
             <v-btn dark class="mr-4 btn-close white--text"
-                v-if="isEdit"
-                :to="`/smis/jobsafety/disaster-survey/${this.id}/show`"
-            >回上層</v-btn>
+                @click="pressBlack"
+            >{{(isEdit)?'回上層':'回管理頁面'}}</v-btn>
 
             <v-btn
                 class="btn-add white--text"
@@ -680,7 +684,7 @@ export default {
             lng: '',  // 發生地點(經度)
             accidentType: 1,  // 事故類別
             accidentResult: 1,  // 事故結果
-            injurySite: 1,  // 傷害部位
+            injurySite: '',  // 傷害部位
             disasterType: 1,  // 災害類型
             vehicleLv1: '',  // 致傷媒介物-第一層
             vehicle: '',  // 致傷媒介物-第二層
@@ -747,7 +751,7 @@ export default {
                 { text: '失能傷害', value: "失能傷害" },
                 { text: '死亡', value: "死亡" },
             ],
-            injurySite: injurySiteOpts,  // 傷害部位
+            injurySite: '',  // 傷害部位
             disasterType: disasterTypeOpts,  // 災害類型,
             vehicleLv1: [],  // 致傷媒介物-第一層
             vehicle: [],  // 致傷媒介物-第二層
@@ -778,13 +782,12 @@ export default {
         $route(to, from) {
             // … 
         },
-        // 致傷媒介物-第二層下拉選單
-        // 'ipt.vehicleLv1': function(val) {
-        //     if (val != '') {
-        //         this.opts.vehicle = vehicleOpts[val]
-        //         this.ipt.vehicle = this.opts.vehicle[1]  // 因為第1個選項不可用，所以設為第2個
-        //     }
-        // },
+        "ipt.name": function(){
+            if(this.ipt.name == this.userData.UserName){
+                this.ipt.name = '';
+                this.chMsgbar({ success: false, msg: '罹災者無法無法自己填寫' })
+            }
+        },
         
     },
     methods: {
@@ -795,6 +798,14 @@ export default {
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
+        pressBlack(){
+            if(this.isEdit){
+                this.$router.push({ path: `/smis/jobsafety/disaster-survey/${this.id}/show` })
+            }
+            else{
+                this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+            }
+        },
         // 初始化資料
         initData() {
             // 初始化表單

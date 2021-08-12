@@ -223,12 +223,12 @@
 
             <!-- 表格最上面插入 toolbar 及 dialog -->
             <template v-slot:top>
-                <v-dialog v-model="jobHour.dialogShow" max-width="600px">
+                <v-dialog v-model="jobHour.dialogShow" max-width="600px" >
                     <v-card>
                         <v-card-title class="btn-expansion white--text px-4 py-1">
                             {{ jobHour.titleName }}
                             <v-spacer></v-spacer>
-                            <v-btn dark fab small text @click="jobHour.dialogShow = false" class="mr-n2">
+                            <v-btn dark fab small text @click="jobHour.dialogShow = false, eqShow = false" class="mr-n2">
                                 <v-icon>mdi-close</v-icon>
                             </v-btn>
                         </v-card-title>
@@ -273,32 +273,72 @@
                                             solo
                                         ></v-select>
                                     </v-col>
-                                    <v-col cols="12" sm="12" v-if="true">
+                                    <v-col cols="12" sm="12" v-if="eqShow">
                                         <h3 class="mb-5">
                                             <v-icon class="mr-1 mb-1">mdi-format-list-bulleted</v-icon>工作項
                                         </h3>
-                                        <EquipRepairCode :key="0" :toLv="5" :nowEqCode="nowEqCode" :disableToLv="2" @getWorkName="getTempCode" />
+                                        <EquipRepairCode :key="0" :toLv="5" :rtnStartLv="5" :nowEqCode="nowEqCode" :nowWorkCode="nowWorkCode" :disableToLv="2" @getWorkName="getTempName" @getEqCode="getEqCode"/>
                                     </v-col>
-
-
                                     <v-col cols="12" sm="12">
                                         <h3 class="mb-1">
                                             <v-icon class="mr-1 mb-1">mdi-calculator</v-icon>工作量(hr)
                                             <span class="red--text">*</span>
                                         </h3>
+                                        <v-btn class="btn-clear black--text mb-1" color="success" elevation="4" @click="hr1">1</v-btn>
+                                        <v-btn class="btn-clear black--text mb-1 ml-1" color="success" elevation="4" @click="hr2">2</v-btn>
+                                        <v-btn class="btn-clear black--text mb-1 ml-1" color="success" elevation="4" @click="hr3">3</v-btn>
+                                        <v-btn class="btn-clear black--text mb-1 ml-1" color="success" elevation="4" @click="hr4">4</v-btn>
+                                        <v-btn class="btn-clear black--text mb-1 ml-1" color="success" elevation="4" @click="hr8">8</v-btn>
                                         <v-text-field
                                             v-model.trim.number="jobForm.Count"
                                             solo type="number"
+                                            suffix="小時"
                                             :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
                                         ></v-text-field>
                                     </v-col>
+                                    <v-col>
+                                        <v-card
+                                            class="d-flex justify-center mb-6"
+                                            flat
+                                            >
+                                            <v-btn class="btn-add" color="success" elevation="4" @click="addWork">加入工作</v-btn>
+                                        </v-card>
+                                    </v-col>
+                                    <!-- <v-card class="d-flex justify-center mb-6">
+                                        <v-btn class="btn-add" color="success" elevation="4" @click="saveJob">加入工作</v-btn>
+                                    </v-card> -->
+                                    <!-- 已選工作項 -->
+                                    <v-col cols="12">
+                                        <h3 class="mb-1 mt-n3">
+                                            <v-icon class="mr-1 mb-1">mdi-briefcase-check</v-icon>已選工作
+                                        </h3>
+
+                                        <v-chip
+                                            v-for="(item, idx) in selectWorkArr"
+                                            :key="item"
+                                            class="mr-3 mt-2"
+                                            label
+                                            color="green dark-2"
+                                            dark
+                                            large
+                                        >
+                                            {{ item }}
+                                            <v-icon right
+                                                @click="rmSelectWork(idx)"
+                                            >mdi-close-circle</v-icon>
+                                        </v-chip>
+                                        
+                                    </v-col>
+
+
+                                    
                                 </v-row>
                             </v-form>
                         </v-card-text>
                         
                         <v-card-actions class="px-5 pb-5">
                             <v-spacer></v-spacer>
-                            <v-btn class="mr-2 btn-clear" elevation="4" @click="jobHour.dialogShow = false">取消</v-btn>
+                            <v-btn class="mr-2 btn-clear" elevation="4" @click="jobHour.dialogShow = false, eqShow = false">取消</v-btn>
                             <v-btn class="btn-add" color="success" elevation="4" @click="saveJob">送出</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -399,10 +439,17 @@ import { maintainOrder, fetchJobName, withdrawOrder } from '@/apis/workList/main
 export default {
     props: ['itemData'],
     data: () => ({
-        nowEqCode: '', //編輯時 預設帶入的combineCode
+        nowEqCode: '', //編輯時 預設帶入的combineCode 
+        nowWorkCode: '', //編輯時 預設帶入的工作項
         combineCode: '', //合併後的設備編碼
         Lv5Name: '', //工作項中文
+        Lv5Code: '', //工作項編碼
+        initCode: '', //最初始的code
+        selectWorkArr0: [],
+        selectWorkArr: [],
+        selectWorkArr_eqCode: [],
         isShowBtn: false,
+        eqShow: false,
         done: false,  // 是否完成頁面操作
         valid: false,  // 表單是否驗證欄位 (demo先取消掉)
         isLoading: false,  // 是否讀取中
@@ -455,6 +502,7 @@ export default {
             JobCode: '',
             JobName: '',
             Count: 1, 
+            eqCode: '',
         },
         jobNameIpts: [],  // 工作項下拉選單
         jobFormIsEdit: false,  // 工時表單是否為編輯模式
@@ -469,12 +517,51 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
     },
+    watch: {
+        // ------- 切換選項時，向後端抓下一層的報修碼 --------
+        // 系統
+        'jobHour.dialogShow': function(newVal) {
+            if (newVal == false) {
+                    console.log("v: ", newVal);
+                    this.eqShow = newVal
+                }
+        },
+    },
     methods: {
         //抓取未確認的設備標示編碼
-        getTempCode(value) {
+        getTempName(value) {
+            console.log("this.Lv5Name: ", value);
             this.Lv5Name = value
-            console.log('Lv5Name: ', this.Lv5Name);
         },
+        getEqCode(value){
+            console.log("this.Lv5Code: ", value);
+            this.Lv5Code = value
+        },
+        addWork(){
+            if(this.Lv5Name == '') return
+            let v = this.Lv5Name + ' - ' + this.jobForm.Count + 'hr'
+            console.log("this.Lv5Code: ", this.Lv5Code);
+            console.log("this.Lv5Name: ", this.Lv5Name);
+            if(this.selectWorkArr0.includes(this.Lv5Name) == false){
+                this.selectWorkArr0.push(this.Lv5Name)
+                this.selectWorkArr_eqCode.push(this.Lv5Code)
+                this.selectWorkArr.push(v)
+            }
+            else{
+                let rmIdx = this.selectWorkArr0.indexOf(this.Lv5Name)
+                console.log("rmIdx = ", rmIdx);
+                this.selectWorkArr.splice(rmIdx, 1)
+                this.selectWorkArr0.splice(rmIdx, 1)
+                this.selectWorkArr0.push(this.Lv5Name)
+                this.selectWorkArr_eqCode.push(this.Lv5Code)
+                this.selectWorkArr.push(v)
+            }
+        },
+        hr1(){ this.jobForm.Count = 1},
+        hr2(){ this.jobForm.Count = 2},
+        hr3(){ this.jobForm.Count = 3},
+        hr4(){ this.jobForm.Count = 4},
+        hr8(){ this.jobForm.Count = 8},
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -494,8 +581,8 @@ export default {
             console.log("codearr: ", codearr);
             codearr[2] = ''
             codearr[3] = ''
-            
-            this.nowEqCode = codearr.join('-') + '-'
+            this.initCode = codearr.join('-') + '-'
+            this.nowEqCode = this.initCode
             console.log("this.nowEqCode: ", this.nowEqCode);
             // this.nowEqCode = obj.MaintainCode
 
@@ -516,6 +603,7 @@ export default {
                 JobCode: '',
                 JobName: '',
                 Count: 1, 
+                eqCode: '',
             }))
             console.log("this.jobHour.items: ", this.jobHour.items)
 
@@ -560,6 +648,7 @@ export default {
         },
         // 送出
         save() {
+            console.log("this.jobHour.items: ", this.jobHour.items);
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
                     this.chLoadingShow({show:true})
@@ -601,49 +690,113 @@ export default {
         },
         // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
         setJobHour(isEdit, item) {
+            this.selectWorkArr = [...[]]
+            this.eqShow = false
             if (!isEdit) {
                 // 新增時
                 this.jobHour.isEdit = false
                 this.jobForm = { ...this.defaultJobForm }
                 this.jobHour.titleName = '新增資料'
+                this.nowEqCode = this.initCode
             } else {
                 // 編輯時
                 this.jobHour.isEdit = true
                 this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
                 this.jobForm = { ...item }  // 現有值帶入表單
+                console.log("this.jobForm: ", this.jobForm);
                 this.jobHour.titleName = `編輯資料 - ${item.PeopleName}`
+                this.nowWorkCode = this.jobForm.JobCode
+                console.log("this.nowWorkCode: ", this.nowWorkCode);
+                console.log("this.jobForm.eqCode: ", this.jobForm.eqCode);
+                if(this.jobForm.eqCode != ''){
+                    this.nowEqCode = this.jobForm.eqCode
+                    console.log("this.nowEqCode: ", this.nowEqCode);
+                }
+                else{
+                    this.nowEqCode = this.initCode
+                }
+                if(this.jobForm.JobName != ''){
+                    this.selectWorkArr.push(`${this.jobForm.JobName}(${this.jobForm.JobCode}) - ${this.jobForm.Count}hr`)
+                    // this.selectWorkArr.push(this.jobForm.JobName + '(' + this.jobForm.JobCode + ') - ' + this.jobForm.Count + "hr")
+                }
             }
             this.jobHour.dialogShow = true
+            this.eqShow = true
         },
         // 刪除工作項
         del(item) {
             let idx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
             this.jobHour.items.splice(idx, 1)
         },
+        //刪除已選工作項
+        rmSelectWork(idx) {
+            this.selectWorkArr.splice(idx, 1)
+            this.selectWorkArr0.splice(idx, 1)
+            this.selectWorkArr_eqCode.splice(idx, 1)
+        },
         // 儲存工作表單
         saveJob() {
+            if(this.Lv5Name == '') return
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
             if(this.Lv5Name != '' && this.Lv5Name != null){
                 // this.jobForm.JobName = this.jobNameIpts.find(item => item.value == this.jobForm.JobCode).text
-                let len = this.Lv5Name.length
                 this.jobForm.JobName = this.Lv5Name.substr(0, this.Lv5Name.length - 4)
             }
             else{
                 this.jobForm.JobName = ''
             }
-            
-            if (this.jobHour.isEdit == false) {
+            if (this.jobHour.isEdit == false) { 
+                // +新增
+                let tempJobHour = []
+                let i = 0
+                console.log("新增時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
+                this.selectWorkArr.forEach(work => {
+                    console.log("work: ", work);
+                    let tempJobForm = {...this.jobForm}
+                    // 反查姓名
+                    tempJobForm.PeopleName = this.allLicenseMembers.find(item => item.value == tempJobForm.PeopleId).text
+                    tempJobForm.JobName = work.substr(0, work.indexOf('('))
+                    tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
+                    tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
+                    tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
+                    console.log("新增 tempJobForm: ", tempJobForm);
+                    tempJobHour.push(tempJobForm)
+                    tempJobForm = {}
+                    i++
+                });
+                this.jobHour.items.push(...tempJobHour)
                 // 反查姓名
-                this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
+                // this.jobForm.PeopleName = this.allLicenseMembers.find(item => item.value == this.jobForm.PeopleId).text
                 // 新增時 (照林鐵人員要求，新增後不關閉視窗)
-                this.jobHour.items.push(this.jobForm)
+                // this.jobHour.items.push(this.jobForm)
                 this.jobForm = { ...this.defaultJobForm }
+                this.jobHour.dialogShow = false
             } else {
                 // 編輯時
-                Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
+                let tempJobHour = []
+                let i = 0
+                console.log("編輯時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
+                this.selectWorkArr.forEach(work => {
+                    console.log("work: ", work);
+                    console.log("this.jobForm: ", this.jobForm);
+                    let tempJobForm = {...this.jobForm}
+                    tempJobForm.JobName = work.substr(0, work.indexOf('('))
+                    tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
+                    tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
+                    tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
+                    console.log("編輯 tempJobForm: ", tempJobForm);
+                    tempJobHour.push(tempJobForm)
+                    tempJobForm = {}
+                    i++
+                });
+                this.jobHour.items.splice(this.jobHour.editIdx + 1, 0, ...tempJobHour) //先插入點擊編輯的那行後面
+                this.jobHour.items.splice(this.jobHour.editIdx, 1) // 再刪除點擊編輯的那行
+                // Object.assign(this.jobHour.items[this.jobHour.editIdx], this.jobForm)
                 this.jobHour.dialogShow = false
             }
+            this.selectWorkArr = [...[]]
+            this.eqShow = false
         },
     },
     created() {

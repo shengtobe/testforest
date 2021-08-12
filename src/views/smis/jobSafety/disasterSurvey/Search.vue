@@ -243,9 +243,10 @@ export default {
             searchData({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
+                IsFirstLoad: false,
                 KeyName: 'SMS_JobAccidentSurvey',  // DB table
                 KeyItem: [
-                    // { tableColumn: 'DeviceDepart', columnValue: this.controlSearch.depart },  // 管控單位
+                    { tableColumn: 'AccidentCode', columnValue: this.searchIpt.number },  //
                     // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料
@@ -289,6 +290,7 @@ export default {
     },
     created() {
         this.searchIpt = { ...this.searchDefault }
+        this.search()
     },
 }
 </script>

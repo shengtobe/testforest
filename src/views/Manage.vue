@@ -25,7 +25,7 @@
     <v-toolbar-title class="shadowText align-center font-weight-bold">
         <div>
             <!-- <img style="vertical-align: sub;width:1.5rem" src="@/../public/images/ROC_Forestry_Bureau_Seal.svg"/> -->
-            <img style="vertical-align: sub;width:1.5rem" src="@/../public/images/forstRailwayLOGO.png"/>
+            <img style="vertical-align: sub;width:1.5rem" src="@/../public/images/newLogo2.png"/>
             林鐵資訊管理系統
         </div>
     </v-toolbar-title>
@@ -68,7 +68,7 @@
                                     <strong class="black--text">設備維修及保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修養護科類工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修、養護科工單</v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/serve">車站營運設備維修工單</v-list-item>
                                 <v-divider></v-divider>

@@ -26,6 +26,44 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
+
+                    <template v-slot:item.Price="{ item }">
+                        <span class="red--text font-weight-black">{{ item.Price }}</span>
+                        <v-btn small dark fab color="info darken-1 btn-modify"
+                            @click="showMoneyDialog(item)"
+                            class="ml-4"
+                        >
+                            <v-icon dark>mdi-pen</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <template v-slot:footer>
+                        <v-divider></v-divider>
+
+                        <p class="py-2 text-center">
+                            總工時： <span class="red--text">{{ new Intl.NumberFormat().format(totalHourCount) }}</span>
+                        </p>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+        <v-col cols="12" class="mt-8">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-cash-usd</v-icon>費用統計
+            </h3>
+            <v-card flat>
+                <v-data-table
+                    :headers="headers_fee"
+                    :items="tableItems_fee"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
                     <!-- 表格最上面插入 toolbar 及 dialog -->
                     <template v-slot:top>
                         <v-dialog v-model="moneyDialog" max-width="450px">
@@ -75,12 +113,13 @@
                         <v-divider></v-divider>
 
                         <p class="py-2 text-center">
-                            總工時： <span class="red--text">{{ new Intl.NumberFormat().format(totalMoney) }}</span>
+                            總費用： <span class="red--text">{{ new Intl.NumberFormat().format(totalMoney) }}</span>
                         </p>
                     </template>
                 </v-data-table>
             </v-card>
         </v-col>
+
     </v-row>
 
     <v-form
@@ -92,14 +131,12 @@
             <v-col cols="12" sm="6" md="3">
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-clock</v-icon>總工時
-                    <span class="red--text">*</span>
+                    <!-- <span class="red--text">*</span> -->
                 </h3>
                 <v-text-field
-                    hide-details
-                    v-model.trim="totalHour"
+                    hide-details readonly
+                    v-model.trim="totalHourCount"
                     solo type="number"
-                    placeholder="請輸入總工時，例如：5"
-                    :rules="[v => /^\d+$/.test(v) || '請輸入整數']"
                 ></v-text-field>
             </v-col>
 
@@ -585,11 +622,16 @@ export default {
         reason: '',  // 退回或徹銷原因
         dialogReturnMsg: '',  // 退回或徹銷時成功的訊息 (demo 時用)
         tableItems: [],  // 工時表格資料
+        tableItems_fee: [],  // 費用表格資料
         headers: [  // 工時標題
             { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
+        headers_fee: [  // 工時標題
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         jobPrice: '', // 工作項金額
@@ -686,8 +728,12 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
         }),
         // 工時統計的總金額
+        totalHourCount() {
+            return this.tableItems.reduce((a,b)=>a + +b.Count, 0)
+        },
+        // 工時統計的總金額
         totalMoney() {
-            return this.tableItems.reduce((a,b)=>a + b.Count * b.Price, 0)
+            return this.tableItems.reduce((a,b)=>a + +b.Price, 0)
         }
         
     },
@@ -726,6 +772,7 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
+            this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
 
             // 要求 平交道項目清單
             railroadrepairList({
@@ -829,7 +876,7 @@ export default {
                 acceptanceOrder({
                     WorkOrderID: this.workNumber,  // 工單編號
                     TotalSpent: this.totalMoney,  // 總金額
-                    TotalWorkTime: this.totalHour,  // 總工時
+                    TotalWorkTime: this.totalHourCount,  // 總工時
                     WorkTimeData: this.tableItems,  // 工時統計資料
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id

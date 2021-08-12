@@ -7,7 +7,7 @@
 -->
 <template>
   <div>
-    <v-chip v-for="(item) in PeopleList" :key="'P_'+item.UserId" close @click:close="deleteSelectPeople(item.UserId)" class="ma-1"> {{ item.UserName }} </v-chip>
+    <v-chip label color="green darken-1" dark large v-for="(item) in PeopleList" :key="'P_'+item.UserId" close @click:close="deleteSelectPeople(item.UserId)" class="ma-1"> {{ item.UserName }} </v-chip>
     <v-btn
       class="mx-2 btn-add"
       fab

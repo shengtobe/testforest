@@ -592,8 +592,6 @@ export default {
         },
         // 送出
         save() {
-            console.log("this.ipt.recipients: ", this.ipt.recipients);
-            return
             if (this.$refs.form.validate()){
                 if (this.$route.params.id == undefined) {
                     if(this.ipt.recipients == ''){
