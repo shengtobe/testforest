@@ -29,23 +29,26 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file</v-icon>機車型號
             </h3>
-            <v-row no-gutters>
-                <v-col cols="5" class="mr-2">
-                    <v-select
-                        v-model="searchIpt.type"
-                        :items="['DL', 'SL']"
-                        solo
-                    ></v-select>
-                </v-col>
-
-                <v-col cols="6">
-                    <v-text-field
-                        v-model.trim="searchIpt.num"
-                        solo
-                        placeholder="例：47"
-                    ></v-text-field>
-                </v-col>
-            </v-row>
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchIpt.MaintainCode_Loc" />
+            <v-dialog v-model="eqCode" max-width="700px">
+                <v-card class="theme-card">
+                    <v-card-title class="px-4 py-1">
+                        機車型號
+                        <v-spacer></v-spacer>
+                        <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <div class="px-4 py-3">
+                        <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" />
+                    </div>
+                    <v-card-actions class="px-5 pb-5">
+                        <v-spacer></v-spacer>
+                        <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                        <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-col>
 
         <v-col cols="12" class="mb-4">
@@ -111,13 +114,13 @@
 
                     <template v-slot:item.action="{ item }">
                         <v-btn dark fab small class="btn-modify mr-2"
-                            @click="edit(item)"
+                            @click="edit(item.RPFlowNo)"
                         >
                             <v-icon>mdi-pen</v-icon>
                         </v-btn>
 
                         <v-btn dark fab small class="btn-delete"
-                            @click="del(item.id)"
+                            @click="preDel(item.RPFlowNo)"
                         >
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
@@ -151,12 +154,12 @@
                 <v-row no-gutters>
                     <v-col cols="12" sm="6">
                         <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
-                        本日行駛公里： {{ content.todayKm }}
+                        本日行駛公里： {{ content.Km }}
                     </v-col>
 
                     <v-col cols="12" sm="6">
-                        <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
-                        累計公里數： {{ content.totalKm }}
+                        <!-- <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
+                        累計公里數： {{ content.totalKm }} -->
                     </v-col>
                 
                     <v-col cols="12">
@@ -165,12 +168,12 @@
 
                     <v-col cols="12" sm="6">
                         <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
-                        發電機日工時： {{ content.todayHour }}
+                        發電機日工時： {{ content.HourDay }}
                     </v-col>
 
                     <v-col cols="12" sm="6">
                         <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
-                        發電機累計工時： {{ content.totalHour }}
+                        發電機累計工時： {{ content.Hours }}
                     </v-col>
 
                     <v-col cols="12">
@@ -183,23 +186,23 @@
                     </v-col>
 
                     <v-col cols="12" sm="4">
-                        柴油： {{ content.useOilDiesel }}
+                        柴油： {{ content.DieselOil }}
                     </v-col>
 
                     <v-col cols="12" sm="4">
-                        引擎機油： {{ content.useOilEngine }}
+                        引擎機油： {{ content.EngineOil }}
                     </v-col>
 
                     <v-col cols="12" sm="4">
-                        TC機油： {{ content.useOilTC }}
+                        TC機油： {{ content.TCOil }}
                     </v-col>
 
                     <v-col cols="12" sm="4">
-                        風泵： {{ content.useOilPump }}
+                        風泵： {{ content.WindMercury }}
                     </v-col>
 
                     <v-col cols="12" sm="4">
-                        其他 {{ content.useOilOther }}
+                        其他 {{ content.Other }}
                     </v-col>
                     
                     <v-col cols="12">
@@ -209,242 +212,60 @@
                     <v-col cols="12">
                         <v-icon class="mr-1 mb-1">mdi-pen</v-icon>
                         保養記事
-                        <p>{{ content.note }}</p>
+                        <p>{{ content.Memo }}</p>
                     </v-col>
                 </v-row>
             </div>
         </v-card>
     </v-dialog>
 
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290" >
+      <v-card class="theme-del-card">
+        <v-card-title class="red white--text px-4 py-1 headline"
+          >確認是否刪除?</v-card-title
+        >
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="btn-close white--text" @click="dialogDel = false">取消</v-btn>
+          <v-btn class="btn-delete white--text" @click="del"
+            >刪除</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
-        <v-card class="theme-card">
-            <v-card-title class=" white--text px-4 py-1">
-                {{ dialogTitle }}
-                <v-spacer></v-spacer>
-                <v-btn dark fab small text @click="dialog = false" class="mr-n2">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-            </v-card-title>
-
-            <v-card-text class="px-6 py-4">
-                <p class="label-warning">
-                    <v-icon class="label-warning mb-1">mdi-alert-decagram</v-icon>
-                    注意：一般員工僅能編修當月與上個月之資料
-                </p>
-                <!-- <v-form
-                    ref="setjobform"
-                    v-model="jobFormValid"
-                    lazy-validation
-                > -->
-                    <v-row>
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-file</v-icon>機車型號
-                            </h3>
-                            <v-select
-                                v-model="ipt.type"
-                                :items="['DL', 'SL']"
-                                solo
-                            ></v-select>
-                        </v-col>
-
-                        <v-col cols="12" sm="4" class="mt-n8 mt-sm-8">
-                            <v-text-field
-                                v-model.trim="ipt.num"
-                                solo
-                                placeholder="例：47"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期
-                            </h3>
-                            <v-menu
-                                v-model="dateMenuShow"
-                                :close-on-content-click="false"
-                                transition="scale-transition"
-                                max-width="290px"
-                                min-width="290px"
-                            >
-                                <template v-slot:activator="{ on }">
-                                    <v-text-field
-                                        v-model.trim="ipt.date"
-                                        solo
-                                        v-on="on"
-                                        readonly
-                                    ></v-text-field>
-                                </template>
-                                <v-date-picker
-                                    color="purple"
-                                    v-model="ipt.date"
-                                    @input="dateMenuShow = false"
-                                    locale="zh-tw"
-                                ></v-date-picker>
-                            </v-menu>
-                        </v-col>
-
-                        <v-col cols="12" sm="8">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>司機員
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.drivers"
-                                solo
-                                placeholder="例：王小明、陳小華"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-train</v-icon>列車次
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.number"
-                                solo
-                                placeholder="例：1-2"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>本日行駛公里
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.todayKm"
-                                solo
-                                placeholder="例：20.3"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>累計公里數
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.totalKm"
-                                solo
-                                placeholder="例：11300.9"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機日工時
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.todayHour"
-                                solo
-                                placeholder="例：8"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機累計工時
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.totalHour"
-                                solo
-                                placeholder="例：2100"
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (柴油)
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.useOilDiesel"
-                                solo
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (引擎機油)
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.useOilEngine"
-                                solo
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (TC機油)
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.useOilTC"
-                                solo
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (風泵)
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.useOilPump"
-                                solo
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12" sm="4">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (其他)
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.useOilOther"
-                                solo
-                            ></v-text-field>
-                        </v-col>
-
-                        <v-col cols="12">
-                            <h3 class="mb-1">
-                                <v-icon class="mr-1 mb-1">mdi-note</v-icon>保養記事
-                            </h3>
-                            <v-text-field
-                                v-model.trim="ipt.note"
-                                solo
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                <!-- </v-form> -->
-            </v-card-text>
-            
-            <v-card-actions class="px-5 pb-5">
-                <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4"  :loading="isLoading" @click="dialog = false">取消</v-btn>
-                <v-btn color="success" elevation="4"  :loading="isLoading" @click="save">送出</v-btn>
-            </v-card-actions>
-        </v-card>
+        <Form :flowNo="itemIndex" :key="'MotoForm_'+formKey" @search="search" @close="dialog=false"/>
     </v-dialog>
 </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
+import { getNowFullTime, decodeObject, unique } from "@/assets/js/commonFun";
 import { monthOptions } from '@/assets/js/dateTimeOption'
-
+import EquipCode from '@/components/EquipRepairCode'
+import Form from './MotoDynamoForm'
+import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve"
 export default {
     data: () => ({
         searchIpt: {  // 搜尋欄位
-            year: new Date().getFullYear()-1911,  // 民國年
+            year: new Date().getFullYear(),
             month: '',  // 月
-            type: 'DL',  // 類型
-            num: '',  // 號碼
+            MaintainCode_System: 'RST',  // 類型
+            MaintainCode_Loc: ''
         },
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '型號', value: 'motoId', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '司機員', value: 'drivers', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '行駛區間', value: 'locations', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '列車次', value: 'number', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '型號', value: 'MotoId', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '日期', value: 'CheckDay', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '司機員', value: 'Driver', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '行駛區間', value: 'KmRecord', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '列車次', value: 'TrainNo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '詳細資訊', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
@@ -453,37 +274,39 @@ export default {
             { text: '不限', value: '' },
             ...monthOptions,
         ],
+        formKey:0,
         dialog: false,  // dialog 是否顯示
+        dialogDel: false,
+        RPFlowNo: 0,
         isLoading: false,  // 是否讀取中
         itemIndex: -1,  // 作用中的物件索引值 (小於0為新增的情況)
-        ipt: {},  // dialog 欄位
-        defaultIpt: {  // dialog 欄位預設值
-            type: 'DL',
-            num: '',
-            date: new Date().toISOString().substr(0, 10),  // 日期
-            drivers: '',  // 司機員
-            locations: '',  // 行駛區間
-            number: '',  // 列車次
-            todayKm: '',  // 本日行駛公里
-            totalKm: '',  // 累計公里數
-            todayHour: '',  // 發電機日工時
-            totalHour: '',  // 發電機累計工時
-            useOilDiesel: 0,  // 耗用油量 (柴油)
-            useOilEngine: 0,// 耗用油量 (引擎機油)
-            useOilTC: 0,  // 耗用油量 (TC機油)
-            useOilPump: 0,  // 耗用油量 (風泵)
-            useOilOther: 0,  // 耗用油量 (其他)
-            note: '',  // 保養記事
-        },
-        dateMenuShow: false,  // 日曆是否顯示
         contentShow: false,  // 詳細內容 dialog 是否顯示
+        eqCode: false,
         content: {},  // 詳細內容欄位
+        preSetEqcode: '',
     }),
-    components: { Pagination },  // 頁碼
+    components: { 
+        Pagination,     // 頁碼
+        EquipCode,
+        Form
+    },
     computed: {
+        ...mapState("user", {
+            userData: (state) => state.userData, // 使用者基本資料
+        }),
         dialogTitle () {
             return this.itemIndex === -1 ? '新增資料' : '編輯資料'
         },
+        com_equipCode: {
+            get: function() {
+                return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+            },
+            set: function(value) {
+                let splitArr = value.split('-')
+                this.searchIpt.MaintainCode_System = splitArr[0]
+                this.searchIpt.MaintainCode_Loc = splitArr[1]
+            }
+        }
     },
     methods: {
         ...mapActions('system', [
@@ -494,108 +317,153 @@ export default {
         search() {
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
-
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: '111',
-                        type: 'DL',  // 機車類型
-                        num: '47',  // 機車號碼
-                        date: '2019-05-01',  // 日期
-                        drivers: '林國煌 郭泓志',  // 司機員
-                        locations: '北嘉+嘉北',  // 行駛區間
-                        number: '1-2',  // 列車次
-                        todayKm: 113.8,  // 本日行駛公里
-                        totalKm: 53175.8,  // 累計公里數
-                        todayHour: 7,  // 發電機日工時
-                        totalHour: 5218,  // 發電機累計工時
-                        useOilDiesel: 300,  // 耗用油量 (柴油)
-                        useOilEngine: 0,// 耗用油量 (引擎機油)
-                        useOilTC: 0,  // 耗用油量 (TC機油)
-                        useOilPump: 0,  // 耗用油量 (風泵)
-                        useOilOther: 0,  // 耗用油量 (其他)
-                        note: '保養說明文字保養說明文字保養說明文字',  // 保養記事
-                    },
-                    {
-                        id: '222',
-                        type: 'DL',
-                        num: '47',
-                        date: '2019-05-02',
-                        drivers: '郭泓志 林國煌 江明輝',
-                        locations: '北嘉+嘉北',
-                        number: '211-2',
-                        todayKm: 113.8,
-                        totalKm: 53289.6,
-                        todayHour: 9,
-                        totalHour: 5227,
-                        useOilDiesel: 300,
-                        useOilEngine: 0,
-                        useOilTC: 0,
-                        useOilPump: 0,
-                        useOilOther: 0,
-                        note: '',
-                    },
-                ]
+            let sDate
+            let eDate
+            if(this.searchIpt.month != ''){
+                sDate = new Date(this.searchIpt.year + '-' + this.searchIpt.month)
+                eDate = new Date(this.searchIpt.year + '-' + this.searchIpt.month)
+                eDate.setMonth(eDate.getMonth()+1)
+                eDate.setDate(eDate.getDate()-1)
+            } else {
+                sDate = new Date(this.searchIpt.year + '-01')
+                eDate = new Date(this.searchIpt.year+1 + '-01')
+                eDate.setDate(eDate.getDate()-1)
+            }
+            let keyItem = []
+            keyItem.push({ Column: "StartDayVlaue", Value: sDate.getFullYear()+'-'+(sDate.getMonth()+1)+'-'+sDate.getDate() })
+            keyItem.push({ Column: "EndDayVlaue", Value: eDate.getFullYear()+'-'+(eDate.getMonth()+1)+'-'+eDate.getDate() })
+            keyItem.push({ Column: "DepartCode", Value: this.userData.DeptList[0].DeptId })
+            keyItem.push({ Column: "MaintainCode_System", Value: this.searchIpt.MaintainCode_System })
+            keyItem.push({ Column: "MaintainCode_Loc", Value: this.searchIpt.MaintainCode_Loc })
+            this.tableItems = []
+            fetchFormOrderList({
+                ClientReqTime: getNowFullTime(),
+                OperatorID: this.userData.UserId,
+                KeyName: 'RP066',
+                KeyItem: keyItem,
+                QyName: [
+                    "RPFlowNo",
+                    "ID",
+                    "Name",
+                    "CheckDay",
+                    "CheckStatus",
+                    "MaintainCode_System",  //設備報修碼(系統)
+                    "MaintainCode_Loc", //設備報修碼(位置)
+                    "Driver",   //司機員
+                    "KmRecord", //行駛區間
+                    "Km",   //本日行駛公里數
+                    "HourDay",  //發電機日工時
+                    "Hours",    //發電機累計工時
+                    "DieselOil",    //柴油
+                    "EngineOil",    //引擎機油
+                    "TCOil",    //TC機油
+                    "WindMercury",  //風汞
+                    "Other",    //其他
+                    "TrainNo",  //列車次
+                    "Memo", //保養記事
+                ],
+            }).then(res => {
+                if(res.data.ErrorCode==0 && res.data.DT!="[]"){
+                    let DT = decodeObject(unique(JSON.parse(res.data.DT)))
+                    this.tableItems = DT.map(e=>({
+                        RPFlowNo: e.RPFlowNo,
+                        ID: e.ID,
+                        Name: e.Name,
+                        CheckDay: e.CheckDay,
+                        CheckStatus: e.CheckStatus,
+                        MotoId: e.MaintainCode_System+'-'+e.MaintainCode_Loc,
+                        Driver: e.Driver,
+                        KmRecord: e.KmRecord,
+                        Km: e.Km,
+                        HourDay: e.HourDay,
+                        Hours: e.Hours,
+                        DieselOil: e.DieselOil,
+                        EngineOil: e.EngineOil,
+                        TCOil: e.TCOil,
+                        WindMercury: e.WindMercury,
+                        Other: e.Other,
+                        TrainNo: e.TrainNo,
+                        Memo: e.Memo,
+                    }))
+                } else {
+                   if(res.data.ErrorCode != 0) {
+                       this.chMsgbar({ success: false, msg: res.data.Msg })
+                   } else if(res.data.DT == "[]") {
+                       this.chMsgbar({ success: false, msg: '查無資料，請使用其他條件查詢' })
+                   }
+                }
+                
+            }).catch(err => {
+                console.error(err)
+                this.chMsgbar({ success: false, msg: '查無資料，請使用其他條件查詢' })
+            }).finally(()=>{
                 this.chLoadingShow({show:false})
-            }, 1000)
+            })
+        },
+        add() {
+            this.formKey ++
+            this.dialog = true
+        },
+        edit(flowNo) {
+            this.itemIndex = flowNo
+            this.formKey ++
+            this.dialog = true
         },
         // 清除搜尋內容
         reset() {
             this.searchIpt.year = this.searchIpt.num = ''
             this.searchIpt.month = ''
+            this.searchIpt.type = 'RST'
         },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
         },
-        // 送出
-        save() {
-            this.isLoading = true
-
-            setTimeout(() => {
-                let txt = this.itemIndex === -1 ? '新增成功' : '更新成功'
-
-                // 編輯時，待後端回傳檔案資訊，再一併寫回 this.tableItems[this.itemIndex] 中
-                // 新增時則不處理 (因為當前搜尋條件不一定符合新增的記錄)
-                if (this.itemIndex > -1) {
-                    Object.assign(this.tableItems[this.itemIndex], this.ipt)
-                }
-                
-                this.chMsgbar({ success: true, msg: txt })
-                this.isLoading = this.dialog = false
-            }, 1000)
-        },
-        // 新增
-        add() {
-            this.ipt = { ...this.defaultIpt }  // 初始化表單，避免點編輯按鈕但未更新時資料殘留
-            this.itemIndex = -1  // 初始化索引值
-            this.dialog = true
-        },
-        // 編輯
-        edit (item) {
-            this.itemIndex = this.tableItems.indexOf(item)  // 取得索引值
-            this.ipt = { ...item }  // 設定表單資料
-            this.dialog = true
+        preDel(id) {
+            this.RPFlowNo = id
+            this.dialogDel = true
         },
         // 刪除
-        del(id) {
-            if (confirm('你確定要刪除嗎?')) {
-                this.chLoadingShow({show:true})
-
-                setTimeout(() => {
-                    let idx = this.tableItems.findIndex(item => item.id == id)
-                    this.tableItems.splice(idx, 1)
-                    this.chMsgbar({ success: true, msg: '刪除成功'})
-                    this.chLoadingShow({show:false})
-                }, 1000)
-            }
+        del() {
+            let id = this.RPFlowNo
+            this.chLoadingShow({show:true})
+            deleteFormOrder({
+                ClientReqTime: getNowFullTime(),
+                OperatorID: this.userData.UserId,
+                KeyName: 'RP066',
+                KeyItem: [
+                    { Column: "RPFlowNo", Value: id }
+                ]
+            }).then(res => {
+                if(res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '刪除成功!' })
+                    this.search()
+                } else {
+                    this.chMsgbar({ success: false, msg: res.data.Msg })
+                }
+            }).catch(err => {
+                console.error(err)
+                this.chMsgbar({ success: false, msg: '刪除失敗!' })
+            }).finally(()=>{
+                this.chLoadingShow({show:false})
+                this.dialogDel = false
+            })
+            
         },
         // 顯示詳細資訊
         view(item) {
             this.contentShow = true
             this.content = { ...item }
         },
+        //機車回傳
+        getRtnCode(code) {
+            this.preSetEqcode = code
+        },
+        //機車送出按鈕
+        selectEQ() {
+            this.com_equipCode = this.preSetEqcode
+            this.eqCode = false
+        }
     },
     created() {
         this.ipt = { ...this.defaultIpt }  // 初始化表單

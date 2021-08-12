@@ -8,6 +8,7 @@
       toLv: 顯示到第幾層，同時也在第幾層回傳，預設5(到工作項)
       needIcon: 是否顯示icon，預設否
       disableToLv: 第幾層前隱藏，需要先傳入值，預設0
+      noLabel: 是否要顯示層級抬頭，預設否
 回傳event：
       getEqCode:回傳組好的設備報修碼
       getWorkCode:回傳選擇的工作項
@@ -21,7 +22,7 @@
 
     <v-col cols="12" class="mt-n4" v-if="toLv >= 1" v-show="_levelShow.Lv1">
       <v-row>
-        <v-col cols="12" align-self="center">
+        <v-col cols="12" align-self="center" v-if="!noLabel">
           <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-buffer</v-icon> 系統</h3>
         </v-col>
         <v-col cols="12">
@@ -39,7 +40,7 @@
 
     <v-col cols="12" v-if="toLv >= 2" v-show="_levelShow.Lv2">
       <v-row>
-        <v-col cols="12" align-self="center">
+        <v-col cols="12" align-self="center" v-if="!noLabel">
           <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-map-marker</v-icon> 位置</h3>
         </v-col>
         <v-col cols="12">
@@ -69,7 +70,7 @@
 
     <v-col cols="12" v-if="toLv >= 3" v-show="_levelShow.Lv3">
       <v-row>
-        <v-col cols="12" align-self="center">
+        <v-col cols="12" align-self="center" v-if="!noLabel">
           <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-anvil</v-icon> 設備</h3>
         </v-col>
         <v-col cols="12">
@@ -99,7 +100,7 @@
 
     <v-col cols="12" v-if="toLv >= 4" v-show="_levelShow.Lv4">
       <v-row>
-        <v-col cols="12" align-self="center">
+        <v-col cols="12" align-self="center" v-if="!noLabel">
           <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-cards-variant</v-icon> 序號</h3>
         </v-col>
         <v-col cols="12">
@@ -118,7 +119,7 @@
 
     <v-col cols="12" v-if="toLv == 5" v-show="_levelShow.Lv5">
       <v-row>
-        <v-col cols="12" align-self="center">
+        <v-col cols="12" align-self="center"  v-if="!noLabel">
           <h3><v-icon class="mr-1 mb-1" v-show="needIcon">mdi-format-list-bulleted</v-icon> 工作項</h3>
         </v-col>
         <v-col cols="12">
@@ -167,6 +168,11 @@
       rtnStartLv: {
         type: Number,
         required: false
+      },
+      noLabel: {
+        type: Boolean,
+        required: false,
+        default: false
       }
     },
     //內部變數
@@ -265,7 +271,7 @@
         }
         this.ifIcon = (!this.needIcon)?false:this.needIcon
         this.rtnStart=this.rtnStartLv==undefined?this.toLv:this.rtnStartLv
-        console.log(this.rtnStart)
+        // console.log(this.rtnStart)
         if(this.nowEqCode == '' || !this.nowEqCode){ //沒有帶值進來
           this._getEqList('SYS','SYS_%','1','1')
         }else{  //有帶值進來
@@ -520,20 +526,20 @@
         const that = this
         await that.$emit('getEqCode',that.newEqCode)
         if(toLevel >= 1){
-          that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).FullShowName + ((toLevel == 1)?'':'-')
-          that.newEqCh = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1).EquipName + ((toLevel == 1)?'':'-')
+          that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1)?.FullShowName||'' + ((toLevel == 1)?'':'-')
+          that.newEqCh = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1)?.EquipName||'' + ((toLevel == 1)?'':'-')
         }
         if(toLevel >= 2){
-          that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).FullShowName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).FullShowName) + ((toLevel == 2)?'':'-')
-          that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22).EquipName : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2).EquipName) + ((toLevel == 2)?'':'-')
+          that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22)?.FullShowName||'' : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2)?.FullShowName||'') + ((toLevel == 2)?'':'-')
+          that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22)?.EquipName||'' : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2)?.EquipName||'') + ((toLevel == 2)?'':'-')
         }
         if(toLevel >= 3){
-          that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).FullShowName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).FullShowName:'') + ((toLevel == 3)?'':'-')
-          that.newEqCh += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3).EquipName + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32).EquipName:'') + ((toLevel == 3)?'':'-')
+          that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3)?.FullShowName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.FullShowName||'':'') + ((toLevel == 3)?'':'-')
+          that.newEqCh += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3)?.EquipName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.EquipName||'':'') + ((toLevel == 3)?'':'-')
         }
         if(toLevel >= 4){
-          that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).FullShowName
-          that.newEqCh += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4).EquipName
+          that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4)?.FullShowName||''
+          that.newEqCh += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4)?.EquipName||''
         }
         await that.$emit('getEqName',that.newEqName)
         await that.$emit('getEqCh',that.newEqCh)

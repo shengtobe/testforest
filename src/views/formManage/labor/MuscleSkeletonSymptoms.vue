@@ -390,7 +390,7 @@ export default {
         // 表格顯示的欄位
         {text: "所屬單位", value: "a1",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
         {text: "檢查日期",value: "a2",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "審查狀態",value: "a3",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "審查狀態",value: "a3",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
         {text: "姓名",value: "a4",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
         {text: "職稱",value: "a5",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
         {text: "性別",value: "a6",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
