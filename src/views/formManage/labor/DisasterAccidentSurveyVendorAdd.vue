@@ -393,13 +393,13 @@ export default {
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
         },
-        {
-          text: "審查狀態",
-          value: "Review",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
+        // {
+        //   text: "審查狀態",
+        //   value: "Review",
+        //   align: "center",
+        //   divider: true,
+        //   class: "subtitle-1 white--text font-weight-bold",
+        // },
         {
           text: "填寫人",
           value: "Name",

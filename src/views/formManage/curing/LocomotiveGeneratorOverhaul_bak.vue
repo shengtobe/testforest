@@ -407,13 +407,13 @@ export default {
         divider: true,
         class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
       },
-      {
-        text: "審查狀態",
-        value: "CheckStatus",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
-      },
+      // {
+      //   text: "審查狀態",
+      //   value: "CheckStatus",
+      //   align: "center",
+      //   divider: true,
+      //   class: "subtitle-1 white--text font-weight-bold light-blue darken-1",
+      // },
       {
         text: "填寫人",
         value: "Name",
