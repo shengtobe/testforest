@@ -2,7 +2,9 @@
 <!-- 
   傳入參數：
     defDeptId: 預設的單位
-    peopleList: 預設人員清單，string array員編陣列
+    peopleList: 預設人員清單，string array valueCol欄位陣列
+    valueCol: string 回傳的值要用欄位什麼回，還有要用什麼欄位設定上去
+    disableList: array 不可以選擇的人員
   回傳function：
     getPeople: 員編
  -->
@@ -53,7 +55,7 @@
         :key="item.value"
         @click="choseUser(item)"
         outlined
-        :disabled="peopleList.findIndex(e=>e==item.value)!=-1"
+        :disabled="peopleList.findIndex(e=>e==item.value)!=-1||disableList.findIndex(e=>e==item.value)!=-1"
         large
         tile
         color="brown"
@@ -67,7 +69,19 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
 export default {
-  props:['defDeptId','peopleList'],
+  props:{
+    defDeptId: String,
+    peopleList: Array,
+    valueCol: {
+      type: String,
+      require: false,
+      default: 'UserId'
+    },
+    'disableList': {
+      type:Array,
+      require: false
+    }
+  },
   data: () => ({
     select: {
       lv1: '',
@@ -126,7 +140,7 @@ export default {
         this.opts.lv1 = res.data.user_depart_list_group_1.map(e=>({value: e.DepartCode,text:e.DepartName}))
         this.opts.lv2 = res.data.user_depart_list_group_2.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
         this.opts.lv3 = res.data.user_depart_list_group_3.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
-        this.users = res.data.user_list_group_4.map(e=>({value: e.UserId,text:e.UserName,DepartCode:e.DepartCode}))
+        this.users = res.data.user_list_group_4.map(e=>({value: e[this.valueCol],text:e.UserName,DepartCode:e.DepartCode}))
         this.userDataFull = res.data.user_list_group_4
         this.getDefaultSelect()
       } catch (err) {
@@ -137,7 +151,7 @@ export default {
     // 選擇員工
     choseUser(item) {
       this.peopleList.push(item.value)
-      this.$emit('getPeople',this.userDataFull.find(e=>e.UserId==item.value))
+      this.$emit('getPeople',this.userDataFull.find(e=>e[this.valueCol]==item.value))
     },
     getDefaultSelect() {
       //defDeptId

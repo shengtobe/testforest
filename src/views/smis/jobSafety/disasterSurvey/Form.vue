@@ -7,14 +7,39 @@
     <v-row class="px-2">
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>勞工類型
+            </h3>
+            <v-select
+                v-model="ipt.type"
+                :items="opts.type"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account</v-icon>罹災者姓名
                 <!-- <span class="red--text">*</span> -->
             </h3>
             <v-text-field
+                v-if="ipt.type!=1"
                 v-model.trim="ipt.name"
                 solo
                 placeholder="請輸入性名"
             ></v-text-field>
+            <peopleSelect v-else :solo="true" valueCol="UserName" :peopleList="ipt.name" :disableList="[userData.UserName]" @getPeople="getPeople" />
+        </v-col>
+
+        <v-col cols="12" sm="6" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>工作部門
+            </h3>
+            <v-select
+                :disabled="ipt.type==1"
+                v-model="ipt.workDepart"
+                :items="opts.depart"
+                solo
+            ></v-select>
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -44,6 +69,7 @@
                 <v-icon class="mr-1 mb-1">mdi-human-male-female</v-icon>性別
             </h3>
             <v-select
+                :disabled="ipt.type==1"
                 v-model="ipt.sex"
                 :items="['男', '女', '其他']"
                 solo
@@ -55,6 +81,7 @@
                 <v-icon class="mr-1 mb-1">mdi-sort-variant</v-icon>年齡
             </h3>
             <v-text-field
+                :disabled="ipt.type==1"
                 v-model.trim="ipt.old"
                 solo
                 placeholder="請輸入年齡"
@@ -81,28 +108,6 @@
                 solo
                 placeholder="請輸入住址"
             ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-snowflake</v-icon>勞工類型
-            </h3>
-            <v-select
-                v-model="ipt.type"
-                :items="opts.type"
-                solo
-            ></v-select>
-        </v-col>
-
-        <v-col cols="12" sm="6" md="3">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>工作部門
-            </h3>
-            <v-select
-                v-model="ipt.workDepart"
-                :items="opts.depart"
-                solo
-            ></v-select>
         </v-col>
         
         <v-col cols="12" sm="6" md="3">
@@ -648,6 +653,8 @@ import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { createData, detailOne, updateData, fileUpdateData, fileDeleteData } from '@/apis/smis/jobSafety'
+import peopleSelect from '@/components/PeopleSelectMuti'
+import { login } from '@/apis/login'
 
 export default {
     props: ['id'],  //路由參數
@@ -766,7 +773,8 @@ export default {
     components: {
         UploadFileAdd,
         UploadFileEdit,
-        FileListShow
+        FileListShow,
+        peopleSelect
     },
     computed: {
         ...mapState ('user', {
@@ -1170,6 +1178,29 @@ export default {
                 })
             }
         },
+        getPeople(value) {
+            if(value){
+                this.ipt.name = value.UserName
+                this.ipt.workDepart = value.DepartName
+                login({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    UserId: value.UserId,
+                    UserPasswd: "",
+                    BackDoor: 'T',
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        let userData = res.data.UserData
+                        this.ipt.sex = userData.PeopleSex=='1'?'男':userData.PeopleSex=='2'?'女':'其他'
+                        this.ipt.old = Math.floor((new Date() - new Date(userData.PeopleBirthday))/1000/60/60/24/365)
+                    }
+                })
+            } else {
+                this.ipt.name = this.defaultIpt.name
+                this.ipt.workDepart = this.defaultIpt.workDepart
+                this.ipt.sex = this.defaultIpt.sex
+                this.ipt.old = this.defaultIpt.old
+            }
+        }
     },
     created() {
         canInUpdate({
