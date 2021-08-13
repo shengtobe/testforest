@@ -158,9 +158,8 @@
                 <v-icon class="mr-1 mb-1">mdi-speedometer</v-icon>體重
             </h3>
             <v-text-field
-                v-model.trim="ipt.PeopleWeight"
+                v-model="ipt.PeopleWeight"
                 solo maxlength="3"
-                type="number"
                 suffix="kg"
                 placeholder="請輸入體重"
             ></v-text-field>
@@ -580,27 +579,27 @@ export default {
         EmployDate: new Date().toISOString().substr(0, 10),  // 受雇日期
         InspectionType: '1',  // 檢查時期
         HealthCheckDate: new Date().toISOString().substr(0, 10),  // 檢查日期
-        PeopleHeight: '1',  // 身高(cm)
-        PeopleWeight: '',  // 體重(kg)
-        BloodShrink: '',  // 血壓收縮壓(mmHg)
-        BloodDiastole: '',  // 血壓舒張壓(mmHg)
-        Pulse: '',  // 脈搏(次/分鐘)
-        Waistline: '',  // 腰圍(cm)
-        Sight: '',  // 視力
-        Hearing: '',  // 聽力
+        PeopleHeight: '0',  // 身高(cm)
+        PeopleWeight: '0',  // 體重(kg)
+        BloodShrink: '0',  // 血壓收縮壓(mmHg)
+        BloodDiastole: '0',  // 血壓舒張壓(mmHg)
+        Pulse: '0',  // 脈搏(次/分鐘)
+        Waistline: '0',  // 腰圍(cm)
+        Sight: '0',  // 視力
+        Hearing: '0',  // 聽力
         UrineProtein: 1,  // 尿蛋白
         UrineBlood: 1,  // 尿潛血
-        WhiteBlood: '',  // 白血球數(個/ul)
-        BloodPigment: '',  // 血色素(g/dL)
+        WhiteBlood: '0',  // 白血球數(個/ul)
+        BloodPigment: '0',  // 血色素(g/dL)
         Xray: '1',  // 胸部 X 光
-        GPTValue: '',  // GPT(U/L)
+        GPTValue: '0',  // GPT(U/L)
         HepatitisB: 'Positive',  // B 肝抗原
-        UricAcid: '',  // 尿酸(mg/dL)
-        Creatinine: '',  // 肌酸酐(mg/dL)
-        Cholesterol: '',  // 膽固醇(mg/dL)
-        HDLValue: '',  // HDL(mg/dL)
-        LDLValue: '',  // LDL(mg/dL)
-        Triglyceride: '',  // 三酸甘油酯(mg/dL)
+        UricAcid: '0',  // 尿酸(mg/dL)
+        Creatinine: '0',  // 肌酸酐(mg/dL)
+        Cholesterol: '0',  // 膽固醇(mg/dL)
+        HDLValue: '0',  // HDL(mg/dL)
+        LDLValue: '0',  // LDL(mg/dL)
+        Triglyceride: '0',  // 三酸甘油酯(mg/dL)
         BloodSugar: '',  // 飯前血糖(mg/dL)
         ECGValue: '',  // 運動心電圖
         HandleNotice: '',  // 應處理及注意事項
@@ -641,6 +640,7 @@ export default {
         $route(to, from) {
             // … 
         },
+        //檢查校正身高數值
         "ipt.PeopleHeight": function(newValue,oldValue){
             let heightBool = /^\d{1,3}$/.test(newValue)
             if(heightBool) {
@@ -648,6 +648,140 @@ export default {
             } else {
                 this.$nextTick(() => {
                     this.ipt.PeopleHeight = oldValue
+                })
+            }
+        },
+        //檢查校正體重數值
+        "ipt.PeopleWeight": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.PeopleWeight = oldValue
+                })
+            }
+        },
+        //檢查校正血壓收縮壓
+        "ipt.BloodShrink": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.BloodShrink = oldValue
+                })
+            }
+        },
+        //檢查校正血壓舒張壓
+        "ipt.BloodDiastole": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.BloodDiastole = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },//檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.XXXXXXXX": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.XXXXXXXX = oldValue
                 })
             }
         },
