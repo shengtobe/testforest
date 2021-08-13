@@ -147,10 +147,9 @@
             </h3>
             <v-text-field
                 v-model="ipt.PeopleHeight"
-                solo 
+                solo maxlength="3"
                 placeholder="請輸入身高"
                 suffix="cm"
-                type="number"
             ></v-text-field>
         </v-col>
 
@@ -641,6 +640,17 @@ export default {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
             // … 
+        },
+        "ipt.PeopleHeight": function(){
+            console.log("1.number: ", this.ipt.PeopleHeight);
+            console.log("number?: ", isNaN(this.ipt.PeopleHeight));
+            // val = val.replace(/[^0-9]/ig,"")
+            if(isNaN(this.ipt.PeopleHeight)){
+                console.log("in");
+                this.ipt.PeopleHeight = this.ipt.PeopleHeight.replace(/[^0-9]/g, '');
+                console.log("in.ipt.PeopleHeight: ", ipt.PeopleHeight);
+            }
+            
         },
         "ipt.Triglyceride": function(){
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){

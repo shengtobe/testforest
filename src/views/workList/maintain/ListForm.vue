@@ -556,7 +556,7 @@
                 </v-sheet>
             </v-col>
             <v-col cols="12" v-else>
-                <h3 class="mb-2">
+                <h3 class="mb-2" v-if="ipt.Condition != ''">
                     <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
                 </h3>
                 {{ ipt.Condition }}
@@ -955,9 +955,15 @@ export default {
         // 送出表單
         save() {
             if (this.$refs.form.validate()) {  // 表單驗證欄位
+                console.log("this.combineCode: ", this.combineCode);
+                if(this.combineCode == ''){
+                    alert("設備標示編碼至少需選至[位置]")
+                    return
+                }
                 this.chLoadingShow({show:true})
                 let tempCodeArr = this.combineCode.split('-')
                 console.log("tempCodeArr: ", tempCodeArr)
+                console.log("tempCodeArr[3]: ", tempCodeArr[3])
                 if (this.isEdit) {
                     // -------- 編輯時 -------
                     updateListOrder({
@@ -970,8 +976,8 @@ export default {
                         CreateDTime: this.ipt.hour,  // 立案時間 (小時)
                         MaintainCode_System: tempCodeArr[0],  // 設備標示編號(系統)
                         MaintainCode_Loc: tempCodeArr[1],  // 設備標示編號(位置)
-                        MaintainCode_Eqp: tempCodeArr[2],  // 設備標示編號(設備)
-                        MaintainCode_Seq: tempCodeArr[3],  // 設備標示編號(序號)
+                        MaintainCode_Eqp: (tempCodeArr[2] == undefined)?'':tempCodeArr[2],  // 設備標示編號(設備)
+                        MaintainCode_Seq: (tempCodeArr[3] == undefined)?'':tempCodeArr[3],  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
@@ -1004,8 +1010,8 @@ export default {
                         CreateDTime: this.ipt.hour,  // 立案時間 (小時)
                         MaintainCode_System: tempCodeArr[0],  // 設備標示編號(系統)
                         MaintainCode_Loc: tempCodeArr[1],  // 設備標示編號(位置)
-                        MaintainCode_Eqp: tempCodeArr[2],  // 設備標示編號(設備)
-                        MaintainCode_Seq: tempCodeArr[3],  // 設備標示編號(序號)
+                        MaintainCode_Eqp: (tempCodeArr[2] == undefined)?'':tempCodeArr[2],  // 設備標示編號(設備)
+                        MaintainCode_Seq: (tempCodeArr[3] == undefined)?'':tempCodeArr[3],  // 設備標示編號(序號)
                         Malfunction: this.ipt.malfunctionDes,  // 故障描述
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id

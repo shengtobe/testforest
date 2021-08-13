@@ -32,10 +32,10 @@
                     </template>
 
                     <template v-slot:item.content="{ item }">
-                        <v-btn small dark fab class="btn-detail" v-if="!item.isRead" @click="personClick(item)">
+                        <v-btn small dark fab class="btn-detail" v-if="!item.isRead" @click="redirect(item)">
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                        <v-icon v-if="item.isRead" @click="personClick(item)">mdi-checkbox-marked-circle-outline</v-icon>
+                        <v-icon v-if="item.isRead" @click="redirect(item)">mdi-checkbox-marked-circle-outline</v-icon>
                     </template>
                     
                     <!-- 頁碼 -->
@@ -161,7 +161,7 @@ export default {
                     // this.tableItems = JSON.parse(res.data.order_list)
                     let tb = JSON.parse(res.data.order_list)
                     console.log("Manage 詢問個人資訊: ", tb)
-                    console.log("Manage 詢問個人資訊: ", tb.map(e=>e.MsgType))
+                    console.log("Manage 詢問個人資訊 MsgType: ", tb.map(e=>e.MsgType))
                     // 個人訊息
                     let psnal = tb.map(item => ({
                         id: item.ModuleItemID,
@@ -264,7 +264,9 @@ export default {
                     console.log("首頁代辦事項已讀 res.data: ", res.data);
                     console.log("首頁代辦事項已讀 this.tableItems.personal: ", this.tableItems.personal);
                     // item.isRead = false
-                    // this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
+                    if(item.MsgType == '1'){
+                        this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
+                    }
 
                     // setTimeout(() => {
                     //     this.$router.push({ path: `/smis/car-safeinfo/info/${item.ModuleItemID}/show` })
@@ -275,17 +277,19 @@ export default {
                 console.log(err)
             }).finally(() => {
             })
+            console.log("[轉跳]item.InfoBelongMod: ", item.InfoBelongMod);
+            console.log("[轉跳]item.ModuleItemID: ", item.ModuleItemID);
             if (confirm('確定要離開目前頁面至指定頁面操作?')) {
                 switch(item.InfoBelongMod){
                     case '1':
                         this.$router.push({ path: '/smis/harmnotify/audit' })
                         break;
                     case '2':
-                        this.$router.push({ path: '/smis/car-accident-event' })
+                        this.$router.push({ path: `/smis/car-accident-event/${item.ModuleItemID}/show` })
                         break;
                     case '3':
                     case '4':
-                        this.$router.push({ path: '/smis/car-harmdb/control-measures' })
+                        this.$router.push({ path: `/smis/car-harmdb/control-measures/${item.ModuleItemID}/edit` })
                         break;
                     case '5':
                         // this.$router.push({ path: '/smis/car-safeinfo/info' })
@@ -298,34 +302,35 @@ export default {
                         this.$router.push({ path: '/smis/safefile/regulations' })
                         break;
                     case '8':
-                        this.$router.push({ path: '/smis/car-safe-performance/machine-abnormal/add' })
+                        this.$router.push({ path: `/smis/car-safe-performance/machine-abnormal/${item.ModuleItemID}/edit` })
                         break;
                     case '9':
-                        this.$router.push({ path: '/smis/jobsafety/physical/form' })
+                        this.$router.push({ path: `/smis/jobsafety/physical/${item.ModuleItemID}/list` })
                         break;
                     case '10':
-                        this.$router.push({ path: '/smis/car-safe-performance/speed-abnormal/add' })
+                        this.$router.push({ path: `/smis/car-safe-performance/speed-abnormal/${item.ModuleItemID}/edit` })
                         break;
                     case '11':
-                        this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                        this.$router.push({ path: `/smis/jobsafety/disaster-survey/${item.ModuleItemID}/show` })
                         break;
                     case '12':
                         // this.$router.push({ path: 'XXXXXXXXXXXXXXX' })
                         break;
                     case '13':
-                        this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })
+                        this.$router.push({ path: `/smis/car-safeinfo/crawl-notify/${item.ModuleItemID}/edit` })
                         break;
                     case '14':
-                        this.$router.push({ path: '/smis/car-harmdb/harms' })
+                        this.$router.push({ path: `/smis/car-harmdb/harms/${item.ModuleItemID}/show` })
                         break;
                     case '15':
-                        this.$router.push({ path: '/smis/jobsafety/disasterdb' })
+                        this.$router.push({ path: `/smis/jobsafety/disasterDb/${item.ModuleItemID}/show` })
                         break;
                     case '16':
-                        this.$router.push({ path: '/worklist/maintain' })
+                        // this.$router.push({ path: '/worklist/maintain' })
+                        this.$router.push({ path: `/worklist/maintain/${item.ModuleItemID}/show` })
                         break;
                     case '17':
-                        this.$router.push({ path: '/worklist/serve' })
+                        this.$router.push({ path: `/worklist/serve/${item.ModuleItemID}/show` })
                         break;
                     case '18':
                         this.$router.push({ path: '/mmis/periodicity-job' })
