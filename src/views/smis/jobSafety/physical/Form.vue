@@ -150,7 +150,7 @@
                 solo maxlength="3"
                 placeholder="請輸入身高"
                 suffix="cm"
-            ></v-text-field>
+            />
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
@@ -580,7 +580,7 @@ export default {
         EmployDate: new Date().toISOString().substr(0, 10),  // 受雇日期
         InspectionType: '1',  // 檢查時期
         HealthCheckDate: new Date().toISOString().substr(0, 10),  // 檢查日期
-        PeopleHeight: '',  // 身高(cm)
+        PeopleHeight: '1',  // 身高(cm)
         PeopleWeight: '',  // 體重(kg)
         BloodShrink: '',  // 血壓收縮壓(mmHg)
         BloodDiastole: '',  // 血壓舒張壓(mmHg)
@@ -641,16 +641,15 @@ export default {
         $route(to, from) {
             // … 
         },
-        "ipt.PeopleHeight": function(){
-            console.log("1.number: ", this.ipt.PeopleHeight);
-            console.log("number?: ", isNaN(this.ipt.PeopleHeight));
-            // val = val.replace(/[^0-9]/ig,"")
-            if(isNaN(this.ipt.PeopleHeight)){
-                console.log("in");
-                this.ipt.PeopleHeight = this.ipt.PeopleHeight.replace(/[^0-9]/g, '');
-                console.log("in.ipt.PeopleHeight: ", ipt.PeopleHeight);
+        "ipt.PeopleHeight": function(newValue,oldValue){
+            let heightBool = /^\d{1,3}$/.test(newValue)
+            if(heightBool) {
+            //    this.ipt.PeopleHeight = newValue
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.PeopleHeight = oldValue
+                })
             }
-            
         },
         "ipt.Triglyceride": function(){
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
@@ -670,8 +669,8 @@ export default {
     },
     computed: {
       ...mapState ('user', {
-      userData: state => state.userData,  // 使用者基本資料
-      groupData: state => state.groupData,
+        userData: state => state.userData,  // 使用者基本資料
+        groupData: state => state.groupData,
       }),
     },
     methods: {
