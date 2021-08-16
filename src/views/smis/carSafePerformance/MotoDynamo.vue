@@ -1,6 +1,6 @@
 <template>
 <v-container class="label-header" style="max-width: 1200px">
-    <h2 class="label-title mb-4">機車行駛公里及發電機工時表查詢</h2>
+    <h2 class="label-title mb-4">機客車行駛公里及發電機工時表查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3">
@@ -27,13 +27,13 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file</v-icon>機車型號
+                <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
             </h3>
             <v-text-field solo @click="eqCode=true" readonly v-model="searchIpt.MaintainCode_Loc" />
             <v-dialog v-model="eqCode" max-width="700px">
                 <v-card class="theme-card">
                     <v-card-title class="px-4 py-1">
-                        機車型號
+                        車輛型號
                         <v-spacer></v-spacer>
                         <v-btn fab small text @click="eqCode = false" class="mr-n2">
                             <v-icon>mdi-close</v-icon>
@@ -158,52 +158,54 @@
                     </v-col>
 
                     <v-col cols="12" sm="6">
-                        <!-- <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
-                        累計公里數： {{ content.totalKm }} -->
+                        <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>
+                        累計公里數： {{ content.AccumKm }}
                     </v-col>
                 
-                    <v-col cols="12">
-                        <v-divider class="mt-2 mb-3"></v-divider>
-                    </v-col>
+                    <template  v-if="customYN">
+                        <v-col cols="12">
+                            <v-divider class="mt-2 mb-3"></v-divider>
+                        </v-col>
 
-                    <v-col cols="12" sm="6">
-                        <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
-                        發電機日工時： {{ content.HourDay }}
-                    </v-col>
+                        <v-col cols="12" sm="6">
+                            <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
+                            發電機日工時： {{ content.HourDay }}
+                        </v-col>
 
-                    <v-col cols="12" sm="6">
-                        <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
-                        發電機累計工時： {{ content.Hours }}
-                    </v-col>
+                        <v-col cols="12" sm="6">
+                            <v-icon class="mr-1 mb-1">mdi-clock</v-icon>
+                            發電機累計工時： {{ content.Hours }}
+                        </v-col>
 
-                    <v-col cols="12">
-                        <v-divider class="mt-2 mb-3"></v-divider>
-                    </v-col>
+                        <v-col cols="12">
+                            <v-divider class="mt-2 mb-3"></v-divider>
+                        </v-col>
 
-                    <v-col cols="12" class="mb-1">
-                        <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>
-                        耗用油量類別
-                    </v-col>
+                        <v-col cols="12" class="mb-1">
+                            <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>
+                            耗用油量類別
+                        </v-col>
 
-                    <v-col cols="12" sm="4">
-                        柴油： {{ content.DieselOil }}
-                    </v-col>
+                        <v-col cols="12" sm="4">
+                            柴油： {{ content.DieselOil }}
+                        </v-col>
 
-                    <v-col cols="12" sm="4">
-                        引擎機油： {{ content.EngineOil }}
-                    </v-col>
+                        <v-col cols="12" sm="4">
+                            引擎機油： {{ content.EngineOil }}
+                        </v-col>
 
-                    <v-col cols="12" sm="4">
-                        TC機油： {{ content.TCOil }}
-                    </v-col>
+                        <v-col cols="12" sm="4">
+                            TC機油： {{ content.TCOil }}
+                        </v-col>
 
-                    <v-col cols="12" sm="4">
-                        風泵： {{ content.WindMercury }}
-                    </v-col>
+                        <v-col cols="12" sm="4">
+                            風泵： {{ content.WindMercury }}
+                        </v-col>
 
-                    <v-col cols="12" sm="4">
-                        其他 {{ content.Other }}
-                    </v-col>
+                        <v-col cols="12" sm="4">
+                            其他 {{ content.Other }}
+                        </v-col>
+                    </template>
                     
                     <v-col cols="12">
                         <v-divider class="mt-2 mb-3"></v-divider>
@@ -306,6 +308,10 @@ export default {
                 this.searchIpt.MaintainCode_System = splitArr[0]
                 this.searchIpt.MaintainCode_Loc = splitArr[1]
             }
+        },
+        customYN () {
+            let Loc = this.content.MotoId
+            return /^(DL|SL)\d{2}$/.test(Loc)
         }
     },
     methods: {
@@ -333,7 +339,7 @@ export default {
             keyItem.push({ Column: "StartDayVlaue", Value: sDate.getFullYear()+'-'+(sDate.getMonth()+1)+'-'+sDate.getDate() })
             keyItem.push({ Column: "EndDayVlaue", Value: eDate.getFullYear()+'-'+(eDate.getMonth()+1)+'-'+eDate.getDate() })
             keyItem.push({ Column: "DepartCode", Value: this.userData.DeptList[0].DeptId })
-            keyItem.push({ Column: "MaintainCode_System", Value: this.searchIpt.MaintainCode_System })
+            keyItem.push({ Column: "MaintainCode_System", Value: this.searchIpt.MaintainCode_System }) 
             keyItem.push({ Column: "MaintainCode_Loc", Value: this.searchIpt.MaintainCode_Loc })
             this.tableItems = []
             fetchFormOrderList({
@@ -352,6 +358,7 @@ export default {
                     "Driver",   //司機員
                     "KmRecord", //行駛區間
                     "Km",   //本日行駛公里數
+                    "AccumKm",  //累計公里數
                     "HourDay",  //發電機日工時
                     "Hours",    //發電機累計工時
                     "DieselOil",    //柴油
@@ -371,10 +378,11 @@ export default {
                         Name: e.Name,
                         CheckDay: e.CheckDay,
                         CheckStatus: e.CheckStatus,
-                        MotoId: e.MaintainCode_System+'-'+e.MaintainCode_Loc,
+                        MotoId: e.MaintainCode_Loc,
                         Driver: e.Driver,
                         KmRecord: e.KmRecord,
                         Km: e.Km,
+                        AccumKm: e.AccumKm,
                         HourDay: e.HourDay,
                         Hours: e.Hours,
                         DieselOil: e.DieselOil,
