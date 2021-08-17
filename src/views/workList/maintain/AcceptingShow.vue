@@ -69,7 +69,7 @@
                         <v-dialog v-model="moneyDialog" max-width="450px">
                             <v-card>
                                 <v-card-title class="light-blue darken-1 white--text px-4 py-1 btn-modify">
-                                    請輸入金額
+                                    請輸入數量及金額
                                     <v-spacer></v-spacer>
                                     <v-btn dark fab small text @click="moneyDialog = false" class="mr-n2">
                                         <v-icon>mdi-close</v-icon>
@@ -78,19 +78,30 @@
 
                                 <v-card-text class="px-6 py-4">
                                     <v-row>
-                                        <v-col cols="12" sm="8">
-                                            <!-- <input placeholder="請輸入金額" 
-                                            v-model.number="jobPrice" 
-                                            type="number" solo> -->
+                                        <v-col cols="12" sm="6">
+                                            <h3 class="mb-1">
+                                                <v-icon class="mr-1 mb-1">mdi-cash-usd</v-icon>單價
+                                            </h3>
                                             <v-text-field
                                                 v-model.trim.number="jobPrice"
                                                 solo type="number"
-                                                placeholder="請輸入金額"
+                                                placeholder="請輸入單價"
                                                 :rules="[v => Number.isFinite(v) || '請輸入整數或小數']"
                                             ></v-text-field>
                                         </v-col>
-
-                                        <v-col cols="12" sm="4">
+                                        <v-col cols="12" sm="6">
+                                            <h3 class="mb-1">
+                                                <v-icon class="mr-1 mb-1">mdi-hexagon-multiple</v-icon>數量
+                                            </h3>
+                                            <v-text-field
+                                                v-model.trim.number="jobAmount"
+                                                solo type="number"
+                                                placeholder="請輸入數量"
+                                                :rules="[v => Number.isFinite(v) || '請輸入整數或小數']"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col cols="12" sm="9"/>
+                                        <v-col cols="12" sm="3" class="mt-n8">
                                             <v-btn class="btn-add" color="green" dark large @click="saveMoney">確定</v-btn>
                                         </v-col>
                                     </v-row>
@@ -631,12 +642,13 @@ export default {
         ],
         headers_fee: [  // 工時標題
             // { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '單價', value: 'UnitPrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '數量', value: 'Amount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '小計', value: 'Subtotal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '編輯費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '單價', value: 'UnitPrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
+            { text: '數量', value: 'Amount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '小計', value: 'Subtotal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
+            { text: '編輯費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 90 },
         ],
+        jobAmount: '', // 工作項數量
         jobPrice: '', // 工作項金額
         moneyDialog: false,  // 金額 dialog 是否顯示
         editIdx: 0,  // 總工時編輯中資料的索引值
@@ -736,7 +748,7 @@ export default {
         },
         // 工時統計的總金額
         totalMoney() {
-            return this.tableItems.reduce((a,b)=>a + +b.Price, 0)
+            return this.tableItems_fee.reduce((a,b)=>a + +b.Subtotal, 0)
         }
         
     },
@@ -774,8 +786,23 @@ export default {
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
-            this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
+            this.tableItems = [ ...obj.WorkTimeCount ]  // 人員工時資料
+            console.log("this.tableItems: ", this.tableItems);
+            // this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
+            //工作項 清單
+            let tempWorkList = this.tableItems.map(e => e.JobName)
+            //工作項清單 移除空白
+            tempWorkList = tempWorkList.filter(function(n){ return n != ''});
+            //工作項清單 移除重複值
+            tempWorkList = tempWorkList.filter(function(ele , pos){
+                return tempWorkList.indexOf(ele) == pos;
+            }) 
+            this.tableItems_fee = tempWorkList.map(item => ({
+                JobName: item,
+                UnitPrice: 0,
+                Amount: 1,
+                Subtotal: 0,
+            }))
 
             // 要求 平交道項目清單
             railroadrepairList({
@@ -795,14 +822,20 @@ export default {
         },
         // 顯示金額Dialog
         showMoneyDialog(item) {
-            this.editIdx = this.tableItems.indexOf(item)  // 編輯中的資料索引
-            this.jobPrice = item.Price  // 現有值帶入
+            console.log("item: ", item);
+            this.editIdx = this.tableItems_fee.indexOf(item)  // 編輯中的資料索引
+            this.jobAmount = item.Amount  // 現有值帶入
+            this.jobPrice = item.UnitPrice  // 現有值帶入
             this.moneyDialog = true
         },
         // 確定工作項金額
         saveMoney() {
             console.log("isRealNum: ", this.isRealNum(this.jobPrice))
-            this.tableItems[this.editIdx].Price = this.jobPrice
+            console.log("isRealNum: ", this.isRealNum(this.jobAmount))
+            console.log("editIdx: ", this.editIdx);
+            this.tableItems_fee[this.editIdx].UnitPrice = this.jobPrice
+            this.tableItems_fee[this.editIdx].Amount = this.jobAmount
+            this.tableItems_fee[this.editIdx].Subtotal = this.jobAmount * this.jobPrice
             this.moneyDialog = false
         },
         // 顯示 dialog
