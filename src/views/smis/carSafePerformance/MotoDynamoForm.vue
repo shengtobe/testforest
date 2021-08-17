@@ -16,13 +16,13 @@
       <v-row>
         <v-col cols="12" sm="8">
           <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>機車型號
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
           </h3>
           <v-text-field solo @click="eqCode=true" v-model="ipt.MaintainCode_Loc" readonly />
           <v-dialog v-model="eqCode" max-width="700px">
             <v-card class="theme-card">
               <v-card-title class="px-4 py-1">
-                機車型號
+                車輛型號
                 <v-spacer></v-spacer>
                 <v-btn fab small text @click="eqCode = false" class="mr-n2">
                   <v-icon>mdi-close</v-icon>
@@ -71,17 +71,6 @@
 
         <v-col cols="12" sm="4">
           <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>本日行駛公里
-          </h3>
-          <v-text-field
-            v-model.trim="ipt.Km"
-            solo
-            placeholder="例：20.3"
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-arrow-left-right-bold</v-icon>行駛區間
           </h3>
           <v-text-field
@@ -93,75 +82,99 @@
 
         <v-col cols="12" sm="4">
           <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機日工時
+            <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>本日行駛公里
           </h3>
           <v-text-field
-            v-model.trim="ipt.HourDay"
+            v-model.trim="ipt.Km"
             solo
-            placeholder="例：8"
+            placeholder="例：20.3"
           ></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="4">
           <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機累計工時
+            <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>累計公里數
           </h3>
           <v-text-field
-            v-model.trim="ipt.Hours"
+            v-model.trim="ipt.AccumKm"
             solo
-            placeholder="例：2100"
+            placeholder="例：11300.9"
           ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (柴油)
-          </h3>
-          <v-text-field
-            v-model.trim="ipt.DieselOil"
-            solo
-          ></v-text-field>
-        </v-col>
+        <template v-if="customYN">
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機日工時
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.HourDay"
+              solo
+              placeholder="例：8"
+            ></v-text-field>
+          </v-col>
 
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (引擎機油)
-          </h3>
-          <v-text-field
-            v-model.trim="ipt.EngineOil"
-            solo
-          ></v-text-field>
-        </v-col>
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-clock</v-icon>發電機累計工時
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.Hours"
+              solo
+              placeholder="例：2100"
+            ></v-text-field>
+          </v-col>
 
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (TC機油)
-          </h3>
-          <v-text-field
-            v-model.trim="ipt.TCOil"
-            solo
-          ></v-text-field>
-        </v-col>
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (柴油)
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.DieselOil"
+              solo
+            ></v-text-field>
+          </v-col>
 
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (風泵)
-          </h3>
-          <v-text-field
-            v-model.trim="ipt.WindMercury"
-            solo
-          ></v-text-field>
-        </v-col>
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (引擎機油)
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.EngineOil"
+              solo
+            ></v-text-field>
+          </v-col>
 
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (其他)
-          </h3>
-          <v-text-field
-            v-model.trim="ipt.Other"
-            solo
-          ></v-text-field>
-        </v-col>
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (TC機油)
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.TCOil"
+              solo
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (風泵)
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.WindMercury"
+              solo
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" sm="4">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-gas-station</v-icon>耗用油量 (其他)
+            </h3>
+            <v-text-field
+              v-model.trim="ipt.Other"
+              solo
+            ></v-text-field>
+          </v-col>
+        </template>
 
         <v-col cols="12">
           <h3 class="mb-1">
@@ -202,7 +215,7 @@ export default {
       KmRecord: '',  // 行駛區間
       TrainNo: '',  // 列車次
       Km: '',  // 本日行駛公里
-      // totalKm: '',  // 累計公里數
+      AccumKm: '',  // 累計公里數
       HourDay: '',  // 發電機日工時
       Hours: '',  // 發電機累計工時
       DieselOil: 0,  // 耗用油量 (柴油)
@@ -211,10 +224,6 @@ export default {
       WindMercury: 0,  // 耗用油量 (風泵)
       Other: 0,  // 耗用油量 (其他)
       Memo: '',  // 保養記事
-      // DepartCode: '',
-      // DepartName: '',
-      // ID: '',
-      // Name: '',
     },
     dateMenuShow: false,  // 日曆是否顯示
     contentShow: false,  // 詳細內容 dialog 是否顯示
@@ -242,6 +251,10 @@ export default {
         this.ipt.MaintainCode_System = splitArr[0]
         this.ipt.MaintainCode_Loc = splitArr[1]
       }
+    },
+    customYN () {
+      let Loc = this.ipt.MaintainCode_Loc
+      return /^(DL|SL)\d{2}$/.test(Loc)
     }
   },
   methods: {
@@ -277,7 +290,27 @@ export default {
           this.goClose()
         })
       } else {
-        // updateFormOrder()
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(), 
+          OperatorID: this.userData.UserId,
+          FunCode: "U",
+          KeyName: 'RP066',
+          RPFlowNo: this.flowNo,
+          KeyItem: [...keyArr]
+        }).then(res => {
+          if(res.data.ErrorCode==0) {
+            this.chMsgbar({ success: true, msg: '資料更新成功!' })
+          } else {
+            console.error(res.data.Msg)
+            this.chMsgbar({ success: false, msg: res.data.Msg })
+          }
+        }).catch(err => {
+          console.error(err)
+          this.chMsgbar({ success: false, msg:'資料更新失敗!' })
+        }).finally(() => {
+          this.$emit('search')
+          this.goClose()
+        })
       }
     },
     goClose() {
@@ -316,6 +349,7 @@ export default {
           "MaintainCode_Loc", //設備報修碼(位置)
           "Driver",   //司機員
           "KmRecord", //行駛區間
+          "AccumKm",  //累計公里數
           "Km",   //本日行駛公里數
           "HourDay",  //發電機日工時
           "Hours",    //發電機累計工時
@@ -329,7 +363,7 @@ export default {
         ],
       }).then(res => {
         if(res.data.ErrorCode == 0){
-          this.ipt = decodeObject(unique(JSON.parse(res.data.DT)))[0]
+          this.ipt = decodeObject(JSON.parse(res.data.DT))[0]
         } else {
           this.chMsgbar({ success: false, msg:'資料查詢失敗!' })
           this.goClose()

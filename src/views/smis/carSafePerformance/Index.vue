@@ -14,7 +14,7 @@
                 <v-list class="pa-0">
                     <v-list-item to="/smis/car-safe-performance/moto-dynamo">
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
-                        機車行駛公里及發電機工時
+                        機客車行駛公里及發電機工時
                     </v-list-item>
                     <v-divider></v-divider>
                     <v-list-item to="/smis/car-safe-performance/machine-abnormal">

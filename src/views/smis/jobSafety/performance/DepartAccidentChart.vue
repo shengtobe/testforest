@@ -171,20 +171,24 @@ export default {
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
                     console.log(res.data)
-                    res.data.SumCount.forEach(e=>{
-                        this.chartLeft.chartdata.labels.push(e.DepName)
-                        this.chartLeft.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
-                        this.chartLeft.chartdata.datasets[0].data.push(e.Count)
-                    })
-                    this.chartLeft.options.scales.yAxes[0].ticks.max = Math.max(...this.chartLeft.chartdata.datasets[0].data)+2
-                    this.chartLeft.componentKey++
-                    res.data.DayCount.forEach(e=>{
-                        this.chartRight.chartdata.labels.push(e.DepName)
-                        this.chartRight.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
-                        this.chartRight.chartdata.datasets[0].data.push(e.Count)
-                    })
-                    this.chartRight.options.scales.yAxes[0].ticks.max = Math.max(...this.chartRight.chartdata.datasets[0].data)+2
-                    this.chartRight.componentKey++
+                    if(res.data.SumCount){
+                        res.data.SumCount.forEach(e=>{
+                            this.chartLeft.chartdata.labels.push(e.DepName)
+                            this.chartLeft.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
+                            this.chartLeft.chartdata.datasets[0].data.push(e.Count)
+                        })
+                        this.chartLeft.options.scales.yAxes[0].ticks.max = Math.max(...this.chartLeft.chartdata.datasets[0].data)+2
+                        this.chartLeft.componentKey++
+                    }
+                    if(res.data.DayCount){
+                        res.data.DayCount.forEach(e=>{
+                            this.chartRight.chartdata.labels.push(e.DepName)
+                            this.chartRight.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
+                            this.chartRight.chartdata.datasets[0].data.push(e.Count)
+                        })
+                        this.chartRight.options.scales.yAxes[0].ticks.max = Math.max(...this.chartRight.chartdata.datasets[0].data)+2
+                        this.chartRight.componentKey++
+                    }
                 }else{
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })

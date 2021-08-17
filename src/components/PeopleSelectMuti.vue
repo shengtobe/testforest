@@ -50,14 +50,14 @@ import { fetchOrganization } from '@/apis/organization'
 import getPeople from '@/components/GetOrganizePeople'
 export default {
 	props: {
-    'solo': Boolean,
-    'peopleList': [String, Array],
-    'valueCol': {
+    solo: Boolean,
+    peopleList: [String, Array],
+    valueCol: {
       type: String,
       require: false,
       default: 'UserId'
     },
-    'disableList': {
+    disableList: {
       type:Array,
       require: false
     }
