@@ -55,7 +55,7 @@
         :key="item.value"
         @click="choseUser(item)"
         outlined
-        :disabled="peopleList.findIndex(e=>e==item.value)!=-1||(disableList?disableList.findIndex(e=>e==item.value)!=-1:false)"
+        :disabled="peopleList.findIndex(e=>e==item.value)!=-1||disableList.findIndex(e=>e==item.value)!=-1"
         large
         tile
         color="brown"
@@ -79,7 +79,8 @@ export default {
     },
     disableList: {
       type:Array,
-      require: false
+      require: false,
+      default: () => []
     }
   },
   data: () => ({
