@@ -55,7 +55,7 @@
         :key="item.value"
         @click="choseUser(item)"
         outlined
-        :disabled="peopleList.findIndex(e=>e==item.value)!=-1||disableList.findIndex(e=>e==item.value)!=-1"
+        :disabled="peopleList.findIndex(e=>e==item.value)!=-1||(disableList?disableList.findIndex(e=>e==item.value)!=-1:false)"
         large
         tile
         color="brown"
@@ -77,7 +77,7 @@ export default {
       require: false,
       default: 'UserId'
     },
-    'disableList': {
+    disableList: {
       type:Array,
       require: false
     }
@@ -160,15 +160,16 @@ export default {
       }
       if(this.opts.lv2.findIndex(e=>e.value==this.defDeptId)>-1){
         this.select.lv2 = this.defDeptId
+        console.log(this.opts.lv2.find(e=>e.value==this.defDeptId))
         let parentName = this.opts.lv2.find(e=>e.value==this.defDeptId).parent
         this.select.lv1 = this.opts.lv1.find(e=>e.text==parentName).value
       }
       if(this.opts.lv3.findIndex(e=>e.value==this.defDeptId)>-1){
         this.select.lv3 = this.defDeptId
         let lv2Name = this.opts.lv3.find(e=>e.value==this.defDeptId).parent
-        this.select.lv2 = this.opts.lv2.find(e=>e.text==parentName).value
+        this.select.lv2 = this.opts.lv2.find(e=>e.text==lv2Name).value
         let lv1Name = this.opts.lv2.find(e=>e.value==this.select.lv2).parent
-        this.select.lv1 = this.opts.lv1.find(e=>e.text==parentName).value
+        this.select.lv1 = this.opts.lv1.find(e=>e.text==lv1Name).value
       }
     }
   },
