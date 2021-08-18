@@ -638,15 +638,15 @@ export default {
             { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量(hr)', value: 'WorkLoad', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         headers_fee: [  // 工時標題
             // { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '單價', value: 'UnitPrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
             { text: '數量', value: 'Amount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '小計', value: 'Subtotal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
-            { text: '編輯費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 90 },
+            { text: '小計', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
+            // { text: '編輯費用', value: 'Price_e', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 90 },
         ],
         jobAmount: '', // 工作項數量
         jobPrice: '', // 工作項金額
@@ -744,11 +744,11 @@ export default {
         }),
         // 工時統計的總金額
         totalHourCount() {
-            return this.tableItems.reduce((a,b)=>a + +b.Count, 0)
+            return this.tableItems.reduce((a,b)=>a + +b.WorkLoad, 0)
         },
         // 工時統計的總金額
         totalMoney() {
-            return this.tableItems_fee.reduce((a,b)=>a + +b.Subtotal, 0)
+            return this.tableItems_fee.reduce((a,b)=>a + +b.Price, 0)
         }
         
     },
@@ -782,12 +782,13 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
+            console.log("obj: ", obj);
             this.isShowBtn = obj.AgentID == this.userData.UserId || obj.DispatchID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 人員工時資料
-            console.log("this.tableItems: ", this.tableItems);
+            console.log("費用頁: this.tableItems: ", this.tableItems);
             // this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
             //工作項 清單
             let tempWorkList = this.tableItems.map(e => e.JobName)
@@ -798,10 +799,14 @@ export default {
                 return tempWorkList.indexOf(ele) == pos;
             }) 
             this.tableItems_fee = tempWorkList.map(item => ({
+                MaintainCode_Eqp: this.tableItems.find(ele => ele.JobName == item).MaintainCode_Eqp,
+                MaintainCode_Seq: this.tableItems.find(ele => ele.JobName == item).MaintainCode_Seq,
+                MaintainCode_AllName: this.tableItems.find(ele => ele.JobName == item).MaintainCode_AllName,
+                JobCode: this.tableItems.find(ele => ele.JobName == item).JobCode,
                 JobName: item,
                 UnitPrice: 0,
                 Amount: 1,
-                Subtotal: 0,
+                Price: 0,
             }))
 
             // 要求 平交道項目清單
@@ -835,7 +840,7 @@ export default {
             console.log("editIdx: ", this.editIdx);
             this.tableItems_fee[this.editIdx].UnitPrice = this.jobPrice
             this.tableItems_fee[this.editIdx].Amount = this.jobAmount
-            this.tableItems_fee[this.editIdx].Subtotal = this.jobAmount * this.jobPrice
+            this.tableItems_fee[this.editIdx].Price = this.jobAmount * this.jobPrice
             this.moneyDialog = false
         },
         // 顯示 dialog
@@ -897,6 +902,7 @@ export default {
         },
         // 送出 (同意驗收)
         save() {
+            console.log("this.tableItems_fee: ", this.tableItems_fee);
             if (confirm('你確定要驗收嗎?')) {
                 this.chLoadingShow({show:true})
                 // 整理平交道項目
@@ -913,7 +919,8 @@ export default {
                     WorkOrderID: this.workNumber,  // 工單編號
                     TotalSpent: this.totalMoney,  // 總金額
                     TotalWorkTime: this.totalHourCount,  // 總工時
-                    WorkTimeData: this.tableItems,  // 工時統計資料
+                    // WorkTimeData: this.tableItems,  // 工時統計資料
+                    MaterialData: this.tableItems_fee,
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                     Railroadrepair: resultCrossItem,

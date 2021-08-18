@@ -148,7 +148,7 @@ export default {
             { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量(hr)', value: 'WorkLoad', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         topItems: [],  // 上面的欄位
