@@ -342,8 +342,15 @@
               that.eqCodes[toObject].push(...res.data.code_list)
               that.eqCodes[toObject].forEach((ele,index) => {
                 let NeqCode = ''
+                //因為3-2的編碼方式是車站+類型，但是顯示的時候只要顯示類型所以要拆出來顯視
                 NeqCode = (ele.EquipCode.indexOf('-')!=-1)?(ele.EquipCode.split('-')[1]):ele.EquipCode
-                ele.FullShowName = ele.EquipName + '(' + NeqCode +')'
+                //中文(編碼)
+                if(toObjectLv == '22') {
+                  let PName = that.eqCodes.eqCodeListLv2.find(e=>e.EquipCode==ele.ParentCode).EquipName
+                  ele.FullShowName = PName + '-' + ele.EquipName + '(' + NeqCode +')'
+                } else {
+                  ele.FullShowName = ele.EquipName + '(' + NeqCode +')'
+                }
               })
               that.eqCodes[toObject] = decodeObject(that.eqCodes[toObject])
             }
@@ -526,16 +533,16 @@
         const that = this
         await that.$emit('getEqCode',that.newEqCode)
         if(toLevel >= 1){
-          that.newEqName = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1)?.FullShowName||'' + ((toLevel == 1)?'':'-')
-          that.newEqCh = that.eqCodes.eqCodeListLv1.find(ele => ele.EquipCode == that.selectItem.Lv1)?.EquipName||'' + ((toLevel == 1)?'':'-')
+          that.newEqName = (that.eqCodes.eqCodeListLv1?.find(ele => ele.EquipCode == that.selectItem.Lv1)?.FullShowName||'') + ((toLevel == 1)?'':'-')
+          that.newEqCh = (that.eqCodes.eqCodeListLv1?.find(ele => ele.EquipCode == that.selectItem.Lv1)?.EquipName||'') + ((toLevel == 1)?'':'-')
         }
         if(toLevel >= 2){
           that.newEqName += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22)?.FullShowName||'' : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2)?.FullShowName||'') + ((toLevel == 2)?'':'-')
           that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22)?.EquipName||'' : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2)?.EquipName||'') + ((toLevel == 2)?'':'-')
         }
         if(toLevel >= 3){
-          that.newEqName += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3)?.FullShowName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.FullShowName||'':'') + ((toLevel == 3)?'':'-')
-          that.newEqCh += that.eqCodes.eqCodeListLv3.find(ele => ele.EquipCode == that.selectItem.Lv3)?.EquipName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.EquipName||'':'') + ((toLevel == 3)?'':'-')
+          that.newEqName += (that.eqCodes.eqCodeListLv3?.find(ele => ele.EquipCode == that.selectItem.Lv3)?.FullShowName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.FullShowName||'':'')) + ((toLevel == 3)?'':'-')
+          that.newEqCh += (that.eqCodes.eqCodeListLv3?.find(ele => ele.EquipCode == that.selectItem.Lv3)?.EquipName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.EquipName||'':'')) + ((toLevel == 3)?'':'-')
         }
         if(toLevel >= 4){
           that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4)?.FullShowName||''

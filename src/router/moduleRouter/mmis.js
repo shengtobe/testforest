@@ -24,7 +24,20 @@ export const MmisRouter = [
         linkText: '料件管理',
         path: '/mmis/material',
         component: () =>
-            import ('@/views/mmis/Material.vue')
+            // import ('@/views/mmis/Material.vue')
+            import ('@/views/mmis/MaterialIndex.vue')
+    },
+    {
+        linkText: '料件規格管理',
+        path: '/mmis/material/material-spec',
+        component: () =>
+            import ('@/views/mmis/MaterialSpec.vue')
+    },
+    {
+        linkText: '料件庫存管理',
+        path: '/mmis/material/material-inventory',
+        component: () =>
+            import ('@/views/mmis/MaterialIndex.vue')
     },
     // ------ 設備維修管理 ------ 
     {
