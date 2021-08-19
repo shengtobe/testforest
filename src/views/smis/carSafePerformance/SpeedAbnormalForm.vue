@@ -98,6 +98,9 @@
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>超速級別
+                <v-btn small dark class="mb-1 ml-2 btn-delete"
+                    @click="dialogShow = true"
+                >速度範圍</v-btn>
             </h3>
             <v-select
                 v-model="OverSpeedId"
@@ -181,6 +184,30 @@
     >
 
     </v-form> -->
+    <!-- 行車超速第1級列車運轉速度範圍 -->
+    <v-dialog v-model="dialogShow" max-width="450px">
+        <v-card class="theme-del-card">
+            <v-toolbar flat dense dark class="metal-red-top">
+                <v-icon class="mr-2">mdi-gauge</v-icon>
+                <v-toolbar-title>行車超速第1級列車運轉速度範圍</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-data-table
+                :headers="headers"
+                :items="tableItems"
+                disable-sort
+                disable-filtering
+                hide-default-footer
+                class="theme-table"
+            ></v-data-table>
+            <body-1 class="mt-4 ml-1 mr-1 mb-1">前項行車超速第1級列車運轉速度範圍包括牽引及推進速度。</body-1>
+            <body-1 class="mt-2 ml-1 mr-1 mb-1">(二)	超出本辦法第二點第(二)、(三)、(四)、(五)限速2至3公里者為第1級行車超速，超出3公里以上者為第2級行車超速。</body-1>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -218,6 +245,21 @@ export default {
             FileCount: [],  // 附件
         },
         dateMemuShow: false,  // 日曆是否顯示
+        dialogShow: false,  // 速限表是否顯示
+        headers: [  // 速限表顯示的欄位
+            { text: '起訖站', value: 'station', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '直線最高速度', value: 'straight', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '曲線最高速度', value: 'curve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
+        tableItems: [  // 速限表表格資料
+            { station: '嘉義 ~ 北門', straight: '33~36', curve: '28~31'},
+            { station: '北門 ~ 竹崎', straight: '50~54', curve: '40~43'},
+            { station: '竹崎 ~ 二萬平', straight: '28~31', curve: '22~25'},
+            { station: '二萬平 ~ 阿里山', straight: '28~30', curve: '18~20'},
+            { station: '阿里山 ~ 祝山', straight: '22~24', curve: '18~20'},
+            { station: '阿里山 ~ 眠月', straight: '22~24', curve: '18~20'},
+            { station: '阿里山 ~ 水山神木', straight: '22~24', curve: '18~20'},
+        ],
     }),
     components: {
         UploadFileAdd,
