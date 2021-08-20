@@ -29,7 +29,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
             </h3>
-            <v-text-field solo @click="eqCode=true" readonly v-model="searchIpt.MaintainCode_Loc" />
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" />
             <v-dialog v-model="eqCode" max-width="700px">
                 <v-card class="theme-card">
                     <v-card-title class="px-4 py-1">
@@ -40,7 +40,7 @@
                         </v-btn>
                     </v-card-title>
                     <div class="px-4 py-3">
-                        <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" />
+                        <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
                     </div>
                     <v-card-actions class="px-5 pb-5">
                         <v-spacer></v-spacer>
@@ -254,6 +254,7 @@ import Form from './MotoDynamoForm'
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve"
 export default {
     data: () => ({
+        searchName: '',
         searchIpt: {  // 搜尋欄位
             year: new Date().getFullYear(),
             month: '',  // 月
@@ -466,6 +467,11 @@ export default {
         //機車回傳
         getRtnCode(code) {
             this.preSetEqcode = code
+        },
+        //機車回傳中文
+        getRtnName(cName) {
+            console.log(cName)
+            this.searchName = cName.replace('車輛(RST)-','')
         },
         //機車送出按鈕
         selectEQ() {
