@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">料件管理</h2>
+    <h2 class="mb-4 label-title">料件規格管理</h2>
 
     <v-divider class="mx-2 mt-5 mb-4" />
 
