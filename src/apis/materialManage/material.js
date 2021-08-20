@@ -83,3 +83,40 @@ return axios(
     data,
 }
 )}
+
+//庫存
+export function materialInventoryQueryList(data) { 
+  return axios(
+  {
+      url: '/mmis/equipdata/materialinventoryquerylist',
+      method: 'post',
+      data,
+  }
+)}
+
+export function materialInventoryQuery(data) { 
+return axios(
+{
+    url: '/mmis/equipdata/materialinventoryquery',
+    method: 'post',
+    data,
+}
+)}
+
+export function materialInventoryEdit(data) { 
+return axios(
+{
+    url: '/mmis/equipdata/materialinventoryedit',
+    method: 'post',
+    data,
+}
+)}
+
+export function materialInventoryDelete(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialinventorydelete',
+        method: 'post',
+        data,
+    }
+    )}
