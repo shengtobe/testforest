@@ -1,7 +1,7 @@
 <template>
 <div>
     <!-- 待派工 -->
-    <Show :itemData="itemData" v-if="status == 1" />
+    <Show :itemData="itemData" v-if="status >= 1" />
 
     <!-- 審核中、已完備資料 -->
     <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />

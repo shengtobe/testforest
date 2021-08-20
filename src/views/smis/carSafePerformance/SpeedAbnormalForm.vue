@@ -185,7 +185,7 @@
 
     </v-form> -->
     <!-- 行車超速第1級列車運轉速度範圍 -->
-    <v-dialog v-model="dialogShow" max-width="450px">
+    <v-dialog v-model="dialogShow" max-width="750px">
         <v-card class="theme-del-card">
             <v-toolbar flat dense dark class="metal-red-top">
                 <v-icon class="mr-2">mdi-gauge</v-icon>
@@ -204,8 +204,24 @@
                 hide-default-footer
                 class="theme-table"
             ></v-data-table>
-            <body-1 class="mt-4 ml-1 mr-1 mb-1">前項行車超速第1級列車運轉速度範圍包括牽引及推進速度。</body-1>
-            <body-1 class="mt-2 ml-1 mr-1 mb-1">(二)	超出本辦法第二點第(二)、(三)、(四)、(五)限速2至3公里者為第1級行車超速，超出3公里以上者為第2級行車超速。</body-1>
+            <div>
+                <p class="font-weight-black ml-1" >行車超速處理</p>
+                <p class="font-weight-regular mt-n4 ml-1">
+                1.	行車超速分為2級，超出第1級以外之列車運轉速度為第2級。<br/>
+                (1)	行車超速範圍包括牽引及推進速度。<br/>
+                (2) 超出限速3公里以下者為第1級行車超速，超出3公里以上者為第2級行車超速。<br/>
+                2.	車速紀錄紙上最大超速點其前後2分鐘共4分鐘之平均速度為檢核超速之列車運轉速度。
+                </p>
+                <p class="font-weight-black ml-1">列車運轉速度規定</p>
+                <p class="font-weight-regular mt-n4 ml-1">
+                1.	以柴油機車或柴油客車為動力之列車最高運轉速度規定如上表：<br/>
+                前項最高運轉速度包括牽引及推進速度。<br/>
+                2.	列車通過對向轉轍器，其運轉速度不得超過每小時12公里。通過附有轉轍器之彎曲路線，不得超過每小時10公里。<br/>
+                3.	調車速度不得超過每小時15公里，編組聯結作業時，相距5公尺以內，運轉速度不得超過每小時5公里。<br/>
+                4.	列車遇有慢行標示牌時，其運轉速度不得超過每小時12公里，但有指定運轉速度者，應依所指示速度行駛。<br/>
+                5.	蒸汽機車運轉速度不得超過每小時18公里。
+                </p>
+            </div>
         </v-card>
     </v-dialog>
 </v-container>
