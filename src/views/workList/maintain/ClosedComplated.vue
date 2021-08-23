@@ -13,7 +13,7 @@
     <v-row class="my-8">
         <v-col cols="12">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時&費用統計
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時統計
             </h3>
             <v-card flat>
                 <v-data-table
@@ -33,6 +33,32 @@
 
                         <p class="py-2 text-center">
                             總工時： <span class="blue--text mr-5">{{ totalJobHour }}</span>
+                        </p>
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+        <v-col cols="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-clock</v-icon>費用統計
+            </h3>
+            <v-card flat>
+                <v-data-table
+                    :headers="headers_fee"
+                    :items="tableItems_fee"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:footer>
+                        <v-divider></v-divider>
+
+                        <p class="py-2 text-center">
                             總金額： <span class="red--text">{{ totalMoney }}</span>
                         </p>
                     </template>
@@ -144,12 +170,21 @@ export default {
         totalMoney: '',  // 工時統計的總金額
         totalJobHour: 0,  // 總工時
         tableItems: [],  // 工時表格資料
+        tableItems_fee: [],  // 工時表格資料
         headers: [  // 工時標題
             { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量(hr)', value: 'WorkLoad', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            // { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
+        headers_fee: [  // 工時標題
+            // { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '單價', value: 'UnitPrice', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
+            { text: '數量', value: 'Amount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '小計', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 100 },
+            // { text: '編輯費用', value: 'Price_e', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' , width: 90 },
         ],
         topItems: [],  // 上面的欄位
         bottomItems: [],  // 下面的欄位
@@ -178,10 +213,12 @@ export default {
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.bottomItems2 = obj.bottomItems2  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
+            this.tableItems_fee = [ ...obj.WorkMaterialList ]  // 費用資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
             if(this.status == "4"){
                 this.isShowBtn = obj.AllDepartorID == this.userData.UserId
+                console.log("isShowBtn: ", obj.AllDepartorID + "==" + this.userData.UserId);
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間

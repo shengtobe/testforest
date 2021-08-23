@@ -98,6 +98,9 @@
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>超速級別
+                <v-btn small dark class="mb-1 ml-2 btn-delete"
+                    @click="dialogShow = true"
+                >速度範圍</v-btn>
             </h3>
             <v-select
                 v-model="OverSpeedId"
@@ -181,6 +184,46 @@
     >
 
     </v-form> -->
+    <!-- 行車超速第1級列車運轉速度範圍 -->
+    <v-dialog v-model="dialogShow" max-width="750px">
+        <v-card class="theme-del-card">
+            <v-toolbar flat dense dark class="metal-red-top">
+                <v-icon class="mr-2">mdi-gauge</v-icon>
+                <v-toolbar-title>行車超速第1級列車運轉速度範圍</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialogShow = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-data-table
+                :headers="headers"
+                :items="tableItems"
+                disable-sort
+                disable-filtering
+                hide-default-footer
+                class="theme-table"
+            ></v-data-table>
+            <div>
+                <p class="font-weight-black ml-1" >行車超速處理</p>
+                <p class="font-weight-regular mt-n4 ml-1">
+                1.	行車超速分為2級，超出第1級以外之列車運轉速度為第2級。<br/>
+                (1)	行車超速範圍包括牽引及推進速度。<br/>
+                (2) 超出限速3公里以下者為第1級行車超速，超出3公里以上者為第2級行車超速。<br/>
+                2.	車速紀錄紙上最大超速點其前後2分鐘共4分鐘之平均速度為檢核超速之列車運轉速度。
+                </p>
+                <p class="font-weight-black ml-1">列車運轉速度規定</p>
+                <p class="font-weight-regular mt-n4 ml-1">
+                1.	以柴油機車或柴油客車為動力之列車最高運轉速度規定如上表：<br/>
+                前項最高運轉速度包括牽引及推進速度。<br/>
+                2.	列車通過對向轉轍器，其運轉速度不得超過每小時12公里。通過附有轉轍器之彎曲路線，不得超過每小時10公里。<br/>
+                3.	調車速度不得超過每小時15公里，編組聯結作業時，相距5公尺以內，運轉速度不得超過每小時5公里。<br/>
+                4.	列車遇有慢行標示牌時，其運轉速度不得超過每小時12公里，但有指定運轉速度者，應依所指示速度行駛。<br/>
+                5.	蒸汽機車運轉速度不得超過每小時18公里。
+                </p>
+            </div>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -218,6 +261,21 @@ export default {
             FileCount: [],  // 附件
         },
         dateMemuShow: false,  // 日曆是否顯示
+        dialogShow: false,  // 速限表是否顯示
+        headers: [  // 速限表顯示的欄位
+            { text: '起訖站', value: 'station', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '直線最高速度', value: 'straight', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '曲線最高速度', value: 'curve', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
+        tableItems: [  // 速限表表格資料
+            { station: '嘉義 ~ 北門', straight: '33~36', curve: '28~31'},
+            { station: '北門 ~ 竹崎', straight: '50~54', curve: '40~43'},
+            { station: '竹崎 ~ 二萬平', straight: '28~31', curve: '22~25'},
+            { station: '二萬平 ~ 阿里山', straight: '28~30', curve: '18~20'},
+            { station: '阿里山 ~ 祝山', straight: '22~24', curve: '18~20'},
+            { station: '阿里山 ~ 眠月', straight: '22~24', curve: '18~20'},
+            { station: '阿里山 ~ 水山神木', straight: '22~24', curve: '18~20'},
+        ],
     }),
     components: {
         UploadFileAdd,

@@ -1,6 +1,7 @@
 <template>
 <v-container style="max-width: 1200px" class="label-header">
-    <h2 class="mb-4 label-title">職災危害編號：{{ code1 }}{{ code2 }}{{ code3 }}</h2>
+    <!-- <h2 class="mb-4 label-title">職災危害編號：{{ code1 }}{{ code2 }}{{ code3 }}</h2> -->
+    <h2 class="mb-4 label-title">職災危害編號：{{ id }}</h2>
 
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
@@ -105,6 +106,7 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.id = obj.EndangerCode // 編號
+            // console.log("this.id: ", this.id);
             // this.code1 = obj.code1 // 編號-第1段
             this.code1 = "" // 編號-第1段
             // this.code2 = obj.code2 // 編號-第2段
@@ -120,6 +122,7 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.saveUserGroup(res.data.GroupData)
+                    console.log("res.data.GroupData: ", res.data.GroupData);
                     this.isShowBtn = this.groupData.RoleLv3 == "T"
                 }
             }).catch( err => {

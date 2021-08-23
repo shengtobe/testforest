@@ -15,7 +15,8 @@
           <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-account</v-icon>姓名
           </h3>
-          <PeopleSelect v-model="ipt.ID" @getName="afterSelect"/>
+          <!-- <PeopleSelect v-model="ipt.ID" @getName="afterSelect"/> -->
+          <PeopleSelectMuti :solo="true" :peopleList="ipt.ID" @getPeople="getPeople" />
         </v-col>
 
         <v-col cols="12" sm="4">
@@ -138,6 +139,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import PeopleSelect from '@/components/PeopleSelect.vue'
+import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { licenseOption } from '@/apis/smis/license'
 export default {
@@ -163,7 +165,8 @@ export default {
     isLoading: false
   }),
   components: {
-    PeopleSelect
+    PeopleSelect,
+    PeopleSelectMuti
   },
   computed: {
       ...mapState ('user', {
@@ -181,13 +184,33 @@ export default {
     ]),
     // 初始化資料
     initData() {
+      this.ipt.LicenseNo = ''
+      this.ipt.EffectiveDate = ''
+      this.ipt.ReTrainingTime = ''
+      this.ipt.Memo = ''
       if(this.data){
+        console.log("data: ", this.data);
+        console.log("11 ipt: ", this.ipt);
         this.ipt = {...this.data}
+        console.log("22 ipt: ", this.ipt);
+        this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/\//g,"-")
+        this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/\//g,"-")
+        this.ipt.ExpDTime = this.ipt.ExpDTime.replace(/\//g,"-")
+        this.ipt.License = this.name
       }
-      this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/\//g,"-")
-      this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/\//g,"-")
-      this.ipt.ExpDTime = this.ipt.ExpDTime.replace(/\//g,"-")
-      this.ipt.License = this.name
+      
+      console.log("ipt.Name: ", this.ipt.Name);
+      
+    },
+    getPeople(value) {
+      console.log("getPeople(value): ", value);
+      
+        if(value){
+            this.ipt.ID = value.UserId
+            this.ipt.Name = value.UserName
+        } else {
+            
+        }
     },
     // 送出
     save() {
@@ -205,13 +228,18 @@ export default {
       }
       if(this.ipt.Memo == undefined) this.ipt.Memo = '';
 
+      // console.log("=============");
+      // console.log("this.ipt: ", this.ipt);
+      // console.log("this.data: ", this.data);
+      // console.log("this.name: ", this.name);
+      // return
       this.isLoading = true
       // this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/-/g,"\/")
       // this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/-/g,"\/")
       // this.ipt.ExpDTime = this.ipt.ExpDTime.replace(/-/g,"\/")
       licenseOption({
         ...this.ipt,
-        Option: (this.data.ID)?'2':'1',
+        Option: (this.data)?'2':'1',
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         LicenseFK: this.ipt.FlowID,

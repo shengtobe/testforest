@@ -29,7 +29,7 @@
                 </v-btn>
               </v-card-title>
               <div class="px-4 py-3">
-                <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" />
+                <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
               </div>
               <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
@@ -320,9 +320,15 @@ export default {
     getRtnCode(code) {
       this.preSetEqcode = code
     },
+    //機車回傳中文
+        getRtnName(cName) {
+            console.log(cName)
+            this.ipt.MaintainCode_Loc = cName.replace('車輛(RST)-','')
+        },
     //機車送出按鈕
     selectEQ() {
       this.com_equipCode = this.preSetEqcode
+      console.log("this.com_equipCode: ", this.com_equipCode);
       this.eqCode = false
     }
   },

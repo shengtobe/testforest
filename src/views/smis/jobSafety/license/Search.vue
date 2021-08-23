@@ -246,5 +246,8 @@ export default {
             this.$router.push({ path: '/smis/jobsafety/license/' + encodeURIComponent(LicenseName) + '/list' })
         }
     },
+    created() {
+        this.search()
+    }
 }
 </script>

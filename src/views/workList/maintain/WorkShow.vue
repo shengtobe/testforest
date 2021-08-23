@@ -290,7 +290,7 @@
                                         <v-btn class="btn-clear black--text mb-1 ml-1" color="success" elevation="4" @click="hr4">4</v-btn>
                                         <v-btn class="btn-clear black--text mb-1 ml-1" color="success" elevation="4" @click="hr8">8</v-btn>
                                         <v-text-field
-                                            v-model.trim.number="jobForm.Count"
+                                            v-model.trim.number="jobForm.Workload"
                                             solo type="number"
                                             suffix="小時"
                                             :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
@@ -490,7 +490,7 @@ export default {
                 { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '工作量(hr)', value: 'Count', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             ],
             items: [],
@@ -503,7 +503,7 @@ export default {
             Location: '',
             JobCode: '',
             JobName: '',
-            Count: 1, 
+            Workload: 1, 
             eqCode: '',
             MaintainCode_AllName: '',
             MaintainCode_Eqp: '',
@@ -548,7 +548,7 @@ export default {
         },
         addWork(){
             if(this.Lv5Name == '') return
-            let v = this.Lv5Name + ' - ' + this.jobForm.Count + 'hr'
+            let v = this.Lv5Name + ' - ' + this.jobForm.Workload + 'hr'
             console.log("this.Lv5Code: ", this.Lv5Code);
             console.log("this.Lv5Name: ", this.Lv5Name);
             console.log("this.LvAllName: ", this.LvAllName);
@@ -569,11 +569,11 @@ export default {
                 this.selectWorkArr.push(v)
             }
         },
-        hr1(){ this.jobForm.Count = 1},
-        hr2(){ this.jobForm.Count = 2},
-        hr3(){ this.jobForm.Count = 3},
-        hr4(){ this.jobForm.Count = 4},
-        hr8(){ this.jobForm.Count = 8},
+        hr1(){ this.jobForm.Workload = 1},
+        hr2(){ this.jobForm.Workload = 2},
+        hr3(){ this.jobForm.Workload = 3},
+        hr4(){ this.jobForm.Workload = 4},
+        hr8(){ this.jobForm.Workload = 8},
         ...mapActions('system', [
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -614,7 +614,7 @@ export default {
                 Location: obj.WorkPlace,
                 JobCode: '',
                 JobName: '',
-                Count: 1, 
+                Workload: 1, 
                 eqCode: '',
                 MaintainCode_AllName: '',
                 MaintainCode_Eqp: '',
@@ -669,6 +669,8 @@ export default {
                     this.chLoadingShow({show:true})
 
                     maintainOrder({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
                         WorkOrderID: this.workNumber,  // 工單編號
                         ToRepairDDay: this.ipt.arrivalFixDate,  // 到修日期(年月日)
                         ToRepairDHour: this.ipt.arrivalFixHour,  // 到修日期(小時)
@@ -681,11 +683,9 @@ export default {
                         FinishDTime: this.ipt.endFixMin,  // 完工日期(分)
                         MaintainStatus: this.ipt.fixSituation,  // 維修情況
                         WorkTimeData: this.jobHour.items,  // 工時統計資料
-                        ClientReqTime: getNowFullTime(),  // client 端請求時間
-                        OperatorID: this.userData.UserId,  // 操作人id
-                        MaintainCode_Eqp: '',
-                        MaintainCode_Seq: '',
-                        MaintainCode_AllName: '',
+                        // MaintainCode_Eqp: '',
+                        // MaintainCode_Seq: '',
+                        // MaintainCode_AllName: '',
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '送出成功' })
@@ -734,7 +734,7 @@ export default {
                     this.nowEqCode = this.initCode
                 }
                 if(this.jobForm.JobName != ''){
-                    this.selectWorkArr.push(`${this.jobForm.JobName}(${this.jobForm.JobCode}) - ${this.jobForm.Count}hr`)
+                    this.selectWorkArr.push(`${this.jobForm.JobName}(${this.jobForm.JobCode}) - ${this.jobForm.Workload}hr`)
                     // this.selectWorkArr.push(this.jobForm.JobName + '(' + this.jobForm.JobCode + ') - ' + this.jobForm.Count + "hr")
                 }
             }
@@ -779,7 +779,7 @@ export default {
                     tempJobForm.PeopleName = this.allLicenseMembers.find(item => item.value == tempJobForm.PeopleId).text
                     tempJobForm.JobName = work.substr(0, work.indexOf('('))
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
-                    tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
+                    tempJobForm.Workload = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
                     tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
                     tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
                     tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
@@ -807,7 +807,7 @@ export default {
                     let tempJobForm = {...this.jobForm}
                     tempJobForm.JobName = work.substr(0, work.indexOf('('))
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
-                    tempJobForm.Count = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
+                    tempJobForm.Workload = work.substr(work.indexOf(' - ') + 3).replace('hr', '')
                     tempJobForm.eqCode = this.selectWorkArr_eqCode[i]
                     tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
                     tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]

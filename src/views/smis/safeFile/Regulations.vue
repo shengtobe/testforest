@@ -94,12 +94,25 @@
                     </template>
 
                     <template v-slot:item.file="{ item }">
-                        <v-chip small label color="primary"
+                        <!-- <v-chip small label color="primary"
                             :href="item.file_path"
                             :download="item.FileFullName"
                         >
                             {{ item.FileFullName }}
-                        </v-chip>
+                        </v-chip> -->
+                        <a :href="item.file_path" download>
+                            {{ item.FileFullName }}
+                        </a>
+
+  
+                        <!-- <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
+                            v-for="item in notify.files"
+                            :key="item.fileName"
+                            :href="item.link"
+                            :download="item.fileName"
+                        >
+                            {{ item.fileName }}
+                        </v-chip> -->
                     </template>
 
                     <template v-slot:item.action="{ item }">
@@ -195,6 +208,22 @@
                         <v-col cols="12" v-if="itemIndex > -1" class="mt-n10">
                             <span class="label-warning">目前檔案： {{ ipt.nowfile }}</span>
                         </v-col>
+
+                        <!-- 上傳檔案 (新增時) -->
+                        <!-- <template v-if="!isEdit"> -->
+                        <!-- <template v-if="!isEdit">
+                            <v-col cols="12" class="mt-8 mb-2">
+                                <v-divider></v-divider>
+                            </v-col>
+
+                            <UploadFileAdd
+                                title="檔案上傳"
+                                :uploadDisnable="false"
+                                :fileList="showFiles"
+                                @joinFile="joinFile"
+                                @rmFile="rmFile"
+                            />
+                        </template> -->
                     </v-row>
                 <!-- </v-form> -->
             </v-card-text>
@@ -224,6 +253,7 @@ export default {
             type: '',  // 文件類型
             fileName: '',  // 文件名稱
             note: '',  // 備註
+            isEdit: false,  // 是否為編輯
         },
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
@@ -293,6 +323,8 @@ export default {
                 KeyItem: [
                     { tableColumn: 'MaintainDesp', columnValue: this.searchIpt.depart },  // 維護單位
                     { tableColumn: 'FileType', columnValue: this.searchIpt.type },  // 文件類型
+                    { tableColumn: 'Remark', columnValue: this.searchIpt.note },  // 文件備註
+                    { tableColumn: 'FileFullName', columnValue: this.searchIpt.fileName },  // 文件備註
                     // { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.fileName },  // 文件名稱
                     // { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.note },  // 備註
                 ],
@@ -307,6 +339,7 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("tableItems: ", this.tableItems);
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -381,6 +414,7 @@ export default {
                         this.tableItems[this.itemIndex].convert_findDate = res.data.convert_findDate  // 最後更新時間
 
                         // 若有傳檔案，則更新檔案路徑及檔名
+                            console.log("ipt.upload: ", this.ipt.upload);
                         if (this.ipt.upload) {
                             this.tableItems[this.itemIndex].FileFullName = this.ipt.upload.fileName  // 檔案名稱
                             this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
