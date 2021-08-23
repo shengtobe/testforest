@@ -287,6 +287,7 @@ export default {
         eqCode: false,
         content: {},  // 詳細內容欄位
         preSetEqcode: '',
+        preSerEqName: ''
     }),
     components: { 
         Pagination,     // 頁碼
@@ -471,11 +472,12 @@ export default {
         //機車回傳中文
         getRtnName(cName) {
             console.log(cName)
-            this.searchName = cName.replace('車輛(RST)-','')
+            this.preSerEqName = cName.replace('車輛(RST)-','')
         },
         //機車送出按鈕
         selectEQ() {
             this.com_equipCode = this.preSetEqcode
+            this.searchName = this.preSerEqName
             this.eqCode = false
         }
     },

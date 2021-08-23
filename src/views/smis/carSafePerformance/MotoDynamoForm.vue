@@ -18,7 +18,7 @@
           <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
           </h3>
-          <v-text-field solo @click="eqCode=true" v-model="ipt.MaintainCode_Loc" readonly />
+          <v-text-field solo @click="eqCode=true" v-model="eqName" readonly />
           <v-dialog v-model="eqCode" max-width="700px">
             <v-card class="theme-card">
               <v-card-title class="px-4 py-1">
@@ -228,8 +228,10 @@ export default {
     dateMenuShow: false,  // 日曆是否顯示
     contentShow: false,  // 詳細內容 dialog 是否顯示
     eqCode: false,
+    eqName: '',
     content: {},  // 詳細內容欄位
     preSetEqcode: '',
+    preSerEqName: ''
   }),
   components: { 
     EquipCode,
@@ -321,13 +323,14 @@ export default {
       this.preSetEqcode = code
     },
     //機車回傳中文
-        getRtnName(cName) {
-            console.log(cName)
-            this.ipt.MaintainCode_Loc = cName.replace('車輛(RST)-','')
-        },
+    getRtnName(cName) {
+      console.log(cName)
+      this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
     //機車送出按鈕
     selectEQ() {
       this.com_equipCode = this.preSetEqcode
+      this.eqName = this.preSerEqName
       console.log("this.com_equipCode: ", this.com_equipCode);
       this.eqCode = false
     }
