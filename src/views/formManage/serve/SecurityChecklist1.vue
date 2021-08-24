@@ -160,7 +160,7 @@
                       color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in items1"
-                      :key="idx"
+                      :key="'item1_'+idx"
                       class="mb-6 mt-4"
                     >
                       <v-row no-gutter class="label-header">
@@ -240,7 +240,7 @@
                       color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in items2"
-                      :key="idx"
+                      :key="'item2_'+idx"
                       class="mb-6 mt-4">
                       <v-row no-gutter class="label-header">
                         <v-col cols="12" sm="2">
@@ -344,7 +344,7 @@
                       color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in items3"
-                      :key="idx"
+                      :key="'item3_'+idx"
                       class="mb-6 mt-4"
                     >
                       <v-row no-gutter class="label-header">
@@ -394,7 +394,7 @@
                       color="border-bg-dark-yellow"
                       elevation="4"
                       v-for="(item, idx) in items4"
-                      :key="idx"
+                      :key="'item4_'+idx"
                       class="mb-6 mt-4"
                     >
                       <v-row no-gutter class="label-header">
@@ -563,7 +563,7 @@ export default {
           { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
         ],
         items_3: [
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
+          { status1: "0", note: "" },
           { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
           { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
           { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
@@ -637,10 +637,40 @@ export default {
   },
   components: { Pagination, dateSelect, deptSelect }, // 頁碼
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
+    ...mapState ('user', {
+        userData: state => state.userData,  // 使用者基本資料
+    }),
+    haveText:function() {
+      let rtnValue = []
+      let rtnChk = []
+      for(let itemKey in this.ipt){
+        let thisElement = this.ipt[itemKey].map(e => {
+          let inElement = {...e}
+          delete inElement.note
+          return inElement
+        })
+        //檢查 有無只填一半的 有=false
+        let itemsHasChk = thisElement.map(e => {
+          let item = Object.values(e)
+          let allTxt = item.every(ele=>ele!='0')
+          let allZero = item.every(ele=>ele=='0')
+          return allTxt || allZero
+        }).every(e=>e) 
+
+        //檢查 有沒有一項是全填完整 有=true
+        let itemsHasValue = thisElement.map(e => {
+          let item = Object.values(e)
+          let allTxt = item.every(ele=>ele!='0')
+          return allTxt
+        }).some(e=>e)
+        
+        rtnValue.push(itemsHasValue) 
+        rtnChk.push(itemsHasChk)
+      }
+      //上面兩個判斷都要過 = true
+      return rtnValue.some(e=>e) && rtnChk.every(e=>e)
     },
+  },
   created() {
       this.ipt2 = { ...this.defaultIpt }
       //更新時間
@@ -754,7 +784,11 @@ export default {
       })
     },
     save() {
-
+      
+      if(!this.haveText){
+        alert("所有檢查項目都沒勾或有檢查項目只勾選一半")
+        return
+      }
       // var dddd = []
      
       // for (let index = 0; index < 11; index++) {

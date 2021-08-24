@@ -620,6 +620,7 @@ export default {
         isEdit: false,  // 是否為編輯
         showEq: false,
         workNumber: '',  // 工單編號
+        lowReturn: '4',
         creater: '',  // 立案人名稱
         createrId: 'K10744389',  // 立案人員工編號
         fixUnit: '',  // 立案單位
@@ -954,6 +955,7 @@ export default {
         },
         // 送出表單
         save() {
+            
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 console.log("this.combineCode: ", this.combineCode);
                 if(this.combineCode == ''){
