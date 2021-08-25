@@ -491,8 +491,8 @@ export default {
           { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
         ],
         items_3: [
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
         ],
       },
       defaultIpt: {  // 預設的欄位值

@@ -475,6 +475,7 @@ export default {
       newText: "紀錄表",
       isLoading: false,
       disabled: false,
+      CheckDay: '',
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -564,15 +565,15 @@ export default {
         ],
         items_3: [
           { status1: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
         ],
         items_4: [
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
-          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
+          { status1: "0", note: "" },
         ],
       },
       test23: "test1111",
