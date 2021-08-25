@@ -113,7 +113,7 @@
                     {{ combineCode }}
                 </p>
             </v-col>
-            <EquipRepairCode :key="0" :toLv="4" :nowEqCode="nowEqCode" @getEqCode="getTempCode" @getEqCh="getTempCh"/>
+            <EquipRepairCode :key="eqkey" :toLv="4" :nowEqCode="nowEqCode" :rtnStartLv="lowReturn" @getEqCode="getTempCode" @getEqCh="getTempCh"/>
         </v-row>
         <v-row class="px-2 mt-8"> 
             <v-col cols="12">
@@ -369,6 +369,8 @@ export default {
         valid: true,  // 表單是否驗證欄位
         combineCh: '', //合併後的設備中文名稱
         showEq: false,
+        eqkey: '0',
+        lowReturn: '4',
         isLoading: false,  // 是否讀取中
         combineCode: '', //合併後的設備編碼
         nowEqCode: '', //編輯時 預設帶入的combineCode
@@ -529,7 +531,11 @@ export default {
                 if (res.data.CreatorID != this.userData.UserId && res.data.DispatchID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
                 }
-
+                console.log("res.data.CreateType: ", res.data.CreateType);
+                if(res.data.CreateType == '2'){
+                    this.lowReturn = '2'
+                    this.eqkey++
+                }
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
                 this.ipt.malfunctionDes = res.data.Malfunction  // 故障描述
                 this.nowEqCode = res.data.MaintainCode

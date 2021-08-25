@@ -805,7 +805,7 @@ export default {
                 JobCode: this.tableItems.find(ele => ele.JobName == item).JobCode,
                 JobName: item,
                 UnitPrice: 0,
-                Amount: 1,
+                Amount: this.tableItems.find(ele => ele.JobName == item).WorkLoad,
                 Price: 0,
             }))
 

@@ -98,8 +98,9 @@
       <v-col cols="12" md="2">
         <h3 class="mb-1"><v-icon class="mr-1">mdi-city-variant-outline</v-icon>監控位置</h3>
         <v-select 
-          :items="['TI-01X','TI-01Y','TI-02X',' TI-02Y']" 
+          :items="locListKeyValue" 
           v-model="Location"
+          @change="test"
           solo />
       </v-col>
       <v-col cols="12" md="2" align-self="center" >
@@ -234,11 +235,21 @@ export default {
       },
     },
     
-    q_datestart:'',
-    q_dateend:'',
+    q_datestart:getNowFullTime().substr(0,10),
+    q_dateend:getNowFullTime().substr(0,10),
     Location:'',
     pageOpt: {page:1},
     tableItems:[],
+    // {LocID:'TI-01X'},
+    //       {LocID:'TI-01Y'},
+    //       {LocID:'TI-02X'},
+    //       {LocID:'TI-02Y'},
+    locListKeyValue: [
+      {text: 'TI-01X：62K+600處下方 X軸', value: 'TI-01X'},
+      {text: 'TI-01Y：62K+600處下方 Y軸', value: 'TI-01Y'},
+      {text: 'TI-02X：62K+600處上方 X軸', value: 'TI-02X'},
+      {text: 'TI-02Y：62K+600處上方 Y軸', value: 'TI-02Y'},
+    ],
     headers: [
       // { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },
       { text: '地點', value: 'LocID', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '15' },
@@ -390,6 +401,9 @@ export default {
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n
+    },
+    test(){
+      console.log("Location: ", this.Location);
     },
     getLightColor(input) {
       let rtnColor = ''
