@@ -114,8 +114,8 @@
                         {{ opts.job.find(e=>e.value==item.JobName).text }}
                     </template>
 
-                    <template v-slot:item.NextCheck="{ item }">
-                        {{ (item.NextCheck == 'T')? '須健檢' : '不須健檢' }}
+                    <template v-slot:item.CheckStatus="{ item }">
+                        <div :class="{'bg-alarm':item.CheckStatus == 'T'}">{{ (item.CheckStatus == 'T')? '須健檢' : '不須健檢' }}</div>
                     </template>
 
                     <template v-slot:item.Onduty="{ item }">
@@ -248,7 +248,11 @@
     </v-dialog>
 </v-container>
 </template>
-
+<style scoped>
+.bg-alarm {
+    background: #ff9999;
+}
+</style>
 <script>
 import { mapState, mapActions } from 'vuex'
 import { fetchOrganization } from '@/apis/organization'
@@ -462,38 +466,23 @@ export default {
             if (res.data.ErrorCode == 0) {
                 this.saveUserGroup(res.data.GroupData)
                 this.isShowBtn = this.groupData.RoleLv3 == "T";
-
+                this.headers = [  // 表格欄位
+                    { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '110' },
+                    { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '80' },
+                    { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '90' },
+                    { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
+                    { text: '健檢提醒', value: 'CheckStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
+                    { text: '最新健檢日', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '120' },
+                    { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+                    { text: '衛教', value: 'HealthChkStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+                    { text: '追蹤', value: 'TrackStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+                    { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+                    { text: '健檢資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
+                ]
                 if(this.isShowBtn){
-                    this.headers = [  // 表格欄位
-                        { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '110' },
-                        { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '80' },
-                        { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '90' },
-                        { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
-                        { text: '健檢提醒', value: 'NextCheck', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
-                        { text: '最新健檢日', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '120' },
-                        { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '衛教', value: 'HealthChkStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '追蹤', value: 'TrackStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '健檢資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '130' },
-                    ]
+                   this.headers.push({ text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '130' })
                 }
-                else{
-                    this.headers = [  // 表格欄位
-                        { text: '部門', value: 'Depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '110' },
-                        { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '80' },
-                        { text: '職務', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '90' },
-                        { text: '是否在職', value: 'Onduty', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
-                        { text: '健檢提醒', value: 'NextCheck', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '100' },
-                        { text: '最新健檢日', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '120' },
-                        { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '衛教', value: 'HealthChkStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '追蹤', value: 'TrackStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                        { text: '健檢資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
-                    ]
-                }
+                
                 //
                 this.reset()
                 this.ipt = { ...this.defaultIpt }  // 初始化表單

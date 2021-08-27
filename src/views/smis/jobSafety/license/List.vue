@@ -35,6 +35,10 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.ExpDTime="{ item }">
+                        <div :class="{'bg-alarm':checkAlarm(item.ExpDTime)}">{{ item.ExpDTime }}</div>
+                    </template>
+
                     <template v-slot:item.needTrain="{ item }">
                         {{ (item.needTrain == 'y')? '是' : '否' }}
                     </template>
@@ -99,7 +103,11 @@
     </v-dialog>
 </v-container>
 </template>
-
+<style scoped>
+.bg-alarm {
+    background: #ff9999;
+}
+</style>
 <script>
 import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
@@ -242,7 +250,12 @@ export default {
                 this.delDialog = false
             })
         },
-
+        checkAlarm(ExpDTime) {
+            const ExpYear = ExpDTime.substring(0,4)
+            let today = new Date()
+            const thisYear = today.getFullYear().toString()
+            return ExpYear <= thisYear
+        }
     },
     mounted() {
         this.initData()

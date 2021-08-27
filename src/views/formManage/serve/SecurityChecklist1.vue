@@ -501,6 +501,7 @@ export default {
       //---api---
       DB_Table: "RP001",
       nowTime: "",
+      CheckDay: '',
       doMan:{
         id: '',
         name: '',
