@@ -25,14 +25,14 @@
                     <th>更新時間</th>
                     <td v-for="i in toptable.LocationList.length" :key="'DTime'+i">{{ toptable.LocationList[i-1].DataDTime }}</td>
                   </tr>
-                  <tr class="lime lighten-4">
+                  <!-- <tr class="lime lighten-4">
                     <th>座標位置</th>
                     <td v-for="i in toptable.LocationList.length" :key="'GPS'+i">{{`(${toptable.LocationList[i-1].GPSValue_X},${toptable.LocationList[i-1].GPSValue_Y})`}}</td>
                   </tr>
                   <tr class="lime lighten-5">
                     <th>初始值</th>
                     <td v-for="i in toptable.LocationList.length" :key="'Init'+i">{{ toptable.LocationList[i-1].InitValue }}</td>
-                  </tr>
+                  </tr> -->
                   <tr  class="lime lighten-4">
                     <th>監測值</th>
                     <td v-for="i in toptable.LocationList.length" :key="'Value'+i">{{ toptable.LocationList[i-1].Value }}</td>
@@ -89,13 +89,13 @@
             <h2 class="label-title" align="center"> 歷史資料</h2>
         </v-col>
         <v-col cols="12" sm="1"/>
-      <v-col cols="12" sm="3">
+      <v-col cols="12" sm="2">
         <DateSelect label="查詢日期(起)" v-model="q_datestart" key="dateStart" :showIcon="true"/>
       </v-col>
-      <v-col cols="12" sm="3">
+      <v-col cols="12" sm="2">
         <DateSelect label="查詢日期(迄)" v-model="q_dateend" key="dateStart" :showIcon="true"/>
       </v-col>
-      <v-col cols="12" md="2">
+      <v-col cols="12" md="4">
         <h3 class="mb-1"><v-icon class="mr-1">mdi-city-variant-outline</v-icon>監控位置</h3>
         <v-select 
           :items="locListKeyValue" 
@@ -245,10 +245,12 @@ export default {
     //       {LocID:'TI-02X'},
     //       {LocID:'TI-02Y'},
     locListKeyValue: [
-      {text: 'TI-01X：62K+600處下方 X軸', value: 'TI-01X'},
-      {text: 'TI-01Y：62K+600處下方 Y軸', value: 'TI-01Y'},
-      {text: 'TI-02X：62K+600處上方 X軸', value: 'TI-02X'},
-      {text: 'TI-02Y：62K+600處上方 Y軸', value: 'TI-02Y'},
+      {text: 'TI-01X：第一分道站處下方 X軸', value: 'TI-01X'},
+      {text: 'TI-01Y：第一分道站處下方 Y軸', value: 'TI-01Y'},
+      {text: 'TI-02X：第一分道站處上方 X軸', value: 'TI-02X'},
+      {text: 'TI-02Y：第一分道站處上方 Y軸', value: 'TI-02Y'},
+      {text: 'TI-02Y：第一分道站處上方 Y軸', value: 'TI-02Y'},
+      {text: '不限', value: ''},
     ],
     headers: [
       // { text: '項次', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold accent', width: '30' },

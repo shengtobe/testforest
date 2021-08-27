@@ -787,7 +787,7 @@ export default {
     save() {
       
       if(!this.haveText){
-        alert("所有檢查項目都沒勾或有檢查項目只勾選一半")
+        alert("無法儲存此表單，至少需勾選完一項目或有項目勾選不完整")
         return
       }
       // var dddd = []

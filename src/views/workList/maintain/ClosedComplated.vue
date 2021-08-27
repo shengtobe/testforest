@@ -15,6 +15,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時統計
             </h3>
+            
             <v-card flat>
                 <v-data-table
                     :headers="headers"
@@ -27,7 +28,23 @@
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
-
+                    
+                    <template v-slot:header.WorkLoad="{header}">
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                                <div
+                                color="primary"
+                                dark
+                                v-bind="attrs"
+                                v-on="on"
+                                >
+                                {{header.text}}
+                                </div>
+                            </template>
+                            <span v-html="header.tooltip"></span>
+                        </v-tooltip>
+                    </template>
+                    
                     <template v-slot:footer>
                         <v-divider></v-divider>
 
@@ -172,10 +189,10 @@ export default {
         tableItems: [],  // 工時表格資料
         tableItems_fee: [],  // 工時表格資料
         headers: [  // 工時標題
-            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'  },
             { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '工作量(hr)', value: 'WorkLoad', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '工作量(hr)', value: 'WorkLoad', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', tooltip:"工作項(hr)：車輛養護科 <br/>數量：鐵路維護科" },
             // { text: '料件費用', value: 'Price', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         headers_fee: [  // 工時標題
@@ -318,6 +335,9 @@ export default {
     },
     created() {
         this.setShowData(this.itemData)
+    },
+    beforeDestroy(){
+        alert("leave")
     }
 }
 </script>

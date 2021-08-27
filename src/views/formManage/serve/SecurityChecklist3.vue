@@ -384,6 +384,7 @@ export default {
       title: "保安裝置檢查紀錄表-奮起湖車站",
       newText: "紀錄表",
       isLoading: false,
+      CheckDay: '',
       disabled: false,
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
@@ -507,6 +508,36 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        haveText:function() {
+        let rtnValue = []
+        let rtnChk = []
+        for(let itemKey in this.ipt){
+          let thisElement = this.ipt[itemKey].map(e => {
+            let inElement = {...e}
+            delete inElement.note
+            return inElement
+          })
+          //檢查 有無只填一半的 有=false
+          let itemsHasChk = thisElement.map(e => {
+            let item = Object.values(e)
+            let allTxt = item.every(ele=>ele!='0')
+            let allZero = item.every(ele=>ele=='0')
+            return allTxt || allZero
+          }).every(e=>e) 
+
+          //檢查 有沒有一項是全填完整 有=true
+          let itemsHasValue = thisElement.map(e => {
+            let item = Object.values(e)
+            let allTxt = item.every(ele=>ele!='0')
+            return allTxt
+          }).some(e=>e)
+          
+          rtnValue.push(itemsHasValue) 
+          rtnChk.push(itemsHasChk)
+        }
+        //上面兩個判斷都要過 = true
+        return rtnValue.some(e=>e) && rtnChk.every(e=>e)
+      },
     },
   created() {
        this.ipt2 = { ...this.defaultIpt }
@@ -615,6 +646,10 @@ export default {
     },
     // 存
     save() {
+      if(!this.haveText){
+        alert("無法儲存此表單，至少需勾選完一項目或有項目勾選不完整")
+        return
+      }
       this.chLoadingShow({show:false})
       createFormOrder({
         ClientReqTime: getNowFullTime(),  // client 端請求時間

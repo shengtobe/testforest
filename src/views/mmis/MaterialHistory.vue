@@ -358,7 +358,8 @@ export default {
               rtnObj.id=i+1
               rtnObj.WorkNumber = e.WorkOrderID
               rtnObj.Dept= e.DispatchDepart
-              rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq + e.MaintainCode_Lv5
+              // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq + e.MaintainCode_Lv5
+              rtnObj.wbs = e.MaintainCode_AllName
               rtnObj.Established = e.CallWorkDTime
               return rtnObj
             })

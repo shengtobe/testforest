@@ -182,6 +182,12 @@
                 key="dateStart"
                 :showIcon="formIconShow"
               />
+              <dateSelect
+                label="異常狀況時間"
+                v-model="datePickerShowControl.alarmDate"
+                key="dateStart"
+                :showIcon="formIconShow"
+              />
             </v-col>
             <v-col cols="8" sm="4">
               <h3 class="mb-1">異常狀況時間</h3>
@@ -262,6 +268,9 @@
                 v-model.trim="CheckOption4"
               />
             </v-col>
+            <v-col cols="12" md="6">
+              <span class="red--text" v-if="showAlert">有欄位未填。</span>
+          </v-col>
           </v-row>
         </div>
 
@@ -329,6 +338,7 @@ export default {
     actions: Actions,
     newText: "通報單",
     isLoading: false,
+    showAlert: false,
     // fields for detail page
     Name: "",
     CheckDay: "",

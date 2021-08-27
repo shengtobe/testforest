@@ -94,15 +94,15 @@
                     </template>
 
                     <template v-slot:item.file="{ item }">
-                        <!-- <v-chip small label color="primary"
+                        <v-chip small label color="primary"
                             :href="item.file_path"
                             :download="item.FileFullName"
                         >
                             {{ item.FileFullName }}
-                        </v-chip> -->
-                        <a :href="item.file_path" download>
+                        </v-chip>
+                        <!-- <a :href="item.file_path" download>
                             {{ item.FileFullName }}
-                        </a>
+                        </a> -->
 
   
                         <!-- <v-chip small label color="primary" class="mr-2 mb-2 mb-sm-0"
@@ -259,7 +259,7 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             { text: '文件類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
-            { text: '文件名稱', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            { text: '文件名稱', value: 'file', align: 'start', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
             { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             { text: '版次', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
             { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },

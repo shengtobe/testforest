@@ -412,6 +412,7 @@ export default {
       newText: "紀錄表",
       isLoading: false,
       disabled: false,
+      CheckDay: '',
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -684,6 +685,10 @@ export default {
     },
     // 存
     save() {
+      if(!this.haveText){
+        alert("無法儲存此表單，至少需勾選完一項目或有項目勾選不完整")
+        return
+      }
       this.chLoadingShow({show:false})
       createFormOrder({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
