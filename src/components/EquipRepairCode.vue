@@ -541,8 +541,8 @@
           that.newEqCh += (that._show22?that.eqCodes.eqCodeListLv22.find(ele => ele.EquipCode == that.selectItem.Lv22)?.EquipName||'' : that.eqCodes.eqCodeListLv2.find(ele => ele.EquipCode == that.selectItem.Lv2)?.EquipName||'') + ((toLevel == 2)?'':'-')
         }
         if(toLevel >= 3){
-          that.newEqName += (that.eqCodes.eqCodeListLv3?.find(ele => ele.EquipCode == that.selectItem.Lv3)?.FullShowName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.FullShowName||'':'')) + ((toLevel == 3)?'':'-')
-          that.newEqCh += (that.eqCodes.eqCodeListLv3?.find(ele => ele.EquipCode == that.selectItem.Lv3)?.EquipName||'' + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.EquipName||'':'')) + ((toLevel == 3)?'':'-')
+          that.newEqName += ((that.eqCodes.eqCodeListLv3?.find(ele => ele.EquipCode == that.selectItem.Lv3)?.FullShowName||'') + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.FullShowName||'':'')) + ((toLevel == 3)?'':'-')
+          that.newEqCh += ((that.eqCodes.eqCodeListLv3?.find(ele => ele.EquipCode == that.selectItem.Lv3)?.EquipName||'') + (that._show32?'/'+that.eqCodes.eqCodeListLv32.find(ele => ele.EquipCode == that.selectItem.Lv32)?.EquipName||'':'')) + ((toLevel == 3)?'':'-')
         }
         if(toLevel >= 4){
           that.newEqName += that.eqCodes.eqCodeListLv4.find(ele => ele.EquipCode == that.selectItem.Lv4)?.FullShowName||''
