@@ -681,6 +681,36 @@ export default {
     ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
     }),
+    haveText:function() {
+      let rtnValue = []
+      let rtnChk = []
+      for(let itemKey in this.ipt){
+        let thisElement = this.ipt[itemKey].map(e => {
+          let inElement = {...e}
+          delete inElement.note
+          return inElement
+        })
+        //檢查 有無只填一半的 有=false
+        let itemsHasChk = thisElement.map(e => {
+          let item = Object.values(e)
+          let allTxt = item.every(ele=>ele!='0')
+          let allZero = item.every(ele=>ele=='0')
+          return allTxt || allZero
+        }).every(e=>e) 
+
+        //檢查 有沒有一項是全填完整 有=true
+        let itemsHasValue = thisElement.map(e => {
+          let item = Object.values(e)
+          let allTxt = item.every(ele=>ele!='0')
+          return allTxt
+        }).some(e=>e)
+        
+        rtnValue.push(itemsHasValue) 
+        rtnChk.push(itemsHasChk)
+      }
+      //上面兩個判斷都要過 = true
+      return rtnValue.some(e=>e) && rtnChk.every(e=>e)
+    },
     Add1(){
       return function(n){
           var data = Number(this.items1_1[n].num1) + Number(this.items1_1[n].num2);

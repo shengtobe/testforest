@@ -542,12 +542,14 @@ export default {
         }).then(res => {
           if (res.data.ErrorCode == 0) {
             const dataList = decodeObject(res.data.WorkDataList)
+            console.log("dataList: ", dataList);
             this.tableItems = dataList.map((e,i)=>{
               let rtnObj = {}
               rtnObj.id=i+1
               rtnObj.WorkNumber = e.WorkOrderID
               rtnObj.Dept= e.DispatchDepart
-              rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
+              // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
+              rtnObj.wbs = e.MaintainCode_AllName
               rtnObj.Established = e.CallWorkDTime
               return rtnObj
             })

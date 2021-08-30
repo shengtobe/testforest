@@ -66,7 +66,7 @@ export default {
                         // 設定上面的欄位資料
                         let topItems = [
                             { icon: 'mdi-ray-vertex', title: '處理階段', text: maintainStatusOpts.find(ele => ele.value == res.data.Status).text },
-                            { icon: 'mdi-codepen', title: '設備標示編號', text: res.data.MaintainCode },
+                            { icon: 'mdi-codepen', title: '設備標示編號', text: res.data.MaintainCode_AllName },
                             { icon: 'mdi-apps', title: '立案單位', text: res.data.CreatorDepart },
                             { icon: 'mdi-account', title: '立案人', text: res.data.Creator },
                             { icon: 'mdi-calendar-text', title: '立案時間', text: `${res.data.CreateDDay} ${res.data.CreateDTime}時` },

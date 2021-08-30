@@ -16,6 +16,13 @@
             >查詢</v-btn>
         </v-col>
     </v-row>
+    <v-row >
+        <v-col class="mt-n9 "><v-checkbox
+            v-model="includTraf"
+            label="包含交通"
+            @change="getData"
+        ></v-checkbox></v-col>
+    </v-row>
     <v-row class="px-2 mb-8">
         <v-col cols="12" md="6">
             <chart v-if="chartLeft.componentKey>1" :chartdata="chartLeft.chartdata" :options="chartLeft.options" :key="chartLeft.componentKey"/>
@@ -44,6 +51,7 @@ import { analyDangerByDepart } from '@/apis/smis/jobSafety'
 import { getNowFullTime } from '@/assets/js/commonFun'
 export default {
     data: () => ({
+        includTraf: true,
         show: false,  // canvas 是否隱藏(在還沒有資料時會變小)
         input:{
             dateStart:'',
@@ -163,15 +171,21 @@ export default {
         },
         getData() {
             this.chLoadingShow({show:true})
+            let mode = (this.includTraf)?'1':'2'
             analyDangerByDepart({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 CreateDTime_Start:this.input.dateStart,
-                CreateDTime_End:this.input.dateEnd
+                CreateDTime_End:this.input.dateEnd,
+                Mode:mode
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
                     console.log(res.data)
                     if(res.data.SumCount){
+                        this.chartLeft.chartdata.labels = [...[]]
+                        this.chartLeft.chartdata.datasets[0].backgroundColor = [...[]]
+                        this.chartLeft.chartdata.datasets[0].data = [...[]]
+                        this.chartLeft.chartdata.datasets[0].count = [...[]]
                         res.data.SumCount.forEach(e=>{
                             this.chartLeft.chartdata.labels.push(e.DepName)
                             this.chartLeft.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
@@ -181,6 +195,10 @@ export default {
                         this.chartLeft.componentKey++
                     }
                     if(res.data.DayCount){
+                        this.chartRight.chartdata.labels = [...[]]
+                        this.chartRight.chartdata.datasets[0].backgroundColor = [...[]]
+                        this.chartRight.chartdata.datasets[0].data = [...[]]
+                        this.chartRight.chartdata.datasets[0].count = [...[]]
                         res.data.DayCount.forEach(e=>{
                             this.chartRight.chartdata.labels.push(e.DepName)
                             this.chartRight.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
