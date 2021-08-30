@@ -20,12 +20,15 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeAClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.dateStart"
-                    @input="dateMemuShow.start = false"
+                    @input="timeA"
+                    :max="dateAMax"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -48,12 +51,15 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeBClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.dateEnd"
-                    @input="dateMemuShow.end = false"
+                    @input="timeB"
+                    :min="dateBMin"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -187,12 +193,14 @@ export default {
         searchIpt: {},
         searchDefault: {
             dateStart: '',  // 發生日期(起)
-            dateEnd: '',  // 發生日期(迄)
+            dateEnd: new Date().toISOString().substr(0, 10),  // 發生日期(迄)
             name: '',  // 罹災者姓名
             workDepart: '嘉義車站',  // 工作部門
             number: '',  // 事故編號
             status: '',  // 事故狀態
         },
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         dateMemuShow: {
             start: false,
             end: false,
@@ -234,6 +242,20 @@ export default {
         // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.searchDefault }
+        },
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.searchIpt.dateStart
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.searchIpt.dateEnd
+        },
+        timeBClean(){
+            this.dateAMax = ''
         },
         // 搜尋
         search() {

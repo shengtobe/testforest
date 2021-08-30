@@ -20,12 +20,15 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeAClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.DTime_Start"
-                    @input="dateMemuShow.start = false"
+                    @input="timeA"
+                    :max="dateAMax"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -48,12 +51,15 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeBClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.DTime_End"
-                    @input="dateMemuShow.end = false"
+                    @input="timeB"
+                    :min="dateBMin"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -218,9 +224,11 @@ export default {
         searchIpt: {},
         searchDefault: {
             DTime_Start: '',  // 日期(起)
-            DTime_End: '',  // 日期(迄)
+            DTime_End: new Date().toISOString().substr(0, 10),  // 日期(迄)
             CarVersion: '',  // 車次
         },
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         dateMemuShow: {
             start: false,
             end: false,
@@ -267,6 +275,20 @@ export default {
         // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.searchDefault }
+        },
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.searchIpt.DTime_Start
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.searchIpt.DTime_End
+        },
+        timeBClean(){
+            this.dateAMax = ''
         },
          // 查詢
         search() {

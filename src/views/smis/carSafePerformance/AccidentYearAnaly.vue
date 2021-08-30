@@ -2,7 +2,7 @@
 <v-container style="max-width: 1200px">
   <v-row>
     <v-col cols="4">
-      <v-btn class="btn-close white--text" large :to="`/smis/car-safe-performance/${acdcode}/accident-trend/${acdname}`">
+      <v-btn v-if="false" class="btn-close white--text" large :to="`/smis/car-safe-performance/${acdcode}/accident-trend/${acdname}`">
         回上一頁
       </v-btn>
     </v-col>

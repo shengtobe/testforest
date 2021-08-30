@@ -279,6 +279,8 @@ export default {
         },
         // 查詢
         search() {
+            // console.log("searchIpt.Option: ", this.searchIpt.Option);
+            // return
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
             brakeQueryList({
@@ -290,7 +292,12 @@ export default {
                     console.log("res.data: ", res.data);
                     if(res.data.DataList.length > 0){
                          this.tableItems = decodeObject(res.data.DataList)
+                         this.tableItems.forEach(e => {
+                             if(e.CarType == '1') e.CarType = '機車'
+                             else e.CarType = '客車'
+                         });
                     }
+                    console.log("this.tableItems: ", this.tableItems);
                 }else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })

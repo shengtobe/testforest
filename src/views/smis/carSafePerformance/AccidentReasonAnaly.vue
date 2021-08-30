@@ -3,7 +3,7 @@
   
   <v-row>
     <v-col cols="12" md="2">
-      <v-btn class="btn-close" dark large :to="`/smis/car-safe-performance/${acdcode}/accident-trend/${acdname}`">
+      <v-btn v-if="false" class="btn-close" dark large :to="`/smis/car-safe-performance/${acdcode}/accident-trend/${acdname}`">
         回上一頁
       </v-btn>
     </v-col>

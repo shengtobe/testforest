@@ -90,10 +90,10 @@
         </v-col>
         <v-col cols="12" sm="1"/>
       <v-col cols="12" sm="2">
-        <DateSelect label="查詢日期(起)" v-model="q_datestart" key="dateStart" :showIcon="true"/>
+        <DateSelect label="查詢日期(起)" :max="dateAMax" @cleanEvent="timeAClean" @inputEvent="timeA" v-model="q_datestart" key="dateStart" :showIcon="true"/>
       </v-col>
       <v-col cols="12" sm="2">
-        <DateSelect label="查詢日期(迄)" v-model="q_dateend" key="dateStart" :showIcon="true"/>
+        <DateSelect label="查詢日期(迄)" :min="dateBMin" @cleanEvent="timeBClean" @inputEvent="timeB" v-model="q_dateend" key="dateStart" :showIcon="true"/>
       </v-col>
       <v-col cols="12" md="4">
         <h3 class="mb-1"><v-icon class="mr-1">mdi-city-variant-outline</v-icon>監控位置</h3>
@@ -177,6 +177,8 @@ import DateSelect from '@/components/forManage/dateSelect'
 import Pagination from '@/components/Pagination'
 export default {
   data: () => ({
+    dateAMax: new Date().toISOString().substr(0, 10),
+    dateBMin: new Date().toISOString().substr(0, 10),
     imgUrl1: require("../../assets/images/slope1.jpg"),
     toptable:{
       LocationList: []
@@ -235,8 +237,8 @@ export default {
       },
     },
     
-    q_datestart:getNowFullTime().substr(0,10),
-    q_dateend:getNowFullTime().substr(0,10),
+    q_datestart: new Date().toISOString().substr(0, 10),
+    q_dateend: new Date().toISOString().substr(0, 10),
     Location:'',
     pageOpt: {page:1},
     tableItems:[],
@@ -279,6 +281,22 @@ export default {
       'chMsgbar',  // 改變 messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    timeA(){
+        this.$nextTick(() => {
+            this.dateBMin = this.q_datestart
+        })
+    },
+    timeAClean(){
+        this.dateBMin = ''
+    },
+    timeB(){
+        this.$nextTick(() => {
+            this.dateAMax = this.q_dateend
+        })
+    },
+    timeBClean(){
+        this.dateAMax = ''
+    },
     callback() {
       const that = this
       fetchList({

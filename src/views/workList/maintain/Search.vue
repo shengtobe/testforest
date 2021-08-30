@@ -44,12 +44,14 @@
                             v-on="on"
                             readonly
                             clearable
+                            @click:clear="timeAClean"
                         ></v-text-field>
                     </template>
                     <v-date-picker
                         color="purple"
                         v-model="ipt.createDateStart"
-                        @input="dateMemuShow.start = false"
+                        @input="timeA"
+                        :max="dateAMax"
                         locale="zh-tw"
                         
                     ></v-date-picker>
@@ -74,12 +76,14 @@
                             v-on="on"
                             readonly
                             clearable
+                            @click:clear="timeBClean"
                         ></v-text-field>
                     </template>
                     <v-date-picker
                         color="purple"
                         v-model="ipt.createDateEnd"
-                        @input="dateMemuShow.end = false"
+                        @input="timeB"
+                        :min="dateBMin"
                         locale="zh-tw"
                     ></v-date-picker>
                 </v-menu>
@@ -338,11 +342,13 @@ export default {
         combineCode: '', //合併後的設備編碼
         nowEqCode: '', //編輯時 預設帶入的combineCode
         pickEqNumber: false, // 設備標示編號選擇視窗
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         ipt: {},
         defaultIpt: {  // 預設的欄位值
             createrId: '',  // 立案人
             createDateStart: '',  // 建立日期(起)
-            createDateEnd: '',  // 建立日期(迄)
+            createDateEnd: new Date().toISOString().substr(0, 10),  // 建立日期(迄)
             dispatcherId: '',  // 派工人
             workNumber: '',  // 工單編號
             workState: '',  // 處理階段
@@ -418,6 +424,20 @@ export default {
             this.ipt.eqNumber2 = tempCodeArr[1],  // 設備標示編號(位置)
             this.ipt.eqNumber3 = tempCodeArr[2],  // 設備標示編號(設備)
             this.ipt.eqNumber4 = tempCodeArr[3]  // 設備標示編號(序號)
+        },
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.ipt.createDateStart
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.ipt.createDateEnd
+        },
+        timeBClean(){
+            this.dateAMax = ''
         },
         //抓取未確認的設備標示編碼
         getTempCode(value) {

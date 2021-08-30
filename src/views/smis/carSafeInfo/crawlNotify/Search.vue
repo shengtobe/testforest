@@ -21,12 +21,14 @@
                         v-on="on"
                         readonly
                         clearable
+                        @click:clear="timeAClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="ipt.dateStart"
-                    @input="dateMemuShow.start = false"
+                    @input="timeA"
+                    :max="dateAMax"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -50,12 +52,14 @@
                         v-on="on"
                         readonly
                         clearable
+                        @click:clear="timeBClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="ipt.dateEnd"
-                    @input="dateMemuShow.end = false"
+                    @input="timeB"
+                    :min="dateBMin"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -163,13 +167,15 @@ import { fetchList, deleteRegul } from '@/apis/smis/carSafeInfo'
 export default {
     data: () => ({
         ipt: {
-            dateStart:  new Date().toISOString().substr(0, 10),  // 限制日期(起)
+            dateStart:  '',  // 限制日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
             end: false,
         },
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         ReportLineList: locationOpts,
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
@@ -195,6 +201,20 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.ipt.dateStart
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.ipt.dateEnd
+        },
+        timeBClean(){
+            this.dateAMax = ''
+        },
         // 搜尋
         search() {
             this.chLoadingShow({show:true})

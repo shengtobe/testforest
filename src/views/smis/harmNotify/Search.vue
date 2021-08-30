@@ -21,13 +21,15 @@
                         v-on="on"
                         readonly
                         clearable
+                        @click:clear="timeAClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="ipt.dateStart"
-                    @input="dateMemuShow.start = false"
+                    @input="timeA"
                     locale="zh-tw"
+                    :max="dateAMax"
                 ></v-date-picker>
             </v-menu>
         </v-col>
@@ -50,13 +52,15 @@
                         v-on="on"
                         readonly
                         clearable
+                        @click:clear="timeBClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="ipt.dateEnd"
-                    @input="dateMemuShow.end = false"
+                    @input="timeB"
                     locale="zh-tw"
+                    :min="dateBMin"
                 ></v-date-picker>
             </v-menu>
         </v-col>
@@ -167,13 +171,15 @@ export default {
     data: () => ({
         ipt: {
             dateStart:  '',  // 通報日期(起)
-            dateEnd: '',  // 通報日期(迄)
+            dateEnd: new Date().toISOString().substr(0, 10),  // 通報日期(迄)
             status: '',  // 通報狀態
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
             end: false,
         },
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         statusOpts: harmNotifyStatus,  // 狀態下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
@@ -199,10 +205,23 @@ export default {
         ]),
         clickDate(){
         },
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.ipt.dateStart
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.ipt.dateEnd
+        },
+        timeBClean(){
+            this.dateAMax = ''
+        },
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {
             this.chLoadingShow({show:true})
-            console.log("進入危害查詢動作");
             this.pageOpt.page = 1  // 頁碼初始化
             // 如果null要改空字串
             if(this.ipt.dateStart == null) this.ipt.dateStart = ''
@@ -234,7 +253,6 @@ export default {
                         }
                     }
                 });
-                console.log("危害通報查詢 搜尋 table填完");
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -253,7 +271,6 @@ export default {
         },
     },
     created() {
-        console.log("進入危害通報查詢");
         this.search(true)
     },
 }

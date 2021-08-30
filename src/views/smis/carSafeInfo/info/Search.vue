@@ -43,13 +43,16 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeAClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="ipt.dateStart"
-                    @input="dateMemuShow.start = false"
                     locale="zh-tw"
+                    @input="timeA"
+                    :max="dateAMax"
                 ></v-date-picker>
             </v-menu>
         </v-col>
@@ -71,13 +74,16 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeBClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="ipt.dateEnd"
-                    @input="dateMemuShow.end = false"
                     locale="zh-tw"
+                    @input="timeB"
+                    :min="dateBMin"
                 ></v-date-picker>
             </v-menu>
         </v-col>
@@ -180,7 +186,7 @@ export default {
         defaultIpt: {
             title: '',  // 通報主題
             dateStart:  '',  // 發布日期(起)
-            dateEnd: '',  // 發布日期(迄)
+            dateEnd: new Date().toISOString().substr(0, 10),  // 發布日期(迄)
             depart: '',  // 通報單位
             status: '',  // 發布狀態
         },
@@ -188,6 +194,8 @@ export default {
             start: false,
             end: false,
         },
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
@@ -227,6 +235,20 @@ export default {
         reset() {
             this.ipt = { ...this.defaultIpt }
             this.search()
+        },
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.ipt.dateStart
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.ipt.dateEnd
+        },
+        timeBClean(){
+            this.dateAMax = ''
         },
         // 搜尋
         search() {

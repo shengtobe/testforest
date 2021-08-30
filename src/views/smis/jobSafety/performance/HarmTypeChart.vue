@@ -3,10 +3,10 @@
     <h2 class="mb-4 label-title">職災傷害類型統計</h2>
     <v-row>
         <v-col>
-            <dateSelect label="統計日期(起)" v-model="input.dateStart" key="dateStart" :showIcon="true"/>
+            <dateSelect label="統計日期(起)" :max="dateAMax" @cleanEvent="timeAClean" @inputEvent="timeA" v-model="input.dateStart" key="dateStart" :showIcon="true"/>
         </v-col>
         <v-col>
-            <dateSelect label="統計日期(訖)" v-model="input.dateEnd" key="dateStart" :showIcon="true"/>
+            <dateSelect label="統計日期(訖)" :min="dateBMin" @cleanEvent="timeBClean" @inputEvent="timeB" v-model="input.dateEnd" key="dateStart" :showIcon="true"/>
         </v-col>
         <v-col>
             <v-btn
@@ -56,6 +56,8 @@ export default {
     data: () => ({
         show: false,  // canvas 是否隱藏(在還沒有資料時會變小)
         includTraf: true,
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         chart:{
             componentKey: 1,
             options: {
@@ -123,7 +125,7 @@ export default {
         },
         input:{
             dateStart:'',
-            dateEnd:''
+            dateEnd: new Date().toISOString().substr(0, 10)
         } 
     }),
     components:{
@@ -141,6 +143,22 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
         ]),
+        timeA(){
+            this.$nextTick(() => {
+                this.dateBMin = this.input.dateStart
+            })
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.$nextTick(() => {
+                this.dateAMax = this.input.dateEnd
+            })
+        },
+        timeBClean(){
+            this.dateAMax = ''
+        },
         // 初始化資料
         initData() {
             const today = new Date

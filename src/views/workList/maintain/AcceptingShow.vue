@@ -152,7 +152,7 @@
             </v-col>
 
             <v-col cols="12" sm="6" md="3">
-                <v-checkbox
+                <v-checkbox v-if="false"
                     class="mx-2 mt-sm-10"
                     v-model="crossShow"
                     label="選擇平交道項目"

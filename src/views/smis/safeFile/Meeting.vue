@@ -20,12 +20,15 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeAClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.dateStart"
-                    @input="dateMemuShow.start = false"
+                    @input="timeA"
+                    :max="dateAMax"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -48,13 +51,16 @@
                         solo
                         v-on="on"
                         readonly
+                        clearable
+                        @click:clear="timeBClean"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.dateEnd"
-                    @input="dateMemuShow.end = false"
                     locale="zh-tw"
+                    @input="timeB"
+                    :min="dateBMin"
                 ></v-date-picker>
             </v-menu>
         </v-col>
@@ -280,10 +286,12 @@ export default {
     data: () => ({
         searchIpt: {  // 搜尋欄位
             dateStart:  '',  // 會議日期(起)
-            dateEnd: '',  // 會議日期(迄)
+            dateEnd: new Date().toISOString().substr(0, 10),  // 會議日期(迄)
             title: '',  // 會議主題
             fileName: '',  // 檔案名稱
         },
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: '',
         dateMemuShow: {  // 日曆是否顯示
             start: false,
             end: false,
@@ -334,6 +342,20 @@ export default {
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+        timeA(){
+            this.dateMemuShow.start = false
+            this.dateBMin = this.searchIpt.dateStart
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateMemuShow.end = false
+            this.dateAMax = this.searchIpt.dateEnd
+        },
+        timeBClean(){
+            this.dateAMax = ''
+        },
         // 搜尋
         search() {
             this.chLoadingShow({show:true})

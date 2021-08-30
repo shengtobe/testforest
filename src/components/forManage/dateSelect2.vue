@@ -2,6 +2,10 @@
   輸入: 
     label: String 標題
     showIcon: Boolean 是否要圖標，預設否 
+    max: String
+    min: String
+  委派 清空event: cleanEvent
+  委派 輸入event: inputEvent
   v-model: 綁定變數
   使用範例:
     <dateSelect label="檢查日期(起)" v-model="input.dateStart" key="dateStart" :showIcon="true | false"/>
@@ -28,13 +32,17 @@
           dense
           v-on="on"
           readonly
+          clearable
+          @click:clear="cleanEvent"
         ></v-text-field>
       </template>
       <v-date-picker
         color="primary"
         v-model="dataSet"
-        @input="showYN = false"
+        @input="inputEvent"
         locale="zh-tw"
+        :max="max"
+        :min="min"
       ></v-date-picker>
     </v-menu>
   </div>
@@ -46,6 +54,8 @@ export default {
     showIcon: Boolean,
     label: String,
     value: String,
+    max: String,
+    min: String,
   },
   data: () => ({
     showYN: false,
@@ -56,12 +66,20 @@ export default {
     this.dataSet = this.value;
     this.showIcon = this.showIcon ? this.showIcon : false;
   },
+  methods: {
+    cleanEvent(){
+      this.$emit("cleanEvent");
+    },
+    inputEvent(){
+      this.showYN = false
+      this.$emit("inputEvent");
+    }
+  },
   computed: {
     // compute_name:function() {
     // }
   },
   created: function () {},
-  methods: {},
   filters: {
     // filter_name:function(value) {
     // }
