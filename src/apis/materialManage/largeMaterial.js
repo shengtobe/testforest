@@ -36,6 +36,33 @@ export function largeQueryDelete(data) {
         data,
     }
 )}
+//檔案上傳
+export function largeFileAdd(data) {
+    return axios(
+    {
+        url: '/mmis/equipdata/largefileadd',
+        method: 'post',
+        data,
+    }
+)}
+//檔案查詢
+export function largeFileView(data) {
+    return axios(
+    {
+        url: '/mmis/equipdata/largefileview',
+        method: 'post',
+        data,
+    }
+)}
+//檔案刪除
+export function largeFileDelete(data) {
+    return axios(
+    {
+        url: '/mmis/equipdata/largefiledelete',
+        method: 'post',
+        data,
+    }
+)}
 //設備標示分碼資料查詢
 export function equipCodeDetail(data) {
     return axios(

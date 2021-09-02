@@ -385,7 +385,7 @@ export default {
       this.searchIpt.wbsName = ""
       this.searchIpt.work = ""
       this.searchIpt.workShow = ""
-      this.searchIpt.Dept = "";
+      this.searchIpt.Dept = this.userData.DeptList[0].DeptDesc;
       this.searchIpt.wbsShow = "";
       // this.searchIpt.Material = "";
     },
@@ -434,18 +434,13 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
+        this.searchIpt.Dept = this.userData.DeptList[0].DeptDesc;
         this.deptLoading = false
       })
     },
-
-
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
-    },
-    
-    close() {
-    
     },
     // 顯示詳細資訊
     view(woID) {
