@@ -540,7 +540,7 @@ export default {
     // 存
     save() {
       // 必要欄位檢查
-      if (this.CheckDay == "" || this.AlarmDay == "" || this.Name == "") {
+      if (this.CheckDay == "" || this.AlarmDay == "" || this.Name == "" || this.CheckOption1 == '' || this.CheckOption2 == '') {
         this.dialogNull = true;
         return;
       }

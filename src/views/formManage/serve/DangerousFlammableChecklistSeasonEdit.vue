@@ -113,95 +113,7 @@ export default {
           Measures: "",
         },
       },
-      /*
-        subtitles: 固定,
-        textareas: 固定,
-        questions: => 1.小題產生器 2.大題產生器
-          2.產生1.的設定檔，然後2.再把1.的東西push進去array再回傳
-          小題產生器: 
-            {
-              pnaelLabel: <string>,
-              questionLabels: [
-                {
-                  width: <number>,
-                  text: <string>,
-                  generate: <boolean>,  //要被自動產生的寫ture，不要的寫false
-                },
-              ],
-              answerStart: <number>,
-              notGenerate: [            //預設不自動產生的都是純文字欄位，依照順序填入
-                [
-                  <string>,
-                ]
-              ],
-              generate: [               //按順序填入
-                {
-                  model: <變數名稱前綴 string>, //預設所有可變動資料都放在editableData裡面
-                  type: <text/number/radio/select/area string>,
-                  <number:{
-                    min: <numbebr>,
-                    max: <number>,
-                  },>
-                  <radio: [
-                    {
-                      color: <string>,
-                      label: <string>,
-                      value: <string>,
-                    }
-                  ],> 
-                  <select: [
-                    {
-                      text: <string>,
-                      value: <string>,
-                    }
-                  ],>
-                },
-              ]
-            }
-          大題產生器
-            {
-              panelQuestion: [      //題目
-                {
-                  panelLabel: <string>,
-                  questions: [
-                    [
-                      <string>,
-                    ],
-                  ],
-                }
-              ],
-              questionLabels: [       //標題
-                {
-                  width: <number>,
-                  text: <string>,
-                  generate: <boolean>,  //要被自動產生的寫ture，不要的寫false
-                },
-              ],
-              panelAnswer: [      //輸入欄位
-                {
-                  model: <變數名稱前綴 string>, //預設所有可變動資料都放在editableData裡面
-                  type: <text/number/radio/select/area string>,
-                  <number:{
-                    min: <numbebr>,
-                    max: <number>,
-                  },>
-                  <radio: [
-                    {
-                      color: <string>,
-                      label: <string>,
-                      value: <string>,
-                    }
-                  ],> 
-                  <select: [
-                    {
-                      text: <string>,
-                      value: <string>,
-                    }
-                  ],>
-                },
-              ]
-            }
-      */
+      
       testSettings: {
         subtitles: [
           "1.依職業安全衛生法第23條規定辦理",
@@ -364,7 +276,6 @@ export default {
           ]
         }
       },
-      // setting: {}
     }
   },
   components: {
@@ -382,36 +293,6 @@ export default {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
-    haveText:function() {
-      let rtnValue = []
-      let rtnChk = []
-      for(let itemKey in this.ipt){
-        let thisElement = this.ipt[itemKey].map(e => {
-          let inElement = {...e}
-          delete inElement.note
-          return inElement
-        })
-        //檢查 有無只填一半的 有=false
-        let itemsHasChk = thisElement.map(e => {
-          let item = Object.values(e)
-          let allTxt = item.every(ele=>ele!='0')
-          let allZero = item.every(ele=>ele=='0')
-          return allTxt || allZero
-        }).every(e=>e) 
-
-        //檢查 有沒有一項是全填完整 有=true
-        let itemsHasValue = thisElement.map(e => {
-          let item = Object.values(e)
-          let allTxt = item.every(ele=>ele!='0')
-          return allTxt
-        }).some(e=>e)
-        
-        rtnValue.push(itemsHasValue) 
-        rtnChk.push(itemsHasChk)
-      }
-      //上面兩個判斷都要過 = true
-      return rtnValue.some(e=>e) && rtnChk.every(e=>e)
-    },
     setting:function() {
       return generateSettings(this.testSettings)
     }
@@ -509,6 +390,16 @@ export default {
       this.$emit("search");
     },
     save() {
+      let str0 = '';
+      for( let itemKey in this.inputData.editableData){
+        if(itemKey.substr(0, 11) == 'CheckOption'){
+          str0 += this.inputData.editableData[itemKey]
+        }
+      }
+      if(str0.includes('0')){
+        alert("檢查結果未填妥。")
+        return
+      }
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);

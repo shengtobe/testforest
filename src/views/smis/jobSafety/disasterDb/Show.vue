@@ -159,7 +159,7 @@ export default {
         },
     },
     created() {
-        console.log("this.itemData: ", this.itemData);
+        console.log("show this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
         // this.fetchData()
     }

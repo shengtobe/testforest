@@ -20,7 +20,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 mb-md-8" @click="search">
+        <v-btn color="green" dark large class="mb-sm-8 md-8 mt-8" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -31,15 +31,15 @@
           <UploadOneFileAdd @joinFile="select" />
         </v-form>
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end mb-3">
+        <v-btn dark large class="mb-sm-8 md-8 btn-fileup">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
         <v-btn
           elevation="3"
           dark
           large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add"
+          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 md-8 btn-add"
           @click="newOne"
         >
           <!-- @click="AddJobApplication = true" -->
@@ -691,7 +691,10 @@ export default {
     },
     // 存
     save() {
-      
+      if(this.CheckMan == ''){
+        alert("站長未填")
+        return
+      }
       this.chLoadingShow({show:false})
 
       let arr = new Array()

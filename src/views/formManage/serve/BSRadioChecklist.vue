@@ -784,7 +784,7 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，無線電清單查詢失敗' })
       }).finally(() => {
-        that.chLoadingShow()
+        // that.chLoadingShow()
         // that.tableItem = decodeObject(that.tableItem)
       })
       // 更新 無線電清單 END
@@ -840,7 +840,17 @@ export default {
     },
     // 存
     save() {
-      ;
+      let str0 = '';
+      for( let keyItem in this.itemlist){
+        this.itemlist[keyItem].forEach(Q => {
+          str0 += Q.status
+        });
+      }
+      console.log("str0: ", str0);
+      if(str0.includes('0')){
+        alert("檢查結果未填妥。")
+        return
+      }
       this.chLoadingShow({show:true});
 
       var data = {
@@ -856,7 +866,6 @@ export default {
           { Column: "Memo", Value: this.Memo },
         ],
       };
-
       // 加入CheckOption1~18的值
       let j = 1;
       for (var items in this.itemlist) {

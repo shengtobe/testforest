@@ -297,6 +297,16 @@ export default {
       this.$emit("search");
     },
     save() {
+      let str0 = '';
+      for( let itemKey in this.inputData.editableData){
+        if(itemKey.substr(0, 11) == 'CheckOption'){
+          str0 += this.inputData.editableData[itemKey]
+        }
+      }
+      if(str0.includes('0')){
+        alert("欄位填寫不完整。")
+        return
+      }
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);

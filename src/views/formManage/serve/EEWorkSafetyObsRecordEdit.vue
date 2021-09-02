@@ -490,6 +490,9 @@ export default {
       this.$emit("search");
     },
     save() {
+      if(this.item.editItem.EmpName == ''){
+        alert("欄位填寫不完整")
+      }
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);

@@ -696,7 +696,9 @@ export default {
                 if (res.data.ErrorCode == 0) {
                     //抽離 其他
                     this.opsList = JSON.parse(res.data.order_list)
+                    console.log("opsList: ", this.opsList);
                     let tempOps = this.opsList.map(e=>e.text)
+                    console.log("tempOps: ", tempOps);
                     tempOps.forEach(e => {
                         if(e.indexOf("-") >= 0){
                             let arr = e.split('-')
@@ -823,7 +825,7 @@ export default {
                 window.scroll(0,0)
                 return
             }
-            else if(this.ipt.evtType1 != '' && this.ipt.evtType2 == ''){
+            else if(this.ipt.evtType1 != '' && this.ipt.evtType2 == ''){//事故類型 選第一個 第二個沒選
                 if(this.ipt.evtType1 != '其他'){
                     alert("事故類型不完整")
                     window.scroll(0,0)
@@ -833,16 +835,24 @@ export default {
                     // OK save
                 }
             }
-            else{
+            else if(this.ipt.evtType1 == '' || this.ipt.evtType2 == ''){
+                alert("事故類型不完整")
+                window.scroll(0,0)
+                return
+            }
+            else{ //事故類型兩個都有選或兩個都沒選
                 // OK save
             }
+            console.log("送出 ipt:", this.ipt);
+            let s = this.ipt.evtType1 + '-' + this.ipt.evtType2
+            console.log("s: ", s);
             this.chLoadingShow({show:true})
             if(this.ipt.locationK == '') this.ipt.locationK = '0'
             if(this.ipt.locationM == '') this.ipt.locationM = '0'
 
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
-                let s = this.ipt.evtType1 + '-' + this.ipt.evtType2
+                
                 let tempType = this.opsList.find(e => e.text = s).Code
                 updateData({
                     AccidentCode: this.id,  // 行車事故事件編號

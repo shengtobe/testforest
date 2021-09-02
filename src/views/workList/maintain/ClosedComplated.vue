@@ -83,7 +83,7 @@
             </v-card>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="false">
             <BottomTable :items="bottomItems2" />
         </v-col>
 

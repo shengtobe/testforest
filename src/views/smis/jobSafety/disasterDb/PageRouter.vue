@@ -55,7 +55,7 @@ export default {
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
-                        this.status = res.data.AccidentStatus  // 狀態
+                        this.status = (res.data.AccidentStatus == '')?'1': res.data.AccidentStatus // 狀態
                     // 設定下面的欄位資料
                     console.log("1");
                     let bottomItems = [
