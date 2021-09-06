@@ -196,6 +196,7 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("措施查詢 tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){

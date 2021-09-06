@@ -6,6 +6,37 @@
     </h2>
 
     <h3 class="mt-8 error--text">同類型危害已核定採用之控制措施：</h3>
+    <v-row class="px-2 label-header">
+        <v-col cols="12" sm="4" md="3" class="mb-n7">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>管控單位
+            </h3>
+            <v-select
+                v-model="depart"
+                :items="departOpts"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="8" md="3" class="mb-n7">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
+            </h3>
+            <v-text-field
+                v-model.trim="subject"
+                solo
+                placeholder="請輸入關鍵字"
+            ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="6" align-self="center" class="mb-n7">
+            <v-btn dark large class="mr-3 btn-search"
+                @click="search"
+            >
+                <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+            </v-btn>
+        </v-col>
+    </v-row>
     <v-row no-gutters class="mb-8">
         <v-col cols="12" class="mb-12">
             <v-card>
@@ -130,6 +161,11 @@ export default {
     props: ['id'],  //路由參數
     data: () => ({
         tableItems: [],  // 表格資料
+        allItems: [],
+        restItem: [],
+        HookArr: [],
+        depart: '',  // 管控單位
+        subject: '',  // 措施簡述
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             // { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
@@ -165,6 +201,7 @@ export default {
             })
             return arr.join('、')
         },
+
     },
     methods: {
         ...mapActions('system', [
@@ -179,15 +216,15 @@ export default {
         fetchData() {
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
-
+            
             fetchList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 // KeyName: 'SMS_ImproveProc',  // DB table
                 KeyName: 'SMS_EndangerProc',  // DB table
                 KeyItem: [
-                    // { tableColumn: 'DeviceDepart', columnValue: this.depart },  // 管控單位
-                    // { tableColumn: 'DeviceTitle', columnValue: this.subject },  // 措施簡述
+                    { tableColumn: 'DeviceDepart', columnValue: this.depart },  // 管控單位
+                    { tableColumn: 'DeviceTitle', columnValue: this.subject },  // 措施簡述
                     { tableColumn: 'AccidentCode', columnValue: this.id },  // 措施簡述
                     // { tableColumn: 'ProcCode', columnValue: this.id },  // 措施簡述
                 ],
@@ -201,15 +238,31 @@ export default {
                     'Remark',
                 ],
             }).then(res => {
-                // this.tableItems = JSON.parse(res.data.order_list)
-                this.tableItems = JSON.parse(res.data.order_list)
-                let HookArr = res.data.CheckedProcCode
+                let rawString = JSON.stringify(res.data.order_list)
+                console.log(rawString);
+                let rawData = JSON.parse(rawString)
+                let parseData = JSON.parse(rawData)
+                console.log("BB : ", parseData);
+                this.allItems = [...parseData]
+                this.HookArr = res.data.CheckedProcCode
                 // let HookArr = ['ARCO01520210707030', 'ARCO01520210707031']
-                HookArr.forEach(element => {
-                    this.selected.push(this.tableItems.find(ele => ele.ProcCode == element))
-                    this.tableItems.splice(this.tableItems.map(e => e.ProcCode).indexOf(element), 1)
+                console.log("before hook this.selected: ", this.selected);
+                this.HookArr.forEach(element => {
+                    this.selected.push(parseData.find(ele => ele.ProcCode == element))
+                    parseData.splice(parseData.map(e => e.ProcCode).indexOf(element), 1)
                 });
-                this.tableItems = [...this.selected, ...this.tableItems]
+                // let newTb = this.tableItems
+                // this.tableItems = [...[]]
+                // newTb.forEach(ee => {
+                //     if(ee.DeviceTitle.includes('訓練')){
+
+                //     }
+                // });
+                console.log("this.selected: ", this.selected);
+                console.log("parseData: ", parseData);
+                console.log("2 in 1 len: ", this.selected.length+parseData.length);
+                this.tableItems = [...this.selected, ...parseData]
+                this.restItem = parseData
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -220,6 +273,43 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
+        },
+        search(){
+            //僅 關鍵字查詢
+            if(this.subject != '' && this.depart == ''){
+                //關鍵字
+                let tt = this.subject
+                //篩出有關鍵字的項目
+                console.log("1");
+                let filterResult1 = this.selected.filter(function (x) { 
+                    return x.DeviceTitle.includes(tt);
+                    });
+                console.log("2");
+                let filterResult2 = this.restItem.filter(function (x) { 
+                    return x.DeviceTitle.includes(tt);
+                    });
+                console.log("3");
+                //刪除以勾選項目
+                console.log("All: ", this.allItems.length);
+                console.log("filterResult1: ", filterResult1);
+                console.log("filterResult2: ", filterResult2);
+                this.tableItems = [...[]]
+                console.log("tableItems: ", this.tableItems);
+                this.tableItems = [...this.filterResult1, ...filterResult2]
+                console.log("4");
+            }
+            else if(this.subject == '' && this.depart != ''){//僅 單位查詢
+                
+            }
+            else if(this.subject == '' && this.depart == ''){// 無篩選條件
+                this.selected = [...[]]
+                let parseData = this.allItems
+                this.HookArr.forEach(element => {
+                    this.selected.push(parseData.find(ele => ele.ProcCode == element))
+                    parseData.splice(parseData.map(e => e.ProcCode).indexOf(element), 1)
+                });
+                this.tableItems = [...this.selected, ...parseData]
+            }
         },
         // 送出
         save() {

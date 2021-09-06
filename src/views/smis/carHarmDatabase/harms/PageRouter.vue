@@ -10,7 +10,7 @@
     <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 
     <!-- 審核中(審核更新) -->
-    <UpdateReview :itemData="itemData" v-if="status == 6" />
+    <UpdateReview :itemData="itemData" v-if="status == 6 || status == 6.1" />
 </div>
 </template>
 

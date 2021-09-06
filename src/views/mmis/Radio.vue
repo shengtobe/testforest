@@ -81,7 +81,7 @@
       </v-col>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <radioEdit :key="'editModal'+modalKey" :nowFlowId="nowFlow" @closeAct="close"></radioEdit>
+        <radioEdit :nowFlowId="nowFlow" @closeAct="close"></radioEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -112,7 +112,6 @@ export default {
     Delete: false,
     sortBy: 'id',
     sortDesc: false,
-    modalKey: 0,
     pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數 
     typeData: [   //H:手持式、S:固定式、C:車裝台
         {
@@ -244,7 +243,6 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
-        console.log("抓無線電清單: ", );
         if (res.data.ErrorCode == 0) {
           //that.chMsgbar({ success: true, msg: '送出成功' })
           that.tableItem = [...res.data.query_list]
@@ -277,7 +275,6 @@ export default {
     },
     goEdit(flowId) {
       this.nowFlow = flowId
-      this.modalKey++
       this.Edit = true
     },
     openDelete(flowId) {

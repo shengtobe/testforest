@@ -321,9 +321,10 @@ export default {
         save() {
             let errArr = []
             if (!this.finishDeath) errArr.push('人員傷亡名單')
-            if (!this.finishImprove) errArr.push('改善措施檢討')
+            // if (!this.finishImprove) errArr.push('改善措施檢討')
 
-            if (this.finishDeath && this.finishImprove) {  // 都有填寫
+            // if (this.finishDeath && this.finishImprove) {  // 都有填寫
+            if (this.finishDeath) {  // 都有填寫
                 if (confirm('你確定要申請措施審核嗎?')) {
                     this.chLoadingShow({show:true})
                     
