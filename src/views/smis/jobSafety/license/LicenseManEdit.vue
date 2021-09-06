@@ -143,7 +143,7 @@ import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { licenseOption } from '@/apis/smis/license'
 export default {
-  props: ['data','name'],
+  props: ['data','name','id'],
   data: () => ({
     ipt: {
       FlowID: '',
@@ -152,6 +152,7 @@ export default {
       Name: '',
       JobName: '',
       LicenseNo: '',
+      LicenseFK: '',
       EffectiveDate: '',
       ReTrainingTime: '',
       ExpDTime: '',
@@ -189,10 +190,7 @@ export default {
       this.ipt.ReTrainingTime = ''
       this.ipt.Memo = ''
       if(this.data){
-        console.log("data: ", this.data);
-        console.log("11 ipt: ", this.ipt);
         this.ipt = {...this.data}
-        console.log("22 ipt: ", this.ipt);
         this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/\//g,"-")
         this.ipt.EffectiveDate = this.ipt.EffectiveDate.replace(/\//g,"-")
         this.ipt.ExpDTime = this.ipt.ExpDTime.replace(/\//g,"-")
@@ -242,7 +240,7 @@ export default {
         Option: (this.data)?'2':'1',
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
-        LicenseFK: this.ipt.FlowID,
+        LicenseFK: this.id,
         License: this.name
       }).then(res=>{
         console.warn(res.data)

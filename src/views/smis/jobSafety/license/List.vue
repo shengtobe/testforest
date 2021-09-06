@@ -86,7 +86,7 @@
 
     <!-- 表單 -->
     <v-dialog v-model="dialog" max-width="700px">
-        <LicenseManEdit @close="close" :data="ipt" :name="name" :key="componentKey"/>
+        <LicenseManEdit @close="close" :data="ipt" :name="name" :id="id" :key="componentKey"/>
     </v-dialog>
     <!-- 刪除 -->
     <v-dialog v-model="delDialog" max-width="350px">
