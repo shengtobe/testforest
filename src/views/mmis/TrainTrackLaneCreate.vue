@@ -17,7 +17,7 @@
           </v-col>
           <v-col cols="12">
             <h3 class="mb-1">設備功能描述<span class="red--text">*</span></h3>
-            <v-text-field solo v-model="detailItems.Description"  :rules="[v => (!!v && /[^\s]/.test(v)) || '項目請勿空白']"/>
+            <v-textarea solo v-model="detailItems.Description"  :rules="[v => (!!v && /[^\s]/.test(v)) || '項目請勿空白']"></v-textarea>
           </v-col>
           <v-col cols="12" md="6">
             <h3 class="mb-1">型號<span class="red--text">*</span></h3>
@@ -52,18 +52,12 @@
             <v-text-field solo v-model="detailItems.OutMaintainDepart"
             :rules="[v => (!!v && /[^\s]/.test(v)) || '項目請勿空白']" />
           </v-col>
-          <!-- <v-col cols="12" sm="4">
-            <h3 class="mb-1">外部維修單位</h3>
-            <v-text-field solo />
+          <!-- <v-col cols="12">
+            <UploadFileAdd title="上傳照片" :fileList="showPics" :uploadDisnable="false" @joinFile="joinFilePic" @rmFile="rmFilePic" class="mb-10"/>
+          </v-col>
+          <v-col cols="12">
+            <UploadFileAdd title="上傳技術文件" :fileList="showTech" :uploadDisnable="false" @joinFile="joinFileTech" @rmFile="rmFileTech" class="mb-10"/>
           </v-col> -->
-          <v-col cols="12">
-            <h3 class="mb-1">上傳照片</h3>
-            <v-file-input solo multiple show-size truncate-length="15" />
-          </v-col>
-          <v-col cols="12">
-            <h3 class="mb-1">上傳技術文件</h3>
-            <v-file-input solo multiple show-size truncate-length="15" />
-          </v-col>
         </v-row>
         <!--選擇設備標示編號-->
         <v-dialog v-model="showMaintainCode" max-width="450px">
@@ -102,6 +96,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import { fetchOrganization } from '@/apis/organization'
 import { createWorkOrder, fetchEqCodeLv1, fetchEqCodeLv2, fetchEqCodeLv3, fetchEqCodeLv4, fetchWorkOrderOne, updateListOrder } from '@/apis/workList/maintain'
 import equipRepairObject from '@/components/EquipRepairCode'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
 export default {
   props: {
     detailItems: Object,
@@ -114,19 +109,25 @@ export default {
       StatusPic: 'N',
     },
     showMaintainCode: false,
+    // eqcode
     ifLv5: false,
     newEqCode: '',
     newEqName: '',
     toLv: 4,
     componentKey: 0,
     nowEqCode: '',
+    //file pic
+    showPics: [],
+    showTech: []
+
   }),
   mounted: function() {
     //抓單位
     this._getOrg()
   },
   components: {
-    equipRepairObject
+    equipRepairObject,
+    UploadFileAdd
   },
   computed: {
     ...mapState ('user', {
@@ -176,7 +177,34 @@ export default {
       this.componentKey += 1
       this.nowEqCode = this.detailItems.MaintainCode
       this.showMaintainCode=true
-    }
+    },
+    // 加入檔案 (組件用)
+    // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
+    joinFilePic(obj, bool) {
+      console.log(obj)
+      if (bool) {
+        this.detailItems.FileListPic.push(obj)  // 加入要上傳後端的檔案
+      } else {
+        this.showPics.push(obj)  // 加入要顯示的縮圖
+      }
+    },
+    joinFileTech(obj, bool) {
+      console.log(obj)
+      if (bool) {
+        this.detailItems.FileListTech.push(obj)  // 加入要上傳後端的檔案
+      } else {
+        this.showTech.push(obj)  // 加入要顯示的縮圖
+      }
+    },
+    // 移除要上傳的檔案 (組件用)
+    rmFilePic(idx) {
+      this.showPics.splice(idx, 1)
+      this.detailItems.FileListPic.splice(idx, 1)
+    },
+    rmFileTech(idx) {
+      this.showTech.splice(idx, 1)
+      this.detailItems.FileListTech.splice(idx, 1)
+    },
   },
   filters: {
     

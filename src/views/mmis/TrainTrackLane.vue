@@ -51,6 +51,7 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             class="theme-table"
+            @item-expanded="whenExpanded"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
@@ -79,25 +80,26 @@
                     {{ item.OutMaintainDepart }}
                     <v-chip class="ma-2" color="dropdownicon" label>技術文件</v-chip>
                     <v-chip
-                      v-if="item.LocDocument"
+                      v-for="(file,index) in item.FileListTech"
+                      :key="'Tech'+item.FlowId+index"
                       small
                       label
                       color="secondary"
                       class="mr-2 mb-2 mb-sm-0"
-                      href="../../../public/demofile/123.docx"
-                      :download="item.LocDocument"
-                    >{{ item.LocDocument }}</v-chip>
-                    <v-chip v-else>無上傳</v-chip>
+                      :href="file.FileFullPath.replace(/\\/g,'/')"
+                      :download="file.FileName"
+                    >{{ file.FileName }}</v-chip>
+                    <v-chip v-if="item.FileListTech.length==0">無上傳技術文件</v-chip>
                   </div>
                   <div class="col-12 col-md-4">
                     <v-img
-                      v-if="item.LocPic"
-                      :lazy-src="url"
+                      v-for="(pics,index) in item.FileListPic"
+                      :key="'Pic'+item.FlowId+index"
+                      :src="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath.replace(/\\/g,'/')))?pics.FileFullPath.replace(/\\/g,'/') : '/images/file.jpg'"
                       max-height="172"
                       max-width="280"
-                      src="../../../public/demofile/demo3.jpg"
-                    />
-                    <v-chip v-else>無上傳照片</v-chip>
+                    ></v-img>
+                    <v-chip v-if="item.FileListPic.length==0">無上傳照片</v-chip>
                   </div>
                 </div>
               </td>
@@ -114,6 +116,16 @@
                 @click="goEdit(item.FlowId)"
               >
                 <v-icon dark>mdi-pen</v-icon>
+              </v-btn>
+              <v-btn
+                title="檔案"
+                class="mr-2 btn-memo"
+                small
+                dark
+                fab
+                @click="goUpfile(item.MaintainCode)"
+              >
+                <v-icon dark>mdi-file</v-icon>
               </v-btn>
               <v-btn title="停用" small dark fab class="btn-delete" @click="confirmDelete(item.FlowId)">
                 <v-icon dark>mdi-sim-off</v-icon>
@@ -136,12 +148,38 @@
             </v-btn>
           </v-card-title>
           <v-lazy>
-            <editPage :detailItems="detailItems"/>
+            <editPage :detailItems="detailItems" :key="'edit'+detailKey"/>
           </v-lazy>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
             <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- 檔案上傳 modal -->
+      <v-dialog v-model="UpFile" max-width="900px">
+        <v-card class="theme-card">
+          <v-card-title class="white--text px-4 py-1">
+            檔案管理
+            <v-spacer></v-spacer>
+            <v-btn dark fab small text @click="close" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-lazy>
+            <v-row>
+              <v-col cols="12">
+                <UploadFileEdit title="上傳照片" :fileList="fileUpload.Pics" :uploadDisnable="false" @uploadFile="joinFilePic" @deleteFile="rmFilePic" class="mb-10"/>
+              </v-col>
+              <v-col cols="12">
+                <UploadFileEdit title="上傳技術文件" :fileList="fileUpload.Tech" :uploadDisnable="false" @uploadFile="joinFileTech" @deleteFile="rmFileTech" class="mb-10"/>
+              </v-col>
+            </v-row>
+          </v-lazy>
+          <v-card-actions class="px-5 pb-5">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">關閉</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -164,13 +202,14 @@
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
 import { getNowFullTime,escapeHtml,encodeObject,decodeObject } from '@/assets/js/commonFun'
-// import UploadFileAdd from "@/components/UploadFileAdd.vue";
-import { largeQueryList, largeQueryDetail,largeQueryEdit,largeQueryDelete } from '@/apis/materialManage/largeMaterial'
+import UploadFileEdit from "@/components/UploadFileEdit.vue";
+import { largeQueryList, largeQueryDetail,largeQueryEdit,largeQueryDelete, largeFileAdd, largeFileView, largeFileDelete } from '@/apis/materialManage/largeMaterial'
 import editPage from '@/views/mmis/TrainTrackLaneCreate.vue'
 export default {
   data: () => ({
     Add: false,
     Edit: false,
+    UpFile: false,
     Delete: false,
     url: "@/public/demofile/demo3.jpg",
     pageOpt: { page: 1 },
@@ -208,12 +247,12 @@ export default {
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
       },
-      {
-        text: "照片",
-        value: "StatusPic",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
+      // {
+      //   text: "照片",
+      //   value: "StatusPic",
+      //   divider: true,
+      //   class: "subtitle-1 white--text font-weight-bold",
+      // },
       {
         text: "設備功能描述",
         value: "Description",
@@ -221,7 +260,7 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "修改、停用",
+        text: "功能",
         value: "a8",
         align: "center",
         divider: true,
@@ -253,6 +292,12 @@ export default {
 
     },
     deleteFlowId: -1,
+    detailKey: 0,
+    fileUpload:{
+      Pics:[],
+      Tech:[]
+    },
+    upfileMaintain: '',
   }),
   mounted: function() {
       this.setShowData()
@@ -260,7 +305,7 @@ export default {
   components: {
     Pagination,
     editPage,
-    // UploadFileAdd,
+    UploadFileEdit,
   },
   computed: {
     ...mapState ('user', {
@@ -294,8 +339,11 @@ export default {
         Supplier: "",
         Type: "",
         Ver: "",
+        FileListPic: [],
+        FileListTech: []
       }
       this.dialog_title = "新增設備"
+      this.detailKey ++
       this.Edit=true
     },
     //抓顯示清單
@@ -338,10 +386,11 @@ export default {
     //存檔
     save(){
       this.chLoadingShow({show:true})
+      console.log(this.detailItems)
       const that = this
       // const dataKeys = Object.keys(that.detailItems)
       // dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])=="string")?escapeHtml(that.detailItems[e]):that.detailItems[e])
-      that.updateData = {...encodeObject(that.detailItems)}
+      that.updateData = that.detailItems
       that.updateData.ClientReqTime=getNowFullTime()  // client 端請求時間
       that.updateData.OperatorID=that.userData.UserId  // 操作人id
       largeQueryEdit(that.updateData).then(res => {
@@ -374,7 +423,10 @@ export default {
         if (res.data.ErrorCode == 0) {
           //that.chMsgbar({ success: true, msg: '資料取得成功' })
           that.detailItems = res.data.query_detail[0]
-          that.detailItems = decodeObject(that.detailItems)
+          that.detailItems = that.detailItems
+          that.detailItems.FileListPic= []
+          that.detailItems.FileListTech= []
+          this.detailKey ++
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -386,6 +438,122 @@ export default {
       })
       this.Edit=true
     },
+    //按下檔案按鈕
+    async goUpfile(flowId){
+      //打API
+      this.upfileMaintain = flowId
+      let fileRtn = await this.getFiles(flowId)
+      this.fileUpload.Pics = fileRtn.Pics
+      this.fileUpload.Tech = fileRtn.Tech
+      this.UpFile = true
+    },
+    async getFiles(Maintain){
+      let Pics = []
+      let Tech = []
+      await largeFileView({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaintainCode: Maintain,
+        Type: '1'
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          Pics = res.data.FileCount
+        } else {
+          this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+        }
+      }).catch(err => {
+        this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+      }).finally(() => {
+      })
+      await largeFileView({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaintainCode: Maintain,
+        Type: '2'
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          Tech = res.data.FileCount
+        } else {
+          this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+        }
+      }).catch(err => {
+        this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+      }).finally(() => {
+      })
+      return {
+        Pics,Tech
+      }
+    },
+    //檔案上傳
+    joinFilePic(obj){
+      //打API
+      this.fileUpload.Pics = []
+      largeFileAdd({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaintainCode: this.upfileMaintain,
+        Type: '1',
+        FileCount: obj
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          this.chMsgbar({ success: true, msg: '檔案上傳成功' })
+          this.fileUpload.Pics = res.data.FileCount
+        } else {
+          this.chMsgbar({ success: false, msg: '檔案上傳失敗' })
+          this.fileUpload.Pics = res.data.FileCount
+        }
+      })
+    },
+    joinFileTech(obj){
+      //打API
+      this.fileUpload.Tech = []
+      largeFileAdd({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaintainCode: this.upfileMaintain,
+        Type: '2',
+        FileCount: obj
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          this.chMsgbar({ success: true, msg: '檔案上傳成功' })
+          this.fileUpload.Tech = res.data.FileCount
+        } else {
+          this.chMsgbar({ success: false, msg: '檔案上傳失敗' })
+          this.fileUpload.Tech = res.data.FileCount
+        }
+      })
+    },
+    //刪除檔案
+    rmFilePic(index){
+      //抓出flowNo然後打API
+      console.log(this.fileUpload.Pics[index].FlowNo)
+      largeFileDelete({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaintainCode: this.upfileMaintain,
+        Type: '1',
+        FlowNo: this.fileUpload.Pics[index].FlowNo
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          this.chMsgbar({ success: true, msg: '檔案刪除成功' })
+          this.fileUpload.Pics = res.data.FileCount
+        } else {
+          this.chMsgbar({ success: false, msg: '檔案刪除失敗' })
+          this.fileUpload.Pics = res.data.FileCount
+        }
+      })
+    },
+    rmFileTech(index){
+      //抓出flowNo然後打API
+    },
+    async whenExpanded(item){
+      console.log('item',item)
+      if(item.value){
+        let fileRtn = await this.getFiles(item.item.MaintainCode)
+        item.item.FileListPic = fileRtn.Pics
+        item.item.FileListTech = fileRtn.Tech
+      }
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -394,15 +562,8 @@ export default {
     close() {
       this.Add = false;
       this.Edit = false;
+      this.UpFile = false
       this.Delete = false;
-    },
-    // 加入要上傳的檔案
-    joinFile(file) {
-      this.ipt.files.push(file);
-    },
-    // 移除要上傳的檔案
-    rmFile(idx) {
-      this.ipt.files.splice(idx, 1);
     },
     //是否刪除
     confirmDelete(flowId) {

@@ -100,7 +100,7 @@
     <v-card-actions class="px-5 pb-5">
       <v-spacer></v-spacer>
       <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
-      <v-btn class="btn-add white--text" elevation="4" @click="save">送出</v-btn>
+      <v-btn class="btn-add white--text" elevation="4" @click="save" :disabled="sendDisabled">送出</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -147,6 +147,7 @@ export default {
       workName: ''
     },
     componentKey: 0,
+    sendDisabled: false
   }),
   mounted: function() {
     this.getDetail(this.materCode,this.deptCode)
@@ -227,13 +228,14 @@ export default {
           }
         }).catch( err => {
           that.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
+          that.sendDisabled = true
         }).finally(() => {
           that.chLoadingShow({show:false})
           that.materDetail = decodeObject(that.materDetail)
           this.contentShow = true;
         })
       }else{
-        
+        this.materDetail.DepartCode = this.userData.DeptList[0].DeptId
       }
     },
     goMaterial() {
@@ -268,19 +270,36 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if(res.data.ErrorCode == 0) {
-          for(let iKey in this.showDetail){
-            if(iKey=='SpecMemo') {
-              this.showDetail[iKey] = res.data.Memo
+          materialInventoryQuery({
+            MaterialCode: this.materDetail.MaterialCode,
+            DepartCode: this.materDetail.DepartCode,  
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+          }).then(response => {
+            if (response.data.ErrorCode == 1) {
+              for(let iKey in this.showDetail){
+                if(iKey=='SpecMemo') {
+                  this.showDetail[iKey] = res.data.Memo
+                } else {
+                  this.showDetail[iKey] = res.data[iKey]
+                }
+              }
             } else {
-              this.showDetail[iKey] = res.data[iKey]
+              this.chMsgbar({ success: false, msg: '該單位已有庫存，請使用修改功能修改庫存' })
+              this.sendDisabled = true
             }
-          }
+          }).catch( err => {
+            this.chMsgbar({ success: false, msg: '伺服器發生問題，查詢失敗' })
+            this.sendDisabled = true
+          })
         } else {
           this.chMsgbar({ success: false, msg: '查無規格資料，請先新增料件規格' })  
+          this.sendDisabled = true
         }
       }).catch(err=>{
         console.error(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
+        this.sendDisabled = true
       })
       this.dialogShow = false
       this.componentKey += 1
