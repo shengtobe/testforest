@@ -179,7 +179,7 @@
                 >編輯</v-btn>
 
                 <v-btn dark class="ma-2 btn-add"
-                    v-if="!isLocked && isShowBtn"
+                    v-if="isShowBtn"
                     @click="excel"
                 >列印</v-btn>
 
@@ -419,7 +419,7 @@ export default {
             if (this.isLocked) {
                 // -------------- 已鎖定 -------------- 
                 let errArr = []
-                if (!this.finishImprove) errArr.push('改善措施')
+                // if (!this.finishImprove) errArr.push('改善措施')
 
                 if (this.finishDeath && this.finishImprove) {  // 都有填寫
                     if (confirm('你確定要申請審核嗎?')) {

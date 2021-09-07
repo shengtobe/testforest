@@ -257,6 +257,7 @@ export default {
                     'Remark',
                 ],
             }).then(res => {
+                console.log("res.data: ", res.data);
                 let rawString = JSON.stringify(res.data.order_list)
                 console.log(rawString);
                 let rawData = JSON.parse(rawString)
@@ -289,6 +290,21 @@ export default {
             }).finally(() => {
                 this.chLoadingShow({show:false})
             })
+
+            //初始 改善措施摘要
+            fetchOne({
+                    AccidentCode: this.id,  // 事故事件編號 (從路由參數抓取)
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+            }).then(res => {
+                    console.log("res....data: ", );
+
+            }).catch(err => {
+                console.log(err)
+                alert('伺服器發生問題，事故類型讀取失敗')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+            
         },
         // 更換頁數
         chPage(n) {
@@ -339,10 +355,10 @@ export default {
         },
         // 送出
         save() {
-            if (this.selected.length == 0) {
-                alert('請選擇要連結的控制措施')
-                return
-            }
+            // if (this.selected.length == 0) {
+            //     alert('請選擇要連結的控制措施')
+            //     return
+            // }
             this.chLoadingShow({show:true})
 
             procUpdateData({
