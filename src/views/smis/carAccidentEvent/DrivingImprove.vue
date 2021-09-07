@@ -133,7 +133,7 @@
             >回上層</v-btn>
 
             <v-btn dark class="btn-add white--text"
-                @click="save"
+                @click="save" v-if="saveShow"
             >送出</v-btn>
         </v-col>
     </v-row>
@@ -156,7 +156,7 @@ import { departOptions } from '@/assets/js/departOption'
 import Pagination from '@/components/Pagination.vue'
 import EvidencesDialog from '@/components/smis/EvidencesDialog.vue'
 import { fetchList } from '@/apis/smis/carHarmDatabase/controlMeasures'
-import { procUpdateData } from '@/apis/smis/carAccidentEvent'
+import { procUpdateData, fetchOne } from '@/apis/smis/carAccidentEvent'
 
 export default {
     props: ['id'],  //路由參數
@@ -164,6 +164,7 @@ export default {
         tableItems: [],  // 表格資料
         tableItemsFirst: [],  // 表格資料
         allItems: [],
+        saveShow: true,
         restItem: [],
         HookArr: [],
         depart: '',  // 管控單位
@@ -257,12 +258,10 @@ export default {
                     'Remark',
                 ],
             }).then(res => {
-                console.log("res.data: ", res.data);
+                console.log("向後端取得資料 res.data: ", res.data);
                 let rawString = JSON.stringify(res.data.order_list)
-                console.log(rawString);
                 let rawData = JSON.parse(rawString)
                 let parseData = JSON.parse(rawData)
-                console.log("BB : ", parseData);
                 this.allItems = [...parseData]
                 this.HookArr = res.data.CheckedProcCode
                 // let HookArr = ['ARCO01520210707030', 'ARCO01520210707031']
@@ -292,11 +291,14 @@ export default {
             })
 
             //初始 改善措施摘要
+            console.log("初始 改善措施摘要");
             fetchOne({
                     AccidentCode: this.id,  // 事故事件編號 (從路由參數抓取)
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
-                    console.log("res....data: ", );
+                if(res.data.ErrorCode == 0){
+                    this.summary = res.data.ProcTitle
+                }
 
             }).catch(err => {
                 console.log(err)
@@ -370,6 +372,7 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.chMsgbar({ success: true, msg: '更新成功' })
+                    this.saveShow = false
                 } else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
