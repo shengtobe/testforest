@@ -23,7 +23,8 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
             </h3>
             <v-text-field
-                v-model.trim="subject"
+                :value="subject"
+                @change="v=>subject=v.trim()"
                 solo
                 placeholder="請輸入關鍵字"
             ></v-text-field>
@@ -42,7 +43,7 @@
             <v-card>
                 <v-data-table
                     :headers="headers"
-                    :items="tableItems"
+                    :items="showItemList"
                     :options.sync="pageOpt"
                     disable-sort
                     disable-filtering
@@ -161,11 +162,14 @@ export default {
     props: ['id'],  //路由參數
     data: () => ({
         tableItems: [],  // 表格資料
+        tableItemsFirst: [],  // 表格資料
         allItems: [],
         restItem: [],
         HookArr: [],
         depart: '',  // 管控單位
+        departConfirm: '',
         subject: '',  // 措施簡述
+        subjectConfirm:'',
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
             // { text: '連結', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
@@ -201,7 +205,22 @@ export default {
             })
             return arr.join('、')
         },
-
+        showItemList() {
+            let text = this.subjectConfirm
+            let depart = this.departConfirm
+            let items = this.tableItems.filter(x=>x.DeviceDepart.includes(depart)).filter(x=>x.DeviceTitle.includes(text))
+            let selected = this.selected.map(e=>e.ProcCode)
+            items.forEach(e=>{
+                e.selected = selected.includes(e.ProcCode)
+            })
+            items.sort(function(x, y) {
+                // true values first
+                return (x.selected === y.selected)? 0 : x.selected? -1 : 1;
+                // false values first
+                // return (x === y)? 0 : x? 1 : -1;
+            })
+            return items
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -262,6 +281,7 @@ export default {
                 console.log("parseData: ", parseData);
                 console.log("2 in 1 len: ", this.selected.length+parseData.length);
                 this.tableItems = [...this.selected, ...parseData]
+                this.tableItemsFirst = this.tableItems
                 this.restItem = parseData
             }).catch(err => {
                 console.log(err)
@@ -275,27 +295,33 @@ export default {
             this.pageOpt.page = n
         },
         search(){
+            console.log("sele: ", this.selected);
+            this.subjectConfirm = this.subject;
+            this.departConfirm = this.depart;
+            return
             //僅 關鍵字查詢
             if(this.subject != '' && this.depart == ''){
                 //關鍵字
-                let tt = this.subject
+                let text = this.subject
                 //篩出有關鍵字的項目
                 console.log("1");
-                let filterResult1 = this.selected.filter(function (x) { 
-                    return x.DeviceTitle.includes(tt);
+                let filterResult1 = this.tableItems.filter(function (x) { 
+                    return x.DeviceTitle.includes(text);
                     });
                 console.log("2");
-                let filterResult2 = this.restItem.filter(function (x) { 
-                    return x.DeviceTitle.includes(tt);
-                    });
+                // let filterResult2 = this.restItem.filter(function (x) { 
+                //     return x.DeviceTitle.includes(text);
+                //     });
                 console.log("3");
                 //刪除以勾選項目
-                console.log("All: ", this.allItems.length);
+                console.log("All len: ", this.allItems.length);
                 console.log("filterResult1: ", filterResult1);
-                console.log("filterResult2: ", filterResult2);
+                // console.log("filterResult2: ", filterResult2);
                 this.tableItems = [...[]]
-                console.log("tableItems: ", this.tableItems);
-                this.tableItems = [...this.filterResult1, ...filterResult2]
+                console.log("tableItems 1: ", this.tableItems);
+                this.tableItems = filterResult1
+                // this.tableItems = [...this.filterResult1, ...filterResult2]
+                console.log("tableItems 2: ", this.tableItems);
                 console.log("4");
             }
             else if(this.subject == '' && this.depart != ''){//僅 單位查詢

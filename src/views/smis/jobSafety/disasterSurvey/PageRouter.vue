@@ -109,9 +109,10 @@ export default {
                         { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(起)', text: res.data.HurtDateStart.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(迄)', text: res.data.HurtDateEnd.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '通報勞檢', text: res.data.NoticeCheck.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '發生原因', text: res.data.ProcContent.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '發生原因', text: res.data.HappenReason.replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '改善措施', text: res.data.HappenReason.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '改善措施', text: res.data.ProcContent.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '是否已鎖定', text: (res.data.LockStatus == 'F')?'未鎖定':'已鎖定' },
                     ]
 
                     // if (this.status > 1) {

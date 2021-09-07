@@ -279,7 +279,7 @@
 
                 <v-btn dark  class="ma-2 btn-detail"
                     @click="save" v-if="isShowBtn"
-                >同意更新</v-btn>
+                >{{(itemData.EndangerStatus == '2')?'同意措施執行':'同意更新'}}</v-btn>
             </template>
         </v-col>
     </v-row>
@@ -358,7 +358,7 @@ import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import VersionDiff from '@/components/smis/VersionDiff.vue'
-import { getBeforeData, sendUpdateData, sendRetuenData, updatePassData} from '@/apis/smis/carHarmDatabase/harms'
+import { getBeforeData, sendUpdateData, sendPassData, endRetuenData, updatePassData} from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['itemData'],
@@ -591,25 +591,48 @@ export default {
         },
         // 同意更新
         save() {
-            if (confirm('你確定要更新嗎?')) {
-                this.chLoadingShow({show:true})
+            if(this.itemData.EndangerStatus == '2'){
+                if (confirm('你確定要同意措施執行嗎?')) {
+                    this.chLoadingShow({show:true})
 
-                updatePassData({
-                    EndangerCode: this.id,  // 編號
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.done = true  // 隱藏頁面操作按鈕
-                    } else {
-                    }
-                }).catch(err => {
-                    console.log(err)
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
-                }).finally(() => {
-                    this.chLoadingShow({show:false})
-                })
+                    sendPassData({
+                        EndangerCode: this.id,  // 編號
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                }
             }
+            else{
+                if (confirm('你確定要同意更新嗎?')) {
+                    updatePassData({
+                        EndangerCode: this.id,  // 編號
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.done = true  // 隱藏頁面操作按鈕
+                        } else {
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                }
+                
+            }
+                
         },
         // 顯示檢視內容
         showContent(txt) {

@@ -709,6 +709,7 @@ export default {
             cause: '',  // 發生原因
             note: '',  // 備註
             improve: '', // 改善措施
+            isLocked: 'F',
         },
         dateMemuShow: {  // 日曆是否顯示
             start: false,
@@ -918,6 +919,7 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
+            console.log("職業事故form obj: ", obj);
             this.ipt.workDepart = obj.PeopleDepart  // 工作部門
             this.ipt.name = obj.HurtPeopleName  // 罹災者姓名
             this.ipt.idCard = obj.HurtPeopleCardID  // 身分證
@@ -958,6 +960,7 @@ export default {
             this.ipt.improve = obj.ProcContent // 發生原因
             this.ipt.cause = obj.HappenReason // 改善措施
             this.ipt.note = obj.Memo // 備註
+            this.isLocked = obj.LockStatus
             this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
         },
         jobSelectChange(){
@@ -1029,6 +1032,7 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                     AccidentCode: this.id,
+                    LockStatus: this.isLocked,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '更新成功' })

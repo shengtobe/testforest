@@ -4,13 +4,13 @@
     <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、已完備資料 -->
-    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
+    <ReviewComplated :itemData="itemData" v-if="status == 3 || status == 3" />
 
     <!-- 審核中、風險已可接受 -->
     <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 
     <!-- 審核中(審核更新) -->
-    <UpdateReview :itemData="itemData" v-if="status == 6 || status == 6.1" />
+    <UpdateReview :itemData="itemData" v-if="status == 6 || status == 2" />
 </div>
 </template>
 
@@ -50,6 +50,7 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("res.data: ", res.data);
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {

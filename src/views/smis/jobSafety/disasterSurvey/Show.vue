@@ -187,9 +187,13 @@
                     @click="del" v-if="isShowBtn"
                 >作廢</v-btn>
 
+                <v-btn dark  class="ma-2 btn-modify"
+                    @click="unlock" v-if="isLocked"
+                >解除鎖定</v-btn>
+
                 <v-btn dark  class="ma-2 btn-memo"
                     @click="save" v-if="isShowBtn"
-                >{{ (isLocked)? '申請審核資料' : '申請審核資料' }}</v-btn>
+                >{{ (isLocked)? '申請審核資料' : '鎖定' }}</v-btn>
             </template>
            
 
@@ -206,7 +210,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
-import { deleteData, sendCheckData} from '@/apis/smis/jobSafety'
+import { deleteData, sendCheckData, updateData } from '@/apis/smis/jobSafety'
 import { exportExcel } from '@/apis/smis/jobSafety'
 
 export default {
@@ -259,11 +263,12 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj: ", obj);
             this.id = obj.AccidentCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.FileCount ]  // 檔案附件
-            this.isLocked = obj.isLocked  // 是否已鎖定
+            this.isLocked = (obj.LockStatus == 'T')?true:false  // 是否已鎖定
 
             canInUpdate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -347,71 +352,186 @@ export default {
                 })
             }
         },
+        unlock(){
+            updateData({
+                HappenDepart: this.itemData.HappenDepart, //3發生單位
+                HurtPeopleName: this.itemData.HurtPeopleName, //4罹災者姓名
+                HurtPeopleCardID: this.itemData.HurtPeopleCardID, //身分證
+                HurtPassportID: this.itemData.HurtPassportID, //護照號碼
+                PeopleAge: this.itemData.PeopleAge, //5年齡
+                PeopleSex: this.itemData.PeopleSex, //6性別
+                PeopleDepart: this.itemData.PeopleDepart, //7工作部門
+                JobTitle: this.itemData.JobTitle, //8職稱
+                PeopleAddress: this.itemData.PeopleAddress, //9住址
+                WorkDate: this.itemData.WorkDate, //10到職日期
+                WorkExp: this.itemData.WorkExp, //11參加本項工作經驗年數
+                EduLevel: this.itemData.EduLevel, //12教育程度
+                TrainDate: this.itemData.TrainDate, //13本項工作相關訓練日期
+                EmployType: this.itemData.EmployType, //1勞工類型
+                HappenDate: this.itemData.HappenDate, //14發生日期(日)
+                HappenDateHr: this.itemData.HappenDateHr, //15發生日期(時)
+                HappenDateMin: this.itemData.HappenDateMin, //16發生日期(分)
+                Weather: this.itemData.Weather, //15氣候
+                HappenPlace: this.itemData.HappenPlace, //16發生地點
+                HappenPlaceLong: this.itemData.HappenPlaceLong, //16發生地點(經度)
+                HappenPlaceLat: this.itemData.HappenPlaceLat, //16發生地點(緯度)
+                AccidentType: this.itemData.AccidentType, //17事故類別
+                AccidentResult: this.itemData.AccidentResult, //18事故結果
+                HurtPart: this.itemData.HurtPart, //22傷害部位
+                DisasterType: this.itemData.DisasterType, //23災害類型
+                HurtMediumLv1: this.itemData.HurtMediumLv1, //24致傷媒介物
+                HurtMediumLv2: this.itemData.HurtMediumLv2, //致傷媒介物 第二層
+                AccidentReason: this.itemData.AccidentReason, //19直接原因
+                AccidentIndirect: this.itemData.AccidentIndirect, //20間接原因
+                AccidentBase: this.itemData.AccidentBase, //21基本原因
+                HurtWorking: this.itemData.HurtWorking, //25傷者當時工作
+                AccidentDesp: this.itemData.AccidentDesp, //26事故概況
+                EmergencyStatus: this.itemData.EmergencyStatus, //27緊急處理情形
+                AccidentPolicy: this.itemData.AccidentPolicy, //28事故單位防範及改善對策
+                HurtDateStart: this.itemData.HurtDateStart, // 公傷假(起)
+                HurtDateEnd: this.itemData.HurtDateEnd, // 公傷假(迄)
+                NoticeCheck: this.itemData.NoticeCheck, // 通報勞檢
+                ProcContent: this.itemData.ProcContent, // 發生原因
+                HappenReason: this.itemData.HappenReason, // 改善措施
+                Memo: this.itemData.Memo, // 備註
+                FileCount: this.FileCount,
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                AccidentCode: this.id,
+                LockStatus: (this.itemData.LockStatus == 'F')?'T':'F',
+            }).then(res => {
+                if (res.data.ErrorCode == 0) {
+                    this.chMsgbar({ success: true, msg: '更新成功' })
+                    this.saveBtnShow = false
+                    this.$router.go()
+                } else {
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+            }).catch(err => {
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
         // 鎖定
         save() {
-            // if (this.isLocked) {
-            //     // -------------- 已鎖定 -------------- 
-            //     let errArr = []
-            //     if (!this.finishImprove) errArr.push('改善措施')
+            if (this.isLocked) {
+                // -------------- 已鎖定 -------------- 
+                let errArr = []
+                if (!this.finishImprove) errArr.push('改善措施')
 
-            //     if (this.finishDeath && this.finishImprove) {  // 都有填寫
-            //         if (confirm('你確定要申請審核嗎?')) {
-            //             this.chLoadingShow({show:true})
+                if (this.finishDeath && this.finishImprove) {  // 都有填寫
+                    if (confirm('你確定要申請審核嗎?')) {
+                        this.chLoadingShow({show:true})
 
-            //             setTimeout(() => {
-            //                 this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-            //                 this.chMsgbar({ success: true, msg: '申請審核成功'})
-            //                 this.chLoadingShow({show:true})
-            //             }, 1000)
-            //         }
-            //     } else {
-            //         let errLog = '你還未填寫「'+ errArr.join('、') + '」'
-            //         alert(errLog)
-            //     }
-            // } else {
-            //     // -------------- 未鎖定 -------------- 
-            //     if (confirm('你確定要鎖定嗎?')) {
-            //         this.chLoadingShow({show:true})
+                        // setTimeout(() => {
+                        //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
+                        //     this.chMsgbar({ success: true, msg: '申請審核成功'})
+                        //     this.done = true
+                        //     this.chLoadingShow({show:true})
+                        // }, 1000)
+                        //-----call申請審核api------
+                        sendCheckData({
+                            AccidentCode: this.id,  // 編號
+                            ClientReqTime: getNowFullTime(),  // client 端請求時間
+                            OperatorID: this.userData.UserId,  // 操作人id
+                        }).then(res => {
+                            if (res.data.ErrorCode == 0) {
+                                this.done = true  // 隱藏頁面操作按鈕
+                            } else {
+                                console.log(res.data.Msg)
+                            }
+                        }).catch(err => {
+                            console.log(err)
+                            this.chMsgbar({ success: false, msg: '伺服器發生問題' })
+                        }).finally(() => {
+                            this.chLoadingShow({show:false})
+                        })
 
-            //         // 向後端更新鎖定、覆核的欄位
-            //         setTimeout(() => {
-            //             // this.topItems.isReview.text = '已複核'
-            //             this.isLocked = true
-            //             this.chLoadingShow({show:true})
-            //         }, 1000)
-            //     }
-            // }
-            if (confirm('你確定要申請審核嗎?')) {
-                this.chLoadingShow({show:true})
-
-                // setTimeout(() => {
-                //     this.$router.push({ path: '/smis/jobsafety/disaster-survey' })
-                //     this.chMsgbar({ success: true, msg: '申請審核成功'})
-                //     this.done = true
-                //     this.chLoadingShow({show:true})
-                // }, 1000)
-                //-----call申請審核api------
-                sendCheckData({
-                    AccidentCode: this.id,  // 編號
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.done = true  // 隱藏頁面操作按鈕
-                    } else {
-                        console.log(res.data.Msg)
+                        setTimeout(() => {
+                            this.chMsgbar({ success: true, msg: '申請審核成功'})
+                        },1000)
                     }
-                }).catch(err => {
-                    console.log(err)
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題' })
-                }).finally(() => {
-                    this.chLoadingShow({show:false})
-                })
+                    } else {
+                        let errLog = '你還未填寫「'+ errArr.join('、') + '」'
+                        alert(errLog)
+                    }
+            } else {
+                // -------------- 未鎖定 -------------- 
+                if (confirm('你確定要鎖定嗎?')) {
+                    this.chLoadingShow({show:true})
 
-                setTimeout(() => {
-                    this.chMsgbar({ success: true, msg: '申請審核成功'})
-                },1000)
+                    // 向後端更新鎖定、覆核的欄位
+                    updateData({
+                        HappenDepart: this.itemData.HappenDepart, //3發生單位
+                        HurtPeopleName: this.itemData.HurtPeopleName, //4罹災者姓名
+                        HurtPeopleCardID: this.itemData.HurtPeopleCardID, //身分證
+                        HurtPassportID: this.itemData.HurtPassportID, //護照號碼
+                        PeopleAge: this.itemData.PeopleAge, //5年齡
+                        PeopleSex: this.itemData.PeopleSex, //6性別
+                        PeopleDepart: this.itemData.PeopleDepart, //7工作部門
+                        JobTitle: this.itemData.JobTitle, //8職稱
+                        PeopleAddress: this.itemData.PeopleAddress, //9住址
+                        WorkDate: this.itemData.WorkDate, //10到職日期
+                        WorkExp: this.itemData.WorkExp, //11參加本項工作經驗年數
+                        EduLevel: this.itemData.EduLevel, //12教育程度
+                        TrainDate: this.itemData.TrainDate, //13本項工作相關訓練日期
+                        EmployType: this.itemData.EmployType, //1勞工類型
+                        HappenDate: this.itemData.HappenDate, //14發生日期(日)
+                        HappenDateHr: this.itemData.HappenDateHr, //15發生日期(時)
+                        HappenDateMin: this.itemData.HappenDateMin, //16發生日期(分)
+                        Weather: this.itemData.Weather, //15氣候
+                        HappenPlace: this.itemData.HappenPlace, //16發生地點
+                        HappenPlaceLong: this.itemData.HappenPlaceLong, //16發生地點(經度)
+                        HappenPlaceLat: this.itemData.HappenPlaceLat, //16發生地點(緯度)
+                        AccidentType: this.itemData.AccidentType, //17事故類別
+                        AccidentResult: this.itemData.AccidentResult, //18事故結果
+                        HurtPart: this.itemData.HurtPart, //22傷害部位
+                        DisasterType: this.itemData.DisasterType, //23災害類型
+                        HurtMediumLv1: this.itemData.HurtMediumLv1, //24致傷媒介物
+                        HurtMediumLv2: this.itemData.HurtMediumLv2, //致傷媒介物 第二層
+                        AccidentReason: this.itemData.AccidentReason, //19直接原因
+                        AccidentIndirect: this.itemData.AccidentIndirect, //20間接原因
+                        AccidentBase: this.itemData.AccidentBase, //21基本原因
+                        HurtWorking: this.itemData.HurtWorking, //25傷者當時工作
+                        AccidentDesp: this.itemData.AccidentDesp, //26事故概況
+                        EmergencyStatus: this.itemData.EmergencyStatus, //27緊急處理情形
+                        AccidentPolicy: this.itemData.AccidentPolicy, //28事故單位防範及改善對策
+                        HurtDateStart: this.itemData.HurtDateStart, // 公傷假(起)
+                        HurtDateEnd: this.itemData.HurtDateEnd, // 公傷假(迄)
+                        NoticeCheck: this.itemData.NoticeCheck, // 通報勞檢
+                        ProcContent: this.itemData.ProcContent, // 發生原因
+                        HappenReason: this.itemData.HappenReason, // 改善措施
+                        Memo: this.itemData.Memo, // 備註
+                        FileCount: this.FileCount,
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        AccidentCode: this.id,
+                        LockStatus: (this.itemData.LockStatus == 'F')?'T':'F',
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '更新成功' })
+                            this.saveBtnShow = false
+                            this.$router.go()
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                    // setTimeout(() => {
+                    //     // this.topItems.isReview.text = '已複核'
+                    //     this.isLocked = true
+                    //     this.chLoadingShow({show:true})
+                    // }, 1000)
+                }
             }
+            return
+            
             
         },
     },
