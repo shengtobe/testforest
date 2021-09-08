@@ -52,7 +52,20 @@ export default {
                     }
                 },
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    datalabels: {
+                        align: "top",
+                        anchor: "start",
+                        clamp :true,
+                        color: function(context) {
+                        return context.dataset.borderColor
+                        },
+                        formatter: function(value, context) {
+                        return value;
+                        }
+                    },
+                },
             },
             data: {
                 labels: [],
@@ -98,7 +111,7 @@ export default {
                         rtnObject.data = []
                         let DepartDataDetail = DepartGroupData[DepartData]
                         for( let YMValue of YM ) {
-                            rtnObject.data.push(DepartDataDetail.find(e=>e.YM==YMValue).Count)
+                            rtnObject.data.push(DepartDataDetail?.find(e=>e.YM==YMValue)?.Count||0)
                         }
                         that.chart.data.datasets.push(rtnObject)
                     }
