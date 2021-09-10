@@ -131,6 +131,13 @@ export default {
     }
   },
   watch: {
+    "select.lv1": function(value){
+      this.select.lv2 = ''
+      this.select.lv3 = ''
+    },
+    "select.lv2": function(value){
+      this.select.lv3 = ''
+    }
   },
   methods: {
     // 向後端取得資料
