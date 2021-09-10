@@ -27,7 +27,7 @@
                 solo
                 placeholder="請輸入性名"
             ></v-text-field>
-            <peopleSelect v-else :solo="true" valueCol="UserName" :peopleList="ipt.name" :disableList="[userData.UserName]" @getPeople="getPeople" />
+            <peopleSelect :key="componentKey" v-else :solo="true" valueCol="UserName" :peopleList="ipt.name" :disableList="[userData.UserName]" @getPeople="getPeople" />
         </v-col>
 
         <v-col cols="12" sm="6" md="3">
@@ -659,12 +659,14 @@ import { login } from '@/apis/login'
 export default {
     props: ['id'],  //路由參數
     data: () => ({
+        test: ['12902'],
         valid: true,  // 表單是否驗證欄位
         isEdit: false,  // 是否編輯中
         saveBtnShow: true, // 送出按鈕隱藏
         isShowBtn: false,
         evidences: [],  // 改善措施證據
         showFiles: [],  // 要顯示的縮圖
+        componentKey: 0,
         ipt: {},
         defaultIpt: {
             name: '',  // 罹災者姓名
@@ -838,6 +840,7 @@ export default {
                             this.$router.push({ path: '/404' })
                         } else {
                             // res.data.controls = JSON.parse(res.data.order_list)  // 已選控制措施
+                            console.log("887 res.data: ", res.data);
                             this.setInitDate(res.data)
                         }
                     } else {
@@ -962,6 +965,7 @@ export default {
             this.ipt.note = obj.Memo // 備註
             this.isLocked = obj.LockStatus
             this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
+            this.componentKey++
         },
         jobSelectChange(){
             if(this.ipt.jobTitle0 == '(空)'){

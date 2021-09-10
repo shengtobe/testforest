@@ -336,8 +336,5 @@ export default {
     created() {
         this.setShowData(this.itemData)
     },
-    beforeDestroy(){
-        alert("leave")
-    }
 }
 </script>

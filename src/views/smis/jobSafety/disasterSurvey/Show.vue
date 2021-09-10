@@ -319,6 +319,7 @@ export default {
                     link.href = `/downloads/${res.data.file_name}`
                     link.setAttribute('download', res.data.file_name)
                     document.body.appendChild(link)
+                    console.log("link: ", link);
                     link.click()
                 }
                 else{

@@ -224,7 +224,6 @@
             <v-text-field
                 v-model.trim="ipt.Sight"
                 solo maxlength="3"
-                type="number"
                 placeholder="請輸入視力"
             ></v-text-field>
         </v-col>
@@ -236,6 +235,7 @@
             <v-text-field
                 v-model.trim="ipt.Hearing"
                 solo maxlength="3"
+                suffix="dB"
                 type="number"
                 placeholder="請輸入聽力"
             ></v-text-field>
@@ -678,48 +678,48 @@ export default {
                 })
             }
         },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
+        //檢查校正 脈搏
+        "ipt.Pulse": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.Pulse = oldValue
                 })
             }
         },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
+        //檢查校正 腰圍
+        "ipt.Waistline": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.Waistline = oldValue
                 })
             }
         },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
+        //檢查校正 視力
+        "ipt.Sight": function(newValue,oldValue){
+            if(/^\.\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.Sight = oldValue
                 })
             }
         },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
+        //檢查校正 聽力
+        "ipt.Hearing": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.Hearing = oldValue
                 })
             }
         },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
+        //檢查校正 尿蛋白
+        "ipt.UrineProtein": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.UrineProtein = oldValue
                 })
             }
         },

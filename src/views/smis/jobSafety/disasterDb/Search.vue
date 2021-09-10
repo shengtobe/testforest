@@ -3,7 +3,17 @@
     <h2 class="mb-4 label-title">職災危害資料庫查詢</h2>
 
     <v-row class="px-2 mb-8">
-        <v-col cols="12" md="6">
+        <v-col cols="12" sm="4" md="3" class="mb-n7">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bank</v-icon>部門
+            </h3>
+            <v-select
+                v-model="depart"
+                :items="depOpts"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" md="4">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-tag</v-icon>作業名稱
             </h3>
@@ -107,7 +117,24 @@ export default {
             name: '',  // 作業名稱
         },
         tableItems: [],  // 表格資料
+        depart: '', // 篩選部門
         pageOpt: { page: 1 },  // 目前頁數
+        depOpts: [
+        // 科室下拉選單
+        { text: "北門車站 S02", value: "01" },
+        { text: "竹崎車站 S04", value: "02" },
+        { text: "交力坪車站 S09", value: "03" },
+        { text: "奮起湖車站 S11", value: "04" },
+        { text: "阿里山車站 S17", value: "05" },
+        { text: "竹崎監工區 ZHQ", value: "06" },
+        { text: "奮起湖監工區 FQH", value: "07" },
+        { text: "阿里山監工區 ALS", value: "08" },
+        { text: "修理工廠 MW1", value: "09" },
+        { text: "嘉義車庫 CYD", value: "10" },
+        { text: "阿里山車庫 ALD", value: "11" },
+        { text: "內勤單位 OFF", value: "12" },
+        { text: "不限", value: "" },
+        ],
         headers: [  // 表格顯示的欄位
             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -167,14 +194,24 @@ export default {
                     // 'InsertDTime',
                 ],
             }).then(res => {
-                this.tableItems = JSON.parse(res.data.order_list)
-                this.tableItems.forEach(element => {
+                let tempTable = JSON.parse(res.data.order_list)
+                console.log("exam this.tableItems one: ", this.tableItems[0]);
+                tempTable.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
                             element[ele] = '';
                         }
                     }
                 });
+                if(this.depart == ''){
+                    this.tableItems = tempTable
+                }
+                else{
+                    this.tableItems = tempTable.filter((item) =>
+                        (item.EndangerCode.split('-'))[2] == this.depart
+                    );
+                }
+                
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -199,6 +236,7 @@ export default {
             //     this.chLoadingShow({show:true})
             // }, 1000)
         },
+        
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n

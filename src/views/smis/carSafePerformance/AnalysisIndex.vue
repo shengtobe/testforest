@@ -19,8 +19,8 @@
             <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/B/accident-trend/${encodeURIComponent('一般行車事故率')}`">
                 一般行車事故率
             </v-btn>
-            <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/C/accident-trend/${encodeURIComponent('行車異常事故率')}`">
-                行車異常事故率
+            <v-btn dark large class="btn-detail my-2 mr-2" :to="`/smis/car-safe-performance/C/accident-trend/${encodeURIComponent('鐵路行車異常事件')}`">
+                鐵路行車異常事件
             </v-btn>
         </v-col>
         <v-col cols="12" style="position:relative;">

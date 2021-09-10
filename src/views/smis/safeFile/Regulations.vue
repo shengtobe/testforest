@@ -240,6 +240,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue'
@@ -248,6 +249,7 @@ import { regulfetchList, regulCreate, updateRegul, deleteRegul } from '@/apis/sm
 
 export default {
     data: () => ({
+        isShowBtn: false, // 編刪按鈕是否顯示(依權限)
         searchIpt: {  // 搜尋欄位
             depart: '',  // 維護單位
             type: '',  // 文件類型
@@ -258,13 +260,7 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '文件類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
-            { text: '文件名稱', value: 'file', align: 'start', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
-            { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
-            { text: '版次', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
-            { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
-            { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+            
         ],
         serchDepartOpts: [  // 搜尋表單維護單位下拉選單
             { text: '不限', value: '' },
@@ -301,6 +297,7 @@ export default {
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
         }),
         dialogTitle () {
             return this.itemIndex === -1 ? '新增資料' : '編輯資料'
@@ -310,6 +307,9 @@ export default {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
+        ]),
+        ...mapActions('user', [
+            'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
         // 搜尋
         search() {
@@ -488,6 +488,42 @@ export default {
     },
     created() {
         this.ipt = { ...this.defaultIpt }
+        canInUpdate({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                this.saveUserGroup(res.data.GroupData)
+                console.log("groupData: ", this.groupData);
+                this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T" || this.groupData.RoleLv4 == "T";
+                console.log(this.isShowBtn);
+
+                if(this.isShowBtn){
+                    this.headers = [  // 表格欄位
+                        { text: '文件類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                        { text: '文件名稱', value: 'file', align: 'start', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                        { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                        { text: '版次', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                        { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                        { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                        { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                    ]
+                }
+                else{
+                    this.headers = [  // 表格欄位
+                        { text: '文件類別', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                        { text: '文件名稱', value: 'file', align: 'start', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                        { text: '維護單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                        { text: '版次', value: 'Version', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                        { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '100' },
+                        { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
+                    ]
+                }
+            }
+        }).catch( err => {
+            console.log(err)
+        }).finally(() => {
+        })
     },
 }
 </script>

@@ -181,6 +181,7 @@
             <v-col cols="12">
                 <h3 class="mb-2">
                     <v-icon class="mr-1 mb-1">mdi-note</v-icon>維修情況
+                    <span class="red--text">*</span>
                 </h3>
 
                 <v-textarea

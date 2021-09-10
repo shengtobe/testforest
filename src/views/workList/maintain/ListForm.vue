@@ -268,7 +268,7 @@
         <v-row class="px-2 mb-8">
             <v-col cols="12" v-if="!isEdit">
                 <h3 class="mb-2">
-                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
+                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>平交道故障狀況
                 </h3>
                 <v-checkbox
                     class="mx-2 mt-sm-10"
@@ -557,7 +557,7 @@
             </v-col>
             <v-col cols="12" v-else>
                 <h3 class="mb-2" v-if="ipt.Condition != ''">
-                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>故障狀況
+                    <v-icon class="mr-1 mb-1">mdi-pen</v-icon>平交道故障狀況
                 </h3>
                 {{ ipt.Condition }}
             </v-col>
@@ -672,7 +672,7 @@ export default {
         },
         canModifyEqCode: false,  // 是否能選擇設備標示編號下拉選單
         crossShow: false,
-        condition: {               //故障狀況
+        condition: {               //平交道故障狀況
             carType: [],            //車種
             direction: '',          //方向
             carNum: '',             //車次
@@ -879,7 +879,7 @@ export default {
                 this.ipt.date = obj.CreateDDay  // 立案日期
                 this.ipt.hour = obj.CreateDTime  // 立即派工的小時
                 this.ipt.subject = obj.WorkSubject  // 故障主旨
-                this.ipt.Condition = obj.Condition  //故障狀況
+                this.ipt.Condition = obj.Condition  //平交道故障狀況
                 this.showEq = true
 
                 // 將派工人資料寫入 vuex(組織表)

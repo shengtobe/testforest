@@ -11,7 +11,7 @@
             </h3>
             <v-select
                 v-model="ipt.evtType1"
-                :items="['重大事故', '一般事故', '異常事件', '其他']"
+                :items="FirstLvFiltered"
                 @change="evtTypeChange"
                 solo
             ></v-select>
@@ -595,9 +595,11 @@ export default {
         isEdit: false,  // 是否為編輯狀態
         saveBtnShow: true, // 送出按鈕顯示
         isUsual: true, // 異常時為false
+        arr0: [],
         arr1: [], // 重大事故
         arr2: [], // 一般事故
         arr3: [], // 異常事件
+        FirstLvFiltered: [], // 事故類型第一層
         ipt: {},
         defaultIpt: {
             subject: '',  // 事故摘要
@@ -696,20 +698,25 @@ export default {
                 if (res.data.ErrorCode == 0) {
                     //抽離 其他
                     this.opsList = JSON.parse(res.data.order_list)
-                    console.log("opsList: ", this.opsList);
                     let tempOps = this.opsList.map(e=>e.text)
-                    console.log("tempOps: ", tempOps);
+                    let firstLv = [];
+                    tempOps.forEach(element => { 
+                        if(element.indexOf("-") >= 0) firstLv.push((element.split('-'))[0])
+                    });
+                    this.FirstLvFiltered = [...new Set(firstLv)]
+                    this.FirstLvFiltered.push("其他")
                     tempOps.forEach(e => {
                         if(e.indexOf("-") >= 0){
                             let arr = e.split('-')
+                            firstLv.push(arr[0])
                             arr[1] = arr[1].replace('率', '')
-                            if(arr[0] == "重大事故"){
+                            if(arr[0] == this.FirstLvFiltered[0]){
                                 this.arr1.push(arr[1])
                             }
-                            else if(arr[0] == "一般事故"){
+                            else if(arr[0] == this.FirstLvFiltered[1]){
                                 this.arr2.push(arr[1])
                             }
-                            else if(arr[0] == "異常事件"){
+                            else if(arr[0] == this.FirstLvFiltered[2]){
                                 this.arr3.push(arr[1])
                             }
                         }
@@ -741,7 +748,6 @@ export default {
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
-                            console.log("res.data: ", res.data);
                             this.setInitDate(res.data)
                         }
                     } else {
@@ -804,13 +810,13 @@ export default {
         evtTypeChange(){
             this.ipt.evtType2 = ''
             this.isUsual = true
-            if(this.ipt.evtType1 == "重大事故"){
+            if(this.ipt.evtType1 == this.FirstLvFiltered[0]){
                 this.evtTypeOpts = this.arr1
             }
-            else if(this.ipt.evtType1 == "一般事故"){
+            else if(this.ipt.evtType1 == this.FirstLvFiltered[1]){
                 this.evtTypeOpts = this.arr2
             }
-            else if(this.ipt.evtType1 == "異常事件"){
+            else if(this.ipt.evtType1 == this.FirstLvFiltered[2]){
                 this.evtTypeOpts = this.arr3
                 this.isUsual = false
             }
@@ -843,9 +849,7 @@ export default {
             else{ //事故類型兩個都有選或兩個都沒選
                 // OK save
             }
-            console.log("送出 ipt:", this.ipt);
             let s = this.ipt.evtType1 + '-' + this.ipt.evtType2
-            console.log("s: ", s);
             this.chLoadingShow({show:true})
             if(this.ipt.locationK == '') this.ipt.locationK = '0'
             if(this.ipt.locationM == '') this.ipt.locationM = '0'
