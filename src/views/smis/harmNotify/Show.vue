@@ -1543,42 +1543,47 @@ export default {
                         this.chMsgbar({ success: true, msg: '立案成功'})
                         this.done = true  // 隱藏按鈕
                         // =================自動轉跳=================
-                        if(carType != 'no' && jobType == 'no'){// 自動轉跳行安的情況
-                            if(carType == 'new'){ //轉跳新增行安
-                                // 行車事故
-                                if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${res.data.EventCode}/show` })
-                                // 行車危害
-                                else if(carCase == 'endanger')  this.$router.push({ path: `/smis/car-harmdb/harms/${res.data.EventCode}/show` })
-                            }
-                            else{//轉跳既有行安
-                                // 行車事故
-                                if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${this.pick1}/show` })
-                                // 行車危害
-                                else if(carCase == 'endanger')  this.$router.push({ path: `/smis/car-harmdb/harms/${this.pick1}/show` })
-                            }
+                        if(res.data.EventCode == '' || res.data.EventCode == null){
                         }
-                        else if(carType == 'no' && jobType != 'no'){// 自動轉跳職安的情況
-                            if(jobType == 'new'){ //轉跳新增職安
-                                // 職業事故
-                                if(jobCase == 'event')  this.$router.push({ path: `/smis/jobsafety/disaster-survey/${res.data.EventCode}/show` })
-                                // 職業危害
-                                else if(jobCase == 'endanger')  this.$router.push({ path: `/smis/jobsafety/disasterdb/${res.data.EventCode}/show` })
-                            }
-                            else{//轉跳既有職安
-                                if(jobCase == 'event'){ // 職業事故
-                                    this.$router.push({ path: `/smis/jobsafety/disaster-survey/${this.pick2}/show` })
+                        else{
+                            if(carType != 'no' && jobType == 'no'){// 自動轉跳行安的情況
+                                if(carType == 'new'){ //轉跳新增行安
+                                    // 行車事故
+                                    if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${res.data.EventCode}/show` })
+                                    // 行車危害
+                                    else if(carCase == 'endanger')  this.$router.push({ path: `/smis/car-harmdb/harms/${res.data.EventCode}/show` })
                                 }
-                                else if(jobCase == 'endanger'){ // 職業危害
-                                    this.$router.push({ path: `/smis/jobsafety/disasterdb/${this.pick2}/show` })
+                                else{//轉跳既有行安
+                                    // 行車事故
+                                    if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${this.pick1}/show` })
+                                    // 行車危害
+                                    else if(carCase == 'endanger')  this.$router.push({ path: `/smis/car-harmdb/harms/${this.pick1}/show` })
                                 }
                             }
+                            else if(carType == 'no' && jobType != 'no'){// 自動轉跳職安的情況
+                                if(jobType == 'new'){ //轉跳新增職安
+                                    // 職業事故
+                                    if(jobCase == 'event')  this.$router.push({ path: `/smis/jobsafety/disaster-survey/${res.data.EventCode}/show` })
+                                    // 職業危害
+                                    else if(jobCase == 'endanger')  this.$router.push({ path: `/smis/jobsafety/disasterdb/${res.data.EventCode}/show` })
+                                }
+                                else{//轉跳既有職安
+                                    if(jobCase == 'event'){ // 職業事故
+                                        this.$router.push({ path: `/smis/jobsafety/disaster-survey/${this.pick2}/show` })
+                                    }
+                                    else if(jobCase == 'endanger'){ // 職業危害
+                                        this.$router.push({ path: `/smis/jobsafety/disasterdb/${this.pick2}/show` })
+                                    }
+                                }
+                            }
                         }
+                        
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '立案成功'})
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題'})
                 }).finally(() => {
                     this.chLoadingShow({show:false})
                 })

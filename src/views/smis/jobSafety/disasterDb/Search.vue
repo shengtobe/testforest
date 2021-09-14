@@ -121,18 +121,18 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         depOpts: [
         // 科室下拉選單
-        { text: "北門車站 S02", value: "01" },
-        { text: "竹崎車站 S04", value: "02" },
-        { text: "交力坪車站 S09", value: "03" },
-        { text: "奮起湖車站 S11", value: "04" },
-        { text: "阿里山車站 S17", value: "05" },
-        { text: "竹崎監工區 ZHQ", value: "06" },
-        { text: "奮起湖監工區 FQH", value: "07" },
-        { text: "阿里山監工區 ALS", value: "08" },
-        { text: "修理工廠 MW1", value: "09" },
-        { text: "嘉義車庫 CYD", value: "10" },
-        { text: "阿里山車庫 ALD", value: "11" },
-        { text: "內勤單位 OFF", value: "12" },
+        { text: "北門車站 S02", value: "S02" },
+        { text: "竹崎車站 S04", value: "S04" },
+        { text: "交力坪車站 S09", value: "S09" },
+        { text: "奮起湖車站 S11", value: "S11" },
+        { text: "阿里山車站 S17", value: "S17" },
+        { text: "竹崎監工區 ZHQ", value: "ZHQ" },
+        { text: "奮起湖監工區 FQH", value: "FQH" },
+        { text: "阿里山監工區 ALS", value: "ALS" },
+        { text: "修理工廠 MW1", value: "MW1" },
+        { text: "嘉義車庫 CYD", value: "CYD" },
+        { text: "阿里山車庫 ALD", value: "ALD" },
+        { text: "內勤單位 OFF", value: "OFF" },
         { text: "不限", value: "" },
         ],
         headers: [  // 表格顯示的欄位
@@ -208,7 +208,7 @@ export default {
                 }
                 else{
                     this.tableItems = tempTable.filter((item) =>
-                        (item.EndangerCode.split('-'))[2] == this.depart
+                        (item.EndangerCode.split('-'))[0] == this.depart
                     );
                 }
                 

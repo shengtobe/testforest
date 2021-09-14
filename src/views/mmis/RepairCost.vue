@@ -70,7 +70,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
+          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName" />
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancel">取消</v-btn>
@@ -97,7 +97,7 @@
         </v-btn>
       </v-col>
     </v-row>
-
+    
     <v-row class="px-2 mb-8">
       <!-- 表格資料 -->
       <v-col cols="12">
@@ -210,6 +210,7 @@ export default {
     StartDay:false,
     EndDay: false,
     eqCodeShow: false,
+    detailCh: '',
     searchIpt: {
       // 搜尋欄位
       EndDay: "",
@@ -373,7 +374,9 @@ export default {
     },
     //抓取未確認的設備標示編碼中文
     getTempName(value) {
+      console.log("value: ", value);
       this.searchTemp.wbsShow = value
+      this.detailCh = value
     },
     //確認設備標示編碼，寫入
     setWBS() {
@@ -415,10 +418,26 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
+          console.log("costQuery顯示詳細資訊: data", res.data);
+          let combinCode
           const dataList = decodeObject(res.data.WorkDataList[0])
           this.content.WorkNumber = dataList.WorkOrderID
           this.content.Dept= dataList.DispatchDepart
-          this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
+          // let combinCode = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
+          this.searchIpt.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq 
+          console.log("this.searchIpt.wbs: ", this.searchIpt.wbs);
+          let brk = 0;
+          while(brk <= 20){
+            this.componentKey++
+            brk++
+            if(this.detailCh == ''){}
+            else{
+              this.content.wbs = this.detailCh
+            }
+            setTimeout(() => {}, 50)
+          }
+          if(brk > 20) this.content.wbs = ''
+          // this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
           this.content.Established = dataList.CallWorkDTime
           this.content.FaultDepict = dataList.Malfunction
           this.content.ClosingTime = dataList.CloseDTime

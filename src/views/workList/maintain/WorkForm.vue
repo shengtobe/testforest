@@ -370,7 +370,7 @@ export default {
         combineCh: '', //合併後的設備中文名稱
         showEq: false,
         eqkey: '0',
-        lowReturn: '4',
+        lowReturn: 4,
         isLoading: false,  // 是否讀取中
         combineCode: '', //合併後的設備編碼
         nowEqCode: '', //編輯時 預設帶入的combineCode
@@ -475,8 +475,6 @@ export default {
         },
         // 更換科室時，自動選該科室人員清單的第一人
         hasLicenLv1Select: function (newVal, oldVal) {
-            console.log("newVal: ", newVal)
-            console.log("oldVal: ", oldVal)
             return
             if (newVal != oldVal) {
                 this.hasLicenLv2Select = this.hasLicenseOptLv2[0].value
@@ -526,14 +524,12 @@ export default {
                 WorkOrderID: this.id,  // 工單編號
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
-                console.log("初始請求:res.data:", res.data)
                 // 檢查是否有權限編輯
                 if (res.data.CreatorID != this.userData.UserId && res.data.DispatchID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
                 }
-                console.log("res.data.CreateType: ", res.data.CreateType);
                 if(res.data.CreateType == '2'){
-                    this.lowReturn = '2'
+                    this.lowReturn = 2
                     this.eqkey++
                 }
                 this.ipt.workNumber = res.data.WorkOrderID  // 工單編號
@@ -547,12 +543,10 @@ export default {
 
                 // 組合全部有證照人員資料(反查姓名用)
                 // let arr = []
-                // console.log("this.hasLicense: ", this.hasLicense)
                 // for (let key in this.hasLicense) {
                 //     arr = [ ...arr, ...this.hasLicense[key]]
                 // }
                 // this.allLicenseArr = arr
-                // console.log("初始化證照陣列:this.allLicenseArr: ", this.allLicenseArr)
             }).catch(err => {
                 alert('資料讀取失敗')
             }).finally(() => {
@@ -564,9 +558,7 @@ export default {
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data
-                console.log("obj: ", obj)
                 this.licenseItems = JSON.parse(res.data.order_list)
-                console.log("證照人員清單licenseItems: ", this.licenseItems)
                 //組合全部有證照人員資料(反查text/valeu用)
                 this.licenseItems.forEach(element => {
                     for (let i = 0; i < element.people_id_list.length; i++) {
@@ -583,7 +575,6 @@ export default {
                 console.log(err)
                 alert('資料讀取失敗2')
             }).finally(() => {
-                console.log("over")
             })
 
             //請求廠商清單
@@ -591,9 +582,7 @@ export default {
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data
-                console.log("obj: ", obj)
                 this.firmItems = JSON.parse(res.data.order_list)
-                console.log("firmItems: ", this.firmItems)
                 this.vendorList = this.firmItems.map(item => item.VendorName)
                 // 初始化林鐵人員下拉選項預設值
             }).catch(err => {
@@ -607,7 +596,6 @@ export default {
             this.chLoadingShow({show:false})
         },
         pickOne(){
-            console.log("this.licenseItems: ", this.licenseItems)
             let select1 = this.hasLicenLv1Select
             this.licenseItems.forEach(element => {
                 if(element.License == select1){
@@ -628,25 +616,20 @@ export default {
         },
         // 初始化林鐵人員下拉選項預設值
         initMemberSelect(data) {
-            console.log("初始化林鐵人員下拉選項預設值data: ", data)
             // this.hasLicenLv1Select = Object.keys(this.hasLicense)[0]  // 需證照人員
             this.hasLicenseOptLv1 = data.map(item => item.License)
         },
         // 增加林鐵的人員(第二參數為是否有證照)
         addMember(id, bool) {
-            console.log("add>>>>>>")
-            console.log("id: ", id)
-            console.log("bool: ", bool)
             if(id == '' || id == null) return
             
             if (bool && this.ipt.licensedMembers.findIndex(ele => ele.PeopleId == id) == -1) {
                 // 有證照且未被加入
                 // this.ipt.licensedArr.push(this.allLicenseArr.find(item => item.value ==id).text)  // 顯示用，只放入姓名
                 this.ipt.licensedArr.push(id)  // 顯示用，只放入姓名
-                this.ipt.licensedMembers.push({ PeopleId: id })  // 後端上傳用(證照功能未完成，先做demo資料)
+                this.ipt.licensedMembers.push({ PeopleId:this.manValueList[this.manTextList.indexOf(id)]})  // 後端上傳用(證照功能未完成，先做demo資料)
                 
                 this.ipt.licensedMembersValue.push({ PeopleId:this.manValueList[this.manTextList.indexOf(id)]})  // 後端上傳用(證照功能未完成，先做demo資料)
-                console.log("this.ipt.licensedMembersValue: ", this.ipt.licensedMembersValue)
                 return
             } else if (!bool && this.ipt.commonMembers.findIndex(ele => ele.PeopleId == id) == -1) {
                 // 作業人員
@@ -655,8 +638,6 @@ export default {
             }
         },
         save() {
-            console.log("this.ipt.commonMemArr: ", this.ipt.commonMemArr);
-            console.log("this.ipt.commonMembers: ", this.ipt.commonMembers); 
             if(this.ipt.agent.name == ''){
                 alert("代理人未填")
                 return
@@ -680,7 +661,7 @@ export default {
                     MaintainCode_Loc: tempCodeArr[1],  // 設備標示編號(位置)
                     MaintainCode_Eqp: tempCodeArr[2],  // 設備標示編號(設備)
                     MaintainCode_Seq: tempCodeArr[3],  // 設備標示編號(序號)
-                    PeopleLicense: this.ipt.licensedMembersValue,  // 林鐵人員統計(有證照), 目前測試先用map做回傳格式
+                    PeopleLicense: this.ipt.licensedMembers,  // 林鐵人員統計(有證照)
                     PeopleNoLicense: this.ipt.commonMembers,  // 林鐵人員統計(無證照)
                     OutSourceCount: this.ipt.vendors.map(item => ({ VendorName: item.name, PeopleCount: item.count })),  // 外包廠商統計
                     ClientReqTime: getNowFullTime(),  // client 端請求時間

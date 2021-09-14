@@ -356,7 +356,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                        this.chMsgbar({ success: false, msg: '立案成功'})
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題'})
                 }).finally(() => {
                     this.chLoadingShow({show:false})
                 })

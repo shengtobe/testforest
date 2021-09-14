@@ -346,9 +346,22 @@ export default {
             console.log("lineList: ", this.lineList);
         },
         // 送出
+        ipt: {
+            line: '',  // 通報路線
+            // lineList: locationOpts.map(item => item.text), // 地點的list
+            
+            pointStart: '',  // 速限起點
+            pointEnd: '',  // 速限終點
+            normal: '',  // 常態速限
+            slow: '',  // 慢行速限
+            dateStart: new Date().toISOString().substr(0, 10),  // 限制日期(起)
+            dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
+            recipients: [],  // 收件人
+        },
         save() {
-            if(this.ipt.recipients.length == 0){
-                alert("收件人未填")
+            if(this.ipt.recipients.length == 0 || this.ipt.line == '' || this.ipt.pointStart == '' || this.ipt.pointEnd == '' 
+            || this.ipt.normal == '' || this.ipt.slow == '' || this.ipt.dateStart == '' || this.ipt.dateEnd == ''){
+                alert("欄位未填")
                 return
             }
             this.chLoadingShow({show:true})

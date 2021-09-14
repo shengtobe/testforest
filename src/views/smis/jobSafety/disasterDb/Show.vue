@@ -6,6 +6,55 @@
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
+        <!-- 表格資料 -->
+        <v-col cols="12" class="text-center mt-2 mb-1" v-if="tableItems.length > 0"/>
+        <v-col cols="12" v-if="tableItems.length > 0">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-2">mdi-alarm-light</v-icon>危害通報
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.ReportStatus="{ item }">
+                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                        </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            :loading="isLoading"
+                            @click="viewPage(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <!-- 頁碼 -->
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
 
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2 btn-close"
@@ -31,8 +80,10 @@ import { mapState, mapActions } from 'vuex'
 import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts } from '@/assets/js/smisData'
+import { harmNotifyStatus } from '@/assets/js/smisData'
 import BottomTable from '@/components/BottomTable.vue'
 import { deleteDataDb} from '@/apis/smis/jobSafety'
+import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
     props: ['itemData'],
@@ -44,6 +95,16 @@ export default {
         code1: '',  // 編號-第1段
         code2: '',  // 編號-第2段
         code3: '',  // 編號-第3段
+        tableItems: [],  // 表格資料
+        statusOpts: harmNotifyStatus,  
+        pageOpt: { page: 1 },  // 目前頁數
+        headers: [  // 表格顯示的欄位
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
     }),
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -67,6 +128,14 @@ export default {
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
+        // 檢視內容
+        viewPage(item) {
+            this.$router.push({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow({show:true})
@@ -130,6 +199,40 @@ export default {
             }).finally(() => {
             })
             
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportData',  // DB table
+                IsFirstLoad: 'F',
+                KeyItem: [
+                    { tableColumn: 'ProEndangerCode', columnValue: this.id },  // 通報日期(起)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerID',
+                    'EndangerFindDate',
+                    'PeopleName',
+                    'ReportTitle',
+                    'ReportStatus',
+                ],
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    console.log("職災危害通報res.data: ", res.data);
+                    this.tableItems = JSON.parse(res.data.order_list)
+                    console.log("職災危害通報tableItems: ", this.tableItems);
+                    this.tableItems.forEach(element => {
+                        for(let ele in element){
+                            if(element[ele] == null){
+                                element[ele] = '';
+                            }
+                        }
+                    });
+                }
+                
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+            })
         },
         // 刪除
         del() {

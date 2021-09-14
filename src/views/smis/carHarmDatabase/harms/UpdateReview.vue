@@ -358,7 +358,7 @@ import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { carHarmDbStatus, evtTypes, operateModes, riskSerious, riskFrequency, riskLevel } from '@/assets/js/smisData'
 import VersionDiff from '@/components/smis/VersionDiff.vue'
-import { getBeforeData, sendUpdateData, sendPassData, endRetuenData, updatePassData} from '@/apis/smis/carHarmDatabase/harms'
+import { getBeforeData, sendUpdateData, sendPassData, endRetuenData, updatePassData, sendRetuenData} from '@/apis/smis/carHarmDatabase/harms'
 
 export default {
     props: ['itemData'],
@@ -481,6 +481,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("res.data: ", res.data);
                     // this.chMsgbar({ success: true, msg: '重提成功' })
                     // this.done = true  // 隱藏頁面操作按鈕
                     tableItems = JSON.parse(res.data.order_list)
@@ -510,11 +511,17 @@ export default {
         },
         // 初始化資料
         setShowData(before, after) {
-            let aa = JSON.parse(before.proc_detail)
+            console.log("before: ", before);
+            console.log("after: ", after);
+            let aa 
+            console.log("1");
+            if(before != undefined)
+                aa = JSON.parse(before.proc_detail)
+            console.log("2");
             // 危害說明
             this.before.descp = before.EndangerDesp
             this.after.descp = after.EndangerDesp
-
+        
             // 權責部門
             this.before.depart = before.EndangerDepart
             this.after.depart = after.EndangerDepart

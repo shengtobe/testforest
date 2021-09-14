@@ -269,9 +269,8 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.WhiteBlood"
-                solo maxlength="6"
-                type="number"
-                suffix="個/ul"
+                solo maxlength="4"
+                suffix="10³/ul"
                 placeholder="請輸入白血球數"
             ></v-text-field>
         </v-col>
@@ -587,8 +586,8 @@ export default {
         Waistline: '0',  // 腰圍(cm)
         Sight: '0',  // 視力
         Hearing: '0',  // 聽力
-        UrineProtein: 1,  // 尿蛋白
-        UrineBlood: 1,  // 尿潛血
+        UrineProtein: '1',  // 尿蛋白
+        UrineBlood: '1',  // 尿潛血
         WhiteBlood: '0',  // 白血球數(個/ul)
         BloodPigment: '0',  // 血色素(g/dL)
         Xray: '1',  // 胸部 X 光
@@ -600,7 +599,7 @@ export default {
         HDLValue: '0',  // HDL(mg/dL)
         LDLValue: '0',  // LDL(mg/dL)
         Triglyceride: '0',  // 三酸甘油酯(mg/dL)
-        BloodSugar: '',  // 飯前血糖(mg/dL)
+        BloodSugar: '0',  // 飯前血糖(mg/dL)
         ECGValue: '',  // 運動心電圖
         HandleNotice: '',  // 應處理及注意事項
         HealthDoctor: '',  // 醫師姓名
@@ -697,14 +696,14 @@ export default {
             }
         },
         //檢查校正 視力
-        "ipt.Sight": function(newValue,oldValue){
-            if(/^\.\d{1,3}$/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.Sight = oldValue
-                })
-            }
-        },
+        // "ipt.Sight": function(newValue,oldValue){
+        //     if(/^[0-9][.][0-9]$/.test(newValue) || newValue == '') {
+        //     } else {
+        //         this.$nextTick(() => {
+        //             this.ipt.Sight = oldValue
+        //         })
+        //     }
+        // },
         //檢查校正 聽力
         "ipt.Hearing": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
@@ -714,7 +713,7 @@ export default {
                 })
             }
         },
-        //檢查校正 尿蛋白
+        //檢查校正 尿蛋白 小於30 mg/dL是正常值，30～300是輕度蛋白尿，超過300則是較嚴重
         "ipt.UrineProtein": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
@@ -723,12 +722,74 @@ export default {
                 })
             }
         },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
+        //檢查校正 XXXXXXXX 正常值為<20
+        "ipt.UrineBlood": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.UrineBlood = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX 4000～10000/ul
+        // "ipt.WhiteBlood": function(newValue,oldValue){
+        //     if(/^\d{1,5}$/.test(newValue)) {
+        //     } else {
+        //         this.$nextTick(() => {
+        //             this.ipt.WhiteBlood = oldValue
+        //         })
+        //     }
+        // },
+        //檢查校正 XXXXXXXX 13.0~18.0 gm/dl
+        "ipt.BloodPigment": function(newValue,oldValue){
+            if(/^\d{1,4}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.BloodPigment = oldValue
+                })
+            }
+        },//檢查校正 XXXXXXXX 40U/L
+        "ipt.GPTValue": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.GPTValue = oldValue
+                })
+            }
+        },
+        // //檢查校正 XXXXXXXX
+        // "ipt.HepatitisB": function(newValue,oldValue){
+        //     if(/^\d{1,3}$/.test(newValue)) {
+        //     } else {
+        //         this.$nextTick(() => {
+        //             this.ipt.HepatitisB = oldValue
+        //         })
+        //     }
+        // },
+        // //檢查校正 XXXXXXXX
+        "ipt.UricAcid": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.UricAcid = oldValue
+                })
+            }
+        },
+        // //檢查校正 XXXXXXXX
+        "ipt.Creatinine": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.Creatinine = oldValue
+                })
+            }
+        },
+        //檢查校正 XXXXXXXX
+        "ipt.BloodSugar": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.BloodSugar = oldValue
                 })
             }
         },
@@ -749,53 +810,36 @@ export default {
                     this.ipt.XXXXXXXX = oldValue
                 })
             }
-        },//檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
+        },
+        "ipt.Triglyceride": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
+                    this.ipt.Triglyceride = oldValue
                 })
             }
-        },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
-                })
-            }
-        },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
-                })
-            }
-        },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
-                })
-            }
-        },
-        "ipt.Triglyceride": function(){
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
                 this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
             }
         },
-        "ipt.LDLValue": function(){
+        "ipt.LDLValue": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.LDLValue = oldValue
+                })
+            }
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
                 this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
             }
         },
-        "ipt.HDLValue": function(){
+        "ipt.HDLValue": function(newValue,oldValue){
+            if(/^\d{1,3}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.HDLValue = oldValue
+                })
+            }
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
                 this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
             }

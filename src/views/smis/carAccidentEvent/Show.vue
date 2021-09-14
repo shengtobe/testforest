@@ -96,7 +96,6 @@
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab class="btn-detail"
-                            :loading="isLoading"
                             @click="viewPage(item)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>

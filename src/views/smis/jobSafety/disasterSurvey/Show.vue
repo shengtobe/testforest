@@ -9,7 +9,55 @@
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
-       
+    <FileListShow :fileList="files" title="檔案列表" />
+
+    <!-- 表格資料 -->
+        <v-col cols="12" v-if="tableItems.length > 0">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-2">mdi-alarm-light</v-icon>危害通報
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.ReportStatus="{ item }">
+                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                        </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            @click="viewPage(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <!-- 頁碼 -->
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
 
         <!-- <v-col cols="12" style="border-bottom: 1px solid #CFD8DC">
             <v-row no-gutters>
@@ -40,7 +88,6 @@
         </v-col> -->
     </v-row>
 
-    <FileListShow :fileList="files" title="檔案列表" />
 
     <v-row class="mt-8">
         <!-- 鎖定後要填寫的部份 -->
@@ -209,9 +256,11 @@ import { canInUpdate } from '@/apis/access'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
+import { harmNotifyStatus } from '@/assets/js/smisData'
 import FileListShow from '@/components/FileListShow.vue'
 import { deleteData, sendCheckData, updateData } from '@/apis/smis/jobSafety'
 import { exportExcel } from '@/apis/smis/jobSafety'
+import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
     props: ['itemData'],
@@ -223,7 +272,17 @@ export default {
         bottomItems: [],  // 下面的欄位
         files: [],  // 上傳的檔案
         isLocked: false,  // 是否已鎖定
+        pageOpt: { page: 1 },  // 目前頁數
         finishImprove: false,  // 是否完成改善措施
+        tableItems: [],  // 表格資料
+        statusOpts: harmNotifyStatus,  // 狀態下拉選單
+        headers: [  // 表格顯示的欄位
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
         notifyLinks: [],  // 連結的通報
         ipt: {  // 鎖定後要填寫的資料
             injuryLeaveStart: new Date().toISOString().substr(0, 10),  // 公傷假(起)
@@ -280,6 +339,40 @@ export default {
                 }
             }).catch( err => {
                 console.log(err)
+            }).finally(() => {
+            })
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportData',  // DB table
+                IsFirstLoad: 'F',
+                KeyItem: [
+                    { tableColumn: 'ProAccidentCode', columnValue: this.id },  // 通報日期(起)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerID',
+                    'EndangerFindDate',
+                    'PeopleName',
+                    'ReportTitle',
+                    'ReportStatus',
+                ],
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    this.tableItems = JSON.parse(res.data.order_list)
+                    this.tableItems.forEach(element => {
+                        for(let ele in element){
+                            if(element[ele] == null){
+                                element[ele] = '';
+                            }
+                        }
+                    });
+                }
+                
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
 
@@ -415,6 +508,15 @@ export default {
                 this.chLoadingShow({show:false})
             })
         },
+        // 檢視內容
+        viewPage(item) {
+            this.chLoadingShow({show:false})
+            this.$router.push({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
+        },
         // 鎖定
         save() {
             if (this.isLocked) {
@@ -422,8 +524,7 @@ export default {
                 let errArr = []
                 // if (!this.finishImprove) errArr.push('改善措施')
 
-                if (this.finishDeath && this.finishImprove) {  // 都有填寫
-                    if (confirm('你確定要申請審核嗎?')) {
+                if (confirm('你確定要申請審核嗎?')) {
                         this.chLoadingShow({show:true})
 
                         // setTimeout(() => {
@@ -439,6 +540,7 @@ export default {
                             OperatorID: this.userData.UserId,  // 操作人id
                         }).then(res => {
                             if (res.data.ErrorCode == 0) {
+                                this.chMsgbar({ success: true, msg: '立案成功'})
                                 this.done = true  // 隱藏頁面操作按鈕
                             } else {
                                 console.log(res.data.Msg)
@@ -450,13 +552,6 @@ export default {
                             this.chLoadingShow({show:false})
                         })
 
-                        setTimeout(() => {
-                            this.chMsgbar({ success: true, msg: '申請審核成功'})
-                        },1000)
-                    }
-                    } else {
-                        let errLog = '你還未填寫「'+ errArr.join('、') + '」'
-                        alert(errLog)
                     }
             } else {
                 // -------------- 未鎖定 -------------- 

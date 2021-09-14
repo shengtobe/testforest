@@ -641,10 +641,14 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
+          let idArr = this.tableItems.map(e=>e.WorkOrderID)
+          console.log("workTimeQuery data: ", res.data);
           const dataList = decodeObject(res.data.WorkDataList[0])
+          console.log("dataList: ", dataList);
           this.content.WorkNumber = dataList.WorkOrderID
           this.content.Dept= dataList.DispatchDepart
-          this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
+          // this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
+          this.content.wbs = dataList.MaintainCode_AllName
           this.content.Established = dataList.CallWorkDTime
           this.content.RepairDate = dataList.ArrivalWorkDTime
           this.content.StartWorkDate = dataList.StartWorkDTime

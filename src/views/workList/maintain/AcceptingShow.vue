@@ -788,6 +788,7 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 人員工時資料
+            let tempFeeTable = [...obj.WorkMaterialList]
             console.log("費用頁: this.tableItems: ", this.tableItems);
             // this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
             //工作項 清單
@@ -798,17 +799,18 @@ export default {
             tempWorkList = tempWorkList.filter(function(ele , pos){
                 return tempWorkList.indexOf(ele) == pos;
             }) 
+            console.log("tempWorkList: ", tempWorkList);
             this.tableItems_fee = tempWorkList.map(item => ({
                 MaintainCode_Eqp: this.tableItems.find(ele => ele.JobName == item).MaintainCode_Eqp,
                 MaintainCode_Seq: this.tableItems.find(ele => ele.JobName == item).MaintainCode_Seq,
                 MaintainCode_AllName: this.tableItems.find(ele => ele.JobName == item).MaintainCode_AllName,
                 JobCode: this.tableItems.find(ele => ele.JobName == item).JobCode,
                 JobName: item,
-                UnitPrice: 0,
+                UnitPrice: tempFeeTable.find(ele => ele.JobName == item).UnitPrice,
                 Amount: this.tableItems.find(ele => ele.JobName == item).WorkLoad,
-                Price: 0,
+                Price: tempFeeTable.find(ele => ele.JobName == item).Price,
             }))
-
+            console.log("tableItems_fee: ", this.tableItems_fee);
             // 要求 平交道項目清單
             railroadrepairList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間

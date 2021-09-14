@@ -100,6 +100,56 @@
             </v-row>
         </v-col>
 
+        <!-- 表格資料 -->
+        <v-col cols="12" class="text-center mt-2 mb-2" v-if="tableItems.length > 0"/>
+        <v-col cols="12" v-if="tableItems.length > 0">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-2">mdi-alarm-light</v-icon>危害通報
+            </h3>
+            <v-card>
+                <v-data-table
+                    :headers="headers"
+                    :items="tableItems"
+                    :options.sync="pageOpt"
+                    disable-sort
+                    disable-filtering
+                    hide-default-footer
+                    class="theme-table"
+                >
+                    <template v-slot:no-data>
+                        <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:loading>
+                        <span class="red--text subtitle-1">資料讀取中...</span>
+                    </template>
+
+                    <template v-slot:item.ReportStatus="{ item }">
+                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                        </template>
+
+                    <!-- headers 的 content 欄位 (檢視內容) -->
+                    <template v-slot:item.content="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            :loading="isLoading"
+                            @click="viewPage(item)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <!-- 頁碼 -->
+                    <template v-slot:footer="footer">
+                        <Pagination
+                            :footer="footer"
+                            :pageOpt="pageOpt"
+                            @chPage="chPage"
+                        />
+                    </template>
+                </v-data-table>
+            </v-card>
+        </v-col>
+
         <v-col cols="12" class="text-center mt-12 mb-8">
             <v-btn dark class="ma-2 btn-close"
                 @click="closeWindow"
@@ -166,6 +216,8 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { passData, withdrawData, deleteData, resetData, closeData } from '@/apis/smis/jobSafety'
+import { harmNotifyStatus } from '@/assets/js/smisData'
+import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
     props: ['itemData'],
@@ -184,6 +236,16 @@ export default {
         isLoading: false,  // 是否讀取中
         dialog: false,  // dialog 是否顯示
         backReason: '',  // 退回原因
+        tableItems: [],  // 表格資料
+        pageOpt: { page: 1 },  // 目前頁數
+        statusOpts: harmNotifyStatus,  // 狀態下拉選單
+        headers: [  // 表格顯示的欄位
+            { text: '通報日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        ],
     }),
     components: {
         TopBasicTable,
@@ -232,34 +294,51 @@ export default {
             }).finally(() => {
             })
 
-            // 危害通報連結 (依通報狀態連至不同頁面)
-            // let arr = obj.notifyLinks.map(item => {
-            //     let link = ''
-            //     switch(item.status) {
-            //         case '未審核':
-            //             link = `/smis/harmnotify/${item.id}/show`
-            //             break
-            //         case '審核中':
-            //             link = `/smis/harmnotify/${item.id}/review`
-            //             break
-            //         case '已結案':
-            //             link = `/smis/harmnotify/${item.id}/complated`
-            //             break
-            //         default:
-            //             break
-            //     }
-
-            //     return {
-            //         id: item.id,
-            //         link: link,
-            //     }
-            // })
-            // this.notifyLinks = [ ...arr ]
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_ReportData',  // DB table
+                IsFirstLoad: 'F',
+                KeyItem: [
+                    { tableColumn: 'ProAccidentCode', columnValue: this.id },  // 通報日期(起)
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'EndangerID',
+                    'EndangerFindDate',
+                    'PeopleName',
+                    'ReportTitle',
+                    'ReportStatus',
+                ],
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    this.tableItems = JSON.parse(res.data.order_list)
+                    this.tableItems.forEach(element => {
+                        for(let ele in element){
+                            if(element[ele] == null){
+                                element[ele] = '';
+                            }
+                        }
+                    });
+                }
+                
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+            })
         },
         showDialog(bool) {
             // 若為 true 是退回
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
+        },
+        // 檢視內容
+        viewPage(item) {
+            this.$router.push({ path: `/smis/harmnotify/${item.EndangerID}/show` })
+        },
+        // 更換頁數
+        chPage(n) {
+            this.pageOpt.page = n
         },
         // 退回
         withdraw() {
