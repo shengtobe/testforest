@@ -386,6 +386,7 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '變更立案成功'})
                         this.done = true  // 隱藏按鈕
+                        this.$router.go()
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })

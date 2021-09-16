@@ -292,7 +292,7 @@ export default {
                     this.saveUserGroup(res.data.GroupData)
                     if(this.status == 2) // 需主管同意
                         this.isShowBtn = this.groupData.RoleLv4 == "T";
-                    else if(this.status == 3) // 行安人員 
+                    else if(this.status == 3) // 職安人員 
                         this.isShowBtn = this.groupData.RoleLv3 == "T";
                 }
             }).catch( err => {

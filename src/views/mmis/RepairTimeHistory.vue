@@ -517,6 +517,7 @@ export default {
     ]),
     // 搜尋
     search() {
+      console.log("search");
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
         this.chLoadingShow({show:true})
         const wbs = this.searchIpt.wbs.split('-')
@@ -668,6 +669,10 @@ export default {
         this.contentShow = true
       })
     },
+    
   },
+  created() {
+      this.search()
+    }
 };
 </script>

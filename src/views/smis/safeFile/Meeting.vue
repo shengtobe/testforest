@@ -525,6 +525,7 @@ export default {
     },
     created() {
         this.ipt = { ...this.defaultIpt }
+        this.search()
     },
 }
 </script>

@@ -82,7 +82,7 @@
             </h3>
             <v-select clearable
                 v-model="ipt.evtType1"
-                :items="['重大事故', '一般事故', '異常事件', '其他']"
+                :items="FirstLvFiltered"
                 @change="evtTypeChange"
                 solo
             ></v-select>
@@ -301,6 +301,7 @@ export default {
         arr1: [], // 重大事故
         arr2: [], // 一般事故
         arr3: [], // 異常事件
+        FirstLvFiltered: [], // 事故類型第一層
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
         opsList: '', // 完整事故類型清單
@@ -367,13 +368,13 @@ export default {
         },
         evtTypeChange(){
             this.ipt.evtType2 = ''
-            if(this.ipt.evtType1 == "重大事故"){
+            if(this.ipt.evtType1 == this.FirstLvFiltered[0]){
                 this.evtTypeOpts = this.arr1
             }
-            else if(this.ipt.evtType1 == "一般事故"){
+            else if(this.ipt.evtType1 == this.FirstLvFiltered[1]){
                 this.evtTypeOpts = this.arr2
             }
-            else if(this.ipt.evtType1 == "異常事件"){
+            else if(this.ipt.evtType1 == this.FirstLvFiltered[2]){
                 this.evtTypeOpts = this.arr3
             }
             else{
@@ -398,6 +399,8 @@ export default {
         search() {
             if(this.ipt.evtType1 == undefined) this.ipt.evtType1 = ''
             if(this.ipt.evtType2 == undefined) this.ipt.evtType2 = ''
+            if(this.ipt.dateStart == null) this.ipt.dateStart = ''
+            if(this.ipt.dateEnd == null) this.ipt.dateEnd = ''
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
@@ -511,29 +514,35 @@ export default {
             if (res.data.ErrorCode == 0) {
                     //抽離 其他
                     this.opsList = JSON.parse(res.data.order_list)
-                    console.log("opsList: ", this.opsList);
                     let tempOps = this.opsList.map(e=>e.text)
+                    let firstLv = [];
+                    tempOps.forEach(element => { 
+                        if(element.indexOf("-") >= 0) firstLv.push((element.split('-'))[0])
+                    });
+                    this.FirstLvFiltered = [...new Set(firstLv)]
+                    this.FirstLvFiltered.push("其他")
                     tempOps.forEach(e => {
                         if(e.indexOf("-") >= 0){
                             let arr = e.split('-')
+                            firstLv.push(arr[0])
                             arr[1] = arr[1].replace('率', '')
-                            if(arr[0] == "重大事故"){
+                            if(arr[0] == this.FirstLvFiltered[0]){
                                 this.arr1.push(arr[1])
                             }
-                            else if(arr[0] == "一般事故"){
+                            else if(arr[0] == this.FirstLvFiltered[1]){
                                 this.arr2.push(arr[1])
                             }
-                            else if(arr[0] == "異常事件"){
+                            else if(arr[0] == this.FirstLvFiltered[2]){
                                 this.arr3.push(arr[1])
                             }
                         }
                         // evtTypeOpts
                     });
                 } else {
-                // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
-                sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                this.$router.push({ path: '/error' })
-            }
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
         }).catch(err => {
             console.log(err)
             alert('伺服器發生問題，事故類型讀取失敗')

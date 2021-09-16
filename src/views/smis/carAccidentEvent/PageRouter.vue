@@ -134,6 +134,7 @@ export default {
                             let bottomItems = [
                                 { dataType: 'text', oneline: true, icon: 'mdi-tag', title: '事故摘要', text: res.data.ReportTitle },
                                 { dataType: 'text', oneline: true, icon: 'mdi-map-marker', title: '發生地點', text: findLocationText },
+                                { dataType: 'text', oneline: true, icon: 'mdi-account-alert', title: '人員傷亡情形', text: res.data.PeopleDesc },
                                 { dataType: 'text', oneline: true, icon: 'mdi-cellphone-link-off', title: '設備受損情形', text: res.data.DeviceLost },
                                 { dataType: 'text', oneline: true, icon: 'mdi-alert-decagram', title: '運轉影響情形', text: res.data.OperationLost },
                                 { dataType: 'text', oneline: true, icon: 'mdi-snowflake', title: '第一層因素', text: AccidentFactors1.find(item => item.value == res.data.SaftyCodeLv1).text },

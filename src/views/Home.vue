@@ -113,6 +113,7 @@ import { InfoBelongMod } from '@/assets/js/smisData'
 
 export default {
     data: () => ({
+        pageOpt: { page: 1 },  // 目前頁數
         tableItems: {  // 表格資料
             personal: [],  // 個人訊息
             todo: [],  // 待辦事項

@@ -36,7 +36,8 @@
                   label="帳號"
                   v-model.trim="ipt.account"
                   prepend-icon="mdi-account"
-                  @keydown.enter.native="keyDown"
+                  @keydown.alt.native="keyDown"
+                  @keyup.enter.native="keyUp"
                 />
 
                 <v-text-field
@@ -44,6 +45,7 @@
                   type="password"
                   v-model.trim="ipt.pwd"
                   prepend-icon="mdi-lock"
+                  @keydown.enter.native="psKeyDown"
                 />
               </v-form>
               
@@ -107,8 +109,21 @@ export default {
   },
   methods: {
     keyDown(e){
-      if(e.altKey && e.keyCode==13) {   //用户点击了ctrl+enter触发
+      if(e.altKey && e.keyCode==88) {   //用户点击了ctrl+enter触发
         this.submit(false)
+      }else { //用户点击了enter触发
+        // this.sendMessage();
+        if(e.keyCode==13){
+          this.submit(true)
+        }
+      }  
+    },
+    keyUp(e){
+      this.submit(true)
+    },
+    psKeyDown(e){
+      if(e.keyCode==13) {   //用户点击了ctrl+enter触发
+        this.submit(true)
       }else { //用户点击了enter触发
         // this.sendMessage();
       }  

@@ -343,6 +343,17 @@
             ></v-text-field>
         </v-col>
     </v-row>
+    <v-row class="px-2 mb-8">
+        <v-col cols="12" sm="12">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-account-alert</v-icon>人員傷亡情形
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.peopleDesc"
+                solo
+            ></v-text-field>
+        </v-col>
+    </v-row>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="6">
@@ -630,6 +641,7 @@ export default {
             fieldMeasure: '',  // 現場相關量測
             naturalDisaster: '',  // 天然災害偵測資訊
             behaviorDesc: '',  // 民眾或旅客行為說明
+            peopleDesc: '',  // 人員傷亡情形
             eqLoss: '',  // 設備受損情形
             serviceShock: '', // 運轉影響情形
             review: '', // 檢討過程
@@ -765,12 +777,35 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
+            let ty = this.opsList.find(e => e.Code == obj.AccidentType).Name
+            let tyArr
+            if(ty.includes('-')){
+                tyArr = ty.split('-')
+            }
+
             this.ipt.subject = obj.ReportTitle  // 事故摘要
             this.ipt.date = obj.FindDDay  // 發生日期
             this.ipt.hour = obj.FindDHour  // 發現時間(小時)
             this.ipt.min = obj.FindDMin  // 發現時間(分)
             this.ipt.climate = obj.EventWeather  // 天候
-            this.ipt.evtType = obj.AccidentType // 事故類型
+            // this.ipt.evtType = obj.AccidentType // 事故類型 ipt.evtType1
+            this.ipt.evtType1 = tyArr[0] // 事故類型
+            this.ipt.evtType2 = ''
+            this.isUsual = true
+            if(this.ipt.evtType1 == this.FirstLvFiltered[0]){
+                this.evtTypeOpts = this.arr1
+            }
+            else if(this.ipt.evtType1 == this.FirstLvFiltered[1]){
+                this.evtTypeOpts = this.arr2
+            }
+            else if(this.ipt.evtType1 == this.FirstLvFiltered[2]){
+                this.evtTypeOpts = this.arr3
+                this.isUsual = false
+            }
+            else{
+                this.ipt.evtType2 = ''
+            }
+            this.ipt.evtType2 = tyArr[1].replace('率', '') // 事故類型
             this.ipt.location = obj.FindLine // 發生地點
             this.ipt.locationK = obj.FindKLine // 路線k
             this.ipt.locationM = obj.FindMLine // 路線m
@@ -792,6 +827,7 @@ export default {
             this.ipt.fieldMeasure = obj.OnsiteMeasure  // 現場相關量測
             this.ipt.naturalDisaster = obj.NaturalInfo  // 天然災害偵測資訊
             this.ipt.behaviorDesc = obj.PeopleMemo  // 民眾或旅客行為說明
+            this.ipt.peopleDesc = obj.PeopleDesc  // 設備受損情形
             this.ipt.eqLoss = obj.DeviceLost  // 設備受損情形
             this.ipt.serviceShock = obj.OperationLost // 運轉影響情形
             this.ipt.review = obj.ReviewProcess // 檢討過程
@@ -853,11 +889,11 @@ export default {
             this.chLoadingShow({show:true})
             if(this.ipt.locationK == '') this.ipt.locationK = '0'
             if(this.ipt.locationM == '') this.ipt.locationM = '0'
-
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
                 
                 let tempType = this.opsList.find(e => e.text = s).Code
+                
                 updateData({
                     AccidentCode: this.id,  // 行車事故事件編號
                     FindDDay: this.ipt.date,  // 發生日期
@@ -880,6 +916,7 @@ export default {
                     RailwayDeviceElse: this.ipt.fenceEqOther,  // 鐵路設施設備及圍籬之設置(其他)
                     IncidentLimit: this.ipt.speedLimit,  // 事發速限
                     IncidentSpeed: this.ipt.carSpeed,  // 事發車速
+                    PeopleDesc: this.ipt.peopleDesc,
                     CarOperation: this.ipt.runPlan,  // 列車運行計劃及運轉情形
                     TalkSituation: this.ipt.relatedPerson,  // 關係者之職務、資歷、操作情形及訪談紀要
                     OnsiteSituation: this.ipt.fieldRegulations,  // 現場作業規定與落實情形
@@ -941,6 +978,7 @@ export default {
                     OnsiteMeasure: this.ipt.fieldMeasure,  // 現場相關量測
                     NaturalInfo: this.ipt.naturalDisaster,  // 天然災害偵測資訊
                     PeopleMemo: this.ipt.behaviorDesc,  // 民眾或旅客行為說明
+                    PeopleDesc: this.ipt.peopleDesc,
                     DeviceLost: this.ipt.eqLoss,  // 設備損失
                     OperationLost: this.ipt.serviceShock,  // 運轉影響情形
                     FixProcess: this.ipt.FixProcess,  // 處置過程(預留的欄位，目前用不到)

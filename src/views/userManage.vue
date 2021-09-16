@@ -252,8 +252,10 @@ export default {
             }
         },
         created() {
+          
             // console.log("this.userData: ", this.userData)
             // return;
+            this.chLoadingShow({show:true})
             //=======建立人員部門對照表
             fetchOrganization({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -285,13 +287,14 @@ export default {
                             DepartCode: element.DepartCode,
                         })
                     });
+                    this.chLoadingShow({show:false})
                 } else {
                 }
             }).catch( err => {
                 console.log(err)
                 alert('建立人員部門對照表時發生問題，請重新查詢!')
             }).finally(() => {
-                this.deptLoading = false
+              this.deptLoading = false
             })
 
             //===============顯示畫面表=================

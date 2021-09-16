@@ -676,6 +676,7 @@ export default {
             sex: '男',  // 性別
             old: '',  // 年齡
             workDepart: '嘉義車站',  // 工作部門
+            workDepartCode: '',  // 工作部門
             startWorkDate: new Date().toISOString().substr(0, 10),  // 到職日期
             jobTitle0: '',  // 職稱
             jobTitle: '',  // 職稱
@@ -1188,8 +1189,10 @@ export default {
         },
         getPeople(value) {
             if(value){
+                console.log("value: ", value);
                 this.ipt.name = value.UserName
                 this.ipt.workDepart = value.DepartName
+                this.ipt.workDepartCode = value.DepartCode
                 login({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     UserId: value.UserId,

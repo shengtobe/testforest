@@ -257,6 +257,8 @@ export default {
             // console.log(this.ipt.title)
             // console.log(this.ipt.status)
             // console.log(this.ipt.depart)
+            if(this.ipt.dateStart == null) this.ipt.dateStart = ''
+            if(this.ipt.dateEnd == null) this.ipt.dateEnd = ''
             this.chLoadingShow({ show: true})
             this.pageOpt.page = 1  // 頁碼初始化
             safetyinfoquery({

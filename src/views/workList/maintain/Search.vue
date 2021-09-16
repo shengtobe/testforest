@@ -276,7 +276,36 @@
             </v-card-actions>
         </v-card>
         </v-dialog>
+        <!-- 快速查詢 -->
+        <v-col cols="12" class="mt-5">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>快速查詢
+            </h3>
+            
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="searchAll"
+            >全部{{ '(' + searchAllCount + ')' }}</v-btn>
 
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="searchStatus1"
+            >待派工{{ '(' + status1Count + ')' }}</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="searchStatus2"
+            >已派工待維修{{ '(' + status2Count + ')' }}</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="searchStatus3"
+            >已維修待驗收{{ '(' + status3Count + ')' }}</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="searchStatus4"
+            >已驗收待結案{{ '(' + status4Count + ')' }}</v-btn>
+
+            <v-btn class="mb-2 mr-3 btn-memo white--text"
+                @click="searchStatus5"
+            >已結案{{ '(' + status5Count + ')' }}</v-btn>
+        </v-col>
         <!-- 表格資料 -->
         <v-row class="px-2">
             <v-col cols="12" class="mt-5 mb-12">
@@ -339,6 +368,12 @@ import Pagination from '@/components/Pagination.vue'
 
 export default {
     data: () => ({
+        searchAllCount: 0,
+        status1Count: 0,
+        status2Count: 0,
+        status3Count: 0,
+        status4Count: 0,
+        status5Count: 0,
         combineCode: '', //合併後的設備編碼
         nowEqCode: '', //編輯時 預設帶入的combineCode
         pickEqNumber: false, // 設備標示編號選擇視窗
@@ -414,7 +449,6 @@ export default {
     methods: {
         pickEqNumber_show(){
             this.nowEqCode = `${this.ipt.eqNumber1}-${this.ipt.eqNumber2}-${this.ipt.eqNumber3}-${this.ipt.eqNumber4}`
-            console.log("nowEqCode: ", this.nowEqCode);
             this.pickEqNumber = true
         },
         pickEqNumber_click(){
@@ -481,7 +515,6 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("維護工單搜尋結果this.tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -490,7 +523,6 @@ export default {
                     }
                 });
                 let dd = this.tableItems.map(e => e.CreateDTime)
-                console.log("time: ", dd)
             }).catch(err => {
                 console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -500,7 +532,6 @@ export default {
         },
         // 檢視內容
         viewPage(item) {
-            console.log("item: ", item);
             let routeData = this.$router.resolve({ path: `/worklist/maintain/${item.WorkOrderID}/show` })
             window.open(routeData.href, '_blank')
         },
@@ -511,11 +542,318 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
-        }
+        },
+        // 預設先執行一次搜尋
+        initSearch() {
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+            
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    { tableColumn: 'CreatorID', columnValue: this.ipt.createrId },  // 立案人id
+                    { tableColumn: 'DispatchID', columnValue: this.ipt.dispatcherId },  // 派工人id
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.createDateStart },  // 工單建立日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.ipt.createDateEnd },  // 工單建立日期(迄)
+                    { tableColumn: 'WorkOrderID', columnValue: this.ipt.workNumber },  // 工單編號
+                    { tableColumn: 'Status', columnValue: this.ipt.workState },  // 處理階段
+                    { tableColumn: 'Shortage', columnValue: this.ipt.shortage },  // 是否缺料
+                    { tableColumn: 'Type', columnValue: this.ipt.fixType },  // 維修類型
+                    { tableColumn: 'WorkSubject', columnValue: this.ipt.subject },  // 故障主旨
+                    { tableColumn: 'CancelStatus', columnValue: this.ipt.cancel },  // 是否徹銷
+                    { tableColumn: 'MaintainCode_System', columnValue: this.ipt.eqNumber1 },  // 設備標示編號1
+                    { tableColumn: 'MaintainCode_Loc', columnValue: this.ipt.eqNumber2 },  // 設備標示編號2
+                    { tableColumn: 'MaintainCode_Eqp', columnValue: this.ipt.eqNumber3 },  // 設備標示編號3
+                    { tableColumn: 'MaintainCode_Seq', columnValue: this.ipt.eqNumber4 },  // 設備標示編號4
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                this.status1Count= 0
+                this.status2Count= 0
+                this.status3Count= 0
+                this.status4Count= 0
+                this.status5Count= 0
+
+                let tempTb = JSON.parse(res.data.order_list)
+                this.searchAllCount= tempTb.length
+                tempTb.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.Status == '1'){
+                        this.status1Count++
+                    }
+                    if(element.Status == '2'){
+                        this.status2Count++
+                    }
+                    if(element.Status == '3'){
+                        this.status3Count++
+                    }
+                    if(element.Status == '4'){
+                        this.status4Count++
+                    }
+                    if(element.Status == '5'){
+                        this.status5Count++
+                    }
+                    
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+
+            
+        },
+        // 全部
+        searchAll() {
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                this.tableItems = JSON.parse(res.data.order_list)
+                this.tableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                });
+                let dd = this.tableItems.map(e => e.CreateDTime)
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        }, 
+        // 待派工
+        searchStatus1() { 
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.status1Count = 0;
+                this.tableItems = [...[]];
+                tempTableItems = JSON.parse(res.data.order_list)
+                tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.Status == '1'){
+                        this.tableItems.push(element)
+                        this.status1Count++
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        }, 
+        // 已派工待維修
+        searchStatus2() { 
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.status2Count = 0;
+                this.tableItems = [...[]];
+                tempTableItems = JSON.parse(res.data.order_list)
+                tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.Status == '2'){
+                        this.tableItems.push(element)
+                        this.status2Count++
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        }, 
+        // 已維修待驗收
+        searchStatus3() { 
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.status3Count = 0;
+                this.tableItems = [...[]];
+                tempTableItems = JSON.parse(res.data.order_list)
+                tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.Status == '3'){
+                        this.tableItems.push(element)
+                        this.status3Count++
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
+        // 已驗收待結案
+        searchStatus4() {
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.status4Count = 0;
+                this.tableItems = [...[]];
+                tempTableItems = JSON.parse(res.data.order_list)
+                tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.Status == '4'){
+                        this.tableItems.push(element)
+                        this.status4Count++
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
+        // 已結案
+        searchStatus5() { 
+            this.chLoadingShow({show:true})
+            this.pageOpt.page = 1  // 頁碼初始化
+
+            fetchOrderList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'MMIS_WorkerOrder',  // DB table
+                KeyItem: [
+                    
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'WorkOrderID',
+                    'WorkSubject',
+                    'Status'
+                ],
+            }).then(res => {
+                let tempTableItems = [];
+                this.status5Count = 0;
+                this.tableItems = [...[]];
+                tempTableItems = JSON.parse(res.data.order_list)
+                tempTableItems.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    if(element.Status == '5'){
+                        this.tableItems.push(element)
+                        this.status5Count++
+                    }
+                });
+            }).catch(err => {
+                console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        }, 
     },
     created() {
         this.ipt = { ...this.defaultIpt }
-        this.search();
+        // this.search();
+        this.initSearch();
     },
+
 }
 </script>

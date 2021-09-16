@@ -519,6 +519,7 @@ export default {
                         { text: '更新日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '150' },
                     ]
                 }
+                this.search()
             }
         }).catch( err => {
             console.log(err)

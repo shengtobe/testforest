@@ -287,6 +287,8 @@ export default {
                         { text: '備註', value: 'Remark', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
                     ]
                 }
+
+                this.search()
             }
         }).catch( err => {
             console.log(err)
