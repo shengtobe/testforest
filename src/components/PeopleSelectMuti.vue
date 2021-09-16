@@ -31,7 +31,7 @@
           </v-btn>
         </v-card-title>
         <v-lazy>
-          <getPeople :defDeptId="userData.DeptList[0].DeptId" :peopleList="PrepeopleList.map(e=>e[valueCol])" :valueCol="valueCol" :disableList="disableList" :key="'PK_'+peopleKey" @getPeople="saveSelectPeople"/>
+          <getPeople :defDeptId="userData.DeptList[0].DeptId" :solo="solo" :peopleList="PrepeopleList.map(e=>e[valueCol])" :valueCol="valueCol" :disableList="disableList" :key="'PK_'+peopleKey" @getPeople="saveSelectPeople"/>
         </v-lazy>
         <v-chip v-for="(item) in PrepeopleList" :key="'PP_'+item.UserId" close @click:close="deletePreselectPeople(item[valueCol])" class="ma-1"> {{ item.UserName }} </v-chip>
         <v-card-actions class="px-5 pb-5">

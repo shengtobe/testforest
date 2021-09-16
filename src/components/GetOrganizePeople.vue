@@ -50,6 +50,9 @@
       <h3 class="mb-3">
         <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>姓名
       </h3>
+      <v-btn v-if="!solo" outlined large tile color="brown" class="mr-4 mb-3" @click="selAll">
+        全選
+      </v-btn>
       <v-btn
         v-for="item in selectOptions.user"
         :key="item.value"
@@ -81,7 +84,8 @@ export default {
       type:Array,
       require: false,
       default: () => []
-    }
+    },
+    solo: Boolean
   },
   data: () => ({
     select: {
@@ -179,6 +183,11 @@ export default {
         let lv1Name = this.opts.lv2.find(e=>e.value==this.select.lv2).parent
         this.select.lv1 = this.opts.lv1.find(e=>e.text==lv1Name).value
       }
+    },
+    selAll() {
+      this.selectOptions.user.forEach(e=>{
+        this.choseUser(e)
+      })
     }
   },
   created() {
