@@ -108,7 +108,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect v-model="ipt.recipients" :isMuti="true"/> 
+                <PeopleSelect :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.recipients"
@@ -136,7 +136,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect v-model="ipt.cc" :isMuti="true"/> 
+                <PeopleSelect :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.cc"
@@ -164,7 +164,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.joiners" @getPeople="getPeople"/> 
+                <PeopleSelect :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.joiners"
@@ -716,9 +716,22 @@ export default {
                 }
             
         },
-        getPeople(peopleData) {
-            this.ipt.joiners.push(peopleData.UserId)
+        getRecipients(peopleData) {
+            for( let data of peopleData ){
+                this.ipt.recipients.push(data.UserId)
+            }
+        },
+        getCc(peopleData) {
+            for( let data of peopleData ){
+                this.ipt.cc.push(data.UserId)
+            }
+        },
+        getJoiners(peopleData) {
+            for( let data of peopleData ){
+                this.ipt.joiners.push(data.UserId)
+            }
         }
+        
     },
     created() {
         this.initData()

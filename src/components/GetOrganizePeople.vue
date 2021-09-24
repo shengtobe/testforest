@@ -186,7 +186,9 @@ export default {
     },
     selAll() {
       this.selectOptions.user.forEach(e=>{
-        this.choseUser(e)
+        if(this.peopleList.findIndex(el=>el==e.value)==-1&&this.disableList.findIndex(el=>el==e.value)==-1) {
+          this.choseUser(e)
+        }
       })
     }
   },
