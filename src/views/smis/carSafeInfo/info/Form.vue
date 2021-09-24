@@ -717,19 +717,13 @@ export default {
             
         },
         getRecipients(peopleData) {
-            for( let data of peopleData ){
-                this.ipt.recipients.push(data.UserId)
-            }
+            this.ipt.recipients = peopleData.map(e=> e.UserId)
         },
         getCc(peopleData) {
-            for( let data of peopleData ){
-                this.ipt.cc.push(data.UserId)
-            }
+            this.ipt.cc = peopleData.map(e=> e.UserId)
         },
         getJoiners(peopleData) {
-            for( let data of peopleData ){
-                this.ipt.joiners.push(data.UserId)
-            }
+            this.ipt.joiners = peopleData.map(e=> e.UserId)
         }
         
     },
