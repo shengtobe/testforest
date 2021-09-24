@@ -164,7 +164,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect v-model="ipt.joiners" :isMuti="true"/> 
+                <PeopleSelect :peopleList="ipt.joiners" @getPeople="getPeople"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.joiners"
@@ -238,7 +238,7 @@ import { dapartOptsForMember } from '@/assets/js/departOption'
 import { getNowFullTime, verifyIptError, getOrg } from '@/assets/js/commonFun'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import PeopleSelect from '@/components/PeopleSelect'
+import PeopleSelect from '@/components/PeopleSelectMuti'
 import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
 import DangerousFlammableChecklistSeasonVue from '../../../formManage/serve/DangerousFlammableChecklistSeason.vue'
 import { fetchSupervisor } from '@/apis/workList/maintain'
@@ -716,6 +716,9 @@ export default {
                 }
             
         },
+        getPeople(peopleData) {
+            this.ipt.joiners.push(peopleData.UserId)
+        }
     },
     created() {
         this.initData()
