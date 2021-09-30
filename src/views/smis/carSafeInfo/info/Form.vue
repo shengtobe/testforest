@@ -108,7 +108,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect v-model="ipt.recipients" :isMuti="true"/> 
+                <PeopleSelect :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.recipients"
@@ -136,7 +136,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect v-model="ipt.cc" :isMuti="true"/> 
+                <PeopleSelect :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.cc"
@@ -164,7 +164,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect v-model="ipt.joiners" :isMuti="true"/> 
+                <PeopleSelect :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.joiners"
@@ -238,7 +238,7 @@ import { dapartOptsForMember } from '@/assets/js/departOption'
 import { getNowFullTime, verifyIptError, getOrg } from '@/assets/js/commonFun'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import UploadFileEdit from '@/components/UploadFileEdit.vue'
-import PeopleSelect from '@/components/PeopleSelect'
+import PeopleSelect from '@/components/PeopleSelectMuti'
 import { safetyinfocreate, safetyinfoquery, safetyinfodetail, safetyinfofileupdate, safetyinfofiledelete, safetyinfoupdate } from '@/apis/smis/carSafeInfo'
 import DangerousFlammableChecklistSeasonVue from '../../../formManage/serve/DangerousFlammableChecklistSeason.vue'
 import { fetchSupervisor } from '@/apis/workList/maintain'
@@ -716,6 +716,16 @@ export default {
                 }
             
         },
+        getRecipients(peopleData) {
+            this.ipt.recipients = peopleData.map(e=> e.UserId)
+        },
+        getCc(peopleData) {
+            this.ipt.cc = peopleData.map(e=> e.UserId)
+        },
+        getJoiners(peopleData) {
+            this.ipt.joiners = peopleData.map(e=> e.UserId)
+        }
+        
     },
     created() {
         this.initData()
