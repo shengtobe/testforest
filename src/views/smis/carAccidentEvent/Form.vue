@@ -321,18 +321,17 @@
     </v-sheet>
 
     <v-row class="px-2" v-if="isUsual">
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-alert</v-icon>事發速限
+                <v-icon class="mr-1 mb-1">mdi-alert</v-icon>事發速限與事發車速(單位:Km/h)
             </h3>
             <v-text-field
                 v-model.trim="ipt.speedLimit"
-                solo type="number"
-                suffix="Km/h"
+                solo
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-speedometer</v-icon>事發車速
             </h3>
@@ -818,7 +817,7 @@ export default {
             this.ipt.aroundEnvOther = obj.SurroundElse  // 周邊環境其他內容
             this.ipt.fenceEq = [ ...obj.RailwayDevice ]  // 鐵路設施設備及圍籬之設置
             this.ipt.fenceEqOther = obj.RailwayDeviceElse  // 鐵路設施設備及圍籬之設置-其他的內容
-            this.ipt.speedLimit = obj.IncidentLimit  // 事發速限
+            this.ipt.speedLimit = obj.IncidentLimitSpeed  // 事發速限
             this.ipt.carSpeed = obj.IncidentSpeed  // 事發車速
             this.ipt.runPlan = obj.CarOperation  // 列車運行計劃及運轉情形
             this.ipt.relatedPerson = obj.TalkSituation  // 關係者之職務、資歷、操作情形及訪談紀要
@@ -914,8 +913,8 @@ export default {
                     SurroundElse: this.ipt.aroundEnvOther,  // 周邊環境(其他)
                     RailwayDevice: this.ipt.fenceEq,  // 鐵路設施設備及圍籬之設置
                     RailwayDeviceElse: this.ipt.fenceEqOther,  // 鐵路設施設備及圍籬之設置(其他)
-                    IncidentLimit: this.ipt.speedLimit,  // 事發速限
-                    IncidentSpeed: this.ipt.carSpeed,  // 事發車速
+                    IncidentLimitSpeed: this.ipt.speedLimit,  // 事發速限
+                    // IncidentSpeed: this.ipt.carSpeed,  // 事發車速
                     PeopleDesc: this.ipt.peopleDesc,
                     CarOperation: this.ipt.runPlan,  // 列車運行計劃及運轉情形
                     TalkSituation: this.ipt.relatedPerson,  // 關係者之職務、資歷、操作情形及訪談紀要
@@ -969,8 +968,8 @@ export default {
                     SurroundElse: this.ipt.aroundEnvOther,  // 周邊環境(其他)
                     RailwayDevice: this.ipt.fenceEq,  // 鐵路設施設備及圍籬之設置
                     RailwayDeviceElse: this.ipt.fenceEqOther,  // 鐵路設施設備及圍籬之設置(其他)
-                    IncidentLimit: this.ipt.speedLimit,  // 事發速限
-                    IncidentSpeed: this.ipt.carSpeed,  // 事發車速
+                    IncidentLimitSpeed: this.ipt.speedLimit,  // 事發速限
+                    // IncidentSpeed: this.ipt.carSpeed,  // 事發車速
                     CarOperation: this.ipt.runPlan,  // 列車運行計劃及運轉情形
                     TalkSituation: this.ipt.relatedPerson,  // 關係者之職務、資歷、操作情形及訪談紀要
                     OnsiteSituation: this.ipt.fieldRegulations,  // 現場作業規定與落實情形
