@@ -777,10 +777,13 @@ export default {
         // 設定資料(編輯時)
         setInitDate(obj) {
             let ty = this.opsList.find(e => e.Code == obj.AccidentType).Name
-            let tyArr
+            console.log("ty: ", ty);
+            let tyArr = [ty,'']
             if(ty.includes('-')){
                 tyArr = ty.split('-')
             }
+            console.log("tyArr: ", tyArr);
+            console.log("tyArr[0]: ", tyArr[0]);
 
             this.ipt.subject = obj.ReportTitle  // 事故摘要
             this.ipt.date = obj.FindDDay  // 發生日期

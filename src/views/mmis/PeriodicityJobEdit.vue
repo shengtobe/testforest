@@ -62,7 +62,7 @@
             </v-col>
             <v-col cols="12" sm="8">
               <h3 class="mb-1">提醒多人</h3>
-              <peopleSelect @getPeople="saveSelectPeople" :peopleList="queryItem.PeopleList"/>
+              <peopleSelect :key="'peopleSelect' + psKey" @getPeople="saveSelectPeople" :peopleList="formatPeopleList"/>
             </v-col>
             <v-col cols="12" sm="12">
               <h3 class="mb-1">工作提醒事項</h3>
@@ -118,7 +118,8 @@
         Cycle: "",
         PeopleList: []
       },
-      SelectPeople: false
+      SelectPeople: false,
+      psKey: 0,
     }),
     mounted: function() {
       this.componentInit()
@@ -139,6 +140,9 @@
           }
         })
         return errArr
+      },
+      formatPeopleList:function(){
+        return this.queryItem.PeopleList.map(e => e.PeopleId)
       }
     },
     methods: {
@@ -152,7 +156,8 @@
       
       /* 抓人 */
       saveSelectPeople(peopleData) {
-        this.queryItem.PeopleList = peopleData.map(e=>e.UserId)
+        this.queryItem.PeopleList = peopleData.map(e=>({PeopleId: e.UserId, PeopleName: e.UserName}))
+        this.psKey += 1
       },
 
       componentInit() {
@@ -170,7 +175,7 @@
               this.queryItem.AlarmDTime = res.data.AlarmDTime.split(' ')[0].replace(/\//g, "-")
               this.queryItem.AlarmEndDTime = res.data.AlarmEndDTime.split(' ')[0].replace(/\//g, "-")
               this.queryItem.Cycle = res.data.Cycle
-              this.queryItem.PeopleList = res.data.PeopleList.map(item=>item.PeopleId)
+              this.queryItem.PeopleList = res.data.PeopleList
               this.queryItem = decodeObject(this.queryItem)
             } else {
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -178,7 +183,8 @@
             }
           }).catch( err => {
             this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
-          }).finally(() => {
+          }).finally(() => { 
+            this.psKey += 1
             this.isLoading = false
           })
         }else if(this.inType == 'add'){
@@ -189,7 +195,7 @@
         const that = this
         this.isLoading = true
         //先處理人事資料部分
-        if(this.queryItemNull==[]){
+        if(this.queryItemNull.length==0){
           if(this.inType == 'edit') {
             jobUpdate({
               ...encodeObject(this.queryItem),
