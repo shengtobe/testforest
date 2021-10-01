@@ -87,7 +87,7 @@ import { mapState } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { login } from '@/apis/login'
 import aesjs from 'aes-js'
-
+import axios from 'axios'
 export default {
   data: () => ({
     // valid: true,    // 先備註掉
@@ -145,7 +145,7 @@ export default {
       // ------------ 已寫好的登入功能，先備註掉 -------------
       this.isLoading = true
       this.errMsg = '認證中...'
-
+      const that = this
       login({
         UserId: this.ipt.account,  // 帳號(員工ID，例如：01009)
         UserPasswd: this.ipt.pwd,  // 密碼(例如：1234)
@@ -158,6 +158,17 @@ export default {
           localStorage.jwt = this.encode(res.data.Token, this.key)  // JWT 也進行加密，要使用時再解密就好
           localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
           localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
+          axios.interceptors.request.use((config) => {
+            // 每次向後端請求時都抓一下當時的 token，避免 token 在瀏覽器開發者工具內改過
+            let $token = localStorage.getItem('jwt')
+            $token = that.decode($token,that.key)
+            if ($token == null) localStorage.clear()
+            
+            config.headers.Authorization = 'Bearer ' + $token
+            return config
+          }, (error) => {
+            return Promise.reject(error)
+          })
           console.log("login in now")
           this.$router.push('/')
         } else {
@@ -183,6 +194,18 @@ export default {
       // 將位元組轉成 16 進位，方便輸出
       return aesjs.utils.hex.fromBytes(encryptedBytes)
     },
+    decode(str, key) {
+      // 將十六進位的資料轉回二進位
+      var encryptedBytes = aesjs.utils.hex.toBytes(str)
+
+      // 解密時要建立另一個 Counter 實體
+      var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5))
+      var decryptedBytes = aesCtr.decrypt(encryptedBytes)
+
+      // 將二進位資料轉換回文字
+      return aesjs.utils.utf8.fromBytes(decryptedBytes)
+    
+    }
   }
 }
 </script>
