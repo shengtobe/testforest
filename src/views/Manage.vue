@@ -434,65 +434,36 @@ export default {
             let obj = {}
             let wsIP = ''
             try {
-                fetch('/env.txt')
-                .then(res => res.text())
-                .then((res) =>{
-                    res.replace("\r\n", "\n")  // 統一換行字串
-                    let arr = res.split("\n")
-                    
-                    let dot = 0
-                    let left = ''
-                    let right = ''
-
-                    arr.forEach(item => {
-                        if (/^#.+/.test(item)) return  // 開頭為 # 的為備註，不處理
-
-                        dot = item.indexOf('=')
-                        if(dot > 0) {
-                            left = item.substr(0, dot).trim()
-                            right = item.substr(dot+1).trim()
-                            obj[left] = right
-                        }
-                    })
-                    //
-
-                    if (obj.MODE == 'dev') {
-                        wsIP = `${obj.DEV_WS_HOST}:${obj.DEV_WS_PORT}/global/inner/alarmmsg`
-                    } else if (obj.MODE == 'prod') {
-                        wsIP = `${obj.PROD_WS_HOST}:${obj.PROD_WS_PORT}/global/inner/alarmmsg`
-                    }
-                    else{
-                    }
-                    wsc = new WebSocket(wsIP)
-                    wsc.onopen = function () {
-                        console.log("connected")
-                    }
-                    wsc.onclose = function (e) {
-                        console.log("closed")
-                    }
-                    wsc.onmessage = function (e) {
-                        var data = JSON.parse(e.data)
-                        console.log(data)
-                        const aType = [
-                            {
-                                value: '1',
-                                text: '雨量通知'
-                            },
-                            {
-                                value: '2',
-                                text: '邊坡通知'
-                            },
-                        ]
-                        if(data.Type=='1'||(data.Type=='2'&&data.IDArray.findIndex(e=>e==that.userData.UserId)>-1)){
-                            that.wsShow = {
-                                overlay: true,
-                                title: aType.find(e=>e.value==data.AlarmType).text,
-                                memo: data.Msg,
-                            }
+                wsIP = `${process.env.VUE_APP_WS_HOST}:${process.env.VUE_APP_WS_PORT}/global/inner/alarmmsg`
+                wsc = new WebSocket(wsIP)
+                wsc.onopen = function () {
+                    console.log("connected")
+                }
+                wsc.onclose = function (e) {
+                    console.log("closed")
+                }
+                wsc.onmessage = function (e) {
+                    var data = JSON.parse(e.data)
+                    console.log(data)
+                    const aType = [
+                        {
+                            value: '1',
+                            text: '雨量通知'
+                        },
+                        {
+                            value: '2',
+                            text: '邊坡通知'
+                        },
+                    ]
+                    if(data.Type=='1'||(data.Type=='2'&&data.IDArray.findIndex(e=>e==that.userData.UserId)>-1)){
+                        that.wsShow = {
+                            overlay: true,
+                            title: aType.find(e=>e.value==data.AlarmType).text,
+                            memo: data.Msg,
                         }
                     }
-                    this.ws = wsc
-                })
+                }
+                this.ws = wsc
             } catch(err) {
                 console.log(err)
             }

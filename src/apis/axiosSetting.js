@@ -8,38 +8,39 @@ let obj = {}
 
 try {
 
-    fetch('/env.txt')
-    .then(res => res.text())
-    .then((res) =>{
-        res.replace("\r\n", "\n")  // 統一換行字串
-        let arr = res.split("\n")
+    // fetch('/env.txt')
+    // .then(res => res.text())
+    // .then((res) =>{
+    //     res.replace("\r\n", "\n")  // 統一換行字串
+    //     let arr = res.split("\n")
         
-        // let obj = {}
-        let dot = 0
-        let left = ''
-        let right = ''
+    //     // let obj = {}
+    //     let dot = 0
+    //     let left = ''
+    //     let right = ''
 
-        arr.forEach(item => {
-            if (/^#.+/.test(item)) return  // 開頭為 # 的為備註，不處理
+    //     arr.forEach(item => {
+    //         if (/^#.+/.test(item)) return  // 開頭為 # 的為備註，不處理
 
-            dot = item.indexOf('=')
-            if(dot > 0) {
-                left = item.substr(0, dot).trim()
-                right = item.substr(dot+1).trim()
-                obj[left] = right
-            }
-        })
-        //
+    //         dot = item.indexOf('=')
+    //         if(dot > 0) {
+    //             left = item.substr(0, dot).trim()
+    //             right = item.substr(dot+1).trim()
+    //             obj[left] = right
+    //         }
+    //     })
+    //     //
 
-        if (obj.MODE == 'dev') {
-            axios.defaults.baseURL = `${obj.DEV_HOST}:${obj.DEV_PORT}/api`
-        } else if (obj.MODE == 'prod') {
-            axios.defaults.baseURL = `${obj.PROD_HOST}:${obj.PROD_PORT}/api`
-        }
-        else{
-        }
+    //     if (obj.MODE == 'dev') {
+    //         axios.defaults.baseURL = `${obj.DEV_HOST}:${obj.DEV_PORT}/api`
+    //     } else if (obj.MODE == 'prod') {
+    //         axios.defaults.baseURL = `${obj.PROD_HOST}:${obj.PROD_PORT}/api`
+    //     }
+    //     else{
+    //     }
         // Object.assign(APP_ENV, obj)
-    })
+    // })
+    axios.defaults.baseURL = `${process.env.VUE_APP_HOST}:${process.env.VUE_APP_PORT}/api`
 } catch(err) {
     console.log(err)
 }
