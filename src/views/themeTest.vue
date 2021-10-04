@@ -93,3 +93,25 @@
     </v-row>
   </v-container>
 </template>
+<script>
+  export default {
+    props: {
+
+    },
+    data: () => ({
+
+    }),
+    components: {
+
+    },
+    mounted() {
+      // console.log(process.env.NODE_ENV);
+    },
+    computed: {
+      
+    },
+    methods: {
+      
+    }
+  }
+</script>
