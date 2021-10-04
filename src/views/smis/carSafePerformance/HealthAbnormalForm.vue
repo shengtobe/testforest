@@ -215,9 +215,7 @@ export default {
         },
         // 送出
         save() {
-            console.log("this.ipt: ", this.ipt);
             let de = {...encodeObject(this.ipt)}
-            console.log("de: ", de)
             this.chLoadingShow({show:true})
             if(this.isEdit){
                 drunkUpdate({
@@ -261,7 +259,6 @@ export default {
         },
         // 加入要上傳的檔案
         joinFile(obj, bool) {
-            console.log("加入要上傳的檔案");
             if (bool) {
                 this.ipt.FileCount.push(obj)  // 加入要上傳後端的檔案
             } else {

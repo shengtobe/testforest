@@ -760,7 +760,6 @@ export default {
         ]),
         // 選擇
         checked() {
-            console.log("👻check item:", this.accidents)
             // this.$emit('checkAccident', this.accidents)
         },
         isRealNum(val){
@@ -782,14 +781,12 @@ export default {
         },
         // 初始化資料
         setShowData(obj) {
-            console.log("obj: ", obj);
             this.isShowBtn = obj.AgentID == this.userData.UserId || obj.DispatchID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.tableItems = [ ...obj.WorkTimeCount ]  // 人員工時資料
             let tempFeeTable = [...obj.WorkMaterialList]
-            console.log("費用頁: this.tableItems: ", this.tableItems);
             // this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
             //工作項 清單
             let tempWorkList = this.tableItems.map(e => e.JobName)
@@ -799,7 +796,6 @@ export default {
             tempWorkList = tempWorkList.filter(function(ele , pos){
                 return tempWorkList.indexOf(ele) == pos;
             }) 
-            console.log("tempWorkList: ", tempWorkList);
             this.tableItems_fee = tempWorkList.map(item => ({
                 MaintainCode_Eqp: this.tableItems.find(ele => ele.JobName == item).MaintainCode_Eqp,
                 MaintainCode_Seq: this.tableItems.find(ele => ele.JobName == item).MaintainCode_Seq,
@@ -810,7 +806,6 @@ export default {
                 Amount: this.tableItems.find(ele => ele.JobName == item).WorkLoad,
                 Price: tempFeeTable.find(ele => ele.JobName == item).Price,
             }))
-            console.log("tableItems_fee: ", this.tableItems_fee);
             // 要求 平交道項目清單
             railroadrepairList({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -829,7 +824,6 @@ export default {
         },
         // 顯示金額Dialog
         showMoneyDialog(item) {
-            console.log("item: ", item);
             this.editIdx = this.tableItems_fee.indexOf(item)  // 編輯中的資料索引
             this.jobAmount = item.Amount  // 現有值帶入
             this.jobPrice = item.UnitPrice  // 現有值帶入
@@ -837,9 +831,6 @@ export default {
         },
         // 確定工作項金額
         saveMoney() {
-            console.log("isRealNum: ", this.isRealNum(this.jobPrice))
-            console.log("isRealNum: ", this.isRealNum(this.jobAmount))
-            console.log("editIdx: ", this.editIdx);
             this.tableItems_fee[this.editIdx].UnitPrice = this.jobPrice
             this.tableItems_fee[this.editIdx].Amount = this.jobAmount
             this.tableItems_fee[this.editIdx].Price = this.jobAmount * this.jobPrice
@@ -904,7 +895,6 @@ export default {
         },
         // 送出 (同意驗收)
         save() {
-            console.log("this.tableItems_fee: ", this.tableItems_fee);
             if (confirm('你確定要驗收嗎?')) {
                 this.chLoadingShow({show:true})
                 // 整理平交道項目

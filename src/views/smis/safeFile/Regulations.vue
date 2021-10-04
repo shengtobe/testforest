@@ -339,9 +339,8 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("tableItems: ", this.tableItems);
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -372,15 +371,13 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
                     }).then(res => {
-                        console.log("res.data", res.data)
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '新增成功' })
                         } else {
-                            console.log(res.data.Msg)
                             this.chMsgbar({ success: false, msg: '新增失敗' })
                         }
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                     }).finally(() => {
                         this.isLoading = this.dialog = false
@@ -414,7 +411,6 @@ export default {
                         this.tableItems[this.itemIndex].convert_findDate = res.data.convert_findDate  // 最後更新時間
 
                         // 若有傳檔案，則更新檔案路徑及檔名
-                            console.log("ipt.upload: ", this.ipt.upload);
                         if (this.ipt.upload) {
                             this.tableItems[this.itemIndex].FileFullName = this.ipt.upload.fileName  // 檔案名稱
                             this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
@@ -422,11 +418,10 @@ export default {
 
                         this.chMsgbar({ success: true, msg: '更新成功' })
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '更新失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.isLoading = this.dialog = false
@@ -470,11 +465,10 @@ export default {
                         this.tableItems.splice(idx, 1)
                         this.chMsgbar({ success: true, msg: '刪除成功' })
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '刪除失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -494,9 +488,7 @@ export default {
         }).then(res => {
             if (res.data.ErrorCode == 0) {
                 this.saveUserGroup(res.data.GroupData)
-                console.log("groupData: ", this.groupData);
                 this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T" || this.groupData.RoleLv4 == "T";
-                console.log(this.isShowBtn);
 
                 if(this.isShowBtn){
                     this.headers = [  // 表格欄位
@@ -522,7 +514,7 @@ export default {
                 this.search()
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
     },

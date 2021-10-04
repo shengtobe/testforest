@@ -352,7 +352,6 @@ export default {
   },
   methods: {
     initInput(){
-      console.log("init create window form")
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
@@ -401,7 +400,7 @@ export default {
     // 搜尋
     search() 
     {
-      console.log("Search click");
+      
       this.chLoadingShow({show:false})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -432,7 +431,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -482,20 +481,15 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         let ad = Object.keys(dat[0])
-        console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
             if(i > 3 && i < 52){
@@ -511,7 +505,7 @@ export default {
           }
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

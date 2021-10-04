@@ -407,7 +407,6 @@ export default {
             {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
-                console.log("儲存使用者資訊 UData: ", UData);
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
                 this.saveUserProfile(UData)
                 
@@ -424,7 +423,7 @@ export default {
             } 
             catch (e) 
             {
-                console.log(e);
+                // console.log(e);
             }
         },
         //全域警告
@@ -465,14 +464,12 @@ export default {
                     }
                     wsc = new WebSocket(wsIP)
                     wsc.onopen = function () {
-                        console.log("connected")
+                        //("connected")
                     }
                     wsc.onclose = function (e) {
-                        console.log("closed")
                     }
                     wsc.onmessage = function (e) {
                         var data = JSON.parse(e.data)
-                        console.log(data)
                         const aType = [
                             {
                                 value: '1',
@@ -494,7 +491,7 @@ export default {
                     this.ws = wsc
                 })
             } catch(err) {
-                console.log(err)
+                //console.log(err);
             }
         },
         //無動作登出
@@ -505,7 +502,6 @@ export default {
             const that = this
             clearTimeout(OtimeOut)
             OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 90 * 60 * 1000)
-            // console.log(OtimeOut)
         }
     },
     created() {

@@ -452,11 +452,6 @@ export default {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
-      console.log("Init~ this.zs:")
-      console.log(this.zs)
-      console.log("this.nowTime:" + this.nowTime)
-      console.log("1. this.ipt.items[0].note: ")
-      console.log(this.ipt.items[0].note)
       var step;
       for (step = 0; step < 14; step++) {
         if(step < 6){
@@ -466,8 +461,6 @@ export default {
         this.ipt.items2[step].status = "0"
         this.ipt.items2[step].note = ''
       }
-      console.log("2. this.ipt.items[0].note: ")
-      console.log(this.ipt.items[0].note)
     },
     unique(list){
       var arr = [];
@@ -490,10 +483,9 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+     
       this.Add = true
       this.action = Actions.add
-      console.log("this.Add: " + this.Add)
       this.initInput();
     },
     ...mapActions('system', [
@@ -510,7 +502,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -540,7 +532,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -557,7 +549,6 @@ export default {
       obj = new Object()
       obj.Column = "CheckDay"
       obj.Value = this.zs
-      console.log(obj.Value)
       arr = arr.concat(obj)               
 
       let i;
@@ -584,8 +575,6 @@ export default {
         arr = arr.concat(obj)
       }
 
-      console.log(JSON.stringify(arr))
-      console.log("this.action == " + this.action == Actions.add)
       if (this.action == Actions.add){
         //-----新增-----
         createFormOrder0({
@@ -595,9 +584,9 @@ export default {
           KeyName: this.DB_Table,  // DB table
           KeyItem:arr,
         }).then(res => {
-          console.log(res.data.DT)
+         
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
           alert('查詢時發生問題，請重新查詢!')
         }).finally(() => {
           this.chLoadingShow({show:false})
@@ -605,8 +594,6 @@ export default {
       }
       else{
         //-----編輯-----
-        console.log("---編輯---")
-        console.log(this.RPFlowNo)
         updateFormOrder({
           ClientReqTime: getNowFullTime(), // client 端請求時間
           OperatorID: this.userData.UserId, // 操作人id
@@ -616,10 +603,10 @@ export default {
           KeyItem: arr,
         })
           .then((res) => {
-            console.log(res.data.DT)
+           
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             // this.chMsgbar({ success: false, msg: Constrant.update.failed });
             alert('查詢時發生問題，請重新查詢!')
           })
@@ -632,8 +619,6 @@ export default {
     // 關閉刪除確認dialod
     closeDialogDel() {
       this.dialogDel = false;
-      console.log("刪除確認是窗關閉, RPFlowNo:")
-      console.log(RPFlowNo)
     },
     // 關閉 dialog
     close() {
@@ -648,9 +633,7 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
       this.RPFlowNo = item.RPFlowNo
-      console.log("RPFlowNo: " + item.RPFlowNo)
       this.action = Actions.edit
       this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
@@ -709,10 +692,8 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
@@ -747,7 +728,7 @@ export default {
 
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -757,9 +738,6 @@ export default {
       this.dialogDel = true;
       this.DelDynamicKey += 1;
       this.RPFlowNo = RPFlowNo;
-      console.log("刪除確認視窗開啟, RPFlowNo:")
-      console.log(RPFlowNo)
-      console.log(this.RPFlowNo)
     },
   },
 };

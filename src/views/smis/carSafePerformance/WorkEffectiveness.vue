@@ -465,7 +465,6 @@ export default {
             DTime_End: thisYear-1
           }).then(res=>{
               if (res.data.ErrorCode == 0) {
-                console.log(res.data.DataList)
                 this.SpeedList = groupBy(res.data.DataList,'ReportLine')
               }else{
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -493,7 +492,6 @@ export default {
             DepartCode: this.selectedType!='T'?this.selectedType:null
           }).then(res=>{
               if (res.data.ErrorCode == 0) {
-                console.log(res.data)
                 this.workOrderTable.items = res.data.DataList
               }else{
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -510,7 +508,6 @@ export default {
           })
             .then(res=>{
               if (res.data.ErrorCode == 0) {
-                console.log(res.data)
                 this.workOrderTable.items = res.data.DataList
               }else{
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -527,7 +524,6 @@ export default {
           })
             .then(res=>{
               if (res.data.ErrorCode == 0) {
-                console.log(res.data)
                 this.workOrderTable.items = res.data.DataList
               }else{
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -583,7 +579,6 @@ export default {
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
           let rtndata = res.data
-          console.log('data',rtndata)
           const dept3 = rtndata.user_depart_list_group_3.map(ele => {
             let rtnObj3 = {}
             rtnObj3.value = ele.DepartCode

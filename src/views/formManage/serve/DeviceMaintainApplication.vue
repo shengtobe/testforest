@@ -639,9 +639,9 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+     
       this.AddJobApplication = true
-      console.log("this.Add: " + this.Add)
+     
       this.initInput();
     },
     ...mapActions('system', [
@@ -653,7 +653,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:false})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -683,7 +683,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -704,7 +704,6 @@ export default {
       // obj.Column = "CheckDay"
       // obj.Value = this.zs
       // arr = arr.concat(obj)
-      // console.log(JSON.stringify(arr))
 
       createFormOrder0({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -742,9 +741,9 @@ export default {
           {"Column":"ResponMan","Value":this.ResponMan}
         ]
       }).then(res => {
-        console.log(res.data.DT)
+       
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -809,7 +808,7 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
         this.AddJobApplication = true
         this.doMan.name = dat[0].Name
@@ -855,7 +854,7 @@ export default {
         this.ResponMan = dat[0].ResponMan
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

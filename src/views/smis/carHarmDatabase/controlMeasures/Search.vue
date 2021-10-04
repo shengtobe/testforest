@@ -196,7 +196,6 @@ export default {
                 ],
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("措施查詢 tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -206,7 +205,7 @@ export default {
                 });
                 this.msg = true
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -236,7 +235,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -291,7 +290,7 @@ export default {
                 this.search()
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
         //

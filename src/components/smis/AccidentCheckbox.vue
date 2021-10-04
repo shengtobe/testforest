@@ -56,10 +56,8 @@ export default {
             ClientReqTime: getNowFullTime(),  // client 端請求時間
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                console.log("🐝🐝 res: ", res.data.AccidentCount);
                 this.groups = res.data.AccidentCount;
                 // this.evtTypeOpts = JSON.parse(res.data.order_list)
-                // console.log("套件內的evtTypeOpts", this.evtTypeOpts);
 
                 // this.accidents = [ ...this.checkArr ]
             } else {
@@ -68,7 +66,7 @@ export default {
                 this.$router.push({ path: '/error' })
             }
         }).catch(err => {
-            console.log(err)
+            //console.log(err)
             alert('伺服器發生問題，事故類型讀取失敗')
         }).finally(() => {
             // this.chLoadingShow()

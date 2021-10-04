@@ -664,7 +664,6 @@ export default {
 
       this.ipt2 = { ...this.defaultIpt }
       //更新時間
-      console.log("更新時間")
       var today=new Date();
       let mStr = today.getMonth()+1;
       let dStr = today.getDate();
@@ -729,8 +728,6 @@ export default {
         this.file = file
     },
     initInput(){
-      console.log("init create window form")
-      // console.log("this.userData.UserName: " + this.userData.UserName)
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
@@ -811,7 +808,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:false})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -836,12 +833,11 @@ export default {
           "FlowId", "DepartName"
         ],
       }).then(res => {
-        console.log("res.data.DT: " + res.data.DT)
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -977,7 +973,6 @@ export default {
         arr = arr.concat(obj)
       }
       //無票旅客交站紀錄
-      console.log("handover.length: " + this.handover.length)
       for (let i = 4; (i+1) <= 8; i++) {
         obj = new Object()
         obj.Column = "StartStation_" + (i+1)
@@ -996,7 +991,6 @@ export default {
         obj.Value = this.handover[i-4].reason
         arr = arr.concat(obj)
       }
-      console.log(JSON.stringify(arr))
 
       createFormOrder0({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -1005,9 +999,9 @@ export default {
         KeyName: this.DB_Table,  // DB table
         KeyItem:arr,
       }).then(res => {
-        console.log(res.data.DT)
+       
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -1131,17 +1125,13 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name2: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         let ad = Object.keys(dat[0])
-        console.log(ad)
         
         var i = 0, j = 0, k = 0, m = 0;
         for(let key of Object.keys(dat[0])){
@@ -1268,7 +1258,7 @@ export default {
 
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

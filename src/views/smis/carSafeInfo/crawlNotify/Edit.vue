@@ -271,13 +271,11 @@ export default {
                     'ReportLine',               
                 ],
              }).then(res => {
-                console.log(res.data)
-                console.log(res.data.RecPeople)
                 //this.tableItems = JSON.parse(res.data.order_list)
                 //console.log(this.tableItems)
                 this.setShowData(res.data)
              }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -295,14 +293,6 @@ export default {
             this.ipt.dateStart = obj.LimitStartDate // 限制日期(起)
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
             this.date = obj.LimitEndDate
-            // console.log(obj.RecPeople)
-            // console.log(obj.ReportLine)
-            // console.log(obj.LimitStart)
-            // console.log(obj.LimitEnd)
-            // console.log(obj.NormalLimit)
-            // console.log(obj.SlowLimit)
-            // console.log(obj.LimitStartDate)
-            // console.log(obj.LimitEndDate)
             this.topData = [
                 { title: '路線', value: obj.ReportLine },
                 { title: '速限起點、終點', value: `${obj.LimitStart} ~ ${obj.LimitEnd} km` },
@@ -401,22 +391,9 @@ export default {
             if (confirm('你確定要儲存嗎?')) {
                 this.chLoadingShow({show:true})
 
-                console.log(this.id)
-                console.log(this.ipt.line)
-                console.log(this.ipt.pointStart)
-                console.log(this.ipt.pointEnd)
-                console.log(this.ipt.normal)
-                console.log(this.ipt.slow)
-                console.log(this.ipt.dateStart)
-                console.log(this.ipt.dateEnd)
-                console.log(this.date)
-                
-
                 let arr = this.recipients.map(item => ({
                 PeopleId: item
-                
             }))
-            
                 updateRegul({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id

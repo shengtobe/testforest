@@ -168,7 +168,6 @@ export default {
         BackDoor: (bool)? 'F' : 'T'  // F 不走後門、T 走後門
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          console.log("login res.data: ", res.data)
           localStorage.isLogined = true
           localStorage.jwt = this.encode(res.data.Token, this.key)  // JWT 也進行加密，要使用時再解密就好
           localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
@@ -184,7 +183,6 @@ export default {
           }, (error) => {
             return Promise.reject(error)
           })
-          console.log("login in now")
           this.$router.push('/')
         } else {
           this.errMsg = res.data.Msg

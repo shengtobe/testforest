@@ -225,10 +225,8 @@ export default {
                     element.HurtDateEnd = element.HurtDateEnd.substr(0, 10)
                 });
                 // this.tableItems[0].HurtPart = injurySiteOpts.find(item => item.value == this.tableItems[0].HurtPart).text
-                console.log("this.tableItems[0].HurtPart", this.tableItems[0].HurtPart)
-                console.log("tableItems", this.tableItems)
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})

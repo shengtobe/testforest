@@ -223,7 +223,6 @@ export default {
             'closeWindow',  // 關閉視窗
         ]),
         setShowData(obj) {
-            console.log("In ClosedComplated:obj:", obj)
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.status = obj.Status  // 處理階段(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -235,7 +234,6 @@ export default {
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
             if(this.status == "4"){
                 this.isShowBtn = obj.AllDepartorID == this.userData.UserId
-                console.log("isShowBtn: ", obj.AllDepartorID + "==" + this.userData.UserId);
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -243,7 +241,6 @@ export default {
                     ReqID: obj.CreatorID,  // 立單人id
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
-                    // console.log("主管測試: ", res.data + "=" + this.userData.UserId);
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
                 }).finally(() => {

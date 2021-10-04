@@ -141,7 +141,6 @@ export default {
     watch: {
         // 下拉選單第1層
         'select.lv1': function(val) {
-            console.log(val)
             let choseItem = this.all.depart1.find(item => item.DepartCode == val)  // 找出該筆資料
 
             // 清空下二層下拉選單及姓名資料
@@ -212,7 +211,7 @@ export default {
                 this.setAllData(res.data)
                 this.initData()
             } catch (err) {
-                console.log(err)
+                //console.log(err)
                 alert('組職表資料取得失敗')
             }
         },

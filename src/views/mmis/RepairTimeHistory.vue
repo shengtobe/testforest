@@ -517,7 +517,6 @@ export default {
     ]),
     // 搜尋
     search() {
-      console.log("search");
       if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
         this.chLoadingShow({show:true})
         const wbs = this.searchIpt.wbs.split('-')
@@ -543,7 +542,6 @@ export default {
         }).then(res => {
           if (res.data.ErrorCode == 0) {
             const dataList = decodeObject(res.data.WorkDataList)
-            console.log("dataList: ", dataList);
             this.tableItems = dataList.map((e,i)=>{
               let rtnObj = {}
               rtnObj.id=i+1
@@ -643,9 +641,7 @@ export default {
       }).then(res => {
         if (res.data.ErrorCode == 0) {
           let idArr = this.tableItems.map(e=>e.WorkOrderID)
-          console.log("workTimeQuery data: ", res.data);
           const dataList = decodeObject(res.data.WorkDataList[0])
-          console.log("dataList: ", dataList);
           this.content.WorkNumber = dataList.WorkOrderID
           this.content.Dept= dataList.DispatchDepart
           // this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq

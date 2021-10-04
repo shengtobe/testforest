@@ -49,7 +49,6 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.ReportStatus  // 狀態
-                        console.log("status: ", res.data.ReportStatus);
                         // 組合發現地點
                         let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
                         
@@ -112,7 +111,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，資料讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})

@@ -498,10 +498,10 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+     
       this.Add = true
       this.action = Actions.add
-      console.log("this.Add: " + this.Add)
+     
       this.initInput();
     },
     ...mapActions('system', [
@@ -518,7 +518,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -549,7 +549,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -563,9 +563,6 @@ export default {
       let arr = new Array()
       let obj = new Object()
 
-      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
-      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
-
       obj = new Object()
       obj.Column = "CheckDay"
       obj.Value = this.zs
@@ -578,10 +575,6 @@ export default {
         obj.Value = this.ipt.items[i].status
         arr = arr.concat(obj)
       }
-
-
-      console.log(JSON.stringify(arr))
-      console.log("this.action == Actions.add:" + this.action == Actions.add)
       if (this.action == Actions.add){
         //-----新增-----
         createFormOrder0({
@@ -591,9 +584,9 @@ export default {
           KeyName: this.DB_Table,  // DB table
           KeyItem:arr,
         }).then(res => {
-          console.log(res.data.DT)
+         
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
           alert('查詢時發生問題，請重新查詢!')
         }).finally(() => {
           this.chLoadingShow({show:false})
@@ -610,10 +603,10 @@ export default {
           KeyItem: arr,
         })
           .then((res) => {
-            console.log(res.data.DT)
+           
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             // this.chMsgbar({ success: false, msg: Constrant.update.failed });
             alert('查詢時發生問題，請重新查詢!')
           })
@@ -640,9 +633,7 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log(item)
       this.RPFlowNo = item.RPFlowNo
-      console.log("RPFlowNo: " + item.RPFlowNo)
       this.action = Actions.edit
       this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
@@ -680,25 +671,18 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         let ad = Object.keys(dat[0])
-        console.log(ad)
-        console.log(" CheckOption19: " + (dat[0])['CheckOption19'])
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
             if(i >= 4 && i <= 22){
-              console.log("i:" + i + " key: " + key + " data: " + (dat[0])[key])
               this.ipt.items[j].status = (dat[0])[key]
               j++;
             }
@@ -706,7 +690,7 @@ export default {
           }
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})

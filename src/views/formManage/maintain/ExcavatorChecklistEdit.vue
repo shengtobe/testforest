@@ -174,7 +174,6 @@ export default {
     ]),
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
-      console.log("CheckDay: " + this.inputData.editableData.CheckDay)
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
       this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
@@ -182,9 +181,8 @@ export default {
     },
     viewPage(item) {
       const that = this;
-      console.log("item: " + item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
-      console.log(getNowFullTime());
+     
+     
       this.chLoadingShow({show:true});
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -228,25 +226,20 @@ export default {
         ],
       })
         .then((res) => {
-          console.log(res.data.DT);
+          
           let dat = JSON.parse(res.data.DT);
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
           this.inputData.DepartCode = dat[0].DepartCode;
           this.inputData.Name = dat[0].Name;
-          console.log("33 Gooooooooooo")
           dat[0] = decodeObject(dat[0]);
-          console.log("44")
           const inputArr = Object.keys(this.inputData.editableData);
-          console.log("inputArr: ")
-          console.log(inputArr)
           inputArr.forEach((e) => {
-              console.log(e)
             that.inputData.editableData[e] = dat[0][e];
           });
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -264,7 +257,6 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj)
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -285,7 +277,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
@@ -313,7 +305,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {

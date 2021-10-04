@@ -324,14 +324,12 @@ export default {
     },
     //機車回傳中文
     getRtnName(cName) {
-      console.log(cName)
       this.preSerEqName = cName.replace('車輛(RST)-','')
     },
     //機車送出按鈕
     selectEQ() {
       this.com_equipCode = this.preSetEqcode
       this.eqName = this.preSerEqName
-      console.log("this.com_equipCode: ", this.com_equipCode);
       this.eqCode = false
     }
   },

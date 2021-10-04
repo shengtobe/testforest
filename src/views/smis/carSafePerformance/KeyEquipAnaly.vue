@@ -380,7 +380,6 @@ export default {
     },
     getTableData() {
       let getYmArr = this.selectTableData.split('~')
-      console.log(getYmArr)
       keyEquipQueryList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -390,7 +389,6 @@ export default {
         LevelCode: this.eqcode,
       }).then(res=>{
         if (res.data.ErrorCode == 0) {
-          console.log(res.data)
           this.workOrderTable.item = res.data.DataList
         }else{
           console.error(res.data.Msg)

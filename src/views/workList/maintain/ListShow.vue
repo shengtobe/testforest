@@ -94,7 +94,6 @@ export default {
         setShowData(obj) {
             this.isShowBtn = obj.CreatorID == this.userData.UserId || obj.DispatchID == this.userData.UserId
             this.isShowBtn2 = obj.DispatchID == this.userData.UserId
-            console.log(obj.CreatorID + '==' + this.userData.UserId + '||' + obj.DispatchID + '==' + this.userData.UserId);
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -117,7 +116,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，刪除失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -150,7 +149,6 @@ export default {
         },
     },
     created() {
-        console.log("ListShow itemData: ", this.itemData);
         this.setShowData(this.itemData)
     }
 }

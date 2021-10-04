@@ -41,7 +41,7 @@ try {
         // Object.assign(APP_ENV, obj)
     })
 } catch(err) {
-    console.log(err)
+    //console.log(err)
 }
 // 後端 api 的 host、port
 // console.log("❌1 axios執行");

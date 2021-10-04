@@ -11,8 +11,6 @@ export const HarmnotifyRouter = [
         path: '/smis/harmnotify/notify', 
         component: () => import('@/views/smis/harmNotify/Form.vue'),
         beforeEnter: (to, from, next) => {
-            console.log("通報新增beforeEnter")
-            console.log("store3:" , store.state.user.groupData);
             const obb = {
                 "FuncName":"SMS_2",
                 ...store.state.user.groupData
@@ -23,11 +21,10 @@ export const HarmnotifyRouter = [
                 // "RoleLv5":store.state.user.groupData.RoleLv5
             }
             checkEnter(obb).then(res => {
-                console.log("res.data: ", res.data);
                 if (res.data.CanIn == 'False') next('/')
                 else next()
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
                 next('/')
             }).finally(() => {
             })
@@ -39,8 +36,6 @@ export const HarmnotifyRouter = [
         path: '/smis/harmnotify/audit', 
         component: () => import('@/views/smis/harmNotify/Search.vue'),
         beforeEnter: (to, from, next) => {
-            console.log("通報查詢beforeEnter")
-            console.log("store3:" , store.state.user.groupData);
             const obb = {
                 FuncName:"SMS_1",
                 ...store.state.user.groupData,
@@ -52,24 +47,22 @@ export const HarmnotifyRouter = [
                 // "RoleLv5":store.state.user.groupData.RoleLv5
             }
             checkEnter(obb).then(res => {
-                console.log("res.data: ", res.data);
                 if (res.data.CanIn == 'False'){
                     canInUpdate({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: store.state.user.userData.UserId,  // 操作人id
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
-                          console.log("🏆🏆res.data: ", res.data)
                         }
                     }).catch( err => {
-                        console.log(err)
+                        //console.log(err)
                     }).finally(() => {
                     })
                     next('/') // 回首頁
                 }
                 else next()
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
                 next('/')
             }).finally(() => {
             })

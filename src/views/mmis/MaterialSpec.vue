@@ -238,7 +238,6 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
-        console.log(res)
         if(res.data.ErrorCode == 0){
           that.chMsgbar({success:true, msg:'資料編輯成功！'})
         }else{

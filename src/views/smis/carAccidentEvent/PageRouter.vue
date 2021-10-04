@@ -54,7 +54,6 @@ export default {
                 if (res.data.ErrorCode == 0) {
                     //抽離 其他
                     this.opsList = JSON.parse(res.data.order_list)
-                    console.log("get opsList: ", this.opsList);
                 } else {
                     // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -70,21 +69,17 @@ export default {
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
-                            console.log("Status: ", res.data.AccidentStatus);
                             this.status = res.data.AccidentStatus  // 狀態
                             let hurtPeoples = []  // 死傷人數資料
                             let controls = []  // 已選控制措施
-                            console.log("1");
                             // 組合發生地點文字
                             let findLocationText = locationOpts.find(item => item.value == res.data.FindLine).text
-                            console.log("2");
                             
                             if (['l1', 'l2', 'l3', 'l4'].includes(res.data.FindLine)) {
                                 findLocationText += ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`  // 本線、祝山線、眠月線、水山線
                             } else if(res.data.FindLine == 'other') {
                                 findLocationText += ` (${res.data.FindLineOther})`  // 其他地點
                             }
-                            console.log("3");
 
                             // 組合路段型態文字
                             let loadTypeArr = res.data.RoadType
@@ -94,7 +89,6 @@ export default {
                                 loadTypeArr.push(`其他${(res.data.RoadTypeElse == '')? '' : ' (' + res.data.RoadTypeElse + ')'}`)  // 把其他及填寫的欄位加進去
                             }
                             let loadTypeText = loadTypeArr.join('、')
-                            console.log("4");
 
                             // 組合周邊環境文字
                             let aroundEnvArr = res.data.Surround
@@ -113,11 +107,6 @@ export default {
                                 fenceEqArr.push(`其他${(res.data.RailwayDeviceElse == '')? '' : ' (' + res.data.RailwayDeviceElse + ')'}`)  // 把其他及填寫的欄位加進去
                             }
                             let fenceEqText = fenceEqArr.join('、')
-                            console.log("4.1");
-                            console.log("res.data.AccidentStatus: ", res.data.AccidentStatus);
-                            console.log("res.data.AccidentType: ", res.data.AccidentType);
-                            console.log("carAccidentEventStatus: ", carAccidentEventStatus);
-                            console.log("opsList: ", this.opsList);
                             let topItems = [  // 上面的欄位
                                 { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: carAccidentEventStatus.find(ele => ele.value == res.data.AccidentStatus).text },
                                 { icon: 'mdi-calendar-text', title: '發生日期', text: res.data.FindDDate },
@@ -128,7 +117,6 @@ export default {
                                 { icon: 'mdi-alert', title: '事發速限', text: res.data.IncidentLimit },
                                 { icon: 'mdi-speedometer', title: '事發車速', text: res.data.IncidentSpeed },
                             ]
-                            console.log("5");
 
                             // 設定下面的欄位資料
                             let bottomItems = [
@@ -144,7 +132,6 @@ export default {
                                 { dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '檢討過程', text: res.data.ReviewProcess.replace(/\n/g, '<br>') },
                                 { dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '備註說明', text: res.data.RemarkDesp.replace(/\n/g, '<br>') },
                             ]
-                            console.log("6");
 
                             // 設定其他資訊的資料
                             let otherInfo = [
@@ -159,14 +146,12 @@ export default {
                                 { oneline: false, title: '天然災害偵測資訊', text: res.data.NaturalInfo.replace(/\n/g, '<br>') },
                                 { oneline: false, title: '民眾或旅客行為說明', text: res.data.PeopleMemo.replace(/\n/g, '<br>') },
                             ]
-                            console.log("7");
                             
                             if (this.status > 1) {
                                 hurtPeoples = JSON.parse(res.data.order_list_hurt_people)  // 死傷人數資料
                                 controls = JSON.parse(res.data.order_list)  // 已選控制措施
                             }
                             this.itemData = { ...res.data, topItems, bottomItems, otherInfo, hurtPeoples, controls }
-                            console.log("8");
 
                         }
                     } else {
@@ -175,13 +160,13 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
                 })
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，事故類型讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})

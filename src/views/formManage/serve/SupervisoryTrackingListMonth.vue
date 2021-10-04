@@ -366,7 +366,6 @@ export default {
         this.file = file
     },
     initInput(){
-      console.log("init create window form")
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
@@ -412,7 +411,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:false})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -442,7 +441,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -489,7 +488,6 @@ export default {
         arr = arr.concat(obj)
       }
 
-      console.log(JSON.stringify(arr))
 
       createFormOrder0({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -498,9 +496,9 @@ export default {
         KeyName: this.DB_Table,  // DB table
         KeyItem:arr,
       }).then(res => {
-        console.log(res.data.DT)
+       
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -565,17 +563,13 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         this.place = dat[0].Place
         var i = 0, j = 0;
@@ -583,19 +577,15 @@ export default {
           if(i >= 4 && i <= 31){
             if(i % 4 == 0){
               this.ipt.items[j].status = (dat[0])[key] == "1"?true:false
-              console.log("ipt.items[" + j + "].status: " + this.ipt.items[j].status + " >> key:" + key)
             }
             else if (i % 4 == 1){
               this.ipt.items[j].note = (dat[0])[key]
-              console.log("ipt.items[" + j + "].note: " + this.ipt.items[j].note + " >> key:" + key)
             }
             else if (i % 4 == 2){
               this.ipt.items[j].note2 = (dat[0])[key]
-              console.log("ipt.items[" + j + "].note2: " + this.ipt.items[j].note2 + " >> key:" + key)
             }
             else{
               this.ipt.items[j].note3 = (dat[0])[key]
-              console.log("ipt.items[" + j + "].note3: " + this.ipt.items[j].note3 + " >> key:" + key)
               j++
             }
           }
@@ -603,7 +593,7 @@ export default {
         }
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

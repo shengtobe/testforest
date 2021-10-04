@@ -395,7 +395,6 @@ export default {
     },
     // 更換頁數
     initInput(){
-      console.log("init")
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       this.MaterialNo = "";
@@ -429,10 +428,10 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+     
       this.Add = true
       this.action = Actions.add
-      console.log("this.Add: " + this.Add)
+     
       this.initInput();
     },
     chPage(n) {
@@ -440,7 +439,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -470,7 +469,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -483,7 +482,6 @@ export default {
 
       
 
-      console.log("this.action == " + this.action == Actions.add)
       if (this.action == Actions.add){
         //-----新增-----
         createFormOrder0({
@@ -504,9 +502,9 @@ export default {
             {Column:"Memo",Value:this.Memo },
           ]
         }).then(res => {
-          console.log(res.data.DT)
+         
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
           alert('查詢時發生問題，請重新查詢!')
         }).finally(() => {
           this.chLoadingShow({show:false})
@@ -534,10 +532,10 @@ export default {
           ]
         })
           .then((res) => {
-            console.log(res.data.DT)
+           
           })
           .catch((err) => {
-            console.log(err);
+            //console.log(err);
             // this.chMsgbar({ success: false, msg: Constrant.update.failed });
             alert('查詢時發生問題，請重新查詢!')
           })
@@ -549,8 +547,6 @@ export default {
     },
     closeDialogDel() {
       this.dialogDel = false;
-      console.log("刪除確認是窗關閉, RPFlowNo:")
-      console.log(RPFlowNo)
     },
     // 關閉 dialog
     close() {
@@ -565,9 +561,7 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
       this.RPFlowNo = item.RPFlowNo
-      console.log("RPFlowNo: " + item.RPFlowNo)
       this.action = Actions.edit
       this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
@@ -595,17 +589,13 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         this.zs = dat[0].CheckDay
         this.MaterialNo = dat[0].MaterialNo
@@ -619,7 +609,7 @@ export default {
         this.Memo = dat[0].Memo
 
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -629,9 +619,6 @@ export default {
       this.dialogDel = true;
       this.DelDynamicKey += 1;
       this.RPFlowNo = RPFlowNo;
-      console.log("刪除確認視窗開啟, RPFlowNo:")
-      console.log(RPFlowNo)
-      console.log(this.RPFlowNo)
     },
   },
 };

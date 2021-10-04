@@ -471,7 +471,7 @@ export default {
         },
         //機車回傳中文
         getRtnName(cName) {
-            console.log(cName)
+           (cName)
             this.preSerEqName = cName.replace('車輛(RST)-','')
         },
         //機車送出按鈕

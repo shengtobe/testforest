@@ -386,7 +386,6 @@ export default {
     //存檔
     save(){
       this.chLoadingShow({show:true})
-      console.log(this.detailItems)
       const that = this
       // const dataKeys = Object.keys(that.detailItems)
       // dataKeys.forEach(e => that.updateData[e] = (typeof(that.detailItems[e])=="string")?escapeHtml(that.detailItems[e]):that.detailItems[e])
@@ -526,7 +525,6 @@ export default {
     //刪除檔案
     rmFilePic(index){
       //抓出flowNo然後打API
-      console.log(this.fileUpload.Pics[index].FlowNo)
       largeFileDelete({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -547,7 +545,6 @@ export default {
       //抓出flowNo然後打API
     },
     async whenExpanded(item){
-      console.log('item',item)
       if(item.value){
         let fileRtn = await this.getFiles(item.item.MaintainCode)
         item.item.FileListPic = fileRtn.Pics

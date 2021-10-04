@@ -181,7 +181,6 @@ export default {
                     this.chart.chartdata.datasets[0].data = [...[]]
                     this.chart.chartdata.datasets[0].count = [...[]]
                     // this.chart = this.initChart
-                    console.log(res.data.DataList)
                     res.data.DataList.forEach(e=>{
                         this.chart.chartdata.labels.push(e.Name)
                         this.chart.chartdata.datasets[0].backgroundColor.push(this.getRandomColor())
@@ -194,7 +193,6 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
                 this.chLoadingShow({show:false})
-                console.log("this.chart.chartdata: ", this.chart.chartdata);
             }).catch( err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             })

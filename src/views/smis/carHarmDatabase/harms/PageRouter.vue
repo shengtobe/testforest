@@ -50,12 +50,10 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("res.data: ", res.data);
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.EndangerStatus  // 狀態
-                        console.log("this.status: ", this.status);
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
 
                         // 組合影響、運轉影響情形字串
@@ -107,7 +105,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，資料讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})

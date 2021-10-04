@@ -307,7 +307,6 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("tableItems: ", this.tableItems);
                         // this.tableItems.forEach(element => {
                         //     for(let ele in element){
                         //         if(element[ele] == null){
@@ -336,7 +335,7 @@ export default {
                         //     }
                         // });
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -366,9 +365,8 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("this.tempItems: ", this.tempItems);
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -407,7 +405,7 @@ export default {
                             }
                         });
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -463,7 +461,7 @@ export default {
                             }
                         });
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -535,7 +533,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -577,7 +575,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -624,7 +622,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -671,7 +669,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -718,7 +716,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -764,7 +762,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -815,7 +813,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -827,7 +825,6 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            console.log("txt: ", txt);
             this.chViewDialog({ show: true, content: txt })
         },
         // 轉換事故事件狀態文字
@@ -875,7 +872,7 @@ export default {
                 this.isShowBtn = this.groupData.RoleLv2 == "T";
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
 

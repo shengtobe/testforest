@@ -440,7 +440,6 @@ export default {
         },
         // 加入要上傳的檔案
         joinFile(obj, bool) {
-            console.log("加入要上傳的檔案");
             if (bool) {
                 this.ipt.FileCount.push(obj)  // 加入要上傳後端的檔案
             } else {

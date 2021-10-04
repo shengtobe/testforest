@@ -161,7 +161,6 @@ export default {
                               this.saveFuncIdList(res.data.FunctionsAuthorData)
                             }
                         }).catch( err => {
-                            console.log(err)
                         }).finally(() => {
                         })
 
@@ -206,7 +205,6 @@ export default {
             },
         },
         created() {
-            // console.log("this.userData: ", this.userData)
             // return;
             //=======建立人員部門對照表
             // fetchOrganization({
@@ -214,7 +212,6 @@ export default {
             //     OperatorID: this.userData.UserId,  // 操作人id
             // }).then(res => {
             //     if (res.data.ErrorCode == 0) {
-            //         console.log("人員權限管理res.data: ", res.data)
             //         // { 
             //         //     methodName:"危害通報頁面",	 userDepartArr
             //         //     methodId:"SMS_1", 
@@ -242,22 +239,18 @@ export default {
             //     } else {
             //     }
             // }).catch( err => {
-            //     console.log(err)
             //     alert('建立人員部門對照表時發生問題，請重新查詢!')
             // }).finally(() => {
             //     this.deptLoading = false
             // })
 
             //===============顯示畫面表=================
-            console.log("顯示畫面表")
             fetchGroupAuth({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                  console.log("res.data: ", res.data)
                   this.tableItems = JSON.parse(res.data.order_list)
-                    console.log("抓群組權限表 res.data: ", this.tableItems)
                     // methodList:[
                     // { 
                     //     methodName:"危害通報頁面",	
@@ -287,7 +280,6 @@ export default {
                 } else {
                 }
             }).catch( err => {
-                console.log(err)
                 alert('查詢權限時發生問題，請重新查詢!')
             }).finally(() => {
                 this.deptLoading = false
@@ -298,10 +290,9 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                  console.log("🏆🏆res.data: ", res.data)
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err);
             }).finally(() => {
             })
 

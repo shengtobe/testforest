@@ -528,7 +528,6 @@ export default {
         // 系統
         'jobHour.dialogShow': function(newVal) {
             if (newVal == false) {
-                    console.log("v: ", newVal);
                     this.eqShow = newVal
                 }
         },
@@ -536,23 +535,17 @@ export default {
     methods: {
         //抓取未確認的設備標示編碼 getEqName
         getTempName(value) {
-            console.log("this.Lv5Name: ", value);
             this.Lv5Name = value
         },
         getEqCode(value){
-            console.log("this.Lv5Code: ", value);
             this.Lv5Code = value
         },
         getEqName(value){
-            console.log("this.LvAllName: ", value);
             this.LvAllName = value
         },
         addWork(){
             if(this.Lv5Name == '') return
             let v = this.Lv5Name + ' - ' + this.jobForm.Workload + 'hr'
-            console.log("this.Lv5Code: ", this.Lv5Code);
-            console.log("this.Lv5Name: ", this.Lv5Name);
-            console.log("this.LvAllName: ", this.LvAllName);
             if(this.selectWorkArr0.includes(this.Lv5Name) == false){
                 this.selectWorkArr0.push(this.Lv5Name)
                 this.selectWorkArr_eqCode.push(this.Lv5Code)
@@ -561,7 +554,6 @@ export default {
             }
             else{
                 let rmIdx = this.selectWorkArr0.indexOf(this.Lv5Name)
-                console.log("rmIdx = ", rmIdx);
                 this.selectWorkArr.splice(rmIdx, 1)
                 this.selectWorkArr0.splice(rmIdx, 1)
                 this.selectWorkArr0.push(this.Lv5Name)
@@ -582,31 +574,24 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj.AgentID!: ", obj.AgentID);
             this.isShowBtn = obj.DispatchID == this.userData.UserId || obj.AgentID == this.userData.UserId
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            console.log("this.bottomItems: ",this.bottomItems)
             this.defaultJobForm.Location = obj.WorkPlace  // 工作地點預設值
-            console.log("obj.MaintainCode: ", obj.MaintainCode);
             let codearr = obj.MaintainCode.split('-')
-            console.log("codearr: ", codearr);
             codearr[2] = ''
             codearr[3] = ''
             this.initCode = codearr.join('-') + '-'
             this.nowEqCode = this.initCode
-            console.log("this.nowEqCode: ", this.nowEqCode);
             // this.nowEqCode = obj.MaintainCode
 
             // 組合所有林鐵人員下拉選單(用於選工作項)
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
-            console.log("arr: ", arr)
             this.allLicenseMembers = arr.map(ele => ({
                 text: ele.PeopleName,
                 value: ele.PeopleId,
             }))
-            console.log("allLicenseMembers: ", this.allLicenseMembers)
             
             // 工時表單初始化
             this.jobHour.items = this.allLicenseMembers.map(item => ({
@@ -621,7 +606,6 @@ export default {
                 MaintainCode_Eqp: '',
                 MaintainCode_Seq: '',
             }))
-            console.log("this.jobHour.items: ", this.jobHour.items)
 
             // 向後端查詢工作項
             fetchJobName({
@@ -633,8 +617,6 @@ export default {
                     text: item.JobName,
                     value: item.JobCode,
                 }))
-                console.log("res.data: ", res.data);
-                console.log("jobNameIpts: ", this.jobNameIpts);
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，工作項查詢失敗' })
             })
@@ -664,7 +646,6 @@ export default {
         },
         // 送出
         save() {
-            console.log("this.jobHour.items: ", this.jobHour.items);
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
                     this.chLoadingShow({show:true})
@@ -722,14 +703,10 @@ export default {
                 this.jobHour.isEdit = true
                 this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
                 this.jobForm = { ...item }  // 現有值帶入表單
-                console.log("this.jobForm: ", this.jobForm);
                 this.jobHour.titleName = `編輯資料 - ${item.PeopleName}`
                 this.nowWorkCode = this.jobForm.JobCode
-                console.log("this.nowWorkCode: ", this.nowWorkCode);
-                console.log("this.jobForm.eqCode: ", this.jobForm.eqCode);
                 if(this.jobForm.eqCode != ''){
                     this.nowEqCode = this.jobForm.eqCode
-                    console.log("this.nowEqCode: ", this.nowEqCode);
                 }
                 else{
                     this.nowEqCode = this.initCode
@@ -756,8 +733,6 @@ export default {
         },
         // 儲存工作表單
         saveJob() {
-            console.log("selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
-            console.log("selectWorkArr_AllName: ", this.selectWorkArr_AllName);
             if(this.Lv5Name == '') return
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
@@ -772,9 +747,7 @@ export default {
                 // +新增
                 let tempJobHour = []
                 let i = 0
-                console.log("新增時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
                 this.selectWorkArr.forEach(work => {
-                    console.log("work: ", work);
                     let tempJobForm = {...this.jobForm}
                     // 反查姓名
                     tempJobForm.PeopleName = this.allLicenseMembers.find(item => item.value == tempJobForm.PeopleId).text
@@ -785,7 +758,6 @@ export default {
                     tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
                     tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
                     tempJobForm.MaintainCode_Seq = (this.selectWorkArr_eqCode[i].split('-'))[3]
-                    console.log("新增 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
                     i++
@@ -801,10 +773,7 @@ export default {
                 // 編輯時
                 let tempJobHour = []
                 let i = 0
-                console.log("編輯時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
                 this.selectWorkArr.forEach(work => {
-                    console.log("work: ", work);
-                    console.log("this.jobForm: ", this.jobForm);
                     let tempJobForm = {...this.jobForm}
                     tempJobForm.JobName = work.substr(0, work.indexOf('('))
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
@@ -813,7 +782,6 @@ export default {
                     tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
                     tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
                     tempJobForm.MaintainCode_Seq = (this.selectWorkArr_eqCode[i].split('-'))[3]
-                    console.log("編輯 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
                     i++
@@ -825,7 +793,6 @@ export default {
             }
             this.selectWorkArr = [...[]]
             this.eqShow = false
-            console.log("jobHour: ", this.jobHour);
         },
     },
     created() {

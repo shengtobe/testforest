@@ -692,7 +692,6 @@ export default {
         }),
     },
     created() {
-      console.log("created start~~")
       this.nowTime = getTodayDateString();
       this.doMan.name = this.userData.UserName;
       var i = 1;
@@ -702,13 +701,9 @@ export default {
     //判斷新增還是編輯
     if(this.$route.params.id.substr(0, 2) == "編號"){
       this.zs = this.nowTime;
-      console.log("詳細頁面:新增 初始化")
       this.tunnelNum = this.$route.params.id;
       this.s01Change();
-      console.log("新增 zs: "  + this.zs)
     }
-      
-
     
   },
   methods: {
@@ -745,9 +740,9 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+     
       this.Add = true
-      console.log("this.Add: " + this.Add)
+     
       this.initInput();
     },
     chPage(n) {
@@ -755,22 +750,15 @@ export default {
     },
     
     s01Change(selectObj){
-      console.log("changing~~~~~")
       this.showImg = true;
-      console.log(selectObj == undefined)
       if(selectObj == undefined){
         selectObj = this.tunnelNum
       }
-      console.log("select is changed >> " + selectObj);
       var i = -1;
-      console.log("substring >> " + selectObj.substr(2));
       i = Number(selectObj.substr(2)) - 1;
       this.i_num = i;
-      console.log("i >> " + i);
       if(i > -1){
         this.v1 = this.vn[i].start;
-        console.log("v1 >> " + this.v1);
-        console.log("start >> " + this.vn[i].start);
         this.v2 = this.vn[i].end;
         this.v3 = this.vn[i].len;
         this.v4 = this.vn[i].radius;
@@ -784,7 +772,7 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -814,7 +802,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -822,7 +810,6 @@ export default {
     },
     // 存
     save() {
-      console.log("送出!!2");
       this.CheckOption1_1 = (this.CheckOption1_1 == undefined)?"0":this.CheckOption1_1;
       this.CheckOption1_2 = (this.CheckOption1_2 == undefined)?"0":this.CheckOption1_2;
       this.CheckOption1_3 = (this.CheckOption1_3 == undefined)?"0":this.CheckOption1_3;
@@ -831,7 +818,6 @@ export default {
       this.CheckOption22_3 = (this.CheckOption22_3 == undefined)?"0":this.CheckOption22_3;
       if (this.action == Actions.add){
         //-----新增-----
-        console.log("-----新增-----")
         createFormOrder0({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
@@ -902,10 +888,9 @@ export default {
             {Column:"Memo",Value:this.note},
           ]
         }).then(res => {
-          console.log("then")
-          console.log(res.data.DT)
+         
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
           alert('查詢時發生問題，請重新查詢!')
         }).finally(() => {
           // this.chLoadingShow({show:true})
@@ -913,7 +898,6 @@ export default {
       }
       else{
         //-----編輯-----
-        console.log("-----編輯-----")
       }
       this.$router.push({ path: "/form-manage/maintain/tunnel-visual-safety-checklist" });
     },
@@ -948,20 +932,15 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         let ad = Object.keys(dat[0])
-        console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
             if(i > 3 && i < 52){
@@ -980,7 +959,7 @@ export default {
 
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         // this.chLoadingShow({show:true})

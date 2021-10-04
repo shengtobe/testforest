@@ -839,7 +839,6 @@ export default {
             // if(this.pick2 == '' && this.ipt.code1 == '' && this.ipt.code2 == ''){
             //     this.jobSafeType = '';
             // }
-            console.log("this.carSafeType: ", this.carSafeType);
             switch(this.carSafeType){
                 case 'B': // 以行安立案 選擇 既有行安事故
                     this.showPick1_1Form = true;
@@ -869,7 +868,6 @@ export default {
                         // this.tableItems = JSON.parse(res.data.order_list)
                         this.tableItems = [...[]]
                         let tempTable = JSON.parse(res.data.order_list)
-                        console.log("tempTable", tempTable.map(e => e.AccidentType));
                         tempTable.forEach(element => {
                             for(let ele in element){
                                 if(element[ele] == null){
@@ -889,14 +887,13 @@ export default {
                             } else if(element.FindLine == 'other') {
                                 findLocationText += ` (${element.FindLineOther})`  // 其他地點
                             }
-                            // console.log("4 findLocationText", findLocationText);
                             element.FindLine = findLocationText
 
                             this.tableItems.push(element)
                             // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                         });
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -927,9 +924,8 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("既有行安危害: ", this.tableItems);
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -965,7 +961,6 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("tableItems: ", this.tableItems);
                         // this.tableItems.forEach(element => {
                         //     for(let ele in element){
                         //         if(element[ele] == null){
@@ -994,7 +989,7 @@ export default {
                         //     }
                         // });
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -1024,9 +1019,8 @@ export default {
                         ],
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
-                        console.log("this.tempItems: ", this.tempItems);
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -1034,7 +1028,6 @@ export default {
                 }
         },
         search1_1(){
-            console.log("locationOpts: ", this.locationOpts);
             fetchListEvent({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
@@ -1067,7 +1060,6 @@ export default {
                             element[ele] = '';
                         }
                     }
-                    // console.log("5 element.AccidentType: ", element.AccidentType);
                     // 解決AccidentType有空字串問題:
                     // if(element.AccidentType == '') element.AccidentType = 'Other'
 
@@ -1081,10 +1073,8 @@ export default {
                     } else if(element.FindLine == 'other') {
                         findLocationText += ` (${element.FindLineOther})`  // 其他地點
                     }
-                    // console.log("4 findLocationText", findLocationText);
                     element.FindLine = findLocationText
 
-                    console.log("this.ipt1_1.evtType1 + '-' + this.ipt1_1.evtType2: ", this.ipt1_1.evtType1 + '-' + this.ipt1_1.evtType2);
 
                     // 事故類型篩選
                     if(this.ipt1_1.evtType1 == '' && this.ipt1_1.evtType2 == ''){ // 無篩選
@@ -1099,7 +1089,6 @@ export default {
                     }
                     else{ // 篩選都有選
                         let type2 = this.opsList.find(ele => ele.Code == element.AccidentType).Name.replace('率', '')
-                        console.log("type2: ", type2);
                         if(type2 == this.ipt1_1.evtType1 + '-' + this.ipt1_1.evtType2){
                             this.tableItems.push(element)
                         }
@@ -1108,10 +1097,9 @@ export default {
                 });
                 //splice
                 // this.tableItems.splice(1, 3);
-                // console.log("this.tableItems[0].AccidentType:", this.tableItems[0].AccidentType)
 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -1148,7 +1136,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -1184,7 +1172,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -1223,7 +1211,7 @@ export default {
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -1262,7 +1250,7 @@ export default {
                     }).then(res => {
                         this.tableItems = JSON.parse(res.data.order_list)
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -1292,7 +1280,6 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
-            console.log("status: ", this.status);
             this.id = obj.EndangerID  // 危害通報編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -1308,7 +1295,7 @@ export default {
                     this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
 
@@ -1321,7 +1308,6 @@ export default {
                 if (res.data.ErrorCode == 0) {
                     //抽離 其他
                     this.opsList = JSON.parse(res.data.order_list)
-                    console.log("opsList: ", this.opsList);
                     let tempOps = this.opsList.map(e=>e.text)
                     tempOps.forEach(e => {
                         if(e.indexOf("-") >= 0){
@@ -1345,7 +1331,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，事故類型讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -1457,7 +1443,6 @@ export default {
         },
         // 顯示檢視內容
         showContent(txt) {
-            console.log("txt: ", txt);
             this.chViewDialog({ show: true, content: txt })
         },
         // 確定立案(用在立案處理是連結跟不予處理的情況)
@@ -1476,7 +1461,6 @@ export default {
                 let carCase = ''  // 行安立案種類
                 let jobType = ''  // 職安立案類型
                 let jobCase = ''  // 職安立案種類
-                console.log("car: " + this.carSafeType + " job: " + this.jobSafeType);
                 // 行安
                 switch (this.carSafeType) {
                     case 'A': // 新增事故

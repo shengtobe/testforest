@@ -283,9 +283,9 @@ export default {
       return arr;
     },
     newOne() {
-      console.log("newOne23");
+     ;
       this.Add = true;
-      console.log("this.Add: " + this.Add);
+     
       this.initInput();
     },
     ...mapActions("system", [
@@ -299,7 +299,7 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -332,7 +332,7 @@ export default {
           this.tableItems = aa;
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           alert("查詢時發生問題，請重新查詢!");
         })
         .finally(() => {
@@ -346,8 +346,8 @@ export default {
       this.AddWorkLogModal = false;
     },
     viewPage(item) {
-      console.log("item: " + item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
+     
+     
       this.chLoadingShow({show:true});
       // 依業主要求變更檢式頁面的方式，所以改為另開分頁
       fetchFormOrderOne({
@@ -372,20 +372,15 @@ export default {
       })
         .then((res) => {
           this.initInput();
-          console.log(res.data.DT);
+          
           let dat = JSON.parse(res.data.DT);
-          console.log("data name: " + dat[0].Name);
-          console.log("data time: " + dat[0].CheckDay);
           this.Add = true;
           // this.zs = res.data.DT.CheckDay
           this.doMan.name = dat[0].Name;
           let time1 = dat[0].CheckDay.substr(0, 10);
-          console.log("data time1: " + time1);
           this.zs = time1;
-          console.log("doMan name: " + this.doMan.name);
           //123資料
           let ad = Object.keys(dat[0]);
-          console.log(ad);
           var i = 0,
             j = 0;
           for (let key of Object.keys(dat[0])) {
@@ -403,7 +398,7 @@ export default {
           this.memo_3 = dat[0].Measures;
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           alert("查詢時發生問題，請重新查詢!");
         })
         .finally(() => {

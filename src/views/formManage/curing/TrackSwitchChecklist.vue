@@ -234,9 +234,9 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      console.log("newOne23");
+     ;
       this.Add = true;
-      console.log("this.Add: " + this.Add);
+     
       this.DynamicKey += 1;
       this.editType = this.actions.add;
     },
@@ -251,7 +251,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -279,7 +279,7 @@ export default {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -296,8 +296,8 @@ export default {
       this.dialogDel = false;
     },
     viewPage(item) {
-      console.log(item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
+     
+     
       this.DynamicKey += 1;
       this.editType = this.actions.edit;
       this.editItem = item;

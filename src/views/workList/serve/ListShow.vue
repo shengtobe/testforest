@@ -110,7 +110,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，刪除失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})

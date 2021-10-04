@@ -296,7 +296,7 @@ export default {
                         this.isShowBtn = this.groupData.RoleLv3 == "T";
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
 
@@ -328,7 +328,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -398,12 +398,9 @@ export default {
         },
         // 加入要上傳的檔案
         joinFile(obj, bool) {
-            console.log("bool:", bool)
             if (bool) {
-                console.log("檔案:", obj)
                 this.evidences.push(obj)  // 加入要上傳後端的檔案
             } else {
-                console.log("縮圖:", obj)
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
         },
@@ -415,7 +412,6 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                console.log("欲刪除的資料ID:" + this.id)
                 this.chLoadingShow({show:true})
 
                 deleteData({
@@ -427,11 +423,10 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -442,7 +437,6 @@ export default {
         closeCase() {
             if (confirm('你確定要申請結案嗎?')) {
                 this.chLoadingShow({show:true})
-                console.log("this.controlReview:", this.controlReview)
 
                 closeData({
                     AccidentCode: this.id,  // 事故事件編號
@@ -451,7 +445,6 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
-                    console.log("申請結案後:", res.data)
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '送出成功' })
                         this.done = true  // 隱藏頁面操作按鈕

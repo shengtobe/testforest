@@ -201,10 +201,8 @@ export default {
                     ClientReqTime: getNowFullTime(),
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then( res => {
-                    console.log("res.data.DataList[0]: ", res.data.DataList[0])
                     if (res.data.ErrorCode == 0) {
                         this.ipt = {FileCount: [], ...decodeObject(res.data.DataList[0]), BarkeID: res.data.DataList[0].BarkeID}  
-                        console.log("this.ipt2: ", this.ipt)  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
                     }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -229,25 +227,15 @@ export default {
         },
         // 送出
         save() {
-            // console.log("1");
             // let dw = []
-            // console.log("2");
-            // console.log("this.ipt: ", this.ipt);
             // dw = [...encodeObject(this.ipt)];
             // return
-            // console.log("3");
-            // console.log("dw len: ", dw);
             // dw.forEach(element => {
-            //     console.log(".....element", element)
             // });
-            // console.log("4");
-            // console.log("FileCount: ", this.ipt.FileCount);
             // return
             this.chLoadingShow({show:true})
             this.ipt.CheckDate = this.ipt.CheckDate.replace(/-/g,'/')
             if(this.isEdit){
-                // console.log("編輯的 ipt: ", this.ipt)
-                // console.log("this.ipt.FileCount: ", this.ipt.FileCount);
                 // this.chLoadingShow({show:true})
                 // return
                 brakeUpdate({
@@ -309,7 +297,6 @@ export default {
         uploadFile(file) {
             this.chLoadingShow({show:true})
 
-            console.log("88")
             return
 
             setTimeout(() => {

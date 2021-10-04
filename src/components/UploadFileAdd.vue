@@ -99,8 +99,6 @@ export default {
         },
         // 加入要上傳的檔案
         join() {
-            console.log("this.choseFiles: ", this.choseFiles)
-            console.log("this.fileList: ", this.fileList)
             if(this.choseFiles == null || this.choseFiles == undefined) return
             if (this.choseFiles.length > 0) {
                 // 已加入的檔案不重覆增加
@@ -123,8 +121,6 @@ export default {
                             let nameArr = ele.name.split('.')  // 用小數點拆成陣列
                             let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
                             
-                            console.log("reader.result~~~~: ", reader.result)
-                            console.log("Array.from(new Uint8Array(reader.result)): ", Array.from(new Uint8Array(reader.result)))
                             this.$emit('joinFile', { FileName: ele.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }, true)
                         }
                         

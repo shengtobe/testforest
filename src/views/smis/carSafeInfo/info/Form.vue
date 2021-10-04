@@ -347,8 +347,6 @@ export default {
                                   
                 ],
              }).then(res => {
-                console.log("編輯時 res.data: ", res.data)
-                // console.log(res.data.RecPeople)
                 if(res.data.SaftyInfoStatus == '1'){ // 已立案
                     if(res.data.PeopleId != this.userData.UserId){ // 
                         this.$router.push({ path: '/no-permission' })
@@ -365,7 +363,6 @@ export default {
                         ReqID: res.data.PeopleId,  // 立單人id
                     }).then(res => {
                         // this.isShowBtn = res.data == this.userData.UserId
-                        console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
                         sup = res.data.ID
                         if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
                             if(res.data.SaftyInfoStatus == '2'){
@@ -384,7 +381,6 @@ export default {
                         else{ // 都不是
                             this.$router.push({ path: '/no-permission' })
                         }
-                        console.log("sup end this.ipt.recipients: ", this.ipt.recipients);
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
                     }).finally(() => {
@@ -394,7 +390,7 @@ export default {
                 
                     this.setShowDataint(res.data)
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -446,7 +442,6 @@ export default {
             this.ipt.title = obj.InfoTitle // 通報主題
             this.ipt.desc = obj.InfoContent // 發布內容RecCopy: RCarr, JoinPeople: JParr, 
             this.ipt.recipients = obj.RecPeople.map(item => item.PeopleId)
-            console.log("this.ipt.recipients: ", this.ipt.recipients);
             this.ipt.cc = obj.RecCopy.map(item => item.PeopleId)
             this.ipt.joiners = obj.JoinPeople.map(item => item.PeopleId)
             // this.ipt.recipients = [ ...obj.RecPeople ] // 收件人
@@ -561,8 +556,6 @@ export default {
         // 刪除檔案 (編輯時)
         deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
-                console.log(this.ipt.files)
-                console.log(idx)
                 this.chLoadingShow({show:true})
                 safetyinfofiledelete({
                     SaftyInfoCode: this.routeId,   // 編號
@@ -609,9 +602,6 @@ export default {
                     let JParr = this.ipt.joiners.map(item => ({
                         PeopleId: item
                     }))
-                    console.log(RParr)
-                    console.log(RCarr)
-                    console.log(JParr)
                     safetyinfocreate({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
@@ -630,11 +620,8 @@ export default {
 
                             //直接進下步驟
                             setTimeout(() => {
-                                console.log("直接進下步驟 res.data.SaftyInfoCode: ", res.data.SaftyInfoCode);
                                 this.chLoadingShow({show:false})
-                                console.log("chLoadingShow({show:false})");
                                 this.$router.push({ path: `/smis/car-safeinfo/info/${res.data.SaftyInfoCode}/show` })
-                                console.log("EE");
                             }, 2000)
                             
                         } else {
@@ -647,7 +634,6 @@ export default {
                     }).finally(() => {
                         this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
-                        console.log("Form final");
                     })
 
                     // 測試用資料
@@ -668,10 +654,6 @@ export default {
                     let JParr = this.ipt.joiners.map(item => ({
                         PeopleId: item
                     }))
-                    console.log(RParr)
-                    console.log(RCarr)
-                    console.log(JParr)
-                    console.log("call safetyinfoupdate");
                         safetyinfoupdate({
                             ClientReqTime: getNowFullTime(),  // client 端請求時間
                             OperatorID: this.userData.UserId,  // 操作人id

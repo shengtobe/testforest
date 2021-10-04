@@ -198,7 +198,6 @@ export default {
                 Mode:mode
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
-                    console.log(res.data)
                     if(res.data.SumCount){
                         this.chartLeft.chartdata.labels = [...[]]
                         this.chartLeft.chartdata.datasets[0].backgroundColor = [...[]]

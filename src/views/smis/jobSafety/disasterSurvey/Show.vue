@@ -322,7 +322,6 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj: ", obj);
             this.id = obj.AccidentCode  // 編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
@@ -338,7 +337,7 @@ export default {
                     this.isShowBtn = this.groupData.RoleLv3 == "T"
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
             this.pageOpt.page = 1  // 頁碼初始化
@@ -371,7 +370,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -412,11 +411,9 @@ export default {
                     link.href = `/downloads/${res.data.file_name}`
                     link.setAttribute('download', res.data.file_name)
                     document.body.appendChild(link)
-                    console.log("link: ", link);
                     link.click()
                 }
                 else{
-                    console.log(res.data.Msg);
                 }
             }).catch(function (err) {
                 alert('匯出失敗')
@@ -439,7 +436,7 @@ export default {
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -543,10 +540,10 @@ export default {
                                 this.chMsgbar({ success: true, msg: '立案成功'})
                                 this.done = true  // 隱藏頁面操作按鈕
                             } else {
-                                console.log(res.data.Msg)
+                               (res.data.Msg)
                             }
                         }).catch(err => {
-                            console.log(err)
+                            //console.log(err)
                             this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                         }).finally(() => {
                             this.chLoadingShow({show:false})

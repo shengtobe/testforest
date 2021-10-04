@@ -671,7 +671,6 @@ export default {
             // 向後端請求第一層設備標示編號
             try {
                 let codeRes = await fetchEqCodeLv1({ ClientReqTime: getNowFullTime() })  // 取得設備標示編號
-                console.log("codeRes: ", codeRes);
                 this.setEqCodeOption(codeRes.data.device_query, 'opt1')  // 初始化設備標示編號第一組檢修碼下拉選單
             } catch (err) {
                 alert('設備報修資料取得失敗')
@@ -712,7 +711,6 @@ export default {
                     this.$router.push({ path: '/no-permission' })
                 }
                 if(obj.ErrorCode == 0){
-                    console.log("obj: ", obj);
                     // 設定資料
                     this.id = obj.WorkOrderID,  // 工單編號
                     this.ipt.year = obj.WorkYear  // 年度
@@ -733,15 +731,13 @@ export default {
                     // this.ipt.eqNumber32 = obj.MaintainCode_Eqp2  // 設備標示編號3-2
                     // this.ipt.eqNumber4 = obj.MaintainCode_Seq  // 設備標示編號4
                     this.nowEqCode = obj.MaintainCode
-                    console.log("this.nowEqCode: ", this.nowEqCode);
                     this.showEq = true
 
                 }
                 else{
-                    console.log(obj.Msg);
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('資料讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -778,8 +774,6 @@ export default {
         editItem (item) {
             let idx = this.ipt.items.indexOf(item)  // 取得該筆資料索引值
             this.nowEditIdx = idx
-            console.log("編輯記錄 item: ", item);
-            console.log("編輯記錄 idx: ", idx);
             this.dialog = true
             this.dialogForm.ServiceItem = item.ServiceItem //工項(項目)
             this.dialogForm.ServiceSpec = item.ServiceSpec//規格
@@ -941,7 +935,6 @@ export default {
         // 初始化設備標示編號
         // codeArr: 後端傳的報修碼陣列, opt: 要設定在哪一組下拉選單(op1~4)
         setEqCodeOption(codeArr, opt) {
-            console.log("codeArr: ", codeArr);
             this.eqCodes[opt] = codeArr.map(item => {
                 return {
                     text: item.CodeDescript,

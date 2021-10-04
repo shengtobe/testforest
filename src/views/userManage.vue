@@ -172,7 +172,6 @@ export default {
                             OperatorID: this.userData.UserId,  // 操作人id
                         }).then(res => {
                             if (res.data.ErrorCode == 0) {
-                              console.log("👾👾 res.data: ", res.data);
                               this.saveFuncIdList(res.data.FunctionsAuthorData)
                               
                               更新groupData
@@ -185,10 +184,9 @@ export default {
                                 RoleLv5: fResult.RoleLv5
                               })
 
-                              console.log("userManager全域的groupData: ", this.groupData);
                             }
                         }).catch( err => {
-                            console.log(err)
+                            //console.log(err);
                         }).finally(() => {
                         })
 
@@ -197,7 +195,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err);
+                    //console.log(err);
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，送出失敗' })
                 }).finally(() => {
                     this.chLoadingShow({ show: false})
@@ -233,7 +231,6 @@ export default {
               this.methodList.find(e=>e.methodId===itemId)[itemCol] = !this.methodList.find(e=>e.methodId===itemId)[itemCol]
             },
             departSelectChange(){
-              console.log("變更this.departSelect:", this.departSelect);
               // this.methodList = [...[]]
               this.methodList = []
               this.tableItems.forEach(element => {
@@ -253,7 +250,6 @@ export default {
         },
         created() {
           
-            // console.log("this.userData: ", this.userData)
             // return;
             this.chLoadingShow({show:true})
             //=======建立人員部門對照表
@@ -262,7 +258,6 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("人員權限管理res.data: ", res.data)
                     // { 
                     //     methodName:"危害通報頁面",	 userDepartArr
                     //     methodId:"SMS_1", 
@@ -291,7 +286,7 @@ export default {
                 } else {
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err);
                 alert('建立人員部門對照表時發生問題，請重新查詢!')
             }).finally(() => {
               this.deptLoading = false
@@ -304,8 +299,6 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                   this.tableItems = JSON.parse(res.data.order_list)
-                    console.log("抓人員權限表 res.data: ", res.data)
-                    console.log("抓人員權限表 tableItems: ", this.tableItems)
                     // methodList:[
                     // { 
                     //     methodName:"危害通報頁面",	
@@ -335,7 +328,7 @@ export default {
                 } else {
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err);
                 alert('查詢權限時發生問題，請重新查詢!')
             }).finally(() => {
                 this.deptLoading = false

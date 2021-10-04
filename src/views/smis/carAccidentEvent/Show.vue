@@ -219,8 +219,6 @@ export default {
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
             this.hurt_people_count = obj.hurt_people_count
-            console.log("finishDeath: ", this.finishDeath);
-            console.log("hurt_people_count: ", this.hurt_people_count);
             canInUpdate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
@@ -230,7 +228,7 @@ export default {
                     this.isShowBtn = this.groupData.RoleLv2 == "T"
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
             this.pageOpt.page = 1  // 頁碼初始化
@@ -262,7 +260,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -309,7 +307,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，作廢失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -340,7 +338,7 @@ export default {
                             this.$router.push({ path: '/error' })
                         }
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('伺服器發生問題，申請失敗')
                     }).finally(() => {
                         this.chLoadingShow({show:false})

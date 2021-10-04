@@ -99,7 +99,6 @@ export default {
         // 復原
         recovery(item) {
             let index = this.tableItems.indexOf(item)
-            console.log(index)
             if (confirm(`你確定要復原編號「${item.id}」的資料嗎?`)) {
                 this.chLoadingShow({show:true})
 

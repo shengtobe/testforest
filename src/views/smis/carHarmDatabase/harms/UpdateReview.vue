@@ -468,7 +468,7 @@ export default {
                     this.isShowBtn = this.groupData.RoleLv4 == "T";
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
 
@@ -481,7 +481,6 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("res.data: ", res.data);
                     // this.chMsgbar({ success: true, msg: '重提成功' })
                     // this.done = true  // 隱藏頁面操作按鈕
                     tableItems = JSON.parse(res.data.order_list)
@@ -511,13 +510,9 @@ export default {
         },
         // 初始化資料
         setShowData(before, after) {
-            console.log("before: ", before);
-            console.log("after: ", after);
             let aa 
-            console.log("1");
             if(before != undefined)
                 aa = JSON.parse(before.proc_detail)
-            console.log("2");
             // 危害說明
             this.before.descp = before.EndangerDesp
             this.after.descp = after.EndangerDesp
@@ -612,7 +607,7 @@ export default {
                         } else {
                         }
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                     }).finally(() => {
                         this.chLoadingShow({show:false})
@@ -631,7 +626,7 @@ export default {
                         } else {
                         }
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                     }).finally(() => {
                         this.chLoadingShow({show:false})

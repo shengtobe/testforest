@@ -827,7 +827,6 @@ export default {
         },
         // 判斷新增或編輯
         initFetchData() {
-            console.log("判斷新增或編輯 id = ", this.id);
             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
 
             if (this.id != undefined) {
@@ -835,7 +834,6 @@ export default {
                 this.isEdit = true
 
                 // 向後端請求資料
-                console.log("ready to 向後端請求資料");
                 this.fetchOrderOne()
                 // 向後端請求證照人員資料
                 // this.fetchLicenseMan()
@@ -848,7 +846,6 @@ export default {
         },
         // 向後端請求資料
         fetchOrderOne() {
-            console.log("向後端請求資料");
             this.chLoadingShow({show:true})
 
             fetchWorkOrderOne({
@@ -856,7 +853,6 @@ export default {
                 ClientReqTime: getNowFullTime()  // client 端請求時間
             }).then(res => {
                 let obj = res.data
-                console.log("維護工單第一個編輯 obj: ", obj)
                 // 檢查是否有權限編輯 (僅立案人、派工人可編輯)
                 if (obj.CreatorID != this.userData.UserId && obj.DispatchID != this.userData.UserId) {
                     this.$router.push({ path: '/no-permission' })
@@ -885,7 +881,7 @@ export default {
                 // 將派工人資料寫入 vuex(組織表)
                 this.chChose({ uid: obj.DispatchID, name: obj.DispatchMan })
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('資料讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -899,10 +895,9 @@ export default {
         //         ClientReqTime: getNowFullTime()  // client 端請求時間
         //     }).then(res => {
         //         let obj = res.data
-        //         console.log("obj: ", obj)
                 
         //     }).catch(err => {
-        //         console.log(err)
+        //         //console.log(err)
         //         alert('資料讀取失敗')
         //     }).finally(() => {
         //         this.chLoadingShow({show:true})
@@ -957,15 +952,12 @@ export default {
         save() {
             
             if (this.$refs.form.validate()) {  // 表單驗證欄位
-                console.log("this.combineCode: ", this.combineCode);
                 if(this.combineCode == ''){
                     alert("設備標示編碼至少需選至[位置]")
                     return
                 }
                 this.chLoadingShow({show:true})
                 let tempCodeArr = this.combineCode.split('-')
-                console.log("tempCodeArr: ", tempCodeArr)
-                console.log("tempCodeArr[3]: ", tempCodeArr[3])
                 if (this.isEdit) {
                     // -------- 編輯時 -------
                     updateListOrder({
@@ -988,7 +980,6 @@ export default {
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
                             this.chMsgbar({ success: true, msg: '編輯成功' })
-                            console.log("送出編輯");
                             // 為避免使用者選立即派工，導致input的不會同步改變，所以重新向後端請求資料
                             this.fetchOrderOne()
                         } else {
@@ -1021,7 +1012,6 @@ export default {
                         Condition: this.conditionText.replace(/<br>/g, '\n')
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
-                            console.log("新增工單 res.data: ", res.data);
                             this.chDialog({ show: true, msg: '新增成功，工單編號為： ' + res.data.WorkOrderID })
                             this.clearErrIpt()
                             this.ipt = { ...this.ipt, ...this.defaultIpt }  // 初始化表單
