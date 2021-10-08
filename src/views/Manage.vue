@@ -182,7 +182,8 @@
                                     <strong class="black--text">職安管理</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_24')" @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
+                                <!-- <v-list-item :disabled="FShow('SMS_24')" @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item> -->
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
                                 <v-divider />
                                 <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey">職災事故事件管理</v-list-item>
                                 <v-divider />

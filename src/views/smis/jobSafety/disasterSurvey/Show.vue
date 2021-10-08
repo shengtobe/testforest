@@ -327,19 +327,20 @@ export default {
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.files = [ ...obj.FileCount ]  // 檔案附件
             this.isLocked = (obj.LockStatus == 'T')?true:false  // 是否已鎖定
-
-            canInUpdate({
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-            }).then(res => {
-                if (res.data.ErrorCode == 0) {
-                    this.saveUserGroup(res.data.GroupData)
-                    this.isShowBtn = this.groupData.RoleLv3 == "T"
-                }
-            }).catch( err => {
-                //console.log(err)
-            }).finally(() => {
-            })
+            
+            this.isShowBtn = !(this.userData.UserName == obj.HurtPeopleName)
+            // canInUpdate({
+            //     ClientReqTime: getNowFullTime(),  // client 端請求時間
+            //     OperatorID: this.userData.UserId,  // 操作人id
+            // }).then(res => {
+            //     if (res.data.ErrorCode == 0) {
+            //         // this.saveUserGroup(res.data.GroupData)
+            //         // this.isShowBtn = this.groupData.RoleLv3 == "T"
+            //     }
+            // }).catch( err => {
+            //     //console.log(err)
+            // }).finally(() => {
+            // })
             this.pageOpt.page = 1  // 頁碼初始化
 
             fetchList({

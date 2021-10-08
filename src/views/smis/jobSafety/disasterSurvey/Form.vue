@@ -837,6 +837,10 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
+                        if(res.data.HurtPeopleName == this.userData.UserName){
+                            alert("無權限做此操作")
+                            this.$router.push({ path: '/404' })
+                        }
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
@@ -1216,8 +1220,9 @@ export default {
             OperatorID: this.userData.UserId,  // 操作人id
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                this.saveUserGroup(res.data.GroupData)
-                this.isShowBtn = this.groupData.RoleLv3 == "T"
+                // this.saveUserGroup(res.data.GroupData)
+                // this.isShowBtn = this.groupData.RoleLv3 == "T"
+                this.isShowBtn = true
 
                 if(this.isShowBtn)
                     this.initData()
