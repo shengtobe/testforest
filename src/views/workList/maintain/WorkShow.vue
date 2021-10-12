@@ -733,6 +733,8 @@ export default {
         },
         // 儲存工作表單
         saveJob() {
+            //沒有選工作
+            if(this.selectWorkArr.length == 0) return
             if(this.Lv5Name == '') return
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
