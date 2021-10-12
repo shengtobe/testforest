@@ -195,7 +195,7 @@ export default {
             dateStart: '',  // 發生日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 發生日期(迄)
             name: '',  // 罹災者姓名
-            workDepart: '嘉義車站',  // 工作部門
+            workDepart: '',  // 工作部門
             number: '',  // 事故編號
             status: '',  // 事故狀態
         },
@@ -215,8 +215,9 @@ export default {
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
+        emptyDepart:[{ text:'不限', value:''}],
         opts: {
-            depart: dapartOptsBrief,  // 部門
+            depart: dapartOptsBrief ,  // 部門
             status: [  // 事故事件狀態 (審核中有二個，故傳中文值讓後端判斷)
                 { text: '不限', value: '' },
                 ...jobDisasterSurveyStatus,
@@ -311,6 +312,8 @@ export default {
         },
     },
     created() {
+        this.opts.depart = [...this.emptyDepart,...dapartOptsBrief]
+        console.log("this.opts.depart: ", this.opts.depart);
         this.searchIpt = { ...this.searchDefault }
         this.search()
     },
