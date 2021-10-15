@@ -110,6 +110,7 @@ export default {
   methods: {
     keyDown(e){
       if(e.altKey && e.keyCode==88) {   //用户点击了ctrl+enter触发
+        console.log("熱鍵+");
         this.submit(false)
       }else { //用户点击了enter触发
         // this.sendMessage();
@@ -130,6 +131,7 @@ export default {
     },
     // 送出
     submit(bool) {
+      console.log("submit: ", bool);
       // if (this.$refs.form.validate()) {  // 驗證欄位
       //   this.isLoading = true
       //   this.errMsg = '重新認證中...'
@@ -161,6 +163,7 @@ export default {
       this.isLoading = true
       this.errMsg = '認證中...'
       const that = this
+      console.log("2");
       login({
         UserId: this.ipt.account,  // 帳號(員工ID，例如：01009)
         UserPasswd: this.ipt.pwd,  // 密碼(例如：1234)

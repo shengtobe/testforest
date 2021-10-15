@@ -424,7 +424,7 @@ export default {
             } 
             catch (e) 
             {
-                // console.log(e);
+                //console.log(e);
             }
         },
         //全域警告
@@ -462,7 +462,7 @@ export default {
                 }
                 this.ws = wsc
             } catch(err) {
-                // console.log(err)
+                //console.log(err)
             }
         },
         //無動作登出

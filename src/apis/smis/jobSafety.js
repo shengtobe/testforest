@@ -164,15 +164,6 @@ export function closeData(data) { return axios(
         data,
     }
 )}
-
-// 申請結案
-export function exportExcel(data) { return axios(
-    {
-        url: '/sms/profession/event/export_excel',
-        method: 'post',
-        data,
-    }
-)}
 // // 搜尋
 // export function licenseRcdQuery(data) { return axios(
 //     {

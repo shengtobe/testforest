@@ -313,7 +313,6 @@ export default {
     },
     created() {
         this.opts.depart = [...this.emptyDepart,...dapartOptsBrief]
-        console.log("this.opts.depart: ", this.opts.depart);
         this.searchIpt = { ...this.searchDefault }
         this.search()
     },

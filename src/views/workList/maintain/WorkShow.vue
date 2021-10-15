@@ -201,7 +201,7 @@
     <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-table</v-icon>工時統計
         <span class="red--text">*</span>
-        <v-btn fab dark small color="indigo"
+        <v-btn fab dark small color="indigo" v-if="isShowBtn"
             @click="setJobHour(false)"
             class="ml-2 mb-1 btn-modify"
         >
@@ -211,7 +211,7 @@
 
     <v-card class="mb-8">
         <v-data-table
-            :headers="jobHour.headers"
+            :headers="headers"
             :items="jobHour.items"
             disable-sort
             disable-filtering
@@ -487,13 +487,13 @@ export default {
             dialogShow: false,
             isEdit: false,  // 是否為工時編輯時
             titleName: '',  // dialog 標題人名
-            headers: [
-                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            ],
+            // headers: [
+            //     { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            // ],
             items: [],
             editIdx: 0,  // 編輯中資料的索引值
         },
@@ -522,6 +522,19 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        headers(){
+            let result = [
+                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            ]
+            if(this.isShowBtn){
+                result.push({ text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' })
+            }
+            return result
+        }
     },
     watch: {
         // ------- 切換選項時，向後端抓下一層的報修碼 --------
@@ -574,7 +587,11 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            this.isShowBtn = obj.DispatchID == this.userData.UserId || obj.AgentID == this.userData.UserId
+            let workPeople = obj.PeopleLicense.map(e => e.PeopleId).concat(obj.PeopleNoLicense.map(e => e.PeopleId))
+            //檢查登入者是否為工作者
+            let IsWorker = workPeople.includes(this.userData.UserId)
+            //是否為派工人或代理人
+            this.isShowBtn = obj.DispatchID == this.userData.UserId || obj.AgentID == this.userData.UserId || IsWorker
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料

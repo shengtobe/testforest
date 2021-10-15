@@ -259,7 +259,7 @@ import BottomTable from '@/components/BottomTable.vue'
 import { harmNotifyStatus } from '@/assets/js/smisData'
 import FileListShow from '@/components/FileListShow.vue'
 import { deleteData, sendCheckData, updateData } from '@/apis/smis/jobSafety'
-import { exportExcel } from '@/apis/smis/jobSafety'
+import { excelData } from '@/apis/smis/jobSafety'
 import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
@@ -402,7 +402,7 @@ export default {
         },
         // 列印
         excel() {
-            exportExcel({
+            excelData({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 AccidentCode: this.id,  // 操作人id
