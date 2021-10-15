@@ -176,11 +176,7 @@ export default {
           localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
           localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
           axios.interceptors.request.use((config) => {
-            // 每次向後端請求時都抓一下當時的 token，避免 token 在瀏覽器開發者工具內改過
-            let $token = localStorage.getItem('jwt')
-            $token = that.decode($token,that.key)
-            if ($token == null) localStorage.clear()
-            
+            let $token = res.data.Token
             config.headers.Authorization = 'Bearer ' + $token
             return config
           }, (error) => {
@@ -193,6 +189,7 @@ export default {
           this.hasError = true
         }
       }).catch(err => {
+        console.warn(err);
         this.errMsg = '伺服器發生錯誤!'
         this.isLoading = false
         this.hasError = true
