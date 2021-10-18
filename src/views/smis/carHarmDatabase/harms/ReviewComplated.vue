@@ -383,6 +383,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj:", obj);
             this.id = obj.EndangerCode  // 編號
             this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料

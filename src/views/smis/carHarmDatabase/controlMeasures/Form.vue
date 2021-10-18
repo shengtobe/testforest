@@ -364,7 +364,7 @@ export default {
                         this.saveBtnShow = false
                         this.chLoadingShow({show:false})
                     })
-                }
+                }else{ this.chLoadingShow({show:false}) }
             } else {
                 // ---------- 新增時---------- 
                 createData({
