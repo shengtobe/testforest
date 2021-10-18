@@ -59,6 +59,10 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
+                    <template v-slot:item.creator="{ item }">
+                        {{ item.Creator }}
+                    </template>
+
                     <template v-slot:item.depart="{ item }">
                         {{ departOpts.find(ele => ele.value == item.DeviceDepart).text }}
                     </template>
@@ -195,15 +199,18 @@ export default {
                     'Remark',
                 ],
             }).then(res => {
-                this.tableItems = JSON.parse(res.data.order_list)
-                this.tableItems.forEach(element => {
-                    for(let ele in element){
-                        if(element[ele] == null){
-                            element[ele] = '';
+                if(res.data.ErrorCode == 0){
+                    this.tableItems = JSON.parse(res.data.order_list)
+                    this.tableItems.forEach(element => {
+                        for(let ele in element){
+                            if(element[ele] == null){
+                                element[ele] = '';
+                            }
                         }
-                    }
-                });
-                this.msg = true
+                    });
+                    this.msg = true
+                }
+                
             }).catch(err => {
                 //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -268,6 +275,7 @@ export default {
                         { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
                         { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
                         { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+                        { text: '建立者', value: 'creator', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
                         { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
                         { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
                         { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
@@ -280,6 +288,7 @@ export default {
                         { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
                         { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
                         { text: '措施說明', value: 'desc', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+                        { text: '建立者', value: 'creator', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
                         { text: '管控單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
                         { text: '規章', value: 'file', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
                         { text: '證據', value: 'evidences', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 70 },
