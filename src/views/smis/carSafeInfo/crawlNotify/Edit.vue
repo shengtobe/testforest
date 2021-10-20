@@ -157,6 +157,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 //import { dapartOptsForMember } from '@/assets/js/departOption'
 import { detail, updateRegul } from '@/apis/smis/carSafeInfo'
@@ -294,7 +295,7 @@ export default {
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
             this.date = obj.LimitEndDate
             this.topData = [
-                { title: '路線', value: obj.ReportLine },
+                { title: '路線', value: locationOpts.find(e => e.value == obj.ReportLine).text  },
                 { title: '速限起點、終點', value: `${obj.LimitStart} ~ ${obj.LimitEnd} km` },
                 { title: '常態速限', value: `${ obj.NormalLimit } km/h` },
                 { title: '慢行速限', value: `${ obj.SlowLimit } km/h` },

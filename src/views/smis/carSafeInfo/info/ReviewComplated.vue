@@ -308,6 +308,8 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            let order_list = JSON.parse(obj.order_list)
+            console.log("order_list: ", order_list);
             // this.chLoadingShow({show:true})
             this.chLoadingShow({ show: true})
             
@@ -362,6 +364,7 @@ export default {
                 }).finally(() => {
                     // this.isLoading = this.dialog = false
                 })
+                
                 
             }
             else if(this.status == 3){ // 加會中
@@ -422,6 +425,55 @@ export default {
                     // this.isLoading = this.dialog = false
                 })
             }
+            let idx = 0
+            let idx2 = 0
+            //讀取追蹤 //bottomItems order_list
+            //加會人  joinTableItems
+            this.bottomItems.forEach(item => {
+                if(item.title == "加會人"){
+                    let txArr = item.text.split('、')
+                    txArr.forEach(tx => {
+                        let person = order_list.find(e => e.PeopleName == tx)
+                        if(person != null && person != undefined){
+                            idx++
+                            this.joinTableItems.push({
+                            num: idx,
+                            depart: person.DepartName, 
+                            name: person.PeopleName,
+                            isRead: (person.RecReadStatus == 'T')? '已讀' : '未讀',
+                            time: (person.RecReadStatus == 'T')?person.UpdateDTime:'',
+                            hasMsg: (person.JoinMemo == null || person.JoinMemo == undefined)?'':person.JoinMemo
+                        })
+                        }
+                    });
+                }
+                else if(item.title == "收件人"){
+                    let txArr = item.text.split('、')
+                    txArr.forEach(tx => {
+                        let receiver = order_list.find(e => e.PeopleName == tx)
+                        if(receiver != null && receiver != undefined){
+                        idx2++
+                        this.tableItems.push({
+                            num: idx2,
+                            depart: receiver.DepartName, 
+                            name: receiver.PeopleName,
+                            isRead: (receiver.RecReadStatus == 'T')? '已讀' : '未讀',
+                            time: (receiver.RecReadStatus == 'T')?receiver.UpdateDTime:'',
+                        })
+                    }
+                    });
+                }
+            });
+                //
+                // { text: '項次', value: 'num', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 80 },
+                // { text: '單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '是否讀取', value: 'isRead', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '讀取時間', value: 'time', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '是否已留意見', value: 'hasMsg', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                
+                console.log("this.joinTableItems: ", this.joinTableItems);
+                //收件人 tableItems
             this.chLoadingShow({ show: false})
             
             
