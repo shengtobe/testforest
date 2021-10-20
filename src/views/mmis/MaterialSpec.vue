@@ -297,9 +297,3 @@ export default {
   created() {},
 };
 </script>
-
-<style>
-.ddf table tbody tr td {
-  background: #ff9999;
-}
-</style>

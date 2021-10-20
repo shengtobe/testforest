@@ -21,6 +21,11 @@
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         料件庫存管理
                     </v-list-item>
+                    <v-divider></v-divider>
+                     <v-list-item to="/mmis/material/material-requistision">
+                        <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
+                        料件移存管理
+                    </v-list-item>
                 </v-list>
             </v-card>
         </v-col>

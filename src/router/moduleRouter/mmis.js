@@ -39,6 +39,12 @@ export const MmisRouter = [
         component: () =>
             import ('@/views/mmis/MaterialInventory.vue')
     },
+    {
+        linkText: '料件移存管理',
+        path: '/mmis/material/material-requistision',
+        component: () =>
+            import ('@/views/mmis/MaterialRequistisionList.vue')
+    },
     // ------ 設備維修管理 ------ 
     {
         linkText: '週期性工作提醒',

@@ -37,15 +37,6 @@ export function materialDelete(data) {
       data,
   }
 )}
-// 移存申請單
-export function mmaterialRequistision(data) { 
-  return axios(
-  {
-      url: '/mmis/equipdata/materialrequistision',
-      method: 'post',
-      data,
-  }
-)}
 
 // 規格
 export function materialSpecQueryList(data) { 
@@ -58,30 +49,30 @@ export function materialSpecQueryList(data) {
 )}
 
 export function materialSpecQuery(data) { 
-return axios(
-{
-    url: '/mmis/equipdata/materialspecquery',
-    method: 'post',
-    data,
-}
+    return axios(
+    {
+        url: '/mmis/equipdata/materialspecquery',
+        method: 'post',
+        data,
+    }
 )}
 
 export function materialSpecEdit(data) { 
-return axios(
-{
-    url: '/mmis/equipdata/materialspecedit',
-    method: 'post',
-    data,
-}
+    return axios(
+    {
+        url: '/mmis/equipdata/materialspecedit',
+        method: 'post',
+        data,
+    }
 )}
 
 export function materialSpecDelete(data) { 
-return axios(
-{
-    url: '/mmis/equipdata/materialspecdelete',
-    method: 'post',
-    data,
-}
+    return axios(
+    {
+        url: '/mmis/equipdata/materialspecdelete',
+        method: 'post',
+        data,
+    }
 )}
 
 //庫存
@@ -95,21 +86,21 @@ export function materialInventoryQueryList(data) {
 )}
 
 export function materialInventoryQuery(data) { 
-return axios(
-{
-    url: '/mmis/equipdata/materialinventoryquery',
-    method: 'post',
-    data,
-}
+    return axios(
+    {
+        url: '/mmis/equipdata/materialinventoryquery',
+        method: 'post',
+        data,
+    }
 )}
 
 export function materialInventoryEdit(data) { 
-return axios(
-{
-    url: '/mmis/equipdata/materialinventoryedit',
-    method: 'post',
-    data,
-}
+    return axios(
+    {
+        url: '/mmis/equipdata/materialinventoryedit',
+        method: 'post',
+        data,
+    }
 )}
 
 export function materialInventoryDelete(data) { 
@@ -119,4 +110,50 @@ export function materialInventoryDelete(data) {
         method: 'post',
         data,
     }
-    )}
+)}
+
+// 移存申請單
+export function materialRequistision(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialrequistision',
+        method: 'post',
+        data,
+    }
+)}
+
+export function materialRequistisionList(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialrequistisionlist',
+        method: 'post',
+        data,
+    }
+)}
+
+export function materialRequistisionDelete(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialrequistisiondelete',
+        method: 'post',
+        data,
+    }
+)}
+
+export function materialRequistisionReturn(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialrequistisionreturn',
+        method: 'post',
+        data,
+    }
+)}
+
+export function materialRequistisionConfirm(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialrequistisionconfirm',
+        method: 'post',
+        data,
+    }
+)}
