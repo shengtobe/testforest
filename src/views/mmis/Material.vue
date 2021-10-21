@@ -293,7 +293,7 @@ export default {
           class: "subtitle-1 white--text font-weight-bold",
         },
         {
-          text: "修改、刪除",
+          text: "修改、停用",
           value: "a8",
           align: "center",
           divider: true,
