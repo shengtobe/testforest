@@ -241,7 +241,7 @@ export default {
     },
     // 搜尋
     search() {
-    console.log("Search click");
+    
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -263,7 +263,7 @@ export default {
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed });
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -274,8 +274,6 @@ export default {
       this.editLog.dealogEdit = false
     },
     viewPage(item) {
-      console.log(item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
       this.editLog.EditDynamicKey += 1;
       this.editLog.editType = Actions.edit;
       this.editLog.editItem = item;

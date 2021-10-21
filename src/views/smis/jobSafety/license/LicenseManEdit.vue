@@ -197,12 +197,9 @@ export default {
         this.ipt.License = this.name
       }
       
-      console.log("ipt.Name: ", this.ipt.Name);
       
     },
     getPeople(value) {
-      console.log("getPeople(value): ", value);
-      
         if(value){
             this.ipt.ID = value.UserId
             this.ipt.Name = value.UserName
@@ -226,10 +223,6 @@ export default {
       }
       if(this.ipt.Memo == undefined) this.ipt.Memo = '';
 
-      // console.log("=============");
-      // console.log("this.ipt: ", this.ipt);
-      // console.log("this.data: ", this.data);
-      // console.log("this.name: ", this.name);
       // return
       this.isLoading = true
       // this.ipt.ReTrainingTime = this.ipt.ReTrainingTime.replace(/-/g,"\/")
@@ -251,13 +244,10 @@ export default {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
         }
-        console.log("licenseOption OK!111")
       }).catch( err => {
         console.warn(err)
-        const msg = '伺服器發生問題，資料' + ((this.data)?'修改':'新增') + '失敗'
         this.chMsgbar({ success: false, msg: msg })
       }).finally(() => {
-        console.log("licenseOption OK!222")
         this.isLoading = false
         this.cancel()
       })

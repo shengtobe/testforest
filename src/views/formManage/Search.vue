@@ -169,7 +169,6 @@ export default {
     },
     // 更換頁數
     chPage(n) {
-      console.log("更換頁數: ", n);
       setGDep(this.department);
       this.pageOpt.page = n;
     },

@@ -45,12 +45,8 @@ export default {
         ]),
         // 向後端取資料
         fetchData() {
-            console.log("Enter router fetchData");
             this.chLoadingShow({ show: true})
-            console.log("Enter router fetchData2");
-            // console.log("Enter router fetchData2.0 sessionStorage: ", sessionStorage);
             // let ww = sessionStorage.getItem('itemStatus') != null
-            // console.log("Enter router fetchData2.1 ww:", ww);
             
 
             // 暫時先用 storage 設定狀態(缺點是不能重新整理看最新狀態資料)
@@ -76,14 +72,11 @@ export default {
                     'FileCount', 
                 ],
                 }).then(res => {
-                    console.log("Enter router fetchData3");
                     this.setShowDataint(res.data)
-                    console.log("Enter router fetchData4");
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('查詢時發生問題，請重新查詢!')
                 }).finally(() => {
-                    console.log("Enter router fetchData5");
                     this.chLoadingShow({ show: false})
                 })
             }
@@ -108,7 +101,6 @@ export default {
             default:
                 break
                 }
-            console.log("obj: ", obj)
             let topItems = [  // 上面的欄位
                 { icon: 'mdi-ray-vertex', title: '發布狀態', text: stry },
                 { icon: 'mdi-bank', title: '通報單位', text: obj.PeopleRootDepartName },
@@ -131,7 +123,6 @@ export default {
         }
     },
     created() {
-        console.log("Enter router");
         this.fetchData()
     }
 }

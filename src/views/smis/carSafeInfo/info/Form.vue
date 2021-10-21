@@ -108,7 +108,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
+                <PeopleSelect :key="k1" :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.recipients"
@@ -136,7 +136,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
+                <PeopleSelect :key="k2" :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.cc"
@@ -164,7 +164,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
+                <PeopleSelect :key="k3" :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.joiners"
@@ -245,6 +245,9 @@ import { fetchSupervisor } from '@/apis/workList/maintain'
 
 export default {
     data: () => ({
+        k1: 0,
+        k2: 0,
+        k3: 0,
         getOrg_objneed: {},
         valid: true,  // 表單是否驗證欄位
         saveBtnShow: true, // 送出按鈕顯示
@@ -347,8 +350,6 @@ export default {
                                   
                 ],
              }).then(res => {
-                console.log("編輯時 res.data: ", res.data)
-                // console.log(res.data.RecPeople)
                 if(res.data.SaftyInfoStatus == '1'){ // 已立案
                     if(res.data.PeopleId != this.userData.UserId){ // 
                         this.$router.push({ path: '/no-permission' })
@@ -365,7 +366,6 @@ export default {
                         ReqID: res.data.PeopleId,  // 立單人id
                     }).then(res => {
                         // this.isShowBtn = res.data == this.userData.UserId
-                        console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
                         sup = res.data.ID
                         if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
                             if(res.data.SaftyInfoStatus == '2'){
@@ -384,7 +384,6 @@ export default {
                         else{ // 都不是
                             this.$router.push({ path: '/no-permission' })
                         }
-                        console.log("sup end this.ipt.recipients: ", this.ipt.recipients);
                     }).catch(err => {
                         this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
                     }).finally(() => {
@@ -394,7 +393,7 @@ export default {
                 
                     this.setShowDataint(res.data)
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -446,23 +445,25 @@ export default {
             this.ipt.title = obj.InfoTitle // 通報主題
             this.ipt.desc = obj.InfoContent // 發布內容RecCopy: RCarr, JoinPeople: JParr, 
             this.ipt.recipients = obj.RecPeople.map(item => item.PeopleId)
-            console.log("this.ipt.recipients: ", this.ipt.recipients);
             this.ipt.cc = obj.RecCopy.map(item => item.PeopleId)
             this.ipt.joiners = obj.JoinPeople.map(item => item.PeopleId)
             // this.ipt.recipients = [ ...obj.RecPeople ] // 收件人
             // this.ipt.cc = [ ...obj.RecCopy ] // 副本
             // this.ipt.joiners = [ ...obj.JoinPeople ] // 加會人
             this.ipt.files = [ ...obj.FileCount ] // 附件檔案
+            this.k1++
+            this.k2++
+            this.k3++
         },
         // 設定資料
-        setInitDate(obj) {
-            this.ipt.title = obj.title // 通報主題
-            this.ipt.desc = obj.desc // 發布內容
-            this.ipt.recipients = [ ...obj.recipients ] // 收件人
-            this.ipt.cc = [ ...obj.cc ] // 副本
-            this.ipt.joiners = [ ...obj.joiners ] // 加會人
-            this.ipt.files = [ ...obj.files ] // 附件檔案
-        },
+        // setInitDate(obj) {
+        //     this.ipt.title = obj.title // 通報主題
+        //     this.ipt.desc = obj.desc // 發布內容
+        //     this.ipt.recipients = [ ...obj.recipients ] // 收件人
+        //     this.ipt.cc = [ ...obj.cc ] // 副本
+        //     this.ipt.joiners = [ ...obj.joiners ] // 加會人
+        //     this.ipt.files = [ ...obj.files ] // 附件檔案
+        // },
         // 切換部門成員
         changeDepart() {
             this.chLoadingShow({show:true})
@@ -561,8 +562,6 @@ export default {
         // 刪除檔案 (編輯時)
         deleteFile(idx) {
             if (confirm('你確定要刪除嗎?')) {
-                console.log(this.ipt.files)
-                console.log(idx)
                 this.chLoadingShow({show:true})
                 safetyinfofiledelete({
                     SaftyInfoCode: this.routeId,   // 編號
@@ -609,9 +608,6 @@ export default {
                     let JParr = this.ipt.joiners.map(item => ({
                         PeopleId: item
                     }))
-                    console.log(RParr)
-                    console.log(RCarr)
-                    console.log(JParr)
                     safetyinfocreate({
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                         OperatorID: this.userData.UserId,  // 操作人id
@@ -630,11 +626,8 @@ export default {
 
                             //直接進下步驟
                             setTimeout(() => {
-                                console.log("直接進下步驟 res.data.SaftyInfoCode: ", res.data.SaftyInfoCode);
                                 this.chLoadingShow({show:false})
-                                console.log("chLoadingShow({show:false})");
                                 this.$router.push({ path: `/smis/car-safeinfo/info/${res.data.SaftyInfoCode}/show` })
-                                console.log("EE");
                             }, 2000)
                             
                         } else {
@@ -647,7 +640,6 @@ export default {
                     }).finally(() => {
                         this.chLoadingShow({show:false})
                         this.$refs.form.resetValidation()  // 取消欄位驗證的紅字樣式
-                        console.log("Form final");
                     })
 
                     // 測試用資料
@@ -668,10 +660,6 @@ export default {
                     let JParr = this.ipt.joiners.map(item => ({
                         PeopleId: item
                     }))
-                    console.log(RParr)
-                    console.log(RCarr)
-                    console.log(JParr)
-                    console.log("call safetyinfoupdate");
                         safetyinfoupdate({
                             ClientReqTime: getNowFullTime(),  // client 端請求時間
                             OperatorID: this.userData.UserId,  // 操作人id

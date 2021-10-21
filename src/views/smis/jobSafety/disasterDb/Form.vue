@@ -354,8 +354,6 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        console.log("fetchOne後收到res.data:")
-                        console.log(res.data)
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
@@ -368,7 +366,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -406,7 +404,6 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            console.log("設定資料(編輯時): obj:", obj)
             this.ipt.EndangerCode = obj.EndangerCode // 職業危害編碼
             let CodeArr = obj.EndangerCode.split("-")
             this.ipt.code1 = CodeArr[0]
@@ -513,7 +510,6 @@ export default {
                     this.chLoadingShow({show:false})
                 })
             } else {
-                console.log("---------- 新增時---------- ")
                 // ---------- 新增時---------- 
                 createDataDb({
                     EndangerCode: this.ipt.EndangerCode, // 職業危害編碼
@@ -575,7 +571,7 @@ export default {
                 }
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
     }

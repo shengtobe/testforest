@@ -632,10 +632,10 @@ export default {
       return arr;
     },
     newOne(){
-      console.log("newOne23")
+     
       this.Add = true
       this.action = Actions.add
-      console.log("this.Add: " + this.Add)
+     
       this.initInput();
     },
     ...mapActions('system', [
@@ -652,7 +652,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -682,7 +682,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -696,13 +696,10 @@ export default {
       let arr = new Array()
       let obj = new Object()
 
-      console.log("this.ipt.items[0].status: " + this.ipt.items[0].status)
-      console.log("this.ipt.items[0].note: " + this.ipt.items[0].note)
 
       obj = new Object()
       obj.Column = "CheckDay"
       obj.Value = this.zs
-      console.log(obj.Value)
       arr = arr.concat(obj)               
 
       let i;
@@ -731,8 +728,6 @@ export default {
       obj.Value = this.CheckOption16
       arr = arr.concat(obj)
 
-      console.log(JSON.stringify(arr))
-      console.log("this.action == " + this.action == Actions.add)
       if (this.action == Actions.add){
         //-----新增-----
         createFormOrder0({
@@ -742,9 +737,9 @@ export default {
           KeyName: this.DB_Table,  // DB table
           KeyItem:arr,
         }).then(res => {
-          console.log(res.data.DT)
+         
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
           alert('查詢時發生問題，請重新查詢!')
         }).finally(() => {
           this.chLoadingShow({show:false})
@@ -761,10 +756,10 @@ export default {
           KeyItem: arr,
         })
           .then((res) => {
-            console.log(res.data.DT)
+           
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             // this.chMsgbar({ success: false, msg: Constrant.update.failed });
             alert('查詢時發生問題，請重新查詢!')
           })
@@ -777,8 +772,6 @@ export default {
     // 關閉刪除確認dialod
     closeDialogDel() {
       this.dialogDel = false;
-      console.log("刪除確認是窗關閉, RPFlowNo:")
-      console.log(RPFlowNo)
     },
     // 關閉 dialog
     close() {
@@ -793,9 +786,7 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      console.log("item: " + item)
       this.RPFlowNo = item.RPFlowNo
-      console.log("RPFlowNo: " + item.RPFlowNo)
       this.action = Actions.edit
       this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
@@ -830,17 +821,13 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         var i = 0, j = 0;
         for (let key of Object.keys(dat[0])) {
@@ -858,7 +845,7 @@ export default {
 
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -868,9 +855,6 @@ export default {
       this.dialogDel = true;
       this.DelDynamicKey += 1;
       this.RPFlowNo = RPFlowNo;
-      console.log("刪除確認視窗開啟, RPFlowNo:")
-      console.log(RPFlowNo)
-      console.log(this.RPFlowNo)
     },
   },
 };

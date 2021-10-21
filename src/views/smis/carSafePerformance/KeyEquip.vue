@@ -238,11 +238,7 @@ export default {
       'chViewDialog',  // 檢視內容 dialog
     ]),
     anClick(){
-      console.log("disable: ", this.reasonSelectEmpty)
       if(this.reasonSelect.location != '' && this.reasonSelect.equip != '' && this.reasonSelect.eqName != ''){
-        console.log("reasonSelect.location: ", this.reasonSelect.location);
-        console.log("reasonSelect.equip: ", this.reasonSelect.equip);
-        console.log("reasonSelect.eqName: ", this.reasonSelect.eqName);
         this.$router.push({ path: `/smis/car-safe-performance/${this.reasonSelect.location}/key-equip/${this.reasonSelect.equip}/key-analysis/${this.reasonSelect.eqName}` })
       }
       // :to="`/smis/car-safe-performance/${reasonSelect.location}/key-equip/${reasonSelect.equip}/key-analysis/${reasonSelect.eqName}`"

@@ -105,8 +105,26 @@
                     </template>
 
                     <template v-slot:item.ReportStatus="{ item }">
-                            <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
-                        </template>
+                        <span>{{ statusOpts.find(ele => ele.value == item.ReportStatus).text }}</span>
+                    </template>
+
+                    <template v-slot:item.CarSafe="{ item }">
+                        <v-chip small label :color="'#76FF03'" v-if="item.Memo.includes('行安') && item.Memo.substr(0, 2) == '新增'">
+                            {{ item.Memo.substr(0, 2) }}
+                        </v-chip>
+                        <v-chip small label :color="'#80D8FF'" v-if="item.Memo.includes('行安') && item.Memo.substr(0, 2) != '新增'">
+                            {{ item.Memo.substr(0, 2) }}
+                        </v-chip>
+                    </template>
+
+                    <template v-slot:item.JobSafe="{ item }">
+                        <v-chip small label :color="'#76FF03'" v-if="item.Memo.includes('職災') && item.Memo.substr(item.Memo.indexOf('職災')-2, 2) == '新增'">
+                            {{ item.Memo.substr(item.Memo.indexOf('職災')-2, 2) }}
+                        </v-chip>
+                        <v-chip small label :color="'#80D8FF'" v-if="item.Memo.includes('職災') && item.Memo.substr(item.Memo.indexOf('職災')-2, 2) != '新增'">
+                            {{ item.Memo.substr(item.Memo.indexOf('職災')-2, 2) }}
+                        </v-chip>
+                    </template>
 
                     <!-- headers 的 content 欄位 (檢視內容) -->
                     <template v-slot:item.content="{ item }">
@@ -188,6 +206,8 @@ export default {
             { text: '通報人', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '行安', value: 'CarSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '職安', value: 'JobSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         isLoading: false,  // 是否讀取中
@@ -219,6 +239,9 @@ export default {
         timeBClean(){
             this.dateAMax = ''
         },
+        carColor(value){
+            return (value == '新增')?'#76FF0' : '#76FF0'
+        },
         // 搜尋 (參數的布林值代表是不是直接抓最新五筆，用於一進入此頁面時)
         search(bool) {
             this.chLoadingShow({show:true})
@@ -246,6 +269,7 @@ export default {
                 IsFirstLoad: (bool)? 'T' : 'F',
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
+                console.log("this.tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -254,7 +278,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})

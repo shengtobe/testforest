@@ -258,14 +258,12 @@ export default {
                     'Remark',
                 ],
             }).then(res => {
-                console.log("向後端取得資料 res.data: ", res.data);
                 let rawString = JSON.stringify(res.data.order_list)
                 let rawData = JSON.parse(rawString)
                 let parseData = JSON.parse(rawData)
                 this.allItems = [...parseData]
                 this.HookArr = res.data.CheckedProcCode
                 // let HookArr = ['ARCO01520210707030', 'ARCO01520210707031']
-                console.log("before hook this.selected: ", this.selected);
                 this.HookArr.forEach(element => {
                     this.selected.push(parseData.find(ele => ele.ProcCode == element))
                     parseData.splice(parseData.map(e => e.ProcCode).indexOf(element), 1)
@@ -277,21 +275,17 @@ export default {
 
                 //     }
                 // });
-                console.log("this.selected: ", this.selected);
-                console.log("parseData: ", parseData);
-                console.log("2 in 1 len: ", this.selected.length+parseData.length);
                 this.tableItems = [...this.selected, ...parseData]
                 this.tableItemsFirst = this.tableItems
                 this.restItem = parseData
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
             })
 
             //初始 改善措施摘要
-            console.log("初始 改善措施摘要");
             fetchOne({
                     AccidentCode: this.id,  // 事故事件編號 (從路由參數抓取)
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -301,7 +295,7 @@ export default {
                 }
 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，事故類型讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -313,47 +307,8 @@ export default {
             this.pageOpt.page = n
         },
         search(){
-            console.log("sele: ", this.selected);
             this.subjectConfirm = this.subject;
             this.departConfirm = this.depart;
-            return
-            //僅 關鍵字查詢
-            if(this.subject != '' && this.depart == ''){
-                //關鍵字
-                let text = this.subject
-                //篩出有關鍵字的項目
-                console.log("1");
-                let filterResult1 = this.tableItems.filter(function (x) { 
-                    return x.DeviceTitle.includes(text);
-                    });
-                console.log("2");
-                // let filterResult2 = this.restItem.filter(function (x) { 
-                //     return x.DeviceTitle.includes(text);
-                //     });
-                console.log("3");
-                //刪除以勾選項目
-                console.log("All len: ", this.allItems.length);
-                console.log("filterResult1: ", filterResult1);
-                // console.log("filterResult2: ", filterResult2);
-                this.tableItems = [...[]]
-                console.log("tableItems 1: ", this.tableItems);
-                this.tableItems = filterResult1
-                // this.tableItems = [...this.filterResult1, ...filterResult2]
-                console.log("tableItems 2: ", this.tableItems);
-                console.log("4");
-            }
-            else if(this.subject == '' && this.depart != ''){//僅 單位查詢
-                
-            }
-            else if(this.subject == '' && this.depart == ''){// 無篩選條件
-                this.selected = [...[]]
-                let parseData = this.allItems
-                this.HookArr.forEach(element => {
-                    this.selected.push(parseData.find(ele => ele.ProcCode == element))
-                    parseData.splice(parseData.map(e => e.ProcCode).indexOf(element), 1)
-                });
-                this.tableItems = [...this.selected, ...parseData]
-            }
         },
         // 送出
         save() {

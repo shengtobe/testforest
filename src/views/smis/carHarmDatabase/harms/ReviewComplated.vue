@@ -383,6 +383,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj:", obj);
             this.id = obj.EndangerCode  // 編號
             this.status = obj.EndangerStatus  // 事故事件狀態(值)
             this.topItems = obj.topItems  // 上面的欄位資料
@@ -408,7 +409,7 @@ export default {
                     }
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
 
@@ -429,7 +430,6 @@ export default {
                 ],
             }).then(res => {
                 if(res.data.ErrorCode == 0){
-                    console.log("res.data: ", res.data);
                     this.tableItems = JSON.parse(res.data.order_list)
                     this.tableItems.forEach(element => {
                         for(let ele in element){
@@ -441,7 +441,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -509,7 +509,7 @@ export default {
                     } else {
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -533,7 +533,7 @@ export default {
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})

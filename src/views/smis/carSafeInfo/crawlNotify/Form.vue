@@ -343,7 +343,6 @@ export default {
             this.ipt.recipients = [ ...[] ]
         },
         ccc(){
-            console.log("lineList: ", this.lineList);
         },
         // 送出
         ipt: {
@@ -394,18 +393,9 @@ export default {
                     this.chLoadingShow({show:false})
                     
                 })
-                // console.log(this.ipt.line)
-                // console.log(this.ipt.pointStart)
-                // console.log(this.ipt.pointEnd)
-                 //console.log(this.ipt.normal)
-                // console.log(this.ipt.slow)
-                // console.log(this.ipt.dateStart)
-                // console.log(this.ipt.dateEnd)
-            // console.log(this.ipt.recipients)
             // let arr = this.ipt.recipients.map(item => ({
             //     PeopleId: item
             // }))
-            // console.log(arr)
             // 測試用資料
             // setTimeout(() => {
             //     this.$router.push({ path: '/smis/car-safeinfo/crawl-notify' })

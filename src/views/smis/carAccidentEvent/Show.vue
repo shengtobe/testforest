@@ -124,6 +124,11 @@
                     :to="`/smis/car-accident-event/${id}/edit`"
                 >編輯</v-btn>
 
+                <v-btn dark class="ma-2 btn-add"
+                    v-if="isShowBtn"
+                    @click="word"
+                >列印</v-btn>
+
                 <v-btn dark  class="ma-2 btn-delete"
                     @click="del" v-if="isShowBtn"
                 >作廢</v-btn>
@@ -151,7 +156,7 @@ import { harmNotifyStatus } from '@/assets/js/smisData'
 import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import OtherInfoShow from '@/views/smis/carAccidentEvent/OtherInfoShow.vue'
-import { applyData, deleteData } from '@/apis/smis/carAccidentEvent'
+import { applyData, deleteData, wordData } from '@/apis/smis/carAccidentEvent'
 import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
@@ -219,8 +224,6 @@ export default {
             this.finishDeath = (obj.HurtPeopleCount == 'F')? false : true // 是否完成人員傷亡名單
             this.finishImprove = (obj.FixDevice == 'F')? false : true // 是否完成改善措施
             this.hurt_people_count = obj.hurt_people_count
-            console.log("finishDeath: ", this.finishDeath);
-            console.log("hurt_people_count: ", this.hurt_people_count);
             canInUpdate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
@@ -230,7 +233,7 @@ export default {
                     this.isShowBtn = this.groupData.RoleLv2 == "T"
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
             this.pageOpt.page = 1  // 頁碼初始化
@@ -262,7 +265,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -291,6 +294,26 @@ export default {
             // })
             // this.notifyLinks = [ ...arr ]
         },
+        // 列印
+        word() {
+            wordData({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                AccidentCode: this.id,  // 操作人id
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    let link = document.createElement('a')
+                    link.href = `/downloads/${res.data.file_name}`
+                    link.setAttribute('download', res.data.file_name)
+                    document.body.appendChild(link)
+                    link.click()
+                }
+                else{
+                }
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
+        },
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
@@ -309,7 +332,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，作廢失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -340,7 +363,7 @@ export default {
                             this.$router.push({ path: '/error' })
                         }
                     }).catch(err => {
-                        console.log(err)
+                        //console.log(err)
                         alert('伺服器發生問題，申請失敗')
                     }).finally(() => {
                         this.chLoadingShow({show:false})

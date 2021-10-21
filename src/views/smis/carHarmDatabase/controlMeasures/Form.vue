@@ -303,7 +303,7 @@ export default {
                 }).then(res => {
                     this.setInitDate(JSON.parse(res.data.order_list)[0])
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('查詢時發生問題，請重新查詢!')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -364,7 +364,7 @@ export default {
                         this.saveBtnShow = false
                         this.chLoadingShow({show:false})
                     })
-                }
+                }else{ this.chLoadingShow({show:false}) }
             } else {
                 // ---------- 新增時---------- 
                 createData({
@@ -478,7 +478,7 @@ export default {
                 }
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
     }

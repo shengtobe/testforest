@@ -312,7 +312,6 @@ export default {
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res=>{
-        console.log("LocationList: ", res.data.LocationList)
         this.toptable.LocationList = res.data.LocationList
       }).catch( err => {
         console.warn(err)
@@ -343,7 +342,6 @@ export default {
         this.Lv1Chart.chartdata.datasets = [...[]]
         this.Lv1Chart.chartdata.labels = [...[]]
         this.tableItems = res.data.LocationList
-        console.log("邊坡歷史紀錄: ", this.tableItems);
         let hour = '0';// 上一筆小時數字為
         // this.tableItems = this.tableItems.splice(0, 80)
         let tempArr = [];
@@ -409,7 +407,6 @@ export default {
           lineTension: 0
         })
         this.Lv1Chart.componentKey ++
-        console.log("chartdata: ", this.Lv1Chart.chartdata);
 
       }).catch( err => {
         console.warn(err)
@@ -423,7 +420,6 @@ export default {
       this.pageOpt.page = n
     },
     test(){
-      console.log("Location: ", this.Location);
     },
     getLightColor(input) {
       let rtnColor = ''

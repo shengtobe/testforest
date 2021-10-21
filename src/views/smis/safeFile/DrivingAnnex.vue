@@ -152,7 +152,7 @@ export default {
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -178,11 +178,10 @@ export default {
                     this.tableItems[this.editIdx].FileDescrip = this.note  // 檔案說明(備註)
                     this.chMsgbar({ success: true, msg: '更新成功' })
                 } else {
-                    console.log(res.data.Msg)
                     this.chMsgbar({ success: false, msg: '更新失敗' })
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 this.chMsgbar({ success: false, msg: '伺服器發生問題' })
             }).finally(() => {
                 this.isLoading = this.dialog = false
@@ -211,11 +210,10 @@ export default {
                         this.tableItems.splice(this.editIdx, 1)
                         this.chMsgbar({ success: true, msg: '刪除成功' })
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '刪除失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})

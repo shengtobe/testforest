@@ -250,9 +250,8 @@ export default {
                         }
                     }
                 });
-                console.log("this.tableItems: ", this.tableItems.map(e => e.ReportLine));
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -318,11 +317,10 @@ export default {
                         this.tableItems.splice(idx, 1)
                         this.chMsgbar({ success: true, msg: '解除成功' })
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '解除失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})

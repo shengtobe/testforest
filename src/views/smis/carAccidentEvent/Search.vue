@@ -447,10 +447,8 @@ export default {
                     } else if(element.FindLine == 'other') {
                         findLocationText += ` (${element.FindLineOther})`  // 其他地點
                     }
-                    // console.log("4 findLocationText", findLocationText);
                     element.FindLine = findLocationText
 
-                    // console.log("5 element.AccidentType: ", element.AccidentType);
                     // 事故類型篩選
                     if(this.ipt.evtType1 == '' && this.ipt.evtType2 == ''){ // 無篩選
                         this.tableItems.push(element)
@@ -472,10 +470,9 @@ export default {
                 });
                 //splice
                 // this.tableItems.splice(1, 3);
-                // console.log("this.tableItems[0].AccidentType:", this.tableItems[0].AccidentType)
 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -501,7 +498,7 @@ export default {
                 this.isShowBtn = this.groupData.RoleLv2 == "T"
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
 
@@ -544,7 +541,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
         }).catch(err => {
-            console.log(err)
+            //console.log(err)
             alert('伺服器發生問題，事故類型讀取失敗')
         }).finally(() => {
             this.chLoadingShow({show:false})

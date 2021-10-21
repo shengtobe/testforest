@@ -252,11 +252,6 @@ export default {
         },
         // 搜尋
         search() {
-            // console.log(this.ipt.dateStart)
-            // console.log(this.ipt.dateEnd)
-            // console.log(this.ipt.title)
-            // console.log(this.ipt.status)
-            // console.log(this.ipt.depart)
             if(this.ipt.dateStart == null) this.ipt.dateStart = ''
             if(this.ipt.dateEnd == null) this.ipt.dateEnd = ''
             this.chLoadingShow({ show: true})
@@ -290,7 +285,7 @@ export default {
                     }
                 });
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({ show: false})

@@ -4,13 +4,13 @@
     <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、已完備資料 -->
-    <ReviewComplated :itemData="itemData" v-if="status == 3 || status == 3" />
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
 
     <!-- 審核中、風險已可接受 -->
     <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 
     <!-- 審核中(審核更新) -->
-    <UpdateReview :itemData="itemData" v-if="status == 6 || status == 2" />
+    <UpdateReview :itemData="itemData" v-if="status == 6" />
 </div>
 </template>
 
@@ -55,7 +55,6 @@ export default {
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.EndangerStatus  // 狀態
-                        console.log("this.status: ", this.status);
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
 
                         // 組合影響、運轉影響情形字串
@@ -107,7 +106,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，資料讀取失敗')
             }).finally(() => {
                 this.chLoadingShow({show:false})

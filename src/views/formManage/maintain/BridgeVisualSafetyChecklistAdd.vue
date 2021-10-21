@@ -747,7 +747,6 @@ export default {
     }
   },
   created:function(){
-    console.log("created start~~")
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
     
@@ -758,39 +757,29 @@ export default {
     //判斷新增還是編輯
     if(this.$route.params.id.substr(0, 2) == "編號"){
       this.zs = this.nowTime;
-      console.log("詳細頁面:新增 初始化")
       this.bridgeNum = this.$route.params.id;
       this.s01Change();
-      console.log("新增 zs: "  + this.zs)
     }
     else{
-      console.log("詳細頁面:編輯 初始化")
       let aa = []
       aa = this.$route.params.id.split(',')
       this.bridgeNum = "編號" + String.fromCharCode(aa[1]);
-      console.log("bridgeNum: " + this.bridgeNum)
       this.s01Change();
       //處理日期解碼
-      console.log("=====處理日期解碼=====")
       let bb = aa[0].split("_")
       let cc = []
       bb.forEach(element => 
         cc.push(String.fromCharCode(element))
       );
-      console.log(cc)
       this.zs = cc.join('')
-      console.log("編輯 zs: "  + this.zs)
       //LineType 路線
-      console.log("=====處理LineType 路線解碼=====")
       bb = aa[5].split("_")
       cc = []
       bb.forEach(element => 
         cc.push(String.fromCharCode(element))
       );
-      console.log(cc)
       this.LineType = cc.join('')
       //CheckOption
-      console.log("=====處理CheckOption解碼=====")
       this.ipt.items1[0].result = String.fromCharCode(aa[6])
       this.ipt.items1[0].damLv = String.fromCharCode(aa[7])
       this.ipt.items1[1].result = String.fromCharCode(aa[8])
@@ -818,16 +807,13 @@ export default {
       this.ipt.items5[7].result = String.fromCharCode(aa[30])
       this.ipt.items5[8].result = String.fromCharCode(aa[31])
       //Memo
-      console.log("=====處理Memo解碼=====")
       bb = aa[32].split("_")
       cc = []
       bb.forEach(element => 
         cc.push(String.fromCharCode(element))
       );
-      console.log(cc)
       this.note = cc.join('')
       //三人名
-      console.log("=====處理三人名解碼=====")
       bb = aa[2].split("_")
       cc = []
       bb.forEach(element => 
@@ -848,7 +834,6 @@ export default {
       this.sirName3 = cc.join('')
     }
     
-    console.log("created end~~")
   },
   methods: {
     initInput(){
@@ -866,16 +851,13 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
     showlog(){
-      console.log("click 長度")
-      // console.log(this.bridgeNum)
       // this.bridgeNum = "編號3"
-      // console.log(this.bridgeNum)
       // this.s01Change();
     },
     newOne(){
-      console.log("newOne23")
+     
       this.Add = true
-      console.log("this.Add: " + this.Add)
+     
       this.initInput();
     },
     // 更換頁數
@@ -884,24 +866,14 @@ export default {
     },
     
     s01Change(selectObj){
-      console.log("changing~~~~~")
       this.showImg = true;
-      console.log(selectObj == undefined)
       if(selectObj == undefined){
-        console.log(this.bridgeNum)
         selectObj = this.bridgeNum
       }
-      console.log("select is changed >> " + selectObj);
       var i = -1;
-      console.log("substring >> " + selectObj.substr(2));
       i = Number(selectObj.substr(2)) - 1;
       this.i_num = i;
-      console.log("i_num >> " + this.i_num);
-      console.log("i >> " + i);
       if(i > -1){
-        console.log("======== ");
-        console.log("v1 >> " + this.v1);
-        console.log("vn[i].start >> " + this.vn[i].start);
         this.v1 = this.vn[i].start;
         this.v2 = this.vn[i].end;
         this.v3 = this.vn[i].len;
@@ -934,7 +906,7 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -964,7 +936,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -972,13 +944,10 @@ export default {
     },
     // 存
     save() {
-      console.log("送出!!2")
       this.chLoadingShow({show:true})
 
-      console.log(this.action)
       if (this.action == Actions.add){
         //-----新增-----
-        console.log("-----新增-----")
         createFormOrder0({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
@@ -1044,9 +1013,9 @@ export default {
             {Column:"Memo",Value:this.note},
           ]
         }).then(res => {
-          console.log(res.data.DT)
+         
         }).catch(err => {
-          console.log(err)
+          //console.log(err)
           alert('查詢時發生問題，請重新查詢!')
         }).finally(() => {
           this.chLoadingShow({show:false})
@@ -1054,7 +1023,6 @@ export default {
       }
       else{
         //-----編輯-----
-        console.log("-----編輯-----")
         updateFormOrder({
           ClientReqTime: getNowFullTime(), // client 端請求時間
           OperatorID: this.userData.UserId, // 操作人id
@@ -1110,10 +1078,10 @@ export default {
           ]
         })
           .then((res) => {
-            console.log(res.data.DT)
+           
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             // this.chMsgbar({ success: false, msg: Constrant.update.failed });
             alert('查詢時發生問題，請重新查詢!')
           })
@@ -1154,20 +1122,15 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         //123資料
         let ad = Object.keys(dat[0])
-        console.log(ad)
         var i = 0, j = 0;
           for(let key of Object.keys(dat[0])){
             if(i > 3 && i < 52){
@@ -1186,7 +1149,7 @@ export default {
 
         
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

@@ -547,7 +547,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -697,7 +697,7 @@ export default {
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -761,7 +761,7 @@ export default {
                 }
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
     }

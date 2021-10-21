@@ -3,6 +3,15 @@
 import axios from '@/apis/axiosSetting'
 
 // -------------- 行車事故事件 -------------
+// excel檔案匯出
+export function wordData(data) { return axios(
+    {
+        url: '/sms/event/export_word',
+        method: 'post',
+        data,
+    }
+)}
+
 // 要求事故類型清單
 export function fetchEvtTypes(data) { return axios(
     {

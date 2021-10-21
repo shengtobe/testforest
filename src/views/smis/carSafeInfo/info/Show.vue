@@ -102,8 +102,6 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj: ", obj);
-            console.log("Auth: ", obj.PeopleId + '=' + this.userData.UserId);
             // 檢查檢視權限
             if(obj.SaftyInfoStatus = '1' && obj.PeopleId != this.userData.UserId){ //已立案 如果非通報人 則不能檢視此頁
                 this.$router.push({ path: '/no-permission' })
@@ -124,7 +122,6 @@ export default {
             this.topItems = obj.topItems  // 上面的欄位資料
             
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            console.log(this.bottomItems)
             
             this.files = [ ...obj.FileCount ]  // 檔案附件
             //console.log(...obj.files)
@@ -152,13 +149,11 @@ export default {
                                   
             //     ],
             //  }).then(res => {
-            //     console.log(res.data)
-            //     console.log(res.data.RecPeople)
             //     //this.tableItems = JSON.parse(res.data.order_list)
             //     //console.log(this.tableItems)
             //     this.setShowDataint(res.data)
             //  }).catch(err => {
-            //     console.log(err)
+            //     //console.log(err)
             //     alert('查詢時發生問題，請重新查詢!')
             //  }).finally(() => {
             //     this.chLoadingShow({show:true})
@@ -218,7 +213,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
              }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -250,7 +245,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
              }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
              }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -265,7 +260,6 @@ export default {
         },
     },
     created() {
-        console.log("Enter show");
         this.setShowData(this.itemData)
     }
 }

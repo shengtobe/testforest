@@ -258,7 +258,7 @@ export default {
                         this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv4 == "T";
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
 
@@ -290,7 +290,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -392,7 +392,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，作廢失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})

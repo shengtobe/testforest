@@ -168,23 +168,17 @@ export default {
         BackDoor: (bool)? 'F' : 'T'  // F 不走後門、T 走後門
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          console.log("login res.data: ", res.data)
           localStorage.isLogined = true
           localStorage.jwt = this.encode(res.data.Token, this.key)  // JWT 也進行加密，要使用時再解密就好
           localStorage.groupData = this.encode(JSON.stringify(res.data.GroupData), this.key)
           localStorage.userData = this.encode(JSON.stringify(res.data.UserData), this.key)
           axios.interceptors.request.use((config) => {
-            // 每次向後端請求時都抓一下當時的 token，避免 token 在瀏覽器開發者工具內改過
-            let $token = localStorage.getItem('jwt')
-            $token = that.decode($token,that.key)
-            if ($token == null) localStorage.clear()
-            
+            let $token = res.data.Token
             config.headers.Authorization = 'Bearer ' + $token
             return config
           }, (error) => {
             return Promise.reject(error)
           })
-          console.log("login in now")
           this.$router.push('/')
         } else {
           this.errMsg = res.data.Msg

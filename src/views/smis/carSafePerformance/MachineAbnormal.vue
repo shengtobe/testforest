@@ -279,7 +279,6 @@ export default {
         },
         // 查詢
         search() {
-            // console.log("searchIpt.Option: ", this.searchIpt.Option);
             // return
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
@@ -289,7 +288,6 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then( res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("res.data: ", res.data);
                     if(res.data.DataList.length > 0){
                          this.tableItems = decodeObject(res.data.DataList)
                          this.tableItems.forEach(e => {
@@ -297,7 +295,6 @@ export default {
                              else e.CarType = '客車'
                          });
                     }
-                    console.log("this.tableItems: ", this.tableItems);
                 }else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
@@ -352,21 +349,17 @@ export default {
         // 顯示檔案
         showFiles(arr) {
             this.fileList = [...[]]
-            console.log("arr: ", arr);
             if (arr.Attachment.length > 0){
                 for (let i = 0; i < arr.Attachment.length; i++) {
                     this.fileList.push({Attachment: arr.Attachment[i], AttachmentPath: arr.AttachmentPath[i]})
                 }
             }
             
-            console.log("fileList: ", this.fileList);
             this.dialogShow = true
         },
     },
     created() {
         this.searchIpt = { ...this.searchDefault }
-        console.log("searchDefault: ", this.searchDefault)
-        console.log("searchIpt: ", this.searchIpt)
     }
 }
 </script>

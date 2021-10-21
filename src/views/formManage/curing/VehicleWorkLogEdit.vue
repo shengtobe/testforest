@@ -252,7 +252,7 @@ export default {
           this.$router.push({ path: '/error' })
         }
       }).catch( err => {
-        console.log(err)
+        //console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed })
       }).finally(() => {
         this.orgIsLoading = false
@@ -308,7 +308,7 @@ export default {
           that.inputData.editableData.HandlerID = that.inputData.editableData.HandlerID.split(",")
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -328,7 +328,6 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj)
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -349,7 +348,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.insert.failed });
         })
         .finally(() => {
@@ -377,7 +376,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.update.failed });
         })
         .finally(() => {

@@ -189,8 +189,8 @@ export default {
     },
     viewPage(item) {
       const that = this;
-      console.log("item: " + item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
+     
+     
       this.chLoadingShow({show:true});
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -210,7 +210,7 @@ export default {
         ],
       })
         .then((res) => {
-          console.log(res.data.DT);
+          
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
           data.CheckDay = data.CheckDay.substr(0, 10);
@@ -230,7 +230,7 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -249,7 +249,7 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj);
+     
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -270,7 +270,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
@@ -298,7 +298,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {

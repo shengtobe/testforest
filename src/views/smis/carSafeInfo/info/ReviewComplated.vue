@@ -308,9 +308,10 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            let order_list = JSON.parse(obj.order_list)
+            console.log("order_list: ", order_list);
             // this.chLoadingShow({show:true})
             this.chLoadingShow({ show: true})
-            console.log("安全資訊 審核中 obj: ", obj)
             
             
             this.id = obj.SaftyInfoCode  // 編號
@@ -321,7 +322,6 @@ export default {
             //this.files = [ ...obj.files ]  // 檔案附件
             //this.opinionList = [ ...obj.opinionList ]  // 加會意見列表
             this.opinionList = [ ...obj.JoinPeople ]  // 加會意見列表
-            console.log("status: ", this.status)
             if(this.status == 1){
                 if(this.userData.UserId == obj.PeopleId){
                     
@@ -338,7 +338,7 @@ export default {
                 //         this.isShowBtn = this.groupData.RoleLv4 == "T";
                 //     }
                 // }).catch( err => {
-                //     console.log(err)
+                //     //console.log(err)
                 // }).finally(() => {
                 // })
                 let sup = ''
@@ -349,7 +349,6 @@ export default {
                     ReqID: obj.PeopleId,  // 立單人id
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
-                    console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
                     sup = res.data.ID
                     if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
                         this.isShowBtn = this.isShowBtn_edit = true
@@ -366,12 +365,12 @@ export default {
                     // this.isLoading = this.dialog = false
                 })
                 
+                
             }
             else if(this.status == 3){ // 加會中
                 this.isShowBtn_edit = this.isShowBtn = false
                 // 驗證登入者是否為加會人
                 let joinerIdArr = obj.JoinPeople.map(e => e.PeopleId)
-                console.log("加會人們: ", joinerIdArr);
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -379,7 +378,6 @@ export default {
                     ReqID: obj.PeopleId,  // 立單人id
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
-                    console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
                     if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
                         this.isShowBtn_add = true
                     }
@@ -403,7 +401,6 @@ export default {
                 let joinerIdArr = obj.JoinPeople.map(e => e.PeopleId) // 加會人
                 let ccArr = obj.RecCopy.map(e => e.PeopleId) // 副本人
                 let recArr = obj.RecPeople.map(e => e.PeopleId) // 收件人
-                console.log("加會人們: ", joinerIdArr);
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -411,7 +408,6 @@ export default {
                     ReqID: obj.PeopleId,  // 立單人id
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
-                    console.log("主管/登入者: ", res.data.ID+'/'+this.userData.UserId);
                     if(joinerIdArr.includes(this.userData.UserId)){// 如果登入者是加會人
                     }
                     else if(this.userData.UserId == res.data.ID){ // 如果登入者是主管
@@ -429,6 +425,55 @@ export default {
                     // this.isLoading = this.dialog = false
                 })
             }
+            let idx = 0
+            let idx2 = 0
+            //讀取追蹤 //bottomItems order_list
+            //加會人  joinTableItems
+            this.bottomItems.forEach(item => {
+                if(item.title == "加會人"){
+                    let txArr = item.text.split('、')
+                    txArr.forEach(tx => {
+                        let person = order_list.find(e => e.PeopleName == tx)
+                        if(person != null && person != undefined){
+                            idx++
+                            this.joinTableItems.push({
+                            num: idx,
+                            depart: person.DepartName, 
+                            name: person.PeopleName,
+                            isRead: (person.RecReadStatus == 'T')? '已讀' : '未讀',
+                            time: (person.RecReadStatus == 'T')?person.UpdateDTime:'',
+                            hasMsg: (person.JoinMemo == null || person.JoinMemo == undefined)?'':person.JoinMemo
+                        })
+                        }
+                    });
+                }
+                else if(item.title == "收件人"){
+                    let txArr = item.text.split('、')
+                    txArr.forEach(tx => {
+                        let receiver = order_list.find(e => e.PeopleName == tx)
+                        if(receiver != null && receiver != undefined){
+                        idx2++
+                        this.tableItems.push({
+                            num: idx2,
+                            depart: receiver.DepartName, 
+                            name: receiver.PeopleName,
+                            isRead: (receiver.RecReadStatus == 'T')? '已讀' : '未讀',
+                            time: (receiver.RecReadStatus == 'T')?receiver.UpdateDTime:'',
+                        })
+                    }
+                    });
+                }
+            });
+                //
+                // { text: '項次', value: 'num', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 80 },
+                // { text: '單位', value: 'depart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '姓名', value: 'name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '是否讀取', value: 'isRead', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '讀取時間', value: 'time', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '是否已留意見', value: 'hasMsg', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                
+                console.log("this.joinTableItems: ", this.joinTableItems);
+                //收件人 tableItems
             this.chLoadingShow({ show: false})
             
             
@@ -443,7 +488,7 @@ export default {
             //             this.isShowBtn = this.groupData.RoleLv4 == "T";
             //         }
             //     }).catch( err => {
-            //         console.log(err)
+            //         //console.log(err)
             //     }).finally(() => {
             //     })
             // }
@@ -479,7 +524,7 @@ export default {
             //            //this.tableItems = res.data
                 
             //            }).catch(err => {
-            //             console.log(err)
+            //             //console.log(err)
             //             alert('查詢時發生問題，請重新查詢!')
             //            }).finally(() => {
             //              this.chLoadingShow({show:true})
@@ -525,7 +570,6 @@ export default {
                   default:
                         break
                      }
-                    console.log(obj)
                     let topItems = [  // 上面的欄位
                         { icon: 'mdi-ray-vertex', title: '發布狀態', text: stry },
                         { icon: 'mdi-bank', title: '通報單位', text: obj.PeopleRootDepartName },
@@ -572,7 +616,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                  }).catch(err => {
-                     console.log(err)
+                     //console.log(err)
                      alert('退回時發生問題，請重新執行!')
                  }).finally(() => {
                 })
@@ -601,7 +645,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
              }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('作廢時發生問題，請重新執行!')
              }).finally(() => {
                 this.chLoadingShow({ show: false})
@@ -631,7 +675,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                  }).catch(err => {
-                     console.log(err)
+                     //console.log(err)
                      alert('發布時發生問題，請重新執行!')
                  }).finally(() => {
                      this.chLoadingShow({ show: false})
@@ -671,7 +715,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                  }).catch(err => {
-                     console.log(err)
+                     //console.log(err)
                      alert('同意送出意見時發生問題，請重新執行!')
                  }).finally(() => {
                      this.chLoadingShow({ show: false})
@@ -689,9 +733,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
                 SaftyInfoCode: this.id
             }).then(res => {
-                console.log("res.data: ", res.data);
                 let link = document.createElement('a')
-                console.log("link: ", link);
                 link.href = `/downloads/${res.data.file_name}`
                 link.setAttribute('download', res.data.file_name)
                 document.body.appendChild(link)

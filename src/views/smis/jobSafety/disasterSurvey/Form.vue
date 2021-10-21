@@ -837,11 +837,14 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
+                        if(res.data.HurtPeopleName == this.userData.UserName){
+                            alert("無權限做此操作")
+                            this.$router.push({ path: '/404' })
+                        }
                         if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                             this.$router.push({ path: '/404' })
                         } else {
                             // res.data.controls = JSON.parse(res.data.order_list)  // 已選控制措施
-                            console.log("887 res.data: ", res.data);
                             this.setInitDate(res.data)
                         }
                     } else {
@@ -850,7 +853,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -923,7 +926,6 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
-            console.log("職業事故form obj: ", obj);
             this.ipt.workDepart = obj.PeopleDepart  // 工作部門
             this.ipt.name = obj.HurtPeopleName  // 罹災者姓名
             this.ipt.idCard = obj.HurtPeopleCardID  // 身分證
@@ -1189,7 +1191,6 @@ export default {
         },
         getPeople(value) {
             if(value){
-                console.log("value: ", value);
                 this.ipt.name = value.UserName
                 this.ipt.workDepart = value.DepartName
                 this.ipt.workDepartCode = value.DepartCode
@@ -1219,8 +1220,9 @@ export default {
             OperatorID: this.userData.UserId,  // 操作人id
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                this.saveUserGroup(res.data.GroupData)
-                this.isShowBtn = this.groupData.RoleLv3 == "T"
+                // this.saveUserGroup(res.data.GroupData)
+                // this.isShowBtn = this.groupData.RoleLv3 == "T"
+                this.isShowBtn = true
 
                 if(this.isShowBtn)
                     this.initData()
@@ -1230,7 +1232,7 @@ export default {
                 }
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
     }

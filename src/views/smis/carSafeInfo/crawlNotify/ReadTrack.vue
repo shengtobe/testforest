@@ -113,7 +113,6 @@ export default {
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         let data = JSON.parse(res.data.order_list)
-                        console.log("追蹤回傳資料 data: ", data);
                         this.tableItems = data.map((item, idx) => {
                         return {
                                 num: idx + 1,

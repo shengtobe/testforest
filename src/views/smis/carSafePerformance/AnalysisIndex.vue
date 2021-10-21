@@ -221,14 +221,12 @@ export default {
             ClientReqTime: getNowFullTime(),
             OperatorID: this.userData.UserId,  // 操作人id
         }).then(res=>{
-            console.log(res.data)
             const resdata = res.data.DataList
             this.selectOptions.Lv1 = resdata?.filter(element=>element.Level=='1')?.map(ele=>({text:ele.Name,value:ele.Code}))||[]
             this.selectOptions.Lv2 = resdata?.filter(element=>element.Level=='2')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
             this.selectOptions.Lv3 = resdata?.filter(element=>element.Level=='3')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
             this.selectOptions.Lv4 = resdata?.filter(element=>element.Level=='4')?.map(ele=>({text:ele.Name,value:ele.Code,parent: ele.Parent}))||[]
         }).catch( err => {
-            console.log('err',err)
           this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
         })
     }

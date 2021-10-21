@@ -161,8 +161,6 @@ export default {
                 if (res.data.ErrorCode == 0) {
                     // this.tableItems = JSON.parse(res.data.order_list)
                     let tb = JSON.parse(res.data.order_list)
-                    console.log("Manage 詢問個人資訊: ", tb)
-                    console.log("Manage 詢問個人資訊 MsgType: ", tb.map(e=>e.MsgType))
                     // 個人訊息
                     let psnal = tb.map(item => ({
                         id: item.ModuleItemID,
@@ -179,7 +177,6 @@ export default {
                     psnal.forEach(element => {
                         element.title = ((element.sourceTitle == null)?'':element.sourceTitle) + '(' + element.title + ')'
                         if(element.MsgType == 1){
-                            console.log("element.MsgType: ", element.MsgType);
                             this.tableItems.personal.push(element);
                         }
                         else{
@@ -205,7 +202,7 @@ export default {
                 //     ]
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err);
             }).finally(() => {
             })
 
@@ -248,7 +245,6 @@ export default {
                 this.chLoadingShow({ show: false})
         },
         redirect(item) {
-            console.log("item:::", item)
             //test
             // item.InfoBelongMod = '18';
             //
@@ -261,9 +257,6 @@ export default {
                 MsgType: item.MsgType,
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("首頁代辦事項已讀 item: ", item);
-                    console.log("首頁代辦事項已讀 res.data: ", res.data);
-                    console.log("首頁代辦事項已讀 this.tableItems.personal: ", this.tableItems.personal);
                     // item.isRead = false
                     if(item.MsgType == '1'){
                         this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
@@ -275,11 +268,9 @@ export default {
 
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err);
             }).finally(() => {
             })
-            console.log("[轉跳]item.InfoBelongMod: ", item.InfoBelongMod);
-            console.log("[轉跳]item.ModuleItemID: ", item.ModuleItemID);
             if (confirm('確定要離開目前頁面至指定頁面操作?')) {
                 switch(item.InfoBelongMod){
                     case '1':
@@ -359,9 +350,6 @@ export default {
                 MsgType: item.MsgType,
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("首頁個人資訊已讀 item: ", item);
-                    console.log("首頁個人資訊已讀 res.data: ", res.data);
-                    console.log("首頁個人資訊已讀 this.tableItems.personal: ", this.tableItems.personal);
                     // item.isRead = false
                     this.tableItems.personal.find(e => e.id == item.ModuleItemID).isRead = true;
 
@@ -371,14 +359,12 @@ export default {
 
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err);
             }).finally(() => {
             })
         },
         // 轉換部門文字
         transferDepartTxt(val) {
-            console.log("departOptions: ", departOptions.map(e=>e.value));
-            console.log("val: ", val);
             return departOptions.find(item => item.value == val).text
         },
     },

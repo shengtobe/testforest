@@ -175,7 +175,6 @@ export default {
         // 初始化資料
         setShowData(obj) {
             this.id = obj.EndangerCode // 編號
-            // console.log("this.id: ", this.id);
             // this.code1 = obj.code1 // 編號-第1段
             this.code1 = "" // 編號-第1段
             // this.code2 = obj.code2 // 編號-第2段
@@ -183,7 +182,6 @@ export default {
             // this.code3 = obj.code3 // 編號-第3段
             this.code3 = "" // 編號-第3段
             this.bottomItems = obj.bottomItems
-            console.log("obj.JobAccidentType: ", obj.JobAccidentType);
 
             canInUpdate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -191,11 +189,10 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.saveUserGroup(res.data.GroupData)
-                    console.log("res.data.GroupData: ", res.data.GroupData);
                     this.isShowBtn = this.groupData.RoleLv3 == "T"
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
             
@@ -216,9 +213,7 @@ export default {
                 ],
             }).then(res => {
                 if(res.data.ErrorCode == 0){
-                    console.log("職災危害通報res.data: ", res.data);
                     this.tableItems = JSON.parse(res.data.order_list)
-                    console.log("職災危害通報tableItems: ", this.tableItems);
                     this.tableItems.forEach(element => {
                         for(let ele in element){
                             if(element[ele] == null){
@@ -229,7 +224,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -237,7 +232,6 @@ export default {
         // 刪除
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                console.log("欲刪除的資料ID:" + this.id)
                 this.chLoadingShow({show:true})
 
                 deleteDataDb({
@@ -249,11 +243,10 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -262,7 +255,6 @@ export default {
         },
     },
     created() {
-        console.log("show this.itemData: ", this.itemData);
         this.setShowData(this.itemData)
         // this.fetchData()
     }

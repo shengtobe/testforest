@@ -201,7 +201,7 @@
     <h3 class="mb-1">
         <v-icon class="mr-1 mb-1">mdi-table</v-icon>工時統計
         <span class="red--text">*</span>
-        <v-btn fab dark small color="indigo"
+        <v-btn fab dark small color="indigo" v-if="isShowBtn"
             @click="setJobHour(false)"
             class="ml-2 mb-1 btn-modify"
         >
@@ -211,7 +211,7 @@
 
     <v-card class="mb-8">
         <v-data-table
-            :headers="jobHour.headers"
+            :headers="headers"
             :items="jobHour.items"
             disable-sort
             disable-filtering
@@ -364,6 +364,17 @@
         </v-data-table>
     </v-card>
 
+    <!-- 檔案上傳 (證據)，新增時 -->
+    <template>
+        <UploadFileAdd
+            title="證據上傳"
+            :uploadDisnable="false"
+            :fileList="showFiles"
+            @joinFile="joinFile"
+            @rmFile="rmFile"
+        />
+    </template>
+
     <v-row>
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center">
@@ -430,6 +441,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import EquipRepairCode from '@/components/EquipRepairCode'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
@@ -447,6 +459,7 @@ export default {
         Lv5Code: '', //工作項編碼
         LvAllName: '', // 中文
         initCode: '', //最初始的code
+        showFiles: [],  // 要顯示的縮圖
         selectWorkArr0: [],
         selectWorkArr: [],
         selectWorkArr_eqCode: [],
@@ -477,6 +490,7 @@ export default {
             endFixHour: '00',  // 完工-時
             endFixMin: '00',  // 完工-分
             fixSituation: '',  // 維修情況
+            files: [],  // 檔案(證據)
         },
         errorSituation: '',  // 必填欄位背景色-維修情況
         topItems: [],  // 上面的欄位
@@ -487,13 +501,13 @@ export default {
             dialogShow: false,
             isEdit: false,  // 是否為工時編輯時
             titleName: '',  // dialog 標題人名
-            headers: [
-                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-                { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            ],
+            // headers: [
+            //     { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            //     { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            // ],
             items: [],
             editIdx: 0,  // 編輯中資料的索引值
         },
@@ -516,43 +530,65 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        UploadFileAdd,
         EquipRepairCode
     },
     computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        headers(){
+            let result = [
+                { text: '姓名', value: 'PeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '地點', value: 'Location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作項', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                { text: '工作量(hr)', value: 'Workload', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+                // { text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            ]
+            if(this.isShowBtn){
+                result.push({ text: '編輯', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' })
+            }
+            return result
+        }
     },
     watch: {
         // ------- 切換選項時，向後端抓下一層的報修碼 --------
         // 系統
         'jobHour.dialogShow': function(newVal) {
             if (newVal == false) {
-                    console.log("v: ", newVal);
                     this.eqShow = newVal
                 }
         },
     },
     methods: {
+        // 加入檔案 (組件用)
+        // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
+        joinFile(obj, bool) {
+            console.log("obj: ", obj);
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
+        },
+        // 移除要上傳的檔案 (組件用)
+        rmFile(idx) {
+            this.showFiles.splice(idx, 1)
+            this.ipt.files.splice(idx, 1)
+        },
         //抓取未確認的設備標示編碼 getEqName
         getTempName(value) {
-            console.log("this.Lv5Name: ", value);
             this.Lv5Name = value
         },
         getEqCode(value){
-            console.log("this.Lv5Code: ", value);
             this.Lv5Code = value
         },
         getEqName(value){
-            console.log("this.LvAllName: ", value);
             this.LvAllName = value
         },
         addWork(){
             if(this.Lv5Name == '') return
             let v = this.Lv5Name + ' - ' + this.jobForm.Workload + 'hr'
-            console.log("this.Lv5Code: ", this.Lv5Code);
-            console.log("this.Lv5Name: ", this.Lv5Name);
-            console.log("this.LvAllName: ", this.LvAllName);
             if(this.selectWorkArr0.includes(this.Lv5Name) == false){
                 this.selectWorkArr0.push(this.Lv5Name)
                 this.selectWorkArr_eqCode.push(this.Lv5Code)
@@ -561,7 +597,6 @@ export default {
             }
             else{
                 let rmIdx = this.selectWorkArr0.indexOf(this.Lv5Name)
-                console.log("rmIdx = ", rmIdx);
                 this.selectWorkArr.splice(rmIdx, 1)
                 this.selectWorkArr0.splice(rmIdx, 1)
                 this.selectWorkArr0.push(this.Lv5Name)
@@ -582,31 +617,28 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
-            console.log("obj.AgentID!: ", obj.AgentID);
-            this.isShowBtn = obj.DispatchID == this.userData.UserId || obj.AgentID == this.userData.UserId
+            let workPeople = obj.PeopleLicense.map(e => e.PeopleId).concat(obj.PeopleNoLicense.map(e => e.PeopleId))
+            //檢查登入者是否為工作者
+            let IsWorker = workPeople.includes(this.userData.UserId)
+            //是否為派工人或代理人
+            this.isShowBtn = obj.DispatchID == this.userData.UserId || obj.AgentID == this.userData.UserId || IsWorker
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
-            console.log("this.bottomItems: ",this.bottomItems)
             this.defaultJobForm.Location = obj.WorkPlace  // 工作地點預設值
-            console.log("obj.MaintainCode: ", obj.MaintainCode);
             let codearr = obj.MaintainCode.split('-')
-            console.log("codearr: ", codearr);
             codearr[2] = ''
             codearr[3] = ''
             this.initCode = codearr.join('-') + '-'
             this.nowEqCode = this.initCode
-            console.log("this.nowEqCode: ", this.nowEqCode);
             // this.nowEqCode = obj.MaintainCode
 
             // 組合所有林鐵人員下拉選單(用於選工作項)
             let arr = obj.PeopleLicense.concat(obj.PeopleNoLicense)  // 所有林鐵人員
-            console.log("arr: ", arr)
             this.allLicenseMembers = arr.map(ele => ({
                 text: ele.PeopleName,
                 value: ele.PeopleId,
             }))
-            console.log("allLicenseMembers: ", this.allLicenseMembers)
             
             // 工時表單初始化
             this.jobHour.items = this.allLicenseMembers.map(item => ({
@@ -621,7 +653,6 @@ export default {
                 MaintainCode_Eqp: '',
                 MaintainCode_Seq: '',
             }))
-            console.log("this.jobHour.items: ", this.jobHour.items)
 
             // 向後端查詢工作項
             fetchJobName({
@@ -633,8 +664,6 @@ export default {
                     text: item.JobName,
                     value: item.JobCode,
                 }))
-                console.log("res.data: ", res.data);
-                console.log("jobNameIpts: ", this.jobNameIpts);
             }).catch(err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，工作項查詢失敗' })
             })
@@ -664,7 +693,6 @@ export default {
         },
         // 送出
         save() {
-            console.log("this.jobHour.items: ", this.jobHour.items);
             if (this.$refs.form.validate()) {  // 表單驗證欄位
                 if (confirm('送出後就無法修改，你確定要送出嗎?')) {
                     this.chLoadingShow({show:true})
@@ -683,6 +711,7 @@ export default {
                         FinishDHour: this.ipt.endFixHour,  // 完工日期(小時)
                         FinishDTime: this.ipt.endFixMin,  // 完工日期(分)
                         MaintainStatus: this.ipt.fixSituation,  // 維修情況
+                        FileCount: this.ipt.files, // 證據檔案上傳
                         WorkTimeData: this.jobHour.items,  // 工時統計資料
                         // MaintainCode_Eqp: '',
                         // MaintainCode_Seq: '',
@@ -722,14 +751,10 @@ export default {
                 this.jobHour.isEdit = true
                 this.jobHour.editIdx = this.jobHour.items.indexOf(item)  // 編輯中的資料索引
                 this.jobForm = { ...item }  // 現有值帶入表單
-                console.log("this.jobForm: ", this.jobForm);
                 this.jobHour.titleName = `編輯資料 - ${item.PeopleName}`
                 this.nowWorkCode = this.jobForm.JobCode
-                console.log("this.nowWorkCode: ", this.nowWorkCode);
-                console.log("this.jobForm.eqCode: ", this.jobForm.eqCode);
                 if(this.jobForm.eqCode != ''){
                     this.nowEqCode = this.jobForm.eqCode
-                    console.log("this.nowEqCode: ", this.nowEqCode);
                 }
                 else{
                     this.nowEqCode = this.initCode
@@ -756,8 +781,8 @@ export default {
         },
         // 儲存工作表單
         saveJob() {
-            console.log("selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
-            console.log("selectWorkArr_AllName: ", this.selectWorkArr_AllName);
+            //沒有選工作
+            if(this.selectWorkArr.length == 0) return
             if(this.Lv5Name == '') return
             // 反查工作項名稱
             // if(this.jobForm.JobCode != '' && this.jobForm.JobCode != null){
@@ -772,9 +797,7 @@ export default {
                 // +新增
                 let tempJobHour = []
                 let i = 0
-                console.log("新增時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
                 this.selectWorkArr.forEach(work => {
-                    console.log("work: ", work);
                     let tempJobForm = {...this.jobForm}
                     // 反查姓名
                     tempJobForm.PeopleName = this.allLicenseMembers.find(item => item.value == tempJobForm.PeopleId).text
@@ -785,7 +808,6 @@ export default {
                     tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
                     tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
                     tempJobForm.MaintainCode_Seq = (this.selectWorkArr_eqCode[i].split('-'))[3]
-                    console.log("新增 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
                     i++
@@ -801,10 +823,7 @@ export default {
                 // 編輯時
                 let tempJobHour = []
                 let i = 0
-                console.log("編輯時 selectWorkArr_eqCode: ", this.selectWorkArr_eqCode);
                 this.selectWorkArr.forEach(work => {
-                    console.log("work: ", work);
-                    console.log("this.jobForm: ", this.jobForm);
                     let tempJobForm = {...this.jobForm}
                     tempJobForm.JobName = work.substr(0, work.indexOf('('))
                     tempJobForm.JobCode = work.substr(work.indexOf('(') + 1, 2)
@@ -813,7 +832,6 @@ export default {
                     tempJobForm.MaintainCode_AllName = this.selectWorkArr_AllName[i]
                     tempJobForm.MaintainCode_Eqp = (this.selectWorkArr_eqCode[i].split('-'))[2]
                     tempJobForm.MaintainCode_Seq = (this.selectWorkArr_eqCode[i].split('-'))[3]
-                    console.log("編輯 tempJobForm: ", tempJobForm);
                     tempJobHour.push(tempJobForm)
                     tempJobForm = {}
                     i++
@@ -825,7 +843,6 @@ export default {
             }
             this.selectWorkArr = [...[]]
             this.eqShow = false
-            console.log("jobHour: ", this.jobHour);
         },
     },
     created() {

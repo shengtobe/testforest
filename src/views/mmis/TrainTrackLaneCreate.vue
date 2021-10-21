@@ -181,7 +181,6 @@ export default {
     // 加入檔案 (組件用)
     // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
     joinFilePic(obj, bool) {
-      console.log(obj)
       if (bool) {
         this.detailItems.FileListPic.push(obj)  // 加入要上傳後端的檔案
       } else {
@@ -189,7 +188,6 @@ export default {
       }
     },
     joinFileTech(obj, bool) {
-      console.log(obj)
       if (bool) {
         this.detailItems.FileListTech.push(obj)  // 加入要上傳後端的檔案
       } else {

@@ -572,7 +572,7 @@ export default {
                 // 初始化林鐵人員下拉選項預設值
                 this.initMemberSelect(this.licenseItems)
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('資料讀取失敗2')
             }).finally(() => {
             })
@@ -586,10 +586,9 @@ export default {
                 this.vendorList = this.firmItems.map(item => item.VendorName)
                 // 初始化林鐵人員下拉選項預設值
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('資料讀取失敗2')
             }).finally(() => {
-                console.log("over2")
             })
 
 

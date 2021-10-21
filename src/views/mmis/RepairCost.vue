@@ -374,7 +374,6 @@ export default {
     },
     //抓取未確認的設備標示編碼中文
     getTempName(value) {
-      console.log("value: ", value);
       this.searchTemp.wbsShow = value
       this.detailCh = value
     },
@@ -418,14 +417,12 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          console.log("costQuery顯示詳細資訊: data", res.data);
           let combinCode
           const dataList = decodeObject(res.data.WorkDataList[0])
           this.content.WorkNumber = dataList.WorkOrderID
           this.content.Dept= dataList.DispatchDepart
           // let combinCode = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
           this.searchIpt.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq 
-          console.log("this.searchIpt.wbs: ", this.searchIpt.wbs);
           let brk = 0;
           while(brk <= 20){
             this.componentKey++

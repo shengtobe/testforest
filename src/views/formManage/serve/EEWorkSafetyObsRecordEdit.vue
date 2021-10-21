@@ -478,7 +478,7 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -520,7 +520,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
@@ -548,7 +548,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {

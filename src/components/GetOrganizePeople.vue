@@ -125,7 +125,6 @@ export default {
       if(lv3.length>0){
         lv3.unshift({value:'',text:''})
       }
-      // console.log(nowDept)
       return {
         lv1: that.opts.lv1,
         lv2: lv2,
@@ -148,7 +147,6 @@ export default {
     async fetchDdata() {
       try {
         let res = await fetchOrganization({ ClientReqTime: getNowFullTime() })  // 取得組織表所有資料
-        // console.log(res.data)
         this.opts.lv1 = res.data.user_depart_list_group_1.map(e=>({value: e.DepartCode,text:e.DepartName}))
         this.opts.lv2 = res.data.user_depart_list_group_2.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
         this.opts.lv3 = res.data.user_depart_list_group_3.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
@@ -172,7 +170,6 @@ export default {
       }
       if(this.opts.lv2.findIndex(e=>e.value==this.defDeptId)>-1){
         this.select.lv2 = this.defDeptId
-        console.log(this.opts.lv2.find(e=>e.value==this.defDeptId))
         let parentName = this.opts.lv2.find(e=>e.value==this.defDeptId).parent
         this.select.lv1 = this.opts.lv1.find(e=>e.text==parentName).value
       }

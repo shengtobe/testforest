@@ -182,7 +182,8 @@
                                     <strong class="black--text">職安管理</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_24')" @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
+                                <!-- <v-list-item :disabled="FShow('SMS_24')" @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item> -->
+                                <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey-add">職業災害事故調查表</v-list-item>
                                 <v-divider />
                                 <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey">職災事故事件管理</v-list-item>
                                 <v-divider />
@@ -407,7 +408,6 @@ export default {
             {
                 // 儲存使用者資訊
                 let UData = JSON.parse(this.decode(localStorage.getItem('userData'), this.key))
-                console.log("儲存使用者資訊 UData: ", UData);
                 this.funcShow = UData.FunctionsAuthorData; // DeptList
                 this.saveUserProfile(UData)
                 
@@ -424,7 +424,7 @@ export default {
             } 
             catch (e) 
             {
-                console.log(e);
+                //console.log(e);
             }
         },
         //全域警告
@@ -437,14 +437,11 @@ export default {
                 wsIP = `${process.env.VUE_APP_WS_HOST}:${process.env.VUE_APP_WS_PORT}/global/inner/alarmmsg`
                 wsc = new WebSocket(wsIP)
                 wsc.onopen = function () {
-                    console.log("connected")
                 }
                 wsc.onclose = function (e) {
-                    console.log("closed")
                 }
                 wsc.onmessage = function (e) {
                     var data = JSON.parse(e.data)
-                    console.log(data)
                     const aType = [
                         {
                             value: '1',
@@ -465,7 +462,7 @@ export default {
                 }
                 this.ws = wsc
             } catch(err) {
-                console.log(err)
+                //console.log(err)
             }
         },
         //無動作登出
@@ -476,7 +473,6 @@ export default {
             const that = this
             clearTimeout(OtimeOut)
             OtimeOut = setTimeout(()=>{that.whenTimnmeout()}, 90 * 60 * 1000)
-            // console.log(OtimeOut)
         }
     },
     created() {

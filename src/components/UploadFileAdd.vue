@@ -5,7 +5,7 @@
     </h3>
 
     <v-row>
-        <v-col cols="12" sm="8" md="10">
+        <v-col cols="12" sm="8" md="10" v-if="!uploadDisnable">
             <v-file-input
                 hide-details
                 label="請點此選要上傳的檔案，選擇時可按 ctrl 或 shift 複選"
@@ -23,7 +23,7 @@
             </v-file-input>
         </v-col>
 
-        <v-col cols="12" sm="2" class="text-right text-md-left">
+        <v-col cols="12" sm="2" class="text-right text-md-left" v-if="!uploadDisnable">
             <v-btn large
                 class="btn-memo white--text"
                 @click="join"
@@ -58,7 +58,7 @@
                             >
                                 <div style="width: calc(100% - 36px);">{{ item.name }}</div>
 
-                                <v-icon large color="error"
+                                <v-icon large color="error" v-if="!uploadDisnable"
                                     class="mr-n2"
                                     @click="del(idx)"
                                 >mdi-close-circle</v-icon>
@@ -99,11 +99,10 @@ export default {
         },
         // 加入要上傳的檔案
         join() {
-            console.log("this.choseFiles: ", this.choseFiles)
-            console.log("this.fileList: ", this.fileList)
             if(this.choseFiles == null || this.choseFiles == undefined) return
             if (this.choseFiles.length > 0) {
                 // 已加入的檔案不重覆增加
+                
                 this.choseFiles.forEach(ele => {
                     let file = this.fileList.find(item => {
                         return item.name == ele.name && item.size == ele.size
@@ -123,8 +122,6 @@ export default {
                             let nameArr = ele.name.split('.')  // 用小數點拆成陣列
                             let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
                             
-                            console.log("reader.result~~~~: ", reader.result)
-                            console.log("Array.from(new Uint8Array(reader.result)): ", Array.from(new Uint8Array(reader.result)))
                             this.$emit('joinFile', { FileName: ele.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }, true)
                         }
                         

@@ -108,7 +108,7 @@ export default {
                     this.isShowBtn = this.groupData.RoleLv3 == "T"
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
             //

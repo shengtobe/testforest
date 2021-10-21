@@ -290,7 +290,7 @@ export default {
                         this.isShowBtn = this.groupData.RoleLv3 == "T" || this.groupData.RoleLv4 == "T";
                 }
             }).catch( err => {
-                console.log(err)
+                //console.log(err)
             }).finally(() => {
             })
 
@@ -322,7 +322,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
             })
@@ -394,7 +394,6 @@ export default {
         // 作廢
         del() {
             if (confirm('你確定要作廢嗎?')) {
-                console.log("欲刪除的資料ID:" + this.id)
                 this.chLoadingShow({show:true})
 
                 deleteData({
@@ -406,11 +405,10 @@ export default {
                         this.chMsgbar({ success: true, msg: '作廢成功' })
                         this.done = true  // 隱藏頁面操作按鈕
                     } else {
-                        console.log(res.data.Msg)
                         this.chMsgbar({ success: false, msg: '作廢失敗' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     this.chMsgbar({ success: false, msg: '伺服器發生問題' })
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -419,7 +417,6 @@ export default {
         },
     },
     created() {
-        console.log("created: this.itemData:", this.itemData)
         this.setShowData(this.itemData)
     }
 }

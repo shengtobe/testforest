@@ -528,7 +528,6 @@ export default {
     },
     // 初始化新增/編輯視窗
     initInput() {
-      console.log("init create window form");
       this.CheckDay = getTodayDateString();
       this.Name = this.doMan.name;
       // this.zs = this.nowTime;
@@ -591,7 +590,7 @@ export default {
     },
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -625,7 +624,7 @@ export default {
           this.tableItems = aa;
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -697,14 +696,14 @@ export default {
       if (this.action == Actions.edit) {
         // update 要自行增加RPFlowNo欄位
         data.RPFlowNo = this.RPFlowNo;
-        console.log(data);
+       
         updateFormOrder(data)
           .then((res) => {
-            console.log(res.data.DT);
+            
             this.chMsgbar({ success: true, msg: Constrant.update.success });
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
@@ -714,11 +713,11 @@ export default {
         // 新增
         createFormOrder0(data)
           .then((res) => {
-            console.log(res.data.DT);
+            
             this.chMsgbar({ success: true, msg: Constrant.insert.success });
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
@@ -742,8 +741,8 @@ export default {
     viewPage(item) {
       this.action = Actions.edit;
       this.readonly = true;
-      console.log("item: " + item);
-      console.log("RPFlowNo: " + item.RPFlowNo);
+     
+     
       this.chLoadingShow({show:true});
       // 依業主要求變更檢式頁面的方式，所以改為另開分頁
       fetchFormOrderOne({
@@ -768,7 +767,7 @@ export default {
       })
         .then((res) => {
           this.initInput();
-          console.log(res.data.DT);
+          
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
           this.doMan.name = data.Name;
@@ -786,7 +785,7 @@ export default {
           this.ShowDetailDialog = true;
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -808,7 +807,7 @@ export default {
           this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {

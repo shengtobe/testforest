@@ -739,7 +739,7 @@ export default {
                     this.$router.push({ path: '/error' })
                 }
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('伺服器發生問題，事故類型讀取失敗')
             }).finally(() => {
                 // this.chLoadingShow({show:true})
@@ -767,7 +767,7 @@ export default {
                         this.$router.push({ path: '/error' })
                     }
                 }).catch(err => {
-                    console.log(err)
+                    //console.log(err)
                     alert('伺服器發生問題，資料讀取失敗')
                 }).finally(() => {
                     this.chLoadingShow({show:false})
@@ -777,13 +777,10 @@ export default {
         // 設定資料(編輯時)
         setInitDate(obj) {
             let ty = this.opsList.find(e => e.Code == obj.AccidentType).Name
-            console.log("ty: ", ty);
             let tyArr = [ty,'']
             if(ty.includes('-')){
                 tyArr = ty.split('-')
             }
-            console.log("tyArr: ", tyArr);
-            console.log("tyArr[0]: ", tyArr[0]);
 
             this.ipt.subject = obj.ReportTitle  // 事故摘要
             this.ipt.date = obj.FindDDay  // 發生日期
@@ -1095,7 +1092,7 @@ export default {
                 }
             }
         }).catch( err => {
-            console.log(err)
+            //console.log(err)
         }).finally(() => {
         })
     }

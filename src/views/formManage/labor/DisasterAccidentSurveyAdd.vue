@@ -453,9 +453,9 @@ export default {
   },
   methods: {
     newOne() {
-      console.log("newOne23");
+     ;
       this.Add = true;
-      console.log("this.Add: " + this.Add);
+     
       this.initInput();
     },
     ...mapActions("system", [
@@ -469,7 +469,7 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {
-      console.log("Search click");
+      
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -502,7 +502,7 @@ export default {
           this.tableItems = aa;
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           alert("查詢時發生問題，請重新查詢!");
         })
         .finally(() => {

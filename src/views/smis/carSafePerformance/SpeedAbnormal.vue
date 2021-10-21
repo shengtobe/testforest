@@ -355,14 +355,12 @@ export default {
         // 顯示檔案
         showFiles(arr) {
             this.fileList = [...[]]
-            console.log("arr: ", arr);
             if (arr.Attachment.length > 0){
                 for (let i = 0; i < arr.Attachment.length; i++) {
                     this.fileList.push({Attachment: arr.Attachment[i], AttachmentPath: arr.AttachmentPath[i]})
                 }
             }
             
-            console.log("fileList: ", this.fileList);
             this.dialogShow = true
         },
         close(){

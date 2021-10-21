@@ -8,6 +8,7 @@
     <!-- 下面的欄位 -->
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
+        <FileListShow :fileList="files" title="檔案列表" />
     </v-row>
 
     <v-row class="my-8">
@@ -166,6 +167,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import FileListShow from '@/components/FileListShow.vue'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { closeOrder, withdrawOrder, cancelOrder, fetchSupervisor } from '@/apis/workList/maintain'
@@ -178,6 +180,7 @@ export default {
         status: '',  // 處理狀態
         isLoading: false,  // 是否讀取中
         workNumber: '',  // 工單編號
+        files: [],  // 上傳的檔案
         dialog: false,  // dialog 是否顯示
         dialogTitle: '',  // dialog 標題
         dialogBtnTxt: '', // dialog 按鈕內容
@@ -210,6 +213,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow,
     },
     computed: {
         ...mapState ('user', {
@@ -223,19 +227,18 @@ export default {
             'closeWindow',  // 關閉視窗
         ]),
         setShowData(obj) {
-            console.log("In ClosedComplated:obj:", obj)
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.status = obj.Status  // 處理階段(值)
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
             this.bottomItems2 = obj.bottomItems2  // 下面的欄位資料
+            this.files = [ ...obj.FileCount ]  // 檔案附件
             this.tableItems = [ ...obj.WorkTimeCount ]  // 工時資料
             this.tableItems_fee = [ ...obj.WorkMaterialList ]  // 費用資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
             if(this.status == "4"){
                 this.isShowBtn = obj.AllDepartorID == this.userData.UserId
-                console.log("isShowBtn: ", obj.AllDepartorID + "==" + this.userData.UserId);
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -243,7 +246,6 @@ export default {
                     ReqID: obj.CreatorID,  // 立單人id
                 }).then(res => {
                     // this.isShowBtn = res.data == this.userData.UserId
-                    // console.log("主管測試: ", res.data + "=" + this.userData.UserId);
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
                 }).finally(() => {

@@ -271,7 +271,6 @@
         }
         this.ifIcon = (!this.needIcon)?false:this.needIcon
         this.rtnStart=this.rtnStartLv==undefined?this.toLv:this.rtnStartLv
-        // console.log(this.rtnStart)
         if(this.nowEqCode == '' || !this.nowEqCode){ //沒有帶值進來
           this._getEqList('SYS','SYS_%','1','1')
         }else{  //有帶值進來

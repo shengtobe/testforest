@@ -624,7 +624,7 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {
@@ -638,14 +638,11 @@ export default {
     save() {
       const that = this;
       let rtnObj = [];
-      console.log(that.inputData.editableData)
       const keyArr = Object.keys(that.inputData.editableData);
-      console.log(keyArr)
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-      console.log(rtnObj)
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -666,7 +663,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.insert.failed });
         })
         .finally(() => {
@@ -694,7 +691,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.update.failed });
         })
         .finally(() => {

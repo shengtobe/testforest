@@ -68,7 +68,7 @@ export default {
           this.chMsgbar({ success: true, msg: Constrant.delete.success });
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.delete.failed });
         })
         .finally(() => {

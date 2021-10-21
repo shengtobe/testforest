@@ -1151,7 +1151,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
@@ -1179,7 +1179,7 @@ export default {
             }
           })
           .catch((err) => {
-            console.log(err);
+            ////console.log(err);
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
@@ -1262,7 +1262,7 @@ export default {
           const that = this;
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
-          console.log(data);
+         
           data.CheckDay = data.CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = RPFlowNo;
           this.inputData.DepartCode = data.DepartCode;
@@ -1285,7 +1285,7 @@ export default {
           });
         })
         .catch((err) => {
-          console.log(err);
+          ////console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {

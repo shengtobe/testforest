@@ -91,7 +91,7 @@
     <v-dialog v-model="Add" persistent max-width="1060px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
-          新增{{ title }}
+          {{ (isEdit)? '編輯': '新增' }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -332,6 +332,7 @@ export default {
         departName: "",
       },
       formIconShow: true,
+      isEdit: false,
       a: "",
       ass: "",
       z: "",
@@ -509,14 +510,13 @@ export default {
     },
     newOne(){
       this.Add = true
+      this.isEdit = false
       this.initInput();
     },
     // 搜尋
     search() {
-      console.log("Search click!")
       var today = new Date();
 
-      console.log("1609")
       this.chLoadingShow({show:false})
 
       fetchFormOrderList({
@@ -542,7 +542,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -579,9 +579,9 @@ export default {
                 }
         ],
       }).then(res => {
-        console.log(res.data.DT)
+       
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
@@ -604,6 +604,7 @@ export default {
 
     viewPage(item) {
       this.chLoadingShow({show:false})
+        this.isEdit = true
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -633,17 +634,13 @@ export default {
         ],
       }).then(res => {
         this.initInput();
-        console.log(res.data.DT)
+       
         let dat = JSON.parse(res.data.DT)
-        console.log("data name: " + dat[0].Name)
-        console.log("data time: " + dat[0].CheckDay)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        console.log("data time1: " + time1)
         this.zs = time1
-        console.log("doMan name: " + this.doMan.name)
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
         var step;
@@ -656,10 +653,7 @@ export default {
           this.ipt.items[step].note = dat[DBIndx].Memo_1
           DBIndx++
         }
-        console.log("DBIndx: " + DBIndx)
         let www = dat.length
-        console.log("dat.length: " + www)
-        console.log("dat[0].Memo_2: " + dat[0].Memo_2)
         this.ipt.items_2[0].status1 = dat[0].Sig_Zhushan
         this.ipt.items_2[0].note = dat[0].Memo_2
         this.ipt.items_2[1].status1 = dat[0].Sig_Alishan
@@ -667,7 +661,7 @@ export default {
         this.ipt.items_2[2].status1 = dat[0].Sig_Mianyue
         this.ipt.items_2[2].note = dat[0].Memo_4
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

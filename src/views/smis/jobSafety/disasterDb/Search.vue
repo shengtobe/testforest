@@ -195,7 +195,6 @@ export default {
                 ],
             }).then(res => {
                 let tempTable = JSON.parse(res.data.order_list)
-                console.log("exam this.tableItems one: ", this.tableItems[0]);
                 tempTable.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -213,7 +212,7 @@ export default {
                 }
                 
             }).catch(err => {
-                console.log(err)
+                //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
             }).finally(() => {
                 this.chLoadingShow({show:false})
@@ -242,7 +241,6 @@ export default {
             this.pageOpt.page = n
         },
         redirect(item) {
-            console.log("click 詳細內容!")
             //開新分頁
             let routeData = this.$router.resolve({ path: `/smis/jobsafety/disasterdb/${item.EndangerCode}/show` })
             window.open(routeData.href, '_blank')
