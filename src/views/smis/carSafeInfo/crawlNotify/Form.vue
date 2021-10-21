@@ -120,7 +120,7 @@
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
                 <span class="red--text">*</span>
             </h3>
-            <PeopleSelect v-model="ipt.recipients" :isMuti="true" /> 
+            <PeopleSelectMuti :solo="false" :peopleList="ipt.recipients" @getPeople="(obj)=>ipt.recipients=obj.map(e=>e.UserId)"/>
             <!-- <v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select
@@ -235,9 +235,8 @@ import { mapState, mapActions } from 'vuex'
 import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { dapartOptsForMember } from '@/assets/js/departOption'
-import PeopleSelect from '@/components/PeopleSelect'
 import { CreateCarSafelnfo } from '@/apis/smis/carSafeInfo'
-
+import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 export default {
     data: () => ({
         valid: true,  // 表單是否驗證欄位
@@ -290,7 +289,7 @@ export default {
         ],
     }),
     components: {
-        PeopleSelect     
+        PeopleSelectMuti  
     },
     computed: {
         ...mapState ('user', {

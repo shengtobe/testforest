@@ -69,7 +69,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件同仁
             </h3>
-            <PeopleSelect v-model="recipients" :isMuti="true" />
+            <PeopleSelectMuti :solo="false" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
             <!--<v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select
@@ -161,7 +161,7 @@ import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 //import { dapartOptsForMember } from '@/assets/js/departOption'
 import { detail, updateRegul } from '@/apis/smis/carSafeInfo'
-import PeopleSelect from '@/components/PeopleSelect'
+import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 
 export default {
     props: ['id'],  //路由參數
@@ -201,6 +201,7 @@ export default {
             accidentType: { icon: 'mdi-snowflake', title: '事故類型', text: '' },
             status: { icon: 'mdi-ray-vertex', title: '事故事件狀態', text: '' },
         },
+        PeopleComponents: 0
     }),
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -209,7 +210,7 @@ export default {
         },
     },
     components: {
-        PeopleSelect     
+        PeopleSelectMuti  
     },
     computed: {
         ...mapState ('user', {
@@ -302,7 +303,7 @@ export default {
                 { title: '限制日期', value: `${obj.LimitStartDate} ~ ${obj.LimitEndDate}` },
                 { title: '通報人', value: obj.PeopleName },
             ]
-            
+            this.PeopleComponents ++
         },
         
         // 切換部門成員
