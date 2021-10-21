@@ -9,6 +9,8 @@
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
 
+        <FileListShow :fileList="files" title="檔案列表" />
+
         <v-col cols="12" class="mt-8">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-clock</v-icon>工時統計
@@ -612,6 +614,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
+import FileListShow from '@/components/FileListShow.vue'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
 import { acceptanceOrder, withdrawOrder, cancelOrder, delayOrder, railroadrepairList } from '@/apis/workList/maintain'
@@ -621,6 +624,7 @@ export default {
     data: () => ({
         isShowBtn: false,
         groups: [], //
+        files: [],  // 上傳的檔案
         accidents: [],
         done: false,  // 是否完成頁面操作
         totalHourValid: true,  // 總工時是否驗證欄位
@@ -702,6 +706,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        FileListShow,
     },
     watch: {
         // 平交道警報裝置全部失效(有勾選)的話，設施回復預設值
@@ -785,6 +790,7 @@ export default {
             this.workNumber = obj.WorkOrderID  // 工單編號
             this.topItems = obj.topItems  // 上面的欄位資料
             this.bottomItems = obj.bottomItems  // 下面的欄位資料
+            this.files = [ ...obj.FileCount ]  // 檔案附件
             this.tableItems = [ ...obj.WorkTimeCount ]  // 人員工時資料
             let tempFeeTable = [...obj.WorkMaterialList]
             // this.tableItems_fee = [ ...obj.WorkTimeCount ]  // 工時資料
