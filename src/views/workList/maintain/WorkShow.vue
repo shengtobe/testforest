@@ -364,6 +364,17 @@
         </v-data-table>
     </v-card>
 
+    <!-- 檔案上傳 (證據)，新增時 -->
+    <template>
+        <UploadFileAdd
+            title="證據上傳"
+            :uploadDisnable="false"
+            :fileList="showFiles"
+            @joinFile="joinFile"
+            @rmFile="rmFile"
+        />
+    </template>
+
     <v-row>
         <!-- 操作按鈕 -->
         <v-col cols="12" class="text-center">
@@ -430,6 +441,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import EquipRepairCode from '@/components/EquipRepairCode'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
@@ -447,6 +459,7 @@ export default {
         Lv5Code: '', //工作項編碼
         LvAllName: '', // 中文
         initCode: '', //最初始的code
+        showFiles: [],  // 要顯示的縮圖
         selectWorkArr0: [],
         selectWorkArr: [],
         selectWorkArr_eqCode: [],
@@ -477,6 +490,7 @@ export default {
             endFixHour: '00',  // 完工-時
             endFixMin: '00',  // 完工-分
             fixSituation: '',  // 維修情況
+            files: [],  // 檔案(證據)
         },
         errorSituation: '',  // 必填欄位背景色-維修情況
         topItems: [],  // 上面的欄位
@@ -516,6 +530,7 @@ export default {
     components: {
         TopBasicTable,
         BottomTable,
+        UploadFileAdd,
         EquipRepairCode
     },
     computed: {
@@ -546,6 +561,21 @@ export default {
         },
     },
     methods: {
+        // 加入檔案 (組件用)
+        // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
+        joinFile(obj, bool) {
+            console.log("obj: ", obj);
+            if (bool) {
+                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+            } else {
+                this.showFiles.push(obj)  // 加入要顯示的縮圖
+            }
+        },
+        // 移除要上傳的檔案 (組件用)
+        rmFile(idx) {
+            this.showFiles.splice(idx, 1)
+            this.ipt.files.splice(idx, 1)
+        },
         //抓取未確認的設備標示編碼 getEqName
         getTempName(value) {
             this.Lv5Name = value
@@ -681,6 +711,7 @@ export default {
                         FinishDHour: this.ipt.endFixHour,  // 完工日期(小時)
                         FinishDTime: this.ipt.endFixMin,  // 完工日期(分)
                         MaintainStatus: this.ipt.fixSituation,  // 維修情況
+                        FileCount: this.ipt.files, // 證據檔案上傳
                         WorkTimeData: this.jobHour.items,  // 工時統計資料
                         // MaintainCode_Eqp: '',
                         // MaintainCode_Seq: '',

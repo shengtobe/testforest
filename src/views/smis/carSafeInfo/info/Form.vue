@@ -108,7 +108,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
+                <PeopleSelect :key="k1" :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.recipients"
@@ -136,7 +136,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
+                <PeopleSelect :key="k2" :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.cc"
@@ -164,7 +164,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
+                <PeopleSelect :key="k3" :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.joiners"
@@ -245,6 +245,9 @@ import { fetchSupervisor } from '@/apis/workList/maintain'
 
 export default {
     data: () => ({
+        k1: 0,
+        k2: 0,
+        k3: 0,
         getOrg_objneed: {},
         valid: true,  // 表單是否驗證欄位
         saveBtnShow: true, // 送出按鈕顯示
@@ -448,16 +451,19 @@ export default {
             // this.ipt.cc = [ ...obj.RecCopy ] // 副本
             // this.ipt.joiners = [ ...obj.JoinPeople ] // 加會人
             this.ipt.files = [ ...obj.FileCount ] // 附件檔案
+            this.k1++
+            this.k2++
+            this.k3++
         },
         // 設定資料
-        setInitDate(obj) {
-            this.ipt.title = obj.title // 通報主題
-            this.ipt.desc = obj.desc // 發布內容
-            this.ipt.recipients = [ ...obj.recipients ] // 收件人
-            this.ipt.cc = [ ...obj.cc ] // 副本
-            this.ipt.joiners = [ ...obj.joiners ] // 加會人
-            this.ipt.files = [ ...obj.files ] // 附件檔案
-        },
+        // setInitDate(obj) {
+        //     this.ipt.title = obj.title // 通報主題
+        //     this.ipt.desc = obj.desc // 發布內容
+        //     this.ipt.recipients = [ ...obj.recipients ] // 收件人
+        //     this.ipt.cc = [ ...obj.cc ] // 副本
+        //     this.ipt.joiners = [ ...obj.joiners ] // 加會人
+        //     this.ipt.files = [ ...obj.files ] // 附件檔案
+        // },
         // 切換部門成員
         changeDepart() {
             this.chLoadingShow({show:true})
