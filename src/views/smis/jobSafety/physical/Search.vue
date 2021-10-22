@@ -237,12 +237,12 @@
     <v-dialog v-model="delDialog" max-width="350px">
         <v-card class="theme-del-card">
             <v-card-title class="white--text px-4 py-1 headline"
-            >確認是否刪除?</v-card-title
+            >確認是否停用?</v-card-title
             >
             <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn class="btn-close white--text" @click="delDialog=false">取消</v-btn>
-            <v-btn class="btn-delete white--text" @click="godel">刪除</v-btn>
+            <v-btn class="btn-delete white--text" @click="godel">停用</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -480,7 +480,7 @@ export default {
                     { text: '健檢資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '70' },
                 ]
                 if(this.isShowBtn){
-                   this.headers.push({ text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '130' })
+                   this.headers.push({ text: '編輯、停用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold shadowText', width: '130' })
                 }
                 
                 //
