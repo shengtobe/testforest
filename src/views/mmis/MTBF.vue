@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">MTBF分析</h2>
+    <h2 class="mb-4 label-title">MTBF 平均故障間隔時間</h2>
     <!-- 查詢表單 -->
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="4" md="3">

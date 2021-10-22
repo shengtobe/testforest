@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1200px">
+<v-container style="max-width: 1400px">
     <h2 class="mb-4 label-title">通報編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
@@ -275,6 +275,15 @@
                         {{ accidentEventStatus.find(ele => ele.value == item.AccidentStatus).text }}
                     </template>
 
+                    <template v-slot:item.detail="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            :loading="isLoading"
+                            @click="redirect(item.AccidentCode, 11)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab class="btn-detail"
                             @click="pick1Event(item)"
@@ -354,6 +363,15 @@
                         <template v-slot:item.status="{ item }">
                             <span>{{ opts1_2.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
                         </template>
+                        
+                        <template v-slot:item.detail="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                :loading="isLoading"
+                                @click="redirect(item.EndangerCode, 12)"
+                            >
+                                <v-icon dark>mdi-file-document</v-icon>
+                            </v-btn>
+                        </template>
                         <!-- headers 的 content 欄位 (危害說明) -->
                         <template v-slot:item.harmDesp="{ item }">
                             <span>{{ item.EndangerDesp }}</span>
@@ -431,6 +449,15 @@
                             <span>{{ opts.status.find(ele => ele.value == item.AccidentStatus).text }}</span>
                         </template>
 
+                        <template v-slot:item.detail="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                :loading="isLoading"
+                                @click="redirect(item.AccidentCode, 21)"
+                            >
+                                <v-icon dark>mdi-file-document</v-icon>
+                            </v-btn>
+                        </template>
+
                         <template v-slot:item.content="{ item }">
                             <v-btn small dark fab class="btn-detail"
                                 @click="pick2Event(item)"
@@ -505,6 +532,15 @@
 
                         <template v-slot:item.level="{ item }">
                             {{ transferLevelText(item.level) }}
+                        </template>
+
+                        <template v-slot:item.detail="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                :loading="isLoading"
+                                @click="redirect(item.EndangerCode, 22)"
+                            >
+                                <v-icon dark>mdi-file-document</v-icon>
+                            </v-btn>
                         </template>
 
                         <template v-slot:item.content="{ item }">
@@ -674,16 +710,17 @@ export default {
         ],
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
-        headers1_1: [  // 表格顯示的欄位
+        headers1_1: [  // 表格顯示既有行安事故的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
             { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
             { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
             { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
-        headers1_2: [  // 表格顯示的欄位
+        headers1_2: [  // 表格顯示既有行安危害的欄位
             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
             { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
@@ -691,22 +728,25 @@ export default {
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 260 },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
         ],
-        headers2_1: [  // 表格顯示的欄位
+        headers2_1: [  // 表格顯示既有職安事故的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
-        headers2_2: [  // 表格顯示的欄位
+        headers2_2: [  // 表格顯示既有職安危害的欄位
              { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         opts: {
@@ -892,6 +932,7 @@ export default {
                             this.tableItems.push(element)
                             // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                         });
+                        console.log("tableItems: ", this.tableItems);
                     }).catch(err => {
                         //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -1276,6 +1317,28 @@ export default {
             else{
                 this.ipt1_1.evtType2 = ''
             }
+        },
+        redirect(id, type) {
+            //開新分頁
+            //type:
+            //11:既有行車事故  12:既有行車危害
+            //21:既有職災事故  22:既有職災危害
+            let routeData
+            switch(type){
+                case 11://既有行車事故
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${id}/show` })
+                    break;
+                case 12://既有行車危害
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${id}/show` })
+                    break;
+                case 21://既有職災事故
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${id}/show` })
+                    break;
+                case 22://既有職災危害
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disasterdb/${id}/show` })
+                    break;
+            }
+            window.open(routeData.href, '_blank')
         },
         // 初始化資料
         setShowData(obj) {
