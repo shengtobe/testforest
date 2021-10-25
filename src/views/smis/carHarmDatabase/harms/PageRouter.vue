@@ -54,9 +54,10 @@ export default {
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
-                        this.status = res.data.EndangerStatus  // 狀態
+                        console.log("else");
+                        // this.status = res.data.EndangerStatus  // 狀態
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
-
+                        console.log("1");
                         // 組合影響、運轉影響情形字串
                         let affectsArr = []
                         if (res.data.EffectTraveler == 'T') affectsArr.push('影響旅客')
@@ -65,6 +66,7 @@ export default {
                         if (res.data.ServiceCarError == 'T') affectsArr.push('列車誤點')
                         if (res.data.ServiceStopError == 'T') affectsArr.push('中斷營運')
 
+                        console.log("2");
 
                         // 組合衍生事故字串
                         let accidentsTxt = '<lu>'
@@ -72,6 +74,7 @@ export default {
                             accidentsTxt += `<li>${evtTypes.find(ele => ele.value == item).text}</li>`
                         })
                         accidentsTxt += '</lu>'
+                        console.log("3");
 
                         let topItems = [  // 上面的欄位
                             { icon: 'mdi-ray-vertex', title: '危害狀態', text: carHarmDbStatus.find(ele => ele.value == res.data.EndangerStatus).text },
@@ -82,6 +85,7 @@ export default {
                             { icon: 'mdi-signal-variant', title: '風險頻率', text: riskFrequency.find(ele => ele.value == res.data.RiskFreq).text },
                             { icon: 'mdi-elevation-rise', title: '風險等級', text: riskLevel.find(ele => ele.value == res.data.RiskLevel).text },
                         ]
+                        console.log("4");
 
                         // 設定下面的欄位資料
                         let bottomItems = [
@@ -92,6 +96,7 @@ export default {
                             { dataType: 'text', oneline: true, icon: 'none', title: '影響、運轉影響情形', text: affectsArr.join('、') },
                             { dataType: 'text', oneline: false, icon: 'none', title: '衍生事故', text: accidentsTxt },
                         ]
+                        console.log("5");
 
                         
 
