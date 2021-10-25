@@ -37,7 +37,7 @@
 
         <v-col cols="12" class="mt-8" v-if="status == 3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>加會意見
+                <v-icon class="mr-1 mb-1">mdi-pen</v-icon>填寫加會意見
                 <span class="red--text">*</span>
             </h3>
             <v-textarea
@@ -51,7 +51,7 @@
         </v-col>
 
         <!-- 加會意見列表 -->
-        <v-col cols="12" class="mt-8" v-if="status == 4">
+        <v-col cols="12" class="mt-8" v-if="status == 4 || status == 3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>加會意見
             </h3>
