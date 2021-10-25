@@ -193,10 +193,10 @@ export default {
     getLvOptions:function() {
         const that = this
         let rtnObj = {
-            Lv1: that.selectOptions.Lv1,
-            Lv2: that.selectOptions?.Lv2?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:ele.text,value:ele.value})) || [],
-            Lv3: that.selectOptions?.Lv3?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:ele.text,value:ele.value})) || [],
-            Lv4: that.selectOptions?.Lv4?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:ele.text,value:ele.value})) || [],
+            Lv1: that.selectOptions?.Lv1?.map(e=>({text:(e.text+(e.text.includes('事故-')?"率":"")),value:e.value})),
+            Lv2: that.selectOptions?.Lv2?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:(ele.text+(ele.text.includes('事故-')?"率":"")),value:ele.value})) || [],
+            Lv3: that.selectOptions?.Lv3?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:(ele.text+(ele.text.includes('事故-')?"率":"")),value:ele.value})) || [],
+            Lv4: that.selectOptions?.Lv4?.filter(e=>e.parent.find(ele=>that.selectValues.Lv1==ele.Code))?.map(ele=>({text:(ele.text+(ele.text.includes('事故-')?"率":"")),value:ele.value})) || [],
         }
         return rtnObj
     },
