@@ -348,6 +348,7 @@ export default {
       this.ModalControl.Delete = true
     },
     goDelete() {
+      this.chLoadingShow({show:true})
       materialRequistisionDelete({
         FlowId: this.Flow.Delete
       }).then(res=>{
@@ -360,13 +361,14 @@ export default {
         }
       }).catch(err=>{
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
-      })
+      }).finally(()=>{this.chLoadingShow({show:false})})
     },
     wantBack(flowId) {
       this.Flow.Back = flowId
       this.ModalControl.Back = true
     },
     goBack() {
+      this.chLoadingShow({show:true})
       materialRequistisionReturn({
         FlowId: this.Flow.Back
       }).then(res=>{
@@ -379,13 +381,14 @@ export default {
         }
       }).catch(err=>{
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料駁回失敗' })
-      })
+      }).finally(()=>{this.chLoadingShow({show:false})})
     },
     wantConfirm(flowId) {
       this.Flow.Confirm = flowId
       this.ModalControl.Confirm = true
     },
     goConfirm() {
+      this.chLoadingShow({show:true})
       materialRequistisionConfirm({
         FlowId: this.Flow.Confirm
       }).then(res=>{
@@ -398,7 +401,7 @@ export default {
         }
       }).catch(err=>{
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料移轉失敗' })
-      })
+      }).finally(()=>{this.chLoadingShow({show:false})})
     }
   },
 };
