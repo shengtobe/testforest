@@ -323,6 +323,7 @@ export default {
     goSearch() {
       this.tableControl.loading = true
       this.tableControl.items = []
+      this.chLoadingShow({show:true})
       materialRequistisionList({
         ...this.searchData,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -336,7 +337,7 @@ export default {
         }
       }).catch(err=>{
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料查詢失敗' })
-      })
+      }).finally(()=>{this.chLoadingShow({show:false})})
     },
     goMemo(memo) {
       this.Memos = memo
