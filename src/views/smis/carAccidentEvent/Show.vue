@@ -125,7 +125,7 @@
                 >編輯</v-btn>
 
                 <v-btn dark class="ma-2 btn-add"
-                    v-if="isShowBtn"
+                    v-if="false"
                     @click="word"
                 >列印</v-btn>
 
