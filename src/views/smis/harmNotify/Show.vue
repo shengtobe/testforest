@@ -625,6 +625,38 @@
         @closeShow="dialogShow.jobHarm = false"
         @connect="connect"
     /> -->
+    <!-- 不立案原因 dialog -->
+    <v-dialog v-model="NoRecordDialog" max-width="600px">
+        <v-card>
+            <v-toolbar dark flat dense color="error" class="mb-2">
+                <v-toolbar-title>不立案原因</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="NoRecordDialog = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12">
+                        <v-textarea
+                            hide-details
+                            solo
+                            rows="8"
+                            placeholder="請輸入原因"
+                            v-model.trim="NoRecordReason"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="NoRecordClick(false)">取消</v-btn>
+                <v-btn color="success"  elevation="4" :loading="isLoading" @click="NoRecordClick(true)">送出</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -658,6 +690,9 @@ export default {
         arr1: [], // 重大事故
         arr2: [], // 一般事故
         arr3: [], // 異常事件
+        NoRecordReason: '', // 不立案原因
+        NoRecordDialog: false,  // 退回 dialog 是否顯示
+        NoRecordPress: '', // 退回 dialog 按了甚麼
         status: '',  // 狀態
         pick1: '', // 既有行安事故編號
         pick2: '', // 既有行安事故編號
@@ -1502,7 +1537,21 @@ export default {
                 }
             }
             this.NoRecord = (IsNoRecord)?'T':'F';
-            this.save();
+            if(IsNoRecord){
+                this.NoRecordDialog = true;
+            }
+            else{
+                this.save();
+            }
+        },
+        NoRecordClick(IsSend){
+            this.NoRecordDialog = false;
+            if(IsSend){
+                this.save();
+            }
+            else{
+                this.NoRecordReason = '';
+            }
         },
         // 顯示檢視內容
         showContent(txt) {
@@ -1585,9 +1634,10 @@ export default {
                     ChangeRecord: 'F',  // 是否變更立案類型
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    Reason: this.NoRecordReason,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.chMsgbar({ success: true, msg: '操作完成'})
                         this.done = true  // 隱藏按鈕
                         // =================自動轉跳=================
                         if(res.data.EventCode == '' || res.data.EventCode == null){
