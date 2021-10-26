@@ -368,7 +368,7 @@
     <!-- 檔案上傳 (證據)，新增時 -->
     <template>
         <UploadFileAdd
-            title="證據上傳"
+            title="維修照片上傳"
             :uploadDisnable="false"
             :fileList="showFiles"
             @joinFile="joinFile"
@@ -565,7 +565,6 @@ export default {
         // 加入檔案 (組件用)
         // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
         joinFile(obj, bool) {
-            console.log("obj: ", obj);
             if (bool) {
                 this.ipt.files.push(obj)  // 加入要上傳後端的檔案
             } else {
@@ -654,7 +653,6 @@ export default {
                 MaintainCode_Eqp: '',
                 MaintainCode_Seq: '',
             }))
-            console.log("this.jobHour.items: ", this.jobHour.items);
 
             // 向後端查詢工作項
             fetchJobName({

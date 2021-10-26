@@ -24,6 +24,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    disable-pagination
                     class="theme-table"
                 >
                     <template v-slot:no-data>

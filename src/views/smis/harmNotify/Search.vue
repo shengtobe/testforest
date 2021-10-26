@@ -269,7 +269,6 @@ export default {
                 IsFirstLoad: (bool)? 'T' : 'F',
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
-                console.log("this.tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){

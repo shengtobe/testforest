@@ -967,7 +967,6 @@ export default {
                             this.tableItems.push(element)
                             // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                         });
-                        console.log("tableItems: ", this.tableItems);
                     }).catch(err => {
                         //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')

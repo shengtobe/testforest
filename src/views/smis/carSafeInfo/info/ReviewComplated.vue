@@ -309,7 +309,6 @@ export default {
         // 初始化資料
         setShowData(obj) {
             let order_list = JSON.parse(obj.order_list)
-            console.log("order_list: ", order_list);
             // this.chLoadingShow({show:true})
             this.chLoadingShow({ show: true})
             
@@ -472,7 +471,6 @@ export default {
                 // { text: '讀取時間', value: 'time', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 // { text: '是否已留意見', value: 'hasMsg', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
                 
-                console.log("this.joinTableItems: ", this.joinTableItems);
                 //收件人 tableItems
             this.chLoadingShow({ show: false})
             
