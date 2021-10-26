@@ -71,6 +71,15 @@ export const harmNotifyStatus = [
     { text: '審核中', value: '4' },
 ]
 
+// 危害通報狀態
+export const harmNotifyStatus0 = [
+    { text: '不限', value: '' },
+    { text: '未回覆', value: '1' },
+    { text: '已回覆尚未立案', value: '2' },
+    { text: '已結案', value: '3' },
+    { text: '審核中', value: '4' },
+]
+
 // // 事故類型
 // export const evtTypes = [
 //     { text: '重大事故-正線衝撞', value: 'M1' },

@@ -243,11 +243,11 @@
                                     <strong class="black--text">統計分析</strong>
                                 </v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/mmis/analy/mttr">MTTR 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mttr">MTTR 平均修復時間</v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/mmis/analy/mtbf">MTBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mtbf">MTBF 平均故障間隔時間</v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/mmis/analy/mkbf">MKBF 分析</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/analy/mkbf">MKBF 系統營運可靠度</v-list-item>
                                 <v-divider />
 
                                 <!-- 報表管理 -->

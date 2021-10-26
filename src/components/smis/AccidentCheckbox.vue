@@ -56,10 +56,13 @@ export default {
             ClientReqTime: getNowFullTime(),  // client 端請求時間
         }).then(res => {
             if (res.data.ErrorCode == 0) {
-                this.groups = res.data.AccidentCount;
-                // this.evtTypeOpts = JSON.parse(res.data.order_list)
-
-                // this.accidents = [ ...this.checkArr ]
+                // this.groups = res.data.AccidentCount;
+                let acc3 = []
+                res.data.AccidentCount[2].TypeList.forEach(item => {
+                    if(item.Value.includes('O') == false)
+                        acc3.push(item)
+                });
+                this.groups = [res.data.AccidentCount[0], res.data.AccidentCount[1], {TypeList: acc3, TypeName: "異常事件"}]
             } else {
                 // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

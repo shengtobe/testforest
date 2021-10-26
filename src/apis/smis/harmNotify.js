@@ -64,3 +64,12 @@ export function analysis2(data) { return axios(
         data,
     }
 )}
+
+// 主管同意不立案/退回
+export function noRecord(data) { return axios(
+    {
+        url: '/sms/dangernotify/check',
+        method: 'post',
+        data,
+    }
+)}

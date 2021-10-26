@@ -50,13 +50,11 @@ export default {
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("res.data: ", res.data);
                     if (res.data.DelStatus == 'T') {  // 若已刪除則轉404頁
                         this.$router.push({ path: '/404' })
                     } else {
                         this.status = res.data.EndangerStatus  // 狀態
                         let controls = JSON.parse(res.data.order_list)  // 已選控制措施
-
                         // 組合影響、運轉影響情形字串
                         let affectsArr = []
                         if (res.data.EffectTraveler == 'T') affectsArr.push('影響旅客')

@@ -68,7 +68,7 @@
               >
                 <v-icon dark>mdi-pen</v-icon>
               </v-btn>
-              <v-btn title="刪除" small dark fab class="btn-delete" @click="openDelete(item.FlowId)">
+              <v-btn title="停用" small dark fab class="btn-delete" @click="openDelete(item.FlowId)">
                 <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
@@ -86,11 +86,11 @@
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
         <v-card>
-          <v-card-title class="red white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+          <v-card-title class="red white--text px-4 py-1 headline">確認是否停用?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn @click="close">取消</v-btn>
-            <v-btn color="success" @click="goDelete()">刪除</v-btn>
+            <v-btn color="success" @click="goDelete()">停用</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -192,7 +192,7 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "修改、刪除",
+        text: "修改、停用",
         value: "a8",
         align: "center",
         divider: true,
@@ -290,13 +290,13 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          that.chMsgbar({success:true, msg:'刪除成功！'})
+          that.chMsgbar({success:true, msg:'停用成功！'})
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
         }
       }).catch( err => {
-        this.chMsgbar({ success: false, msg: '伺服器發生問題，刪除失敗' })
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，停用失敗' })
       }).finally(() => {
         that.chLoadingShow({show:false})
         that.close()

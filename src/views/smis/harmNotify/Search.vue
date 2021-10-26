@@ -181,7 +181,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
-import { harmNotifyStatus } from '@/assets/js/smisData'
+import { harmNotifyStatus0 } from '@/assets/js/smisData'
 import Pagination from '@/components/Pagination.vue'
 import { fetchList } from '@/apis/smis/harmNotify'
 
@@ -198,7 +198,7 @@ export default {
         },
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
-        statusOpts: harmNotifyStatus,  // 狀態下拉選單
+        statusOpts: harmNotifyStatus0,  // 狀態下拉選單
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位

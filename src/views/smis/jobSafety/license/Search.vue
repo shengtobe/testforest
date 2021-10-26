@@ -94,16 +94,16 @@
     <v-dialog v-model="dialog" max-width="700px">
         <LicenseEdit :key="componentKey" @cancel="cancel" :license="ipt"/> 
     </v-dialog>
-    <!-- 刪除 -->
+    <!-- 停用 -->
     <v-dialog v-model="delDialog" max-width="350px">
         <v-card class="theme-del-card">
             <v-card-title class="red white--text px-4 py-1 headline"
-            >會連同所有人員資料一併刪除，你確定要刪除嗎?</v-card-title
+            >會連同所有人員資料一併停用，你確定要停用嗎?</v-card-title
             >
             <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn class="btn-close" dark @click="delDialog=false">取消</v-btn>
-            <v-btn class="btn-delete" dark @click="del(delItem)">刪除</v-btn>
+            <v-btn class="btn-delete" dark @click="del(delItem)">停用</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -130,7 +130,7 @@ export default {
             { text: '有效時間(年)', value: 'ValidityPeriod', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '備註', value: 'Memo', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '70' },
             { text: '人員資料', value: 'link', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '編輯、刪除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '130' },
+            { text: '編輯、停用', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: '130' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
@@ -218,7 +218,7 @@ export default {
             this.delItem = item
             this.delDialog = true
         },
-        // 刪除
+        // 停用
         del(item) {
             this.chLoadingShow({show:true})
             licenseRcdOption({
@@ -228,14 +228,14 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res=>{
                 if (res.data.ErrorCode == 0) {
-                    this.chMsgbar({ success: false, msg: '資料刪除成功' })
+                    this.chMsgbar({ success: false, msg: '資料停用成功' })
                 }else{
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
                 }
             }).catch( err => {
                 console.warn(err)
-                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+                this.chMsgbar({ success: false, msg: '伺服器發生問題，資料停用失敗' })
             }).finally(() => {
                 this.chLoadingShow({show:false})
                 this.delDialog = false

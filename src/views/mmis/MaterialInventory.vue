@@ -206,14 +206,14 @@
       <v-dialog v-model="Edit" max-width="900px">
         <CmaterialEdit @close="close" :materCode="nowMaterial" :deptCode="nowDept" DType="edit" :key="componentKey" @save="save"></CmaterialEdit>
       </v-dialog>
-      <!-- 刪除 modal -->
+      <!-- 停用 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
         <v-card class="theme-del-card">
-          <v-card-title class="white--text px-4 py-1 headline">確認是否刪除?</v-card-title>
+          <v-card-title class="white--text px-4 py-1 headline">確認是否停用?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn class="btn-close white--text" @click="close">取消</v-btn>
-            <v-btn class="btn-delete white--text" @click="goDelete">刪除</v-btn>
+            <v-btn class="btn-delete white--text" @click="goDelete">停用</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -456,13 +456,13 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if(res.data.ErrorCode == 0){
-          this.chMsgbar({success:true, msg:'資料刪除成功！'})
+          this.chMsgbar({success:true, msg:'資料停用成功！'})
         }else{
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
         }
       }).catch( err => {
-        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料刪除失敗' })
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料停用失敗' })
       }).finally(() => {
         this.chLoadingShow({ show: false})
         this.searchData()

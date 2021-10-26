@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1200px">
+<v-container style="max-width: 1400px">
     <h2 class="mb-4 label-title">通報編號：{{ id }}</h2>
 
     <!-- 上面的欄位 -->
@@ -275,6 +275,15 @@
                         {{ accidentEventStatus.find(ele => ele.value == item.AccidentStatus).text }}
                     </template>
 
+                    <template v-slot:item.detail="{ item }">
+                        <v-btn small dark fab class="btn-detail"
+                            :loading="isLoading"
+                            @click="redirect(item.AccidentCode, 11)"
+                        >
+                            <v-icon dark>mdi-file-document</v-icon>
+                        </v-btn>
+                    </template>
+
                     <template v-slot:item.content="{ item }">
                         <v-btn small dark fab class="btn-detail"
                             @click="pick1Event(item)"
@@ -354,6 +363,15 @@
                         <template v-slot:item.status="{ item }">
                             <span>{{ opts1_2.status.find(ele => ele.value == item.EndangerStatus).text }}</span>
                         </template>
+                        
+                        <template v-slot:item.detail="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                :loading="isLoading"
+                                @click="redirect(item.EndangerCode, 12)"
+                            >
+                                <v-icon dark>mdi-file-document</v-icon>
+                            </v-btn>
+                        </template>
                         <!-- headers 的 content 欄位 (危害說明) -->
                         <template v-slot:item.harmDesp="{ item }">
                             <span>{{ item.EndangerDesp }}</span>
@@ -431,6 +449,15 @@
                             <span>{{ opts.status.find(ele => ele.value == item.AccidentStatus).text }}</span>
                         </template>
 
+                        <template v-slot:item.detail="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                :loading="isLoading"
+                                @click="redirect(item.AccidentCode, 21)"
+                            >
+                                <v-icon dark>mdi-file-document</v-icon>
+                            </v-btn>
+                        </template>
+
                         <template v-slot:item.content="{ item }">
                             <v-btn small dark fab class="btn-detail"
                                 @click="pick2Event(item)"
@@ -505,6 +532,15 @@
 
                         <template v-slot:item.level="{ item }">
                             {{ transferLevelText(item.level) }}
+                        </template>
+
+                        <template v-slot:item.detail="{ item }">
+                            <v-btn small dark fab class="btn-detail"
+                                :loading="isLoading"
+                                @click="redirect(item.EndangerCode, 22)"
+                            >
+                                <v-icon dark>mdi-file-document</v-icon>
+                            </v-btn>
                         </template>
 
                         <template v-slot:item.content="{ item }">
@@ -589,6 +625,38 @@
         @closeShow="dialogShow.jobHarm = false"
         @connect="connect"
     /> -->
+    <!-- 不立案原因 dialog -->
+    <v-dialog v-model="NoRecordDialog" max-width="600px">
+        <v-card>
+            <v-toolbar dark flat dense color="error" class="mb-2">
+                <v-toolbar-title>不立案原因</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="NoRecordDialog = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12">
+                        <v-textarea
+                            hide-details
+                            solo
+                            rows="8"
+                            placeholder="請輸入原因"
+                            v-model.trim="NoRecordReason"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="NoRecordClick(false)">取消</v-btn>
+                <v-btn color="success"  elevation="4" :loading="isLoading" @click="NoRecordClick(true)">送出</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -622,6 +690,9 @@ export default {
         arr1: [], // 重大事故
         arr2: [], // 一般事故
         arr3: [], // 異常事件
+        NoRecordReason: '', // 不立案原因
+        NoRecordDialog: false,  // 退回 dialog 是否顯示
+        NoRecordPress: '', // 退回 dialog 按了甚麼
         status: '',  // 狀態
         pick1: '', // 既有行安事故編號
         pick2: '', // 既有行安事故編號
@@ -674,16 +745,17 @@ export default {
         ],
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
-        headers1_1: [  // 表格顯示的欄位
+        headers1_1: [  // 表格顯示既有行安事故的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
             { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
             { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
             { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
         ],
-        headers1_2: [  // 表格顯示的欄位
+        headers1_2: [  // 表格顯示既有行安危害的欄位
             { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '營運模式', value: 'mode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
             { text: '風險嚴重性', value: 'serious', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
@@ -691,22 +763,25 @@ export default {
             { text: '風險等級', value: 'level', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
             { text: '危害說明', value: 'harmDesp', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 260 },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 90 },
         ],
-        headers2_1: [  // 表格顯示的欄位
+        headers2_1: [  // 表格顯示既有職安事故的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '發生部門', value: 'HappenDepart', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '罹災者姓名', value: 'HurtPeopleName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '發生日期', value: 'HappenDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
-        headers2_2: [  // 表格顯示的欄位
+        headers2_2: [  // 表格顯示既有職安危害的欄位
              { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '內容', value: 'detail', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '選用', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         opts: {
@@ -892,6 +967,7 @@ export default {
                             this.tableItems.push(element)
                             // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                         });
+                        console.log("tableItems: ", this.tableItems);
                     }).catch(err => {
                         //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -1277,6 +1353,28 @@ export default {
                 this.ipt1_1.evtType2 = ''
             }
         },
+        redirect(id, type) {
+            //開新分頁
+            //type:
+            //11:既有行車事故  12:既有行車危害
+            //21:既有職災事故  22:既有職災危害
+            let routeData
+            switch(type){
+                case 11://既有行車事故
+                    routeData = this.$router.resolve({ path: `/smis/car-accident-event/${id}/show` })
+                    break;
+                case 12://既有行車危害
+                    routeData = this.$router.resolve({ path: `/smis/car-harmdb/harms/${id}/show` })
+                    break;
+                case 21://既有職災事故
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disaster-survey/${id}/show` })
+                    break;
+                case 22://既有職災危害
+                    routeData = this.$router.resolve({ path: `/smis/jobsafety/disasterdb/${id}/show` })
+                    break;
+            }
+            window.open(routeData.href, '_blank')
+        },
         // 初始化資料
         setShowData(obj) {
             this.status = obj.ReportStatus  // 狀態(用來判斷是否已回覆通報人)
@@ -1439,7 +1537,21 @@ export default {
                 }
             }
             this.NoRecord = (IsNoRecord)?'T':'F';
-            this.save();
+            if(IsNoRecord){
+                this.NoRecordDialog = true;
+            }
+            else{
+                this.save();
+            }
+        },
+        NoRecordClick(IsSend){
+            this.NoRecordDialog = false;
+            if(IsSend){
+                this.save();
+            }
+            else{
+                this.NoRecordReason = '';
+            }
         },
         // 顯示檢視內容
         showContent(txt) {
@@ -1522,9 +1634,10 @@ export default {
                     ChangeRecord: 'F',  // 是否變更立案類型
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    Reason: this.NoRecordReason,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.chMsgbar({ success: true, msg: '操作完成'})
                         this.done = true  // 隱藏按鈕
                         // =================自動轉跳=================
                         if(res.data.EventCode == '' || res.data.EventCode == null){

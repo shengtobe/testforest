@@ -127,18 +127,18 @@
                 @click="closeWindow"
             >關閉視窗</v-btn>
 
-            <template v-if="(!done) && isShowBtn">
+            <template >
                 <v-btn dark  class="ma-2 btn-modify"
-                    @click="edit"
+                    @click="edit" v-if="(!done) && isShowBtn"
                 >變更立案類型</v-btn>
 
-                <!-- <v-btn dark  class="ma-2" color="error"
-                    @click="dialog = true" 
+                <v-btn dark  class="ma-2" color="error"
+                    @click="dialog = true"  v-if="(!done) && isShowBtn_s4"
                 >退回</v-btn>
 
                 <v-btn dark  class="ma-2" color="success"
-                    @click="save"
-                >同意不立案</v-btn> -->
+                    @click="save" v-if="(!done) && isShowBtn_s4"
+                >同意不立案</v-btn>
             </template>
         </v-col>
     </v-row>
@@ -187,7 +187,8 @@ import BottomTable from '@/components/BottomTable.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { carEventItems, jobEventItems } from '@/assets/js/smisTestData'
 import { locationOpts } from '@/assets/js/smisData'
-import { recordNotify } from '@/apis/smis/harmNotify'
+import { recordNotify, noRecord } from '@/apis/smis/harmNotify'
+import { fetchSupervisor } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -195,6 +196,7 @@ export default {
     data: () => ({
         routeId: '',
         isShowBtn: false,
+        isShowBtn_s4: false,
         done: false,  // 是否完成頁面操作
         topItems: {  // 上面的欄位
             creater: { icon: 'mdi-account', title: '通報人', text: '' },
@@ -229,7 +231,7 @@ export default {
         dialog: false,  // dialog 是否顯示
         backReason: '',  // 退回原因
     }),
-    components: { TopBasicTable, BottomTable, FileListShow },
+    components: { TopBasicTable, BottomTable, FileListShow, fetchSupervisor },
     watch: {
         // 路由參數變化時，重新向後端取資料
         $route(to, from) {
@@ -301,7 +303,27 @@ export default {
             this.files = [ ...obj.FileCount ]  // 檔案附件
             this.replayMsg = obj.ReplyMsg  // 回覆訊息
             this.isShowBtn = this.groupData.RoleLv2 == "T" || this.groupData.RoleLv3 == "T"
-
+            if(obj.ReportStatus == '4'){ // 審核中
+                this.isShowBtn = false
+                let sup
+                fetchSupervisor({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    ReqID: obj.NoticePeopleId,  // 立單人id
+                }).then(res => {
+                    // this.isShowBtn = res.data == this.userData.UserId
+                    sup = res.data.ID
+                    if(this.userData.UserId == sup){ // 如果登入者是主管
+                        this.isShowBtn_s4 = true
+                    }
+                    else{ // 都不是
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
+                }).finally(() => {
+                    // this.isLoading = this.dialog = false
+                })
+            }// 審核中 加會中 已發布 END
             // this.topItems.creater.text = `${obj.NoticePeople} (${obj.NoticePeopleId})`  // 通報人
             // // this.topItems.creater.text = obj.NoticePeople  // 通報人
             // this.topItems.depart.text = obj.NoticePeopleDepart  // 部門
@@ -321,35 +343,54 @@ export default {
         },
         // 退回
         withdraw() {
-            this.isLoading = true
+            if (confirm('你確定要退回嗎?')) {
+                this.isLoading = true
+                noRecord({
+                    EndangerID: this.id,  // 通報編號
+                    CheckMode: '2',
+                    Reason: this.backReason,  // 
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '退回成功'})
+                        this.done = true  // 隱藏按鈕
+                        this.dialog = false
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題'})
+                }).finally(() => {
+                    this.chLoadingShow({show:false})
+                })
+            }
+            else{
+                this.chLoadingShow({show:false})
+            }
+            
 
-            setTimeout(() => {
-                this.chMsgbar({ success: true, msg: '退回成功'})
-                this.done = true  // 隱藏頁面操作按鈕
-                this.dialog = false
-            }, 1000)
+            // setTimeout(() => {
+            //     this.chMsgbar({ success: true, msg: '退回成功'})
+            //     this.done = true  // 隱藏頁面操作按鈕
+            //     this.dialog = false
+            // }, 1000)
         },
         // 同意不立案
         save() {
             if (confirm('你確定要不立案嗎?')) {
                 this.chLoadingShow({show:true})
 
-                recordNotify({
+                noRecord({
                     EndangerID: this.id,  // 通報編號
-                    DriveRecordType: 'no',  // 行安立案類型
-                    DriveRecordCase: 'no',  // 行安立案種類
-                    ProfesRecordType: 'no',  // 職安立案類型
-                    ProfesRecordCase: 'no',  // 職安立案種類
-                    DriveConnectID: 'no',
-                    ProfesConnectID: 'no',
-                    EndangerCode: '',
-                    NoRecord: 'T',  // 是否不立案
-                    ChangeRecord: 'F',  // 是否變更立案類型
+                    CheckMode: '1',
+                    Reason: '',  // 
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '立案成功'})
+                        this.chMsgbar({ success: true, msg: '審核完成'})
                         this.done = true  // 隱藏按鈕
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -386,7 +427,10 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '變更立案成功'})
                         this.done = true  // 隱藏按鈕
-                        this.$router.go()
+                        setTimeout(() => {
+                            this.$router.go()
+                        }, 800)
+                        
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
