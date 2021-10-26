@@ -216,6 +216,7 @@
             disable-sort
             disable-filtering
             hide-default-footer
+            disable-pagination
             class="theme-table"
         >
             <template v-slot:no-data>
@@ -653,6 +654,7 @@ export default {
                 MaintainCode_Eqp: '',
                 MaintainCode_Seq: '',
             }))
+            console.log("this.jobHour.items: ", this.jobHour.items);
 
             // 向後端查詢工作項
             fetchJobName({
