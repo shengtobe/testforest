@@ -104,8 +104,15 @@ export default {
                     case "職災危害":
                         src = `smis/jobsafety/disasterdb/${flowId}/show`
                         break;
+                    default:
+                        src = ""
+                        break;
                 }
-                rtnArr.push(item.slice(0,item.indexOf('(')+1)+`<a target="_blank" href="#/${src}">`+item.slice(item.indexOf('(')+1,item.indexOf(')'))+'</a>'+item.slice(item.indexOf(')')))
+                if(src!=""){
+                  rtnArr.push(item.slice(0,item.indexOf('(')+1)+`<a target="_blank" href="#/${src}">`+item.slice(item.indexOf('(')+1,item.indexOf(')'))+'</a>'+item.slice(item.indexOf(')')))
+                }else{
+                  rtnArr.push(item)  
+                }
             }
             return rtnArr.join("、")
         }
