@@ -22,6 +22,7 @@
                     disable-sort
                     disable-filtering
                     hide-default-footer
+                    disable-pagination
                     class="theme-table"
                 >
                     <template v-slot:no-data>
@@ -808,9 +809,9 @@ export default {
                 MaintainCode_AllName: this.tableItems.find(ele => ele.JobName == item).MaintainCode_AllName,
                 JobCode: this.tableItems.find(ele => ele.JobName == item).JobCode,
                 JobName: item,
-                UnitPrice: tempFeeTable.find(ele => ele.JobName == item).UnitPrice,
+                UnitPrice: this.tableItems.find(ele => ele.JobName == item).UnitPrice,
                 Amount: this.tableItems.find(ele => ele.JobName == item).WorkLoad,
-                Price: tempFeeTable.find(ele => ele.JobName == item).Price,
+                Price: this.tableItems.find(ele => ele.JobName == item).Price,
             }))
             // 要求 平交道項目清單
             railroadrepairList({
