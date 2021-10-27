@@ -1,6 +1,6 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">MKBF 平均修復時間</h2>
+    <h2 class="mb-4 label-title">MKBF 系統營運可靠度</h2>
     <!-- 查詢表單 -->
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="4" md="3">
