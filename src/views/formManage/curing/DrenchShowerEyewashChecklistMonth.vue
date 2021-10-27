@@ -40,7 +40,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
-          class="theme-card"
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
