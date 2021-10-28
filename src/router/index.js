@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 匯入路由表
 import { ProfileRouter } from './moduleRouter/profile'
+import { ReferenceURL } from './moduleRouter/refURL'
 import { AccessRouter } from './moduleRouter/access'
 import { CarHarmdbRouter } from './moduleRouter/smis/carHarmDb'
 import { HarmnotifyRouter } from './moduleRouter/smis/harmNotify'
@@ -37,6 +38,7 @@ const routes = [
     component: () => import('../views/Manage.vue'),
     children: [
       ...ProfileRouter,  // 個人資訊管理 (含首頁)
+      ...ReferenceURL,  // 相關網站
       ...AccessRouter,  // 權限管理
 
       // ------ smis ------

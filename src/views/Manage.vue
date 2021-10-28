@@ -62,6 +62,8 @@
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/form-manage">表單</v-list-item>
                                 <v-divider></v-divider>
+                                <v-list-item @click="showNav = false" to="/refURL">相關網站</v-list-item>
+                                <v-divider></v-divider>
 
                                 <!-- 故障、保養工單 -->
                                 <v-list-item :class="titleColor1" disabled>
