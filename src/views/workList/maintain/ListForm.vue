@@ -594,7 +594,7 @@
 
                 <v-btn
                     class="btn-add white--text"
-                    @click="save"
+                    @click="save" v-if="isShowBtn"
                 >送出</v-btn>
             </v-col>
         </v-row> 
@@ -619,6 +619,7 @@ export default {
         nowEqCode: '', //編輯時 預設帶入的combineCode
         isEdit: false,  // 是否為編輯
         showEq: false,
+        isShowBtn: false,
         workNumber: '',  // 工單編號
         lowReturn: '4',
         creater: '',  // 立案人名稱
