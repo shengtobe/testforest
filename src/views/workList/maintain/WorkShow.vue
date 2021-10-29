@@ -31,6 +31,7 @@
                             transition="scale-transition"
                             max-width="290px"
                             min-width="290px"
+                            :disabled="!isShowBtn"
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
@@ -56,6 +57,7 @@
                             :items="hourOpts"
                             solo
                             hide-details
+                            :disabled="!isShowBtn"
                         ></v-select>
                     </v-col>
 
@@ -65,6 +67,7 @@
                             :items="minOpts"
                             solo
                             hide-details
+                            :disabled="!isShowBtn"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -85,6 +88,7 @@
                             transition="scale-transition"
                             max-width="290px"
                             min-width="290px"
+                            :disabled="!isShowBtn"
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
@@ -110,6 +114,7 @@
                             :items="hourOpts"
                             solo
                             hide-details
+                            :disabled="!isShowBtn"
                         ></v-select>
                     </v-col>
 
@@ -119,6 +124,7 @@
                             :items="minOpts"
                             solo
                             hide-details
+                            :disabled="!isShowBtn"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -139,6 +145,7 @@
                             transition="scale-transition"
                             max-width="290px"
                             min-width="290px"
+                            :disabled="!isShowBtn"
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
@@ -164,6 +171,7 @@
                             :items="hourOpts"
                             solo
                             hide-details
+                            :disabled="!isShowBtn"
                         ></v-select>
                     </v-col>
 
@@ -173,6 +181,7 @@
                             :items="minOpts"
                             solo
                             hide-details
+                            :disabled="!isShowBtn"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -192,6 +201,7 @@
                     v-model.trim="ipt.fixSituation"
                     :background-color="errorSituation"
                     :rules="[v => (!!v && /[^\s]/.test(v)) || '此欄位不可空白']"
+                    :disabled="!isShowBtn"
                 ></v-textarea>
             </v-col>
         </v-row>
@@ -373,6 +383,7 @@
             :fileList="showFiles"
             @joinFile="joinFile"
             @rmFile="rmFile"
+            v-if="isShowBtn"
         />
     </template>
 
