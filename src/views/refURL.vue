@@ -2,12 +2,12 @@
 <v-container style="max-width: 1200px;">
     <h2 class="mb-4 label-title">相關網站</h2>
     <v-row no-gutters >
-        <v-col cols="4">
-            <div class="text-h6 mb-1">
+        <v-col cols="4" class="bk">
+            <div class="text-h6 mb-1 ">
             中央氣象局
             </div>
-            <a @click="link1">
-                <v-img
+            <a href="https://www.cwb.gov.tw/V8/C/" target="_blank">
+                <v-img class="img-responsive center-block"
                 src="../assets/images/bg07.jpg"
                 max-width="250"
                 ></v-img>
@@ -18,7 +18,7 @@
             <div class="text-h6 mb-1">
             國家地震中心
             </div>
-            <a @click="link2">
+            <a href="https://www.ncree.narl.org.tw/" target="_blank">
                 <v-img
                 src="../assets/images/ncree.png"
                 max-width="220"
@@ -29,19 +29,21 @@
             <div class="text-h6 mb-1">
             國家災害防救科技中心
             </div>
-            <a @click="link3">
-                <v-img
-                src="../assets/images/ncdr.jpg"
-                    max-width="270"
-                ></v-img>
-            </a>
+            <div>
+                <a href="https://datahub.ncdr.nat.gov.tw/" target="_blank">
+                    <v-img
+                    src="../assets/images/ncdr.jpg"
+                        max-width="270"
+                    ></v-img>
+                </a>
+            </div>
         </v-col>
         <v-row no-gutters class="mt-10">
             <v-col cols="4">
                 <div class="text-h6 mb-1">
                 水土保持局之土石流防災中心
                 </div>
-                <a @click="link4">
+                <a href="https://246.swcb.gov.tw/" target="_blank">
                     <v-img
                     src="../assets/images/dpyl.png"
                     max-width="330"
@@ -52,7 +54,7 @@
                 <div class="text-h6 mb-1">
                 經濟部中央地質調查所全球資訊網
                 </div>
-                <a @click="link5">
+                <a href="https://www.moeacgs.gov.tw/" target="_blank">
                     <v-img
                     src="../assets/images/cgs.png"
                     max-width="220"
@@ -63,7 +65,7 @@
                 <div class="text-h6 mb-1">
                 行政院農業委員會水土保持局全球資訊網
                 </div>
-                <a @click="link6">
+                <a href="https://www.swcb.gov.tw/Home/" target="_blank">
                     <v-img
                     src="../assets/images/swcb.png"
                     max-width="220"
@@ -76,7 +78,7 @@
                 <div class="text-h6 mb-1">
                 中央災害應變中心
                 </div>
-                <a @click="link7">
+                <a href="https://www.emic.gov.tw/cht/index.php?" target="_blank">
                     <v-img
                     src="../assets/images/ceoc.jpg"
                     max-width="220"
@@ -116,38 +118,19 @@ export default {
             'chMsgbar',  // messageBar
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
-        // 中央氣象
-        link1() {
-            window.open(`https://www.cwb.gov.tw/V8/C/`, '_blank')
-        },
-        // 國家地震中心：
-        link2() {
-            window.open(`https://www.ncree.narl.org.tw/`, '_blank')
-        },
-        // 國家災害防救科技中心：
-        link3() {
-            window.open(`https://datahub.ncdr.nat.gov.tw/`, '_blank')
-        },
-        // 水土保持局之土石流防災中心
-        link4() {
-            window.open(`https://246.swcb.gov.tw/`, '_blank')
-        },
-        // 經濟部中央地質調查所全球資訊網
-        link5() {
-            window.open(`https://www.moeacgs.gov.tw/`, '_blank')
-        },
-        // 行政院農業委員會水土保持局全球資訊網：
-        link6() {
-            window.open(`https://www.swcb.gov.tw/Home/`, '_blank')
-        },
-        // 中央災害應變中心：
-        link7() {
-            window.open(`https://www.emic.gov.tw/cht/index.php?`, '_blank')
-        },
-        
     },
     created() {
         
     }
 }
 </script>
+<style>
+    a {
+        color: #428bca;
+        text-decoration: none;
+    }
+    .bk:hover{
+        background: #428bca;
+        width: 230px;
+    }
+</style>
