@@ -1562,8 +1562,29 @@ export default {
             //     alert('請先完成回覆處理!')
             //     return
             // }
+            if(this.NoRecord == 'F'){// 僅立案情況需要判斷合理性
+                if(this.carSafeType == '' && this.jobSafeType == ''){
+                    alert("未選擇任何立案")
+                    return
+                }
+                else{
+                    if(this.carSafeType == 'B' || this.carSafeType == 'D'){
+                        if(this.pick1 == ""){
+                            alert("未選擇既有行安立案編號")
+                            return
+                        }
+                    }
+                    if(this.jobSafeType == 'B' || this.jobSafeType == 'D'){
+                        if(this.pick2 == ""){
+                            alert("未選擇既有職災立案編號")
+                            return
+                        }
+                    }
+                } 
+            }
             let askMsg = (this.NoRecord == 'F')?'你確定要立案嗎?':'你確定要不立案嗎?';
             if (confirm(askMsg)) {
+                
 
                 this.chLoadingShow({show:true})
 
