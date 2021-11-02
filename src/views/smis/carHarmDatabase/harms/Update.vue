@@ -196,18 +196,18 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="8" md="3">
+        <v-col cols="12" sm="8" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>措施簡述
             </h3>
-            <v-text-field
+            <v-text-field v-if="false"
                 v-model.trim="controlSearch.subject"
                 solo
                 placeholder="請輸入關鍵字"
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="3" align-self="center">
+        <v-col cols="12" md="3" align-self="center" v-if="false">
             <v-btn color="green" dark large
                 @click="search"
             >
@@ -215,7 +215,7 @@
             </v-btn>
         </v-col>
 
-        <v-col cols="12">
+        <v-col cols="12" v-if="false">
             <v-card>
                 <v-data-table
                     :headers="headers"
