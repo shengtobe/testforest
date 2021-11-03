@@ -184,7 +184,7 @@
         </v-col>
 
         <!-- 控制措施 -->
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="4" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-bank</v-icon>控制措施權責部門
             </h3>
