@@ -21,6 +21,7 @@
               solo
               v-on="on"
               readonly
+              clearable
             ></v-text-field>
           </template>
           <v-date-picker
@@ -48,6 +49,7 @@
               solo
               v-on="on"
               readonly
+              clearable
             ></v-text-field>
           </template>
           <v-date-picker
@@ -242,7 +244,7 @@
           disable-sort
           disable-filtering
           hide-default-footer
-          class="Theme-table"
+          class="theme-table"
         >
           <template v-slot:no-data>
             <span class="red--text subtitle-1">沒有資料</span>
@@ -807,6 +809,7 @@ export default {
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id this.doMan.name = this.userData.UserName
         // OperatorID: "16713",  // 操作人id
+        FunCode: 'C',
         KeyName: this.DB_Table, // DB table
         KeyItem: arr,
       };

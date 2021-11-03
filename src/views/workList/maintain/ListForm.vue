@@ -594,7 +594,7 @@
 
                 <v-btn
                     class="btn-add white--text"
-                    @click="save" v-if="isShowBtn"
+                    @click="save"
                 >送出</v-btn>
             </v-col>
         </v-row> 
