@@ -117,7 +117,7 @@
                 </h3>
                 <v-select
                     v-model="ipt.shortage"
-                    :items="[{ text: '無缺料', value: 'F' }, { text: '缺料中', value: 'T' }]"
+                    :items="[{ text: '不限', value: '' }, { text: '無缺料', value: 'F' }, { text: '缺料中', value: 'T' }]"
                     solo
                 ></v-select>
             </v-col>
@@ -128,7 +128,7 @@
                 </h3>
                 <v-select
                     v-model="ipt.fixType"
-                    :items="[{ text: '故障檢修', value: '1' }, { text: '例行保養', value: '2' }]"
+                    :items="[{ text: '不限', value: '' }, { text: '故障檢修', value: '1' }, { text: '例行保養', value: '2' }]"
                     solo
                 ></v-select>
             </v-col>
@@ -172,7 +172,7 @@
                 </h3>
                 <v-select
                     v-model="ipt.cancel"
-                    :items="[{ text: '未徹銷', value: 'F' }, { text: '已徹銷', value: 'T' }]"
+                    :items="[{ text: '不限', value: '' }, { text: '未徹銷', value: 'F' }, { text: '已徹銷', value: 'T' }]"
                     solo
                 ></v-select>
             </v-col>
@@ -391,9 +391,9 @@ export default {
             eqNumber2: '',  // 設備標示編號2
             eqNumber3: '',  // 設備標示編號3
             eqNumber4: '',  // 設備標示編號4
-            shortage: 'F',  // 是否缺料 (預設不缺料)
+            shortage: '',  // 是否缺料 (預設不缺料)
             cancel: 'F',  // 是否徹銷
-            fixType: '1',  // 維修類型
+            fixType: '',  // 維修類型
             moneyStart: '',  // 總費用(最小金額)
             moneyEnd: '',  // 總費用(最大金額)
             subject: '',  // 故障主旨
@@ -493,8 +493,8 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'MMIS_WorkerOrder',  // DB table
                 KeyItem: [
-                    { tableColumn: 'CreatorID', columnValue: this.ipt.createrId },  // 立案人id
-                    { tableColumn: 'DispatchID', columnValue: this.ipt.dispatcherId },  // 派工人id
+                    { tableColumn: 'Creator', columnValue: this.ipt.createrId },  // 立案人id
+                    { tableColumn: 'DispatchMan', columnValue: this.ipt.dispatcherId },  // 派工人id
                     { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.createDateStart },  // 工單建立日期(起)
                     { tableColumn: 'CreateDTime_End', columnValue: this.ipt.createDateEnd },  // 工單建立日期(迄)
                     { tableColumn: 'WorkOrderID', columnValue: this.ipt.workNumber },  // 工單編號

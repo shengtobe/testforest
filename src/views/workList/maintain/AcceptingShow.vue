@@ -838,6 +838,18 @@ export default {
         },
         // 確定工作項金額
         saveMoney() {
+            if(this.jobAmount == '' && this.jobPrice == ''){
+                alert('無填寫單價數量')
+                return
+            }
+            if(this.jobAmount == '' && this.jobPrice != ''){
+                alert('數量未填')
+                return
+            }
+            else if(this.jobAmount != '' && this.jobPrice == ''){
+                alert('單價未填')
+                return
+            }
             this.tableItems_fee[this.editIdx].UnitPrice = this.jobPrice
             this.tableItems_fee[this.editIdx].Amount = this.jobAmount
             this.tableItems_fee[this.editIdx].Price = this.jobAmount * this.jobPrice

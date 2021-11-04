@@ -70,7 +70,7 @@
                                     <strong class="black--text">設備維修及保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修、養護科工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/maintain">維護、養護科工單</v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/serve">車站營運設備維修工單</v-list-item>
                                 <v-divider></v-divider>
@@ -236,10 +236,12 @@
                             </v-list>
                         </v-card>
                     </v-col>
-
+                    <div id="aaa">
+                        <p>123</p>
+                    </div>
                     <v-col cols="12" md="2">
-                        <v-card outlined tile class="mt-sm-12">
-                            <v-list class="pa-0">
+                        <v-card outlined tile class="mt-sm-12 ">
+                            <v-list class="pa-0 mt-5" >
                                 <!-- 統計分析 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">統計分析</strong>
@@ -261,7 +263,7 @@
                                 <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/material-history">料件履歷</v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用履歷</v-list-item>
                                 <v-divider />
                                 <!-- 報表管理 -->
                                 <!-- <v-list-item :class="titleColor3" disabled>
@@ -491,3 +493,9 @@ export default {
     }
 }
 </script>
+<style>
+#aaa{
+    position: absolute;
+    z-index: 999;
+}
+</style>

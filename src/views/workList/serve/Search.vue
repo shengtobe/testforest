@@ -98,6 +98,10 @@
                         {{ (item.Type == 3)? '契約' : '小額採購' }}
                     </template>
 
+                    <template v-slot:item.Type="{ item }">
+                        {{ item.Malfunction }}
+                    </template>
+
                     <template v-slot:item.Status="{ item }">
                         {{ statusOpt.find(ele => ele.value == item.Status).text }}
                     </template>
@@ -152,6 +156,7 @@ export default {
         headers: [  // 表格顯示的欄位
             { text: '年度', value: 'WorkYear', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '總金額', value: 'TotalSpent', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報維修地點及事項', value: 'Malfunction', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '工單性質', value: 'Type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '處理階段', value: 'Status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -194,6 +199,7 @@ export default {
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
                 if(this.tableItems.length == 0) return
+                console.log("this.tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
