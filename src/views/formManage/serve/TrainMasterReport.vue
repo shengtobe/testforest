@@ -28,11 +28,11 @@
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-         <UploadOneFileAdd @joinFile="select" />
+         <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
         <v-btn
@@ -724,8 +724,8 @@ export default {
     }
   },
   methods: {
-    select(file) {
-        this.file = file
+    select() {
+      this.$refs.upload.uploadFile()
     },
     initInput(){
       this.doMan.name = this.userData.UserName;
