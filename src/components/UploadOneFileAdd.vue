@@ -46,7 +46,7 @@ export default {
                     let nameArr = file.name.split('.')  // 用小數點拆成陣列
                     let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
                     
-                    let uploadFile = { fileName: file.name, fileType: type, unitData: Array.from(new Uint8Array(reader.result)) }
+                    let uploadFile = { FileName: file.name, FileType: type, UnitData: Array.from(new Uint8Array(reader.result)) }
                     that.fileToUpload = uploadFile
                     this.$emit('joinFile', uploadFile)
                 }
