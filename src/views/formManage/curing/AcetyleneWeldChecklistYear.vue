@@ -94,6 +94,10 @@
         </v-data-table>
       </v-card>
     </v-col>
+
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <dialogDelete
@@ -286,7 +290,7 @@ import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
-
+import fileList from "@/components/forManage/fileList";
 class Question {
   constructor(description, option, memo) {
     this.description = description;
@@ -374,6 +378,7 @@ export default {
         },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       //------
       itemlist: {
@@ -422,7 +427,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, dialogDelete, ToolBar, UploadOneFileAdd }, // 頁碼
+  components: { Pagination, dateSelect, dialogDelete, ToolBar, UploadOneFileAdd,fileList }, // 頁碼
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -507,6 +512,7 @@ export default {
           let tbBuffer = JSON.parse(res.data.DT);
           let aa = unique(tbBuffer);
           this.tableItems = aa;
+          this.fileItems = res.data.FileCount||[];
         })
         .catch((err) => {
           //console.log(err);

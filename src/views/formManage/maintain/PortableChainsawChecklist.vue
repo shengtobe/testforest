@@ -94,6 +94,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <dialogDelete
@@ -139,6 +142,7 @@ import EditPage from "@/views/formManage/maintain/PortableChainsawChecklistEdit"
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
+import fileList from "@/components/forManage/fileList";
 
 export default {
   data() {
@@ -185,6 +189,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      fileItems: [],
       //------
     };
   },
@@ -195,7 +200,8 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState("user", {
@@ -260,6 +266,7 @@ export default {
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          this.fileItems = res.data.FileCount||[];
         })
         .catch((err) => {
           //console.log(err);

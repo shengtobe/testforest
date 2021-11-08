@@ -93,6 +93,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="editLog.dealogEdit" persistent max-width="900px">
       <EditPage 
@@ -134,7 +137,7 @@ import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 import { Actions } from "@/assets/js/actions";
 import EditPage from '@/views/formManage/curing/BoilerChecklistEdit'
-
+import fileList from "@/components/forManage/fileList";
 export default {
   data() {
     return {
@@ -154,6 +157,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold light-blue darken-1" },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       items: [
         { question: "1.檢視本體保溫材、外殼有無損傷或洩漏" },
@@ -213,7 +217,8 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState ('user', {
@@ -265,6 +270,7 @@ export default {
         ],
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed });

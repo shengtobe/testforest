@@ -98,6 +98,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <dialogDelete
         :id="userData.UserId"
@@ -141,6 +144,7 @@ import EditPage from "@/views/formManage/maintain/LawnMowerChecklistSeasonEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
+import fileList from "@/components/forManage/fileList";
 
 
 export default {
@@ -186,6 +190,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      fileItems: [],
       items: [
         { qq: "1. 引擎冷卻水(水箱)" },
         { qq: "2. 引擎機油" },
@@ -211,7 +216,8 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
         ...mapState ('user', {
@@ -271,6 +277,7 @@ export default {
         ],
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         this.chMsgbar({ success: false, msg: Constrant.query.failed });
       }).finally(() => {

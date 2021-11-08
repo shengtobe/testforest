@@ -93,6 +93,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="editLog.dealogEdit" persistent max-width="900px">
       <EditPage 
@@ -135,7 +138,7 @@ import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 import { Actions } from "@/assets/js/actions";
 import EditPage from '@/views/formManage/curing/BridgeCraneChecklistMonthEdit'
-
+import fileList from "@/components/forManage/fileList";
 export default {
   data() {
     return {
@@ -197,7 +200,8 @@ export default {
     ToolBar,
     dialogDelete,
     EditPage,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState ('user', {

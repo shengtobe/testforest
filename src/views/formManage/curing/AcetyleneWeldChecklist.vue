@@ -122,6 +122,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290" >
       <v-card class="theme-del-card">
@@ -294,6 +297,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import fileList from "@/components/forManage/fileList";
 
 class Question {
   constructor(description, option) {
@@ -380,6 +384,7 @@ export default {
         },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       itemlist: {
         items1: [
@@ -424,7 +429,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd },
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd, fileList },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -504,9 +509,10 @@ export default {
           let tbBuffer = JSON.parse(res.data.DT);
           let aa = unique(tbBuffer);
           this.tableItems = aa;
+          this.fileItems = res.data.FileCount||[];
         })
         .catch((err) => {
-          //console.log(err);
+          // console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {

@@ -89,6 +89,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 新增保安裝置保修工作申請書 modal -->
     <v-dialog v-model="AddJobApplication" max-width="900px">
       <v-card class="theme-card">
@@ -392,6 +395,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import fileList from "@/components/forManage/fileList";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -511,11 +515,18 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
+  components: { 
+    Pagination, 
+    dateSelect, 
+    deptSelect, 
+    UploadOneFileAdd,
+    fileList 
+  }, // 頁碼
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -682,6 +693,7 @@ export default {
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
