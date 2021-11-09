@@ -271,7 +271,7 @@
                             </v-list>
                         </v-card>
                         <div id="versionArea" class="mt-10">
-                            <p class="text-end text--disabled font-weight-bold">v.0.0.3</p>
+                            <p class="text-end text--disabled font-weight-bold">v.0.0.4</p>
                         </div>
                     </v-col>
                 </v-row>
