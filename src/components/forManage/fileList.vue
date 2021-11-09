@@ -67,7 +67,7 @@ export default {
         },
         {
           text: "上傳日期",
-          value: "CreDTime",
+          value: "CrateDTime",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
