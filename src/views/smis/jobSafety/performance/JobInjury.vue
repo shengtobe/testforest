@@ -5,48 +5,48 @@
     <v-row class="px-2 mb-8">
         <v-col cols="12" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-tag</v-icon>前年總工時(小時)
+                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-3}}年總工時(小時)
             </h3>
             <v-text-field
-                v-model.trim="searchIpt.YearHr_belast"
+                v-model="searchIpt.YearHr_belast"
                 solo
-                placeholder="請輸前年總工時"
+                placeholder="請輸入工時"
                 suffix="hr"
             ></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-tag</v-icon>去年總工時(小時)
+                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-2}}年總工時(小時)
             </h3>
             <v-text-field
-                v-model.trim="searchIpt.YearHr_last"
+                v-model="searchIpt.YearHr_last"
                 solo
-                placeholder="請輸去年總工時"
+                placeholder="請輸入工時"
                 suffix="hr"
             ></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-tag</v-icon>今年總工時(小時)
+                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-1}}年總工時(小時)
             </h3>
             <v-text-field
-                v-model.trim="searchIpt.YearHr_this"
+                v-model="searchIpt.YearHr_this"
                 solo
-                placeholder="請輸今年總工時"
+                placeholder="請輸入工時"
                 suffix="hr"
             ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" align-self="center">
             <v-btn dark large class="my-2 mr-2 btn-search"
-                @click="search"
+                @click="resetHours"
             >
-                <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+                <v-icon class="mr-1">mdi-cloud-sync</v-icon>重置工時
             </v-btn>
 
             <v-btn dark large class="ma-2 btn-add"
                 @click="edit"
             >
-                <v-icon>mdi-pencil</v-icon>編輯
+                <v-icon>mdi-cloud-upload</v-icon>修改
             </v-btn>
         </v-col>
 
@@ -54,11 +54,11 @@
             <v-btn dark large class="my-2 mr-2 btn-search"
                 @click="search"
             >
-                <v-icon class="mr-1">mdi-magnify</v-icon>查詢
+                <v-icon class="mr-1">mdi-magnify</v-icon>職能傷害率查詢
             </v-btn>
 
             <v-btn dark large class="ma-2 btn-add"
-                to="/smis/jobsafety/disasterdb/add"
+                to="/smis/jobsafety/disasterdb/add" v-if="false"
             >
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
@@ -90,7 +90,7 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>codes
 
-                    <template v-slot:item.codes="{ item }">
+                    <!-- <template v-slot:item.codes="{ item }">
                         {{ item.code1 }}-{{ item.code2 }}-{{ item.code3 }}
                     </template>
 
@@ -113,15 +113,15 @@
                         >
                             <v-icon dark>mdi-file-document</v-icon>
                         </v-btn>
-                    </template>
+                    </template> -->
 
-                    <template v-slot:footer="footer">
+                    <!-- <template v-slot:footer="footer">
                         <Pagination
                             :footer="footer"
                             :pageOpt="pageOpt"
                             @chPage="chPage"
                         />
-                    </template>
+                    </template> -->
                 </v-data-table>
             </v-card>
         </v-col>
@@ -144,17 +144,25 @@ export default {
             YearHr_last: '',  // 去年總工時(小時)
             YearHr_this: '',  // 金年總工時(小時)
         },
+        time: getNowFullTime().substr(0, 4),
         tableItems: [],  // 表格資料
         depart: '', // 篩選部門
         pageOpt: { page: 1 },  // 目前頁數
-        headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '風險嚴重性', value: 'EndangerLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '風險可能性', value: 'EndangerProb', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '風險等級', value: 'RiskLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-        ],
+        aa2: '1233',
+        // headers: [  // 表格顯示的欄位
+        //     // { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     // { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     { text: aa2, value: 'YearHr_belast', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     { text: '去年總工時(小時)', value: 'YearHr_last', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     { text: '今年總工時(小時)', value: 'YearHr_this', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        // ],
+        // headers_: [  // 表格顯示的欄位
+        //     // { text: '編號', value: 'EndangerCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     // { text: '作業名稱', value: 'JobName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     { text: this.time + '年', value: 'YearHr_belast', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     { text: this.time + '年', value: 'YearHr_last', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        //     { text: this.time + '年', value: 'YearHr_this', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+        // ],
         opts: {
             status: [  // 事故事件狀態 (審核中有二個，故傳中文值讓後端判斷)
                 { text: '不限', value: '' },
@@ -172,10 +180,49 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        headers () {
+            return [
+            {
+                text: '',
+                align: 'start',
+                divider: true,
+                align: 'center',
+                value: 'startText',
+                class: 'subtitle-1 white--text font-weight-bold',
+                width: 28
+            },
+            {
+                text: this.time - 3 + '年',
+                divider: true,
+                align: 'center',
+                value: 'YearHr_belast',
+                class: 'subtitle-1 white--text font-weight-bold',
+                
+            },
+            {
+                text: this.time - 2 + '年',
+                divider: true,
+                align: 'center',
+                value: 'YearHr_last',
+                class: 'subtitle-1 white--text font-weight-bold',
+                
+            },
+            {
+                text: this.time - 1 + '年',
+                divider: true,
+                align: 'center',
+                value: 'YearHr_this',
+                class: 'subtitle-1 white--text font-weight-bold',
+                
+            },
+            
+            ]
+        },
     },
     methods: {
         ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            "chMsgbar", // messageBar
         ]),
         // 清除搜尋內容
         reset() {
@@ -185,40 +232,6 @@ export default {
         search() {
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
-
-            jobDangerYearhr({
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-                Mode: '1',  // DB table
-                YearHr_belast: this.searchIpt.YearHr_belast,
-                YearHr_last: this.searchIpt.YearHr_last,
-                YearHr_this: this.searchIpt.YearHr_this,
-            }).then(res => {
-                console.log("jobDangerYearhr res data: ", res.data);
-                // let tempTable = JSON.parse(res.data.order_list)
-                // tempTable.forEach(element => {
-                //     for(let ele in element){
-                //         if(element[ele] == null){
-                //             element[ele] = '';
-                //         }
-                //     }
-                // });
-                // if(this.depart == ''){
-                //     this.tableItems = tempTable
-                // }
-                // else{
-                //     this.tableItems = tempTable.filter((item) =>
-                //         (item.EndangerCode.split('-'))[0] == this.depart
-                //     );
-                // }
-                
-            }).catch(err => {
-                //console.log(err)
-                alert('查詢時發生問題，請重新查詢!')
-            }).finally(() => {
-                this.chLoadingShow({show:false})
-            })
-
             jobDangerOccupationrate({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
@@ -226,24 +239,62 @@ export default {
                 YearHr_last: this.searchIpt.YearHr_last,
                 YearHr_this: this.searchIpt.YearHr_this,
             }).then(res => {
-                console.log("jobDangerOccupationrate res data: ", res.data);
-                // let tempTable = JSON.parse(res.data.order_list)
-                // tempTable.forEach(element => {
-                //     for(let ele in element){
-                //         if(element[ele] == null){
-                //             element[ele] = '';
-                //         }
-                //     }
-                // });
-                // if(this.depart == ''){
-                //     this.tableItems = tempTable
-                // }
-                // else{
-                //     this.tableItems = tempTable.filter((item) =>
-                //         (item.EndangerCode.split('-'))[0] == this.depart
-                //     );
-                // }
-                
+                if(res.data.ErrorCode == 0){
+                    this.tableItems = [
+                        {
+                            startText:'FR',
+                            YearHr_belast: '',
+                            YearHr_last: '',
+                            YearHr_this: '',
+                        },
+                        {
+                            startText:'FSI',
+                            YearHr_belast: '',
+                            YearHr_last: '',
+                            YearHr_this: '',
+                        },
+                        {
+                            startText:'SR',
+                            YearHr_belast: '',
+                            YearHr_last: '',
+                            YearHr_this: '',
+                        },
+                    ]
+                    res.data.FR.forEach(FRitem => {
+                        if(FRitem.Year == this.time - 3){
+                            this.tableItems[0].YearHr_belast = FRitem.Rate;
+                        }
+                        else if(FRitem.Year == this.time - 2){
+                            this.tableItems[0].YearHr_last = FRitem.Rate;
+                        }
+                        else if(FRitem.Year == this.time - 1){
+                            this.tableItems[0].YearHr_this = FRitem.Rate;
+                        }
+                    });
+                    res.data.FSI.forEach(FRitem => {
+                        if(FRitem.Year == this.time - 3){
+                            this.tableItems[1].YearHr_belast = FRitem.Rate;
+                        }
+                        else if(FRitem.Year == this.time - 2){
+                            this.tableItems[1].YearHr_last = FRitem.Rate;
+                        }
+                        else if(FRitem.Year == this.time - 1){
+                            this.tableItems[1].YearHr_this = FRitem.Rate;
+                        }
+                    });
+                    res.data.SR.forEach(FRitem => {
+                        if(FRitem.Year == this.time - 3){
+                            this.tableItems[2].YearHr_belast = FRitem.Rate;
+                        }
+                        else if(FRitem.Year == this.time - 2){
+                            this.tableItems[2].YearHr_last = FRitem.Rate;
+                        }
+                        else if(FRitem.Year == this.time - 1){
+                            this.tableItems[2].YearHr_this = FRitem.Rate;
+                        }
+                    });
+                    
+                }
             }).catch(err => {
                 //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -253,7 +304,49 @@ export default {
 
             
         },
-        
+        resetHours(){
+            this.chLoadingShow({show:true})
+            jobDangerYearhr({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                Mode: '1',  // DB table
+                YearHr_belast: this.searchIpt.YearHr_belast,
+                YearHr_last: this.searchIpt.YearHr_last,
+                YearHr_this: this.searchIpt.YearHr_this,
+            }).then(res => {
+                this.searchIpt.YearHr_belast = res.data.YearHr_belast;
+                this.searchIpt.YearHr_this = res.data.YearHr_this;
+                this.searchIpt.YearHr_last = res.data.YearHr_last;
+            }).catch(err => {
+                //console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
+        edit(){
+            this.chLoadingShow({show:true})
+            jobDangerYearhr({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                Mode: '2',  // DB table
+                YearHr_belast: this.searchIpt.YearHr_belast,
+                YearHr_last: this.searchIpt.YearHr_last,
+                YearHr_this: this.searchIpt.YearHr_this,
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    this.chMsgbar({ success: true, msg: '工時修改完成！' })
+                }
+                // this.searchIpt.YearHr_belast = res.data.YearHr_this;
+                // this.searchIpt.YearHr_this = res.data.YearHr_belast;
+                // this.searchIpt.YearHr_last = res.data.YearHr_last;
+            }).catch(err => {
+                //console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
+                this.chLoadingShow({show:false})
+            })
+        },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
@@ -278,6 +371,8 @@ export default {
     },
     created() {
         this.searchIpt = { ...this.searchDefault }
+
+        this.resetHours();
     },
 }
 </script>

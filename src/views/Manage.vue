@@ -236,12 +236,9 @@
                             </v-list>
                         </v-card>
                     </v-col>
-                    <div id="aaa">
-                        <p>123</p>
-                    </div>
                     <v-col cols="12" md="2">
                         <v-card outlined tile class="mt-sm-12 ">
-                            <v-list class="pa-0 mt-5" >
+                            <v-list class="pa-0" >
                                 <!-- 統計分析 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">統計分析</strong>
@@ -273,6 +270,9 @@
                                 <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item> -->
                             </v-list>
                         </v-card>
+                        <div id="versionArea" class="mt-10">
+                            <p class="text-end text--disabled font-weight-bold">v.0.0.3</p>
+                        </div>
                     </v-col>
                 </v-row>
             </v-container>
@@ -495,7 +495,13 @@ export default {
 </script>
 <style>
 #aaa{
-    position: absolute;
-    z-index: 999;
+    /* position: absolute; */
+    /* z-index: 999; */
+    /* right: 0px; */
+    /* margin-left: 70%; */
+    /* bottom: 0px; */
+    /* margin-right: 8%; */
+    /* margin-bottom: 15%; */
+    color: rgba(20, 20, 20, 0.4);
 }
 </style>

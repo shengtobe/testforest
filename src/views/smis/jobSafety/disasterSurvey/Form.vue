@@ -761,6 +761,7 @@ export default {
                 { text: '輕傷', value: "輕傷" },
                 { text: '失能傷害', value: "失能傷害" },
                 { text: '死亡', value: "死亡" },
+                { text: '永久失能', value: "永久失能" },
             ],
             injurySite: '',  // 傷害部位
             disasterType: disasterTypeOpts,  // 災害類型,

@@ -28,15 +28,16 @@
           key="department"
         />
       </v-col>
+      
       <v-col cols="12" sm="3" md="3"></v-col>
 
-      <v-col cols="12" sm="3" md="3">
+      <v-col cols="12" sm="3" md="3" >
         <v-form ref="uploadform">
           <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup" @click="select">
+      <v-col cols="12" sm="3" md="3" class="d-flex " align-self="center">
+        <v-btn dark large class="my-2 mr-2 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
