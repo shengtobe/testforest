@@ -145,11 +145,27 @@
             <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
-
-            <v-btn dark class="btn-add"
-                v-if="!isStop"
+            <v-btn dark class="mr-3 btn-add"
+                v-if="!isStop && isSp == false"
                 @click="update"
             >儲存</v-btn>
+
+            <v-btn dark class="mr-3 btn-modify"
+                v-if="!isStop && isSp == false"
+                @click="request"
+            >申請審核</v-btn>
+
+            <v-btn dark class="mr-3 btn-delete"
+                v-if="isSp"
+                @click="update"
+            >退回</v-btn>
+
+            <v-btn dark class="mr-3 btn-add"
+                v-if="isSp && isSp == true"
+                @click="runReturn"
+            >同意發布</v-btn>
+
+            
         </v-col>
     </v-row>
 </v-container>
@@ -160,7 +176,7 @@ import { mapState, mapActions } from 'vuex'
 import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 //import { dapartOptsForMember } from '@/assets/js/departOption'
-import { detail, updateRegul } from '@/apis/smis/carSafeInfo'
+import { detail, updateRegul, slowspeedCheck, slowspeedReturn, slowspeedexcel } from '@/apis/smis/carSafeInfo'
 import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 
 export default {
@@ -171,6 +187,7 @@ export default {
         date: new Date().toISOString().substr(0, 10),  // 延長日期
         dateMemuShow: false,  // 日曆是否顯示
         isStop: false,  // 是否解除
+        isSp: false,
         choose: '',  // 所選部門,
         chooseMembers: [],  // 勾選的收件人
         //dapartOpts: dapartOptsForMember,  // 部門下拉選單
@@ -227,33 +244,6 @@ export default {
         initData() {
           if (this.id != undefined) {
                 this.chLoadingShow({show:true})
-                //  let arr = this.recipients.map(item => ({
-                //  PeopleId: item
-                //  }))
-
-                // 範例效果
-                // setTimeout(() => {
-                //     if (this.id == 222) this.isStop = true  // 設定已解除的範例
-
-                //     // 設定上方資料
-                //     let obj = {
-                //         id: '111',
-                //         line: '本線',
-                //         pointStart: '5.7',
-                //         pointEnd: '8',
-                //         normal: '70',
-                //         slow: '50',
-                //         dateStart: '2019-05-10',
-                //         dateEnd: '2019-05-22',
-                //         creater: '王小明',
-                //         isStop: false,  // 是否解除
-                //     }
-                //     this.setShowData(obj)
-
-                //     this.recipients = ['2', '3', '5', '7']
-                //     this.chLoadingShow({show:true})
-                // }, 1000)
-                
             
                 detail({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -284,8 +274,13 @@ export default {
              })
             }
          },
+         request(){
+
+         },
          // 設定上方資料
          setShowData(obj) {
+             console.log("obj: ", obj);
+            this.isSp = obj.InfoSign == this.userData.UserId;
             this.recipients = obj.RecPeople.map(item => item.PeopleId)
             this.ipt.line = obj.ReportLine // 通報路線
             this.ipt.pointStart = obj.LimitStart // 速限起點
@@ -306,88 +301,35 @@ export default {
             this.PeopleComponents ++
         },
         
-        // 切換部門成員
-        // changeDepart() {
-        //     this.chLoadingShow({show:true})
-
-        //     // 範例效果
-        //     setTimeout(() => {
-        //         this.checkboxs = [ ...this.members ]  // 測試用先不過慮部門全列出
-        //         this.chLoadingShow({show:true})
-        //     }, 1000)
-            
-        // },
-        // 加入全部 (checkboxs 陣列元素是物件)
-        // joinAll() {
-        //     this.checkboxs.forEach(ele => {
-        //         // 若未選取則加入
-        //         let member = this.recipients.find(item => item == ele.value)
-        //         if (member == undefined) this.recipients.push(ele.value)
-        //     })
-        // },
-        // // 加入勾選 (chooseMembers 陣列元素是物件的value屬性)
-        // join() {
-        //     this.chooseMembers.forEach(ele => {
-        //         // 若未選取則加入
-        //         let member = this.recipients.find(item => item == ele)
-        //         if (member == undefined) this.recipients.push(ele)
-        //     })
-        //     this.chooseMembers = [ ...[] ]
-        // },
-        // // 查詢名稱
-        // transferName(val) {
-        //     return this.members.find(ele => ele.value == val).name
-        // },
-        // // 移除收件人
-        // delMember(idx) {
-        //     this.recipients.splice(idx, 1)
-        // },
-        // // 移除全部收件人
-        // delAll() {
-        //     this.recipients = [ ...[] ]
-        // },
-        // 延長日期
-        // save() {
-        //     if (confirm('你確定要延長日期嗎?')) {
-        //         this.chLoadingShow({show:true})
+        runReturn(){
+            slowspeedReturn({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SlowSpeedCode: this.id,  // DB table
                 
-        //         let arr = this.ipt.recipients.map(item => ({
-        //         PeopleId: item
-        //     }))
-        //         updateRegul({
-        //             ClientReqTime: getNowFullTime(),  // client 端請求時間
-        //             OperatorID: this.userData.UserId,  // 操作人id
-        //             SlowSpeedCode: this.id, //慢行通報編號
-        //             ReportLine: this.ipt.line,  //通報路線
-        //             LimitStart: this.ipt.pointStart,  //速限起點
-        //             LimitEnd: this.ipt.pointEnd,  //速限終點
-        //             NormalLimit: this.ipt.normal,  //常態速限
-        //             SlowLimit: this.ipt.slow,  //慢行速限
-        //             LimitStartDate: this.ipt.dateStart,  //限制日期(起)
-        //             LimitEndDate: this.ipt.dateEnd,  //限制日期(迄)
-        //             RecPeople: arr
-            
-        //         }).then(res => {
-        //             if (res.data.ErrorCode == 0) {
-        //                 this.chMsgbar({ success: true, msg: '延長成功'})
-        //                 this.status = '2'  // 狀態改為已回覆
-        //             } else {
-        //                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-        //                 this.$router.push({ path: '/error' })
-        //             }
-        //         }).catch(err => {
-        //              this.chMsgbar({ success: false, msg: '延長成功'})
-        //         }).finally(() => {
-        //             this.chLoadingShow({show:true})
-        //         })
-
-        //         // 測試用資料
-        //         setTimeout(() => {
-        //             this.chMsgbar({ success: true, msg: '延長日期成功'})
-        //             this.chLoadingShow({show:true})
-        //         }, 1000)
-        //     }
-        // },
+                QyName: [    // 欲回傳的欄位資料
+                    'SlowSpeedCode',
+                    'PeopleId',
+                    'PeopleName',
+                    'LimitStart',
+                    'LimitEnd',
+                    'NormalLimit',
+                    'SlowLimit',
+                    'LimitStartDate',
+                    'LimitEndDate',  
+                    'ReportLine',               
+                ],
+             }).then(res => {
+                //this.tableItems = JSON.parse(res.data.order_list)
+                //console.log(this.tableItems)
+                this.setShowData(res.data)
+             }).catch(err => {
+                //console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+             }).finally(() => {
+                this.chLoadingShow({show:false})
+             })
+        },
         // 儲存
         update() {
             if (confirm('你確定要儲存嗎?')) {
@@ -413,6 +355,9 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '儲存成功'})
                        // this.status = '2'  // 狀態改為已回覆
+                       setTimeout(() => {
+                            this.$router.go()
+                        }, 800)
                     } else {
                         //console.log(res.data.Msg)
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

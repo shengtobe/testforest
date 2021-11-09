@@ -3,6 +3,33 @@
 import axios from '@/apis/axiosSetting'
 
 // --------------- 慢行文件 ------------------
+// 審核 同意發布
+export function slowspeedCheck(data) { return axios(
+    {
+        url: '/sms/slowspeed/check',
+        method: 'post',
+        data,
+    }
+)}
+
+// 審核 主管退回
+export function slowspeedReturn(data) { return axios(
+    {
+        url: '/sms/slowspeed/return',
+        method: 'post',
+        data,
+    }
+)}
+
+// 內部通報單列印
+export function slowspeedexcel(data) { return axios(
+    {
+        url: '/sms/slowspeed/slowspeedexcel',
+        method: 'post',
+        data,
+    }
+)}
+
 // 搜尋
 export function fetchList(data) { return axios(
     {

@@ -207,3 +207,19 @@ export function analyDangerByDepart(data) { return axios(
         data,
     }
 )}
+// 年工時輸入/查詢
+export function jobDangerYearhr(data) { return axios(
+    {
+        url: '/sms/profession/danger/yearhr',
+        method: 'post',
+        data,
+    }
+)}
+// 職能傷害率查詢
+export function jobDangerOccupationrate(data) { return axios(
+    {
+        url: '/sms/profession/danger/occupationrate',
+        method: 'post',
+        data,
+    }
+)}
