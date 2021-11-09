@@ -35,12 +35,12 @@
           <!-- <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
           </h3> -->
-          <UploadOneFileAdd @joinFile="select" />
+          <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
           <!-- <v-text-field solo placeholder="點此選擇檔案" /> -->
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end ">
-        <v-btn dark large class="mb-sm-8 mb-md-11 btn-fileup ">
+        <v-btn dark large class="mb-sm-8 mb-md-11 btn-fileup " @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
@@ -98,6 +98,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <dialogDelete
@@ -143,6 +146,7 @@ import EditPage from "@/views/formManage/serve/GeneratorChecklistEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
+import fileList from "@/components/forManage/fileList";
 
 export default {
   data() {
@@ -189,6 +193,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      fileItems: [],
       //------
     };
   },
@@ -200,6 +205,7 @@ export default {
     ToolBar,
     dialogDelete,
     UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState("user", {
@@ -213,16 +219,13 @@ export default {
     this.search();
   },
   methods: {
-    select(file) {
-        this.file = file
+    select() {
+      this.$refs.upload.uploadFile()
     },
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    select(file) {
-        this.file = file
-    },
     newOne() {
      ;
       this.Add = true;
@@ -267,6 +270,7 @@ export default {
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          this.fileItems = res.data.FileCount||[];
         })
         .catch((err) => {
           ////console.log(err);

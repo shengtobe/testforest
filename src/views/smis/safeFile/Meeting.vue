@@ -406,9 +406,9 @@ export default {
                     MeetingDateMin: this.ipt.min,  // 會議時間(分)
                     MeetingTitle: this.ipt.title,  // 會議主題
                     Remark: this.ipt.note,  // 備註
-                    FileName: (this.ipt.upload != null)?this.ipt.upload.fileName:'',  // 檔案名稱
-                    FileType: (this.ipt.upload != null)?this.ipt.upload.fileType:'',  // 檔案類型
-                    UnitData: (this.ipt.upload != null)?this.ipt.upload.unitData:'',  // 檔案內容
+                    FileName: (this.ipt.upload != null)?this.ipt.upload.FileName:'',  // 檔案名稱
+                    FileType: (this.ipt.upload != null)?this.ipt.upload.FileType:'',  // 檔案類型
+                    UnitData: (this.ipt.upload != null)?this.ipt.upload.UnitData:'',  // 檔案內容
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
@@ -433,9 +433,9 @@ export default {
                     MeetingDateMin: this.ipt.min,  // 會議時間(分)
                     MeetingTitle: this.ipt.title,  // 會議主題
                     Remark: this.ipt.note,  // 備註
-                    FileName: (this.ipt.upload)? this.ipt.upload.fileName : null,  // 檔案名稱
-                    FileType: (this.ipt.upload)? this.ipt.upload.fileType : null,  // 檔案類型
-                    UnitData: (this.ipt.upload)? this.ipt.upload.unitData : null,  // 檔案內容
+                    FileName: (this.ipt.upload)? this.ipt.upload.FileName : null,  // 檔案名稱
+                    FileType: (this.ipt.upload)? this.ipt.upload.FileType : null,  // 檔案類型
+                    UnitData: (this.ipt.upload)? this.ipt.upload.UnitData : null,  // 檔案內容
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
@@ -450,7 +450,7 @@ export default {
 
                         // 若有傳檔案，則更新檔案路徑及檔名
                         if (this.ipt.upload) {
-                            this.tableItems[this.itemIndex].file_name = this.ipt.upload.fileName  // 檔案名稱
+                            this.tableItems[this.itemIndex].file_name = this.ipt.upload.FileName  // 檔案名稱
                             this.tableItems[this.itemIndex].file_path = res.data.file_path  // 檔案路徑
                         }
 

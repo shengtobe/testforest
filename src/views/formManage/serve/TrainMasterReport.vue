@@ -28,11 +28,11 @@
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-         <UploadOneFileAdd @joinFile="select" />
+         <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
         <v-btn
@@ -71,6 +71,9 @@
           </template>
         </v-data-table>
       </v-card>
+    </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
     </v-col>
     <!-- 新增保安裝置保修工作申請書 modal -->
     <v-dialog v-model="Add" persistent max-width="900px">
@@ -509,6 +512,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import fileList from "@/components/forManage/fileList";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -652,11 +656,18 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd }, // 頁碼
+  components: { 
+    Pagination, 
+    dateSelect, 
+    deptSelect, 
+    UploadOneFileAdd,
+    fileList 
+  }, // 頁碼
   created() {
       // for(let i = 0; i < 76; i++){
       //   this.item.push
@@ -724,8 +735,8 @@ export default {
     }
   },
   methods: {
-    select(file) {
-        this.file = file
+    select() {
+      this.$refs.upload.uploadFile()
     },
     initInput(){
       this.doMan.name = this.userData.UserName;
@@ -836,6 +847,7 @@ export default {
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')

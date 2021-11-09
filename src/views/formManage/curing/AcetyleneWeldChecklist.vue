@@ -32,11 +32,11 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <UploadOneFileAdd @joinFile="select" />
+          <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
@@ -121,6 +121,9 @@
           </template>
         </v-data-table>
       </v-card>
+    </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
     </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290" >
@@ -294,6 +297,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import fileList from "@/components/forManage/fileList";
 
 class Question {
   constructor(description, option) {
@@ -380,6 +384,7 @@ export default {
         },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       itemlist: {
         items1: [
@@ -424,7 +429,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd },
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd, fileList },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
@@ -439,8 +444,8 @@ export default {
     this.doMan.departId = this.userData.DeptList[0].DeptId;
   },
   methods: {
-    select(file) {
-        this.file = file
+    select() {
+      this.$refs.upload.uploadFile()
     },
     initInput() {
       this.Name = this.doMan.name;
@@ -504,9 +509,10 @@ export default {
           let tbBuffer = JSON.parse(res.data.DT);
           let aa = unique(tbBuffer);
           this.tableItems = aa;
+          this.fileItems = res.data.FileCount||[];
         })
         .catch((err) => {
-          //console.log(err);
+          // console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {

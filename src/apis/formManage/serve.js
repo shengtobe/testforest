@@ -61,3 +61,14 @@ export function updateFormOrder(data) {
         }
     )
 }
+
+// 表單管理-上傳單筆表單資料-上傳單筆表單資料 (for 前台-上傳單筆表單明細)		
+export function uploadFile(data) {
+    return axios(
+        {
+            url: 'rp/form/upload',
+            method: 'post',
+            data,
+        }
+    )
+}

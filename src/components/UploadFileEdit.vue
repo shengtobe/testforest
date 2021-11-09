@@ -1,64 +1,64 @@
 <template>
-<v-col cols="12">
-    <h3 class="mb-1">
-        <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>{{ title }}
-    </h3>
+    <v-col cols="12">
+        <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-cloud-upload</v-icon>{{ title }}
+        </h3>
 
-    <v-row>
-        <v-col cols="12" sm="8">
-            <v-file-input
-                hide-details
-                label="請點此選擇要新增的檔案"
-                solo
-                v-model="choseFile"
-                @change="select"
-                :disabled="uploadDisnable"
+        <v-row>
+            <v-col cols="12" sm="8">
+                <v-file-input
+                    hide-details
+                    label="請點此選擇要新增的檔案"
+                    solo
+                    v-model="choseFile"
+                    @change="select"
+                    :disabled="uploadDisnable"
+                >
+                    <template v-slot:selection="{ text }">
+                        <v-chip small label color="primary" class="pa-4">{{ text }}</v-chip>
+                    </template>
+                </v-file-input>
+            </v-col>
+
+            <v-col cols="12" sm="2" class="text-right text-md-left">
+                <v-btn large
+                    class="btn-memo white--text"
+                    @click="upload"
+                >檔案上傳</v-btn>
+            </v-col>
+
+            <!-- 檔案 -->
+            <v-col
+                cols="12"
+                class="mb-n4"
+                v-for="(item, i) in fileList"
+                :key="(item.fileName == undefined)? item.FileName : item.fileName"
             >
-                <template v-slot:selection="{ text }">
-                    <v-chip small label color="primary" class="pa-4">{{ text }}</v-chip>
-                </template>
-            </v-file-input>
-        </v-col>
+                <v-row class="mx-2 elevation-4">
+                    <v-col cols="12" md="8" class="white">
+                        <v-icon>mdi-file-document</v-icon>
+                        {{ (item.fileName == undefined)? item.FileName : item.fileName }}
+                    </v-col>
 
-        <v-col cols="12" sm="2" class="text-right text-md-left">
-            <v-btn large
-                class="btn-memo white--text"
-                @click="upload"
-            >檔案上傳</v-btn>
-        </v-col>
+                    <v-col cols="12" md="4" class="white text-right">
+                        <v-btn
+                            dark
+                            small
+                            :href="(item.link == undefined)? item.FileFullPath : item.link"
+                            :download="(item.fileName == undefined)? item.FileName : item.fileName"
+                            class="mr-3 btn-modify"
+                        >下載</v-btn>
 
-        <!-- 檔案 -->
-        <v-col
-            cols="12"
-            class="mb-n4"
-            v-for="(item, i) in fileList"
-            :key="(item.fileName == undefined)? item.FileName : item.fileName"
-        >
-            <v-row class="mx-2 elevation-4">
-                <v-col cols="12" md="8" class="white">
-                    <v-icon>mdi-file-document</v-icon>
-                    {{ (item.fileName == undefined)? item.FileName : item.fileName }}
-                </v-col>
-
-                <v-col cols="12" md="4" class="white text-right">
-                    <v-btn
-                        dark
-                        small
-                        :href="(item.link == undefined)? item.FileFullPath : item.link"
-                        :download="(item.fileName == undefined)? item.FileName : item.fileName"
-                        class="mr-3 btn-modify"
-                    >下載</v-btn>
-
-                    <v-btn
-                        small
-                        class="btn-delete white--text"
-                        @click="delFile(i)"
-                    >刪除</v-btn>
-                </v-col>
-            </v-row>
-        </v-col>
-    </v-row>
-</v-col>
+                        <v-btn
+                            small
+                            class="btn-delete white--text"
+                            @click="delFile(i)"
+                        >刪除</v-btn>
+                    </v-col>
+                </v-row>
+            </v-col>
+        </v-row>
+    </v-col>
 </template>
 
 <script>

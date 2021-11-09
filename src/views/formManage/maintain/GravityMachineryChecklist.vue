@@ -31,11 +31,11 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <UploadOneFileAdd @joinFile="select" />
+          <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
@@ -92,6 +92,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <dialogDelete
@@ -137,6 +140,7 @@ import EditPage from "@/views/formManage/maintain/GravityMachineryChecklistEdit"
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
+import fileList from "@/components/forManage/fileList";
 
 
 export default {
@@ -181,6 +185,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      fileItems: [],
       //------
       items: [
         { qq: "1. 水箱" },
@@ -204,7 +209,8 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState("user", {
@@ -218,8 +224,8 @@ export default {
     this.search();
   },
   methods: {
-    select(file) {
-        this.file = file
+    select() {
+      this.$refs.upload.uploadFile()
     },
     ...mapActions("system", [
       "chMsgbar", // messageBar
@@ -269,6 +275,7 @@ export default {
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          this.fileItems = res.data.FileCount||[];
         })
         .catch((err) => {
           //console.log(err);
