@@ -595,7 +595,6 @@ export default {
         // 退回
         withdraw() {
             this.chLoadingShow({ show: true})
-//console.log(this.backReason)
             setTimeout(() => {
 
                 safetyinforeturn({

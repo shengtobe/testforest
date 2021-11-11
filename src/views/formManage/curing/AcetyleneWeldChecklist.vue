@@ -263,7 +263,7 @@
             >取消</v-btn
           >
           <v-btn
-            class="btn-add"
+            class="btn-add white--text"
             elevation="4"
             :loading="isLoading"
             @click="save"
@@ -522,7 +522,6 @@ export default {
     },
     // 存
     save() {
-      ;
       this.chLoadingShow({ show: true});
 
       var data = {

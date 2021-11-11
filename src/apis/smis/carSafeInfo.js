@@ -3,10 +3,19 @@
 import axios from '@/apis/axiosSetting'
 
 // --------------- 慢行文件 ------------------
-// 審核 同意發布
+// 審核 申請審核
 export function slowspeedCheck(data) { return axios(
     {
         url: '/sms/slowspeed/check',
+        method: 'post',
+        data,
+    }
+)}
+
+// 審核 同意發布
+export function slowspeedPass(data) { return axios(
+    {
+        url: '/sms/slowspeed/pass',
         method: 'post',
         data,
     }

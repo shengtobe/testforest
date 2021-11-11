@@ -45,7 +45,7 @@
                         v-on="on"
                         readonly
                         hide-details
-                        :disabled="isStop"
+                        :disabled="isStop || status != 1"
                     ></v-text-field>
                 </template>
                 <v-date-picker
@@ -53,8 +53,22 @@
                     v-model="date"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
+                    :min="ipt.dateEnd"
                 ></v-date-picker>
             </v-menu>
+        </v-col>
+        <v-col class="d-flex align-end mb-2" cols="12" sm="4" md="3" v-if="date != date_brfore">
+            <v-btn
+            fab
+            dark title="復原"
+            small 
+            color="blue-grey lighten-2"
+            @click="dateBack"
+            >
+            <v-icon dark>
+                mdi-replay
+            </v-icon>
+            </v-btn>
         </v-col>
 <!--
         <v-col cols="12" md="6" align-self="end" class="mb-1">
@@ -69,7 +83,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件同仁
             </h3>
-            <PeopleSelectMuti :solo="false" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
+            <PeopleSelectMuti :solo="false" :canEdit="status == 1" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
             <!--<v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select
@@ -140,34 +154,81 @@
                 </v-chip>
             </div>-->
         </v-col>
+        <v-col class="d-flex align-end mb-2" cols="12" sm="4" md="3" v-if="recipients != recipients_before">
+            <v-btn
+            fab
+            dark title="收件同仁復原"
+            small 
+            color="blue-grey lighten-2"
+            @click="recipientsBack"
+            >
+            <v-icon dark>
+                mdi-replay
+            </v-icon>
+            </v-btn>
+        </v-col>
 
         <v-col cols="12" class="my-8">
             <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
             <v-btn dark class="mr-3 btn-add"
-                v-if="!isStop && isSp == false"
+                v-if="isStop == false && isSp == false && status == 1"
                 @click="update"
             >儲存</v-btn>
 
             <v-btn dark class="mr-3 btn-modify"
-                v-if="!isStop && isSp == false"
+                v-if="isStop == false && isSp == false && status == 1"
                 @click="request"
             >申請審核</v-btn>
 
             <v-btn dark class="mr-3 btn-delete"
-                v-if="isSp"
-                @click="update"
+                v-if="isSp && status == 2"
+                @click="dialog = true"
             >退回</v-btn>
 
             <v-btn dark class="mr-3 btn-add"
-                v-if="isSp && isSp == true"
-                @click="runReturn"
+                v-if="isSp && isSp == true && status == 2"
+                @click="allow"
             >同意發布</v-btn>
 
             
         </v-col>
     </v-row>
+    <!-- 退回 dialog -->
+    <v-dialog v-model="dialog" max-width="600px"
+        v-if="status == 2"
+    >
+        <v-card class="theme-del-card">
+            <v-toolbar dark flat dense class="mb-2 metal-red-top">
+                <v-toolbar-title>退回原因</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12">
+                        <v-textarea
+                            hide-details
+                            solo
+                            rows="8"
+                            placeholder="請輸入原因"
+                            v-model.trim="backReason"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2 btn-close white--text" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text"  elevation="4" :loading="isLoading" @click="runReturn">送出</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -176,19 +237,25 @@ import { mapState, mapActions } from 'vuex'
 import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 //import { dapartOptsForMember } from '@/assets/js/departOption'
-import { detail, updateRegul, slowspeedCheck, slowspeedReturn, slowspeedexcel } from '@/apis/smis/carSafeInfo'
+import { detail, updateRegul, slowspeedCheck, slowspeedPass, slowspeedReturn, slowspeedexcel } from '@/apis/smis/carSafeInfo'
 import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 
 export default {
     props: ['id'],  //路由參數
     data: () => ({
         recipients: [],  // 收件人
+        recipients_before: [],  // 收件人
         topData: [],  // 上方基本資料
         date: new Date().toISOString().substr(0, 10),  // 延長日期
+        date_brfore: '',
         dateMemuShow: false,  // 日曆是否顯示
         isStop: false,  // 是否解除
+        backReason: '',  // 退回原因
         isSp: false,
+        isRequested: false, // 是否已申請
+        dialog: false,  // 退回 dialog 是否顯示
         choose: '',  // 所選部門,
+        status: 0, // 目前流程步驟
         chooseMembers: [],  // 勾選的收件人
         //dapartOpts: dapartOptsForMember,  // 部門下拉選單
         checkboxs: [],  // 選單
@@ -240,7 +307,13 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
-        
+        dateBack(){
+            this.date = this.date_brfore
+        },
+        recipientsBack(){
+            this.recipients = this.recipients_before
+            this.PeopleComponents++
+        },
         initData() {
           if (this.id != undefined) {
                 this.chLoadingShow({show:true})
@@ -274,14 +347,63 @@ export default {
              })
             }
          },
-         request(){
+         allow(){
+             if (confirm('確定要同意發布嗎?')) {
+                this.chLoadingShow({show:true})
+                slowspeedPass({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  // DB table
+                    QyName: [],    // 欲回傳的欄位資料
+                 }).then(res => {
+                     if(res.data.ErrorCode == 0){
+                        this.chMsgbar({ success: true, msg: '發布成功'})
+                        this.$router.go()
 
+                     }
+                 }).catch(err => {
+                    //console.log(err)
+                    alert('查詢時發生問題，請重新查詢!')
+                 }).finally(() => {
+                    this.chLoadingShow({show:false})
+                 })
+            }
+         },
+         request(){
+             if(this.date != this.date_brfore){
+                 alert('[延長日期]有未儲存的修改')
+                 return
+             }
+             else if(this.recipients != this.recipients_before){
+                 alert('[收件同仁]有未儲存的修改')
+                 return
+             }
+             if (confirm('確定要申請審核嗎?')) {
+                this.chLoadingShow({show:true})
+                slowspeedCheck({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  // DB table
+                    QyName: [],    // 欲回傳的欄位資料
+                 }).then(res => {
+                     if(res.data.ErrorCode == 0){
+                        this.chMsgbar({ success: true, msg: '已送出申請'})
+                        this.$router.go()
+
+                     }
+                 }).catch(err => {
+                    //console.log(err)
+                    alert('查詢時發生問題，請重新查詢!')
+                 }).finally(() => {
+                    this.chLoadingShow({show:false})
+                 })
+            }
          },
          // 設定上方資料
          setShowData(obj) {
-             console.log("obj: ", obj);
             this.isSp = obj.InfoSign == this.userData.UserId;
             this.recipients = obj.RecPeople.map(item => item.PeopleId)
+            this.recipients_before = this.recipients
             this.ipt.line = obj.ReportLine // 通報路線
             this.ipt.pointStart = obj.LimitStart // 速限起點
             this.ipt.pointEnd = obj.LimitEnd // 速限終點
@@ -289,7 +411,8 @@ export default {
             this.ipt.slow = obj.SlowLimit // 慢行速限
             this.ipt.dateStart = obj.LimitStartDate // 限制日期(起)
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
-            this.date = obj.LimitEndDate
+            this.date = this.date_brfore = obj.LimitEndDate
+            this.status = obj.SlowSpeedStatus
             this.topData = [
                 { title: '路線', value: locationOpts.find(e => e.value == obj.ReportLine).text  },
                 { title: '速限起點、終點', value: `${obj.LimitStart} ~ ${obj.LimitEnd} km` },
@@ -302,33 +425,29 @@ export default {
         },
         
         runReturn(){
-            slowspeedReturn({
-                ClientReqTime: getNowFullTime(),  // client 端請求時間
-                OperatorID: this.userData.UserId,  // 操作人id
-                SlowSpeedCode: this.id,  // DB table
-                
-                QyName: [    // 欲回傳的欄位資料
-                    'SlowSpeedCode',
-                    'PeopleId',
-                    'PeopleName',
-                    'LimitStart',
-                    'LimitEnd',
-                    'NormalLimit',
-                    'SlowLimit',
-                    'LimitStartDate',
-                    'LimitEndDate',  
-                    'ReportLine',               
-                ],
-             }).then(res => {
-                //this.tableItems = JSON.parse(res.data.order_list)
-                //console.log(this.tableItems)
-                this.setShowData(res.data)
-             }).catch(err => {
-                //console.log(err)
-                alert('查詢時發生問題，請重新查詢!')
-             }).finally(() => {
-                this.chLoadingShow({show:false})
-             })
+            this.chLoadingShow({ show: true})
+                slowspeedReturn({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  // DB table
+                    Reason: this.backReason //退回原因
+                 }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '退回成功' })
+                        this.dialog = false
+                        setTimeout(() => {
+                            this.$router.go()
+                        }, 500)
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                 }).catch(err => {
+                     //console.log(err)
+                     alert('退回時發生問題，請重新執行!')
+                 }).finally(() => {
+                })
+            this.chLoadingShow({ show: false})
         },
         // 儲存
         update() {
@@ -382,3 +501,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+.iconReplay {
+  cursor: pointer;
+}
+</style>
