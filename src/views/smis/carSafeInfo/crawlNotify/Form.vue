@@ -16,27 +16,27 @@
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限起點(km)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限起點
             </h3>
             <v-text-field
                 v-model.trim="ipt.pointStart" type="number" step=0.1
-                solo
+                solo suffix="km"
             ></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限終點(km)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限終點
             </h3>
             <v-text-field
                 v-model.trim="ipt.pointEnd" type="number" step=0.1
-                solo
+                solo suffix="km"
             ></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>常態速限(km/h)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>常態速限
                 <v-btn small dark class="mb-1 ml-2 btn-delete"
                     @click="dialogShow = true"
                 >速限表</v-btn>
@@ -44,17 +44,17 @@
             <v-select
                 v-model="ipt.normal"
                 :items="['18', '20', '22', '25', '28', '30', '40', '45']"
-                solo
+                solo suffix="km/h"
             ></v-select>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>慢行速限(km/h)
+                <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>慢行速限 (預設值：12 km/h)
             </h3>
             <v-text-field
                 v-model.trim="ipt.slow" type="number"
-                solo
+                solo suffix="km/h"
             ></v-text-field>
         </v-col>
 
@@ -249,7 +249,7 @@ export default {
             pointStart: '',  // 速限起點
             pointEnd: '',  // 速限終點
             normal: '',  // 常態速限
-            slow: '',  // 慢行速限
+            slow: '12',  // 慢行速限
             dateStart: new Date().toISOString().substr(0, 10),  // 限制日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
             recipients: [],  // 收件人

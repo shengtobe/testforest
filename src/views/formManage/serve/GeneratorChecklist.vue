@@ -32,9 +32,6 @@
 
       <v-col cols="12" sm="3" md="3">
         <v-form ref="uploadform">
-          <!-- <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3> -->
           <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
           <!-- <v-text-field solo placeholder="點此選擇檔案" /> -->
         </v-form>

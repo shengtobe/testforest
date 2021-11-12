@@ -285,6 +285,7 @@ import {
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
+import fileList from "@/components/forManage/fileList";
 import {
   fetchFormOrderList,
   fetchFormOrderOne,
@@ -298,7 +299,6 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
-import fileList from "@/components/forManage/fileList";
 
 class Question {
   constructor(description, option) {

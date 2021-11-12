@@ -86,6 +86,11 @@ export default {
       this.defPeopleList = [...this.peopleList]
     }
     this.fetchOrganization()
+    if(this.canEdit){
+    }
+    else{
+      this.canEdit = true
+    }
 	},
 	computed: {
     ...mapState ('user', {

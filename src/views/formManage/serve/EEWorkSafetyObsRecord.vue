@@ -45,29 +45,17 @@
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn> -->
       </v-col>
-      <!-- <v-col cols="12" sm="3" md="3">
+      <v-col cols="12" sm="3" md="3" >
         <v-form ref="uploadform">
-          <h3 class="mb-1">
-            <v-icon class="mr-1 mb-1">mdi-file</v-icon>檔案上傳
-          </h3>
-          <v-text-field solo placeholder="點此選擇檔案" />
+          <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
-      </v-col> -->
-      <!-- <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="pink" dark large class="mb-sm-8 mb-md-8">
+      </v-col>
+      <v-col cols="12" sm="3" md="3" class="d-flex " align-self="center">
+        <v-btn dark large class="my-2 mr-2 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
-        <v-btn
-          color="indigo"
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8"
-          @click="newOne"
-        >
-          <v-icon>mdi-plus</v-icon>新增檢點表
-        </v-btn>
-      </v-col> -->
+      </v-col>
+      <v-col cols="12" sm="3" md="3"/>
 
       <v-dialog v-model="dialogDel" persistent max-width="290">
         <v-card class="theme-del-card">
@@ -305,6 +293,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
 import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
+import fileList from "@/components/forManage/fileList";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
@@ -320,6 +309,7 @@ export default {
     action: Actions.add,
     actions: Actions,
     isLoading: false,
+      fileItems: [],
     disabled: false,
     file: null,
     Add: false,
@@ -475,7 +465,8 @@ export default {
     ToolBar,
     formDepartOptions,
     dialogDelete,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState ('user', {
