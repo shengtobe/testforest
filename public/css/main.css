@@ -13,7 +13,7 @@
   z-index: 11;
 }
 #main-nav {
-  width: 100vw;
+  width: calc(100vw - 0.7rem);
   height: 100vh;
   /*background-color: white;*/
   background:linear-gradient(to top, #ffc7608c , #ffc7608c ), no-repeat center/35% url('../images/newLogo2_op90.png'), no-repeat url('../images/TestBg4.png');
