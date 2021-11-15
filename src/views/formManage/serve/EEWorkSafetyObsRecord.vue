@@ -117,6 +117,9 @@
           </template>
         </v-data-table>
       </v-col>
+      <v-col cols="12">
+        <fileList :fileItems="fileItems" />
+      </v-col>
       <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
       <dialogDelete
@@ -493,6 +496,9 @@ export default {
     select(file) {
         this.file = file
     },
+    select() {
+      this.$refs.upload.uploadFile()
+    },
     // 更新資料
     update() {
       this.$emit("chLocation", {});
@@ -579,6 +585,7 @@ export default {
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')

@@ -798,6 +798,7 @@ export default {
                     ProcCode: item.ProcCode
                 }))
                 sendUpdateData({
+                    Mode: '1',
                     EndangerCode: this.id,  // 危害編號
                     EndangerDesp: this.ipt.desc,  // 危害說明
                     EndangerCode: this.id,  // 危害說明
@@ -822,9 +823,52 @@ export default {
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '更新成功' })
+                        this.chMsgbar({ success: true, msg: '更新已送出' })
                         this.done = true
-                    } else {
+                    }
+                    else if(res.data.ErrorCode == 1){
+                        if (confirm('此危害有未審核的更新，確定覆蓋更新嗎?')){
+                            sendUpdateData({
+                                Mode: '2',
+                                EndangerCode: this.id,  // 危害編號
+                                EndangerDesp: this.ipt.desc,  // 危害說明
+                                EndangerCode: this.id,  // 危害說明
+                                OperationMode: this.ipt.mode,  //營運模式
+                                EndangerReason: this.ipt.reason,  // 危害直接成因
+                                EndangerIndirect: this.ipt.indirectReason,  // 可能的危害間接原因
+                                Remark: this.ipt.note,  // 備註
+                                EndangerDepart: this.ipt.depart,  // 危害權責部門
+                                RiskSerious: this.ipt.serious,  // 風險嚴重性
+                                RiskFreq: this.ipt.frequency,  // 風險頻率
+                                RiskLevel: '',  // 風險等級
+                                DeriveAccident: this.ipt.accidents,  // 衍生事故
+                                EffectTraveler: (this.ipt.affectTraveler)? 'T' : 'F',  // 影響人員-旅客
+                                EffectEmploy: (this.ipt.affectStaff)? 'T' : 'F',  // 影響人員-員工
+                                EffectPeople: (this.ipt.affectPublic)? 'T' : 'F',  // 影響人員-大眾
+                                ServiceCarError: (this.ipt.trainLate)? 'T' : 'F',  // 營運衝擊-列車誤點
+                                ServiceStopError: (this.ipt.stopOperation)? 'T' : 'F',  // 營運衝擊-中斷營運
+                                DeviceDepart: '',  // 控制措施權責部門
+                                ConnectWBS: this.ipt.wbs,  // 關聯子系統(WBS)
+                                ProcCount: chooseControlData,  // 已選控制措施清單
+                                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                                OperatorID: this.userData.UserId,  // 操作人id
+                            }).then(res => {
+                                if (res.data.ErrorCode == 0) {
+                                    this.chMsgbar({ success: true, msg: '更新已送出' })
+                                    this.done = true
+                                } else {
+                                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                                    this.$router.push({ path: '/error' })
+                                }
+                            }).catch(err => {
+                                this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                            }).finally(() => {
+                                this.chLoadingShow({show:false})
+                            })
+                        }
+                        
+                    } 
+                    else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
                     }

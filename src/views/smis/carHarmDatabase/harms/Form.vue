@@ -1,10 +1,30 @@
 <template>
 <v-container style="max-width: 1200px">
     <h2 class="mb-4 label-title">
-        {{ (this.isEdit)? `危害編輯 (編號：${ id })` : '危害新增' }}
+        {{ (this.isEdit)? `行車危害編輯 (編號：${ id })` : '行車危害新增' }}
     </h2>
 
     <v-row class="px-2 label-header">
+        <v-col cols="12" md="1" align-self="end">
+            
+            <v-text-field
+                v-model.trim="ipt.dangerID_1"
+                solo
+                readonly
+            ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" align-self="end">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-bookmark-plus</v-icon>危害編號
+                <span class="red--text">*</span>
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.dangerID_2"
+                solo
+                placeholder="請輸入危害編號"
+            ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3"/>
         <v-col cols="12" md="6">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-pen</v-icon>危害說明
@@ -433,6 +453,8 @@ export default {
         },
         defaultIpt: {
             desc: '',  // 危害說明
+            dangerID_1: 'HL-', // 編號
+            dangerID_2: '', // 編號
             reason: '',  // 危害直接成因
             indirectReason: '',  // 可能的危害間接原因
             note: '',  // 備註
@@ -589,6 +611,10 @@ export default {
                 alert("危害說明未填")
                 return
             }
+            else if(this.ipt.dangerID_2 == ''){
+                alert("危害編號未填")
+                return
+            }
             this.chLoadingShow({show:true})
 
             // 組合要傳至後端的已選控制措施資料
@@ -596,7 +622,12 @@ export default {
                 EndangerCode: '',
                 ProcCode: item.ProcCode
             }))
-
+            let rps = ['HL-', 'hl-', 'Hl-', 'hL-', 'HL', 'hl', 'Hl', 'hL', ]
+            rps.forEach(e => {
+                if(this.ipt.dangerID_2.includes(e)){
+                    this.ipt.dangerID_2 = this.ipt.dangerID_2.replace(e, '')
+                }
+            });
             if (this.isEdit) {
                 // ---------- 編輯時---------- 
                 updateData({
@@ -636,6 +667,7 @@ export default {
             } else {
                 // ---------- 新增時---------- 
                 createData({
+                    EndangerCode: this.ipt.dangerID_1 + this.ipt.dangerID_2,  // 危害編號
                     EndangerDesp: this.ipt.desc,  // 危害說明
                     OperationMode: this.ipt.mode,  //營運模式
                     EndangerReason: this.ipt.reason,  // 危害直接成因

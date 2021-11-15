@@ -254,6 +254,7 @@ export default {
         ],
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed });
