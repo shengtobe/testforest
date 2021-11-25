@@ -24,7 +24,7 @@
             <v-col cols="12" sm="3" md="3">
               <dateSelect
                 label="上次檢驗完成日期"
-                key="lastChkDay"
+                :key="'lastChkDay'+keyNum"
                 :showIcon="commonSettings.iconShow"
                 v-model="inputData.editableData.LastChkDay"
               />
@@ -76,7 +76,7 @@
             <v-col cols="12" sm="3">
               <dateSelect
                 label="本次檢修開始日期"
-                key="bgChkDay"
+                :key="'bgChkDay'+keyNum"
                 :showIcon="commonSettings.iconShow"
                 v-model="inputData.editableData.BgChkDay"
               />
@@ -84,7 +84,7 @@
             <v-col cols="12" sm="3">
               <dateSelect
                 label="本次檢修完成日期"
-                key="endChkDay"
+                :key="'endChkDay'+keyNum"
                 :showIcon="commonSettings.iconShow"
                 v-model="inputData.editableData.EndChkDay"
               />
@@ -321,6 +321,9 @@ export default {
       });
       return rtnObj;
     },
+    keyNum() {
+      return this.$vnode.key
+    }
   },
   created() {
   },
@@ -354,11 +357,6 @@ export default {
       this.inputData.ID = this.userData.UserId;
       this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
       this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
-      this.inputData.editableData.LastKm = ''
-      this.inputData.editableData.BgChkDay = ''
-      this.inputData.editableData.EndChkDay = ''
-      this.inputData.editableData.Km = ''
-      this.inputData.editableData.LastChkDay = ''
       console.log("this.inputData.editableData.LastChkDay: ", this.inputData.editableData.LastChkDay);
       // this.inputData.editableData.LastChkDay = ''
     },
