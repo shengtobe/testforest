@@ -186,10 +186,10 @@ export default {
                 text: '',
                 align: 'start',
                 divider: true,
-                align: 'center',
+                align: 'right',
                 value: 'startText',
                 class: 'subtitle-1 white--text font-weight-bold',
-                width: 28
+                width: 180
             },
             {
                 text: this.time - 3 + '年',
@@ -242,19 +242,19 @@ export default {
                 if(res.data.ErrorCode == 0){
                     this.tableItems = [
                         {
-                            startText:'FR',
+                            startText:'失能傷害頻率(FR)',
                             YearHr_belast: '',
                             YearHr_last: '',
                             YearHr_this: '',
                         },
                         {
-                            startText:'FSI',
+                            startText:'傷害指數(FSI)',
                             YearHr_belast: '',
                             YearHr_last: '',
                             YearHr_this: '',
                         },
                         {
-                            startText:'SR',
+                            startText:'失能傷害嚴重率(SR)',
                             YearHr_belast: '',
                             YearHr_last: '',
                             YearHr_this: '',

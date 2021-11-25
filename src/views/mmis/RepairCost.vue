@@ -235,48 +235,13 @@ export default {
     pageOpt: { page: 1 }, // 目前頁數
     headers: [
       // 表格顯示的欄位
-      {
-        text: "項次",
-        value: "id",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "工單編號",
-        value: "WorkNumber",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "科室",
-        value: "Dept",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "設備標示編號",
-        value: "wbs",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "立單日期",
-        value: "Established",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "檢視工單",
-        value: "ViewTicket",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
+      { text: "項次", value: "id", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold"},
+      { text: "工單編號", value: "WorkNumber", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold"},
+      { text: "科室", value: "Dept",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+      { text: "設備標示編號", value: "wbs", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold"},
+      { text: "維修費用", value: "TotalSpent", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold"},
+      { text: "立單日期", value: "Established", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold"},
+      { text: "檢視工單", value: "ViewTicket", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold"},
      
     ],
     contentShow: false, // 詳細內容 dialog 是否顯示
@@ -329,6 +294,7 @@ export default {
               rtnObj.WorkNumber = e.WorkOrderID
               rtnObj.Dept= e.DispatchDepart
               // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
+              rtnObj.TotalSpent = e.TotalSpent
               rtnObj.wbs = e.MaintainCode_AllName
               rtnObj.Established = e.CallWorkDTime
               return rtnObj
@@ -423,17 +389,18 @@ export default {
           this.content.Dept= dataList.DispatchDepart
           // let combinCode = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
           this.searchIpt.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq 
-          let brk = 0;
-          while(brk <= 20){
-            this.componentKey++
-            brk++
-            if(this.detailCh == ''){}
-            else{
-              this.content.wbs = this.detailCh
-            }
-            setTimeout(() => {}, 50)
-          }
-          if(brk > 20) this.content.wbs = ''
+          this.content.wbs = res.data.WorkDataList[0].MaintainCode_AllName; 
+          // let brk = 0;
+          // while(brk <= 20){
+          //   this.componentKey++
+          //   brk++
+          //   if(this.detailCh == ''){}
+          //   else{
+          //     this.content.wbs = this.detailCh
+          //   }
+          //   setTimeout(() => {}, 50)
+          // }
+          // if(brk > 20) this.content.wbs = ''
           // this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
           this.content.Established = dataList.CallWorkDTime
           this.content.FaultDepict = dataList.Malfunction

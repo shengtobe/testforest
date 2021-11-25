@@ -169,7 +169,7 @@
                 <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-account</v-icon>作業人員
                 </h3>
-                <peopleSelect @getPeople="saveSelectPeople" :peopleList="queryItem.PeopleList"/>
+                <peopleSelect @getPeople="saveSelectPeople" :canEdit="true" :peopleList="queryItem.PeopleList"/>
                 <!-- <v-row>
                     <v-col cols="10" sm="4" md="6">
                         <v-text-field

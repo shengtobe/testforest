@@ -23,7 +23,28 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇機車編號
         </h3>
-        <v-select
+        <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
+        <v-dialog v-model="eqCode" max-width="700px">
+            <v-card class="theme-card">
+                <v-card-title class="px-4 py-1">
+                    車輛型號
+                    <v-spacer></v-spacer>
+                    <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn> 
+                </v-card-title>
+                <div class="px-4 py-3">
+                    <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
+                    @getEqCode="getRtnCode" @getEqName="getRtnName"/>
+                </div>
+                <v-card-actions class="px-5 pb-5">
+                    <v-spacer></v-spacer>
+                    <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                    <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <!-- <v-select
           v-model="formData.searchItem.carId"
           :items="[
             { text: 'A0001', value: 'A' },
@@ -33,7 +54,7 @@
             { text: 'A0005', value: 'E' },
           ]"
           solo
-        />
+        /> -->
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -130,6 +151,7 @@ import {
 import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
+import EquipCode from '@/components/EquipRepairCode'
 import deptSelect from "@/components/forManage/deptSelect";
 //import EditPage from "@/views/formManage/curing/LocomotiveTwoMaintenanceEdit";
 import EditPage from "@/views/formManage/curing/LocomotiveCommonMaintenanceEdit";
@@ -141,9 +163,13 @@ export default {
   data: () => ({
     title: "柴油液力機車二級檢修記錄表",
     newText: "記錄表",
+    searchName: '',
+    key: 0,
     actions: Actions,
     isLoading: false,
     disabled: false,
+    preSetEqcode: '',
+    preSerEqName: '',
     // controls for dialog
     ShowDetailDialog: false,
     dialogDel: false, // model off
@@ -153,6 +179,12 @@ export default {
     //---api---
     DB_Table: "RP051",
     RPFlowNo: "",
+    searchIpt: {  // 搜尋欄位
+        year: new Date().getFullYear(),
+        month: '',  // 月
+        MaintainCode_System: 'RST',  // 類型
+        MaintainCode_Loc: ''
+    },
     //搜尋欄位設定
     formData: {
       settings: {
@@ -166,6 +198,7 @@ export default {
       },
     },
 
+    eqCode: false,
     DynamicKey: 0,
     DelDynamicKey: 0,
     editType: "",
@@ -819,11 +852,24 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    EquipCode,
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+        get: function() {
+            return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+        },
+        set: function(value) {
+          if(value != ''){
+            let splitArr = value.split('-')
+            this.searchIpt.MaintainCode_System = splitArr[0]
+            this.searchIpt.MaintainCode_Loc = splitArr[1]
+          }
+        }
+    },
   },
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
@@ -832,6 +878,10 @@ export default {
     this.search();
   },
   methods: {
+    clickCleanCode(){
+      this.searchIpt.MaintainCode_System = 'RST'
+      this.searchIpt.MaintainCode_Loc = ''
+    },
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
@@ -850,6 +900,22 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    //機車回傳
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+        (cName)
+        this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+        this.com_equipCode = this.preSetEqcode
+        this.searchName = this.preSerEqName
+        this.eqCode = false
+    },
+    
     // 搜尋
     search() {
       

@@ -169,7 +169,7 @@
                 @click="click1"
                 solo
             ></v-select>
-            <p class="red--text mt-n6">{{ pick1 }}</p>
+            <p v-html="pick1_memo" class="red--text mt-n6"></p>
         </v-col>
 
         <v-col cols="12" sm="4" md="3" v-if="(status == 2) && isShowBtn">
@@ -182,9 +182,30 @@
                 @change="selector2Changed"
                 solo
             ></v-select>
-            <p class="red--text mt-n6">{{ pick2 }}</p>
+            <p v-html="pick2_memo" class="red--text mt-n6"></p>
         </v-col>
-
+        <!-- 已選的既有 -->
+        <v-row class="mt-1 ml-1 mr-1" v-if="showCarPicked">
+            <!-- 已選行安既有 -->
+            <v-col cols="12" sm="6" md="6" v-if="true">
+                <v-row>
+                    <h3 class="mb-1">
+                        <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>已選的行車危害
+                    </h3>
+                </v-row>
+                <v-row>
+                    <v-data-table
+                        :headers="headers_selected"
+                        :items="tableItems_selected"
+                        disable-sort
+                        disable-filtering
+                        hide-default-footer
+                        class="theme-table"
+                    ></v-data-table>
+                </v-row>
+            </v-col>    
+        </v-row>
+        
         <v-col cols="12" sm="4" md="3" align-self="end" v-if="jobSafeType == 'C'">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-barcode</v-icon>職業危害編號
@@ -277,7 +298,6 @@
 
                     <template v-slot:item.detail="{ item }">
                         <v-btn small dark fab class="btn-detail"
-                            :loading="isLoading"
                             @click="redirect(item.AccidentCode, 11)"
                         >
                             <v-icon dark>mdi-file-document</v-icon>
@@ -366,7 +386,6 @@
                         
                         <template v-slot:item.detail="{ item }">
                             <v-btn small dark fab class="btn-detail"
-                                :loading="isLoading"
                                 @click="redirect(item.EndangerCode, 12)"
                             >
                                 <v-icon dark>mdi-file-document</v-icon>
@@ -451,7 +470,6 @@
 
                         <template v-slot:item.detail="{ item }">
                             <v-btn small dark fab class="btn-detail"
-                                :loading="isLoading"
                                 @click="redirect(item.AccidentCode, 21)"
                             >
                                 <v-icon dark>mdi-file-document</v-icon>
@@ -536,7 +554,6 @@
 
                         <template v-slot:item.detail="{ item }">
                             <v-btn small dark fab class="btn-detail"
-                                :loading="isLoading"
                                 @click="redirect(item.EndangerCode, 22)"
                             >
                                 <v-icon dark>mdi-file-document</v-icon>
@@ -652,8 +669,49 @@
             
             <v-card-actions class="px-5 pb-5">
                 <v-spacer></v-spacer>
-                <v-btn class="mr-2" elevation="4" :loading="isLoading" @click="NoRecordClick(false)">取消</v-btn>
-                <v-btn color="success"  elevation="4" :loading="isLoading" @click="NoRecordClick(true)">送出</v-btn>
+                <v-btn class="mr-2" elevation="4" @click="NoRecordClick(false)">取消</v-btn>
+                <v-btn color="success"  elevation="4" @click="NoRecordClick(true)">送出</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+    <!-- 新增行安危害 dialog -->
+    <v-dialog v-model="newCarHarmDialog" max-width="350px">
+        <v-card>
+            <v-toolbar dark flat dense color="error" class="mb-2">
+                <v-toolbar-title>行車危害新增編號</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="afterNewCarHarm(false)" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" md="3" align-self="end">
+                        <v-text-field
+                            v-model.trim="dangerID_1"
+                            solo
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="8" align-self="end">
+                        <h3 class="mb-1">
+                            <v-icon class="mr-1 mb-1">mdi-bookmark-plus</v-icon>危害編號
+                            <span class="red--text">*</span>
+                        </h3>
+                        <v-text-field
+                            v-model.trim="dangerID_2"
+                            solo
+                            placeholder="請輸入危害編號"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2" elevation="4" @click="afterNewCarHarm(false)">取消</v-btn>
+                <v-btn color="success"  elevation="4" @click="afterNewCarHarm(true)">確定</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -690,12 +748,17 @@ export default {
         arr1: [], // 重大事故
         arr2: [], // 一般事故
         arr3: [], // 異常事件
+        dangerID_1: 'HL-', // 編號
+        dangerID_2: '', // 編號
+        newCarHarmDialog: false, // 顯示新增行車危害編號視窗
         NoRecordReason: '', // 不立案原因
         NoRecordDialog: false,  // 退回 dialog 是否顯示
         NoRecordPress: '', // 退回 dialog 按了甚麼
         status: '',  // 狀態
         pick1: '', // 既有行安事故編號
         pick2: '', // 既有行安事故編號
+        pick1_memo: '',
+        pick2_memo: '',
         pick1_2: '', // 既有行安危害編號
         pick2_1: '', // 既有職災事故編號
         pick2_2: '', // 既有職安危害編號
@@ -744,6 +807,8 @@ export default {
             '自訂訊息',
         ],
         tableItems: [],  // 表格資料
+        headers_selected: [],
+        tableItems_selected: [],
         pageOpt: { page: 1 },  // 目前頁數
         headers1_1: [  // 表格顯示既有行安事故的欄位
             { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
@@ -896,6 +961,10 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
             groupData: state => state.groupData,
         }),
+        showCarPicked: function(){
+            // return (this.pick1 != "")?true:false;
+            return false
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -915,6 +984,10 @@ export default {
             //     this.jobSafeType = '';
             // }
             switch(this.carSafeType){
+                case 'C':
+                    // 新增行安危害!
+                    this.newCarHarmDialog = true
+                    break
                 case 'B': // 以行安立案 選擇 既有行安事故
                     this.showPick1_1Form = true;
                     this.chLoadingShow({show:true})
@@ -967,6 +1040,7 @@ export default {
                             this.tableItems.push(element)
                             // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                         });
+                        console.log("table: ", this.tableItems);
                     }).catch(err => {
                         //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -1008,6 +1082,7 @@ export default {
                     break;
                 default:
                     this.pick1 = "";
+                    this.pick1_memo = "";
                     break;
             }
         },
@@ -1101,6 +1176,20 @@ export default {
                         this.chLoadingShow({show:false})
                     })
                 }
+        },
+        afterNewCarHarm(isSend){
+            this.newCarHarmDialog = false;
+            if(isSend){
+                this.pick1 = this.dangerID_1 + this.dangerID_2
+                this.pick1_memo = this.pick1
+            }
+            else{
+                // if(this.pick1 != ''){
+
+                // }
+                this.carSafeType = '';
+                this.pick1 = this.pick1_memo = '';
+            }
         },
         search1_1(){
             fetchListEvent({
@@ -1294,6 +1383,7 @@ export default {
                     break;
                 case 'C': // 以職安立案 選擇 新增職災事故
                     this.pick2 = "";
+                    this.pick2_memo = "";
                     // this.shwoPick2_3Form = true
 
 
@@ -1334,6 +1424,7 @@ export default {
                 default:
                     this.ipt.code1 = this.ipt.code2 = '';
                     this.pick2 = "";
+                    this.pick2_memo = "";
                     break;
             }
         },
@@ -1584,15 +1675,13 @@ export default {
             }
             let askMsg = (this.NoRecord == 'F')?'你確定要立案嗎?':'你確定要不立案嗎?';
             if (confirm(askMsg)) {
-                
-
                 this.chLoadingShow({show:true})
-
                 // 判斷行安、職安的立案類型及種類 (依下拉選單所選的值判斷，不選擇就維持空值)
                 let carType = ''  // 行安立案類型
                 let carCase = ''  // 行安立案種類
                 let jobType = ''  // 職安立案類型
                 let jobCase = ''  // 職安立案種類
+                let DriveEndangerCode = ''; // DriveEndangerCode
                 // 行安
                 switch (this.carSafeType) {
                     case 'A': // 新增事故
@@ -1606,6 +1695,7 @@ export default {
                     case 'C': // 新增危害
                         carType = 'new'
                         carCase = 'endanger'
+                        DriveEndangerCode = this.dangerID_1 + this.dangerID_2
                         break
                     case 'D': // 既有危害
                         carType = 'connect'
@@ -1649,6 +1739,7 @@ export default {
                     ProfesRecordCase: jobCase,  // 職安立案種類
                     DriveConnectID: this.pick1,
                     ProfesConnectID: this.pick2,
+                    DriveEndangerCode: DriveEndangerCode, // 行安危害使用者所輸入數值
                     EndangerCode: this.ipt.code1 + '-' + this.ipt.code2,
                     NoRecord: this.NoRecord,  // 是否不立案
                     ChangeRecord: 'F',  // 是否變更立案類型
@@ -1657,20 +1748,25 @@ export default {
                     Reason: this.NoRecordReason,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
+                        console.log("0");
                         this.chMsgbar({ success: true, msg: '操作完成'})
                         this.done = true  // 隱藏按鈕
                         // =================自動轉跳=================
                         if(res.data.EventCode == '' || res.data.EventCode == null){
+                            console.log('nnn')
                         }
                         else{
                             if(carType != 'no' && jobType == 'no'){// 自動轉跳行安的情況
+                                console.log("A");
                                 if(carType == 'new'){ //轉跳新增行安
+                                    console.log("1");
                                     // 行車事故
                                     if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${res.data.EventCode}/show` })
                                     // 行車危害
                                     else if(carCase == 'endanger')  this.$router.push({ path: `/smis/car-harmdb/harms/${res.data.EventCode}/show` })
                                 }
                                 else{//轉跳既有行安
+                                    console.log("2");
                                     // 行車事故
                                     if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${this.pick1}/show` })
                                     // 行車危害
@@ -1678,13 +1774,17 @@ export default {
                                 }
                             }
                             else if(carType == 'no' && jobType != 'no'){// 自動轉跳職安的情況
+                                console.log("B");
                                 if(jobType == 'new'){ //轉跳新增職安
+                                    console.log("1");
                                     // 職業事故
                                     if(jobCase == 'event')  this.$router.push({ path: `/smis/jobsafety/disaster-survey/${res.data.EventCode}/show` })
                                     // 職業危害
                                     else if(jobCase == 'endanger')  this.$router.push({ path: `/smis/jobsafety/disasterdb/${res.data.EventCode}/show` })
                                 }
                                 else{//轉跳既有職安
+                                    console.log("2");
+                                    console.log("jobCase: ", jobCase);
                                     if(jobCase == 'event'){ // 職業事故
                                         this.$router.push({ path: `/smis/jobsafety/disaster-survey/${this.pick2}/show` })
                                     }
@@ -1693,9 +1793,15 @@ export default {
                                     }
                                 }
                             }
+                            else{
+                                console.log("else");
+                            }
                         }
                         
-                    } else {
+                    } else if(res.data.ErrorCode == 1){
+                        alert("行安危害編號已存在")
+                        return
+                    }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
                     }
@@ -1768,7 +1874,7 @@ export default {
                         jobCase = 'no'
                         break;
                 }
-
+                
                 recordNotify({
                     EndangerID: this.id,  // 通報編號
                     DriveRecordType: carType,  // 行安立案類型
@@ -1800,25 +1906,49 @@ export default {
         pick1Event(item) {
             switch(this.carSafeType){
                 case 'B':
-                    this.showPick1_1Form = false;
+                    this.showPick1_1Form = false; // 既有table關掉
                     this.pick1 = item.AccidentCode
+                    this.pick1_memo = "行車事故: "+item.AccidentCode+"<br>發生地點: "+item.FindLine+"<br>事故類型: "+this.opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '') // 已選編號
+                    // this.headers_selected = this.headers1_1; // 已選的header
+                    // console.log("item: ", item);
+                    // this.tableItems_selected = [...item]; // 已選的item
+                    
                     break;
                 case 'D':
                     this.showPick1_2Form = false;
                     this.pick1 = item.EndangerCode
+                    this.pick1_memo = "行車危害: "+item.EndangerCode+"<br>風險等級: "+this.opts1_2.riskLevel.find(ele => ele.value == item.RiskLevel).text+"<br>危害說明: "+item.EndangerDesp // 已選編號
                     break;
             }
             // this.carSafeType = ''
         },
         pick2Event(item) {
+                    console.log("item: ", item);
+                    console.log("jobSafeType: ", this.jobSafeType);
             switch(this.jobSafeType){
                 case 'B':
                     this.shwoPick2_1Form = false;
+                    let hName = ''
+                    let nn = []
+                    let cc = ''
+                    if(item.HurtPeopleName != null){
+                        nn = item.HurtPeopleName.split('')
+                        for (let index = 0; index < nn.length-2; index++) {
+                            cc += 'O'
+                        }
+                        hName = nn[0] + cc + nn[nn.length-1]
+                    }
+                    else{
+                        hName = ''
+                    }
+                    let hDepart = (item.HappenDepart == null)?'':item.HappenDepart
                     this.pick2 = item.AccidentCode
+                    this.pick2_memo = "職災事故: "+item.AccidentCode+"<br>發生部門: "+ hDepart +"<br>罹災者姓名: "+ hName // 已選編號
                     break;
                 case 'D':
                     this.shwoPick2_2Form = false;
                     this.pick2 = item.EndangerCode
+                    this.pick2_memo = "職業危害: "+item.EndangerCode+"<br>作業名稱: "+item.JobName // 已選編號
                     break;
             }
         },

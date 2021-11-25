@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">慢行通報編輯 (編號：{{ id }})</h2>
+    <h2 class="mb-4 label-title">慢行通報{{(isStop == false && isSp == false && status == 1)?'編輯':''}} (編號：{{ id }})</h2>
 
     <p class="error--text" v-if="isStop">
         <v-icon class="mr-1 mb-1 error--text">mdi-alert-decagram</v-icon>
@@ -83,7 +83,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件同仁
             </h3>
-            <PeopleSelectMuti :solo="false" :canEdit="status == 1" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
+            <PeopleSelectMuti :solo="false" :canEdit="isStop == false && isSp == false && status == 1" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
             <!--<v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select
@@ -177,6 +177,9 @@
                 @click="update"
             >儲存</v-btn>
 
+            <v-btn dark class="ma-2 btn-modify"
+                @click="print"
+            >列印</v-btn>
             <v-btn dark class="mr-3 btn-modify"
                 v-if="isStop == false && isSp == false && status == 1"
                 @click="request"
@@ -251,7 +254,7 @@ export default {
         dateMemuShow: false,  // 日曆是否顯示
         isStop: false,  // 是否解除
         backReason: '',  // 退回原因
-        isSp: false,
+        isSp: false, // 登入者是否為主管
         isRequested: false, // 是否已申請
         dialog: false,  // 退回 dialog 是否顯示
         choose: '',  // 所選部門,
@@ -369,6 +372,22 @@ export default {
                  })
             }
          },
+         // 列印
+        print() {
+            safetyinfoexcel({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: this.id
+            }).then(res => {
+                let link = document.createElement('a')
+                link.href = `/downloads/${res.data.file_name}`
+                link.setAttribute('download', res.data.file_name)
+                document.body.appendChild(link)
+                link.click()
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
+        },
          request(){
              if(this.date != this.date_brfore){
                  alert('[延長日期]有未儲存的修改')
@@ -413,7 +432,20 @@ export default {
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
             this.date = this.date_brfore = obj.LimitEndDate
             this.status = obj.SlowSpeedStatus
+            let statusTxt = ''
+            switch(this.status){
+                case "1":
+                    statusTxt = '已立案'
+                    break;
+                case "2":
+                    statusTxt = '審核中'
+                    break;
+                case "3":
+                    statusTxt = '已發布'
+                    break;
+            }
             this.topData = [
+                { title: '通報狀態', value: statusTxt  },
                 { title: '路線', value: locationOpts.find(e => e.value == obj.ReportLine).text  },
                 { title: '速限起點、終點', value: `${obj.LimitStart} ~ ${obj.LimitEnd} km` },
                 { title: '常態速限', value: `${ obj.NormalLimit } km/h` },

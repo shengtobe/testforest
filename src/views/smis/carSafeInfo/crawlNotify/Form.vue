@@ -120,7 +120,7 @@
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件人
                 <span class="red--text">*</span>
             </h3>
-            <PeopleSelectMuti :solo="false" :peopleList="ipt.recipients" @getPeople="(obj)=>ipt.recipients=obj.map(e=>e.UserId)"/>
+            <PeopleSelectMuti :solo="false" :canEdit="true" :peopleList="ipt.recipients" @getPeople="(obj)=>ipt.recipients=obj.map(e=>e.UserId)"/>
             <!-- <v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select

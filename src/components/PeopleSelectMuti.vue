@@ -18,7 +18,7 @@
       dark
       small
       @click="openSelectPeople"
-      v-show="(solo&&PeopleList.length==0)||((!solo) || (!solo)&&canEdit)"
+      v-show="(solo&&PeopleList.length==0)||(solo==false)&&canEdit"
     >
       <v-icon dark>
         mdi-plus
@@ -86,11 +86,14 @@ export default {
       this.defPeopleList = [...this.peopleList]
     }
     this.fetchOrganization()
-    if(this.canEdit){
+    console.log("solo: ", this.solo)
+    console.log("canEdit: ", this.canEdit);
+    if(this.canEdit == undefined || this.canEdit == null){
+        this.canEdit = true
       }
     else{
-      this.canEdit = true
     }
+    console.log("canEdit: ", this.canEdit);
 	},
 	computed: {
     ...mapState ('user', {
