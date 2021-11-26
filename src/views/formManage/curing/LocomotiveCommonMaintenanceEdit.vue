@@ -305,6 +305,7 @@ export default {
             this.searchIpt.MaintainCode_System = splitArr[0]
             this.searchIpt.MaintainCode_Loc = splitArr[1]
             this.searchName = value
+            this.inputData.editableData.CarId = this.preSerEqName
           }
         }
     },
@@ -347,9 +348,10 @@ export default {
     },
     //機車送出按鈕
     selectEQ() {
-        this.com_equipCode = this.preSerEqName
+        this.com_equipCode = this.preSetEqcode
         this.searchName = this.preSerEqName
         this.eqCode = false
+        // this.inputData.editableData.CarId = this.preSerEqName
     },
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
@@ -357,7 +359,6 @@ export default {
       this.inputData.ID = this.userData.UserId;
       this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
       this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
-      console.log("this.inputData.editableData.LastChkDay: ", this.inputData.editableData.LastChkDay);
       // this.inputData.editableData.LastChkDay = ''
     },
     viewPage(item) {
@@ -380,11 +381,8 @@ export default {
           this.inputData.DepartCode = data.DepartCode;
           this.inputData.Name = data.Name;
           this.inputData.DepartName = data.DepartName;
-          let get2 = data.CarId.split('-')[get1.length - 1]
-          let get3 = get2.indexOf('(')
-          let get4 = get2.indexOf(')')
-          let get5 = get2.substr(get3+1, get4-get3-1)
-          this.com_equipCode = 'RST-' + get5
+          let afterRev = data.CarId.split('').reverse()
+          this.com_equipCode = 'RST-' + afterRev.slice(1, afterRev.indexOf('(')).reverse().join('')
           this.searchName = data.CarId
           data = decodeObject(data);
           const inputArr = Object.keys(this.inputData.editableData);
@@ -417,7 +415,6 @@ export default {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
-     
       if (this.editType == this.actions.add) {
         createFormOrder0({
           ClientReqTime: getNowFullTime(), // client 端請求時間

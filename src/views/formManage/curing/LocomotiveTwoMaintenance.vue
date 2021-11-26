@@ -1133,7 +1133,7 @@ export default {
       this.dialogDel = false;
     },
     viewPage(item) {
-     
+     console.log("item: ", item);
      
       this.DynamicKey += 1;
       this.editType = this.actions.edit;
