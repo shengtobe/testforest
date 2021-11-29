@@ -89,6 +89,9 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
+    </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" persistent max-width="1000px">
       <v-card class="theme-card">

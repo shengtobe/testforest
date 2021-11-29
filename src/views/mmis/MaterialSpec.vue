@@ -133,7 +133,7 @@ export default {
           class: "subtitle-1 white--text font-weight-bold",
         },
         {
-          text: "單位",
+          text: "料件單位",
           value: "Unit",
           align: "center",
           sortable: true,

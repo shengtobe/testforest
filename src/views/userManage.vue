@@ -13,17 +13,23 @@
               solo @change="departSelectChange"
           ></v-select>
       </v-col>
+      <v-col cols="12" sm="3">
+        <h3 class="mb-1">員工編號</h3>
+        <v-text-field v-model="empID" clearable solo />
+      </v-col>
     </v-row>
     
     <v-row>
       <v-col cols="12">
-        <v-data-table 
+        <v-data-table  
+          fixed-header
           disable-filtering
           hide-default-footer
           disable-pagination
           disable-sort
           dense class="theme-table"
-          :items="methodList"
+          height="60vh"
+          :items="filterEmpID"
           :headers="headers">
           <template v-slot:item.UserLv1="{ item }">
             <div style="height:100%" @click="rowclick(item.methodId,'UserLv1')">
@@ -93,6 +99,7 @@
   import { fetchUserAuth, userAuthUpdate, canInUpdate } from '@/apis/access'
   import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
   import { mapState, mapActions } from 'vuex'
+// import { filter } from 'vue/types/umd'
 
 export default {
 	data: () => ({
@@ -101,6 +108,7 @@ export default {
         methodList:[],
         departList: [],
         departSelect: '',
+        empID: '',
         headers:[
             { text: '人員名稱', value: 'methodName', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
             { text: '編號', value: 'methodId', align: 'center', class: 'subtitle-1 white--text font-weight-bold' },
@@ -124,8 +132,22 @@ export default {
                 funcIdList: state => state.funcIdList,  // 使用者基本資料
             }),
             compute_name:function() {
-
-            }
+            },
+            filterEmpID:function() {
+              if(this.empID == '' || this.empID == null){
+                return this.methodList
+              }
+              else{
+                let temp = []
+                this.methodList.forEach(e => {
+                  if(e.methodId.includes(this.empID)){
+                    temp.push(e)
+                  }
+                });
+                console.log("changing");
+                return temp
+              }
+            },
         },
         methods: {
             ...mapActions('system', [

@@ -62,7 +62,7 @@
             </v-col>
             <v-col cols="12" sm="8">
               <h3 class="mb-1">提醒多人</h3>
-              <peopleSelect :key="'peopleSelect' + psKey" @getPeople="saveSelectPeople" :peopleList="formatPeopleList"/>
+              <peopleSelect :canEdit="true" :key="'peopleSelect' + psKey" @getPeople="saveSelectPeople" :peopleList="formatPeopleList"/>
             </v-col>
             <v-col cols="12" sm="12">
               <h3 class="mb-1">工作提醒事項</h3>

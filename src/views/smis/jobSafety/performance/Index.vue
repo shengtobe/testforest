@@ -21,6 +21,11 @@
                         <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
                         科室職災事故統計(含交通職災)
                     </v-list-item>
+                    <v-divider></v-divider>
+                    <v-list-item to="/smis/jobsafety/performance/job-injury">
+                        <v-icon color="primary" class="mr-1">mdi-chevron-double-right</v-icon>
+                        職能傷害率
+                    </v-list-item>
                 </v-list>
             </v-card>
         </v-col>

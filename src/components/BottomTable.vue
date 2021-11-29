@@ -92,16 +92,20 @@ export default {
                 let flowId = item.slice(item.indexOf('(')+1,item.indexOf(')'))
                 let src = ""
                 switch(srcType) {
+                    case "行車事故":
                     case "行安事故":
                         src = `smis/car-accident-event/${flowId}/show`
                         break;
+                    case "行車危害":
                     case "行安危害":
                         src = `smis/car-harmdb/harms/${flowId}/show`
                         break;
                     case "職災事故":
+                    case "職安事故":
                         src = `smis/jobsafety/disaster-survey/${flowId}/show`
                         break;
                     case "職災危害":
+                    case "職安危害":
                         src = `smis/jobsafety/disasterdb/${flowId}/show`
                         break;
                     default:

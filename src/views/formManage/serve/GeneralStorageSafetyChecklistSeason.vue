@@ -136,6 +136,7 @@ import {
 import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList } from "@/apis/formManage/serve";
 import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
+import fileList from "@/components/forManage/fileList";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import EditPage from "@/views/formManage/serve/GeneralStorageSafetyChecklistSeasonEdit";

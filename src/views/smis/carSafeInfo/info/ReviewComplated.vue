@@ -47,6 +47,7 @@
                 rows="6"
                 placeholder="請輸入加會意見"
                 v-model.trim="opinion"
+                :disabled="status == 3 && isShowBtn_add == false"
             ></v-textarea>
         </v-col>
 
@@ -595,7 +596,6 @@ export default {
         // 退回
         withdraw() {
             this.chLoadingShow({ show: true})
-//console.log(this.backReason)
             setTimeout(() => {
 
                 safetyinforeturn({

@@ -616,12 +616,35 @@ export default {
 
                 sendResetData({
                     EndangerCode: this.id,  // 事故事件編號
+                    Mode: '1',
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '重提成功' })
                         this.done = true  // 隱藏頁面操作按鈕
+                    }
+                    else if(res.data.ErrorCode == 1){
+                        if (confirm('此危害有未審核的重提流程，確定要覆蓋嗎?')){
+                            sendResetData({
+                                EndangerCode: this.id,  // 事故事件編號
+                                Mode: '2',
+                                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                                OperatorID: this.userData.UserId,  // 操作人id
+                            }).then(res => {
+                                if (res.data.ErrorCode == 0) {
+                                    this.chMsgbar({ success: true, msg: '重提成功' })
+                                    this.done = true  // 隱藏頁面操作按鈕
+                                } else {
+                                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                                    this.$router.push({ path: '/error' })
+                                }
+                            }).catch(err => {
+                                this.chMsgbar({ success: false, msg: '伺服器發生問題，重提失敗' })
+                            }).finally(() => {
+                                this.chLoadingShow({show:false})
+                            })
+                        }
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })

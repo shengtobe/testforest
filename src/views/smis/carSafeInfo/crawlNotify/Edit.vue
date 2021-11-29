@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px">
-    <h2 class="mb-4 label-title">慢行通報編輯 (編號：{{ id }})</h2>
+    <h2 class="mb-4 label-title">慢行通報{{(isStop == false && isSp == false && status == 1)?'編輯':''}} (編號：{{ id }})</h2>
 
     <p class="error--text" v-if="isStop">
         <v-icon class="mr-1 mb-1 error--text">mdi-alert-decagram</v-icon>
@@ -45,7 +45,7 @@
                         v-on="on"
                         readonly
                         hide-details
-                        :disabled="isStop"
+                        :disabled="isStop || status != 1"
                     ></v-text-field>
                 </template>
                 <v-date-picker
@@ -53,8 +53,22 @@
                     v-model="date"
                     @input="dateMemuShow = false"
                     locale="zh-tw"
+                    :min="ipt.dateEnd"
                 ></v-date-picker>
             </v-menu>
+        </v-col>
+        <v-col class="d-flex align-end mb-2" cols="12" sm="4" md="3" v-if="date != date_brfore">
+            <v-btn
+            fab
+            dark title="復原"
+            small 
+            color="blue-grey lighten-2"
+            @click="dateBack"
+            >
+            <v-icon dark>
+                mdi-replay
+            </v-icon>
+            </v-btn>
         </v-col>
 <!--
         <v-col cols="12" md="6" align-self="end" class="mb-1">
@@ -69,7 +83,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account-multiple</v-icon>收件同仁
             </h3>
-            <PeopleSelectMuti :solo="false" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
+            <PeopleSelectMuti :solo="false" :canEdit="isStop == false && isSp == false && status == 1" :peopleList="recipients" @getPeople="(obj)=>recipients=obj.map(e=>e.UserId)" :key="PeopleComponents"/>
             <!--<v-row>
                 <v-col cols="12" sm="4" md="3">
                     <v-select
@@ -140,18 +154,84 @@
                 </v-chip>
             </div>-->
         </v-col>
+        <v-col class="d-flex align-end mb-2" cols="12" sm="4" md="3" v-if="recipients != recipients_before">
+            <v-btn
+            fab
+            dark title="收件同仁復原"
+            small 
+            color="blue-grey lighten-2"
+            @click="recipientsBack"
+            >
+            <v-icon dark>
+                mdi-replay
+            </v-icon>
+            </v-btn>
+        </v-col>
 
         <v-col cols="12" class="my-8">
             <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
-
-            <v-btn dark class="btn-add"
-                v-if="!isStop"
+            <v-btn dark class="mr-3 btn-add"
+                v-if="isStop == false && isSp == false && status == 1"
                 @click="update"
             >儲存</v-btn>
+
+            <v-btn dark class="ma-2 btn-modify"
+                @click="print"
+            >列印</v-btn>
+            <v-btn dark class="mr-3 btn-modify"
+                v-if="isStop == false && isSp == false && status == 1"
+                @click="request"
+            >申請審核</v-btn>
+
+            <v-btn dark class="mr-3 btn-delete"
+                v-if="isSp && status == 2"
+                @click="dialog = true"
+            >退回</v-btn>
+
+            <v-btn dark class="mr-3 btn-add"
+                v-if="isSp && isSp == true && status == 2"
+                @click="allow"
+            >同意發布</v-btn>
+
+            
         </v-col>
     </v-row>
+    <!-- 退回 dialog -->
+    <v-dialog v-model="dialog" max-width="600px"
+        v-if="status == 2"
+    >
+        <v-card class="theme-del-card">
+            <v-toolbar dark flat dense class="mb-2 metal-red-top">
+                <v-toolbar-title>退回原因</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="dialog = !dialog" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12">
+                        <v-textarea
+                            hide-details
+                            solo
+                            rows="8"
+                            placeholder="請輸入原因"
+                            v-model.trim="backReason"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+            
+            <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2 btn-close white--text" elevation="4" :loading="isLoading" @click="dialog = false">取消</v-btn>
+                <v-btn class="btn-add white--text"  elevation="4" :loading="isLoading" @click="runReturn">送出</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -160,18 +240,25 @@ import { mapState, mapActions } from 'vuex'
 import { locationOpts } from '@/assets/js/smisData'
 import { getNowFullTime } from '@/assets/js/commonFun'
 //import { dapartOptsForMember } from '@/assets/js/departOption'
-import { detail, updateRegul } from '@/apis/smis/carSafeInfo'
+import { detail, updateRegul, slowspeedCheck, slowspeedPass, slowspeedReturn, slowspeedexcel } from '@/apis/smis/carSafeInfo'
 import PeopleSelectMuti from '@/components/PeopleSelectMuti'
 
 export default {
     props: ['id'],  //路由參數
     data: () => ({
         recipients: [],  // 收件人
+        recipients_before: [],  // 收件人
         topData: [],  // 上方基本資料
         date: new Date().toISOString().substr(0, 10),  // 延長日期
+        date_brfore: '',
         dateMemuShow: false,  // 日曆是否顯示
         isStop: false,  // 是否解除
+        backReason: '',  // 退回原因
+        isSp: false, // 登入者是否為主管
+        isRequested: false, // 是否已申請
+        dialog: false,  // 退回 dialog 是否顯示
         choose: '',  // 所選部門,
+        status: 0, // 目前流程步驟
         chooseMembers: [],  // 勾選的收件人
         //dapartOpts: dapartOptsForMember,  // 部門下拉選單
         checkboxs: [],  // 選單
@@ -223,37 +310,16 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'closeWindow',  // 關閉視窗
         ]),
-        
+        dateBack(){
+            this.date = this.date_brfore
+        },
+        recipientsBack(){
+            this.recipients = this.recipients_before
+            this.PeopleComponents++
+        },
         initData() {
           if (this.id != undefined) {
                 this.chLoadingShow({show:true})
-                //  let arr = this.recipients.map(item => ({
-                //  PeopleId: item
-                //  }))
-
-                // 範例效果
-                // setTimeout(() => {
-                //     if (this.id == 222) this.isStop = true  // 設定已解除的範例
-
-                //     // 設定上方資料
-                //     let obj = {
-                //         id: '111',
-                //         line: '本線',
-                //         pointStart: '5.7',
-                //         pointEnd: '8',
-                //         normal: '70',
-                //         slow: '50',
-                //         dateStart: '2019-05-10',
-                //         dateEnd: '2019-05-22',
-                //         creater: '王小明',
-                //         isStop: false,  // 是否解除
-                //     }
-                //     this.setShowData(obj)
-
-                //     this.recipients = ['2', '3', '5', '7']
-                //     this.chLoadingShow({show:true})
-                // }, 1000)
-                
             
                 detail({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -284,9 +350,79 @@ export default {
              })
             }
          },
+         allow(){
+             if (confirm('確定要同意發布嗎?')) {
+                this.chLoadingShow({show:true})
+                slowspeedPass({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  // DB table
+                    QyName: [],    // 欲回傳的欄位資料
+                 }).then(res => {
+                     if(res.data.ErrorCode == 0){
+                        this.chMsgbar({ success: true, msg: '發布成功'})
+                        this.$router.go()
+
+                     }
+                 }).catch(err => {
+                    //console.log(err)
+                    alert('查詢時發生問題，請重新查詢!')
+                 }).finally(() => {
+                    this.chLoadingShow({show:false})
+                 })
+            }
+         },
+         // 列印
+        print() {
+            safetyinfoexcel({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                SaftyInfoCode: this.id
+            }).then(res => {
+                let link = document.createElement('a')
+                link.href = `/downloads/${res.data.file_name}`
+                link.setAttribute('download', res.data.file_name)
+                document.body.appendChild(link)
+                link.click()
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
+        },
+         request(){
+             if(this.date != this.date_brfore){
+                 alert('[延長日期]有未儲存的修改')
+                 return
+             }
+             else if(this.recipients != this.recipients_before){
+                 alert('[收件同仁]有未儲存的修改')
+                 return
+             }
+             if (confirm('確定要申請審核嗎?')) {
+                this.chLoadingShow({show:true})
+                slowspeedCheck({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  // DB table
+                    QyName: [],    // 欲回傳的欄位資料
+                 }).then(res => {
+                     if(res.data.ErrorCode == 0){
+                        this.chMsgbar({ success: true, msg: '已送出申請'})
+                        this.$router.go()
+
+                     }
+                 }).catch(err => {
+                    //console.log(err)
+                    alert('查詢時發生問題，請重新查詢!')
+                 }).finally(() => {
+                    this.chLoadingShow({show:false})
+                 })
+            }
+         },
          // 設定上方資料
          setShowData(obj) {
+            this.isSp = obj.InfoSign == this.userData.UserId;
             this.recipients = obj.RecPeople.map(item => item.PeopleId)
+            this.recipients_before = this.recipients
             this.ipt.line = obj.ReportLine // 通報路線
             this.ipt.pointStart = obj.LimitStart // 速限起點
             this.ipt.pointEnd = obj.LimitEnd // 速限終點
@@ -294,8 +430,22 @@ export default {
             this.ipt.slow = obj.SlowLimit // 慢行速限
             this.ipt.dateStart = obj.LimitStartDate // 限制日期(起)
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
-            this.date = obj.LimitEndDate
+            this.date = this.date_brfore = obj.LimitEndDate
+            this.status = obj.SlowSpeedStatus
+            let statusTxt = ''
+            switch(this.status){
+                case "1":
+                    statusTxt = '已立案'
+                    break;
+                case "2":
+                    statusTxt = '審核中'
+                    break;
+                case "3":
+                    statusTxt = '已發布'
+                    break;
+            }
             this.topData = [
+                { title: '通報狀態', value: statusTxt  },
                 { title: '路線', value: locationOpts.find(e => e.value == obj.ReportLine).text  },
                 { title: '速限起點、終點', value: `${obj.LimitStart} ~ ${obj.LimitEnd} km` },
                 { title: '常態速限', value: `${ obj.NormalLimit } km/h` },
@@ -306,88 +456,31 @@ export default {
             this.PeopleComponents ++
         },
         
-        // 切換部門成員
-        // changeDepart() {
-        //     this.chLoadingShow({show:true})
-
-        //     // 範例效果
-        //     setTimeout(() => {
-        //         this.checkboxs = [ ...this.members ]  // 測試用先不過慮部門全列出
-        //         this.chLoadingShow({show:true})
-        //     }, 1000)
-            
-        // },
-        // 加入全部 (checkboxs 陣列元素是物件)
-        // joinAll() {
-        //     this.checkboxs.forEach(ele => {
-        //         // 若未選取則加入
-        //         let member = this.recipients.find(item => item == ele.value)
-        //         if (member == undefined) this.recipients.push(ele.value)
-        //     })
-        // },
-        // // 加入勾選 (chooseMembers 陣列元素是物件的value屬性)
-        // join() {
-        //     this.chooseMembers.forEach(ele => {
-        //         // 若未選取則加入
-        //         let member = this.recipients.find(item => item == ele)
-        //         if (member == undefined) this.recipients.push(ele)
-        //     })
-        //     this.chooseMembers = [ ...[] ]
-        // },
-        // // 查詢名稱
-        // transferName(val) {
-        //     return this.members.find(ele => ele.value == val).name
-        // },
-        // // 移除收件人
-        // delMember(idx) {
-        //     this.recipients.splice(idx, 1)
-        // },
-        // // 移除全部收件人
-        // delAll() {
-        //     this.recipients = [ ...[] ]
-        // },
-        // 延長日期
-        // save() {
-        //     if (confirm('你確定要延長日期嗎?')) {
-        //         this.chLoadingShow({show:true})
-                
-        //         let arr = this.ipt.recipients.map(item => ({
-        //         PeopleId: item
-        //     }))
-        //         updateRegul({
-        //             ClientReqTime: getNowFullTime(),  // client 端請求時間
-        //             OperatorID: this.userData.UserId,  // 操作人id
-        //             SlowSpeedCode: this.id, //慢行通報編號
-        //             ReportLine: this.ipt.line,  //通報路線
-        //             LimitStart: this.ipt.pointStart,  //速限起點
-        //             LimitEnd: this.ipt.pointEnd,  //速限終點
-        //             NormalLimit: this.ipt.normal,  //常態速限
-        //             SlowLimit: this.ipt.slow,  //慢行速限
-        //             LimitStartDate: this.ipt.dateStart,  //限制日期(起)
-        //             LimitEndDate: this.ipt.dateEnd,  //限制日期(迄)
-        //             RecPeople: arr
-            
-        //         }).then(res => {
-        //             if (res.data.ErrorCode == 0) {
-        //                 this.chMsgbar({ success: true, msg: '延長成功'})
-        //                 this.status = '2'  // 狀態改為已回覆
-        //             } else {
-        //                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-        //                 this.$router.push({ path: '/error' })
-        //             }
-        //         }).catch(err => {
-        //              this.chMsgbar({ success: false, msg: '延長成功'})
-        //         }).finally(() => {
-        //             this.chLoadingShow({show:true})
-        //         })
-
-        //         // 測試用資料
-        //         setTimeout(() => {
-        //             this.chMsgbar({ success: true, msg: '延長日期成功'})
-        //             this.chLoadingShow({show:true})
-        //         }, 1000)
-        //     }
-        // },
+        runReturn(){
+            this.chLoadingShow({ show: true})
+                slowspeedReturn({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    SlowSpeedCode: this.id,  // DB table
+                    Reason: this.backReason //退回原因
+                 }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '退回成功' })
+                        this.dialog = false
+                        setTimeout(() => {
+                            this.$router.go()
+                        }, 500)
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                 }).catch(err => {
+                     //console.log(err)
+                     alert('退回時發生問題，請重新執行!')
+                 }).finally(() => {
+                })
+            this.chLoadingShow({ show: false})
+        },
         // 儲存
         update() {
             if (confirm('你確定要儲存嗎?')) {
@@ -413,6 +506,9 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '儲存成功'})
                        // this.status = '2'  // 狀態改為已回覆
+                       setTimeout(() => {
+                            this.$router.go()
+                        }, 800)
                     } else {
                         //console.log(res.data.Msg)
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -437,3 +533,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+.iconReplay {
+  cursor: pointer;
+}
+</style>

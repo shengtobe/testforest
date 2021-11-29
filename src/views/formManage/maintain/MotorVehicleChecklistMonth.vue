@@ -235,7 +235,8 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
-    UploadOneFileAdd
+    UploadOneFileAdd,
+    fileList
   },
   computed: {
     ...mapState("user", {

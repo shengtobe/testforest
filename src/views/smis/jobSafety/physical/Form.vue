@@ -740,15 +740,35 @@ export default {
         //         })
         //     }
         // },
-        //檢查校正 XXXXXXXX 13.0~18.0 gm/dl
+        //檢查校正 血色素 11.0~18.0 gm/dl   value=value.replace(/^\D*(\d*(?:\.\d{0,1})?).*$/g, '$1')
         "ipt.BloodPigment": function(newValue,oldValue){
-            if(/^\d{1,4}$/.test(newValue)) {
+            // if(/^\d{1,4}$/.test(newValue)) {
+            // } else {
+            //     this.$nextTick(() => {
+            //         this.ipt.BloodPigment = oldValue
+            //     })
+            // }
+            // this.$nextTick(() => {
+            //         this.ipt.BloodPigment = this.ipt.BloodPigment.replace(/^\D*(\d*(?:\.\d{0,1})?).*$/g, '$1')
+            //     })
+            if(/(^[1-9]{1}\d{0,3}$)|((^\d{1}[.]{1})(?:\d{0,2}[1-9]{1}$))|((^[1-9]{1}\d{1}[.]{1})(?:\d{0,1}[1-9]{1}$))|((^[1-9]{1}\d{2}[.]{1})(?:[1-9]{1}$))/.test(newValue)) {
             } else {
                 this.$nextTick(() => {
                     this.ipt.BloodPigment = oldValue
                 })
             }
-        },//檢查校正 XXXXXXXX 40U/L
+            // let temp = newValue.replace('.','')
+            // if(/^\d{1,3}$/.test(temp) == false) {// 如果非1~4位整數
+            //     this.$nextTick(() => {
+            //         this.ipt.BloodPigment = oldValue
+            //     })
+            // }
+            // else{
+            //     this.$nextTick(() => {
+            //         this.ipt.BloodPigment = parseFloat(this.ipt.BloodPigment).toString()
+            //     })
+            // }
+        },//檢查校正 GPT 40U/L
         "ipt.GPTValue": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
@@ -766,19 +786,29 @@ export default {
         //         })
         //     }
         // },
-        // //檢查校正 XXXXXXXX
+        // //檢查校正 尿酸(mg/dL)
         "ipt.UricAcid": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
+            let temp = newValue.replace('.','')
+            if(/^\d{1,3}$/.test(temp) == false) {// 如果非1~4位整數
                 this.$nextTick(() => {
                     this.ipt.UricAcid = oldValue
+                })
+            } else{
+                this.$nextTick(() => {
+                    this.ipt.UricAcid = parseFloat(this.ipt.BloodPigment).toString()
                 })
             }
         },
         // //檢查校正 XXXXXXXX
         "ipt.Creatinine": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
+            // if(/^\d{1,3}$/.test(newValue)) {
+            // } else {
+            //     this.$nextTick(() => {
+            //         this.ipt.Creatinine = oldValue
+            //     })
+            // }
+            let temp = newValue.replace('.','')
+            if(/^\d{1,6}$/.test(temp) == false) {// 如果非1~4位整數
                 this.$nextTick(() => {
                     this.ipt.Creatinine = oldValue
                 })
@@ -812,8 +842,14 @@ export default {
             }
         },
         "ipt.Triglyceride": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
+            // if(/^\d{1,3}$/.test(newValue)) {
+            // } else {
+            //     this.$nextTick(() => {
+            //         this.ipt.Triglyceride = oldValue
+            //     })
+            // }
+            let temp = newValue.replace('.','')
+            if(/^\d{1,6}$/.test(temp) == false) {// 如果非1~4位整數
                 this.$nextTick(() => {
                     this.ipt.Triglyceride = oldValue
                 })
@@ -823,22 +859,41 @@ export default {
             }
         },
         "ipt.LDLValue": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
+            // if(/^\d{1,3}$/.test(newValue)) {
+            // } else {
+            //     this.$nextTick(() => {
+            //         this.ipt.LDLValue = oldValue
+            //     })
+            // }
+            let temp = newValue.replace('.','')
+            if(/^\d{1,6}$/.test(temp) == false) {// 如果非1~4位整數
                 this.$nextTick(() => {
                     this.ipt.LDLValue = oldValue
                 })
+            } else{
+                
             }
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
                 this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
             }
         },
         "ipt.HDLValue": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
+            // if(/^\d{1,3}$/.test(newValue)) {
+            // } else {
+            //     this.$nextTick(() => {
+            //         this.ipt.HDLValue = oldValue
+            //     })
+            // }
+            // if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
+            //     this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
+            // }
+            let temp = newValue.replace('.','')
+            if(/^\d{1,6}$/.test(temp) == false) {// 如果非1~4位整數
                 this.$nextTick(() => {
                     this.ipt.HDLValue = oldValue
                 })
+            } else{
+                
             }
             if(this.ipt.LDLValue != '' && this.ipt.HDLValue != '' && this.ipt.Triglyceride != ''){
                 this.ipt.Cholesterol = +this.ipt.LDLValue + +this.ipt.HDLValue + +(this.ipt.Triglyceride/5)
@@ -909,6 +964,7 @@ export default {
               this.ipt.DepartName = res.data.UserData.DeptList[0].DeptDesc
               this.ipt.PeopleBirth = res.data.UserData.PeopleBirthday.split(" ")[0].split("/").map(e=>e.length<2?'0'+e:e).join('-')
               this.ipt.PeopleSex = this.sex.find(e=>e.from == res.data.UserData.PeopleSex)?.to || "X"
+              this.ipt.EmployDate = res.data.UserData.CreateDTime.split(' ')[0].replaceAll('\/', '-')
             //   this.ipt.JobName = res.data.UserData.JobName
             } else {
               sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

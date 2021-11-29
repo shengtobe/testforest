@@ -26,7 +26,7 @@ $theme-color-list: (
 
 @mixin metal-bg($top-color) {
   // background: linear-gradient(to top, #{$top-color}60, #{$top-color}8e),linear-gradient(to top, #d7d7d7 0%, #858585 45%, #d7d7d7 55%, #fff 100%);
-  background: linear-gradient(to top, #d7d7d760 0%, #85858560 45%, #d7d7d760 55%, #ffffff60 100%), linear-gradient(to top, #{$top-color}, #{$top-color});
+  background: linear-gradient(to top, #d7d7d760 0%, #85858560 45%, #d7d7d760 55%, #ffffff60 100%), linear-gradient(to top, #{$top-color}, #{$top-color}) !important;
 }
 
 @mixin gradual-mix-bg($color) {

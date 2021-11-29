@@ -157,6 +157,7 @@ export default {
         { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
+      fileItems: [],
       tableItems: [],
       //------
       //------formData 搜尋欄-----
@@ -253,6 +254,7 @@ export default {
         ],
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed });

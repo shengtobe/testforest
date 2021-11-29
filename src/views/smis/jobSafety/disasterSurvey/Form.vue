@@ -270,7 +270,7 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點(緯度)
             </h3>
@@ -281,7 +281,7 @@
             ></v-text-field>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="12" sm="6" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-map-marker</v-icon>發生地點(經度)
             </h3>
@@ -537,7 +537,7 @@
                 solo
             ></v-select>
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>發生原因
             </h3>
@@ -550,7 +550,7 @@
             ></v-textarea>
         </v-col>
 
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="12">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註
             </h3>
@@ -761,6 +761,7 @@ export default {
                 { text: '輕傷', value: "輕傷" },
                 { text: '失能傷害', value: "失能傷害" },
                 { text: '死亡', value: "死亡" },
+                { text: '永久失能', value: "永久失能" },
             ],
             injurySite: '',  // 傷害部位
             disasterType: disasterTypeOpts,  // 災害類型,

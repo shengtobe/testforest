@@ -7,9 +7,11 @@
     <v-row>
       <v-col cols="12">
         <v-data-table 
+          fixed-header
           disable-filtering
           hide-default-footer
           disable-pagination
+          height="60vh"
           disable-sort
           dense class="theme-table"
           :items="methodList"

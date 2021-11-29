@@ -120,21 +120,25 @@
                         {{ `${item.convert_Date_Start} ~ ${item.convert_Date_End}` }}
                     </template>
 
+                    <template v-slot:item.SlowSpeedStatus="{ item }">
+                        {{ transferStatusText(item.SlowSpeedStatus) }}
+                    </template>
+
                     <template v-slot:item.action="{ item }">
-                        <v-btn fab small dark  class="mr-2 btn-memo"
+                        <v-btn title="讀取追蹤" fab small dark  class="mr-2 btn-memo"
                             :to="`/smis/car-safeinfo/crawl-notify/${item.SlowReportCode}/read-track`"
                         >
                             <v-icon>mdi-radar</v-icon>
                         </v-btn>
 
-                        <v-btn fab small class="mr-2 btn-modify white--text"
+                        <v-btn title="查看" fab small class="mr-2 btn-modify white--text"
                             target="_blank"
                             :to="`/smis/car-safeinfo/crawl-notify/${item.SlowReportCode}/edit`"
                         >
-                            <v-icon>mdi-pen</v-icon>
+                            <v-icon>mdi-file-document</v-icon>
                         </v-btn>
 
-                        <v-btn fab small class="btn-delete white--text"
+                        <v-btn title="解除" fab small class="btn-delete white--text"
                             :disabled="item.isStop"
                             @click="stop(item.SlowReportCode)"
                         >
@@ -174,12 +178,13 @@ export default {
             start: false,
             end: false,
         },
+        
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
         ReportLineList: locationOpts,
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
-        headers: [  // 表格顯示的欄位
+        headers: [  // 表格顯示的欄位 SlowSpeedStatus
             { text: '編號', value: 'SlowReportCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '路線', value: 'line', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -187,7 +192,8 @@ export default {
             { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '讀取追蹤、編輯、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報狀態', value: 'SlowSpeedStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '讀取追蹤、查看、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
     }),
     components: { Pagination },  // 頁碼
@@ -302,6 +308,19 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
+        },
+        transferStatusText(status) {
+            switch(status) {
+                case '1':
+                    return '已立案'
+                case '2':
+                    return '審核中'
+                case '3':
+                    return '已發布'
+                default:
+                    return '不明'
+                    break
+            }
         },
         // 解除
         stop(SlowReportCode) {

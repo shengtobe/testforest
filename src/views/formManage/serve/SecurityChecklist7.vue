@@ -386,7 +386,7 @@ export default {
         // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
         items: [
-          { status1: "0", status2: "0", status3: "0", status: "0", note: "" },
+          { status1: "0", status2: "0", status3: "0", status4: "0", note: "" },
         ],
         items_2: [
           { status1: "0", note: "" },
@@ -503,6 +503,7 @@ export default {
 
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chMsgbar',  // 改變 messageBar
         ]),
     // 更換頁數
     chPage(n) {
@@ -579,8 +580,9 @@ export default {
                 }
         ],
       }).then(res => {
-       
-      }).catch(err => {
+       if (res.data.ErrorCode == 0) {
+          this.chMsgbar({ success: true, msg: '新增成功' })
+        }
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {

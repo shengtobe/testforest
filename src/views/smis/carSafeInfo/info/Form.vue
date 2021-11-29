@@ -108,7 +108,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :key="k1" :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
+                <PeopleSelect :key="k1" :canEdit="true" :peopleList="ipt.recipients" @getPeople="getRecipients"  :disableList="ipt.cc.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.recipients"
@@ -136,7 +136,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :key="k2" :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
+                <PeopleSelect :key="k2" :canEdit="true" :peopleList="ipt.cc" @getPeople="getCc" :disableList="ipt.recipients.concat(ipt.joiners)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.cc"
@@ -164,7 +164,7 @@
                         class="mb-1 ml-2"
                     >移除全部</v-btn> -->
                 </h4>
-                <PeopleSelect :key="k3" :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
+                <PeopleSelect :key="k3" :canEdit="true" :peopleList="ipt.joiners" @getPeople="getJoiners" :disableList="ipt.recipients.concat(ipt.cc)"/> 
                 <!-- <div>
                     <v-chip
                         v-for="(item, idx) in ipt.joiners"

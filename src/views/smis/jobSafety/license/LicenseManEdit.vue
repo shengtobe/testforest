@@ -16,7 +16,7 @@
             <v-icon class="mr-1 mb-1">mdi-account</v-icon>姓名
           </h3>
           <!-- <PeopleSelect v-model="ipt.ID" @getName="afterSelect"/> -->
-          <PeopleSelectMuti :solo="true" :peopleList="ipt.ID" @getPeople="getPeople" />
+          <PeopleSelectMuti :solo="true" :canEdit="true" :peopleList="ipt.ID" @getPeople="getPeople" />
         </v-col>
 
         <v-col cols="12" sm="4">

@@ -619,6 +619,7 @@ export default {
         nowEqCode: '', //編輯時 預設帶入的combineCode
         isEdit: false,  // 是否為編輯
         showEq: false,
+        isShowBtn: false,
         workNumber: '',  // 工單編號
         lowReturn: '4',
         creater: '',  // 立案人名稱

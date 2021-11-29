@@ -21,7 +21,7 @@
       </v-col>
 
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search">
+        <v-btn dark large class="mb-sm-8 md-8 mt-8 btn-search" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
@@ -32,6 +32,18 @@
           @click="newOne"
         >
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row class="px-2 label-header">
+      <v-col cols="12" sm="3" md="3">
+        <v-form ref="uploadform">
+          <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
+        </v-form>
+      </v-col>
+      <v-col cols="12" sm="3" md="3" class="d-flex align-end mb-3">
+        <v-btn dark large class="mb-sm-8 md-8 btn-fileup" @click="select">
+          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
     </v-row>
@@ -75,6 +87,9 @@
           </template>
         </v-data-table>
       </v-card>
+    </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
     </v-col>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" persistent max-width="800px">
@@ -154,7 +169,7 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">站長簽章</h3>
-                    <v-textarea auto-grow outlined rows="1" />
+                    <v-textarea auto-grow outlined rows="1" v-model="CheckMan"/>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">施工聯絡人</h3>
@@ -167,11 +182,11 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">名稱</h3>
-                    <v-textarea auto-grow outlined rows="1" />
+                    <v-textarea auto-grow outlined rows="1" v-model="gearName"/>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">處置狀況</h3>
-                    <v-textarea auto-grow outlined rows="1" />
+                    <v-textarea auto-grow outlined rows="1" v-model="detail"/>
                   </v-col>
                 </v-row>
               </v-alert>
@@ -179,7 +194,7 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 label-header">備註</h3>
-              <v-textarea solo rows="4" />
+              <v-textarea solo rows="4" v-model="memo"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -218,6 +233,8 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
+import fileList from "@/components/forManage/fileList";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -234,6 +251,7 @@ export default {
       newText: "紀錄簿",
       isLoading: false,
       disabled: false,
+      fileItems: [],
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
         dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
@@ -263,7 +281,11 @@ export default {
       EndWorkHour: '',
       EndWorkMinute: '',
       WorkStatus: '',
+      CheckMan: '',
       Worker: '',
+      gearName: '',
+      detail: '',
+      memo: '',
       StopEqip: '',
       StopEqipStatus: '',
       ipt2: {},
@@ -299,7 +321,7 @@ export default {
       suggest: "", // 改善建議
     };
   },
-  components: { Pagination, dateSelect, deptSelect }, // 頁碼
+  components: { Pagination, dateSelect, deptSelect, UploadOneFileAdd, fileList  }, // 頁碼
   computed: {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -351,6 +373,9 @@ export default {
       this.z = this.df = this.nowTime
   },
   methods: {
+    select() {
+      this.$refs.upload.uploadFile()
+    },
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();
@@ -400,7 +425,7 @@ export default {
     // 搜尋
     search() 
     {
-      
+      console.log("s");
       this.chLoadingShow({show:false})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -430,6 +455,7 @@ export default {
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
@@ -438,7 +464,51 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      if(this.CheckMan == ''){
+        alert("站長未填")
+        return
+      }
+      this.chLoadingShow({show:false})
+
+      let arr = new Array()
+      let obj = new Object()
+
+      // obj = new Object()
+      // obj.Column = "CheckDay"
+      // obj.Value = this.zs
+      // arr = arr.concat(obj)
+
+      createFormOrder0({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        KeyName: this.DB_Table,  // DB table
+        KeyItem:[
+          {"Column":"CheckDay","Value":this.CheckDay},
+          {"Column":"CheckMan","Value":this.CheckMan},
+          {"Column":"Place","Value":this.Place},
+          {"Column":"Content","Value":this.Content},
+          {"Column":"BgWorkHour","Value":this.BgWorkHour},
+          {"Column":"BgWorkMinute","Value":this.BgWorkMinute},
+          {"Column":"EndWorkHour","Value":this.EndWorkHour},
+          {"Column":"EndWorkMinute","Value":this.EndWorkMinute},
+          {"Column":"WorkStatus","Value":this.WorkStatus},
+          {"Column":"Worker","Value":this.Worker},
+          {"Column":"StopEqip","Value":this.gearName},
+          {"Column":"StopEqipStatus","Value":this.detail},
+          {"Column":"Memo","Value":this.memo},
+        ]
+      }).then(res => {
+       
+      }).catch(err => {
+        //console.log(err)
+        alert('查詢時發生問題，請重新查詢!')
+      }).finally(() => {
+        this.chLoadingShow({ show: false})
+      })
+      this.Add = false
+    },
     // 關閉 dialog
     close() {
       this.Add = false;

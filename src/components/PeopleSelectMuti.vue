@@ -1,6 +1,7 @@
 <!--
   input:
     solo: boolean 是否單選
+    canEdit: boolean 是否可新增刪除
     peopleList: string array 預設人員清單，員編陣列
     valueCol: string 回傳的值要用欄位什麼回，還有要用什麼欄位設定上去
     disableList: array 不可以選擇的人員
@@ -10,13 +11,14 @@
 <template>
   <div>
     <v-chip label color="green darken-1" dark large v-for="(item) in PeopleList" :key="'P_'+item.UserId" close @click:close="deleteSelectPeople(item[valueCol])" class="ma-1"> {{ item.UserName }} </v-chip>
-    <v-btn
+    <v-chip label color="green darken-1" dark large v-for="(item) in PeopleList_NoClose" :key="'P_'+item.UserId" class="ma-1"> {{ item.UserName }} </v-chip>
+    <v-btn 
       class="mx-2 btn-add"
       fab
       dark
       small
       @click="openSelectPeople"
-      v-show="(solo&&PeopleList.length==0)||(!solo)"
+      v-show="(solo&&PeopleList.length==0)||(solo==false)&&canEdit"
     >
       <v-icon dark>
         mdi-plus
@@ -51,6 +53,7 @@ import getPeople from '@/components/GetOrganizePeople'
 export default {
 	props: {
     solo: Boolean,
+    canEdit: Boolean,
     peopleList: [String, Array],
     valueCol: {
       type: String,
@@ -66,6 +69,7 @@ export default {
     defPeopleList:[],
     people: [],
     PeopleList: [],
+    PeopleList_NoClose: [],
     PrepeopleList: [],
     SelectPeople: false,
     isSolo: false,
@@ -82,6 +86,14 @@ export default {
       this.defPeopleList = [...this.peopleList]
     }
     this.fetchOrganization()
+    console.log("solo: ", this.solo)
+    console.log("canEdit: ", this.canEdit);
+    if(this.canEdit == undefined || this.canEdit == null){
+        this.canEdit = true
+      }
+    else{
+    }
+    console.log("canEdit: ", this.canEdit);
 	},
 	computed: {
     ...mapState ('user', {
@@ -104,7 +116,14 @@ export default {
       }).then(res=>{
         this.people = res.data.user_list_group_4
         this.PeopleList = this.people.filter(e=>this.defPeopleList.findIndex(el=>el==e[this.valueCol])!=-1)
+        this.PeopleList_NoClose = this.people.filter(e=>this.defPeopleList.findIndex(el=>el==e[this.valueCol])!=-1)
         this.PrepeopleList = [...this.PeopleList]
+        if(this.canEdit == false){ // 如果不能新增刪除
+          this.PeopleList = [...[]] // 編輯的chip要清空
+        }
+        else{ // 如果可以新增刪除
+          this.PeopleList_NoClose = [...[]] // 沒X的chip要清空
+        }
       })
     },
     openSelectPeople() {

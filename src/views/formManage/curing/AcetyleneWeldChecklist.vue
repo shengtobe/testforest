@@ -28,15 +28,16 @@
           key="department"
         />
       </v-col>
+      
       <v-col cols="12" sm="3" md="3"></v-col>
 
-      <v-col cols="12" sm="3" md="3">
+      <v-col cols="12" sm="3" md="3" >
         <v-form ref="uploadform">
           <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
         </v-form>
       </v-col>
-      <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-fileup" @click="select">
+      <v-col cols="12" sm="3" md="3" class="d-flex " align-self="center">
+        <v-btn dark large class="my-2 mr-2 btn-fileup" @click="select">
           <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
         </v-btn>
       </v-col>
@@ -262,7 +263,7 @@
             >取消</v-btn
           >
           <v-btn
-            class="btn-add"
+            class="btn-add white--text"
             elevation="4"
             :loading="isLoading"
             @click="save"
@@ -284,6 +285,7 @@ import {
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
+import fileList from "@/components/forManage/fileList";
 import {
   fetchFormOrderList,
   fetchFormOrderOne,
@@ -297,7 +299,6 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
-import fileList from "@/components/forManage/fileList";
 
 class Question {
   constructor(description, option) {
@@ -521,7 +522,6 @@ export default {
     },
     // 存
     save() {
-      ;
       this.chLoadingShow({ show: true});
 
       var data = {

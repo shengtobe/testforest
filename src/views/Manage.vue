@@ -62,13 +62,15 @@
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/form-manage">表單</v-list-item>
                                 <v-divider></v-divider>
+                                <v-list-item @click="showNav = false" to="/refURL">相關網站</v-list-item>
+                                <v-divider></v-divider>
 
                                 <!-- 故障、保養工單 -->
                                 <v-list-item :class="titleColor1" disabled>
                                     <strong class="black--text">設備維修及保養工單</strong>
                                 </v-list-item>
                                 <v-divider></v-divider>
-                                <v-list-item @click="showNav = false" to="/worklist/maintain">維修、養護科工單</v-list-item>
+                                <v-list-item @click="showNav = false" to="/worklist/maintain">維護、養護科工單</v-list-item>
                                 <v-divider></v-divider>
                                 <v-list-item @click="showNav = false" to="/worklist/serve">車站營運設備維修工單</v-list-item>
                                 <v-divider></v-divider>
@@ -234,10 +236,9 @@
                             </v-list>
                         </v-card>
                     </v-col>
-
                     <v-col cols="12" md="2">
-                        <v-card outlined tile class="mt-sm-12">
-                            <v-list class="pa-0">
+                        <v-card outlined tile class="mt-sm-12 ">
+                            <v-list class="pa-0" >
                                 <!-- 統計分析 -->
                                 <v-list-item :class="titleColor3" disabled>
                                     <strong class="black--text">統計分析</strong>
@@ -259,7 +260,7 @@
                                 <v-divider />
                                 <v-list-item @click="showNav = false" to="/mmis/material-history">料件履歷</v-list-item>
                                 <v-divider />
-                                <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用</v-list-item>
+                                <v-list-item @click="showNav = false" to="/mmis/repair-cost">維修費用履歷</v-list-item>
                                 <v-divider />
                                 <!-- 報表管理 -->
                                 <!-- <v-list-item :class="titleColor3" disabled>
@@ -269,6 +270,10 @@
                                 <v-list-item @click="showNav = false" to="/text-theme">測試顯示區域</v-list-item> -->
                             </v-list>
                         </v-card>
+                        <div id="versionArea" class="mt-10">
+                            <p class="text-end text--disabled font-weight-bold">v.0.1.4</p>
+                            <!-- 建置 修正危害通報pick1導致連錯誤 改為新變數 -->
+                        </div>
                     </v-col>
                 </v-row>
             </v-container>
@@ -489,3 +494,15 @@ export default {
     }
 }
 </script>
+<style>
+#aaa{
+    /* position: absolute; */
+    /* z-index: 999; */
+    /* right: 0px; */
+    /* margin-left: 70%; */
+    /* bottom: 0px; */
+    /* margin-right: 8%; */
+    /* margin-bottom: 15%; */
+    color: rgba(20, 20, 20, 0.4);
+}
+</style>

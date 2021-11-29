@@ -28,13 +28,20 @@
           key="department"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3"></v-col>
-
-      <v-col cols="12" sm="3" md="3">
-      </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
       </v-col>
+      <v-col cols="12" sm="3" md="3" >
+        <v-form ref="uploadform">
+          <UploadOneFileAdd :TableKey="DB_Table" ref="upload" />
+        </v-form>
+      </v-col>
+      <v-col cols="12" sm="3" md="3" class="d-flex " align-self="center">
+        <v-btn dark large class="my-2 mr-2 btn-fileup" @click="select">
+          <v-icon class="mr-1">mdi-cloud-upload</v-icon>上傳
+        </v-btn>
+      </v-col>
     </v-row>
+    
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
@@ -86,6 +93,9 @@
           </template>
         </v-data-table>
       </v-card>
+    </v-col>
+    <v-col cols="12">
+      <fileList :fileItems="fileItems" />
     </v-col>
     <!-- 刪除確認視窗 -->
     <v-dialog v-model="dialogDel" persistent max-width="290">
@@ -370,6 +380,8 @@ import { formDepartOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
+import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
+import fileList from "@/components/forManage/fileList";
 
 export default {
   data() {
@@ -380,6 +392,7 @@ export default {
       actions: Actions,
       isLoading: false,
       disabled: false,
+      fileItems: [],
       QueryDayStart: "",
       QueryDayEnd: "",
       apm: ["嘉義", "北門", "鹿麻產", "竹崎", "木履寮", "樟腦寮", "獨立山", "梨園寮", "交力坪", "水社寮", "奮起湖", "多林", "十字路", "屏遮那", "第一分道", "二萬平", "神木", "阿里山", "沼平", "對高岳", "祝山"],
@@ -507,7 +520,7 @@ export default {
     dateSelect,
     deptSelect,
     ToolBar,
-    dialogDelete,
+    dialogDelete, UploadOneFileAdd, fileList
   },
   computed: {
         ...mapState ('user', {
@@ -533,6 +546,9 @@ export default {
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
+    select() {
+      this.$refs.upload.uploadFile()
+    },
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
@@ -643,6 +659,7 @@ export default {
         let tbBuffer = JSON.parse(res.data.DT)
         let aa = unique(tbBuffer)
         this.tableItems = aa
+        this.fileItems = res.data.FileCount||[];
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
