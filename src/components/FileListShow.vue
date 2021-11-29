@@ -18,8 +18,8 @@
                         <v-card>
                             <v-img
                                 contain
-                                min-width="100%"
-                                height="158"
+                                aspect-ratio="1.7778"
+                                height="158px"
                                 :src="(['png', 'jpeg', 'jpg', 'gif'].includes(item.FileType))? item.FileFullPath : '/images/file.jpg'"
                                 class="grey lighten-2"
                             ></v-img>

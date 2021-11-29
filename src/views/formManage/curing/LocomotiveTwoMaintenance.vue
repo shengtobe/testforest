@@ -1047,6 +1047,8 @@ export default {
     clickCleanCode(){
       this.searchIpt.MaintainCode_System = 'RST'
       this.searchIpt.MaintainCode_Loc = ''
+      this.com_equipCode = 'RST-'
+      this.searchName = ''
     },
     ...mapActions("system", [
       "chMsgbar", // messageBar
@@ -1063,6 +1065,8 @@ export default {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
       this.formData.searchItem.carId = "";
+      this.com_equipCode = 'RST-'
+      this.searchName = ''
     },
     // 更換頁數
     chPage(n) {
@@ -1099,7 +1103,7 @@ export default {
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "DepartCode", Value: this.formData.searchItem.department },
-          { Column: "CarId", Value: this.formData.searchItem.carId },
+          { Column: "CarId", Value: this.searchName },
         ],
         QyName: [
           "RPFlowNo",
@@ -1133,8 +1137,6 @@ export default {
       this.dialogDel = false;
     },
     viewPage(item) {
-     console.log("item: ", item);
-     
       this.DynamicKey += 1;
       this.editType = this.actions.edit;
       this.editItem = item;

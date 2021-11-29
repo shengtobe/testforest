@@ -23,17 +23,27 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇機車編號
         </h3>
-        <v-select
-          v-model="formData.searchItem.carId"
-          :items="[
-            { text: 'A0001', value: 'A' },
-            { text: 'A0002', value: 'B' },
-            { text: 'A0003', value: 'C' },
-            { text: 'A0004', value: 'D' },
-            { text: 'A0005', value: 'E' },
-          ]"
-          solo
-        />
+        <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
+        <v-dialog v-model="eqCode" max-width="700px">
+            <v-card class="theme-card">
+                <v-card-title class="px-4 py-1">
+                    車輛型號
+                    <v-spacer></v-spacer>
+                    <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn> 
+                </v-card-title>
+                <div class="px-4 py-3">
+                    <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
+                    @getEqCode="getRtnCode" @getEqName="getRtnName"/>
+                </div>
+                <v-card-actions class="px-5 pb-5">
+                    <v-spacer></v-spacer>
+                    <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                    <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -132,6 +142,7 @@ import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import EquipCode from '@/components/EquipRepairCode'
 import EditPage from "@/views/formManage/curing/LocomotiveCommonMaintenanceEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
@@ -143,8 +154,19 @@ export default {
     title: "柴油液力機車一級檢修記錄表",
     newText: "記錄表",
     actions: Actions,
+    searchName: '',
+    key: 0,
+    preSetEqcode: '',
+    preSerEqName: '',
     isLoading: false,
     disabled: false,
+    searchIpt: {  // 搜尋欄位
+        year: new Date().getFullYear(),
+        month: '',  // 月
+        MaintainCode_System: 'RST',  // 類型
+        MaintainCode_Loc: ''
+    },
+    eqCode: false,
     // controls for dialog
     ShowDetailDialog: false,
     dialogDel: false, // model off
@@ -332,6 +354,119 @@ export default {
         Memo_48: "",
       },
     },
+    inputDefData: {
+      RPFlowNo: "",
+      DepartCode: "",
+      DepartName: "",
+      ID: "",
+      Name: "",
+      editableData: {
+        CheckDay: "",
+        CarId: "",
+        LastChkDay: "",
+        LastKm: "",
+        BgChkDay: "",
+        EndChkDay: "",
+        Km: "",
+        CheckOption1: "",
+        CheckOption2: "",
+        CheckOption3: "",
+        CheckOption4: "",
+        CheckOption5: "",
+        CheckOption6: "",
+        CheckOption7: "",
+        CheckOption8: "",
+        CheckOption9: "",
+        CheckOption10: "",
+        CheckOption11: "",
+        CheckOption12: "",
+        CheckOption13: "",
+        CheckOption14: "",
+        CheckOption15: "",
+        CheckOption16: "",
+        CheckOption17: "",
+        CheckOption18: "",
+        CheckOption19: "",
+        CheckOption20: "",
+        CheckOption21: "",
+        CheckOption22: "",
+        CheckOption23: "",
+        CheckOption24: "",
+        CheckOption25: "",
+        CheckOption26: "",
+        CheckOption27: "",
+        CheckOption28: "",
+        CheckOption29: "",
+        CheckOption30: "",
+        CheckOption31: "",
+        CheckOption32: "",
+        CheckOption33: "",
+        CheckOption34: "",
+        CheckOption35: "",
+        CheckOption36: "",
+        CheckOption37: "",
+        CheckOption38: "",
+        CheckOption39: "",
+        CheckOption40: "",
+        CheckOption41: "",
+        CheckOption42: "",
+        CheckOption43: "",
+        CheckOption44: "",
+        CheckOption45: "",
+        CheckOption46: "",
+        CheckOption47: "",
+        CheckOption48: "",
+        Memo_1: "",
+        Memo_2: "",
+        Memo_3: "",
+        Memo_4: "",
+        Memo_5: "",
+        Memo_6: "",
+        Memo_7: "",
+        Memo_8: "",
+        Memo_9: "",
+        Memo_10: "",
+        Memo_11: "",
+        Memo_12: "",
+        Memo_13: "",
+        Memo_14: "",
+        Memo_15: "",
+        Memo_16: "",
+        Memo_17: "",
+        Memo_18: "",
+        Memo_19: "",
+        Memo_20: "",
+        Memo_21: "",
+        Memo_22: "",
+        Memo_23: "",
+        Memo_24: "",
+        Memo_25: "",
+        Memo_26: "",
+        Memo_27: "",
+        Memo_28: "",
+        Memo_29: "",
+        Memo_30: "",
+        Memo_31: "",
+        Memo_32: "",
+        Memo_33: "",
+        Memo_34: "",
+        Memo_35: "",
+        Memo_36: "",
+        Memo_37: "",
+        Memo_38: "",
+        Memo_39: "",
+        Memo_40: "",
+        Memo_41: "",
+        Memo_42: "",
+        Memo_43: "",
+        Memo_44: "",
+        Memo_45: "",
+        Memo_46: "",
+        Memo_47: "",
+        Memo_48: "",
+      },
+    },
+    
     itemsList: [
       {
         title: "動力系統",
@@ -629,11 +764,24 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    EquipCode,
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+        get: function() {
+            return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+        },
+        set: function(value) {
+          if(value != ''){
+            let splitArr = value.split('-')
+            this.searchIpt.MaintainCode_System = splitArr[0]
+            this.searchIpt.MaintainCode_Loc = splitArr[1]
+          }
+        }
+    },
   },
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
@@ -646,10 +794,16 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    clickCleanCode(){
+      this.searchIpt.MaintainCode_System = 'RST'
+      this.searchIpt.MaintainCode_Loc = ''
+      this.com_equipCode = 'RST-'
+      this.searchName = ''
+    },
     newOne() {
-     ;
+      this.inputData = {...this.inputDefData}
+      this.inputData.editableData = {...this.inputDefData.editableData}
       this.Add = true;
-     
       this.DynamicKey += 1;
       this.editType = this.actions.add;
     },
@@ -657,10 +811,27 @@ export default {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
       this.formData.searchItem.carId = "";
+      this.com_equipCode = 'RST-'
+      this.searchName = ''
     },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
+    },
+    //機車回傳
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+        (cName)
+        this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+        this.com_equipCode = this.preSetEqcode
+        this.searchName = this.preSerEqName
+        this.eqCode = false
     },
     // 搜尋
     search() {
@@ -677,7 +848,7 @@ export default {
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "DepartCode", Value: this.formData.searchItem.department },
-          { Column: "CarId", Value: this.formData.searchItem.carId },
+          { Column: "CarId", Value: this.searchName },
         ],
         QyName: [
           "RPFlowNo",
