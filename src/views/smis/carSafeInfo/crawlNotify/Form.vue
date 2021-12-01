@@ -18,20 +18,40 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限起點
             </h3>
-            <v-text-field
-                v-model.trim="ipt.pointStart" type="number" step=0.1
-                solo suffix="km"
-            ></v-text-field>
+            <v-row>
+                <v-col class="py-0">
+                    <v-text-field
+                        v-model.trim="ipt.pointStartK" type="number" step=1
+                        solo suffix="K"
+                    ></v-text-field>
+                </v-col>
+                <v-col class="py-0">
+                    <v-text-field
+                        v-model.trim="ipt.pointStartM" type="number" step=1 max="999"
+                        solo suffix="M"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-gauge</v-icon>速限終點
             </h3>
-            <v-text-field
-                v-model.trim="ipt.pointEnd" type="number" step=0.1
-                solo suffix="km"
-            ></v-text-field>
+            <v-row>
+                <v-col class="py-0">
+                    <v-text-field
+                        v-model.trim="ipt.pointEndK" type="number" step=1
+                        solo suffix="K"
+                    ></v-text-field>
+                </v-col>
+                <v-col class="py-0">
+                    <v-text-field
+                        v-model.trim="ipt.pointEndM" type="number" step=1 max="999"
+                        solo suffix="M"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
@@ -246,8 +266,10 @@ export default {
             line: '',  // 通報路線
             // lineList: locationOpts.map(item => item.text), // 地點的list
             
-            pointStart: '',  // 速限起點
-            pointEnd: '',  // 速限終點
+            pointStartK: '',  // 速限起點
+            pointStartM: '',  // 速限起點
+            pointEndK: '',  // 速限終點
+            pointEndM: '',  // 速限終點
             normal: '',  // 常態速限
             slow: '12',  // 慢行速限
             dateStart: new Date().toISOString().substr(0, 10),  // 限制日期(起)
@@ -344,18 +366,6 @@ export default {
         ccc(){
         },
         // 送出
-        ipt: {
-            line: '',  // 通報路線
-            // lineList: locationOpts.map(item => item.text), // 地點的list
-            
-            pointStart: '',  // 速限起點
-            pointEnd: '',  // 速限終點
-            normal: '',  // 常態速限
-            slow: '',  // 慢行速限
-            dateStart: new Date().toISOString().substr(0, 10),  // 限制日期(起)
-            dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
-            recipients: [],  // 收件人
-        },
         save() {
             if(this.ipt.recipients.length == 0 || this.ipt.line == '' || this.ipt.pointStart == '' || this.ipt.pointEnd == '' 
             || this.ipt.normal == '' || this.ipt.slow == '' || this.ipt.dateStart == '' || this.ipt.dateEnd == ''){
@@ -370,8 +380,8 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                     ReportLine: this.ipt.line,  //通報路線
-                    LimitStart: this.ipt.pointStart,  //速限起點
-                    LimitEnd: this.ipt.pointEnd,  //速限終點
+                    LimitStart: this.ipt.pointStartK+'.'+(parseInt(this.ipt.pointStartM)/1000),  //速限起點
+                    LimitEnd: this.ipt.pointEndK+'.'(parseInt(+this.ipt.pointEndM)/1000),  //速限終點
                     NormalLimit: this.ipt.normal,  //常態速限
                     SlowLimit: this.ipt.slow,  //慢行速限
                     LimitStartDate: this.ipt.dateStart,  //限制日期(起)

@@ -447,7 +447,7 @@ export default {
             this.topData = [
                 { title: '通報狀態', value: statusTxt  },
                 { title: '路線', value: locationOpts.find(e => e.value == obj.ReportLine).text  },
-                { title: '速限起點、終點', value: `${obj.LimitStart} ~ ${obj.LimitEnd} km` },
+                { title: '速限起點、終點', value: `${Math.trunc(obj.LimitStart)}K+${this.fract(obj.LimitStart)}M ~ ${Math.trunc(obj.LimitEnd)}K+${this.fract(obj.LimitEnd)}M` },
                 { title: '常態速限', value: `${ obj.NormalLimit } km/h` },
                 { title: '慢行速限', value: `${ obj.SlowLimit } km/h` },
                 { title: '限制日期', value: `${obj.LimitStartDate} ~ ${obj.LimitEndDate}` },
@@ -527,6 +527,9 @@ export default {
                 // }, 1000)
             }
         },
+        fract(num) {
+            return (num*1000) - Math.trunc(num)*1000;
+        }
     },
     created() {
         this.initData()
