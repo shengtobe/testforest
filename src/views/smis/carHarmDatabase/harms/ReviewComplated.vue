@@ -323,7 +323,6 @@ export default {
         tableItems: [],  // 表格資料
         ctrlDriveId: [], // 控制措施編號
         showFiles: [],  // 要顯示的縮圖
-        eachFile:{ FileName: '' ,FileType: '', UnitData: '', ProcCode: '' },
         headers: [  // 表格欄位
             { text: '編號', value: 'ProcCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '措施簡述', value: 'DeviceTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -636,6 +635,7 @@ export default {
                 alert("請選擇控制措施編號")
                 return
             }
+            
             // 找出目前所選的控制措施 id 檔案列表的索引值
             let idx = this.uploads.findIndex(ele => {
                 return ele.ProcCode == this.controlId
@@ -646,7 +646,6 @@ export default {
                 let file = this.uploads[idx].file_path_name.find(item => {
                     return item == chooseItem.name
                 })
-
                 // // 若已加入列表中沒找到檔案則加入
                 if (file == undefined){
                     let reader = new FileReader()  // blob 用
@@ -656,16 +655,15 @@ export default {
                     reader.onload = () => {
                         // 抓出副檔名
                         let nameArr = chooseItem.name.split('.')  // 用小數點拆成陣列
-                        let type = (nameArr.length > 1) ? nameArr[nameArr.length - 1] : ''  // 若沒有副檔名傳空值
-                        
-                        this.eachFile.FileName = chooseItem.name
-                        this.eachFile.FileType = type
-                        this.eachFile.UnitData = Array.from(new Uint8Array(reader.result))
-                        this.eachFile.ProcCode = this.uploads[idx].ProcCode
+                        this.evidences.push({
+                            FileName: chooseItem.name,
+                            FileType: (nameArr.length > 1) ? nameArr[nameArr.length - 1] : '',  // 若沒有副檔名傳空值
+                            UnitData: Array.from(new Uint8Array(reader.result)),
+                            ProcCode: this.uploads[idx].ProcCode
+                            })
+                        this.uploads[idx].file_path_name.push(chooseItem.name)
                     }
-                    this.evidences.push(this.eachFile)
                     
-                    this.uploads[idx].file_path_name.push(chooseItem.name)
                 }
                 else{
                     alert("檔名有重複")
@@ -675,8 +673,19 @@ export default {
         },
         // 刪除要上傳的檔案
         rmFile(fileListIdx, itemIdx) {
+            let nn = this.uploads[fileListIdx].file_path_name[itemIdx]
             this.uploads[fileListIdx].file_path_name.splice(itemIdx, 1)
             this.uploads[fileListIdx].file_path.splice(itemIdx, 1)
+            let newEvidences = []
+            console.log("this.evidences: ", this.evidences);
+            console.log("1 this.evidences: ", this.evidences.map(e => e.FileName));
+            this.evidences.forEach(item => {
+                if(item.FileName != nn){
+                    newEvidences.push(item)
+                }
+            });
+            this.evidences = newEvidences
+            console.log("2 this.evidences: ", this.evidences.map(e => e.FileName));
         },
     },
     created() {
