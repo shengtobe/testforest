@@ -119,23 +119,33 @@
           <v-expansion-panel-header class="metal-dark-yellow-top white--text font-weight-bold text-subtitle-1">{{item.lineName}}</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-row>
-              <v-col cols="1"></v-col>
-              <v-col cols="1"><sup>0K</sup></v-col>
-              <v-col cols="1"><sup>1K</sup></v-col>
-              <v-col cols="1"><sup>2K</sup></v-col>
-              <v-col cols="1"><sup>3K</sup></v-col>
-              <v-col cols="1"><sup>4K</sup></v-col>
-              <v-col cols="1"><sup>5K</sup></v-col>
-              <v-col cols="1"><sup>6K</sup></v-col>
-              <v-col cols="1"><sup>7K</sup></v-col>
-              <v-col cols="1"><sup>8K</sup></v-col>
-              <v-col cols="1"><sup>9K</sup></v-col>
-              <v-col cols="1"></v-col>
-            </v-row>
-            <v-row v-for="(cols,ind) in _getTotalRowCol(item)" :key="i+'R'+ind">
-              <v-col cols="1" class="text-right"><sup>{{cols[0]}}K</sup></v-col>
-              <v-col cols="1" v-for="(col,index) in cols" :key="i+'R'+ind+'C'+index">
-                <div :class="'some_element '+getColor(item.lineCode,col)"></div>
+              <v-col @mousewheel.prevent="scrollZoom" :class="item.lineCode" class="px-0">
+                <div class="pa-0 d-flex">
+                  <div style="width:2%"/>
+                  <div :style="{width:98*Zoom.zoomScale[Zoom[item.lineCode]]/100+'%'}" class="text-center" v-for="(l,ind) in scaleTitle(lineScale[i])" :key="item.lineCode+'title'+l">
+                    <sub v-if="Number.isInteger(l)" :class="{'font-weight-black':Number.isInteger(l),'red--text':Number.isInteger(l)}">{{right(l.toString(),2)}}</sub>
+                    <!-- <sub v-else-if="right(l.toString(),2)=='.5'">{{right(l.toString(),2)}}</sub> -->
+                  </div>
+                </div>
+                <div class="pa-0 d-flex flex-wrap">
+                  <template v-for="(line,index) in lineScale[i]">
+                    <div v-if="line%10==0" :key="item.lineCode+line+'K'" :class="item.lineCode" class="text-right" style="width:2%"><sup>{{line}}K</sup></div>
+                    <div :key="item.lineCode+line" :class="[item.lineCode,getColor(item.lineCode,line)]" class="text-center some_element" :style="{width:98*Zoom.zoomScale[Zoom[item.lineCode]]/100+'%'}">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                        <div
+                          :class="item.lineCode"
+                          v-bind="attrs"
+                          v-on="on"
+                          style="width:100%;height:100%;"
+                        >
+                        </div>
+                      </template>
+                      <span>{{XKmToXKXM(line)}}</span>
+                      </v-tooltip>
+                    </div>
+                  </template>
+                </div>
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -226,9 +236,7 @@ export default {
         { text: '處理階段', value: 'Level', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
         { text: '檢視內容', value: 'Extend', align: 'center', class: 'subtitle-1 white--text font-weight-bold', width: '110' },
       ],
-      items:[
-        {FlowId:'TEST0001',Title:'測試工單',Level:'報修階段'}
-      ],
+      items:[],
     },
     selectItem:[],
     trainSpeed:[
@@ -265,7 +273,15 @@ export default {
       Detail: ''
     },
     orgList: [],
-    SpeedList:{}
+    SpeedList:{},
+    Zoom:{
+      l1: 0,
+      l2: 0,
+      l3: 0,
+      l4: 0,
+      zoomScale:[10,5,2,1],
+      lineCnt:[1,0.5,0.2,0.1]
+    }
   }),
   components: { 
     ChartBar,
@@ -350,6 +366,18 @@ export default {
           break;
       }
       return rtnObj
+    },
+    lineScale() {
+      let Ts = this.trainSpeed
+      let Zoom = this.Zoom
+      return Ts.map(e=>{
+        let rtnArr = []
+        const zoomSc = Zoom.zoomScale[Zoom[e.lineCode]]
+        for(let Km = e.rangeMin ; Km < Math.ceil(e.rangeMax*10) ; Km+=zoomSc){
+          rtnArr.push(Km/10)
+        }
+        return rtnArr
+      })
     }
   },
   methods: {
@@ -465,12 +493,26 @@ export default {
             DTime_End: thisYear-1
           }).then(res=>{
               if (res.data.ErrorCode == 0) {
-                this.SpeedList = groupBy(res.data.DataList,'ReportLine')
+                let group = groupBy(JSON.parse(res.data.order_list),'ReportLine')
+                for(let key in group) {
+                  const line = this.trainSpeed.find(e=>e.lineCode==key)
+                  group[key] = group[key].filter(e=>e.LimitEnd&&e.LimitStart&&(line.rangeMin<=e.LimitEnd&&e.LimitEnd<=line.rangeMax)&&(line.rangeMin<=e.LimitStart&&e.LimitStart<=line.rangeMax)).map(e=>{
+                    let rtnObj = {LimitEnd:parseFloat(e.LimitEnd),LimitStart:parseFloat(e.LimitStart)}
+                    if(rtnObj.LimitEnd<rtnObj.LimitStart) {
+                      let temp = rtnObj.LimitStart
+                      rtnObj.LimitStart = rtnObj.LimitEnd
+                      rtnObj.LimitEnd = temp
+                    }
+                    return rtnObj
+                  })
+                }
+                this.SpeedList = group
               }else{
                 sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                 this.$router.push({ path: '/error' })
               }
             }).catch( err => {
+              console.warn(err)
               this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
             })
           break;
@@ -544,34 +586,22 @@ export default {
       }
     },
     getColor(line,col) {
-      const getValue = this.SpeedList[line]?.find(e=>e.LimitStart==col)?.Value||''
-      switch(getValue){
-        case '1':
-          return 'green'
-        case '2':
-          return 'yellow'
-        case '3':
-          return 'red'
-        default:
-          return 'grey'
+      const lineData = this.SpeedList[line].map(e=>({Start:e.LimitStart*1000,End:e.LimitEnd*1000}))
+      const round = this.Zoom.lineCnt[this.Zoom[line]]
+      const min = col*1000
+      const max = round*1000 + col*1000
+      const setValue = lineData.filter(e=>(e.Start<=min&&min<e.End)||(e.Start<=max&&max<e.End)||(min<=e.Start&&e.Start<=max)||(min<e.End&&e.End<max)).length
+      if(setValue<=30){
+        return 'green'
+      } else if(setValue<=90&&setValue>30){
+        return 'yellow'
+      } else if(setValue>90){
+        return 'red'
+      } else {
+        return 'gray'
       }
     },
     //------
-    _getTotalRowCol(item) {
-      let thisMin = Math.floor(item.rangeMin)
-      let thisMax = Math.floor(item.rangeMax)
-      let rowMax = Math.floor(thisMax/10)
-      let countRow = []
-      let countCol = []
-      for(let row = Math.floor(thisMin/10) ; row <= rowMax ; row ++) {
-        countCol = []
-        for(let col = 0 ;( (row<rowMax && col < 10) || (row==rowMax && col <= thisMax%10) ); col ++) {
-          countCol.push(row*10+col)
-        }
-        countRow.push(countCol)
-      }
-      return countRow
-    },
     _getOrg() { //抓單位
       fetchOrganization({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -628,6 +658,37 @@ export default {
         this.orgIsLoading = false
       })
     },
+    scrollZoom(e) {
+      const line = Object.keys(this.Zoom).find(el=>e.target._prevClass.includes(el))
+      const max = 3
+      const min = 0
+      if(e.isTrusted) {
+        if(e.deltaY>0) {
+          this.Zoom[line] = this.Zoom[line]>min?this.Zoom[line]-=1:min
+        } else {
+          this.Zoom[line] = this.Zoom[line]<max?this.Zoom[line]+=1:max
+        }
+      }
+    },
+    scaleTitle(arr) {
+      return arr.filter(e=>e<10)
+    },
+    right(str, num) {
+      return str.substring(str.length-num,str.length)
+    },
+    XKmToXKXM(km) {
+      const tkm = km.toString()
+      const getDot = tkm.indexOf(".")
+      let Kilo = 0
+      let Meter = 0
+      if(getDot>=0){
+        Kilo = tkm.substring(0,getDot)
+        Meter = tkm.substring(getDot+1,getDot+2)+'00'
+      } else {
+        Kilo = tkm.substring(0)
+      }
+      return Kilo+'K+'+Meter+'M'
+    }
   },
   mounted() {
     this.dataInit()
@@ -636,10 +697,6 @@ export default {
 </script>
 <style scoped>
 .some_element {
-  position: relative;
-  width: 70%;
-  height: 0;
-  margin-left: 30%;
-  padding-bottom: 70%;
+  border: 1px solid white !important;
 } 
 </style>

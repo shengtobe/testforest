@@ -105,7 +105,7 @@
                     </template>
 
                     <template v-slot:item.location="{ item }">
-                        {{ `${item.LimitStart} ~ ${item.LimitEnd} km` }}
+                        {{ `${Math.trunc(item.LimitStart)}K+${fract(item.LimitStart)}M ~ ${Math.trunc(item.LimitEnd)}K+${fract(item.LimitEnd)}M` }}
                     </template>
 
                     <template v-slot:item.normal="{ item }">
@@ -353,6 +353,9 @@ export default {
                 // }, 1000)
             }
         },
+        fract(num) {
+            return (num*1000) - Math.trunc(num)*1000;
+        }
     },
     created() {
         this.search()
