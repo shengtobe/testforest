@@ -79,6 +79,17 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
         </v-col>
+        <v-col cols="12" sm="6" md="3">
+          <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-alert-circle</v-icon>失效狀態
+          </h3>
+          <v-select
+              clearable
+              v-model="departSelect"
+              :items="expired"
+              solo @change="departSelectChange"
+          ></v-select>
+      </v-col>
         
         <!-- 表格資料 -->
         <v-col cols="12">
@@ -114,6 +125,11 @@
 
                     <template v-slot:item.slow="{ item }">
                         {{ item.SlowLimit }} km/h
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        <p v-if="expired.find(ele => ele.value == item.Status).text == '未失效'">{{ expired.find(ele => ele.value == item.Status).text  }}</p>
+                        <p v-if="expired.find(ele => ele.value == item.Status).text == '已失效'" class="red--text">{{ expired.find(ele => ele.value == item.Status).text  }}</p>
                     </template>
 
                     <template v-slot:item.date="{ item }">
@@ -178,7 +194,7 @@ export default {
             start: false,
             end: false,
         },
-        
+        expired:[{text: '全部', value: ''}, {text: '已失效', value: 'T'}, {text: '未失效', value: 'F'}],
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
         ReportLineList: locationOpts,
@@ -191,6 +207,7 @@ export default {
             { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '失效狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報狀態', value: 'SlowSpeedStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '讀取追蹤、查看、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
@@ -220,6 +237,8 @@ export default {
         },
         timeBClean(){
             this.dateAMax = ''
+        },
+        departSelectChange(){
         },
         // 搜尋
         search() {

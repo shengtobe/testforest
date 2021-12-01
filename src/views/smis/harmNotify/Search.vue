@@ -110,19 +110,19 @@
 
                     <template v-slot:item.CarSafe="{ item }">
                         <v-chip small label :color="'#76FF03'" v-if="item.Memo.includes('行安') && item.Memo.substr(0, 2) == '新增'">
-                            {{ item.Memo.substr(0, 6).replace('職災', '').replace('行安', '') }}
+                            {{ item.Memo.substr(0, 6).replace('職災', '').replace('職安', '').replace('行安', '') }}
                         </v-chip>
                         <v-chip small label :color="'#80D8FF'" v-if="item.Memo.includes('行安') && item.Memo.substr(0, 2) != '新增'">
-                            {{ item.Memo.substr(0, 6).replace('職災', '').replace('行安', '') }}
+                            {{ item.Memo.substr(0, 6).replace('職災', '').replace('職安', '').replace('行安', '') }}
                         </v-chip>
                     </template>
 
                     <template v-slot:item.JobSafe="{ item }">
-                        <v-chip small label :color="'#76FF03'" v-if="item.Memo.includes('職災') && item.Memo.substr(item.Memo.indexOf('職災')-2, 2) == '新增'">
-                            {{ item.Memo.substr(item.Memo.indexOf('職災')-2, 6).replace('職災', '').replace('行安', '') }}
+                        <v-chip small label :color="'#76FF03'" v-if="item.Memo.includes('職') && item.Memo.substr(item.Memo.indexOf('職災')-2, 2) == '新增'">
+                            {{ item.Memo.substr(item.Memo.indexOf('職')-2, 6).replace('職災', '').replace('職安', '').replace('行安', '') }}
                         </v-chip>
-                        <v-chip small label :color="'#80D8FF'" v-if="item.Memo.includes('職災') && item.Memo.substr(item.Memo.indexOf('職災')-2, 2) != '新增'">
-                            {{ item.Memo.substr(item.Memo.indexOf('職災')-2, 6).replace('職災', '').replace('行安', '') }}
+                        <v-chip small label :color="'#80D8FF'" v-if="item.Memo.includes('職') && item.Memo.substr(item.Memo.indexOf('職災')-2, 2) != '新增'">
+                            {{ item.Memo.substr(item.Memo.indexOf('職')-2, 6).replace('職災', '').replace('職安', '').replace('行安', '') }}
                         </v-chip>
                     </template>
 
@@ -207,7 +207,7 @@ export default {
             { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '行安', value: 'CarSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '職安', value: 'JobSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '職安/職災', value: 'JobSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         isLoading: false,  // 是否讀取中

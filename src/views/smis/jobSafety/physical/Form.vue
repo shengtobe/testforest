@@ -280,6 +280,7 @@
                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>血色素
             </h3>
             <v-text-field
+                :rules="[v => (!!v && /(^[1-9]{1}\d{0,3}$)|((^\d{1}[.]{1})(?:\d{0,2}[1-9]{1}$))|((^[1-9]{1}\d{1}[.]{1})(?:\d{0,1}[1-9]{1}$))|((^[1-9]{1}\d{2}[.]{1})(?:[1-9]{1}$))/.test(v)) || '數值長度錯誤']"
                 v-model.trim="ipt.BloodPigment"
                 solo maxlength="6"
                 type="number"
@@ -584,12 +585,12 @@ export default {
         BloodDiastole: '0',  // 血壓舒張壓(mmHg)
         Pulse: '0',  // 脈搏(次/分鐘)
         Waistline: '0',  // 腰圍(cm)
-        Sight: '0',  // 視力
+        Sight: '0.0',  // 視力
         Hearing: '0',  // 聽力
         UrineProtein: '1',  // 尿蛋白
         UrineBlood: '1',  // 尿潛血
         WhiteBlood: '0',  // 白血球數(個/ul)
-        BloodPigment: '0',  // 血色素(g/dL)
+        BloodPigment: '11',  // 血色素(g/dL)
         Xray: '1',  // 胸部 X 光
         GPTValue: '0',  // GPT(U/L)
         HepatitisB: 'Positive',  // B 肝抗原
@@ -677,7 +678,7 @@ export default {
                 })
             }
         },
-        //檢查校正 脈搏
+        // //檢查校正 脈搏
         "ipt.Pulse": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
@@ -696,14 +697,14 @@ export default {
             }
         },
         //檢查校正 視力
-        // "ipt.Sight": function(newValue,oldValue){
-        //     if(/^[0-9][.][0-9]$/.test(newValue) || newValue == '') {
-        //     } else {
-        //         this.$nextTick(() => {
-        //             this.ipt.Sight = oldValue
-        //         })
-        //     }
-        // },
+        "ipt.Sight": function(newValue,oldValue){
+            if(/^[0-9][.][0-9]$/.test(newValue) || newValue == '') {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.Sight = oldValue
+                })
+            }
+        },
         //檢查校正 聽力
         "ipt.Hearing": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
@@ -713,7 +714,7 @@ export default {
                 })
             }
         },
-        //檢查校正 尿蛋白 小於30 mg/dL是正常值，30～300是輕度蛋白尿，超過300則是較嚴重
+        // //檢查校正 尿蛋白 小於30 mg/dL是正常值，30～300是輕度蛋白尿，超過300則是較嚴重
         "ipt.UrineProtein": function(newValue,oldValue){
             if(/^\d{1,3}$/.test(newValue)) {
             } else {
@@ -732,14 +733,14 @@ export default {
             }
         },
         //檢查校正 XXXXXXXX 4000～10000/ul
-        // "ipt.WhiteBlood": function(newValue,oldValue){
-        //     if(/^\d{1,5}$/.test(newValue)) {
-        //     } else {
-        //         this.$nextTick(() => {
-        //             this.ipt.WhiteBlood = oldValue
-        //         })
-        //     }
-        // },
+        "ipt.WhiteBlood": function(newValue,oldValue){
+            if(/^\d{1,5}$/.test(newValue)) {
+            } else {
+                this.$nextTick(() => {
+                    this.ipt.WhiteBlood = oldValue
+                })
+            }
+        },
         //檢查校正 血色素 11.0~18.0 gm/dl   value=value.replace(/^\D*(\d*(?:\.\d{0,1})?).*$/g, '$1')
         "ipt.BloodPigment": function(newValue,oldValue){
             // if(/^\d{1,4}$/.test(newValue)) {
@@ -751,12 +752,12 @@ export default {
             // this.$nextTick(() => {
             //         this.ipt.BloodPigment = this.ipt.BloodPigment.replace(/^\D*(\d*(?:\.\d{0,1})?).*$/g, '$1')
             //     })
-            if(/(^[1-9]{1}\d{0,3}$)|((^\d{1}[.]{1})(?:\d{0,2}[1-9]{1}$))|((^[1-9]{1}\d{1}[.]{1})(?:\d{0,1}[1-9]{1}$))|((^[1-9]{1}\d{2}[.]{1})(?:[1-9]{1}$))/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.BloodPigment = oldValue
-                })
-            }
+            // if(/(^[1-9]{1}\d{0,3}$)|((^\d{1}[.]{1})(?:\d{0,2}[1-9]{1}$))|((^[1-9]{1}\d{1}[.]{1})(?:\d{0,1}[1-9]{1}$))|((^[1-9]{1}\d{2}[.]{1})(?:[1-9]{1}$))/.test(newValue)) {
+            // } else {
+            //     // this.$nextTick(() => {
+            //     //     this.ipt.BloodPigment = oldValue
+            //     // })
+            // }
             // let temp = newValue.replace('.','')
             // if(/^\d{1,3}$/.test(temp) == false) {// 如果非1~4位整數
             //     this.$nextTick(() => {
@@ -777,16 +778,7 @@ export default {
                 })
             }
         },
-        // //檢查校正 XXXXXXXX
-        // "ipt.HepatitisB": function(newValue,oldValue){
-        //     if(/^\d{1,3}$/.test(newValue)) {
-        //     } else {
-        //         this.$nextTick(() => {
-        //             this.ipt.HepatitisB = oldValue
-        //         })
-        //     }
-        // },
-        // //檢查校正 尿酸(mg/dL)
+        //檢查校正 尿酸(mg/dL)
         "ipt.UricAcid": function(newValue,oldValue){
             let temp = newValue.replace('.','')
             if(/^\d{1,3}$/.test(temp) == false) {// 如果非1~4位整數
@@ -820,24 +812,6 @@ export default {
             } else {
                 this.$nextTick(() => {
                     this.ipt.BloodSugar = oldValue
-                })
-            }
-        },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
-                })
-            }
-        },
-        //檢查校正 XXXXXXXX
-        "ipt.XXXXXXXX": function(newValue,oldValue){
-            if(/^\d{1,3}$/.test(newValue)) {
-            } else {
-                this.$nextTick(() => {
-                    this.ipt.XXXXXXXX = oldValue
                 })
             }
         },
@@ -982,6 +956,10 @@ export default {
           if(this.ipt.ID == ''){
               alert("尚未輸入人名/員工編號或單位名稱")
               return;
+          }
+          else if(/(^[1-9]{1}\d{0,3}$)|((^\d{1}[.]{1})(?:\d{0,2}[1-9]{1}$))|((^[1-9]{1}\d{1}[.]{1})(?:\d{0,1}[1-9]{1}$))|((^[1-9]{1}\d{2}[.]{1})(?:[1-9]{1}$))/.test(this.ipt.BloodPigment) == false){
+              alert('送出失敗，請確認「血色素」數值長度')
+              return
           }
           
         this.chLoadingShow({show:true})
