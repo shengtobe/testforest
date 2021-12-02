@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1200px" class="label-header">
+<v-container style="max-width: 1300px" class="label-header">
     <h2 class="mb-4 label-title">管理慢行通報</h2>
 
     <v-row class="px-2 mb-8">
@@ -84,10 +84,9 @@
               <v-icon class="mr-1 mb-1">mdi-alert-circle</v-icon>失效狀態
           </h3>
           <v-select
-              clearable
-              v-model="departSelect"
-              :items="expired"
-              solo @change="departSelectChange"
+              v-model="overdueSelect"
+              :items="overdue"
+              solo @change="overdueSelectChange"
           ></v-select>
       </v-col>
         
@@ -128,8 +127,8 @@
                     </template>
 
                     <template v-slot:item.status="{ item }">
-                        <p v-if="expired.find(ele => ele.value == item.Status).text == '未失效'">{{ expired.find(ele => ele.value == item.Status).text  }}</p>
-                        <p v-if="expired.find(ele => ele.value == item.Status).text == '已失效'" class="red--text">{{ expired.find(ele => ele.value == item.Status).text  }}</p>
+                        <span v-if="overdue.find(ele => ele.value == item.Status).text == '未失效'">{{ overdue.find(ele => ele.value == item.Status).text  }}</span>
+                        <span v-if="overdue.find(ele => ele.value == item.Status).text == '已失效'" class="red--text">{{ overdue.find(ele => ele.value == item.Status).text  }}</span>
                     </template>
 
                     <template v-slot:item.date="{ item }">
@@ -194,21 +193,23 @@ export default {
             start: false,
             end: false,
         },
-        expired:[{text: '全部', value: ''}, {text: '已失效', value: 'T'}, {text: '未失效', value: 'F'}],
+        overdueSelect: '',
+        overdue:[{text: '全部', value: ''}, {text: '已失效', value: 'T'}, {text: '未失效', value: 'F'}],
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
         ReportLineList: locationOpts,
         tableItems: [],  // 表格資料
+        originalTableItems: [],  // 原始表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位 SlowSpeedStatus
             { text: '編號', value: 'SlowReportCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '路線', value: 'line', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '路線', value: 'line', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 75},
             { text: '速限起點、終點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '常態速限', value: 'normal', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '慢行速限', value: 'slow', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '限制日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '失效狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '通報人', value: 'pose_name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 75 },
             { text: '通報狀態', value: 'SlowSpeedStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '讀取追蹤、查看、解除', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
@@ -238,8 +239,7 @@ export default {
         timeBClean(){
             this.dateAMax = ''
         },
-        departSelectChange(){
-        },
+        
         // 搜尋
         search() {
             this.chLoadingShow({show:true})
@@ -267,14 +267,20 @@ export default {
                     'SlowReportCode',               
                 ],
             }).then(res => {
-                this.tableItems = JSON.parse(res.data.order_list)
-                this.tableItems.forEach(element => {
+                this.originalTableItems = JSON.parse(res.data.order_list)
+                this.originalTableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
                             element[ele] = '';
                         }
                     }
                 });
+                if(this.overdueSelect != ''){
+                    this.tableItems = this.originalTableItems.filter(e => e.Status == this.overdueSelect)
+                }
+                else{
+                    this.tableItems = this.originalTableItems
+                }
             }).catch(err => {
                 //console.log(err)
                 alert('查詢時發生問題，請重新查詢!')
@@ -323,6 +329,16 @@ export default {
             //     ]
             //     this.chLoadingShow({show:true})
             // }, 1000)
+        },
+        overdueSelectChange(){
+            if(this.originalTableItems.length > 0){
+                if(this.overdueSelect == ''){
+                    this.tableItems = this.originalTableItems
+                }
+                else{
+                    this.tableItems = this.originalTableItems.filter(e => e.Status == this.overdueSelect)
+                }
+            }
         },
         // 更換頁數
         chPage(n) {
