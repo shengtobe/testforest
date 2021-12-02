@@ -590,7 +590,7 @@ export default {
       const round = this.Zoom.lineCnt[this.Zoom[line]]
       const min = col*1000
       const max = round*1000 + col*1000
-      const setValue = lineData.filter(e=>(e.Start<=min&&min<e.End)||(e.Start<=max&&max<e.End)||(min<=e.Start&&e.Start<=max)||(min<e.End&&e.End<max)).length
+      const setValue = lineData.filter(e=>e.Start<max&&e.End>min).length
       if(setValue<=30){
         return 'green'
       } else if(setValue<=90&&setValue>30){
