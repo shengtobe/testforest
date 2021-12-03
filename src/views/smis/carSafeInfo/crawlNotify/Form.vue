@@ -367,9 +367,13 @@ export default {
         },
         // 送出
         save() {
-            if(this.ipt.recipients.length == 0 || this.ipt.line == '' || this.ipt.pointStart == '' || this.ipt.pointEnd == '' 
-            || this.ipt.normal == '' || this.ipt.slow == '' || this.ipt.dateStart == '' || this.ipt.dateEnd == ''){
-                alert("欄位未填")
+            if(this.ipt.recipients.length == 0 || this.ipt.line == '' || this.ipt.pointStartK == '' ||  this.ipt.pointStartM == '' || this.ipt.pointEndK == '' 
+            || this.ipt.pointEndM == '' || this.ipt.normal == '' || this.ipt.slow == '' || this.ipt.dateStart == '' || this.ipt.dateEnd == ''){
+                this.chMsgbar({ success: false, msg: '欄位未填'})
+                return
+            }
+            if(this.ipt.pointStartK == this.ipt.pointEndK && this.ipt.pointStartM == this.ipt.pointEndM){
+                this.chMsgbar({ success: false, msg: '路線起迄不可相同'})
                 return
             }
             this.chLoadingShow({show:true})
