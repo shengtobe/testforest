@@ -199,7 +199,6 @@ export default {
             }).then(res => {
                 this.tableItems = JSON.parse(res.data.order_list)
                 if(this.tableItems.length == 0) return
-                console.log("this.tableItems: ", this.tableItems);
                 this.tableItems.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){

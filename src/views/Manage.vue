@@ -271,7 +271,7 @@
                             </v-list>
                         </v-card>
                         <div id="versionArea" class="mt-10">
-                            <p class="text-end text--disabled font-weight-bold">v.0.1.4</p>
+                            <p class="text-end text--disabled font-weight-bold">v.0.1.12</p>
                             <!-- 建置 修正危害通報pick1導致連錯誤 改為新變數 -->
                         </div>
                     </v-col>

@@ -144,7 +144,6 @@ export default {
                     temp.push(e)
                   }
                 });
-                console.log("changing");
                 return temp
               }
             },

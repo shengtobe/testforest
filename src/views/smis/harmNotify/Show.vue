@@ -1040,7 +1040,6 @@ export default {
                             this.tableItems.push(element)
                             // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
                         });
-                        console.log("table: ", this.tableItems);
                     }).catch(err => {
                         //console.log(err)
                         alert('查詢時發生問題，請重新查詢!')
@@ -1748,7 +1747,6 @@ export default {
                     Reason: this.NoRecordReason,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        console.log("0");
                         this.chMsgbar({ success: true, msg: '操作完成'})
                         this.done = true  // 隱藏按鈕
                         // =================自動轉跳=================
@@ -1757,16 +1755,13 @@ export default {
                         }
                         else{
                             if(carType != 'no' && jobType == 'no'){// 自動轉跳行安的情況
-                                console.log("A");
                                 if(carType == 'new'){ //轉跳新增行安
-                                    console.log("1");
                                     // 行車事故
                                     if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${res.data.EventCode}/show` })
                                     // 行車危害
                                     else if(carCase == 'endanger')  this.$router.push({ path: `/smis/car-harmdb/harms/${res.data.EventCode}/show` })
                                 }
                                 else{//轉跳既有行安
-                                    console.log("2");
                                     // 行車事故
                                     if(carCase == 'event')  this.$router.push({ path: `/smis/car-accident-event/${this.pick1}/show` })
                                     // 行車危害
@@ -1774,17 +1769,13 @@ export default {
                                 }
                             }
                             else if(carType == 'no' && jobType != 'no'){// 自動轉跳職安的情況
-                                console.log("B");
                                 if(jobType == 'new'){ //轉跳新增職安
-                                    console.log("1");
                                     // 職業事故
                                     if(jobCase == 'event')  this.$router.push({ path: `/smis/jobsafety/disaster-survey/${res.data.EventCode}/show` })
                                     // 職業危害
                                     else if(jobCase == 'endanger')  this.$router.push({ path: `/smis/jobsafety/disasterdb/${res.data.EventCode}/show` })
                                 }
                                 else{//轉跳既有職安
-                                    console.log("2");
-                                    console.log("jobCase: ", jobCase);
                                     if(jobCase == 'event'){ // 職業事故
                                         this.$router.push({ path: `/smis/jobsafety/disaster-survey/${this.pick2}/show` })
                                     }
@@ -1794,7 +1785,6 @@ export default {
                                 }
                             }
                             else{
-                                console.log("else");
                             }
                         }
                         
@@ -1923,8 +1913,6 @@ export default {
             // this.carSafeType = ''
         },
         pick2Event(item) {
-                    console.log("item: ", item);
-                    console.log("jobSafeType: ", this.jobSafeType);
             switch(this.jobSafeType){
                 case 'B':
                     this.shwoPick2_1Form = false;

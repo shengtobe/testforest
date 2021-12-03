@@ -425,7 +425,6 @@ export default {
     // 搜尋
     search() 
     {
-      console.log("s");
       this.chLoadingShow({show:false})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間

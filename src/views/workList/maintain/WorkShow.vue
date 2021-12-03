@@ -377,7 +377,7 @@
 
     <!-- 檔案上傳 (證據)，新增時 -->
     <template>
-        <UploadFileAdd
+        <UploadFileAdd2
             title="維修照片上傳"
             :uploadDisnable="false"
             :fileList="showFiles"
@@ -454,6 +454,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
+import UploadFileAdd2 from '@/components/UploadFileAdd2.vue'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import EquipRepairCode from '@/components/EquipRepairCode'
 import { hourOptions, minOptions } from '@/assets/js/dateTimeOption'
@@ -543,7 +544,8 @@ export default {
         TopBasicTable,
         BottomTable,
         UploadFileAdd,
-        EquipRepairCode
+        EquipRepairCode,
+        UploadFileAdd2
     },
     computed: {
         ...mapState ('user', {
@@ -575,9 +577,18 @@ export default {
     methods: {
         // 加入檔案 (組件用)
         // 註：第二參數的布林值，是控制物件加入上傳後端的陣列，還是縮圖顯示的陣列
-        joinFile(obj, bool) {
+        joinFile(obj, bool) { //FileFullPath
+            // FileName	
+            // FileType	
+            // UnitData	
+            // FileFullPath	
+
             if (bool) {
-                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+                let temp
+                if(obj.FileFullPath == null || obj.FileFullPath == undefined){
+                    temp = {FileName:obj.FileName, FileType:obj.FileType, UnitData:obj.UnitData, FileFullPath:''}
+                }
+                this.ipt.files.push(temp)  // 加入要上傳後端的檔案
             } else {
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
@@ -642,6 +653,17 @@ export default {
             codearr[3] = ''
             this.initCode = codearr.join('-') + '-'
             this.nowEqCode = this.initCode
+            if(obj.FileCount.length > 0){
+                // FileFullPath: "\\upload\\workorder\\202111301120171080_05025.jpg"
+                // FileName: "15698151461650.jpg"
+                // FileType: "jpg"
+                obj.FileCount.forEach(itemFile => {
+                    this.ipt.files.push({FileName:itemFile.FileName, FileType:itemFile.FileType, UnitData:'', FileFullPath:itemFile.FileFullPath})
+                    this.showFiles.push({FileName:itemFile.FileName, FileType:itemFile.FileType, UnitData:'', FileFullPath:itemFile.FileFullPath, name:itemFile.FileName})
+                });
+                //temp = {FileName:obj.FileName, FileType:obj.FileType, UnitData:obj.UnitData, FileFullPath:''}
+
+            }
             // this.nowEqCode = obj.MaintainCode
 
             // 組合所有林鐵人員下拉選單(用於選工作項)

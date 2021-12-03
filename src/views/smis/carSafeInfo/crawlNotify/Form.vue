@@ -380,8 +380,8 @@ export default {
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
                     ReportLine: this.ipt.line,  //通報路線
-                    LimitStart: this.ipt.pointStartK+'.'+(parseInt(this.ipt.pointStartM)/1000),  //速限起點
-                    LimitEnd: this.ipt.pointEndK+'.'(parseInt(+this.ipt.pointEndM)/1000),  //速限終點
+                    LimitStart: (parseInt(this.ipt.pointStartK)+(parseInt(this.ipt.pointStartM)/1000)).toString(),  //速限起點
+                    LimitEnd: (parseInt(this.ipt.pointEndK)+(parseInt(+this.ipt.pointEndM)/1000)).toString(),  //速限終點
                     NormalLimit: this.ipt.normal,  //常態速限
                     SlowLimit: this.ipt.slow,  //慢行速限
                     LimitStartDate: this.ipt.dateStart,  //限制日期(起)
@@ -389,9 +389,15 @@ export default {
                     RecPeople: arr,           
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '回覆成功'})
+                        this.chMsgbar({ success: true, msg: '立案成功，已自動轉跳'})
                         this.status = '2'  // 狀態改為已回覆
                         this.saveBtnShow = false
+
+                        //直接進下步驟
+                        setTimeout(() => {
+                            this.chLoadingShow({show:false})
+                            this.$router.push({ path: `/smis/car-safeinfo/crawl-notify/${res.data.SlowSpeedCode}/edit` })
+                        }, 1500)
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })

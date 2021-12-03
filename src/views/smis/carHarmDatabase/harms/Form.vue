@@ -580,6 +580,7 @@ export default {
         },
         // 設定資料(編輯時)
         setInitDate(obj) {
+            this.ipt.dangerID_2 = obj.EndangerCode.substr(obj.EndangerCode.indexOf('-')+1)
             this.ipt.desc = obj.EndangerDesp // 危害說明
             this.ipt.reason = obj.EndangerReason  // 危害直接成因
             this.ipt.indirectReason = obj.EndangerIndirect  // 可能的危害間接原因
