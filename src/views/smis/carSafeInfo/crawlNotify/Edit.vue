@@ -45,7 +45,7 @@
                         v-on="on"
                         readonly
                         hide-details
-                        :disabled="isStop || status != 1"
+                        :disabled="!canEditDate"
                     ></v-text-field>
                 </template>
                 <v-date-picker
@@ -169,6 +169,9 @@
         </v-col>
 
         <v-col cols="12" class="my-8">
+            <v-btn dark class="mr-4 btn-close"
+                to="/smis/car-safeinfo/crawl-notify"
+            >回管理頁</v-btn>
             <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
             >關閉視窗</v-btn>
@@ -259,6 +262,7 @@ export default {
         dialog: false,  // 退回 dialog 是否顯示
         choose: '',  // 所選部門,
         status: 0, // 目前流程步驟
+        PeopleId: '', // 通報人
         chooseMembers: [],  // 勾選的收件人
         //dapartOpts: dapartOptsForMember,  // 部門下拉選單
         checkboxs: [],  // 選單
@@ -432,6 +436,7 @@ export default {
             this.ipt.dateEnd = obj.LimitEndDate // 限制日期(迄)  
             this.date = this.date_brfore = obj.LimitEndDate
             this.status = obj.SlowSpeedStatus
+            this.PeopleId = obj.PeopleId
             let statusTxt = ''
             switch(this.status){
                 case "1":
@@ -480,6 +485,11 @@ export default {
                  }).finally(() => {
                 })
             this.chLoadingShow({ show: false})
+        },
+        canEditDate(){
+            // 這些情況可以編輯延長
+            //         未解除                  主管                        通報人
+            return this.isStop == false && this.isSp == true || this.userData.UserId == this.PeopleId
         },
         // 儲存
         update() {

@@ -391,6 +391,22 @@ export default {
             this.ctrlDriveId = this.tableItems0.map(item => item.ProcCode )
             this.uploads = this.tableItems0
             this.pageOpt.page = 1  // 頁碼初始化
+            // 欲送出檔案更新
+            obj.controls.forEach(ctrl => {
+                for (let index = 0; index < ctrl.file_path.length; index++) {
+                    let existNameArr = this.evidences.map(e=>e.FileName)
+                    if(existNameArr.includes(ctrl.file_path_name[index]) == false){
+                        let nameArr = ctrl.file_path_name[index].split('.')  // 用小數點拆成陣列
+                        this.evidences.push({
+                            FileName: ctrl.file_path_name[index],
+                            FileFullPath: ctrl.file_path[index],
+                            FileType: (ctrl.file_path_name[index].includes('.')) ? nameArr[nameArr.length - 1] : '',  // 若沒有副檔名傳空值
+                            UnitData: '',
+                            ProcCode: ctrl.ProcCode
+                        })
+                    }
+                }
+            });
 
             //敲門
             canInUpdate({
@@ -449,18 +465,18 @@ export default {
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
         },
-        joinFile(obj, bool) {
-            if (bool) {
-                this.ipt.files.push(obj)  // 加入要上傳後端的檔案
-            } else {
-                this.showFiles.push(obj)  // 加入要顯示的縮圖
-            }
-        },
+        // joinFile(obj, bool) {
+        //     if (bool) {
+        //         this.ipt.files.push(obj)  // 加入要上傳後端的檔案
+        //     } else {
+        //         this.showFiles.push(obj)  // 加入要顯示的縮圖
+        //     }
+        // },
         // 移除要上傳的檔案 (組件用)
-        rmFile(idx) {
-            this.showFiles.splice(idx, 1)
-            this.ipt.files.splice(idx, 1)
-        },
+        // rmFile(idx) {
+        //     this.showFiles.splice(idx, 1)
+        //     this.ipt.files.splice(idx, 1)
+        // },
         // 退回
         withdraw() {
             this.isLoading = true
@@ -657,6 +673,7 @@ export default {
                         let nameArr = chooseItem.name.split('.')  // 用小數點拆成陣列
                         this.evidences.push({
                             FileName: chooseItem.name,
+                            FileFullPath: '',
                             FileType: (nameArr.length > 1) ? nameArr[nameArr.length - 1] : '',  // 若沒有副檔名傳空值
                             UnitData: Array.from(new Uint8Array(reader.result)),
                             ProcCode: this.uploads[idx].ProcCode
@@ -677,15 +694,12 @@ export default {
             this.uploads[fileListIdx].file_path_name.splice(itemIdx, 1)
             this.uploads[fileListIdx].file_path.splice(itemIdx, 1)
             let newEvidences = []
-            console.log("this.evidences: ", this.evidences);
-            console.log("1 this.evidences: ", this.evidences.map(e => e.FileName));
             this.evidences.forEach(item => {
                 if(item.FileName != nn){
                     newEvidences.push(item)
                 }
             });
             this.evidences = newEvidences
-            console.log("2 this.evidences: ", this.evidences.map(e => e.FileName));
         },
     },
     created() {

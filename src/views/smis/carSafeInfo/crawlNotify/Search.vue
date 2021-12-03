@@ -127,7 +127,7 @@
                     </template>
 
                     <template v-slot:item.status="{ item }">
-                        <span v-if="overdue.find(ele => ele.value == item.Status).text == '未失效'">{{ overdue.find(ele => ele.value == item.Status).text  }}</span>
+                        <span v-if="overdue.find(ele => ele.value == item.Status).text == '有效'" class="green--text">{{ overdue.find(ele => ele.value == item.Status).text  }}</span>
                         <span v-if="overdue.find(ele => ele.value == item.Status).text == '已失效'" class="red--text">{{ overdue.find(ele => ele.value == item.Status).text  }}</span>
                     </template>
 
@@ -194,7 +194,7 @@ export default {
             end: false,
         },
         overdueSelect: '',
-        overdue:[{text: '全部', value: ''}, {text: '已失效', value: 'T'}, {text: '未失效', value: 'F'}],
+        overdue:[{text: '全部', value: ''}, {text: '已失效', value: 'F'}, {text: '有效', value: 'T'}],
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
         ReportLineList: locationOpts,
@@ -359,6 +359,11 @@ export default {
         },
         // 解除
         stop(SlowReportCode) {
+            let get = this.tableItems.find(e => e.SlowReportCode == SlowReportCode).PeopleId
+            if(get.PeopleId != this.userData.UserId && get.InfoSign != this.userData.UserId){
+                alert('僅通報人或通報人主管可以解除')
+                return
+            }
             if (confirm('解除會發通知給所有收件人，並且之後無法再編輯，你確定要解除嗎?')) {
                 this.chLoadingShow({show:true})
                 deleteRegul({
