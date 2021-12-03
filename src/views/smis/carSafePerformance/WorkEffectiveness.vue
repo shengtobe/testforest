@@ -124,7 +124,6 @@
                   <div style="width:2%"/>
                   <div :style="{width:98*Zoom.zoomScale[Zoom[item.lineCode]]/100+'%'}" class="text-center" v-for="(l,ind) in scaleTitle(lineScale[i])" :key="item.lineCode+'title'+l">
                     <sub v-if="Number.isInteger(l)" :class="{'font-weight-black':Number.isInteger(l),'red--text':Number.isInteger(l)}">{{right(l.toString(),2)}}</sub>
-                    <!-- <sub v-else-if="right(l.toString(),2)=='.5'">{{right(l.toString(),2)}}</sub> -->
                   </div>
                 </div>
                 <div class="pa-0 d-flex flex-wrap">
@@ -495,9 +494,11 @@ export default {
               if (res.data.ErrorCode == 0) {
                 let group = groupBy(JSON.parse(res.data.order_list),'ReportLine')
                 for(let key in group) {
-                  const line = this.trainSpeed.find(e=>e.lineCode==key)
-                  group[key] = group[key].filter(e=>e.LimitEnd&&e.LimitStart&&(line.rangeMin<=e.LimitEnd&&e.LimitEnd<=line.rangeMax)&&(line.rangeMin<=e.LimitStart&&e.LimitStart<=line.rangeMax)).map(e=>{
-                    let rtnObj = {LimitEnd:parseFloat(e.LimitEnd),LimitStart:parseFloat(e.LimitStart)}
+                  const line = this.trainSpeed.find(e=>e.lineCode==key) //抓每條線
+                  group[key] = group[key]
+                  .filter(e=>e.LimitEnd&&e.LimitStart&&(line.rangeMin<=e.LimitEnd&&e.LimitEnd<=line.rangeMax)&&(line.rangeMin<=e.LimitStart&&e.LimitStart<=line.rangeMax)) //先把無效的資料刪除
+                  .map(e=>{ //再把里程轉成數字並升冪儲存
+                    let rtnObj = {LimitEnd:parseFloat(e.LimitEnd),LimitStart:parseFloat(e.LimitStart),StartDate:e.LimitStartDate,EndDate:e.LimitEndDate}
                     if(rtnObj.LimitEnd<rtnObj.LimitStart) {
                       let temp = rtnObj.LimitStart
                       rtnObj.LimitStart = rtnObj.LimitEnd
@@ -586,19 +587,65 @@ export default {
       }
     },
     getColor(line,col) {
-      const lineData = this.SpeedList[line].map(e=>({Start:e.LimitStart*1000,End:e.LimitEnd*1000}))
-      const round = this.Zoom.lineCnt[this.Zoom[line]]
-      const min = col*1000
-      const max = round*1000 + col*1000
-      const setValue = lineData.filter(e=>e.Start<max&&e.End>min).length
-      if(setValue<=30){
+      const lineData = this.SpeedList[line].map(e=>({Start:e.LimitStart*1000,End:e.LimitEnd*1000,StartDate:e.StartDate,EndDate:e.EndDate}))   //抓這個條線的資料並把區間改為用公尺算，避免小數點資料錯誤
+      const round = this.Zoom.lineCnt[this.Zoom[line]]  //這個區間的長度為多少
+      const min = col*1000  //抓區間起始值並轉換成公尺
+      const max = round*1000 + col*1000 //抓區間結束值並轉換成公尺
+      const DateData = lineData.filter(e=>e.Start<max&&e.End>min).map(e=>({start:e.StartDate,end:e.EndDate}))  //把在這個區間的資料取出並重新把資料存成只有日期的
+      // 把日期取聯集 functions start
+      const isBetween = function(range, date) {
+        return range.start <= date && range.end >= date;
+      };
+      const rangesOverlap = function(rangeOne, rangeTwo) {
+        return isBetween(rangeOne, rangeTwo.start) || isBetween(rangeOne, rangeTwo.end);
+      };
+      const mergeRanges = function(rangeOne, rangeTwo) {
+        let newRange = {}
+
+        if (isBetween(rangeOne, rangeTwo.start)) {
+          newRange.start = rangeOne.start;
+        } else {
+          newRange.start = rangeTwo.start;
+        }
+        if (isBetween(rangeOne, rangeTwo.end)) {
+          newRange.end = rangeOne.end;
+        } else {
+          newRange.end = rangeTwo.end;
+        }
+
+        return newRange;
+      };
+      const merge = function(rangeCollection) {
+        let concatenatedCollections = rangeCollection
+        let newCollection = concatenatedCollections.reduce((newCollection, range) => {
+          let index = newCollection.findIndex(rangeToCheck => rangesOverlap(rangeToCheck, range));
+          if (index !== -1) {
+            newCollection[index] = mergeRanges(newCollection[index], range);
+          } else {
+            newCollection.push(range);
+          }
+          return newCollection;
+        }, []);
+        return newCollection;
+      };
+      // 把日期取聯集 end
+      // 抓日期差
+      const DateDiff = function(dtStart, dtEnd) {
+        return parseInt((dtEnd - dtStart) / 86400000)
+      }
+      const dateCount = merge(DateData).map(e=>DateDiff(new Date(e.start),new Date(e.end))+1) //先取聯集然後每筆作日期差，因為日期差會少一天所以要再+1
+      let setValue=0
+      if(dateCount.length>0){ //有資料的就把陣列裡面的資料相加
+        setValue=dateCount.reduce((a,b)=>a+b)
+      }
+      if(0<setValue&&setValue<=30){
         return 'green'
-      } else if(setValue<=90&&setValue>30){
+      } else if(30<setValue&&setValue<=90){
         return 'yellow'
       } else if(setValue>90){
         return 'red'
       } else {
-        return 'gray'
+        return 'grey'
       }
     },
     //------
@@ -659,6 +706,7 @@ export default {
       })
     },
     scrollZoom(e) {
+      //Zoom[line]存的是array index，所以直接異動就可以更改縮放比例
       const line = Object.keys(this.Zoom).find(el=>e.target._prevClass.includes(el))
       const max = 3
       const min = 0
@@ -688,7 +736,7 @@ export default {
         Kilo = tkm.substring(0)
       }
       return Kilo+'K+'+Meter+'M'
-    }
+    },
   },
   mounted() {
     this.dataInit()
