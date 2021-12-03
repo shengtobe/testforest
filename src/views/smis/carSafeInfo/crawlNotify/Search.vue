@@ -65,7 +65,18 @@
             </v-menu>
         </v-col>
 
-        <v-col cols="12" md="6" align-self="center" class="mb-8 mb-md-0">
+        
+        <v-col cols="12" sm="6" md="3">
+          <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-alert-circle</v-icon>失效狀態
+          </h3>
+          <v-select
+              v-model="overdueSelect"
+              :items="overdue"
+              solo @change="overdueSelectChange"
+          ></v-select>
+      </v-col>
+      <v-col cols="12" md="3" align-self="center" class="mb-8 mb-md-0">
             <v-btn dark large
                 @click="search"
                 class="mr-3 btn-search"
@@ -79,16 +90,6 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
         </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <h3 class="mb-1">
-              <v-icon class="mr-1 mb-1">mdi-alert-circle</v-icon>失效狀態
-          </h3>
-          <v-select
-              v-model="overdueSelect"
-              :items="overdue"
-              solo @change="overdueSelectChange"
-          ></v-select>
-      </v-col>
         
         <!-- 表格資料 -->
         <v-col cols="12">
