@@ -10,7 +10,7 @@
 -->
 <template>
   <div>
-    <v-chip label color="green darken-1" dark large v-for="(item) in PeopleList" :key="'P_'+item.UserId" close @click:close="deleteSelectPeople(item[valueCol])" class="ma-1"> {{ item.UserName }} </v-chip>
+    <v-chip label color="green darken-1" dark large v-for="(item) in PeopleList" :key="'P_'+item.UserId" :close="canEdit" @click:close="deleteSelectPeople(item[valueCol])" class="ma-1"> {{ item.UserName }} </v-chip>
     <v-chip label color="green darken-1" dark large v-for="(item) in PeopleList_NoClose" :key="'P_'+item.UserId" class="ma-1"> {{ item.UserName }} </v-chip>
     <v-btn 
       class="mx-2 btn-add"
@@ -18,7 +18,7 @@
       dark
       small
       @click="openSelectPeople"
-      v-show="(solo&&PeopleList.length==0)||(solo==false)&&canEdit"
+      v-show="((solo&&PeopleList.length==0)||(solo==false))&&canEdit"
     >
       <v-icon dark>
         mdi-plus
@@ -53,7 +53,10 @@ import getPeople from '@/components/GetOrganizePeople'
 export default {
 	props: {
     solo: Boolean,
-    canEdit: Boolean,
+    canEdit: {
+      type: Boolean,
+      default: true
+    },
     peopleList: [String, Array],
     valueCol: {
       type: String,
@@ -81,19 +84,12 @@ export default {
 	mounted() {
     if(this.solo){
       this.isSolo = this.solo
+      // console.log(this.peopleList)
       this.defPeopleList = [this.peopleList]
     } else {
       this.defPeopleList = [...this.peopleList]
     }
     this.fetchOrganization()
-    console.log("solo: ", this.solo)
-    console.log("canEdit: ", this.canEdit);
-    if(this.canEdit == undefined || this.canEdit == null){
-        this.canEdit = true
-      }
-    else{
-    }
-    console.log("canEdit: ", this.canEdit);
 	},
 	computed: {
     ...mapState ('user', {

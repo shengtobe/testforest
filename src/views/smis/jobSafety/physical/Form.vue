@@ -16,7 +16,7 @@
           :loading="orgIsLoading"
           @change="getPeopleData"
           /> -->
-        <PeopleSelect :disabled="id != 0 && id != undefined" v-model="ipt.ID"  @change="getPeopleData" />
+        <PeopleSelect solo :canEdit="!(id != 0 && id != undefined)" :peopleList="ipt.ID" @getPeople="(obj)=>{ipt.ID=obj.UserId;getPeopleData(obj.UserId)}" :key="'people'+peopleKey"/>
       </v-col>
       <!-- <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">
@@ -573,8 +573,8 @@ import { jobUrineOpts } from '@/assets/js/smisData'
 import { canInUpdate } from '@/apis/access'
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { login } from '@/apis/login'
-import PeopleSelect from '@/components/PeopleSelect'
-// import PeopleSelect from '@/components/PeopleSelectMuti'
+// import PeopleSelect from '@/components/PeopleSelect'
+import PeopleSelect from '@/components/PeopleSelectMuti'
 import { healthCdList, healthUpdate } from '@/apis/smis/health'
 export default {
     props:['id','sid'],
@@ -770,7 +770,8 @@ export default {
         {from:'1',to:'M'},
         {from:'2',to:'F'},
         {from:'3',to:'X'}
-      ]
+      ],
+      peopleKey: 0
     }),
     components:{
       PeopleSelect
@@ -995,8 +996,9 @@ export default {
         } else {
           // -------------- 新增時 --------------
           if(this.id != 0 && this.id != undefined){   //有選定人的新增
-           this.ipt.ID = this.id
+            this.ipt.ID = this.id
             this.getPeopleData(this.id)
+            this.peopleKey++
           }
         }
         this.componentKey++
