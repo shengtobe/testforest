@@ -92,6 +92,7 @@
                 <v-icon class="mr-1 mb-1">mdi-code</v-icon>事故編號
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="searchIpt.number"
                 solo
                 placeholder="請輸入事故編號"
@@ -269,7 +270,12 @@ export default {
                 IsFirstLoad: false,
                 KeyName: 'SMS_JobAccidentSurvey',  // DB table
                 KeyItem: [
-                    { tableColumn: 'AccidentCode', columnValue: this.searchIpt.number },  //
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.dateStart },  // 日期(起)
+                    { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.dateEnd},  // 日期(迄)       
+                    { tableColumn: 'AccidentCode', columnValue: this.searchIpt.number },  // 事故編號
+                    { tableColumn: 'AccidentStatus', columnValue: this.searchIpt.status },  // 事故狀態
+                    { tableColumn: 'HurtPeopleName', columnValue: this.searchIpt.name },  // 事故狀態
+                    { tableColumn: 'PeopleDepart', columnValue: this.searchIpt.workDepart },  // 事故狀態
                     // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料

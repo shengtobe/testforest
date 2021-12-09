@@ -2,6 +2,15 @@
 
 import axios from '@/apis/axiosSetting'
 
+// 匯出工單
+export function exportWorkList(data) { return axios(
+    {
+        url: '/mmis/order/export_excel',
+        method: 'post',
+        data,
+    }
+)}
+
 // 請求廠商名單
 export function fetchFirmList(data) { return axios(
     {

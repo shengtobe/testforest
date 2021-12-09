@@ -114,6 +114,11 @@
                     v-if="(status == 4) && isShowBtn"
                 >徹銷</v-btn>
 
+                <v-btn dark class="ma-2 btn-modify"
+                    @click="print"
+                    v-if="(status == 5) && isShowBtn"
+                >匯出工單</v-btn>
+
                 <v-btn dark class="ma-2 btn-add"
                     :loading="isLoading" 
                     color="success"
@@ -171,7 +176,7 @@ import { getNowFullTime } from '@/assets/js/commonFun'
 import FileListShow from '@/components/FileListShow.vue'
 import TopBasicTable from '@/components/TopBasicTable.vue'
 import BottomTable from '@/components/BottomTable.vue'
-import { closeOrder, withdrawOrder, cancelOrder, fetchSupervisor } from '@/apis/workList/maintain'
+import { closeOrder, withdrawOrder, cancelOrder, fetchSupervisor, exportWorkList } from '@/apis/workList/maintain'
 
 export default {
     props: ['itemData'],
@@ -238,7 +243,9 @@ export default {
             this.tableItems_fee = [ ...obj.WorkMaterialList ]  // 費用資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
+            console.log("this.status: ", this.status);
             if(this.status == "4"){
+                console.log("obj.AllDepartorID: ", obj.AllDepartorID);
                 this.isShowBtn = obj.AllDepartorID == this.userData.UserId
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
@@ -253,6 +260,11 @@ export default {
                     // this.isLoading = this.dialog = false
                 })
             }
+            else if(this.status == "5") //已結案時:
+            {
+                // 派工人 DispatchID 代理人 AgentID
+                this.isShowBtn = (obj.DispatchID == this.userData.UserId) || (obj.AgentID == this.userData.UserId)
+            }
             else{
 
             }
@@ -266,6 +278,26 @@ export default {
             this.dialogApiName = bool  // true 為退回，false 為徹銷
             this.dialogReturnMsg = (bool)? '退回成功' : '徹銷成功'
             this.dialog = true
+        },
+        print(){
+            exportWorkList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                WorkOrderID: this.workNumber
+            }).then(res => {
+                let link = document.createElement('a')
+                console.log("1");
+                link.href = `/downloads/${res.data.file_name}`
+                console.log("2");
+                link.setAttribute('download', res.data.file_name)
+                console.log("3");
+                document.body.appendChild(link)
+                console.log("4");
+                link.click()
+                console.log("5");
+            }).catch(function (err) {
+                alert('匯出失敗')
+            })
         },
         // 退回、徹銷
         withdraw() {

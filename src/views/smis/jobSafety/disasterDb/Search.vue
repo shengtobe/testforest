@@ -18,6 +18,7 @@
                 <v-icon class="mr-1 mb-1">mdi-tag</v-icon>作業名稱
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="searchIpt.name"
                 solo
                 placeholder="請輸入作業名稱"

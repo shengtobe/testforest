@@ -378,10 +378,10 @@ export default {
          },
          // 列印
         print() {
-            safetyinfoexcel({
+            slowspeedexcel({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
-                SaftyInfoCode: this.id
+                SlowSpeedCode: this.id
             }).then(res => {
                 let link = document.createElement('a')
                 link.href = `/downloads/${res.data.file_name}`
