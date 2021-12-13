@@ -8,6 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-database</v-icon>簡易查詢
             </h3>
             <v-text-field
+                clearable
                 hide-details
                 v-model.trim="keyword"
                 solo

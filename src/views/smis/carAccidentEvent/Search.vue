@@ -111,6 +111,7 @@
                 <v-icon class="mr-1 mb-1">mdi-alert-decagram</v-icon>運轉影響情形
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="ipt.serviceShock"
                 solo
             ></v-text-field>
@@ -121,6 +122,7 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>處置過程
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="ipt.handle"
                 solo
             ></v-text-field>
@@ -131,6 +133,7 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>檢討過程
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="ipt.review"
                 solo
             ></v-text-field>
@@ -141,6 +144,7 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>原因分析
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="ipt.reason"
                 solo
             ></v-text-field>
@@ -151,6 +155,7 @@
                 <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>備註
             </h3>
             <v-text-field
+                clearable
                 v-model.trim="ipt.note"
                 solo
             ></v-text-field>
@@ -162,7 +167,7 @@
             </h3>
             <v-select
                 v-model="ipt.status"
-                :items="statusOpts"
+                :items="accidentEventStatus"
                 solo
             ></v-select>
         </v-col>
@@ -327,13 +332,6 @@ export default {
         evtTypeOptsForm: evtTypes, // 對照表事故類型
         evtTypeOpts: [],  // 事故類型
         locationOpts: locationOpts,  // 事故發生地點
-        statusOpts: [  // 事故事件狀態下拉選單 (審核中有二個，故傳中文值讓後端判斷)
-            { text: '不限', value: '' },
-            { text: '已立案', value: '已立案' },
-            { text: '已完備資料', value: '已完備資料' },
-            { text: '改善措施已落實', value: '改善措施已落實' },
-            { text: '審核中', value: '審核中' },
-        ],
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
@@ -401,6 +399,11 @@ export default {
             if(this.ipt.evtType2 == undefined) this.ipt.evtType2 = ''
             if(this.ipt.dateStart == null) this.ipt.dateStart = ''
             if(this.ipt.dateEnd == null) this.ipt.dateEnd = ''
+
+            // v-model="ipt.evtType2"
+            //     :items="evtTypeOpts"
+            // let searchType = this.evtTypeOpts.find
+
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
 
@@ -409,8 +412,14 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'SMS_AccidentEventData',  // DB table
                 KeyItem: [
-                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 發生日期(起)
+                    { tableColumn: 'CreateDTime_Start', columnValue: this.ipt.dateStart },  // 發生日期(起) ipt.evtType2
                     { tableColumn: 'CreateDTime_End', columnValue: this.ipt.dateEnd },  // 發生日期(迄)
+                    { tableColumn: 'DeviceLost', columnValue: this.ipt.eqLoss },  // 設備受損情形
+                    { tableColumn: 'OperationLost', columnValue: this.ipt.serviceShock },  // 運轉影響情形
+                    { tableColumn: 'ReviewProcess', columnValue: this.ipt.handle },  // 處置過程
+                    { tableColumn: 'CauseAnaly', columnValue: this.ipt.reason },  // 原因分析
+                    { tableColumn: 'RemarkDesp', columnValue: this.ipt.note },  // 備註說明
+                    { tableColumn: 'AccidentStatus', columnValue: this.ipt.status },  // 事故事件狀態
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'AccidentCode',
@@ -446,6 +455,8 @@ export default {
                         
                     } else if(element.FindLine == 'other') {
                         findLocationText += ` (${element.FindLineOther})`  // 其他地點
+                    } else if(element.FindLine == '') {
+                        findLocationText = element.FindLineOther
                     }
                     element.FindLine = findLocationText
 

@@ -161,7 +161,7 @@ export default {
       userData: state => state.userData,  // 使用者基本資料
     }),
     accidentTableItem: function() {
-      return this.accidentTable.item.filter(item=>item.AccidentFindDate == this.searchipt.selectedYear)
+      return this.accidentTable.item.filter(item=>item.AccidentFindDate.split('\/')[2].substr(0, 4) == this.searchipt.selectedYear)
     }
   },
   methods: {

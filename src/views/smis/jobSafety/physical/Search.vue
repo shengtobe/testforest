@@ -21,7 +21,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.Name"
-                solo
+                solo clearable
                 placeholder="請輸入姓名"
             ></v-text-field>
         </v-col>
@@ -65,7 +65,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.CheckYear"
-                solo
+                solo clearable
                 placeholder="請輸入西元年，例：2020"
             ></v-text-field>
         </v-col>

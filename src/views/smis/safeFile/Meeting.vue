@@ -71,7 +71,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.title"
-                solo
+                solo clearable
             ></v-text-field>
         </v-col>
 
@@ -81,7 +81,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.fileName"
-                solo
+                solo clearable
             ></v-text-field>
         </v-col>
 
@@ -128,15 +128,15 @@
                     <template v-slot:item.date="{ item }">
                         {{ `${item.convert_findDate} ${item.convert_findDateHr}:${item.convert_findDateMin}:00` }}
                     </template>
-
+                     
                     <template v-slot:item.download="{ item }">
-                        <v-btn fab small dark class="btn-detail"
-                            v-if="item.file_name != '' && item.file_path != ''"
-                            :href="item.file_path"
-                            :download="item.file_name"
-                        >
-                            <v-icon>mdi-file-document</v-icon>
-                        </v-btn>
+                            <v-btn fab small dark class="btn-detail"
+                                v-if="item.file_name != '' && item.file_path != ''"
+                                :href="item.file_path"
+                                :download="item.file_name"
+                            >
+                                <v-icon>mdi-file-document</v-icon>
+                            </v-btn>
                     </template>
 
                     <template v-slot:item.action="{ item }">
@@ -369,6 +369,7 @@ export default {
                     { tableColumn: 'CreateDTime_Start', columnValue: this.searchIpt.dateStart },  // 會議日期(起)
                     { tableColumn: 'CreateDTime_End', columnValue: this.searchIpt.dateEnd },  // 會議日期(迄)
                     { tableColumn: 'MeetingTitle', columnValue: this.searchIpt.title },  // 維護單位
+                    { tableColumn: 'file_name', columnValue: this.searchIpt.fileName },  // 檔案名稱
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'SaftyFlieID',

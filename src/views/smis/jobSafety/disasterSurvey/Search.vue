@@ -71,6 +71,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.name"
+                clearable
                 solo
                 placeholder="請輸入性名"
             ></v-text-field>

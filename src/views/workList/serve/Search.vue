@@ -95,11 +95,7 @@
                     </template>
 
                     <template v-slot:item.Type="{ item }">
-                        {{ (item.Type == 3)? '契約' : '小額採購' }}
-                    </template>
-
-                    <template v-slot:item.Type="{ item }">
-                        {{ item.Malfunction }}
+                        {{ (item.Type == '3')? '契約' : '小額採購' }}
                     </template>
 
                     <template v-slot:item.Status="{ item }">

@@ -45,7 +45,6 @@ export default {
         // 向後端取資料
         fetchData() {
             this.chLoadingShow({show:true})
-
             // 初始化事故類型 fetchEvtTypes
             fetchEvtTypes({
                 OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
@@ -79,6 +78,8 @@ export default {
                                 findLocationText += ` (${res.data.FindKLine}K+${res.data.FindMLine}M)`  // 本線、祝山線、眠月線、水山線
                             } else if(res.data.FindLine == 'other') {
                                 findLocationText += ` (${res.data.FindLineOther})`  // 其他地點
+                            } else if(res.data.FindLine == '') {
+                                findLocationText = res.data.FindLineOther  // 其他地點
                             }
 
                             // 組合路段型態文字

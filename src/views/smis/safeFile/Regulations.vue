@@ -31,7 +31,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.fileName"
-                solo
+                solo clearable
             ></v-text-field>
         </v-col>
 
@@ -41,7 +41,7 @@
             </h3>
             <v-text-field
                 v-model.trim="searchIpt.note"
-                solo
+                solo clearable
             ></v-text-field>
         </v-col>
 
@@ -58,11 +58,11 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <!-- <v-btn elevation="2" large class="mr-3"
+            <v-btn elevation="2" large class="mr-3"
                 @click="reset"
             >
                 <v-icon>mdi-reload</v-icon>清除搜尋內容
-            </v-btn> -->
+            </v-btn>
         </v-col>
         
         <!-- 表格資料 -->
@@ -347,9 +347,9 @@ export default {
             })
         },
         // 清除搜尋內容
-        // reset() {
-        //     this.searchIpt.depart = this.searchIpt.type = this.searchIpt.fileName = ''
-        // },
+        reset() {
+            this.searchIpt.depart = this.searchIpt.type = this.searchIpt.fileName = this.searchIpt.note = ''
+        },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n

@@ -16,12 +16,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly clearable @click:clear="timeAClean"/>
           </template>
           <v-date-picker
             color="primary"
             v-model="searchIpt.StartDay"
-            @input="dateSelect.StartDay = false"
+            @input="timeA"
+            :max="dateAMax"
             locale="zh-tw"
           />
         </v-menu>
@@ -39,12 +40,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly clearable @click:clear="timeBClean"/>
           </template>
           <v-date-picker
             color="primary"
             v-model="searchIpt.EndDay"
-            @input="dateSelect.EndDay = false"
+            @input="timeB"
+            :min="dateBMin"
             locale="zh-tw"
           />
         </v-menu>
@@ -410,11 +412,11 @@ export default {
   data: () => ({
     searchIpt: {
       // 搜尋欄位
-      EndDay: "",
+      EndDay: new Date().toISOString().substr(0, 10),
       StartDay: "",
       wbs: "",
       wbsShow: "",
-      Dept: "",
+      Dept: "不限",
       Material: "",
       schedulehour: "",
       schedulemin: "",
@@ -425,6 +427,8 @@ export default {
       AcceptanceDate: "",
       closDate: "",
     },
+    dateAMax: new Date().toISOString().substr(0, 10),
+    dateBMin: '',
     dateSelect: {
       StartDay: false,
       EndDay: false,
@@ -515,56 +519,69 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    timeA(){
+            this.dateSelect.StartDay = false
+            this.dateBMin = this.searchIpt.StartDay
+        },
+        timeAClean(){
+            this.dateBMin = ''
+        },
+        timeB(){
+            this.dateSelect.EndDay = false
+            this.dateAMax = this.searchIpt.EndDay
+        },
+        timeBClean(){
+            this.dateAMax = ''
+        },
     // 搜尋
     search() {
-      if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
-        this.chLoadingShow({show:true})
-        const wbs = this.searchIpt.wbs.split('-')
-        const sendData = {
-          CreateDTime_Start: this.searchIpt.StartDay,
-          CreateDTime_End: this.searchIpt.EndDay,
-          DepartName: this.searchIpt.Dept,
-          MaintainCode_System: wbs[0]||"",
-          MaintainCode_Loc: wbs[1]||"",
-          MaintainCode_Eqp: wbs[2]||"",
-          MaintainCode_Seq: wbs[3]||"",
-          ArrivalWorkDTime: this.searchIpt.RepairDate,	
-          StartWorkDTime: this.searchIpt.StartWorkDate,
-          FinishDTime: this.searchIpt.FinishedDate,
-          AcceptDTime: this.searchIpt.AcceptanceDate,
-          CloseDTime: this.searchIpt.closDate,
-          TotalWorkTime: this.searchIpt.Material,
-          ClientReqTime: getNowFullTime(),  // client 端請求時間
-          OperatorID: this.userData.UserId,  // 操作人id
-        }
-        workTimeQueryList({
-          ...sendData
-        }).then(res => {
-          if (res.data.ErrorCode == 0) {
-            const dataList = decodeObject(res.data.WorkDataList)
-            this.tableItems = dataList.map((e,i)=>{
-              let rtnObj = {}
-              rtnObj.id=i+1
-              rtnObj.WorkNumber = e.WorkOrderID
-              rtnObj.Dept= e.DispatchDepart
-              // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
-              rtnObj.wbs = e.MaintainCode_AllName
-              rtnObj.Established = e.CallWorkDTime
-              return rtnObj
-            })
-          } else {
-            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-            this.$router.push({ path: '/error' })
-          }
-        }).catch( err => {
-          console.warn(err)
-          this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
-        }).finally(() => {
-          this.chLoadingShow({show:false})
-        })
-      }else{
-        this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })
+      if(this.searchIpt.StartDay == null) this.searchIpt.StartDay = ''
+      if(this.searchIpt.EndDay == null) this.searchIpt.EndDay = ''
+      if(this.searchIpt.Dept == '不限') this.searchIpt.Dept = ''
+      this.chLoadingShow({show:true})
+      const wbs = this.searchIpt.wbs.split('-')
+      const sendData = {
+        CreateDTime_Start: this.searchIpt.StartDay,
+        CreateDTime_End: this.searchIpt.EndDay,
+        DepartName: (this.searchIpt.Dept == '不限')?'':this.searchIpt.Dept,
+        MaintainCode_System: wbs[0]||"",
+        MaintainCode_Loc: wbs[1]||"",
+        MaintainCode_Eqp: wbs[2]||"",
+        MaintainCode_Seq: wbs[3]||"",
+        ArrivalWorkDTime: this.searchIpt.RepairDate,	
+        StartWorkDTime: this.searchIpt.StartWorkDate,
+        FinishDTime: this.searchIpt.FinishedDate,
+        AcceptDTime: this.searchIpt.AcceptanceDate,
+        CloseDTime: this.searchIpt.closDate,
+        TotalWorkTime: this.searchIpt.Material,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
       }
+      workTimeQueryList({
+        ...sendData
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          const dataList = decodeObject(res.data.WorkDataList)
+          this.tableItems = dataList.map((e,i)=>{
+            let rtnObj = {}
+            rtnObj.id=i+1
+            rtnObj.WorkNumber = e.WorkOrderID
+            rtnObj.Dept= e.DispatchDepart
+            // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
+            rtnObj.wbs = e.MaintainCode_AllName
+            rtnObj.Established = e.CallWorkDTime
+            return rtnObj
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        console.warn(err)
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.chLoadingShow({show:false})
+      })
     },
     // 清除搜尋內容
     reset() {
@@ -574,7 +591,7 @@ export default {
         StartDay: "",
         wbs: "",
         wbsShow: "",
-        Dept: "",
+        Dept: "不限",
         Material: "",
         schedulehour: "",
         schedulemin: "",
@@ -593,7 +610,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
+          this.selectDept = ["不限" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })

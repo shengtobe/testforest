@@ -23,12 +23,20 @@ export const InfoBelongMod = [
 ]
 // 行車事故事件狀態
 export const carAccidentEventStatus = [
+    // { text: '不限', value: '' },
+    // { text: '已立案', value: '1' },
+    // { text: '審核中', value: '2' },
+    // { text: '已完備資料', value: '3' },
+    // { text: '審核中', value: '4' },
+    // { text: '改善措施已落實', value: '5' },
     { text: '不限', value: '' },
     { text: '已立案', value: '1' },
     { text: '審核中', value: '2' },
     { text: '已完備資料', value: '3' },
-    { text: '審核中', value: '4' },
+    { text: '審核中(證據確認)', value: '4' },
     { text: '改善措施已落實', value: '5' },
+    { text: '已結案', value: '6' },
+    { text: '作廢', value: '7' },
 ]
 
 // 行車危害狀態

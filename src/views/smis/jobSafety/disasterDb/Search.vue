@@ -13,7 +13,39 @@
                 solo
             ></v-select>
         </v-col>
-        <v-col cols="12" md="4">
+        
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-format-line-spacing</v-icon>風險嚴重性
+            </h3>
+            <v-select
+                v-model="searchIpt.EndangerLevel"
+                :items="opts.serious"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-signal-variant</v-icon>風險可能性
+            </h3>
+            <v-select
+                v-model="searchIpt.EndangerProb"
+                :items="opts.possibility"
+                solo
+            ></v-select>
+        </v-col>
+
+        <v-col cols="12" sm="4" md="3">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-signal-variant</v-icon>風險等級
+            </h3>
+            <v-select
+                v-model="searchIpt.RiskLevel"
+                :items="opts.riskLevel"
+                solo
+            ></v-select>
+        </v-col>
+        <v-col cols="12" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-tag</v-icon>作業名稱
             </h3>
@@ -38,11 +70,11 @@
                 <v-icon>mdi-plus</v-icon>新增
             </v-btn>
 
-            <!-- <v-btn elevation="2" large class="ma-2"
+            <v-btn elevation="2" large class="ma-2"
                 @click="reset"
             >
                 <v-icon class="mr-1">mdi-reload</v-icon>清除搜尋內容
-            </v-btn> -->
+            </v-btn>
         </v-col>
 
         <!-- 表格資料 -->
@@ -69,16 +101,16 @@
                         {{ item.code1 }}-{{ item.code2 }}-{{ item.code3 }}
                     </template>
 
-                    <template v-slot:item.serious="{ item }">
-                        {{ transferSeriousText(item.serious) }}
+                    <template v-slot:item.EndangerLevel="{ item }">
+                        {{ transferSeriousText(item.EndangerLevel) }}
                     </template>
 
-                    <template v-slot:item.possibility="{ item }">
-                        {{ transferPossibilityText(item.possibility) }}
+                    <template v-slot:item.EndangerProb="{ item }">
+                        {{ transferPossibilityText(item.EndangerProb) }}
                     </template>
 
-                    <template v-slot:item.level="{ item }">
-                        {{ transferLevelText(item.level) }}
+                    <template v-slot:item.RiskLevel="{ item }">
+                        {{ transferLevelText(item.RiskLevel) }}
                     </template>
 
                     <template v-slot:item.content="{ item }">
@@ -108,7 +140,7 @@
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
-import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts } from '@/assets/js/smisData'
+import { jobSeriousOpts, jobPossibilityOpts, jobLevelOpts, disasterTypeOpts, riskSerious } from '@/assets/js/smisData'
 import { searchDataDb } from '@/apis/smis/jobSafety'
 
 export default {
@@ -116,6 +148,9 @@ export default {
         searchIpt: {},
         searchDefault: {
             name: '',  // 作業名稱
+            EndangerLevel: "", //14嚴重性
+            EndangerProb: "", //15可能性
+            RiskLevel: "", //16風險等級
         },
         tableItems: [],  // 表格資料
         depart: '', // 篩選部門
@@ -153,6 +188,9 @@ export default {
                 { text: '審核中', value: '審核中' },
                 { text: '已作廢', value: '已作廢' },
             ],
+            riskLevel: jobLevelOpts,  // 風險嚴重性
+            serious: riskSerious,  // 風險嚴重性
+            possibility: jobPossibilityOpts,  // 風險可能性
         },
         isLoading: false,  // 是否讀取中
     }),
@@ -174,13 +212,15 @@ export default {
         search() {
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
-
             searchDataDb({
                 ClientReqTime: getNowFullTime(),  // client 端請求時間
                 OperatorID: this.userData.UserId,  // 操作人id
                 KeyName: 'SMS_JobAccidentData',  // DB table
                 KeyItem: [
                     { tableColumn: 'JobName', columnValue: this.searchIpt.name },  //
+                    { tableColumn: 'EndangerProb', columnValue: this.searchIpt.EndangerProb },  //
+                    { tableColumn: 'EndangerLevel', columnValue: this.searchIpt.EndangerLevel },  //
+                    { tableColumn: 'RiskLevel', columnValue: this.searchIpt.RiskLevel },  //
                     // { tableColumn: 'DeviceTitle', columnValue: this.controlSearch.subject },  // 措施簡述
                 ],
                 QyName: [    // 欲回傳的欄位資料
@@ -248,7 +288,7 @@ export default {
         },
         // 轉換風險嚴重性文字
         transferSeriousText(val) {
-            return jobSeriousOpts.find(item => item.value == val).text
+            return riskSerious.find(item => item.value == val).text
         },
         // 轉換風險風險可能性文字
         transferPossibilityText(val) {

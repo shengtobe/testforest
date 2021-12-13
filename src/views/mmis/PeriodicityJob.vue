@@ -18,12 +18,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="datestart" solo v-on="on" readonly />
+            <v-text-field v-model.trim="datestart" solo v-on="on" readonly clearable @click:clear="timeAClean"/>
           </template>
           <v-date-picker
             color="primary"
             v-model="datestart"
-            @input="q_datestart = false"
+            @input="timeA"
+            :max="dateAMax"
             locale="zh-tw"
           />
         </v-menu>
@@ -40,12 +41,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="dateend" solo v-on="on" readonly />
+            <v-text-field v-model.trim="dateend" solo v-on="on" readonly clearable @click:clear="timeBClean"/>
           </template>
           <v-date-picker
             color="primary"
             v-model="dateend"
-            @input="q_dateend = false"
+            @input="timeB"
+            :min="dateBMin"
             locale="zh-tw"
           />
         </v-menu>
@@ -142,6 +144,8 @@ export default {
     Add: false,
     Edit: false,
     Delete: false,
+    dateAMax: '',
+    dateBMin: '',
     pageOpt: { page: 1 },
     expanded: [],
     singleExpand: true,
@@ -243,6 +247,20 @@ export default {
       this.thisflow = ""
       this.inType = "add"
       this.Edit = true
+    },
+    timeA(){
+      this.q_datestart = false
+      this.dateBMin = this.datestart
+    },
+    timeAClean(){
+        this.dateBMin = ''
+    },
+    timeB(){
+        this.q_dateend = false
+        this.dateAMax = this.dateend
+    },
+    timeBClean(){
+        this.dateAMax = ''
     },
     getQueryList() { //抓清單
       if(parseInt(this.datestart.replace(/-/g,"")) <= parseInt(this.dateend.replace(/-/g,"")) || (this.dateend == "" && this.datestart== "")){
