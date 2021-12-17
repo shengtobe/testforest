@@ -438,10 +438,10 @@ export default {
         // dialog 關閉
         close() {
             this.dialogShow = false
-            this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
-            })
+            // this.$nextTick(() => {
+            //     this.editedItem = Object.assign({}, this.defaultItem)
+            //     this.editedIndex = -1
+            // })
         },
         // 存檔
         save() {

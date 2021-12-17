@@ -83,7 +83,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>限制日期(起)
             </h3>
             <v-menu
-                v-model="dateMemuShow.start"
+                v-model="dateMenuShow.start"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -94,13 +94,14 @@
                         v-model.trim="ipt.dateStart"
                         solo
                         v-on="on"
-                        readonly
+                        readonly clearable @click:clear="timeClean(1)"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="purple"
                     v-model="ipt.dateStart"
-                    @input="dateMemuShow.start = false"
+                    @input="time(1)"
+                    :max="dateAMax"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -111,7 +112,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>限制日期(迄)
             </h3>
             <v-menu
-                v-model="dateMemuShow.end"
+                v-model="dateMenuShow.end"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -122,13 +123,14 @@
                         v-model.trim="ipt.dateEnd"
                         solo
                         v-on="on"
-                        readonly
+                        readonly clearable @click:clear="timeClean(2)"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="purple"
                     v-model="ipt.dateEnd"
-                    @input="dateMemuShow.end = false"
+                    @input="time(2)"
+                    :min="dateBMin"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -262,6 +264,8 @@ export default {
         valid: true,  // 表單是否驗證欄位
         saveBtnShow: true, // 送出按鈕隱藏
         lineList: locationOpts.slice(0, 4), // 地點的list
+        dateAMax: new Date().toISOString().substr(0, 10),
+        dateBMin: new Date().toISOString().substr(0, 10),
         ipt: {
             line: '',  // 通報路線
             // lineList: locationOpts.map(item => item.text), // 地點的list
@@ -276,7 +280,7 @@ export default {
             dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
             recipients: [],  // 收件人
         },
-        dateMemuShow: {  // 日曆是否顯示
+        dateMenuShow: {  // 日曆是否顯示
             start: false,
             end: false,
         },
@@ -365,10 +369,28 @@ export default {
         },
         ccc(){
         },
+        time(i){
+            if(i == 1){
+                this.dateMenuShow.start = false
+                this.dateBMin = this.ipt.dateStart
+            }
+            else{
+                this.dateMenuShow.end = false
+                this.dateAMax = this.ipt.dateEnd
+            }
+        },
+        timeClean(i){
+            if(i == 1){
+                this.dateBMin = ''
+            }
+            else{
+                this.dateAMax = ''
+            }
+        },
         // 送出
         save() {
             if(this.ipt.recipients.length == 0 || this.ipt.line == '' || this.ipt.pointStartK == '' ||  this.ipt.pointStartM == '' || this.ipt.pointEndK == '' 
-            || this.ipt.pointEndM == '' || this.ipt.normal == '' || this.ipt.slow == '' || this.ipt.dateStart == '' || this.ipt.dateEnd == ''){
+            || this.ipt.pointEndM == '' || this.ipt.normal == '' || this.ipt.slow == '' || this.ipt.dateStart == '' || this.ipt.dateEnd == '' || this.ipt.dateStart == null || this.ipt.dateEnd == null){
                 this.chMsgbar({ success: false, msg: '欄位未填'})
                 return
             }

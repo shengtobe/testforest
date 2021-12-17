@@ -293,6 +293,9 @@ export default {
                     if(res.data.DataList.length > 0){
                         this.tableItems = decodeObject(res.data.DataList)
                     }
+                    else{
+                        this.tableItems = [...[]]
+                    }
                 }else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })

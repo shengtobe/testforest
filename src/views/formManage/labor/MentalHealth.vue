@@ -708,7 +708,6 @@ export default {
       this.RPFlowNo = RPFlowNo;
     },
     Add() {
-      alert("123");
     },
   },
 };

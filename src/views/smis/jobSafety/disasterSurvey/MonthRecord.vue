@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1200px">
+<v-container style="max-width: 1400px">
     <h2 class="mb-4 label-title">職業災害紀錄表</h2>
 
     <v-row class="px-2 mb-8 label-header">
@@ -100,20 +100,13 @@
                         <span class="red--text subtitle-1">資料讀取中...</span>
                     </template>
 
-                    <template v-slot:item.date="{ item }">
-                        {{ `${item.findDate} ${item.findHour}:${item.findMin}` }}
-                    </template>
-
-                    <template v-slot:item.disasterType="{ item }">
-                        {{ transferDisasterType(item.disasterType) }}
-                    </template>
-
-                    <template v-slot:item.injurySite="{ item }">
-                        {{ transferInjurySite(item.injurySite) }}
+                    <template v-slot:item.HappenDate="{ item }">
+                        <!-- {{ `${item.findDate} ${item.findHour}:${item.findMin}` }} -->
+                        {{ `${item.HappenDate.substr(0, 10)}` }}
                     </template>
 
                     <template v-slot:item.injuryLeave="{ item }">
-                        {{ `${item.HurtDateStart} ~ ${item.HurtDateEnd}` }}
+                        {{ `${item.HurtDateStart.substr(0, 10)} ~ ${item.HurtDateEnd.substr(0, 10)}` }}
                     </template>
 
                     <template v-slot:item.cause="{ item }">
@@ -220,7 +213,7 @@ export default {
                 //injurySiteOpts.find(item => item.value == res.data.HurtPart).text
                 this.tableItems.forEach(element => {
                     if(element.HurtPart == null) element.HurtPart = '';
-                    element.HurtPart = injurySiteOpts.find(item => item.value == element.HurtPart).text
+                    // element.HurtPart = injurySiteOpts.find(item => item.value == element.HurtPart).text
                     element.HurtDateStart = element.HurtDateStart.substr(0, 10)
                     element.HurtDateEnd = element.HurtDateEnd.substr(0, 10)
                 });

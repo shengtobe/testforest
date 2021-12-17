@@ -8,7 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(起)
             </h3>
             <v-menu
-                v-model="dateMemuShow.start"
+                v-model="dateMenuShow.start"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -19,13 +19,14 @@
                         v-model.trim="searchIpt.DTime_Start"
                         solo
                         v-on="on"
-                        readonly
+                        readonly clearable @click:clear="timeClean(1)"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.DTime_Start"
-                    @input="dateMemuShow.start = false"
+                    @input="time(1)"
+                    :max="dateAMax"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -36,7 +37,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(迄)
             </h3>
             <v-menu
-                v-model="dateMemuShow.end"
+                v-model="dateMenuShow.end"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -47,13 +48,14 @@
                         v-model.trim="searchIpt.DTime_End"
                         solo
                         v-on="on"
-                        readonly
+                        readonly clearable @click:clear="timeClean(2)"
                     ></v-text-field>
                 </template>
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.DTime_End"
-                    @input="dateMemuShow.end = false"
+                    @input="time(2)"
+                :min="dateBMin"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -232,7 +234,9 @@ export default {
             Option: 'T',  // 機車'1'或客車'2'
             CarCode: '',  // 車號
         },
-        dateMemuShow: {
+        dateAMax: '',
+        dateBMin: '',
+        dateMenuShow: {
             start: false,
             end: false,
         },
@@ -277,6 +281,26 @@ export default {
         reset() {
             this.searchIpt = { ...this.searchDefault }
         },
+        time(i){
+            if(i == 1){
+                this.dateMenuShow.start = false
+                this.dateBMin = this.searchIpt.DTime_Start
+            }
+            else{
+                this.dateMenuShow.end = false
+                this.dateAMax = this.searchIpt.DTime_End
+            }
+        },
+        timeClean(i){
+            if(i == 1){
+                this.dateBMin = ''
+                this.$nextTick(() => { this.$nextTick(() => { this.searchIpt.DTime_Start = ''})})
+            }
+            else{
+                this.dateAMax = ''
+                this.$nextTick(() => { this.$nextTick(() => { this.searchIpt.DTime_End = ''})})
+            }
+        },
         // 查詢
         search() {
             // return
@@ -288,6 +312,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then( res => {
                 if (res.data.ErrorCode == 0) {
+                    console.log("res.data.DataList.length: ", res.data.DataList.length)
                     if(res.data.DataList.length > 0){
                          this.tableItems = decodeObject(res.data.DataList)
                          this.tableItems.forEach(e => {
@@ -295,6 +320,7 @@ export default {
                              else e.CarType = '客車'
                          });
                     }
+                    else this.tableItems = [...[]]
                 }else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })

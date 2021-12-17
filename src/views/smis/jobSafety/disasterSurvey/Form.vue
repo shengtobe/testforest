@@ -146,9 +146,10 @@
             <v-select class="text--black"
                 @change="jobSelectChange"
                 v-model="ipt.jobTitle0" 
-                :items="['(空)','行政助理','站務士','工程士','站務員','助理管理師','助理工程師','行政專員','安全衛生管理員','司機員','列車長','管理師','工程師','調度員','資深管理師','資深工程師','其他']"
+                :items="jobTitles"
                 solo
             ></v-select>
+                <!-- :items="['(空)','行政助理','站務士','工程士','站務員','助理管理師','助理工程師','行政專員','安全衛生管理員','司機員','列車長','管理師','工程師','調度員','資深管理師','資深工程師','其他']" -->
         </v-col>
         <v-col cols="12" sm="6" md="3">
             <h3 class="mb-1" >
@@ -654,6 +655,7 @@ import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import FileListShow from '@/components/FileListShow.vue'
 import { createData, detailOne, updateData, fileUpdateData, fileDeleteData } from '@/apis/smis/jobSafety'
 import peopleSelect from '@/components/PeopleSelectMuti'
+import { fetchOrganization } from '@/apis/organization'
 import { login } from '@/apis/login'
 
 export default {
@@ -666,6 +668,7 @@ export default {
         isShowBtn: false,
         evidences: [],  // 改善措施證據
         showFiles: [],  // 要顯示的縮圖
+        jobTitles: [],
         componentKey: 0,
         ipt: {},
         defaultIpt: {
@@ -821,6 +824,7 @@ export default {
         },
         // 初始化資料
         initData() {
+            
             // 初始化表單
             this.ipt = { ...this.defaultIpt }
             // 產生致傷媒介物-第一層選單 & 設定預設值
@@ -935,7 +939,7 @@ export default {
             this.ipt.sex = obj.PeopleSex  // 性別
             this.ipt.old = obj.PeopleAge  // 年齡
             this.ipt.startWorkDate = obj.WorkDate// 到職日期
-            this.ipt.jobTitle = obj.JobTitle// 職稱
+            this.ipt.jobTitle0 = obj.JobTitle// 職稱
             this.ipt.education = obj.EduLevel  // 教育程度
             this.ipt.address = obj.PeopleAddress  // 住址
             this.ipt.workYear = obj.WorkExp  // 本項工作經驗年數
@@ -1191,6 +1195,7 @@ export default {
             }
         },
         getPeople(value) {
+            console.log("value: ", value)
             if(value){
                 this.ipt.name = value.UserName
                 this.ipt.workDepart = value.DepartName
@@ -1226,7 +1231,29 @@ export default {
                 this.isShowBtn = true
 
                 if(this.isShowBtn)
-                    this.initData()
+                    // 初始化職稱list
+                    fetchOrganization({
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            console.log("res.data.user_list_group_4: ", res.data.user_list_group_4);
+                            let arrTwo = res.data.user_list_group_4.map(e => e.JobName)
+                            this.jobTitles = arrTwo.filter(function(ele , pos){
+                                return arrTwo.indexOf(ele) == pos;
+                            }) 
+                        } else {
+                            // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                        this.initData()
+                    }).catch(err => {
+                        //console.log(err)
+                        alert('伺服器發生問題，資料讀取失敗')
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                    
                 else{
                     alert("無權限做此操作")
                     this.$router.push('/')

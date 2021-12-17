@@ -738,7 +738,6 @@ export default {
       })
     },//viewPage
     Add() {
-      alert("123");
     }
   },
 };

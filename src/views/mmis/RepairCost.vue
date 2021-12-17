@@ -15,12 +15,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly clearable @click:clear="timeAClean"/>
           </template>
           <v-date-picker
             color="primary"
             v-model="searchIpt.StartDay"
-            @input="StartDay = false"
+            @input="timeA"
+            :max="dateAMax"
             locale="zh-tw"
           />
         </v-menu>
@@ -38,12 +39,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly clearable @click:clear="timeBClean"/>
           </template>
           <v-date-picker
             color="primary"
             v-model="searchIpt.EndDay"
-            @input="EndDay = false"
+            @input="timeB"
+            :min="dateBMin"
             locale="zh-tw"
           />
         </v-menu>
@@ -58,7 +60,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>設備標示編號(WBS)
         </h3>
-        <v-text-field v-model.trim="searchIpt.wbsShow" readonly solo @click="goEq"  />
+        <v-text-field v-model.trim="searchIpt.wbsShow" readonly solo @click="goEq" clearable @click:clear="clearEq" />
       </v-col>
 
       <v-dialog v-model="eqCodeShow" max-width="900px">
@@ -70,7 +72,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName" />
+          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :rtnStartLv="1" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName" />
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancel">取消</v-btn>
@@ -85,7 +87,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-screwdriver</v-icon>維修費用
         </h3>
-        <v-text-field type="Number" min=0 v-model.trim="searchIpt.RepairFees" solo />
+        <v-text-field type="Number" min=0 v-model.trim="searchIpt.RepairFees" solo clearable/>
       </v-col>
 
       <v-col cols="12" class="mb-8">
@@ -211,13 +213,15 @@ export default {
     EndDay: false,
     eqCodeShow: false,
     detailCh: '',
+    dateAMax: '',
+    dateBMin: '',
     searchIpt: {
       // 搜尋欄位
       EndDay: "",
       StartDay: "",
       wbs: "",
       wbsShow: "",
-      Dept: "",
+      Dept: "不限",
       RepairFees: "",
     },
     searchTemp: {
@@ -265,53 +269,63 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    timeA(){
+      this.StartDay = false
+      this.dateBMin = this.searchIpt.StartDay
+    },
+    timeAClean(){
+        this.dateBMin = ''
+    },
+    timeB(){
+        this.EndDay = false
+        this.dateAMax = this.searchIpt.EndDay
+    },
+    timeBClean(){
+        this.dateAMax = ''
+    },
     //搜尋區塊功能=========================================================//
     // 搜尋
     search() {
-      if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
-        this.chLoadingShow({show:true})
-        const wbs = this.searchIpt.wbs.split('-')
-        const sendData = {
-          CreateDTime_Start: this.searchIpt.StartDay,
-          CreateDTime_End: this.searchIpt.EndDay,
-          DepartName: this.searchIpt.Dept,
-          TotalSpent: this.searchIpt.RepairFees,
-          MaintainCode_System: wbs[0]||"",
-          MaintainCode_Loc: wbs[1]||"",
-          MaintainCode_Eqp: wbs[2]||"",
-          MaintainCode_Seq: wbs[3]||"",
-          ClientReqTime: getNowFullTime(),  // client 端請求時間
-          OperatorID: this.userData.UserId,  // 操作人id
-        }
-        costQueryList({
-          ...sendData
-        }).then(res => {
-          if (res.data.ErrorCode == 0) {
-            const dataList = decodeObject(res.data.WorkDataList)
-            this.tableItems = dataList.map((e,i)=>{
-              let rtnObj = {}
-              rtnObj.id=i+1
-              rtnObj.WorkNumber = e.WorkOrderID
-              rtnObj.Dept= e.DispatchDepart
-              // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
-              rtnObj.TotalSpent = e.TotalSpent
-              rtnObj.wbs = e.MaintainCode_AllName
-              rtnObj.Established = e.CallWorkDTime
-              return rtnObj
-            })
-          } else {
-            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-            this.$router.push({ path: '/error' })
-          }
-        }).catch( err => {
-          console.warn(err)
-          this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
-        }).finally(() => {
-          this.chLoadingShow({show:false})
-        })
-      }else{
-        this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })
+      this.chLoadingShow({show:true})
+      const wbs = this.searchIpt.wbs.split('-')
+      const sendData = {
+        CreateDTime_Start: (this.searchIpt.StartDay == null)?'':this.searchIpt.StartDay,
+        CreateDTime_End: (this.searchIpt.EndDay == null)?'':this.searchIpt.EndDay,
+        DepartName: (this.searchIpt.Dept == '不限')?'':this.searchIpt.Dept,
+        TotalSpent: (this.searchIpt.RepairFees == null)?'':this.searchIpt.RepairFees,
+        MaintainCode_System: wbs[0]||"",
+        MaintainCode_Loc: wbs[1]||"",
+        MaintainCode_Eqp: wbs[2]||"",
+        MaintainCode_Seq: wbs[3]||"",
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
       }
+      costQueryList({
+        ...sendData
+      }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          const dataList = decodeObject(res.data.WorkDataList)
+          this.tableItems = dataList.map((e,i)=>{
+            let rtnObj = {}
+            rtnObj.id=i+1
+            rtnObj.WorkNumber = e.WorkOrderID
+            rtnObj.Dept= e.DispatchDepart
+            // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
+            rtnObj.TotalSpent = e.TotalSpent
+            rtnObj.wbs = e.MaintainCode_AllName
+            rtnObj.Established = e.CallWorkDTime
+            return rtnObj
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        console.warn(err)
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.chLoadingShow({show:false})
+      })
     },
     // 清除搜尋內容
     reset() {
@@ -321,7 +335,7 @@ export default {
         StartDay: "",
         wbs: "",
         wbsShow: "",
-        Dept: "",
+        Dept: "不限",
         RepairFees: "",
       }
     },
@@ -349,6 +363,10 @@ export default {
       this.searchIpt.wbsShow = this.searchTemp.wbsShow
       this.cancel()
     },
+    clearEq(){
+      this.searchIpt.wbs = this.searchTemp.wbs = ""
+      this.searchIpt.wbsShow = this.searchTemp.wbsShow = ""
+    },
     getOrg() {
       this.deptLoading = true
       fetchOrganization({
@@ -356,7 +374,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
+          this.selectDept = ["不限" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })

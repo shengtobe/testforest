@@ -65,7 +65,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>設備標示編號(WBS)
         </h3>
-        <v-text-field v-model.trim="searchIpt.wbsShow" readonly solo @click="goEq"  />
+        <v-text-field v-model.trim="searchIpt.wbsShow" readonly solo @click="goEq" clearable @click:clear="clearEq"/>
       </v-col>
       <v-dialog v-model="eqCodeShow" max-width="900px">
         <v-card class="theme-card">
@@ -76,7 +76,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
+          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :rtnStartLv="1" :nowEqCode="searchIpt.wbs" @getEqCode="getTempCode" @getEqName="getTempName"/>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancel">取消</v-btn>
@@ -602,6 +602,7 @@ export default {
         AcceptanceDate: "",
         closDate: "",
       }
+        this.clearEq()
     },
     getOrg() {
       this.deptLoading = true
@@ -642,6 +643,9 @@ export default {
       this.searchIpt.wbs = this.searchTemp.wbs
       this.searchIpt.wbsShow = this.searchTemp.wbsShow
       this.cancel()
+    },
+    clearEq(){
+      this.searchIpt.wbs = this.searchTemp.wbs = this.searchIpt.wbsShow = this.searchTemp.wbsShow = "";
     },
     // 更換頁數
     chPage(n) {

@@ -21,7 +21,8 @@
             color="primary"
             type="month"
             v-model="searchIpt.StartDay"
-            @input="StartDay = false"
+            @input="timeA(1)"
+            :max="dateAMax"
             locale="zh-tw"
           />
         </v-menu>
@@ -45,7 +46,8 @@
             color="primary"
             type="month"
             v-model="searchIpt.EndDay"
-            @input="EndDay = false"
+            @input="timeA(2)"
+            :min="dateBMin"
             locale="zh-tw"
           />
         </v-menu>
@@ -107,6 +109,8 @@ export default {
     StartDay:false,
     EndDay: false,
     eqCodeShow: false,
+    dateAMax: '',
+    dateBMin: '',
     searchIpt: {
       // 搜尋欄位
       EndDay: "",
@@ -202,6 +206,16 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    timeA(i){
+      if(i == 1){
+        this.StartDay = false
+        this.dateBMin = this.searchIpt.StartDay
+      }
+      else{
+        this.EndDay = false
+        this.dateAMax = this.searchIpt.EndDay
+      }
+    },
     //搜尋區塊功能=========================================================//
     // 搜尋
     search() {

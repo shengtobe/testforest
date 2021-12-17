@@ -15,12 +15,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly clearable @click:clear="timeAClean"/>
           </template>
           <v-date-picker
             color="purple"
             v-model="searchIpt.StartDay"
-            @input="StartDay = false"
+            @input="timeA"
+            :max="dateAMax"
             locale="zh-tw"
           />
         </v-menu>
@@ -38,12 +39,13 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly  clearable @click:clear="timeBClean"/>
           </template>
           <v-date-picker
             color="purple"
             v-model="searchIpt.EndDay"
-            @input="EndDay = false"
+            @input="timeB"
+            :min="dateBMin"
             locale="zh-tw"
           />
         </v-menu>
@@ -60,7 +62,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-message-processing</v-icon>設備標示編號(WBS)
         </h3>
-        <v-text-field v-model.trim="wbsCode.wbsShow" solo readonly @click="goEq" />
+        <v-text-field v-model.trim="wbsCode.wbsShow" solo readonly @click="goEq" clearable @click:clear="clearEq"/>
       </v-col>
       <v-dialog v-model="eqCodeShow" max-width="900px">
         <v-card class="theme-card">
@@ -71,7 +73,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :nowEqCode="searchIpt.wbs" :nowWorkCode="searchIpt.work" @getEqCode="getTempCode" @getEqName="getTempName" @getWorkCode="getTempWcode" @getWorkName="getTempWname"/>
+          <EquipRepairCode :key="componentKey" :toLv="dataForEqCode.toLv" :rtnStartLv="1" :nowEqCode="searchIpt.wbs" :nowWorkCode="searchIpt.work" @getEqCode="getTempCode" @getEqName="getTempName" @getWorkCode="getTempWcode" @getWorkName="getTempWname"/>
           <v-card-actions class="px-5 pb-5">
             <v-spacer></v-spacer>
             <v-btn class="mr-2 btn-close white--text" elevation="4" @click="cancel">取消</v-btn>
@@ -238,6 +240,8 @@ export default {
     EndDay: false,
     eqCodeShow: false,
     deptLoading: false,
+    dateAMax: '',
+    dateBMin: '',
     selectDept:[],
     searchIpt: {
       // 搜尋欄位
@@ -247,7 +251,7 @@ export default {
       wbsShow: "",
       work: "",
       workShow: "",
-      Dept: "",
+      Dept: "不限",
       Material: "",
     },
     searchTemp: {
@@ -331,51 +335,61 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    timeA(){
+      this.StartDay = false
+      this.dateBMin = this.searchIpt.StartDay
+    },
+    timeAClean(){
+        this.dateBMin = ''
+    },
+    timeB(){
+        this.EndDay = false
+        this.dateAMax = this.searchIpt.EndDay
+    },
+    timeBClean(){
+        this.dateAMax = ''
+    },
     // 搜尋
     search() {
-      if(parseInt(this.searchIpt.StartDay.replace(/-/g,"")) <= parseInt(this.searchIpt.EndDay.replace(/-/g,"")) || (this.searchIpt.EndDay == "" && this.searchIpt.StartDay== "")){
-        this.chLoadingShow({show:true})
-        const wbs = this.searchIpt.wbs.split('-')
-        const sendData = {
-          CreateDTime_Start: this.searchIpt.StartDay,
-          CreateDTime_End: this.searchIpt.EndDay,
-          DepartName: this.searchIpt.Dept,
-          MaintainCode_System: wbs[0]||"",
-          MaintainCode_Loc: wbs[1]||"",
-          MaintainCode_Eqp: wbs[2]||"",
-          MaintainCode_Seq: wbs[3]||""||"",
-          MaintainCode_Lv5: this.searchIpt.work,
-          ClientReqTime: getNowFullTime(),  // client 端請求時間
-          OperatorID: this.userData.UserId,  // 操作人id
-        }
-        materialQueryList({
-          ...sendData
-          }).then(res => {
-          if (res.data.ErrorCode == 0) {
-            const dataList = decodeObject(res.data.WorkDataList)
-            this.tableItems = dataList.map((e,i)=>{
-              let rtnObj = {}
-              rtnObj.id=i+1
-              rtnObj.WorkNumber = e.WorkOrderID
-              rtnObj.Dept= e.DispatchDepart
-              // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq + e.MaintainCode_Lv5
-              rtnObj.wbs = e.MaintainCode_AllName
-              rtnObj.Established = e.CallWorkDTime
-              return rtnObj
-            })
-          } else {
-            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-            this.$router.push({ path: '/error' })
-          }
-        }).catch( err => {
-          console.warn(err)
-          this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
-        }).finally(() => {
-          this.chLoadingShow({show:false})
-        })
-      }else{
-        this.chMsgbar({ success: false, msg: '查詢日期(起) 不得大於 查詢日期(迄)' })
+      this.chLoadingShow({show:true})
+      const wbs = this.searchIpt.wbs.split('-')
+      const sendData = {
+        CreateDTime_Start: (this.searchIpt.StartDay == null)?'':this.searchIpt.StartDay,
+        CreateDTime_End: (this.searchIpt.EndDay == null)?'':this.searchIpt.EndDay,
+        DepartName: (this.searchIpt.Dept == '不限')?'':this.searchIpt.Dept,
+        MaintainCode_System: wbs[0]||"",
+        MaintainCode_Loc: wbs[1]||"",
+        MaintainCode_Eqp: wbs[2]||"",
+        MaintainCode_Seq: wbs[3]||""||"",
+        MaintainCode_Lv5: this.searchIpt.work,
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
       }
+      materialQueryList({
+        ...sendData
+        }).then(res => {
+        if (res.data.ErrorCode == 0) {
+          const dataList = decodeObject(res.data.WorkDataList)
+          this.tableItems = dataList.map((e,i)=>{
+            let rtnObj = {}
+            rtnObj.id=i+1
+            rtnObj.WorkNumber = e.WorkOrderID
+            rtnObj.Dept= e.DispatchDepart
+            // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq + e.MaintainCode_Lv5
+            rtnObj.wbs = e.MaintainCode_AllName
+            rtnObj.Established = e.CallWorkDTime
+            return rtnObj
+          })
+        } else {
+          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+          this.$router.push({ path: '/error' })
+        }
+      }).catch( err => {
+        console.warn(err)
+        this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+      }).finally(() => {
+        this.chLoadingShow({show:false})
+      })
     },
     // 清除搜尋內容
     reset() {
@@ -419,6 +433,12 @@ export default {
       this.searchIpt.workShow = this.searchTemp.workShow
       this.cancel()
     },
+    clearEq(){
+      this.searchIpt.wbs = this.searchTemp.wbs = ""
+      this.searchIpt.work = this.searchTemp.work = ""
+      this.searchIpt.wbsShow = this.searchTemp.wbsShow = ""
+      this.searchIpt.workShow = this.searchTemp.workShow = ""
+    },
     getOrg() {
       this.deptLoading = true
       fetchOrganization({
@@ -426,7 +446,7 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.selectDept = ["" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
+          this.selectDept = ["不限" , ...decodeObject(res.data.user_depart_list_group_1.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_2.map(item=>item.DepartName)),...decodeObject(res.data.user_depart_list_group_3.map(item=>item.DepartName))]
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })

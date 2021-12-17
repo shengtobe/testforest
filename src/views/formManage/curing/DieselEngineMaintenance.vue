@@ -21,13 +21,14 @@
               solo
               v-on="on"
               readonly
-              clearable
+              clearable @click:clear="timeClean(1)"
             ></v-text-field>
           </template>
           <v-date-picker
             color="primary"
             v-model="ipt.dateStart"
-            @input="dateMenuShow.start = false"
+            @input="time(1)"
+            :max="dateAMax"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -49,13 +50,14 @@
               solo
               v-on="on"
               readonly
-              clearable
+              clearable @click:clear="timeClean(2)"
             ></v-text-field>
           </template>
           <v-date-picker
             color="primary"
             v-model="ipt.dateEnd"
-            @input="dateMenuShow.end = false"
+           @input="time(2)"
+            :min="dateBMin"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -320,6 +322,8 @@ export default {
     action: Actions.add,
     actions: Actions,
     newText: "保養資料",
+    dateAMax: '',
+    dateBMin: '',
     isLoading: false,
     disabled: false,
     DB_Table: "RP047",
@@ -719,6 +723,24 @@ export default {
       }
       return arr.join("/");
     },
+    time(i){
+      if(i == 1){
+        this.dateMenuShow.start = false
+        this.dateBMin = this.ipt.dateStart
+      }
+      else{
+        this.dateMenuShow.end = false
+        this.dateAMax = this.ipt.dateEnd
+      }
+    },
+    timeClean(i){
+      if(i == 1){
+        this.dateBMin = ''
+      }
+      else{
+        this.dateAMax = ''
+      }
+    },
     // 搜尋
     search() {
       this.chLoadingShow({show:true});
@@ -727,8 +749,8 @@ export default {
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table, // DB table
         KeyItem: [
-          { Column: "StartDayVlaue", Value: this.ipt.dateStart },
-          { Column: "EndDayVlaue", Value: this.ipt.dateEnd },
+          { Column: "StartDayVlaue", Value: (this.ipt.dateStart == null)?'':this.ipt.dateStart },
+          { Column: "EndDayVlaue", Value: (this.ipt.dateEnd == null)?'':this.ipt.dateEnd },
         ],
         QyName: [
           // "DISTINCT (RPFlowNo)",

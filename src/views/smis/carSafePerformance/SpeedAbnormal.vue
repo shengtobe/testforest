@@ -302,6 +302,9 @@ export default {
                 if (res.data.ErrorCode == 0) {
                     if(res.data.DataList.length > 0){
                         this.tableItems = decodeObject(res.data.DataList)
+                        }
+                    else{
+                        this.tableItems = [...[]]
                     }
                 }else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

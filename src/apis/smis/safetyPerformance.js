@@ -10,16 +10,17 @@ export function indexLevelList(data) {
         }
     )
 }
-// 事故原因分類列表清單 (三層) 
+// 事故原因分類列表清單 (三層) XXX
 export function accidentResonQueryList(data) {
     return axios(
         {
-            url: 'sms/sp/accidentlevelquerylist',
+            url: 'sms/sp/accidentreasonquerylist',
             method: 'post',
             data,
         }
     )
 }
+
 
 //--軔機--
 //查詢清單

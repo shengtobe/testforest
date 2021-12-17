@@ -147,10 +147,12 @@ export default {
     async fetchDdata() {
       try {
         let res = await fetchOrganization({ ClientReqTime: getNowFullTime() })  // 取得組織表所有資料
+        console.log("res.data:", res.data)
         this.opts.lv1 = res.data.user_depart_list_group_1.map(e=>({value: e.DepartCode,text:e.DepartName}))
         this.opts.lv2 = res.data.user_depart_list_group_2.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
         this.opts.lv3 = res.data.user_depart_list_group_3.map(e=>({value: e.DepartCode,text:e.DepartName,parent:e.DepartParentName}))
         this.users = res.data.user_list_group_4.map(e=>({value: e[this.valueCol],text:e.UserName,DepartCode:e.DepartCode}))
+        console.log("this.users: ", this.users)
         this.userDataFull = res.data.user_list_group_4
         this.getDefaultSelect()
       } catch (err) {

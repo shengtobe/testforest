@@ -56,6 +56,14 @@
           <span class="red--text subtitle-1">資料讀取中...</span>
         </template>
 
+        <template v-slot:item.AccidentType="{ item }">
+            <span>{{ evtTypesList.find(ele => ele.value == item.AccidentType).text }}</span>
+        </template>
+
+        <template v-slot:item.FindLine="{ item }">
+            <span>{{ locationOptsList.find(ele => ele.value == item.FindLine).text }}</span>
+        </template>
+
         <template v-slot:footer="footer">
           <Pagination
             :footer="footer"
@@ -72,6 +80,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, decodeObject } from '@/assets/js/commonFun'
+import { evtTypes, locationOpts } from '@/assets/js/smisData'
 import { accidentQuery, accidentQueryList } from '@/apis/smis/safetyPerformance'
 import ChartLine from '@/components/chartLine'
 import Pagination from '@/components/Pagination.vue'
@@ -82,6 +91,8 @@ export default {
     searchipt:{
       selectedYear: '',
     },
+    evtTypesList: [],
+    locationOptsList: [],
     chartdata: {
       labels: [],
       datasets: [
@@ -171,6 +182,8 @@ export default {
       'chViewDialog',  // 檢視內容 dialog
     ]),
     dataInit() {
+      this.evtTypesList = evtTypes
+      this.locationOptsList = locationOpts
       const that = this
       const today = new Date() 
       for( let i = today.getFullYear()-1 ; i >= (today.getFullYear() - 10) && i >= 2012 ; i--){

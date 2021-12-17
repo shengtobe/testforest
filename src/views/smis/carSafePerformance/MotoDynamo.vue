@@ -10,7 +10,9 @@
             <v-text-field
                 v-model.trim="searchIpt.year"
                 solo
-                placeholder="例：109"
+                placeholder="例：2018"
+                clearable
+                @click:clear="yearClear"
             ></v-text-field>
         </v-col>
 
@@ -334,12 +336,18 @@ export default {
                 eDate.setDate(eDate.getDate()-1)
             } else {
                 sDate = new Date(this.searchIpt.year + '-01')
-                eDate = new Date(this.searchIpt.year+1 + '-01')
+                eDate = new Date(parseInt(this.searchIpt.year)+1 + '-01')
                 eDate.setDate(eDate.getDate()-1)
             }
             let keyItem = []
-            keyItem.push({ Column: "StartDayVlaue", Value: sDate.getFullYear()+'-'+(sDate.getMonth()+1)+'-'+sDate.getDate() })
-            keyItem.push({ Column: "EndDayVlaue", Value: eDate.getFullYear()+'-'+(eDate.getMonth()+1)+'-'+eDate.getDate() })
+            if(this.searchIpt.year == ''){
+                keyItem.push({ Column: "StartDayVlaue", Value: "" })
+                keyItem.push({ Column: "EndDayVlaue", Value: "" })
+            }
+            else{
+                keyItem.push({ Column: "StartDayVlaue", Value: sDate.getFullYear()+'-'+(sDate.getMonth()+1)+'-'+sDate.getDate() })
+                keyItem.push({ Column: "EndDayVlaue", Value: eDate.getFullYear()+'-'+(eDate.getMonth()+1)+'-'+eDate.getDate() })
+            }
             keyItem.push({ Column: "DepartCode", Value: this.userData.DeptList[0].DeptId })
             keyItem.push({ Column: "MaintainCode_System", Value: this.searchIpt.MaintainCode_System }) 
             keyItem.push({ Column: "MaintainCode_Loc", Value: this.searchIpt.MaintainCode_Loc })
@@ -418,6 +426,13 @@ export default {
             this.itemIndex = flowNo
             this.formKey ++
             this.dialog = true
+        },
+        yearClear(){
+            this.$nextTick(() => {
+                this.$nextTick(() => {
+                    this.searchIpt.year = ""
+                })
+            })
         },
         // 清除搜尋內容
         reset() {

@@ -26,12 +26,13 @@
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
-                  <v-text-field v-model.trim="queryItem.AlarmDTime" solo v-on="on" readonly />
+                  <v-text-field v-model.trim="queryItem.AlarmDTime" solo v-on="on" readonly clearable @click:clear="timeAClean"/>
                 </template>
                 <v-date-picker
                   color="primary"
                   v-model="queryItem.AlarmDTime"
-                  @input="a_datestart = false"
+                  @input="timeA(1)"
+                  :max="dateAMax"
                   locale="zh-tw"
                 />
               </v-menu>
@@ -46,12 +47,13 @@
                 min-width="290px"
               >
                 <template v-slot:activator="{ on }">
-                  <v-text-field v-model.trim="queryItem.AlarmEndDTime" solo v-on="on" readonly />
+                  <v-text-field v-model.trim="queryItem.AlarmEndDTime" solo v-on="on" readonly clearable @click:clear="timeBClean"/>
                 </template>
                 <v-date-picker
                   color="primary"
                   v-model="queryItem.AlarmEndDTime"
-                  @input="a_dateend = false"
+                  @input="timeA(2)"
+                  :min="dateBMin"
                   locale="zh-tw"
                 />
               </v-menu>
@@ -95,6 +97,8 @@
       titleShow: '',
       a_datestart: "",
       a_dateend: "",
+      dateAMax: '',
+      dateBMin: '',
       add: {
         datestart: "",
       },
@@ -191,11 +195,29 @@
           this.titleShow = "新增"
         }
       },
+      timeA(i){
+        if(i == 1){
+          this.a_datestart = false
+          this.dateBMin = this.queryItem.AlarmDTime
+        }
+        else{
+          this.a_dateend = false
+          this.dateAMax = this.queryItem.AlarmEndDTime
+        }
+      },
+      timeAClean(){
+          this.dateBMin = ''
+      },
+      timeBClean(){
+          this.dateAMax = ''
+      },
       goSave() {
         const that = this
         this.isLoading = true
         //先處理人事資料部分
         if(this.queryItemNull.length==0){
+          if(this.queryItem.AlarmDTime == null) this.queryItem.AlarmDTime = ''
+          if(this.queryItem.AlarmEndDTime == null) this.queryItem.AlarmEndDTime = ''
           if(this.inType == 'edit') {
             jobUpdate({
               ...encodeObject(this.queryItem),

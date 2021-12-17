@@ -15,13 +15,14 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.StartDay" solo v-on="on" readonly/>
           </template>
           <v-date-picker
             color="primary"
             type="month"
             v-model="searchIpt.StartDay"
-            @input="StartDay = false"
+            @input="timeA(1)"
+            :max="dateAMax"
             locale="zh-tw"
           />
         </v-menu>
@@ -39,13 +40,14 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly />
+            <v-text-field v-model.trim="searchIpt.EndDay" solo v-on="on" readonly/>
           </template>
           <v-date-picker
             color="primary"
             type="month"
             v-model="searchIpt.EndDay"
-            @input="EndDay = false"
+            @input="timeA(2)"
+            :min="dateBMin"
             locale="zh-tw"
           />
         </v-menu>
@@ -107,6 +109,8 @@ export default {
     StartDay:false,
     EndDay: false,
     eqCodeShow: false,
+    dateAMax: '',
+    dateBMin: '',
     searchIpt: {
       // 搜尋欄位
       EndDay: "",
@@ -183,6 +187,22 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    timeA(i){
+      if(i == 1){
+        this.StartDay = false
+        this.dateBMin = this.searchIpt.StartDay
+      }
+      else{
+        this.EndDay = false
+        this.dateAMax = this.searchIpt.EndDay
+      }
+    },
+    timeAClean(){
+        this.dateBMin = ''
+    },
+    timeBClean(){
+        this.dateAMax = ''
+    },
     //搜尋區塊功能=========================================================//
     // 搜尋
     search() {
@@ -193,7 +213,8 @@ export default {
         const wbs = this.searchIpt.wbs.split('-')
         const sendData = {
           CreateDTime_Start: this.searchIpt.StartDay + '-' + (new Date(begMonth[0],parseInt(begMonth[1])-1,1).getDate()),
-          CreateDTime_End: this.searchIpt.EndDay + '-' + (new Date(endMonth[0],endMonth[1],0).getDate()),
+          // CreateDTime_End: this.searchIpt.EndDay + '-' + (new Date(endMonth[0],endMonth[1],0).getDate()),
+          CreateDTime_End: this.searchIpt.EndDay,
           DepartName: this.searchIpt.Dept,
           MaintainCode_System: wbs[0]||"",
           MaintainCode_Loc: wbs[1]||"",
