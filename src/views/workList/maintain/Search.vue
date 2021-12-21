@@ -31,7 +31,7 @@
                     <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>工單建立日期(起)
                 </h3>
                 <v-menu
-                    v-model="dateMemuShow.start"
+                    v-model="dateMenuShow.start"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     max-width="290px"
@@ -63,7 +63,7 @@
                     <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>工單建立日期(迄)
                 </h3>
                 <v-menu
-                    v-model="dateMemuShow.end"
+                    v-model="dateMenuShow.end"
                     :close-on-content-click="false"
                     transition="scale-transition"
                     max-width="290px"
@@ -398,7 +398,7 @@ export default {
             moneyEnd: '',  // 總費用(最大金額)
             subject: '',  // 故障主旨
         },
-        dateMemuShow: {  // 日曆是否顯示
+        dateMenuShow: {  // 日曆是否顯示
             start: false,
             end: false,
         },
@@ -460,14 +460,14 @@ export default {
             this.ipt.eqNumber4 = tempCodeArr[3]  // 設備標示編號(序號)
         },
         timeA(){
-            this.dateMemuShow.start = false
+            this.dateMenuShow.start = false
             this.dateBMin = this.ipt.createDateStart
         },
         timeAClean(){
             this.dateBMin = ''
         },
         timeB(){
-            this.dateMemuShow.end = false
+            this.dateMenuShow.end = false
             this.dateAMax = this.ipt.createDateEnd
         },
         timeBClean(){

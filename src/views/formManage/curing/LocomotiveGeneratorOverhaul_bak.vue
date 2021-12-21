@@ -35,7 +35,7 @@
           <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>保養日期(迄)
         </h3>
         <v-menu
-          v-model="dateMemuShow.end"
+          v-model="dateMenuShow.end"
           :close-on-content-click="false"
           transition="scale-transition"
           max-width="290px"
@@ -52,7 +52,7 @@
           <v-date-picker
             color="primary"
             v-model="ipt.dateEnd"
-            @input="dateMemuShow.end = false"
+            @input="dateMenuShow.end = false"
             locale="zh-tw"
           ></v-date-picker>
         </v-menu>
@@ -322,7 +322,7 @@ export default {
       case: "",
       eqLoss: "",
     },
-    dateMemuShow: {
+    dateMenuShow: {
       // 日曆是否顯示
       start: false,
       end: false,

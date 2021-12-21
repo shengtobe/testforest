@@ -355,7 +355,7 @@ export default {
       Item: "",
       Memo: "",
     },
-    dateMemuShow: {
+    dateMenuShow: {
       // 日曆是否顯示
       start: false,
       end: false,

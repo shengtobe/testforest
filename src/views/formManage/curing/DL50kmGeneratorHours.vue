@@ -15,9 +15,10 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
+            <v-text-field v-model.trim="z" solo v-on="on" readonly clearable @click:clear="timeClean(1)"></v-text-field>
           </template>
-          <v-date-picker color="purple" v-model="z" @input="a = false" locale="zh-tw"></v-date-picker>
+          <v-date-picker color="purple" v-model="z" @input="time(1)"
+            :max="dateAMax" locale="zh-tw"></v-date-picker>
         </v-menu>
       </v-col>
       <v-col cols="12" sm="3" md="3">
@@ -32,13 +33,15 @@
           min-width="290px"
         >
           <template v-slot:activator="{ on }">
-            <v-text-field v-model.trim="df" solo v-on="on" readonly></v-text-field>
+            <v-text-field v-model.trim="df" solo v-on="on" readonly clearable @click:clear="timeClean(2)"></v-text-field>
           </template>
-          <v-date-picker color="primary" v-model="df" @input="q = false" locale="zh-tw"></v-date-picker>
+          <v-date-picker color="primary" 
+          v-model="df" @input="time(2)"
+            :min="dateBMin" locale="zh-tw"></v-date-picker>
         </v-menu>
       </v-col>
       <div class="col-sm-4 col-md-8 col-12">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search">
+        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
@@ -113,19 +116,40 @@
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>填寫日期
                   </h3>
-                  <v-text-field solo value="2020-09-01" readonly />
+                  <v-menu
+                    v-model="dateMenuShow"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    max-width="290px"
+                    min-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model.trim="ipt.date"
+                            solo
+                            v-on="on"
+                            readonly
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        color="purple"
+                        v-model="ipt.date"
+                        @input="dateMenuShow = false"
+                        locale="zh-tw"
+                    ></v-date-picker>
+                </v-menu>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>司機員
                   </h3>
-                  <v-text-field solo value="王大明" readonly />
+                  <v-text-field solo v-model="ipt.driver"/>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>行駛區間
                   </h3>
-                  <v-text-field solo value="北嘉" readonly />
+                  <v-text-field solo v-model="ipt.section"/>
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
@@ -139,9 +163,9 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
+                      <v-text-field v-model.trim="ipt.nextLv2" solo v-on="on" readonly></v-text-field>
                     </template>
-                    <v-date-picker color="purple" v-model="z" @input="add = false" locale="zh-tw"></v-date-picker>
+                    <v-date-picker color="purple" v-model="ipt.nextLv2" @input="add = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
               </v-row>
@@ -150,20 +174,20 @@
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>本次行駛公里
                   </h3>
-                  <v-text-field solo value="94.8" readonly />
+                  <v-text-field solo v-model="ipt.currentKm" />
                 </v-col>
 
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>累計公里數
                   </h3>
-                  <v-text-field solo value="72739.7" readonly />
+                  <v-text-field solo v-model="ipt.totalKm" />
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>列車次
                   </h3>
-                  <v-text-field solo value="1-2" readonly />
+                  <v-text-field solo v-model="ipt.carId" />
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
@@ -177,9 +201,9 @@
                     min-width="290px"
                   >
                     <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="z" solo v-on="on" readonly></v-text-field>
+                      <v-text-field v-model="ipt.nextLv3" solo v-on="on" readonly></v-text-field>
                     </template>
-                    <v-date-picker color="purple" v-model="z" @input="aff = false" locale="zh-tw"></v-date-picker>
+                    <v-date-picker color="purple" v-model="ipt.nextLv3" @input="aff = false" locale="zh-tw"></v-date-picker>
                   </v-menu>
                 </v-col>
               </v-row>
@@ -188,20 +212,20 @@
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>發電機
                   </h3>
-                  <v-text-field solo value="1500" readonly />
+                  <v-text-field solo v-model="ipt.gen" />
                 </v-col>
 
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>引擎
                   </h3>
-                  <v-text-field solo value="16600" readonly />
+                  <v-text-field solo v-model="ipt.engine" />
                 </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>黃油
                   </h3>
-                  <v-text-field solo value="74600" readonly />
+                  <v-text-field solo v-model="ipt.grease" />
                 </v-col>
               </v-row>
               <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
@@ -220,11 +244,11 @@
                     >
                       <v-col cols="12" sm="4">
                         <h3 class="mb-1">日工時</h3>
-                        <v-text-field solo v-model="items1.qq" />
+                        <v-text-field solo v-model="items1.dayTime" />
                       </v-col>
                       <v-col cols="12" sm="4">
                         <h3 class="mb-1">累計工時</h3>
-                        <v-text-field solo v-model="items1.ww" />
+                        <v-text-field solo v-model="items1.totalTime" />
                       </v-col>
                     </v-row>
                   </v-expansion-panel-content>
@@ -245,23 +269,23 @@
                     >
                       <v-col cols="12" sm="3">
                         <h3 class="mb-1">柴油</h3>
-                        <v-text-field solo v-model="items2.aa" />
+                        <v-text-field solo v-model="items2.diesel" />
                       </v-col>
                       <v-col cols="12" sm="3">
                         <h3 class="mb-1">引擎機油</h3>
-                        <v-text-field solo v-model="items2.ss" />
+                        <v-text-field solo v-model="items2.engineOil" />
                       </v-col>
                       <v-col cols="12" sm="2">
                         <h3 class="mb-1">TC機油</h3>
-                        <v-text-field solo v-model="items2.dd" />
+                        <v-text-field solo v-model="items2.tc" />
                       </v-col>
                       <v-col cols="12" sm="2">
                         <h3 class="mb-1">風泵</h3>
-                        <v-text-field solo v-model="items2.ff" />
+                        <v-text-field solo v-model="items2.windPump" />
                       </v-col>
                       <v-col cols="12" sm="2">
                         <h3 class="mb-1">其他</h3>
-                        <v-text-field solo v-model="items2.gg" />
+                        <v-text-field solo v-model="items2.other" />
                       </v-col>
                     </v-row>
                   </v-expansion-panel-content>
@@ -272,7 +296,7 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 label-header">保養記事</h3>
-              <v-textarea auto-grow outlined rows="4" />
+              <v-textarea auto-grow outlined rows="4" v-model="memo" />
             </v-col>
           </v-row>
         </div>
@@ -303,6 +327,8 @@ export default {
       isLoading: false,
       disabled: false,
       panel: [0, 1, 2],
+      dateAMax: '',
+      dateBMin: '',
       disabled: false,
       readonly: false,
       formDepartOptions: [
@@ -310,10 +336,11 @@ export default {
         { text: "不限", value: "" },
         ...formDepartOptions,
       ],
+      dateMenuShow: false,
       a: "",
       ass: "",
       aff: "",
-      add: "",
+      add: false,
       z: "",
       zs: "",
       q: "",
@@ -330,7 +357,7 @@ export default {
       dialog3: false,
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
-      DB_Table: "RP001",
+      DB_Table: "RP066",
       nowTime: "",
       doMan:{
         id: '',
@@ -338,8 +365,22 @@ export default {
         depart: '',
         checkManName: ''
       },
-      ipt2: {},
-      defaultIpt: {  // 預設的欄位值
+      ipt:{},
+      defaultIpt: {
+        driver: "", // 司機員
+        section: "", // 區段
+        currentKm: "", // 本次里程
+        totalKm: "", // 累計里程
+        carId: "", // 列車次  
+        nextLv2: "", // 下次二級  
+        nextLv3: "", // 下次三級  
+        gen: "", // 發電機  
+        engine: "", // 引擎  
+        grease: "", // 黃油  
+        date: new Date().toISOString().substr(0, 10), // 填寫時間
+      },
+      iptSearch: {},
+      defaultSearchIpt: {  // 預設的欄位值
           startDay: '',
           EndDay: '',
           depart: '',  // 單位
@@ -355,31 +396,12 @@ export default {
       ],
       tableItems: [],
       //------
-      ipt: {
-        department: "",
-        date: new Date().toISOString().substr(0, 10),
-        items: [
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-          { status: "1", note: "" },
-        ],
-      },
-      items1: [{ qq: "", ww: "" }],
-      items2: [{ aa: "", ss: "", dd: "", ff: "", gg: "" }],
-      suggest: "", // 改善建議
+      
+      items1: [{ dayTime: "", totalTime: "" }],
+      items2: [{ diesel: "", engineOil: "", tc: "", windPump: "", other: "" }],
+      defaultItems1: [{ dayTime: "", totalTime: "" }],
+      defaultItems2: [{ diesel: "", engineOil: "", tc: "", windPump: "", other: "" }],
+      memo: "", // 保養記事
     };
   },
   components: { Pagination }, // 頁碼
@@ -389,7 +411,7 @@ export default {
         }),
   },
   created() {
-      this.ipt2 = { ...this.defaultIpt }
+      this.iptSearch = { ...this.defaultSearchIpt }
       //更新時間
       var today=new Date();
       let mStr = today.getMonth()+1;
@@ -401,19 +423,16 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+      this.z = this.df = this.dateAMax = this.dateBMin = this.nowTime
   },
   methods: {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
+      this.ipt = this.defaultIpt;
+      this.items1 = this.defaultItems1;
+      this.items2 = this.defaultItems2;
+      this.memo = ""
     },
     unique(list){
       var arr = [];
@@ -446,6 +465,24 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    time(i){
+      if(i == 1){
+        this.a = false
+        this.dateBMin = this.z
+      }
+      else{
+        this.q = false
+        this.dateAMax = this.df
+      }
+    },
+    timeClean(i){
+      if(i == 1){
+        this.dateBMin = ''
+      }
+      else{
+        this.dateAMax = ''
+      }
+    },
     // 搜尋
     search() {
       this.chLoadingShow({show:true})
@@ -456,7 +493,7 @@ export default {
         KeyItem: [ 
           {'Column':'StartDayVlaue','Value':this._data.z},
           {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {"Column":"DepartCode","Value":this._data.iptSearch.depart},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -474,8 +511,8 @@ export default {
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
+        let diesel = unique(tbBuffer)
+        this.tableItems = diesel
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
@@ -484,7 +521,51 @@ export default {
       })
     },
     // 存
-    save() {},
+    save() {
+      var data = {
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id this.doMan.name = this.userData.UserName
+        // OperatorID: "16713",  // 操作人id
+        FunCode: 'C',
+        KeyName: this.DB_Table, // DB table
+        KeyItem: [
+          {'Column':'Driver','Value': this.ipt.driver}, // 司機員
+          {'Column':'KmRecord','Value': this.ipt.section}, // 區段
+          {'Column':'NextLv2','Value': this.ipt.nextLv2}, // nextLv2
+          {'Column':'Km','Value': this.ipt.currentKm}, // 本次里程
+          {'Column':'AccumKm','Value': this.ipt.totalKm}, // 累計里程
+          {'Column':'TrainNo','Value': this.ipt.carId}, // 列車次
+          {'Column':'NextLv3','Value': this.ipt.nextLv3}, // 下次三級
+          {'Column':'Generator','Value': this.ipt.gen}, // 發電機
+          {'Column':'Engine','Value': this.ipt.engine}, // 引擎
+          {'Column':'Grease','Value': this.ipt.grease}, // 黃油
+          {'Column':'CheckDay','Value': this.ipt.date}, // 填寫時間
+          {'Column':'HourDay','Value': this.items1.dayTime}, // 發電機日工時
+          {'Column':'Hours','Value': this.items1.totalTime}, // 發電機累計工時
+          {'Column':'DieselOil','Value': this.items2.diesel}, // 柴油
+          {'Column':'EngineOil','Value': this.items2.engineOil}, // 引擎機油
+          {'Column':'TCOil','Value': this.items2.tc}, // TC機油
+          {'Column':'WindMercury','Value': this.items2.windPump}, // 風泵
+          {'Column':'Other','Value': this.items2.other}, // 其他
+          {'Column':'Memo','Value': this.memo}, // 保養記事
+        ]
+      };
+      // 新增
+        createFormOrder0(data)
+          .then((res) => {
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
+          })
+          .catch((err) => {
+            ////console.log(err);
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
+          })
+          .finally(() => {
+            this.add = false
+            this.initInput()
+            this.chLoadingShow({ show: false});
+            this.search();
+          });
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
@@ -509,18 +590,24 @@ export default {
                 ],
         QyName:[
           "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "Driver",
+          "KmRecord",
+          "Km",
+          "Generator",
+          "Engine",
+          "Grease",
+          "NextLv2",
+          "NextLv3",
+          "AccumKm",
+          "HourDay",
+          "Hours",
+          "DieselOil",
+          "EngineOil",
+          "TCOil",
+          "WindMercury",
+          "Other",
+          "TrainNo",
+          "Memo",
         ],
       }).then(res => {
         this.initInput();
@@ -529,24 +616,26 @@ export default {
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
+        this.ipt.driver = date[0].Driver
+        this.ipt.section = date[0].KmRecord
+        this.ipt.currentKm = date[0].Km
+        this.ipt.gen = date[0].Generator
+        this.ipt.engine = date[0].Engine
+        this.ipt.grease = date[0].Grease
+        this.ipt.nextLv2 = date[0].NextLv2
+        this.ipt.nextLv3 = date[0].NextLv3
+        this.ipt.totalKm = date[0].AccumKm
+        this.ipt.XXXX = date[0].HourDay
+        this.ipt.XXXX = date[0].Hours
+        this.ipt.XXXX = date[0].DieselOil
+        this.ipt.XXXX = date[0].EngineOil
+        this.ipt.XXXX = date[0].TCOil
+        this.ipt.XXXX = date[0].WindMercury
+        this.ipt.XXXX = date[0].Other
+        this.ipt.XXXX = date[0].TrainNo
+        this.ipt.XXXX = date[0].Memo
         //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')

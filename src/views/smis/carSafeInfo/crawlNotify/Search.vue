@@ -8,7 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>限制日期(起)
             </h3>
             <v-menu
-                v-model="dateMemuShow.start"
+                v-model="dateMenuShow.start"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -39,7 +39,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>限制日期(迄)
             </h3>
             <v-menu
-                v-model="dateMemuShow.end"
+                v-model="dateMenuShow.end"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -190,7 +190,7 @@ export default {
             dateStart:  '',  // 限制日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 限制日期(迄)
         },
-        dateMemuShow: {  // 日曆是否顯示
+        dateMenuShow: {  // 日曆是否顯示
             start: false,
             end: false,
         },
@@ -227,14 +227,14 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         timeA(){
-            this.dateMemuShow.start = false
+            this.dateMenuShow.start = false
             this.dateBMin = this.ipt.dateStart
         },
         timeAClean(){
             this.dateBMin = ''
         },
         timeB(){
-            this.dateMemuShow.end = false
+            this.dateMenuShow.end = false
             this.dateAMax = this.ipt.dateEnd
         },
         timeBClean(){

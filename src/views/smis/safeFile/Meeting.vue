@@ -8,7 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>會議日期(起)
             </h3>
             <v-menu
-                v-model="dateMemuShow.start"
+                v-model="dateMenuShow.start"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -39,7 +39,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>會議日期(迄)
             </h3>
             <v-menu
-                v-model="dateMemuShow.end"
+                v-model="dateMenuShow.end"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -189,7 +189,7 @@
                                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>會議日期
                             </h3>
                             <v-menu
-                                v-model="dateMemuShow.form"
+                                v-model="dateMenuShow.form"
                                 :close-on-content-click="false"
                                 transition="scale-transition"
                                 max-width="290px"
@@ -206,7 +206,7 @@
                                 <v-date-picker
                                     color="primary"
                                     v-model="ipt.date"
-                                    @input="dateMemuShow.form = false"
+                                    @input="dateMenuShow.form = false"
                                     locale="zh-tw"
                                 ></v-date-picker>
                             </v-menu>
@@ -292,7 +292,7 @@ export default {
         },
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
-        dateMemuShow: {  // 日曆是否顯示
+        dateMenuShow: {  // 日曆是否顯示
             start: false,
             end: false,
             form: false,  // dialog 表單內的日期
@@ -343,14 +343,14 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
         ]),
         timeA(){
-            this.dateMemuShow.start = false
+            this.dateMenuShow.start = false
             this.dateBMin = this.searchIpt.dateStart
         },
         timeAClean(){
             this.dateBMin = ''
         },
         timeB(){
-            this.dateMemuShow.end = false
+            this.dateMenuShow.end = false
             this.dateAMax = this.searchIpt.dateEnd
         },
         timeBClean(){

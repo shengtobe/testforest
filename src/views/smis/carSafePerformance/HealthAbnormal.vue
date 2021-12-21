@@ -8,7 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(起)
             </h3>
             <v-menu
-                v-model="dateMemuShow.start"
+                v-model="dateMenuShow.start"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -39,7 +39,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(迄)
             </h3>
             <v-menu
-                v-model="dateMemuShow.end"
+                v-model="dateMenuShow.end"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -228,7 +228,7 @@ export default {
         },
         dateAMax: new Date().toISOString().substr(0, 10),
         dateBMin: '',
-        dateMemuShow: {
+        dateMenuShow: {
             start: false,
             end: false,
         },
@@ -267,14 +267,14 @@ export default {
             this.searchIpt = { ...this.searchDefault }
         },
         timeA(){
-            this.dateMemuShow.start = false
+            this.dateMenuShow.start = false
             this.dateBMin = this.searchIpt.DTime_Start
         },
         timeAClean(){
             this.dateBMin = ''
         },
         timeB(){
-            this.dateMemuShow.end = false
+            this.dateMenuShow.end = false
             this.dateAMax = this.searchIpt.DTime_End
         },
         timeBClean(){

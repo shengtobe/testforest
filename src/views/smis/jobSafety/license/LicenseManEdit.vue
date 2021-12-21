@@ -35,7 +35,7 @@
             <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>證照生效日
           </h3>
           <v-menu
-            v-model="dateMemuShow.activeDate"
+            v-model="dateMenuShow.activeDate"
             :close-on-content-click="false"
             transition="scale-transition"
             max-width="290px"
@@ -52,7 +52,7 @@
             <v-date-picker
               color="purple"
               v-model="ipt.EffectiveDate"
-              @input="dateMemuShow.activeDate = false"
+              @input="dateMenuShow.activeDate = false"
               locale="zh-tw"
             ></v-date-picker>
           </v-menu>
@@ -63,7 +63,7 @@
             <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>最後回訓日
           </h3>
           <v-menu
-            v-model="dateMemuShow.lastTrain"
+            v-model="dateMenuShow.lastTrain"
             :close-on-content-click="false"
             transition="scale-transition"
             max-width="290px"
@@ -80,7 +80,7 @@
             <v-date-picker
               color="purple"
               v-model="ipt.ReTrainingTime"
-              @input="dateMemuShow.lastTrain = false"
+              @input="dateMenuShow.lastTrain = false"
               locale="zh-tw"
             ></v-date-picker>
           </v-menu>
@@ -91,7 +91,7 @@
             <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>證照有效日
           </h3>
           <v-menu
-            v-model="dateMemuShow.expDate"
+            v-model="dateMenuShow.expDate"
             :close-on-content-click="false"
             transition="scale-transition"
             max-width="290px"
@@ -108,7 +108,7 @@
             <v-date-picker
               color="purple"
               v-model="ipt.ExpDTime"
-              @input="dateMemuShow.expDate = false"
+              @input="dateMenuShow.expDate = false"
               locale="zh-tw"
             ></v-date-picker>
           </v-menu>
@@ -158,7 +158,7 @@ export default {
       ExpDTime: '',
       Memo: '',
     },  // dialog 欄位
-    dateMemuShow: {
+    dateMenuShow: {
       activeDate: false,
       lastTrain: false,
       expDate: false

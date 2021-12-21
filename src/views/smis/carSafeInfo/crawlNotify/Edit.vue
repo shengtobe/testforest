@@ -32,7 +32,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>延長日期
             </h3>
             <v-menu
-                v-model="dateMemuShow"
+                v-model="dateMenuShow"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -51,7 +51,7 @@
                 <v-date-picker
                     color="primary"
                     v-model="date"
-                    @input="dateMemuShow = false"
+                    @input="dateMenuShow = false"
                     locale="zh-tw"
                     :min="ipt.dateEnd"
                 ></v-date-picker>
@@ -254,7 +254,7 @@ export default {
         topData: [],  // 上方基本資料
         date: new Date().toISOString().substr(0, 10),  // 延長日期
         date_brfore: '',
-        dateMemuShow: false,  // 日曆是否顯示
+        dateMenuShow: false,  // 日曆是否顯示
         isStop: false,  // 是否解除
         backReason: '',  // 退回原因
         isSp: false, // 登入者是否為主管

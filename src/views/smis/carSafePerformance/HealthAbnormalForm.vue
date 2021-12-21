@@ -10,7 +10,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期
             </h3>
             <v-menu
-                v-model="dateMemuShow"
+                v-model="dateMenuShow"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -27,7 +27,7 @@
                 <v-date-picker
                     color="primary"
                     v-model="ipt.CheckDate"
-                    @input="dateMemuShow = false"
+                    @input="dateMenuShow = false"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -150,7 +150,7 @@ export default {
             ErrorCheckStatus: '',  // 異常處理情形
             FileCount: [],  // 附件
         },
-        dateMemuShow: false,  // 日曆是否顯示
+        dateMenuShow: false,  // 日曆是否顯示
         componentKey: 0,
     }),
     components: {

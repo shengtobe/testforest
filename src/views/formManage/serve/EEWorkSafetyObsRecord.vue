@@ -383,7 +383,7 @@ export default {
       case: "",
       eqLoss: ""
     },
-    dateMemuShow: {
+    dateMenuShow: {
       // 日曆是否顯示
       start: false,
       end: false

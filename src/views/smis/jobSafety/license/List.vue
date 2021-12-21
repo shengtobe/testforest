@@ -125,7 +125,7 @@ export default {
                 { text: '一般員工', value: '3' },
             ],
         },
-        dateMemuShow: {  // 日曆是否顯示
+        dateMenuShow: {  // 日曆是否顯示
             activeDate: false,  // 證照生效日
             lastTrain: false,  // 最後回訓日
         },

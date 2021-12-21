@@ -8,7 +8,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(起)
             </h3>
             <v-menu
-                v-model="dateMemuShow.start"
+                v-model="dateMenuShow.start"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -25,7 +25,7 @@
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.dateStart"
-                    @input="dateMemuShow.start = false"
+                    @input="dateMenuShow.start = false"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -36,7 +36,7 @@
                 <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>日期(迄)
             </h3>
             <v-menu
-                v-model="dateMemuShow.end"
+                v-model="dateMenuShow.end"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 max-width="290px"
@@ -53,7 +53,7 @@
                 <v-date-picker
                     color="primary"
                     v-model="searchIpt.dateEnd"
-                    @input="dateMemuShow.end = false"
+                    @input="dateMenuShow.end = false"
                     locale="zh-tw"
                 ></v-date-picker>
             </v-menu>
@@ -158,7 +158,7 @@ export default {
             dateStart: new Date().toISOString().substr(0, 10),  // 發生日期(起)
             dateEnd: new Date().toISOString().substr(0, 10),  // 發生日期(迄)
         },
-        dateMemuShow: {
+        dateMenuShow: {
             start: false,
             end: false,
         },
