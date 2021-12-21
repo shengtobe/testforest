@@ -297,8 +297,6 @@ export default {
       this.Add = false;
       this.dialogDel = false;
     },
-    // 存
-    save() {},
     // 關閉 dialog
     viewPage(item) {
      

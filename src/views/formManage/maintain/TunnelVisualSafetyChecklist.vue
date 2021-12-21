@@ -293,9 +293,6 @@ export default {
       }).finally(() => {
         this.chLoadingShow({show:false})
       })
-    },
-    // 存
-    save() {},
     // 關閉 dialogx
     closeWorkLogModal() {
       this.AddWorkLogModal = false;
