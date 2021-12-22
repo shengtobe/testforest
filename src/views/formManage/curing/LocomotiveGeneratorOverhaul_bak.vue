@@ -273,7 +273,6 @@
               color="success"
               elevation="4"
               :loading="isLoading"
-              @click="save"
               >送出</v-btn
             >
           </v-card-actions>
@@ -550,8 +549,6 @@ export default {
           this.chLoadingShow({ show: false});
         });
     },
-    // 存
-    save() {},
     // 關閉 dialog
     close() {
       this.Add = false;

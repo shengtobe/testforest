@@ -151,23 +151,6 @@
                   </h3>
                   <v-text-field solo v-model="ipt.section"/>
                 </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>下次二級
-                  </h3>
-                  <v-menu
-                    v-model="add"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="ipt.nextLv2" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="ipt.nextLv2" @input="add = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
               </v-row>
               <v-row no-gutter class="label-header">
                 <v-col cols="12" sm="3">
@@ -188,44 +171,6 @@
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>列車次
                   </h3>
                   <v-text-field solo v-model="ipt.carId" />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>下次三級
-                  </h3>
-                  <v-menu
-                    v-model="aff"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model="ipt.nextLv3" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="ipt.nextLv3" @input="aff = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-              </v-row>
-              <v-row no-gutter class="label-header">
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>發電機
-                  </h3>
-                  <v-text-field solo v-model="ipt.gen" />
-                </v-col>
-
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>引擎
-                  </h3>
-                  <v-text-field solo v-model="ipt.engine" />
-                </v-col>
-                <v-col cols="12" sm="3">
-                  <h3 class="mb-1">
-                    <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>黃油
-                  </h3>
-                  <v-text-field solo v-model="ipt.grease" />
                 </v-col>
               </v-row>
               <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
@@ -316,14 +261,16 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
+import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data() {
     return {
       title: "DL50號機車行駛公里及發電機工時統計表",
       newText: "統計表",
+      isEdit: false,
       isLoading: false,
       disabled: false,
       panel: [0, 1, 2],
@@ -337,6 +284,7 @@ export default {
         ...formDepartOptions,
       ],
       dateMenuShow: false,
+      RPFlowNo: '',
       a: "",
       ass: "",
       aff: "",
@@ -372,11 +320,6 @@ export default {
         currentKm: "", // 本次里程
         totalKm: "", // 累計里程
         carId: "", // 列車次  
-        nextLv2: "", // 下次二級  
-        nextLv3: "", // 下次三級  
-        gen: "", // 發電機  
-        engine: "", // 引擎  
-        grease: "", // 黃油  
         date: new Date().toISOString().substr(0, 10), // 填寫時間
       },
       iptSearch: {},
@@ -412,6 +355,7 @@ export default {
   },
   created() {
       this.iptSearch = { ...this.defaultSearchIpt }
+      this.ipt = this.defaultIpt;
       //更新時間
       var today=new Date();
       let mStr = today.getMonth()+1;
@@ -429,9 +373,9 @@ export default {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
-      this.ipt = this.defaultIpt;
-      this.items1 = this.defaultItems1;
-      this.items2 = this.defaultItems2;
+      this.ipt = {...this.defaultIpt};
+      this.items1 = {...this.defaultItems1};
+      this.items2 = {...this.defaultItems2};
       this.memo = ""
     },
     unique(list){
@@ -456,10 +400,12 @@ export default {
     },
     newOne(){
       this.Add = true
+      this.isEdit = false
       this.initInput();
     },
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
+          "chMsgbar", // messageBar
+          'chLoadingShow',  // 切換 loading 圖顯示
         ]),
     // 更換頁數
     chPage(n) {
@@ -526,20 +472,16 @@ export default {
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id this.doMan.name = this.userData.UserName
         // OperatorID: "16713",  // 操作人id
-        FunCode: 'C',
+        RPFlowNo: (this.isEdit)?this.RPFlowNo:'',
+        FunCode: (this.isEdit)?'U':'C',
         KeyName: this.DB_Table, // DB table
         KeyItem: [
+          {'Column':'CheckDay','Value': this.ipt.date}, // 司機員
           {'Column':'Driver','Value': this.ipt.driver}, // 司機員
           {'Column':'KmRecord','Value': this.ipt.section}, // 區段
-          {'Column':'NextLv2','Value': this.ipt.nextLv2}, // nextLv2
           {'Column':'Km','Value': this.ipt.currentKm}, // 本次里程
           {'Column':'AccumKm','Value': this.ipt.totalKm}, // 累計里程
           {'Column':'TrainNo','Value': this.ipt.carId}, // 列車次
-          {'Column':'NextLv3','Value': this.ipt.nextLv3}, // 下次三級
-          {'Column':'Generator','Value': this.ipt.gen}, // 發電機
-          {'Column':'Engine','Value': this.ipt.engine}, // 引擎
-          {'Column':'Grease','Value': this.ipt.grease}, // 黃油
-          {'Column':'CheckDay','Value': this.ipt.date}, // 填寫時間
           {'Column':'HourDay','Value': this.items1.dayTime}, // 發電機日工時
           {'Column':'Hours','Value': this.items1.totalTime}, // 發電機累計工時
           {'Column':'DieselOil','Value': this.items2.diesel}, // 柴油
@@ -550,7 +492,26 @@ export default {
           {'Column':'Memo','Value': this.memo}, // 保養記事
         ]
       };
-      // 新增
+      if(this.isEdit == true){
+        // 編輯
+        updateFormOrder(data)
+          .then((res) => {
+            // 
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
+          })
+          .catch((err) => {
+            //console.log(err);
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
+          })
+          .finally(() => {
+            this.Add = false
+            this.initInput()
+            this.chLoadingShow({ show: false});
+            this.search();
+          });
+      }
+      else{
+        // 新增
         createFormOrder0(data)
           .then((res) => {
             this.chMsgbar({ success: true, msg: Constrant.insert.success });
@@ -560,11 +521,12 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
-            this.add = false
+            this.Add = false
             this.initInput()
             this.chLoadingShow({ show: false});
             this.search();
           });
+      }
     },
     // 關閉 dialog
     close() {
@@ -579,6 +541,7 @@ export default {
       }, 300);
     },
     viewPage(item) {
+      this.isEdit = true
       this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
@@ -589,15 +552,11 @@ export default {
           {'Column':'RPFlowNo','Value':item.RPFlowNo},
                 ],
         QyName:[
+          "RPFlowNo",
           "CheckDay",
           "Driver",
           "KmRecord",
           "Km",
-          "Generator",
-          "Engine",
-          "Grease",
-          "NextLv2",
-          "NextLv3",
           "AccumKm",
           "HourDay",
           "Hours",
@@ -614,26 +573,23 @@ export default {
         let dat = JSON.parse(res.data.DT)
         this.Add = true
         // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.ipt.driver = date[0].Driver
-        this.ipt.section = date[0].KmRecord
-        this.ipt.currentKm = date[0].Km
-        this.ipt.gen = date[0].Generator
-        this.ipt.engine = date[0].Engine
-        this.ipt.grease = date[0].Grease
-        this.ipt.nextLv2 = date[0].NextLv2
-        this.ipt.nextLv3 = date[0].NextLv3
-        this.ipt.totalKm = date[0].AccumKm
-        this.ipt.XXXX = date[0].HourDay
-        this.ipt.XXXX = date[0].Hours
-        this.ipt.XXXX = date[0].DieselOil
-        this.ipt.XXXX = date[0].EngineOil
-        this.ipt.XXXX = date[0].TCOil
-        this.ipt.XXXX = date[0].WindMercury
-        this.ipt.XXXX = date[0].Other
-        this.ipt.XXXX = date[0].TrainNo
-        this.ipt.XXXX = date[0].Memo
+        // this.doMan.name = dat[0].Name
+        // let time1 = dat[0].CheckDay.substr(0,10)
+        this.RPFlowNo = dat[0].RPFlowNo
+        this.ipt.date = dat[0].CheckDay
+        this.ipt.driver = dat[0].Driver
+        this.ipt.section = dat[0].KmRecord
+        this.ipt.currentKm = dat[0].Km
+        this.ipt.totalKm = dat[0].AccumKm
+        this.items1.dayTime = dat[0].HourDay
+        this.items1.totalTime = dat[0].Hours
+        this.items2.diesel = dat[0].DieselOil
+        this.items2.engineOil = dat[0].EngineOil
+        this.items2.tc = dat[0].TCOil
+        this.items2.windPump = dat[0].WindMercury
+        this.items2.other = dat[0].Other
+        this.ipt.carId = dat[0].TrainNo
+        this.memo = dat[0].Memo
         //123資料
         
       }).catch(err => {

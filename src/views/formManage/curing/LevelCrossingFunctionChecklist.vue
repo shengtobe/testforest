@@ -35,7 +35,7 @@
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
       </v-col>
     </v-row>
-    <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
+    <ToolBar @search="search" @reset="initInput" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -99,11 +99,11 @@
         @cancel="closeDialogDel"
       />
     </v-dialog>
-    <!-- 新增自動檢點表 modal -->
-    <v-dialog v-model="Add" persistent max-width="960px">
+    <!-- 編輯自動檢點表 modal -->
+    <v-dialog v-model="Edit" persistent max-width="960px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
-          新增{{ title }}
+          編輯{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -116,98 +116,7 @@
               <p>1.依職業安全衛生法第23條及職業安全衛生管理辦法第50條規定辦理。</p>
               <p>2.缺點由使用單位自行改善，不克者委請設備商修護。</p>
             </v-col>
-            <!-- 檢查項目 -->
-            <v-col cols="12">
-              <v-row no-gutter class="label-header">
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查日期</h3>
-                  <v-menu
-                    v-model="ass"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field v-model.trim="zs" solo v-on="on" readonly></v-text-field>
-                    </template>
-                    <v-date-picker color="purple" v-model="zs" @input="ass = false" locale="zh-tw"></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">管理單位</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">檢查人員</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">型式</h3>
-                  <v-text-field solo value  />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">堆高荷重</h3>
-                  <v-text-field solo value  />
-                </v-col>
-              </v-row>
-              <v-row no-gutter class="label-header d-none d-sm-flex font-weight-black">
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">編號及平交道位置</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">電源邏輯電路</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">接收器</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">警音</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">警示燈</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">道路閃爍光燈1,2</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">遮桿閃爍光燈1,2</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">信號燈1,2</h4>
-                </v-col>
-                <v-col cols="12" sm="1">
-                  <h4 class="mb-1">遮斷機1,2</h4>
-                </v-col>
-              </v-row>
-              <v-alert
-                dense
-                border="top"
-                colored-border
-                color="border-bg-dark-yellow"
-                elevation="4"
-                v-for="(item, idx) in items"
-                :key="idx"
-                class="mb-6"
-              >
-                <v-row no-gutter>
-                  <v-col cols="12" sm="1">{{ item.question }}</v-col>
-                  <v-col cols="12" sm="1">
-                    <span class="d-sm-none label-header">檢查結果：</span>
-                    <v-radio-group dense row v-model="ipt.items[idx].status" class="pa-0 ma-0">
-                      <v-radio color="success" label="正常" value="1"></v-radio>
-                      <v-radio color="red" label="維修保養後正常" value="2"></v-radio>
-                      <v-radio color="black" label="無此設備" value="3"></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                </v-row>
-              </v-alert>
-            </v-col>
-            <!-- 改善建議、改善追蹤 -->
-            <v-col cols="12">
-              <h3 class="mb-1 label-header">改善措施</h3>
-              <v-textarea auto-grow outlined rows="4" v-model.trim="ipt.suggest"></v-textarea>
-            </v-col>
+            
             <!-- END 檢查項目 -->
           </v-row>
         </div>
@@ -215,7 +124,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
-          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">儲存編輯</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -263,11 +172,11 @@ export default {
       ii: "",
       uu: "",
       yy: "",
-      Add: false,
+      Edit: false,
       dialog3: false,
       ShowDetailDialog: false,
       dialogDel: false, // model off
-      Add: false,
+      Edit: false,
       dialog3: false,
       formData: {
         settings: {
@@ -307,6 +216,7 @@ export default {
         // { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "區段", value: "Location", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
@@ -314,95 +224,8 @@ export default {
       ipt: {
         department: "",
         date: new Date().toISOString().substr(0, 10),
-        items: [
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-          { status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", status: "0", note: "", sign: "" },
-        ],
+        
       },
-      items: [
-        { question: "1. （漏水與否）引擎冷卻水檢查" },
-        { question: "2. 引擎機油檢查" },
-        { question: "3. 檢查輪胎氣壓及有無損傷" },
-        { question: "4. 吊句防脫裝置" },
-        { question: "5. 螺帽檢查輪殼的鎖緊" },
-        { question: "6. 動作情況檢查離合器踏板" },
-        { question: "7. 液壓油檢查" },
-        { question: "8. 範圍檢查方向盤動作" },
-        { question: "9. 情況檢查手煞車動作" },
-        { question: "10. 操作情況檢查儀表、燈及喇叭" },
-        { question: "11. 不正常現象檢查荷重架有否" },
-        { question: "12. 有否漏油現象檢查" },
-        { question: "13. 油水分離器檢查" },
-        { question: "14. 煞車之性能制動裝置及" },
-        { question: "15. 有無損壞頂蓬及桅桿" },
-        { question: "16. 其他" },
-      ],
       suggest: "", // 改善建議
     };
   },
@@ -470,6 +293,8 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    closeDialogDel(){
+    },
     // 搜尋
     search() {
       
@@ -479,8 +304,8 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
                 ],
         QyName:[
@@ -495,6 +320,7 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
+          "Location",
           "FlowId", "DepartName"
         ],
       }).then(res => {
@@ -508,11 +334,11 @@ export default {
         this.chLoadingShow({ show: false})
       })
     },
-    // 存
+    // 儲存編輯
     save() {},
     // 關閉 dialog
     close() {
-      this.Add = false;
+      this.Edit = false;
       this.dialog3 = false;
       this.dialogShowEdit = false;
       this.dialogDel = false;
@@ -551,28 +377,7 @@ export default {
         this.initInput();
        
         let dat = JSON.parse(res.data.DT)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
+        
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
