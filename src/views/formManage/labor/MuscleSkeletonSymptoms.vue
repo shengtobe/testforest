@@ -4,61 +4,13 @@
     <!-- 第一排選項 -->
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>調查日期(起)
-        </h3>
-        <v-menu
-          v-model="a"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="z"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="primary"
-            v-model="z"
-            @input="a = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect label="調查日期(起)" :showIcon="false" v-model="SQuery.sDate"/>
       </v-col>
       <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-calendar-text</v-icon>調查日期(迄)
-        </h3>
-        <v-menu
-          v-model="q"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model.trim="df"
-              solo
-              v-on="on"
-              readonly
-            ></v-text-field>
-          </template>
-          <v-date-picker
-            color="primary"
-            v-model="df"
-            @input="q = false"
-            locale="zh-tw"
-          ></v-date-picker>
-        </v-menu>
+        <dateSelect label="調查日期(迄)" :showIcon="false" v-model="SQuery.eDate"/>
       </v-col>
       <div class="col-sm-4 col-md-8 col-12">
-        <v-btn  dark large class="col-4 col-md-2 mr-3 btn-search">
+        <v-btn  dark large class="col-4 col-md-2 mr-3 btn-search" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn class="btn-add" elevation="3" dark large @click="newOne">
@@ -67,7 +19,7 @@
       </div>
     </v-row>
     <!-- 人數 -->
-    <v-row class="label-header">
+    <!-- <v-row class="label-header">
       <v-col cols="12" sm="6">
       </v-col>
       <v-col cols="12" sm="2">
@@ -89,7 +41,7 @@
         </v-text-field>
       </v-col>
       
-    </v-row>
+    </v-row> -->
     <!-- 表格資料 -->
     <v-col cols="12">
       <v-card>
@@ -110,6 +62,87 @@
             <span class="red--text subtitle-1">資料讀取中...</span>
           </template>
 
+          <template v-slot:item.SEX="{ item }">
+            {{ gender.find(e=>e.value==item.SEX).text }}
+          </template>
+
+          <template v-slot:item.Hand="{ item }">
+            {{ item.Hand=='1'?'左':'右' }}
+          </template>
+
+          <template v-slot:item.CheckOption2="{ item }">
+            {{ item.CheckOption2=='1'?'是':'否' }}
+          </template>
+
+          <template v-slot:item.CheckOption1="{ item }">
+            {{ item.CheckOption1=='1'?'是':'否' }}
+          </template>
+
+          <template v-slot:item.CheckOption4="{ item }">
+            {{ getDuringTime(item.CheckOption4) }}
+          </template>
+          
+
+          <template v-slot:item.CheckOption5="{ item }">
+            {{ getSelection(item.CheckOption5) }}
+          </template>
+
+          <template v-slot:item.CheckOption6="{ item }">
+            {{ getSelection(item.CheckOption6) }}
+          </template>
+
+          <template v-slot:item.CheckOption7="{ item }">
+            {{ getSelection(item.CheckOption7) }}
+          </template>
+
+          <template v-slot:item.CheckOption8="{ item }">
+            {{ getSelection(item.CheckOption8) }}
+          </template>
+
+          <template v-slot:item.CheckOption9="{ item }">
+            {{ getSelection(item.CheckOption9) }}
+          </template>
+
+          <template v-slot:item.CheckOption10="{ item }">
+            {{ getSelection(item.CheckOption10) }}
+          </template>
+
+          <template v-slot:item.CheckOption11="{ item }">
+            {{ getSelection(item.CheckOption11) }}
+          </template>
+
+          <template v-slot:item.CheckOption12="{ item }">
+            {{ getSelection(item.CheckOption12) }}
+          </template>
+
+          <template v-slot:item.CheckOption13="{ item }">
+            {{ getSelection(item.CheckOption13) }}
+          </template>
+
+          <template v-slot:item.CheckOption14="{ item }">
+            {{ getSelection(item.CheckOption14) }}
+          </template>
+
+          <template v-slot:item.CheckOption15="{ item }">
+            {{ getSelection(item.CheckOption15) }}
+          </template>
+
+          <template v-slot:item.CheckOption16="{ item }">
+            {{ getSelection(item.CheckOption16) }}
+          </template>
+
+          <template v-slot:item.CheckOption17="{ item }">
+            {{ getSelection(item.CheckOption17) }}
+          </template>
+
+          <template v-slot:item.CheckOption18="{ item }">
+            {{ getSelection(item.CheckOption18) }}
+          </template>
+
+          <template v-slot:item.CheckOption19="{ item }">
+            {{ getSelection(item.CheckOption19) }}
+          </template>
+
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
             <v-btn
@@ -117,13 +150,14 @@
               class="mr-2 btn-memo"
               small
               dark
+              fab
               @click="viewPage(item)"
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
-            <!-- <v-btn title="刪除" small dark fab color="red" @click="dialog3 = true">
+            <v-btn title="刪除" small dark fab class="mr-2 btn-delete" @click="goDel(item)">
               <v-icon dark>mdi-delete</v-icon>
-            </v-btn>-->
+            </v-btn>
           </template>
 
           <!-- 頁碼 -->
@@ -155,76 +189,51 @@
             <v-col cols="12" class="label-header">
               <v-row no-gutter>
                 <v-col cols="12" sm="4">
-                  <h3 class="mb-1">填表日期</h3>
-                  <v-menu
-                    v-model="ass"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        v-model.trim="zs"
-                        solo
-                        v-on="on"
-                        readonly
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      color="primary"
-                      v-model="zs"
-                      @input="ass = false"
-                      locale="zh-tw"
-                    ></v-date-picker>
-                  </v-menu>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">工作部門</h3>
-                  <v-select dense single-line :items="apm" outlined />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">班別</h3>
-                  <v-text-field dense single-line outlined />
-                </v-col>
-                <v-col cols="12" sm="12">
-                  <h3 class="mb-1">作業名稱</h3>
-                  <v-text-field dense single-line outlined />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">職稱</h3>
-                  <v-text-field dense single-line outlined />
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <h3 class="mb-1">員工編號</h3>
-                  <v-text-field dense single-line outlined />
+                  <dateSelect label="填表日期" :showIcon="false" v-model="ipt.CheckDay"/>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">姓名</h3>
-                  <v-text-field dense single-line outlined />
+                  <peopleSelect solo :peopleList="ipt.CheckedID" ref="peopleSelect" :canEdit="!flowNo" @getPeople="(val)=>{ipt.CheckedID=val.UserId;ipt.CheckedName=val.UserName;getPeopleData(val.UserId)}"/>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="4">
+                  <deptSelect label="工作部門" outType="key" v-model="ipt.Dep" readonly/>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">地區</h3>
+                  <v-text-field dense single-line solo v-model="ipt.Location"/>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">作業名稱</h3>
+                  <v-text-field dense single-line solo v-model="ipt.WorkName"/>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <h3 class="mb-1">職稱</h3>
+                  <v-text-field dense single-line solo v-model="ipt.JobName"/>
+                </v-col>
+                <v-col cols="12" sm="4">
                   <h3 class="mb-1">性別</h3>
-                  <v-select dense single-line :items="gender" outlined />
+                  <v-select dense single-line :items="gender" v-model="ipt.SEX" solo/>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="4">
                   <h3 class="mb-1">年齡</h3>
-                  <v-text-field dense type="number" single-line outlined />
+                  <v-text-field dense type="number" single-line solo v-model="ipt.Age"/>
                 </v-col>
-                <v-col cols="12" sm="3">
+                <v-col cols="12" sm="4">
                   <h3 class="mb-1">年資(年)</h3>
-                  <v-text-field dense type="number" single-line outlined />
+                  <v-text-field dense type="number" single-line solo v-model="ipt.Experience"/>
                 </v-col>
-                <v-col cols="12" sm="3" />
+                <!-- <v-col cols="12" sm="3" /> -->
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">身高</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line solo suffix="cm" v-model="ipt.Height"/>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">體重</h3>
-                  <v-text-field dense single-line outlined />
+                  <v-text-field dense single-line solo suffix="kg" v-model="ipt.Weight"/>
                 </v-col>
                 <v-col cols="12" sm="4">
                   <h3 class="mb-1">慣用手</h3>
-                  <v-select dense single-line :items="handedness" outlined />
+                  <v-select dense single-line :items="handedness" solo v-model="ipt.Hand"/>
                 </v-col>
               </v-row>
               <v-col cols="12" sm="12">
@@ -234,26 +243,26 @@
                   </p>
                 </v-col>
                 <v-col cols="12" sm="2">
-                  <v-radio-group dense row class="pa-0 ma-0" v-model="IsSick1">
+                  <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.CheckOption1">
                     <v-radio color="success" label="是" value="1" />
                     <v-radio color="success" label="否" value="2" />
                   </v-radio-group>
                 </v-col>
               </v-col>
-              <div v-if="IsSick1 == 1">
+              <div v-if="ipt.CheckOption1 == 1">
                 <v-col cols="12" sm="9">
                   <p class="font-weight-black title text-left font-size-50">
                     身體的疲勞、痠痛、發麻、刺痛等不舒服，是否與目前工作有關？
                   </p>
                 </v-col>
                 <v-col cols="12" sm="2">
-                  <v-radio-group dense row class="pa-0 ma-0" v-model="IsSick2">
+                  <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.CheckOption2">
                     <v-radio color="success" label="是" value="1" />
                     <v-radio color="success" label="否" value="2" />
                   </v-radio-group>
                 </v-col>
               </div>
-              <div v-if="IsSick2 == 1">
+              <div v-if="ipt.CheckOption2 == 1">
                 <p class="font-weight-black title text-left font-size-50">
                   原因是:
                 </p>
@@ -261,12 +270,12 @@
                   auto-grow
                   outlined
                   rows="3"
-                  v-model.trim="ipt.suggest"
+                  v-model.trim="ipt.CheckOption3"
                 ></v-textarea>
                 <p class="font-weight-black title text-left font-size-50">
                   上述最嚴重部位之酸痛、不適情形持續多久時間？
                 </p>
-                <v-radio-group dense row class="pa-0 ma-0" v-model="SickTime">
+                <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.CheckOption4">
                   <v-radio color="orange" label="一個月" value="1" />
                   <v-radio color="orange" label="三個月" value="2" />
                   <v-radio color="orange" label="六個月" value="3" />
@@ -294,7 +303,7 @@
                   <v-row no-gutter>
                     <v-col cols="12" sm="4">{{ item.question }}</v-col>
                     <v-col cols="12" sm="8">
-                      <v-radio-group dense row class="pa-0 ma-0" v-model="ipt.sickPos[idx].pos">
+                      <v-radio-group dense row class="pa-0 ma-0" v-model="ipt['CheckOption'+(idx+5)]">
                         <v-radio color="success" label="[不痛]，關節可以自由活動" value="1"/>
                         <v-radio color="orange" label="[微痛]，關節活動到極限會酸痛，可以忽略" value="2" />
                         <v-radio color="orange" label="[中等疼痛]，關節活動超過一半會酸痛，但是可以完成全部活動範圍，可能影響工作" value="3" />
@@ -312,9 +321,8 @@
                   auto-grow
                   outlined
                   rows="4"
-                  v-model.trim="ipt.suggest"
-                ></v-textarea>
-
+                  v-model.trim="ipt.Memo"
+                />
                 <p>
                   以自覺式肌肉骨骼症狀調查表(NMQ)，對於未曾實施過NMQ調查之員工實施，以發現可能有潛在肌肉骨骼傷病風險之工作或作業，參考列入可能需要評估之對象。
                 </p>
@@ -336,6 +344,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="Del.show" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="Del.RPFlowNo"
+        :key="'d' + Del.key"
+        @search="search"
+        @close="close"
+        @cancel="close" />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -343,220 +362,190 @@
 import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
-import { maintainStatusOpts } from '@/assets/js/workList'
-import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { fetchFormOrderList, fetchFormOrderOne, updateFormOrder, createFormOrder0, deleteFormOrder } from '@/apis/formManage/serve'
+import deptSelect from '@/components/forManage/deptSelect'
+import dateSelect from '@/components/forManage/dateSelect'
+import peopleSelect from '@/components/PeopleSelectMuti'
+import dialogDelete from "@/components/forManage/dialogDelete"
+import { login } from '@/apis/login'
 
 export default {
   data() {
     return {
       title: "肌肉骨骼症狀調查表",
       newText: "調查表",
+      DB_Table: "RP094",
       isLoading: false,
-     disabled: false,
-      apm: ["綜合企劃科", "鐵路服務科", "鐵路維護科", "車輛養護科", "秘書室", "人事室", "主計室", "政風室", "修理工廠", "嘉義車庫", "阿里山車庫", "竹崎監工區", "奮起湖監工區", "阿里山監工區"],
-      gender: ["男", "女", "其他"],
-      handedness: ["右手", "左手"],
-      IsSick1: 0,
-      IsSick2: 0,
-      SickTime: 0,
-      manImg: require("../../../../src/assets/images/manPic.png"),
-      HarmCount: 5,
-      NoHarmCount: 13,
-      SumHarmCount: null,
-      formDepartOptions: [
-        // 通報單位下拉選單
-        { text: "不限", value: "" },
-        ...formDepartOptions,
+      disabled: false,
+      gender: [
+        { value:"1",text:"男" },
+        { value:"2",text:"女" },
+        { value:"3",text:"其他" },
       ],
-      a: "",
-      ass: "",
-      z: "",
-      zs: "",
-      q: "",
-      df: "",
-      s: "",
-      qz: "",
-      wx: "",
-      pp: "",
-      oo: "",
-      ii: "",
-      uu: "",
-      yy: "",
+      handedness: [
+        { value:"2",text:"右手" },
+        { value:"1",text:"左手" },
+      ],
+      // IsSick1: 0,
+      // IsSick2: 0,
+      // SickTime: 0,
+      manImg: require("../../../../src/assets/images/manPic.png"),
+      // HarmCount: 5,
+      // NoHarmCount: 13,
+      // SumHarmCount: null,
       Add: false,
       dialog3: false,
+      SQuery: {
+        sDate: "",
+        eDate: ""
+      },
       pageOpt: { page: 1 }, // 目前頁數
       headers: [
         // 表格顯示的欄位
-        {text: "所屬單位", value: "a1",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "檢查日期",value: "a2",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        // {text: "審查狀態",value: "a3",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "姓名",value: "a4",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "職稱",value: "a5",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "性別",value: "a6",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "作業名稱",value: "a7",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "年齡",value: "a8",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "年資",value: "a9",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "身高(cm)",value: "a10",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "體重(kg)",value: "a11",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "慣用手",value: "a12",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "職業傷害",value: "a13",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "通報中",value: "a14",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "問卷調查",value: "a15",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "是否不適",value: "a16",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "與目前工作有關",value: "a17",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "痠痛持續時間",value: "a18",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "頸",value: "a19",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "上背",value: "a20",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "下背",value: "a21",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "左肩",value: "a22",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "右肩",value: "a23",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "左手肘 前臂",value: "a24",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "右手肘 前臂",value: "a25",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "左手 手腕",value: "a26",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "右手 手腕",value: "a27",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "左臀/大腿",value: "a28",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "右臀/大腿",value: "a29",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "左膝",value: "a30",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "右膝",value: "a31",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "左腳踝/腳",value: "a32",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "右腳踝/腳",value: "a33",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "簡易人因工程改善",value: "a34",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "是否改善",value: "a35",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "進階人因工程改善",value: "a36",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "是否改善",value: "a37",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
-        {text: "備註",value: "a38",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "所屬單位", value: "DepName",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "檢查日期",value: "CheckDay",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "姓名",value: "CheckedName",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "職稱",value: "JobName",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "性別",value: "SEX",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "作業名稱",value: "WorkName",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "年齡",value: "Age",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "年資",value: "Experience",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "身高(cm)",value: "Height",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "體重(kg)",value: "Weight",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "慣用手",value: "Hand",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "職業傷害",value: "a13",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "通報中",value: "a14",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "問卷調查",value: "a15",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "是否不適",value: "CheckOption1",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "與目前工作有關",value: "CheckOption2",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "痠痛持續時間",value: "CheckOption4",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "頭",value: "CheckOption5",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "上背",value: "CheckOption6",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左肩",value: "CheckOption7",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右肩",value: "CheckOption8",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左手肘/左前臂",value: "CheckOption9",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右手肘/右前臂",value: "CheckOption10",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "下背",value: "CheckOption11",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左手/左手腕",value: "CheckOption12",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右手/右手腕",value: "CheckOption13",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左臀/左大腿",value: "CheckOption14",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右臀/右大腿",value: "CheckOption15",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左膝",value: "CheckOption16",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右膝",value: "CheckOption17",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "左腳踝/左腳",value: "CheckOption18",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "右腳踝/右腳",value: "CheckOption19",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "簡易人因工程改善",value: "a34",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "是否改善",value: "a35",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "進階人因工程改善",value: "a36",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        // {text: "是否改善",value: "a37",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "備註",value: "Memo",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
+        {text: "功能",value: "content",align: "center",divider: true,class: "subtitle-1 white--text font-weight-bold"},
       ],
-      tableItems: [
-        {
-          a1: "車輛養護科",
-          a2: "2020-08-01",
-          a3: "已審查",
-          a4: "王大明",
-          a5: "科員",
-          a6: "男",
-          a7: "鐵路維護保養",
-          a8: "40",
-          a9: "12",
-          a10: "170",
-          a11: "66",
-          a12: "右",
-          a13: "O",
-          a14: "X",
-          a15: "O",
-          a16: "O",
-          a17: "O",
-          a18: "3年",
-          a19: "2",
-          a20: "3",
-          a21: "1",
-          a22: "0",
-          a23: "0",
-          a24: "0",
-          a25: "2",
-          a26: "1",
-          a27: "0",
-          a28: "0",
-          a29: "4",
-          a30: "3",
-          a31: "0",
-          a32: "0",
-          a33: "0",
-          a34: "",
-          a35: "",
-          a36: "",
-          a37: "",
-          a38: ""
-        },
-        {
-          a1: "二萬平車站",
-          a2: "2020-08-01",
-          a3: "審查中",
-          a4: "羅佑婷",
-          a5: "副站長",
-          a6: "女",
-          a7: "值班",
-          a8: "43",
-          a9: "19",
-          a10: "154",
-          a11: "47",
-          a12: "右",
-          a13: "O",
-          a14: "X",
-          a15: "O",
-          a16: "X",
-          a17: "O",
-          a18: "1年",
-          a19: "1",
-          a20: "1",
-          a21: "0",
-          a22: "0",
-          a23: "0",
-          a24: "1",
-          a25: "0",
-          a26: "1",
-          a27: "2",
-          a28: "0",
-          a29: "2",
-          a30: "1",
-          a31: "3",
-          a32: "0",
-          a33: "1",
-          a34: "",
-          a35: "",
-          a36: "",
-          a37: "",
-          a38: ""
-        },
-      ],
+      tableItems: [],
+      defIpt:{
+        CheckDay: "",
+        CheckedID: "",
+        CheckedName: "",
+        Location: "",
+        Dep: "",
+        DepName: "",
+        WorkName: "",
+        JobName: "",
+        SEX: "",
+        Age: "",
+        Experience: "",
+        Height: "",
+        Weight: "",
+        Hand: "",
+        CheckOption1: "",
+        CheckOption2: "",
+        CheckOption3: "",
+        CheckOption4: "",
+        CheckOption5: "0",
+        CheckOption6: "0",
+        CheckOption7: "0",
+        CheckOption8: "0",
+        CheckOption9: "0",
+        CheckOption10: "0",
+        CheckOption11: "0",
+        CheckOption12: "0",
+        CheckOption13: "0",
+        CheckOption14: "0",
+        CheckOption15: "0",
+        CheckOption16: "0",
+        CheckOption17: "0",
+        CheckOption18: "0",
+        CheckOption19: "0",
+        Memo: ""
+      },
       ipt: {
-        // department: "",
-        // name: JSON.parse(localStorage.getItem("user")).name,
-        // date: new Date().toISOString().substr(0, 10),
-        sickPos: [
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-          { pos: "0", note: "" },
-        ],
+        CheckDay: "",
+        CheckedID: "",
+        CheckedName: "",
+        Location: "",
+        Dep: "",
+        DepName: "",
+        WorkName: "",
+        JobName: "",
+        SEX: "",
+        Age: "",
+        Experience: "",
+        Height: "",
+        Weight: "",
+        Hand: "",
+        CheckOption1: "",
+        CheckOption2: "",
+        CheckOption3: "",
+        CheckOption4: "",
+        CheckOption5: "0",
+        CheckOption6: "0",
+        CheckOption7: "0",
+        CheckOption8: "0",
+        CheckOption9: "0",
+        CheckOption10: "0",
+        CheckOption11: "0",
+        CheckOption12: "0",
+        CheckOption13: "0",
+        CheckOption14: "0",
+        CheckOption15: "0",
+        CheckOption16: "0",
+        CheckOption17: "0",
+        CheckOption18: "0",
+        CheckOption19: "0",
+        Memo: ""
       },
       sickPos: [
-        { question: "1. 頸" },
-        { question: "2. 左肩" },
-        { question: "3. 左手肘/左前臂" },
-        { question: "4. 左手/左手腕" },
-        { question: "5. 左臀/左大腿" },
-        { question: "6. 左膝" },
-        { question: "7. 左腳踝/左腳" },
-        { question: "8. 上背" },
-        { question: "9. 右肩" },
-        { question: "10. 右手肘/右前臂" },
-        { question: "11. 下背" },
-        { question: "12. 右手/右手腕" },
-        { question: "13. 右臀/右大腿" },
-        { question: "14. 右膝" },
+        { question: "1. 頭" },
+        { question: "2. 上背" },
+        { question: "3. 左肩" },
+        { question: "4. 右肩" },
+        { question: "5. 左手肘/左前臂" },
+        { question: "6. 右手肘/右前臂" },
+        { question: "7. 下背" },
+        { question: "8. 左手/左手腕" },
+        { question: "9. 右手/右手腕" },
+        { question: "10. 左臀/左大腿" },
+        { question: "11. 右臀/右大腿" },
+        { question: "12. 左膝" },
+        { question: "13. 右膝" },
+        { question: "14. 左腳踝/左腳" },
         { question: "15. 右腳踝/右腳" },
       ],
-      suggest: "", // 改善建議
+      flowNo: "",
+      Del: {
+        show: false,
+        key: 0,
+        RPFlowNo: ""
+      }
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { 
+    Pagination,
+    deptSelect,
+    dateSelect,
+    peopleSelect,
+    dialogDelete
+  },
   computed: {
     ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -578,45 +567,18 @@ export default {
         dStr = '0' + dStr;
       }
       this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
+      this.SQuery.sDate = this.SQuery.eDate = this.nowTime
   },
   methods: {
-    initInput(){
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
-    },
-    unique(list){
-      var arr = [];
-      let b = false;
-      for (var i = 0; i < list.length; i++) {
-        if (i == 0) arr.push(list[i]);
-        b = false;
-        if (arr.length > 0 && i > 0) {
-          for (var j = 0; j < arr.length; j++) {
-            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
-              b = true;
-              //break;
-            }
-          }
-          if (!b) {
-            arr.push(list[i]);
-          }
-        }
-      }
-      return arr;
-    },
     newOne(){
-     
+      if(this.ipt.CheckedID){
+        this.$refs.peopleSelect.deleteSelectPeople(this.ipt.CheckedID)
+      }
+      this.ipt = {...this.defIpt}
+      const today = new Date()
+      this.flowNo = ""
+      this.ipt.CheckDay = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate()
       this.Add = true
-     
-      this.initInput();
     },
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
@@ -627,30 +589,51 @@ export default {
     },
     // 搜尋
     search() {
-      
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
+          {'Column':'StartDayVlaue','Value':this.SQuery.sDate},
+          {"Column":"EndDayVlaue","Value":this.SQuery.eDate},
+        ],
         QyName:[
-          // "DISTINCT (RPFlowNo)",
-          // // "ID",
-          // // "Name",
-          // // "CheckDay",
-          // // "CheckStatus",
-          // " * "
           "RPFlowNo",
-          "ID",
-          "Name",
           "CheckDay",
-          "CheckStatus",
-          "FlowId", "DepartName"
+          "CheckedID",
+          "CheckedName",
+          "Location",
+          "Dep",
+          "DepName",
+          "WorkName",
+          "JobName",
+          "SEX",
+          "Age",
+          "Experience",
+          "Height",
+          "Weight",
+          "Hand",
+          "CheckOption1",
+          "CheckOption2",
+          "CheckOption3",
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
+          "CheckOption9",
+          "CheckOption10",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "CheckOption15",
+          "CheckOption16",
+          "CheckOption17",
+          "CheckOption18",
+          "CheckOption19",
+          "Memo",
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
@@ -663,23 +646,114 @@ export default {
         this.chLoadingShow({show:false})
       })
     },
+    getPeopleData(empid){
+      if(empid!=undefined){
+        const sendData = {
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          UserId: empid,
+          UserPasswd: "",
+          BackDoor: 'T',
+        }
+        login({
+          ...sendData
+        }).then(res => {
+          if (res.data.ErrorCode == 0) {
+            this.ipt.CheckedName = res.data.UserData.UserName
+            this.ipt.Dep = res.data.UserData.DeptList[0].DeptId
+            this.ipt.DepName = res.data.UserData.DeptList[0].DeptDesc
+            this.ipt.SEX = res.data.UserData.PeopleSex
+            this.ipt.JobName = res.data.UserData.JobName
+            const getAge = function(dateString) {
+                var today = new Date();
+                var birthDate = new Date(dateString);
+                var age = today.getFullYear() - birthDate.getFullYear();
+                var m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+                {
+                    age--;
+                }
+                return age;
+              }
+            this.ipt.Age = getAge(res.data.UserData.PeopleBirthday)
+            const monthDiff = function(d1, d2) {
+              var months;
+              months = (d2.getFullYear() - d1.getFullYear()) * 12;
+              months -= d1.getMonth();
+              months += d2.getMonth();
+              return months <= 0 ? 0 : months;
+            }
+            const totalMonth = monthDiff(new Date(res.data.UserData.CreateDTime), new Date())
+            this.ipt.Experience = (totalMonth/12).toFixed(1)
+            // this.ipt.EmployDate = res.data.UserData.CreateDTime.split(' ')[0].replaceAll('\/', '-')
+          } else {
+            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+            this.$router.push({ path: '/error' })
+          }
+        }).catch( err => {
+          console.warn(err)
+          this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
+        }).finally(() => {
+        })
+      }
+    },
     // 存
-    save() {},
+    save() {
+      this.chLoadingShow({show:true})
+      let ki = []
+      for( let key in this.ipt ) {
+        ki.push({
+          Column: key,
+          Value: this.ipt[key]
+        })
+      }
+      if(!this.flowNo) {
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          FunCode: 'C',
+          KeyItem:ki
+        }).then(res=>{
+          if(!res.data.ErrorCode==0){
+            console.error(res.data.Msg)
+            alert('儲存時發生問題，請重新儲存!')
+          }
+        }).catch(err => {
+          console.warn(err)
+          alert('儲存時發生問題，請重新儲存!')
+        }).finally(() => {
+          this.chLoadingShow({show:false})
+        })
+      } else {
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          FunCode: 'U',
+          RPFlowNo: this.flowNo,
+          KeyItem:ki
+        }).then(res=>{
+          if(!res.data.ErrorCode==0){
+            console.error(res.data.Msg)
+            alert('儲存時發生問題，請重新儲存!')
+          }
+        }).catch(err => {
+          console.warn(err)
+          alert('儲存時發生問題，請重新儲存!')
+        }).finally(() => {
+          this.chLoadingShow({show:false})
+        })
+      }
+      this.Add = false
+    },
     // 關閉 dialog
     close() {
       this.Add = false;
-      this.dialog3 = false;
-      this.dialogShowEdit = false;
-      this.dialogDel = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.addItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
+      this.Del.show = false
     },
     viewPage(item) {
       this.chLoadingShow({show:true})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      this.flowNo = item.RPFlowNo
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
@@ -689,55 +763,91 @@ export default {
                 ],
         QyName:[
           "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
+          "CheckedID",
+          "CheckedName",
+          "Location",
+          "Dep",
+          "DepName",
+          "WorkName",
+          "JobName",
+          "SEX",
+          "Age",
+          "Experience",
+          "Height",
+          "Weight",
+          "Hand",
           "CheckOption1",
-          "Memo_1",
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
+          "CheckOption9",
+          "CheckOption10",
+          "CheckOption11",
+          "CheckOption12",
+          "CheckOption13",
+          "CheckOption14",
+          "CheckOption15",
+          "CheckOption16",
+          "CheckOption17",
+          "CheckOption18",
+          "CheckOption19",
+          "Memo",
         ],
       }).then(res => {
-        this.initInput();
-       
         let dat = JSON.parse(res.data.DT)
+        console.log(dat[0])
+        this.ipt = {...dat[0]}
         this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
       }).catch(err => {
-        //console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
       })
-    },//viewPage
-    Add() {
+    },
+    goDel(item) {
+      this.Del.RPFlowNo = item.RPFlowNo
+      this.Del.key++
+      this.Del.show  = true
+    },
+    getSelection(selection) {
+      switch(selection){
+        case "1":
+          return "不痛"
+        case "2":
+          return "微痛"
+        case "3":
+          return "中等疼痛"
+        case "4":
+          return "劇痛"
+        case "5":
+          return "非常劇痛"
+        case "6":
+          return "極度劇痛"
+        default:
+          return ""
+      }
+    },
+    getDuringTime(time) {
+      switch(time){
+        case '1':
+          return '一個月'
+        case '2':
+          return '三個月'
+        case '3':
+          return '六個月'
+        case '4':
+          return '一年'
+        case '5':
+          return '三年'
+        case '6':
+          return '超過三年'
+        default:
+          return ""
+      }
     }
   },
 };
