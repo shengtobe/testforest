@@ -246,7 +246,12 @@ export default {
     },
     // 搜尋
     search() {
-    
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間

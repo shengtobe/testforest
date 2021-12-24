@@ -124,7 +124,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-spacer></v-spacer>
           <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
-          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">儲存編輯</v-btn>
+          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading">儲存編輯</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -153,6 +153,8 @@ export default {
       actions: Actions,
       isLoading: false,
       disabled: false,
+      dateAMax: '',
+      dateBMin: '',
       a: "",
       ass: "",
       z: "",
@@ -283,7 +285,6 @@ export default {
       return arr;
     },
     newOne(){
-     
       this.$router.push({ path: '/form-manage/curing/level-crossing-function-checklist-add' })
     },
     ...mapActions('system', [
@@ -297,7 +298,12 @@ export default {
     },
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -334,8 +340,6 @@ export default {
         this.chLoadingShow({ show: false})
       })
     },
-    // 儲存編輯
-    save() {},
     // 關閉 dialog
     close() {
       this.Edit = false;
@@ -349,7 +353,12 @@ export default {
       }, 300);
     },
     viewPage(item) {
+      if(item.RPFlowNo.length > 0){
+        this.$router.push({ path: `/form-manage/curing/level-crossing-function-checklist-edit/${item.RPFlowNo}` })
+      }
+      return
       this.chLoadingShow({show:true})
+      
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -360,23 +369,25 @@ export default {
                 ],
         QyName:[
           "CheckDay",
-          "DepartName",
+          "EndDay",
+          "Memo",
           "Name",
-          "CheckMan",
           "CheckOption1",
-          "Memo_1",
           "CheckOption2",
-          "Memo_2",
           "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
+          "CheckOption4",
+          "CheckOption5",
+          "CheckOption6",
+          "CheckOption7",
+          "CheckOption8",
 
         ],
       }).then(res => {
         this.initInput();
        
         let dat = JSON.parse(res.data.DT)
+        console.log("dat: ", dat);
+        this.$router.push({ path: `/form-manage/curing/${dat}/level-crossing-function-checklist-add` })
         
       }).catch(err => {
         //console.log(err)

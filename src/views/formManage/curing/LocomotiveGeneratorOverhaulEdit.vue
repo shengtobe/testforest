@@ -269,7 +269,8 @@ export default {
       // --
       const keyArr = Object.keys(that.inputData.editableData);
       keyArr.forEach((e) => {
-        rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
+        if(e != 'Name')
+          rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
       encodeObject(rtnObj);
      

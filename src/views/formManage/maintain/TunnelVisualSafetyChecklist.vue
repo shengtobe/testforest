@@ -258,7 +258,12 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this._data.z)
+      let d2 = Date.parse(this._data.df)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間

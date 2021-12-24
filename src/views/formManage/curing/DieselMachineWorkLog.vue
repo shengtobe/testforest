@@ -5,17 +5,27 @@
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
-          label="日誌日期"
-          key="checkDate"
+          label="日誌日期(起)"
+          key="dateStart"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.checkDate"
+          v-model="formData.searchItem.dateStart"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="日誌日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
         />
       </v-col>
     </v-row>
-    <ToolBar @search="search" @reset="reset" @newOne="newOne('1')" :text="newText" />
+    <ToolBar @search="search" @reset="reset" @newOne="newOne('1')" :text="'使用前'+newText" />
     
     <!-- 表格資料 -->
+    <v-col class="label-header font-weight-black mb-n3"><h3 class="text-center">使用前日誌</h3></v-col>
     <v-col cols="12">
+      
       <v-card>
         <v-data-table
           :headers="header1"
@@ -65,7 +75,7 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <v-row class="px-2">
+    <v-row class="px-2 mt-15 mb-n16">
       <v-col cols="12" align-self="end" class="mb-5 text-md-right">
         <v-btn
           elevation="3"
@@ -75,11 +85,12 @@
           @click="newOne('2')"
         >
           <!-- @click="ShowDetailDialog = true" -->
-          <v-icon>mdi-plus</v-icon>新增{{ newText }}
+          <v-icon>mdi-plus</v-icon>新增使用後{{ newText }}
         </v-btn>
       </v-col>
     </v-row>
     <!-- 表格資料 -->
+    <v-col class="label-header font-weight-black mb-n3"><h3 class="text-center">使用後日誌</h3></v-col>
     <v-col cols="12">
       <v-card>
         <v-data-table
@@ -210,11 +221,13 @@ export default {
           deptOptions:[]
         },
         searchItem: {
-          checkDate: "",
+          dateStart: "",
+          dateEnd: "",
           department: "",
         },
         default: {
-          checkDate: "",
+          dateStart: "",
+          dateEnd: "",
           department: "",
         }
       },
@@ -247,7 +260,7 @@ export default {
     }),
   },
   mounted() {
-    this.formData.searchItem.checkDate = this.formData.default.checkDate = getTodayDateString();
+    this.formData.searchItem.dateStart = this.formData.default.dateEnd = getTodayDateString();
   },
   methods: {
     ...mapActions('system', [
@@ -269,14 +282,20 @@ export default {
     },
     // 搜尋
     search() {
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this.formData.searchItem.checkDate},
-          {"Column":"EndDayVlaue","Value":this.formData.searchItem.checkDate},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
           {"Column":"DepartCode","Value":this.formData.searchItem.department},
                 ],
         QyName:[

@@ -585,7 +585,12 @@ export default {
     },
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this.input.dateStart)
+      let d2 = Date.parse(this.input.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -623,7 +628,6 @@ export default {
     },
     // 存
     save() {
-      ;
       this.chLoadingShow({show:true});
 
       var data = {

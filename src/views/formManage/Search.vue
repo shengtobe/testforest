@@ -136,10 +136,12 @@ export default {
       let arr = this.allRouters.filter((item) =>
         item.formGroup.includes(this.department)
       );
-
       // 加項次
       return arr.map((item, idx) => {
         if ("params" in item) {
+          if(item.path.includes('?')){
+            item.path = item.path.substring(0, item.path.indexOf('?'))
+          }
           item.path = item.path + "?";
           for (let index = 0; index < item.params.length; index++) {
             const element = item.params[index];

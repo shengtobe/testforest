@@ -81,7 +81,13 @@
 
           <v-col cols="12" sm="3">
             <h3 class="mb-1">工作部門</h3>
-            <v-select
+            <v-text-field
+              dense
+              single-line
+              v-model="inputData.editableData.CheckOption4"
+              outlined
+            />
+            <!-- <v-select
               dense
               single-line
               :items="apm"
@@ -89,7 +95,7 @@
               item-value="value"
               v-model="inputData.editableData.CheckOption4"
               outlined
-            />
+            /> -->
           </v-col>
           <v-col cols="12" sm="3">
             <h3 class="mb-1">職稱</h3>
@@ -604,9 +610,12 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.inputData.editableData.CheckOption1 = this.type;
+    this.inputData.editableData.CheckOption1 = this.typeStr;
+    console.log("this.inputData.editableData.CheckOption1: ", this.inputData.editableData.CheckOption1);
   },
-  created() {},
+  created() {
+    console.log("DisasterAccidentSurveyEdit.vue");
+  },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料

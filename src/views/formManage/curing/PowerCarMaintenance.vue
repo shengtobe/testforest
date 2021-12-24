@@ -438,7 +438,6 @@ export default {
     ]),
     newOne() {
       if (this.powerCarData.CarNo != "") {
-       ;
         this.Add = true;
        
         this.DynamicKey += 1;
@@ -456,7 +455,12 @@ export default {
     },
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       const that = this;
       // RP097
       this.chLoadingShow({show:true});
@@ -464,7 +468,10 @@ export default {
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table_097, // DB table
-        KeyItem: [{ Column: "CarNo", Value: this.formData.searchItem.carNo }],
+        KeyItem: [
+          { Column: "StartDayVlaue", Value: this.formData.searchItem.dateStart},
+          { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
+          { Column: "CarNo", Value: this.formData.searchItem.carNo }],
         QyName: [
           "CheckDay",
           "CarNo",

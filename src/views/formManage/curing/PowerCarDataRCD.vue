@@ -4,6 +4,22 @@
     <!-- 第一排選項 -->
     <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢修日期(起)"
+          key="dateStart"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateStart"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢修日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">車號</h3>
         <v-text-field solo v-model="formData.searchItem.carNo"></v-text-field>
       </v-col>
@@ -145,6 +161,13 @@ export default {
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
       },
+      {
+        text: "建立日期",
+        value: "CheckDay",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
       // {
       //   text: "審查狀態",
       //   value: "CheckStatus",
@@ -217,13 +240,22 @@ export default {
     },
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id
         KeyName: this.DB_Table, // DB table
-        KeyItem: [{ Column: "CarNo", Value: this.formData.searchItem.carNo }],
+        KeyItem: [
+          { Column: "StartDayVlaue", Value: this.formData.searchItem.dateStart},
+          { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
+          { Column: "CarNo", Value: this.formData.searchItem.carNo }
+          ],
         QyName: [
           "RPFlowNo",
           "ID",

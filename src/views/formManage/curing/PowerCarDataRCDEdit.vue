@@ -68,6 +68,7 @@
         <v-col>
           <h3 class="mb-1">年份</h3>
           <v-text-field
+            maxlength="4"
             v-model.trim="inputData.editableData.Year"
             solo
           ></v-text-field>

@@ -19,7 +19,7 @@
           label="調查日期(起)"
           key="dateStart"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateStart"
+          v-model="formData.searchItem.dateEnd"
         />
       </v-col>
     </v-row>
@@ -224,6 +224,7 @@ export default {
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
     this.type = this.$route.query.type;
+    console.log("this.$route.query.type: ", this.$route.query.type);
     this.typeStr = this.type == 1 ? "本處員工" : "承攬商";
   },
   mounted() {
@@ -252,7 +253,12 @@ export default {
     },
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間

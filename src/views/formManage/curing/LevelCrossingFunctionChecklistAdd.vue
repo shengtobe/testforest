@@ -3,10 +3,13 @@
 <!-- ------------加變數設定v-model只設到18-下次要從18-1開始加變數----------- -->
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center">新增{{ newText }}</p>
+      <v-row>
+      <p class="font-weight-black title text-center">
+        {{ (isEdit)? `編輯${ newText } (編號：${ id })` : `新增${ newText }` }}
+        </p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
-        <v-row no-gutter class="label-header">
+        <!-- <v-row no-gutter class="label-header">
           <v-col cols="12" sm="3">
             <dateSelect
             label="評估日期"
@@ -14,7 +17,7 @@
             v-model="zs"
           />
           </v-col>
-        </v-row>
+        </v-row> -->
         <!-- 選擇顯示項目 -->
         <v-col cols="12" sm="12">
           <h3 class="label-header">請選擇區段</h3>
@@ -23,7 +26,7 @@
           <v-radio-group style="margin-top: -5px" v-model="valShow" row >
             <v-tooltip bottom v-for="(item, idx) in loc" :key="'vs'+idx">
               <template v-slot:activator="{ on }" >
-                <span v-on="on">
+                <span v-on="on" class="mb-2 mr-2">
                   <v-radio  :value="item.title" @click="initInput">
                     <template v-slot:label>
                       <h4 >{{ item.title}}</h4>
@@ -250,6 +253,7 @@ import { Constrant } from "@/assets/js/constrant";
 import ToolBar from "@/components/forManage/toolbar";
 
 export default {
+  props: ['id'],  //路由參數
   data() {
     return {
       showTF: false,
@@ -464,10 +468,12 @@ export default {
           return this.valShow != 0
         },
         showTitle:function(){
-          let aa = this.loc.find(e => e.title == this.valShow).title
           let bb = this.loc.find(e => e.title == this.valShow).section
-          return aa + '. ' + bb
+          return this.valShow + '. ' + bb
         },
+        isEdit:function(){
+          return this.id != undefined
+        }
   },
   created() {
     //更新時間
@@ -476,6 +482,54 @@ export default {
     this.doMan.id = this.userData.UserId;
     this.doMan.depart = this.userData.DeptList[0].DeptDesc;
     this.doMan.departId = this.userData.DeptList[0].DeptId;
+    this.action = (this.id == undefined)?Actions.add:Actions.edit
+    if(this.action == Actions.edit){
+      this.chLoadingShow({show:true});
+      fetchFormOrderOne({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem: [ 
+            {'Column':'RPFlowNo','Value':this.id},
+                  ],
+          QyName:[
+            "CheckDay",
+            "EqipNo",
+            "EndDay",
+            "Memo",
+            "Name",
+            "CheckOption1",
+            "CheckOption2",
+            "CheckOption3",
+            "CheckOption4",
+            "CheckOption5",
+            "CheckOption6",
+            "CheckOption7",
+            "CheckOption8",
+          ],
+        }).then(res => {
+          this.initInput();
+         
+          let dat = (JSON.parse(res.data.DT))[0]
+          this.valShow = dat.EqipNo
+          this.RepairDay = dat.CheckDay
+          this.CheckOption1 = dat.CheckOption1
+          this.CheckOption2 = dat.CheckOption2
+          this.CheckOption3 = dat.CheckOption3
+          this.CheckOption4 = dat.CheckOption4
+          this.CheckOption5 = dat.CheckOption5
+          this.CheckOption6 = dat.CheckOption6
+          this.CheckOption7 = dat.CheckOption7
+          this.CheckOption8 = dat.CheckOption8
+          this.CompleteDay = dat.EndDay
+          this.Memo = dat.Memo
+        }).catch(err => {
+          //console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+    }
   },
   methods: {
     initInput(){
@@ -502,12 +556,19 @@ export default {
     addSupervisor() {},
     // 存
     save() {
+      let d1 = Date.parse(this.RepairDay)
+      let d2 = Date.parse(this.CompleteDay)
+      if(d1 > d2){
+        alert('時間錯誤')
+        return
+      }
       this.chLoadingShow({show:true});
       var data = {
         ClientReqTime: getNowFullTime(), // client 端請求時間
         OperatorID: this.userData.UserId, // 操作人id this.doMan.name = this.userData.UserName
         // OperatorID: "16713",  // 操作人id
         KeyName: this.DB_Table, // DB table
+        RPFlowNo: (this.id == undefined)?'':this.id,
         KeyItem: [
           { Column: "CheckDay", Value: this.RepairDay },
           { Column: "EqipNo", Value: this.loc.find(e => e.title == this.valShow).title },
@@ -519,6 +580,7 @@ export default {
           { Column: "CheckOption5", Value: this.CheckOption5 },
           { Column: "CheckOption6", Value: this.CheckOption6 },
           { Column: "CheckOption7", Value: this.CheckOption7 },
+          { Column: "CheckOption8", Value: this.CheckOption8 },
           { Column: "EndDay", Value: this.CompleteDay },
           { Column: "Memo", Value: this.Memo },
         ],
@@ -526,7 +588,6 @@ export default {
       // 修改
       if (this.action == Actions.edit) {
         // update 要自行增加RPFlowNo欄位
-        data.RPFlowNo = this.RPFlowNo;
        
         updateFormOrder(data)
           .then((res) => {
@@ -562,64 +623,6 @@ export default {
     closeWorkLogModal() {
       this.AddWorkLogModal = false;
     },
-    viewPage(item) {
-      this.chLoadingShow({show:true})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
-        ],
-      }).then(res => {
-        this.initInput();
-       
-        let dat = JSON.parse(res.data.DT)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({ show: false})
-      })
-    },//viewPage
   },
 };
 </script>

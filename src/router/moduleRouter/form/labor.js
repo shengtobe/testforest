@@ -55,7 +55,7 @@ export const FormLaborRouter = [
         path: '/form-manage/labor/disaster-accident-survey-vendor',
         component: () => import('@/views/formManage/labor/DisasterAccidentSurvey.vue'),
         formGroup: ['labor'],
-        params: [{ key: "type", value: 2 }]
+        params: [{ key: "type", value: '2' }]
     },
     {
         linkText: '災害事故調查表(承攬商)Add', // 職安衛8. 

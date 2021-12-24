@@ -72,7 +72,7 @@
 
           <v-col cols="12" sm="3">
             <h3 class="mb-1">工作部門</h3>
-            <v-select dense single-line :items="apm" outlined />
+            <v-text-field dense single-line outlined />
           </v-col>
           <v-col cols="12" sm="3">
             <h3 class="mb-1">職稱</h3>

@@ -523,7 +523,12 @@ export default {
     },
     // 搜尋
     search() {
-      
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
+      if(d1 > d2){
+        alert('時間範圍錯誤')
+        return
+      }
       this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -531,7 +536,7 @@ export default {
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
           {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
-          {"Column":"EndDayVlaue","Value":this._data.df},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
           {"Column":"DepartCode","Value":this._data.ipt2.depart},
                 ],
         QyName:[
