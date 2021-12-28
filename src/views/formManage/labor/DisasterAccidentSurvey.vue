@@ -272,7 +272,7 @@ export default {
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "CheckOption1", Value: this.type },
         ],
-        QyName: ["RPFlowNo", "ID", "Name", "CheckDay", "CheckStatus", "FlowId"],
+        QyName: ["RPFlowNo", "ID", "Name", "CheckDay", "CheckStatus", "FlowId", "DepartName"],
       })
         .then((res) => {
           this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));

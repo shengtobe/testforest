@@ -186,6 +186,13 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
+        text: "車號",
+        value: "CarNo",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
+      {
         text: "功能",
         value: "content",
         align: "center",

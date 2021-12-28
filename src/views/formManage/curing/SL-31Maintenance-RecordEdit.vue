@@ -17,6 +17,7 @@
               <v-select
                 v-model="inputData.editableData.CarHeadCode"
                 :items="carHeadCodes"
+                
                 solo
               />
             </v-col>
@@ -24,8 +25,8 @@
               <v-text-field
                 solo
                 v-model="inputData.editableData.CarNo"
-                type="number"
                 label="請輸入數字部分"
+                maxlength="10"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -45,14 +46,14 @@
         <!-- 累計公里數 -->
         <v-col cols="8" sm="4">
           <h3 class="mb-1">累計公里數</h3>
-          <v-text-field v-model="inputData.editableData.Km" required solo />
+          <v-text-field v-model="inputData.editableData.Km" maxlength="10" required solo />
         </v-col>
         <!-- 地點 -->
         <v-col cols="8" sm="4">
           <h3 class="mb-1">地點</h3>
           <v-text-field
             v-model="inputData.editableData.Location"
-            required
+            required maxlength="99"
             solo
           />
         </v-col>

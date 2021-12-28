@@ -24,7 +24,7 @@
               <v-text-field
                 solo
                 v-model="inputData.editableData.CarNo"
-                type="number"
+                maxlength="10"
                 label="請輸入數字部分"
               ></v-text-field>
             </v-col>
@@ -45,7 +45,7 @@
         <!-- 填寫人 -->
         <v-col cols="8" sm="4">
           <h3 class="mb-1">填寫人</h3>
-          <v-text-field v-model="inputData.Name" solo />
+          <v-text-field v-model="inputData.Name" solo maxlength="6"/>
         </v-col>
       </v-row>
       <v-row>

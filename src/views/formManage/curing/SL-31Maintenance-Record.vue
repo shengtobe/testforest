@@ -178,27 +178,6 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "破損及不良部分",
-        value: "Memo_1",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "狀況及原因",
-        value: "Memo_2",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
-        text: "處置",
-        value: "Memo_3",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
         text: "填寫人",
         value: "Name",
         align: "center",
@@ -289,9 +268,6 @@ export default {
           "CarHeadCode",
           "CarNo",
           "Km",
-          "Memo_1",
-          "Memo_2",
-          "Memo_3",
         ],
       })
         .then((res) => {

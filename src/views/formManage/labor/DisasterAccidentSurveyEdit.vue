@@ -33,6 +33,7 @@
               dense
               single-line
               outlined
+              maxlength="20"
               placeholder="ex:108082301"
               v-model="inputData.editableData.EventId"
             />
@@ -58,10 +59,10 @@
           <v-col cols="12" sm="2">
             <h3 class="mb-1">年齡</h3>
             <v-text-field
-              class="iwidth"
               type="number"
               dense
               single-line
+              :rules="ageRules"
               outlined
               v-model="inputData.editableData.CheckOption3"
             />
@@ -81,12 +82,14 @@
 
           <v-col cols="12" sm="3">
             <h3 class="mb-1">工作部門</h3>
-            <v-text-field
+            <v-select
               dense
               single-line
+              :items="commonSettings.departOpts"
+              item-text="text"
+              item-value="value"
               v-model="inputData.editableData.CheckOption4"
-              outlined
-            />
+              outlined/>
             <!-- <v-select
               dense
               single-line
@@ -101,6 +104,7 @@
             <h3 class="mb-1">職稱</h3>
             <v-text-field
               dense
+              maxlength="10"
               single-line
               v-model="inputData.editableData.CheckOption6"
               outlined
@@ -136,6 +140,7 @@
               type="number"
               dense
               single-line
+              maxlength="2"
               v-model="inputData.editableData.CheckOption9"
               outlined
             >
@@ -169,7 +174,7 @@
               <v-spacer />
             </v-toolbar>
           </v-col>
-          <v-col cols="12" sm="2">
+          <v-col cols="12" sm="3">
             <dateSelect
               label="發生日期"
               key="checkDate"
@@ -180,7 +185,6 @@
           <v-col cols="12" sm="2">
             <h3 class="mb-1">時</h3>
             <v-text-field
-              class="iwidth"
               type="number"
               dense
               single-line
@@ -192,7 +196,6 @@
           <v-col cols="12" sm="2">
             <h3 class="mb-1">分</h3>
             <v-text-field
-              class="iwidth"
               type="number"
               dense
               single-line
@@ -203,22 +206,30 @@
           </v-col>
           <v-col cols="12" sm="2">
             <h3 class="mb-1">星期</h3>
-            <v-select
+            <v-text-field
+              dense
+              single-line
+              readonly
+              v-model="setCheckOption13"
+              outlined
+            />
+            <!-- <v-select
               dense
               single-line
               :items="weekday"
               item-text="text"
               item-value="value"
-              v-model="inputData.editableData.CheckOption13"
+              v-model="setCheckOption13"
               :selected="getWeekDay"
               outlined
-            />
+            /> -->
           </v-col>
           <v-col cols="12" sm="2">
             <h3 class="mb-1">氣候</h3>
             <v-text-field
               dense
               single-line
+              maxlength="4"
               v-model="inputData.editableData.CheckOption16"
               outlined
             />
@@ -228,6 +239,7 @@
             <v-text-field
               dense
               single-line
+              maxlength="20"
               v-model="inputData.editableData.CheckOption17"
               outlined
             />
@@ -446,6 +458,7 @@ import {
   isDateObject,
 } from "@/assets/js/commonFun";
 import { generateSettings } from "@/assets/js/commonQuestion2Generater";
+import { departOptions } from '@/assets/js/departOption'
 import {
   fetchFormOrderOne,
   createFormOrder0,
@@ -472,10 +485,16 @@ export default {
       iconShow: true,
       isLoading: false,
       deptReadonly: true,
+      departOpts: departOptions.slice(1)
     },
     nameRules: [
       (v) => !!v || "公里數必須填寫",
       (v) => v.length > 0 || "公里數必須大於0",
+    ],
+    ageRules: [
+      (v) => !!v || "年齡必須填寫",
+      (v) => (v && v >= 15) || "年齡格式錯誤",
+      (v) => (v && v <= 120) || "年齡格式錯誤",
     ],
     hourRules: [
       (v) => !!v || "必填欄位",
@@ -610,16 +629,23 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this.inputData.editableData.CheckOption1 = this.typeStr;
-    console.log("this.inputData.editableData.CheckOption1: ", this.inputData.editableData.CheckOption1);
+    this.inputData.editableData.CheckOption1 = this.type;
   },
   created() {
-    console.log("DisasterAccidentSurveyEdit.vue");
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    setCheckOption13(){
+      let ww = ['日', '一', '二', '三', '四', '五', '六']
+      let d = this.inputData.editableData.CheckOption12
+      if(d != ''){
+        let t = new Date(d)
+        return ww[t.getDay()]
+      }
+      return ''
+    },
     mainTitle: function () {
       return this.editType + this.title + "(" + this.typeStr + ")";
     },
@@ -729,9 +755,16 @@ export default {
     save() {
       const that = this;
       let rtnObj = [];
-      const keyArr = Object.keys(that.inputData.editableData);
+      const keyArr = Object.keys(that.inputData.editableData); //inputData.editableData.CheckOption5
       keyArr.forEach((e) => {
-        rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
+        if(e == 'CheckOption5' || e == 'CheckOption12'){
+          let a = new Date(that.inputData.editableData[e])
+          console.log("a: ", a);
+          rtnObj.push({ Column: e, Value: a });
+        }
+        else{
+          rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
+        }
       });
       encodeObject(rtnObj);
      

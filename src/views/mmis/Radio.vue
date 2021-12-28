@@ -24,11 +24,11 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>持有人
         </h3>
-        <v-text-field solo v-model="ipt.man" placeholder="請輸入持有人編號或姓名" />
+        <v-text-field solo v-model="ipt.man" placeholder="請輸入持有人編號或姓名" clearable/>
       </v-col>
 
-      <v-col cols="12" md="3" align-self="center" @click="setDataList">
-        <v-btn class="btn-search" dark large>
+      <v-col cols="12" md="3" align-self="center" >
+        <v-btn class="btn-search" dark large @click="setDataList">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn dark large class="ml-2 btn-add" @click="goEdit(-1)">
@@ -81,7 +81,7 @@
       </v-col>
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
-        <radioEdit :nowFlowId="nowFlow" @closeAct="close"></radioEdit>
+        <radioEdit :key="'radioEdit' + editKey" :nowFlowId="nowFlow" @closeAct="close"></radioEdit>
       </v-dialog>
       <!-- 刪除 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -107,6 +107,7 @@ import { fetchOrganization } from '@/apis/organization'
 import radioEdit from '@/views/mmis/RadioCreate.vue'
 export default {
   data: () => ({
+    editKey: 0,
     Add: false,
     Edit: false,
     Delete: false,
@@ -164,15 +165,15 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "單位名稱",
-        value: "DepartParentName",
+        text: "科室",
+        value: "DepartName",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "車站",
-        value: "DepartName",
+        text: "單位名稱",
+        value: "DepartUnit",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
@@ -239,7 +240,7 @@ export default {
       this.chLoadingShow({show:true})
       radioQueryList({
         DepartCode: that.ipt.depart, 
-        Man: that.ipt.man,
+        Man: (that.ipt.man == null)?"":that.ipt.man,
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
@@ -275,9 +276,11 @@ export default {
     },
     goEdit(flowId) {
       this.nowFlow = flowId
+      this.editKey++
       this.Edit = true
     },
     openDelete(flowId) {
+      console.log("flowId: ", flowId);
       this.Delete = true
       this.nowFlow = flowId
     },
