@@ -601,7 +601,7 @@ export default {
       }
       var today = new Date();
 
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
 
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間

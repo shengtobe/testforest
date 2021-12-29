@@ -904,44 +904,6 @@ export default {
     },
     // 新增監工區塊欄位
     addSupervisor() {},
-    // 搜尋
-    search() {
-      
-      this.chLoadingShow({show:true})
-      fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
-        QyName:[
-          // "DISTINCT (RPFlowNo)",
-          // // "ID",
-          // // "Name",
-          // // "CheckDay",
-          // // "CheckStatus",
-          // " * "
-          "RPFlowNo",
-          "ID",
-          "Name",
-          "CheckDay",
-          "CheckStatus",
-          "FlowId", "DepartName"
-        ],
-      }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({show:false})
-      })
-    },
     // 存
     save() {
       this.chLoadingShow({show:true})

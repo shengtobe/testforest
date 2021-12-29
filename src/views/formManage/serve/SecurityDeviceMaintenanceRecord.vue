@@ -183,11 +183,11 @@
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">名稱</h3>
-                    <v-textarea auto-grow outlined rows="1" v-model="gearName"/>
+                    <v-textarea auto-grow outlined rows="1" v-model="StopEqip"/>
                   </v-col>
                   <v-col cols="12" sm="4">
                     <h3 class="mb-1">處置狀況</h3>
-                    <v-textarea auto-grow outlined rows="1" v-model="detail"/>
+                    <v-textarea auto-grow outlined rows="1" v-model="StopEqipStatus"/>
                   </v-col>
                 </v-row>
               </v-alert>
@@ -195,7 +195,7 @@
             <!-- 改善建議、改善追蹤 -->
             <v-col cols="12">
               <h3 class="mb-1 label-header">備註</h3>
-              <v-textarea solo rows="4" v-model="memo"/>
+              <v-textarea solo rows="4" v-model="Memo"/>
             </v-col>
             <!-- END 檢查項目 -->
           </v-row>
@@ -236,14 +236,6 @@ import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import fileList from "@/components/forManage/fileList";
-class Question {
-  constructor(description, method, result, memo) {
-    this.description = description;
-    this.method = method;
-    this.result = result;
-    this.memo = memo;
-  }
-}
 
 export default {
   data() {
@@ -286,11 +278,9 @@ export default {
       WorkStatus: '',
       CheckMan: '',
       Worker: '',
-      gearName: '',
-      detail: '',
-      memo: '',
       StopEqip: '',
       StopEqipStatus: '',
+      Memo: '',
       ipt2: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',
@@ -383,16 +373,18 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();
       this.zs = this.nowTime;
-      this.Place = '',
-      this.Content = '',
-      this.BgWorkHour = '',
-      this.BgWorkMinute = '',
-      this.EndWorkHour = '',
-      this.EndWorkMinute = '',
-      this.WorkStatus = '',
-      this.Worker = '',
-      this.StopEqip = '',
+      this.Place = ''
+      this.Content = ''
+      this.BgWorkHour = ''
+      this.BgWorkMinute = ''
+      this.EndWorkHour = ''
+      this.EndWorkMinute = ''
+      this.WorkStatus = ''
+      this.CheckMan = ''
+      this.Worker = ''
+      this.StopEqip = ''
       this.StopEqipStatus = ''
+      this.Memo = ''
     },
     newOne(){
       this.action = Actions.add;
@@ -420,8 +412,9 @@ export default {
       return arr;
     },
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -435,14 +428,14 @@ export default {
         alert('時間範圍錯誤')
         return
       }
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          { Column: "StartDayVlaue", Value: this.input.dateStart },
-          { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "StartDayVlaue", Value: (this.input.dateStart == null)?'':this.input.dateStart },
+          { Column: "EndDayVlaue", Value: (this.input.dateEnd == null)?'':this.input.dateEnd },
           { Column: "DepartCode", Value: this.input.department },
                 ],
         QyName:[
@@ -479,7 +472,7 @@ export default {
         alert("站長未填")
         return
       }
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
 
       let arr = new Array()
       let obj = new Object()
@@ -506,15 +499,15 @@ export default {
             {"Column":"EndWorkMinute","Value":this.EndWorkMinute},
             {"Column":"WorkStatus","Value":this.WorkStatus},
             {"Column":"Worker","Value":this.Worker},
-            {"Column":"StopEqip","Value":this.gearName},
-            {"Column":"StopEqipStatus","Value":this.detail},
-            {"Column":"Memo","Value":this.memo},
+            {"Column":"StopEqip","Value":this.StopEqip},
+            {"Column":"StopEqipStatus","Value":this.StopEqipStatus},
+            {"Column":"Memo","Value":this.Memo},
           ]
         }).then(res => {
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
         
         }).catch(err => {
-          //console.log(err)
-          alert('編輯時發生問題，請重新查詢!')
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
         }).finally(() => {
           this.chLoadingShow({ show: false})
         })
@@ -536,15 +529,15 @@ export default {
             {"Column":"EndWorkMinute","Value":this.EndWorkMinute},
             {"Column":"WorkStatus","Value":this.WorkStatus},
             {"Column":"Worker","Value":this.Worker},
-            {"Column":"StopEqip","Value":this.gearName},
-            {"Column":"StopEqipStatus","Value":this.detail},
-            {"Column":"Memo","Value":this.memo},
+            {"Column":"StopEqip","Value":this.StopEqip},
+            {"Column":"StopEqipStatus","Value":this.StopEqipStatus},
+            {"Column":"Memo","Value":this.Memo},
           ]
         }).then(res => {
-        
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
         }).catch(err => {
           //console.log(err)
-          alert('查詢時發生問題，請重新查詢!')
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
         }).finally(() => {
           this.chLoadingShow({ show: false})
         })
@@ -593,6 +586,7 @@ export default {
           "Worker",
           "StopEqip",
           "StopEqipStatus",
+          "Memo",
           "RPFlowNo"
         ],
       }).then(res => {
@@ -600,15 +594,25 @@ export default {
        
         let dat = (JSON.parse(res.data.DT))[0]
         this.Add = true
+        console.log("dat: ", dat)
         // this.zs = res.data.DT.CheckDay
         this.RPFlowNo = dat.RPFlowNo;
         this.doMan.name = dat.Name
         this.CheckDay = dat.CheckDay.substr(0,10)
         //123資料
         // let ad = Object.keys(dat[0])
-        
-        
-        
+        this.Place = dat.Place
+        this.Content = dat.Content
+        this.BgWorkHour = dat.BgWorkHour
+        this.BgWorkMinute = dat.BgWorkMinute
+        this.EndWorkHour = dat.EndWorkHour
+        this.EndWorkMinute = dat.EndWorkMinute
+        this.WorkStatus = dat.WorkStatus
+        this.CheckMan = dat.CheckMan
+        this.Worker = dat.Worker
+        this.StopEqip = dat.StopEqip
+        this.StopEqipStatus = dat.StopEqipStatus
+        this.Memo = dat.Memo
       }).catch(err => {
         //console.log(err)
         alert('查詢詳細時發生問題!')

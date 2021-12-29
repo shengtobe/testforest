@@ -23,7 +23,7 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1" v-if="formData.settings.formIconShow">mdi-domain</v-icon>車庫
         </h3>
-        <v-select :items="formData.settings.deptOptions" item-text="value" item-value="key" v-model="formData.searchItem.department" solo/>
+        <v-select :items="formData.settings.deptOptions" item-text="value" item-value="key" v-model="formData.searchItem.garageCode" solo/>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -45,6 +45,10 @@
 
           <template v-slot:loading>
             <span class="red--text subtitle-1">資料讀取中...</span>
+          </template>
+
+          <template v-slot:item.GarageCode="{ item }">
+            {{ formData.settings.deptOptions.find(ele => ele.key == item.GarageCode).value }}
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
@@ -134,6 +138,7 @@ export default {
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-boldlabel-header" },
         { text: "填寫日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-boldlabel-header" },
         // { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-boldlabel-header" },
+        { text: "車庫", value: "GarageCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-boldlabel-header" },
         { text: "填寫人單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-boldlabel-header" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-boldlabel-header" },
@@ -149,11 +154,13 @@ export default {
         searchItem: {
           dateStart: "",
           dateEnd: "",
+          garageCode: "",
           department: "",
         },
         default: {
           dateStart: "",
           dateEnd: "",
+          garageCode: "",
           department: "",
         }
       },
@@ -206,8 +213,10 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.formData.settings.deptOptions = res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
-          
+          this.formData.settings.deptOptions = [
+            {key:'',value:'不限'}
+            ,...(res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName})))
+          ]
         }else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -247,12 +256,13 @@ export default {
         KeyItem: [ 
           {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
           {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
-          {"Column":"DepartCode","Value":this.formData.searchItem.department},
+          {"Column":"GarageCode","Value":this.formData.searchItem.garageCode},
                 ],
         QyName:[
           "RPFlowNo",
           "ID",
           "Name",
+          "GarageCode",
           "CheckDay",
           "CheckStatus",
           "FlowId", "DepartName"
@@ -271,7 +281,6 @@ export default {
       this.editLog.dealogEdit = false
     },
     viewPage(item) {
-     
       this.editLog.EditDynamicKey += 1;
       this.editLog.editType = Actions.edit;
       this.editLog.editItem = item;

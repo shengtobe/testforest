@@ -25,7 +25,7 @@
               <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1" v-if="commonSettings.iconShow">mdi-domain</v-icon>車庫
               </h3>
-              <v-select :items="deptOptions" item-text="value" item-value="key" v-model="inputData.DepartCode" solo/>
+              <v-select :items="deptOptions" item-text="value" item-value="key" v-model="inputData.GarageCode" solo/>
             </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">檢查人員</h3>
@@ -273,8 +273,7 @@ export default {
     ],
     inputData: {
       RPFlowNo: "",
-      DepartCode: "",
-      DepartName: "",
+      GarageCode: "",
       ID: "",
       Name: "",
       editableData: {
@@ -534,8 +533,7 @@ export default {
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
-      this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
-      this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
+      this.inputData.GarageCode = ''
     },
     viewPage(item) {
       const that = this;
@@ -547,6 +545,7 @@ export default {
         KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
         QyName: [
           "CheckDay",
+          "GarageCode",
           "DepartCode",
           "DepartName",
           "ID",
@@ -701,10 +700,11 @@ export default {
           let dat = JSON.parse(res.data.DT);
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
-          this.inputData.DepartCode = dat[0].DepartCode;
+          this.inputData.GarageCode = dat[0].GarageCode;
           this.inputData.Name = dat[0].Name;
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);
+          console.log("inputArr: ", inputArr);
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
@@ -724,10 +724,13 @@ export default {
     save() {
       const that = this;
       let rtnObj = [];
+      rtnObj.GarageCode = this.inputData.GarageCode
+      rtnObj.push({ Column: 'GarageCode', Value: this.inputData.GarageCode })
       const keyArr = Object.keys(that.inputData.editableData);
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });
+      this.chLoadingShow({show:true})
       encodeObject(rtnObj);
       if (this.editType == this.actions.add) {
         createFormOrder0({
@@ -753,10 +756,12 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
+            this.chLoadingShow({show:false})
             that.close();
           });
       } else {
         //就是edit
+        rtnObj.push({ Column: 'RPFlowNo', Value: this.inputData.RPFlowNo })
         updateFormOrder({
           ClientReqTime: getNowFullTime(), // client 端請求時間
           OperatorID: this.userData.UserId, // 操作人id

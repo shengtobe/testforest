@@ -662,8 +662,9 @@ export default {
       this.initInput();
     },
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -676,14 +677,14 @@ export default {
         alert('時間範圍錯誤')
         return
       }
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          { Column: "StartDayVlaue", Value: this.input.dateStart },
-          { Column: "EndDayVlaue", Value: this.input.dateEnd },
+          { Column: "StartDayVlaue", Value: (this.input.dateStart == null)?'':this.input.dateStart },
+          { Column: "EndDayVlaue", Value: (this.input.dateEnd == null)?'':this.input.dateEnd },
           { Column: "DepartCode", Value: this.input.department },
                 ],
         QyName:[
@@ -767,10 +768,9 @@ export default {
             {"Column":"ResponMan","Value":this.ResponMan}
           ]
         }).then(res => {
-        
+            this.chMsgbar({ success: true, msg: Constrant.update.success });
         }).catch(err => {
-          //console.log(err)
-          alert('查詢時發生問題，請重新查詢!')
+            this.chMsgbar({ success: false, msg: Constrant.update.failed });
         }).finally(() => {
           this.chLoadingShow({ show: false})
         })
@@ -811,10 +811,10 @@ export default {
             {"Column":"ResponMan","Value":this.ResponMan}
           ]
         }).then(res => {
-        
+          this.chMsgbar({ success: true, msg: Constrant.insert.success });
         }).catch(err => {
           //console.log(err)
-          alert('查詢時發生問題，請重新查詢!')
+          this.chMsgbar({ success: false, msg: Constrant.insert.failed });
         }).finally(() => {
           this.chLoadingShow({ show: false})
         })

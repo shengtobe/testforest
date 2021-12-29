@@ -6,13 +6,22 @@
       <!-- 檢查日期(起) -->
       <v-col cols="12" sm="3" md="3">
         <dateSelect
-          label="日期"
-          key="checkDate"
+          label="檢查日期(起)"
+          key="dateStart"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.checkDate"
+          v-model="formData.searchItem.dateStart"
         />
       </v-col>
+      <!-- 檢查日期(迄) -->
       <v-col cols="12" sm="3" md="3">
+        <dateSelect
+          label="檢查日期(迄)"
+          key="dateEnd"
+          :showIcon="formData.settings.formIconShow"
+          v-model="formData.searchItem.dateEnd"
+        />
+      </v-col>
+      <v-col cols="12" sm="3" md="3" v-if="false">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1" v-if="formData.settings.formIconShow">mdi-domain</v-icon>車庫
         </h3>
@@ -138,7 +147,7 @@ export default {
   data() {
     return {
       // 自定義變數
-      title:"_____車庫動力車狀態日報表",
+      title:"嘉義車庫動力車狀態日報表",
       newText:"日報表",
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
@@ -176,12 +185,14 @@ export default {
           deptOptions:[]
         },
         searchItem: {
-          checkDate: "",
-          department: "",
+          dateStart: "",
+          dateEnd: "",
+          garageCode: "",
         },
         default: {
-          checkDate: "",
-          department: "",
+          dateStart: "",
+          dateEnd: "",
+          garageCode: "",
         }
       },
       //---------delLog-----------
@@ -213,7 +224,7 @@ export default {
     }),
   },
   mounted() {
-    this.formData.searchItem.checkDate = this.formData.default.checkDate = getTodayDateString();
+    this.formData.searchItem.dateEnd = getTodayDateString();
     this._getOrg()
   },
   methods: {
@@ -230,7 +241,10 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if (res.data.ErrorCode == 0) {
-          this.formData.settings.deptOptions = res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
+          this.formData.settings.deptOptions = [
+            {key:'',value:'不限'},
+            ...res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
+          ]
         }else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -272,9 +286,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this.formData.searchItem.checkDate},
-          {"Column":"EndDayVlaue","Value":this.formData.searchItem.checkDate},
-          {"Column":"DepartCode","Value":this.formData.searchItem.department},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
+          {"Column":"GarageCode","Value":this.formData.searchItem.garageCode},
                 ],
         QyName:[
           "RPFlowNo",

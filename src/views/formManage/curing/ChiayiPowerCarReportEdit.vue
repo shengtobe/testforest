@@ -21,14 +21,15 @@
                 v-model="inputData.editableData.CheckDay"
               />
             </v-col>
-            <v-col cols="12" sm="3" md="4">
+            <!-- <v-col cols="12" sm="3" md="4">
               <h3 class="mb-1">車庫</h3>
-              <v-select :items="deptOptions" item-text="value" item-value="key" v-model="inputData.DepartCode" solo/>
-            </v-col>
+              <v-select :items="deptOptions" item-text="value" item-value="key" v-model="inputData.GarageCode" solo/>
+            </v-col> -->
             <v-col cols="12" sm="4">
               <h3 class="mb-1">檢查人員</h3>
               <v-text-field solo value v-model="inputData.Name"/>
             </v-col>
+            <v-col cols="12" sm="4"/>
           </v-row>
           <v-row no-gutter class="label-header">
             <v-col cols="12" sm="4">
@@ -137,6 +138,7 @@ export default {
     deptOptions:[],
     inputData: {
       RPFlowNo: "",
+      GarageCode: "",
       DepartCode: "",
       DepartName: "",
       ID: "",
@@ -203,8 +205,7 @@ export default {
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
-      this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
-      this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
+      this.inputData.GarageCode = ""
     },
     viewPage(item) {
       const that = this;
@@ -216,7 +217,7 @@ export default {
         KeyItem: [{ Column: "RPFlowNo", Value: item.RPFlowNo }],
         QyName: [
           "CheckDay",
-          "DepartCode",
+          "GarageCode",
           "DepartName",
           "ID",
           "Name",
@@ -232,7 +233,7 @@ export default {
           let dat = JSON.parse(res.data.DT);
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
-          this.inputData.DepartCode = dat[0].DepartCode;
+          this.inputData.GarageCode = dat[0].GarageCode;
           this.inputData.Name = dat[0].Name;
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);

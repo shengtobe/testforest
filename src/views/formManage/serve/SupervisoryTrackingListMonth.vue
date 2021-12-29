@@ -427,7 +427,7 @@ export default {
         alert('時間範圍錯誤')
         return
       }
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
