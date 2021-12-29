@@ -83,7 +83,7 @@
             small
             dark
             fab
-            class="Btn-delete"
+            class="btn-delete"
             @click="deleteRecord(item.RPFlowNo)"
           >
             <v-icon dark>mdi-delete</v-icon>

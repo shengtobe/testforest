@@ -403,6 +403,7 @@ export default {
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
           this.inputData.DepartCode = dat[0].DepartCode;
+          this.inputData.DepartName = dat[0].DepartName;
           this.inputData.Name = dat[0].Name;
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);

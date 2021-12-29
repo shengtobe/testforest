@@ -366,7 +366,7 @@ export default {
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);
           inputArr.forEach((e) => {
-            var tmp = data[e];
+            var tmp = dat[0][e];
             if (isDateObject(tmp)) {
               that.inputData.editableData[e] = tmp.substr(0, 10);
             } else {
@@ -375,7 +375,7 @@ export default {
           });
         })
         .catch((err) => {
-          ////console.log(err);
+          // console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {

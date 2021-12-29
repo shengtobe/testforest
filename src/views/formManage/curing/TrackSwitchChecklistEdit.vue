@@ -1,5 +1,5 @@
 <template>
-  <v-card clas="theme-card">
+  <v-card class="theme-card">
     <v-card-title class=" white--text px-4 py-1">
       {{ editType }}{{ commonSettings.title }}
       <v-spacer></v-spacer>

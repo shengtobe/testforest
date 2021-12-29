@@ -121,7 +121,7 @@
         >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn class="btn-delete white--text" @click="dialogDel = false">取消</v-btn>
+          <v-btn class="btn-close white--text" @click="dialogDel = false">取消</v-btn>
           <v-btn class="btn-delete white--text" @click="deleteRecord(doMan.id, DB_Table, RPFlowNo)"
             >刪除</v-btn
           >
@@ -175,7 +175,7 @@
                     label="管理單位"
                     v-model="DepartName"
                     :iconYN="formIconShow"
-                    outType="key"
+                    outType="value"
                     key="department"
                   />
                 </v-col>
@@ -619,7 +619,7 @@ export default {
           this.Name = data.Name;
           this.CheckDay = data.CheckDay.substr(0, 10);
           this.Memo_1 = data.Memo_1;
-
+          this.DepartName = data.DepartName;
           let j = 1;
           for (var items in this.itemlist) {
             const element = this.itemlist[items];

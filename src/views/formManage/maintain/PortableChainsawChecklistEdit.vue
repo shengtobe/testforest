@@ -171,17 +171,17 @@ export default {
           "ID",
           "Name",
           "CheckOption1",
-          "Memo1",
+          "Memo_1",
           "CheckOption2",
-          "Memo2",
+          "Memo_2",
           "CheckOption3",
-          "Memo3",
+          "Memo_3",
           "CheckOption4",
-          "Memo4",
+          "Memo_4",
           "CheckOption5",
-          "Memo5",
+          "Memo_5",
           "CheckOption6",
-          "Memo6",
+          "Memo_6",
           "Advice",
           "Measures",
         ],
@@ -200,7 +200,7 @@ export default {
           });
         })
         .catch((err) => {
-          //console.log(err);
+          // console.log(err);
           this.chMsgbar({ success: false, msg: Constrant.query.failed });
         })
         .finally(() => {

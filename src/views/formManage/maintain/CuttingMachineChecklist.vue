@@ -264,13 +264,13 @@
                 colored-border
                 color="border-bg-dark-yellow"
                 elevation="4"
-                v-for="n in 10"
-                :key="n"
+                v-for="(item,index) in itemlist.items1"
+                :key="index"
                 class="mb-6"
               >
                 <v-row no-gutter>
                   <v-col cols="12" sm="3">{{
-                    deatilItemDesc["desc" + n]
+                    item.description
                   }}</v-col>
                   <v-col cols="12" sm="3">
                     <v-select
@@ -278,7 +278,7 @@
                         { text: '動作測試', value: '1' },
                         { text: '目視點檢', value: '2' },
                       ]"
-                      v-model="detailItem['CheckMethod' + n]"
+                      v-model="item.method"
                       solo
                     />
                   </v-col>
@@ -287,7 +287,7 @@
                     <v-radio-group
                       dense
                       row
-                      v-model="detailItem['CheckOption' + n]"
+                      v-model="item.result"
                       class="pa-0 ma-0"
                     >
                       <v-radio color="success" label="良好" value="1"></v-radio>
@@ -301,7 +301,7 @@
                   </v-col>
                   <v-col cols="12" sm="3">
                     <v-textarea
-                      v-model="detailItem['Memo' + n]"
+                      v-model="item.memo"
                       hide-details
                       auto-grow
                       outlined
