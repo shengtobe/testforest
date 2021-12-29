@@ -154,7 +154,7 @@
 
               <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
                 <v-expansion-panel>
-                  <v-expansion-panel-header>
+                  <v-expansion-panel-header class="btn-expansion white--text">
                     存放數量
                     <template v-slot:actions>
                       <v-icon color="dropdownicon">

@@ -682,7 +682,7 @@ export default {
       formIconShow: true,
     };
   },
-  components: { Pagination, dateSelect, deptSelect, ToolBar },
+  components: { Pagination, dateSelect, deptSelect, ToolBar, dialogDelete },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
