@@ -162,7 +162,7 @@
             <!-- 檢查項目 -->
             <v-col cols="12">
               <v-row no-gutter class="label-header">
-                <v-col cols="12" sm="3" md="3">
+                <v-col cols="12" sm="4" md="4">
                   <dateSelect
                     label="檢查日期"
                     v-model="CheckDay"
@@ -170,7 +170,7 @@
                     :showIcon="formIconShow"
                   />
                 </v-col>
-                <v-col cols="12" sm="3" md="3">
+                <v-col cols="12" sm="4" md="4" v-if="false">
                   <deptSelect
                     label="管理單位"
                     v-model="DepartName"

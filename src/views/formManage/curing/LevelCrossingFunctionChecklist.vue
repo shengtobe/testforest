@@ -296,6 +296,11 @@ export default {
     },
     closeDialogDel(){
     },
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
+    },
     // 搜尋
     search() {
       let d1 = Date.parse(this.formData.searchItem.dateStart)
@@ -312,7 +317,7 @@ export default {
         KeyItem: [ 
           {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
           {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {"Column":"DepartCode","Value":this.formData.searchItem.department},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
