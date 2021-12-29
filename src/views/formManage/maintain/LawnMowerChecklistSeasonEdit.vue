@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="blue white--text px-4 py-1">
+  <v-card class="theme-card">
+    <v-card-title class="white--text px-4 py-1">
       {{ editType }}{{ commonSettings.title }}
       <v-spacer></v-spacer>
       <v-btn dark fab small text @click="close" class="mr-n2">
@@ -19,7 +19,7 @@
       <v-spacer></v-spacer>
       <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
-        class="btn-delete white--text"
+        class="btn-add white--text"
         elevation="4"
         :loading="commonSettings.isLoading"
         @click="save"
