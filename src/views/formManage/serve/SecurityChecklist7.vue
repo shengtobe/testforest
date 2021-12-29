@@ -14,7 +14,6 @@
         <dateSelect
           label="檢查日期(起)"
           v-model="input.dateStart"
-          key="dateStart"
           :showIcon="formIconShow"
         />
       </v-col>
@@ -22,7 +21,6 @@
         <dateSelect
           label="檢查日期(迄)"
           v-model="input.dateEnd"
-          key="dateStart"
           :showIcon="formIconShow"
         />
       </v-col>
@@ -107,7 +105,6 @@
                   <dateSelect
                     label="保養日期"
                     v-model="CheckDay"
-                    key="dateStart"
                     :showIcon="formIconShow"
                   />
                 </v-col>
@@ -245,8 +242,8 @@
                       colored-border
                       color="border-bg-dark-yellow"
                       elevation="4"
-                      v-for="(item, idx) in items2"
-                      :key="idx"
+                      v-for="(item, idx2) in items2"
+                      :key="idx2"
                       class="mb-6 mt-4"
                     >
                       <v-row no-gutter class="label-header">
@@ -255,7 +252,7 @@
                           <v-radio-group
                             dense
                             row
-                            v-model="ipt.items_2[idx].status1"
+                            v-model="ipt.items_2[idx2].status1"
                             class="pa-0 ma-0">
                             <v-radio color="success" label="正常" value="1"></v-radio>
                             <v-radio color="red" label="異常" value="2"></v-radio>
@@ -263,7 +260,7 @@
                         </v-col>
                         <v-col cols="12" sm="4">
                           <span class="d-sm-none error--text">備註</span>
-                          <v-textarea auto-grow v-model="ipt.items_2[idx].note"
+                          <v-textarea auto-grow v-model="ipt.items_2[idx2].note"
                            outlined rows="2"/>
                         </v-col>
                       </v-row>
@@ -466,7 +463,7 @@ export default {
     initInput(){
       this.doMan.name = this.userData.UserName;
       this.CheckDay = getTodayDateString();
-      this.zs = this.nowTime;
+      this.CheckDay = this.nowTime;
       var step;
       for (step = 0; step < 1; step++) {
         this.ipt.items[step].status1 = "0"
@@ -572,7 +569,7 @@ export default {
             "Chk1": 
                 [
                   {
-                    "CheckDay":this.zs, "SwitchLoc":"0", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
+                    "CheckDay":this.CheckDay, "SwitchLoc":"0", "SwitchNo":"1", "SwitchLock":this.ipt.items[0].status1, "Rust":this.ipt.items[0].status2, 
                     "Bearing":this.ipt.items[0].status3, "SwitchClean":this.ipt.items[0].status4, "Memo_1":this.ipt.items[0].note
                   },
                 ],
@@ -590,7 +587,7 @@ export default {
           this.chMsgbar({ success: true, msg: '新增成功' })
         }
         //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
+        
       }).finally(() => {
         this.chLoadingShow({ show: false})
       })
@@ -648,7 +645,7 @@ export default {
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
         let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
+        this.CheckDay = time1
         // this.tableItems = JSON.parse(res.data.DT)
         //123資料
         var step;

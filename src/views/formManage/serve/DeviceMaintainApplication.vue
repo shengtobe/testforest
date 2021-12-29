@@ -20,7 +20,7 @@
         />
       </v-col>
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn color="green" dark large class="mb-sm-8 md-8 mt-8" @click="search">
+        <v-btn color="green" dark large class="mb-sm-8 md-8 mt-8 btn-add" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -96,7 +96,7 @@
     <v-dialog v-model="AddJobApplication" max-width="900px">
       <v-card class="theme-card">
         <v-card-title class="blue white--text px-4 py-1">
-          新增{{ title }}
+          {{ action }}{{ title }}
           <v-spacer />
           <v-btn dark fab small text @click="CloseJobApplication" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -177,7 +177,7 @@
                                 style="margin-bottom: -10%;"
                                 v-model.trim="BgWorkDay"
                                 outlined
-                                v-on="on"
+                                v-on="on" readonly
                                 dense
                                 single-line
                               />
@@ -189,8 +189,8 @@
                               locale="zh-tw"
                             />
                           </v-menu>
-                          <input class="newinput widtha" type="number" placeholder="時" v-model="BgWorkTime.hr"/>
-                          <input class="newinput widtha" type="number" placeholder="分" v-model="BgWorkTime.min"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="時" v-model="BgWorkTime.hr"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="分" v-model="BgWorkTime.min"/>
                         </v-col>
                         <v-col cols="12" sm="3">
                           <h3>工作完成預定時刻</h3>
@@ -206,7 +206,7 @@
                                 v-model.trim="FinDay"
                                 outlined
                                 v-on="on"
-                                dense
+                                dense readonly
                                 single-line
                                 style="margin-bottom: -10%;"
                               />
@@ -218,8 +218,8 @@
                               locale="zh-tw"
                             />
                           </v-menu>
-                          <input class="newinput widtha" type="number" placeholder="時" v-model="FinTime.hr"/>
-                          <input class="newinput widtha" type="number" placeholder="分" v-model="FinTime.min"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="時" v-model="FinTime.hr"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="分" v-model="FinTime.min"/>
                         </v-col>
                         <v-col cols="12" sm="6">
                           <h3>工作概要</h3>
@@ -294,7 +294,7 @@
                                 v-model.trim="ReadyWorkDay"
                                 outlined
                                 v-on="on"
-                                dense
+                                dense readonly
                                 single-line
                                 style="margin-bottom: -5%;"
                               />
@@ -306,8 +306,8 @@
                               locale="zh-tw"
                             />
                           </v-menu>
-                          <input class="newinput widtha" type="number" placeholder="時" v-model="ReadyWorkTime.hr"/>
-                          <input class="newinput widtha" type="number" placeholder="分" v-model="ReadyWorkTime.min"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="時" v-model="ReadyWorkTime.hr"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="分" v-model="ReadyWorkTime.min"/>
                         </v-col>
                         <v-col cols="12" sm="3">
                           <h3>工作完成時間</h3>
@@ -323,7 +323,7 @@
                                 v-model.trim="FinishDay"
                                 outlined
                                 v-on="on"
-                                dense
+                                dense readonly
                                 single-line
                                 style="margin-bottom: -5%;"
                               />
@@ -335,8 +335,8 @@
                               locale="zh-tw"
                             />
                           </v-menu>
-                          <input class="newinput widtha" type="number" placeholder="時" v-model="FinishTime.hr"/>
-                          <input class="newinput widtha" type="number" placeholder="分" v-model="FinishTime.min"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="時" v-model="FinishTime.hr"/>
+                          <input class="newinput widtha" maxlength="2" placeholder="分" v-model="FinishTime.min"/>
                         </v-col>
                         <v-col cols="12" sm="3">
                           <h3>填發站長</h3>
@@ -410,6 +410,10 @@ export default {
     return {
       title: "保安裝置保修工作申請書",
       newText: "申請書",
+      action: Actions.add,
+      actions: Actions,
+      RPFlowNo: "",
+      isEdit: false,
       isLoading: false,
       disabled: false,
       file: null,
@@ -621,7 +625,9 @@ export default {
     addZero(num){
       let result
       if(num == "") return "00";
-      if(num < 10){
+      
+      if(num.length < 2){
+        
         result = "0" + num
       }
       else{
@@ -650,7 +656,7 @@ export default {
       return arr;
     },
     newOne(){
-     
+      this.action = Actions.add;
       this.AddJobApplication = true
      
       this.initInput();
@@ -721,50 +727,100 @@ export default {
       // obj.Column = "CheckDay"
       // obj.Value = this.zs
       // arr = arr.concat(obj)
-
-      createFormOrder0({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
-        // OperatorID: "16713",  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem:[
-          {"Column":"CheckDay","Value":this.nowTime},
-          {"Column":"CheckMan","Value":this.CheckMan},
-          {"Column":"TEL","Value":this.TEL},
-          {"Column":"Contactor","Value":this.Contactor},
-          {"Column":"NumberID","Value":this.NumberID},
-          {"Column":"StationID","Value":this.StationID},
-          {"Column":"BgWorkDay","Value":this.BgWorkDay},
-          {"Column":"BgWorkTime","Value":this.addZero(this.BgWorkTime.hr) + ":" + this.addZero(this.BgWorkTime.min)},
-          {"Column":"FinDay","Value":this.FinDay},
-          {"Column":"FinTime","Value":this.addZero(this.FinTime.hr) + ":" + this.addZero(this.FinTime.min)},
-          {"Column":"DescriptionWork","Value":this.DescriptionWork},
-          {"Column":"WorkID","Value":this.WorkID},
-          {"Column":"Station","Value":this.Station},
-          {"Column":"BgStation","Value":this.BgStation},
-          {"Column":"EndStation","Value":this.EndStation},
-          {"Column":"BgKm","Value":this.BgKm},
-          {"Column":"BgM","Value":this.BgM},
-          {"Column":"EndKm","Value":this.EndKm},
-          {"Column":"EndM","Value":this.EndM},
-          {"Column":"Line","Value":this.Line},
-          {"Column":"SwitchNo","Value":this.SwitchNo},
-          {"Column":"ReadyWorkDay","Value":this.ReadyWorkDay},
-          {"Column":"ReadyWorkTime","Value":this.addZero(this.ReadyWorkTime.hr) + ":" + this.addZero(this.ReadyWorkTime.min)},
-          {"Column":"FinishDay","Value":this.FinishDay},
-          {"Column":"FinishTime","Value":this.addZero(this.FinishTime.hr) + ":" + this.addZero(this.FinishTime.min)},
-          {"Column":"Supervisor","Value":this.Supervisor},
-          {"Column":"ResponDep","Value":this.ResponDep},
-          {"Column":"ResponMan","Value":this.ResponMan}
-        ]
-      }).then(res => {
-       
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({ show: false})
-      })
+      if (this.action == Actions.edit) {
+        // update 要自行增加RPFlowNo欄位
+        console.log("RPFlowNo: ", this.RPFlowNo);
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          RPFlowNo: this.RPFlowNo,
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            // {"Column":"RPFlowNo","Value":this.RPFlowNo},
+            {"Column":"CheckDay","Value":this.nowTime},
+            {"Column":"CheckMan","Value":this.CheckMan},
+            {"Column":"TEL","Value":this.TEL},
+            {"Column":"Contactor","Value":this.Contactor},
+            {"Column":"NumberID","Value":this.NumberID},
+            {"Column":"StationID","Value":this.StationID},
+            {"Column":"BgWorkDay","Value":this.BgWorkDay},
+            {"Column":"BgWorkTime","Value":this.addZero(this.BgWorkTime.hr) + ":" + this.addZero(this.BgWorkTime.min)},
+            {"Column":"FinDay","Value":this.FinDay},
+            {"Column":"FinTime","Value":this.addZero(this.FinTime.hr) + ":" + this.addZero(this.FinTime.min)},
+            {"Column":"DescriptionWork","Value":this.DescriptionWork},
+            {"Column":"WorkID","Value":this.WorkID},
+            {"Column":"Station","Value":this.Station},
+            {"Column":"BgStation","Value":this.BgStation},
+            {"Column":"EndStation","Value":this.EndStation},
+            {"Column":"BgKm","Value":this.BgKm},
+            {"Column":"BgM","Value":this.BgM},
+            {"Column":"EndKm","Value":this.EndKm},
+            {"Column":"EndM","Value":this.EndM},
+            {"Column":"Line","Value":this.Line},
+            {"Column":"SwitchNo","Value":this.SwitchNo},
+            {"Column":"ReadyWorkDay","Value":this.ReadyWorkDay},
+            {"Column":"ReadyWorkTime","Value":this.addZero(this.ReadyWorkTime.hr) + ":" + this.addZero(this.ReadyWorkTime.min)},
+            {"Column":"FinishDay","Value":this.FinishDay},
+            {"Column":"FinishTime","Value":this.addZero(this.FinishTime.hr) + ":" + this.addZero(this.FinishTime.min)},
+            {"Column":"Supervisor","Value":this.Supervisor},
+            {"Column":"ResponDep","Value":this.ResponDep},
+            {"Column":"ResponMan","Value":this.ResponMan}
+          ]
+        }).then(res => {
+        
+        }).catch(err => {
+          //console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+      } else {
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            {"Column":"CheckDay","Value":this.nowTime},
+            {"Column":"CheckMan","Value":this.CheckMan},
+            {"Column":"TEL","Value":this.TEL},
+            {"Column":"Contactor","Value":this.Contactor},
+            {"Column":"NumberID","Value":this.NumberID},
+            {"Column":"StationID","Value":this.StationID},
+            {"Column":"BgWorkDay","Value":this.BgWorkDay},
+            {"Column":"BgWorkTime","Value":this.addZero(this.BgWorkTime.hr) + ":" + this.addZero(this.BgWorkTime.min)},
+            {"Column":"FinDay","Value":this.FinDay},
+            {"Column":"FinTime","Value":this.addZero(this.FinTime.hr) + ":" + this.addZero(this.FinTime.min)},
+            {"Column":"DescriptionWork","Value":this.DescriptionWork},
+            {"Column":"WorkID","Value":this.WorkID},
+            {"Column":"Station","Value":this.Station},
+            {"Column":"BgStation","Value":this.BgStation},
+            {"Column":"EndStation","Value":this.EndStation},
+            {"Column":"BgKm","Value":this.BgKm},
+            {"Column":"BgM","Value":this.BgM},
+            {"Column":"EndKm","Value":this.EndKm},
+            {"Column":"EndM","Value":this.EndM},
+            {"Column":"Line","Value":this.Line},
+            {"Column":"SwitchNo","Value":this.SwitchNo},
+            {"Column":"ReadyWorkDay","Value":this.ReadyWorkDay},
+            {"Column":"ReadyWorkTime","Value":this.addZero(this.ReadyWorkTime.hr) + ":" + this.addZero(this.ReadyWorkTime.min)},
+            {"Column":"FinishDay","Value":this.FinishDay},
+            {"Column":"FinishTime","Value":this.addZero(this.FinishTime.hr) + ":" + this.addZero(this.FinishTime.min)},
+            {"Column":"Supervisor","Value":this.Supervisor},
+            {"Column":"ResponDep","Value":this.ResponDep},
+            {"Column":"ResponMan","Value":this.ResponMan}
+          ]
+        }).then(res => {
+        
+        }).catch(err => {
+          //console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+      }
+      
       this.AddJobApplication = false
     },
     // 關閉 dialog
@@ -783,46 +839,48 @@ export default {
       }, 300);
     },
     viewPage(item) {
-      this.chLoadingShow({show:false})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "Name",
-          "CheckMan",
-          "TEL",
-          "Contactor",
-          "NumberID",
-          "StationID",
-          "BgWorkDay",
-          "BgWorkTime",
-          "FinDay",
-          "FinTime",
-          "DescriptionWork",
-          "WorkID",
-          "Station",
-          "BgStation",
-          "EndStation",
-          "BgKm",
-          "BgM",
-          "EndKm",
-          "EndM",
-          "Line",
-          "SwitchNo",
-          "ReadyWorkDay",
-          "ReadyWorkTime",
-          "FinishDay",
-          "FinishTime",
-          "Supervisor",
-          "ResponDep",
-          "ResponMan",
-        ],
+      this.chLoadingShow({show:true})
+      this.action = Actions.edit;
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
+      ClientReqTime: getNowFullTime(),  // client 端請求時間
+      OperatorID: this.userData.UserId,  // 操作人id
+      KeyName: this.DB_Table,  // DB table
+      KeyItem: [ 
+        {'Column':'RPFlowNo','Value':item.RPFlowNo},
+              ],
+      QyName:[
+        "CheckDay",
+        "Name",
+        "CheckMan",
+        "TEL",
+        "Contactor",
+        "NumberID",
+        "StationID",
+        "BgWorkDay",
+        "BgWorkTime",
+        "FinDay",
+        "FinTime",
+        "DescriptionWork",
+        "WorkID",
+        "Station",
+        "BgStation",
+        "EndStation",
+        "BgKm",
+        "BgM",
+        "EndKm",
+        "EndM",
+        "Line",
+        "SwitchNo",
+        "ReadyWorkDay",
+        "ReadyWorkTime",
+        "FinishDay",
+        "FinishTime",
+        "Supervisor",
+        "ResponDep",
+        "ResponMan",
+        "RPFlowNo"
+      ],
       }).then(res => {
         this.initInput();
        
@@ -870,6 +928,7 @@ export default {
         this.ResponDep = dat[0].ResponDep
         this.ResponMan = dat[0].ResponMan
         
+        this.RPFlowNo = dat[0].RPFlowNo;
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')

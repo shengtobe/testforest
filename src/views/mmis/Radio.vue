@@ -151,13 +151,6 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "位置",
-        value: "Loc",
-        align: "center",
-        divider: true,
-        class: "subtitle-1 white--text font-weight-bold",
-      },
-      {
         text: "類型",
         value: "Type",
         align: "center",
@@ -179,8 +172,8 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "持有人編號",
-        value: "ManID",
+        text: "位置",
+        value: "Loc",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",

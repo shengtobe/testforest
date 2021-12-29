@@ -19,12 +19,12 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
-      <v-col cols="12" sm="4" md="3">
+      <v-col cols="12" sm="4" md="3" >
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇車輛編號
         </h3>
         <!-- <v-select v-model="formData.searchItem.carNo" :items="CarNos" solo /> -->
-        <v-text-field v-model="formData.searchItem.carNo" solo />
+        <v-text-field v-model="formData.searchItem.carNo" solo clearable/>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -279,7 +279,7 @@ export default {
             Value: this.formData.searchItem.dateStart,
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
-          { Column: "CarNo", Value: this.formData.searchItem.carNo },
+          // { Column: "CarNo", Value: this.formData.searchItem.carNo },
         ],
         QyName: [
           "RPFlowNo",

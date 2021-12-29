@@ -274,7 +274,7 @@
               small
               dark
               fab
-              class="Btn-delete"
+              class="btn-delete"
               @click="
                 dialogDel = true;
                 RPFlowNo = item.RPFlowNo;

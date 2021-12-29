@@ -677,7 +677,7 @@ export default {
             });
           }
           this.RPFlowNo = data.RPFlowNo;
-          this.ShowDetailDialog = true;
+          this.ShowDetailDialog = false;
         })
         .catch((err) => {
           //console.log(err);

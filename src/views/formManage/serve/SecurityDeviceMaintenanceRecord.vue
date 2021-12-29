@@ -146,7 +146,7 @@
                   </v-col>
                   <v-col cols="12" sm="4" style="display: flex;">
                     <h3 class="mt-3 mr-1">起</h3>
-                    <v-text-field type="number" v-model="BgWorkHour" solo style="width: 0px;" placeholder="時"/>
+                    <v-text-field  v-model="BgWorkHour" lazy max="23" solo style="width: 0px;" placeholder="時"/>
                     <h3 class="mt-3">：</h3>
                     <v-text-field type="number" v-model="BgWorkMinute" solo style="width: 0px;" placeholder="分"/>
                   </v-col>
@@ -558,6 +558,7 @@ export default {
         this.initInput();
        
         let dat = JSON.parse(res.data.DT)
+        console.log("dat[0]: ", dat[0]);
         this.Add = true
         // this.zs = res.data.DT.CheckDay
         this.doMan.name = dat[0].Name
