@@ -91,23 +91,10 @@
 
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
-            <v-btn
-              title="詳細資料"
-              class="mr-2 btn-memo"
-              small
-              dark
-              fab
-              @click="viewPage(item)"
-            >
+            <v-btn title="詳細資料" class="mr-2 btn-memo" small dark fab @click="viewPage(item)">
               <v-icon dark>mdi-pen</v-icon>
             </v-btn>
-            <v-btn
-              title="刪除"
-              small
-              dark
-              fab
-              class="btn-delete"
-              @click="
+            <v-btn title="刪除" small dark fab class="btn-delete" @click="
                 dialogDel = true;
                 RPFlowNo = item.RPFlowNo;
               "

@@ -80,6 +80,7 @@
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
           </template>
+          
 
           <!-- 頁碼 -->
           <template v-slot:footer="footer">
@@ -95,7 +96,7 @@
     <v-dialog v-model="Add" persistent max-width="800px">
       <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
-          新增{{ title }}
+          {{ action }}{{ title }}
           <v-spacer></v-spacer>
           <v-btn dark fab small text @click="close" class="mr-n2">
             <v-icon>mdi-close</v-icon>
@@ -249,8 +250,10 @@ export default {
     return {
       title: "保安裝置保修工作紀錄簿",
       newText: "紀錄簿",
+      RPFlowNo: "",
       isLoading: false,
       disabled: false,
+      action: Actions.add,
       fileItems: [],
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
@@ -392,6 +395,7 @@ export default {
       this.StopEqipStatus = ''
     },
     newOne(){
+      this.action = Actions.add;
       this.Add = true
       this.initInput();
     },
@@ -458,6 +462,7 @@ export default {
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
+        console.log("tbBuffer: ", tbBuffer);
         let aa = unique(tbBuffer)
         this.tableItems = aa
         this.fileItems = res.data.FileCount||[];
@@ -483,35 +488,69 @@ export default {
       // obj.Column = "CheckDay"
       // obj.Value = this.zs
       // arr = arr.concat(obj)
+      if (this.action == Actions.edit){
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          RPFlowNo: this.RPFlowNo,
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            {"Column":"CheckDay","Value":this.CheckDay},
+            {"Column":"CheckMan","Value":this.CheckMan},
+            {"Column":"Place","Value":this.Place},
+            {"Column":"Content","Value":this.Content},
+            {"Column":"BgWorkHour","Value":this.BgWorkHour},
+            {"Column":"BgWorkMinute","Value":this.BgWorkMinute},
+            {"Column":"EndWorkHour","Value":this.EndWorkHour},
+            {"Column":"EndWorkMinute","Value":this.EndWorkMinute},
+            {"Column":"WorkStatus","Value":this.WorkStatus},
+            {"Column":"Worker","Value":this.Worker},
+            {"Column":"StopEqip","Value":this.gearName},
+            {"Column":"StopEqipStatus","Value":this.detail},
+            {"Column":"Memo","Value":this.memo},
+          ]
+        }).then(res => {
+        
+        }).catch(err => {
+          //console.log(err)
+          alert('編輯時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+      }
+      else{
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:[
+            {"Column":"CheckDay","Value":this.CheckDay},
+            {"Column":"CheckMan","Value":this.CheckMan},
+            {"Column":"Place","Value":this.Place},
+            {"Column":"Content","Value":this.Content},
+            {"Column":"BgWorkHour","Value":this.BgWorkHour},
+            {"Column":"BgWorkMinute","Value":this.BgWorkMinute},
+            {"Column":"EndWorkHour","Value":this.EndWorkHour},
+            {"Column":"EndWorkMinute","Value":this.EndWorkMinute},
+            {"Column":"WorkStatus","Value":this.WorkStatus},
+            {"Column":"Worker","Value":this.Worker},
+            {"Column":"StopEqip","Value":this.gearName},
+            {"Column":"StopEqipStatus","Value":this.detail},
+            {"Column":"Memo","Value":this.memo},
+          ]
+        }).then(res => {
+        
+        }).catch(err => {
+          //console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+      }
 
-      createFormOrder0({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
-        // OperatorID: "16713",  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem:[
-          {"Column":"CheckDay","Value":this.CheckDay},
-          {"Column":"CheckMan","Value":this.CheckMan},
-          {"Column":"Place","Value":this.Place},
-          {"Column":"Content","Value":this.Content},
-          {"Column":"BgWorkHour","Value":this.BgWorkHour},
-          {"Column":"BgWorkMinute","Value":this.BgWorkMinute},
-          {"Column":"EndWorkHour","Value":this.EndWorkHour},
-          {"Column":"EndWorkMinute","Value":this.EndWorkMinute},
-          {"Column":"WorkStatus","Value":this.WorkStatus},
-          {"Column":"Worker","Value":this.Worker},
-          {"Column":"StopEqip","Value":this.gearName},
-          {"Column":"StopEqipStatus","Value":this.detail},
-          {"Column":"Memo","Value":this.memo},
-        ]
-      }).then(res => {
-       
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({ show: false})
-      })
+      
       this.Add = false
     },
     // 關閉 dialog
@@ -528,8 +567,9 @@ export default {
     },
     viewPage(item) {
       this.chLoadingShow({show:false})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
+      this.action = Actions.edit;
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
@@ -553,36 +593,25 @@ export default {
           "Worker",
           "StopEqip",
           "StopEqipStatus",
+          "RPFlowNo"
         ],
       }).then(res => {
         this.initInput();
        
-        let dat = JSON.parse(res.data.DT)
-        console.log("dat[0]: ", dat[0]);
+        let dat = (JSON.parse(res.data.DT))[0]
         this.Add = true
         // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
+        this.RPFlowNo = dat.RPFlowNo;
+        this.doMan.name = dat.Name
+        this.CheckDay = dat.CheckDay.substr(0,10)
         //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
+        // let ad = Object.keys(dat[0])
+        
+        
         
       }).catch(err => {
         //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
+        alert('查詢詳細時發生問題!')
       }).finally(() => {
         this.chLoadingShow({ show: false})
       })

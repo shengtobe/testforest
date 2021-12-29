@@ -729,7 +729,6 @@ export default {
       // arr = arr.concat(obj)
       if (this.action == Actions.edit) {
         // update 要自行增加RPFlowNo欄位
-        console.log("RPFlowNo: ", this.RPFlowNo);
         updateFormOrder({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
