@@ -504,10 +504,9 @@ export default {
             {"Column":"Memo","Value":this.Memo},
           ]
         }).then(res => {
-            this.chMsgbar({ success: true, msg: Constrant.update.success });
-        
+          this.chMsgbar({ success: true, msg: Constrant.update.success });
         }).catch(err => {
-            this.chMsgbar({ success: false, msg: Constrant.update.failed });
+          this.chMsgbar({ success: false, msg: Constrant.update.failed });
         }).finally(() => {
           this.chLoadingShow({ show: false})
         })

@@ -192,7 +192,7 @@
               </v-col>
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">任現職年資</h3>
-                <v-text-field v-model="EmployeeYears" solo />
+                <v-text-field maxlength="3" v-model="EmployeeYears"  solo />
               </v-col>
               <v-col cols="8" sm="4">
                 <h3 class="mb-1">工作名稱</h3>
@@ -300,8 +300,9 @@ import fileList from "@/components/forManage/fileList";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
-import { formDepartOptions } from '@/assets/js/departOption'
+import { departOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 
@@ -312,12 +313,11 @@ export default {
     action: Actions.add,
     actions: Actions,
     isLoading: false,
-      fileItems: [],
+    fileItems: [],
     disabled: false,
     file: null,
     Add: false,
     dialog3: false,
-    ShowDetailDialog: false,
     dialogDel: false, // model off
     Add: false,
     dialog3: false,
@@ -342,10 +342,10 @@ export default {
     dds: "",
     zs: "",
     fw: "",
-    formDepartOptions: [
+    departOptions: [
         // 通報單位下拉選單
         { text: "不限", value: "" },
-        ...formDepartOptions,
+        ...departOptions,
       ],
     EmpDepartCode: "", //被觀察人部門代號
     EmpDepartName: "", //被觀察人部門名稱
@@ -426,7 +426,6 @@ export default {
     mainLocation: "", // 所選的地點
     OLocation: "", // 其他地點
     dialogShowAdd: false, // model off
-    dialogShowEdit: false, // model off
     dialogDel: false, // model off
     dialogm1: "2020-08-01",
     aa: "",
@@ -466,7 +465,7 @@ export default {
     dateSelect,
     deptSelect,
     ToolBar,
-    formDepartOptions,
+    departOptions,
     dialogDelete,
     UploadOneFileAdd,
     fileList
@@ -504,8 +503,9 @@ export default {
       this.$emit("chLocation", {});
     },
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
@@ -599,12 +599,13 @@ export default {
       })
     },
     save() {
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
       if(this.EmpDepartCode == ""){
         this.EmpDepartName = ""
       }
       else{
-        this.EmpDepartName = formDepartOptions.find(ele => ele.value == this.EmpDepartCode).text
+        console.log("departOptions: ", departOptions);
+        this.EmpDepartName = departOptions.find(ele => ele.value == this.EmpDepartCode).text
       }
 
       if (this.action == Actions.add){
@@ -645,10 +646,9 @@ export default {
             {Column:"CheckOption16",Value:this.CheckOption16},
           ]
         }).then(res => {
-         
+            this.chMsgbar({ success: true, msg: Constrant.insert.success });
         }).catch(err => {
-          //console.log(err)
-          alert('查詢時發生問題，請重新查詢!')
+            this.chMsgbar({ success: false, msg: Constrant.insert.failed });
         }).finally(() => {
           this.chLoadingShow({show:false})
         })
@@ -693,12 +693,9 @@ export default {
           ]
         })
           .then((res) => {
-           
-          })
-          .catch((err) => {
-            ////console.log(err);
-            // this.chMsgbar({ success: false, msg: Constrant.update.failed });
-            alert('查詢時發生問題，請重新查詢!')
+           this.chMsgbar({ success: true, msg: Constrant.update.success });
+        }).catch(err => {
+          this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
             this.chLoadingShow({show:false})
@@ -712,7 +709,6 @@ export default {
     // 關閉 dialog
     close() {
       this.Add = false;
-      this.dialogShowEdit = false;
       this.dialogDel = false;ds
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -723,7 +719,7 @@ export default {
     viewPage(item) {
       this.RPFlowNo = item.RPFlowNo
       this.action = Actions.edit
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
