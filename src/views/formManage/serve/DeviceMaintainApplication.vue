@@ -719,7 +719,7 @@ export default {
         alert("站長未填")
         return
       }
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
 
       let arr = new Array()
       let obj = new Object()

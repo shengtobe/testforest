@@ -1118,6 +1118,7 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     save() {
+      this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
@@ -1155,6 +1156,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             this.close();
           });
       } else {
@@ -1183,6 +1185,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             this.close();
           });
       }

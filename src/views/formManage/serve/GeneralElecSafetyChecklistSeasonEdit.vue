@@ -234,39 +234,39 @@ export default {
           "ID",
           "Name",
           "CheckOption1",
-          "Memo1",
+          "Memo_1",
           "CheckOption2",
-          "Memo2",
+          "Memo_2",
           "CheckOption3",
-          "Memo3",
+          "Memo_3",
           "CheckOption4",
-          "Memo4",
+          "Memo_4",
           "CheckOption5",
-          "Memo5",
+          "Memo_5",
           "CheckOption6",
-          "Memo6",
+          "Memo_6",
           "CheckOption7",
-          "Memo7",
+          "Memo_7",
           "CheckOption8",
-          "Memo8",
+          "Memo_8",
           "CheckOption9",
-          "Memo9",
+          "Memo_9",
           "CheckOption10",
-          "Memo10",
+          "Memo_10",
           "CheckOption11",
-          "Memo11",
+          "Memo_11",
           "CheckOption12",
-          "Memo12",
+          "Memo_12",
           "CheckOption13",
-          "Memo13",
+          "Memo_13",
           "CheckOption14",
-          "Memo14",
+          "Memo_14",
           "CheckOption15",
-          "Memo15",
+          "Memo_15",
           "CheckOption16",
-          "Memo16",
+          "Memo_16",
           "CheckOption17",
-          "Memo17",
+          "Memo_17",
           "Advice",
           "Measures",
         ],
@@ -307,6 +307,7 @@ export default {
         alert("欄位填寫不完整。")
         return
       }
+      this.chLoadingShow({show:true})
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
@@ -339,6 +340,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             that.close();
           });
       } else {
@@ -367,6 +369,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             that.close();
           });
       }

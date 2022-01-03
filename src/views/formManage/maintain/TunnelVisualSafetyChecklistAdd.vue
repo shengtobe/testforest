@@ -19,11 +19,11 @@
                   min-width="290px"
                 >
                   <template v-slot:activator="{ on }">
-                    <v-text-field v-model.trim="zs" outlined v-on="on" dense single-line />
+                    <v-text-field v-model.trim="CheckDate" outlined v-on="on" dense single-line />
                   </template>
                   <v-date-picker
                     color="primary"
-                    v-model="zs"
+                    v-model="CheckDate"
                     @input="MaintenanceDay = false"
                     locale="zh-tw"
                   />
@@ -411,6 +411,7 @@ import deptSelect from "@/components/forManage/deptSelect";
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 
@@ -426,7 +427,7 @@ export default {
       CheckOption22_2: "0",
       CheckOption22_3: "0",
       tunnelNum: "",
-      zs: "",
+      CheckDate: "",
       title: "隧道目視安全檢查表",
       newText: "檢查表",
       action: Actions.add,
@@ -463,6 +464,7 @@ export default {
       sirName1: "",
       sirName2: "",
       sirName3: "",
+      LineType: "",
       arr:[
         "brgImg1_1.jpg",
         "brgImg1_2.jpg"
@@ -696,66 +698,176 @@ export default {
       this.doMan.name = this.userData.UserName;
       var i = 1;
       for(i; i <= 15; i++ ){
-      this.sbjNum.push("編號" + i);
-    }
-    //判斷新增還是編輯
-    if(this.$route.params.id.substr(0, 2) == "編號"){
-      this.zs = this.nowTime;
-      this.tunnelNum = this.$route.params.id;
-      this.s01Change();
-    }
-    
-  },
+        this.sbjNum.push("編號" + i);
+      }
+      let rid = this.$route.params.id; // 管理頁傳來的id
+      //判斷新增還是編輯
+      if(rid.substr(0, 2) == "編號"){
+        this.action = Actions.add
+        this.CheckDate = this.nowTime;
+        this.tunnelNum = rid;
+        this.s01Change();
+      }
+      else{
+        // 編輯 抓資料
+        this.action = Actions.edit
+        this.RPFlowNo = rid
+        this.chLoadingShow({ show: true});
+        fetchFormOrderOne({
+          ClientReqTime: getNowFullTime(), // client 端請求時間
+          OperatorID: this.userData.UserId, // 操作人id
+          KeyName: this.DB_Table, // DB table
+          KeyItem: [{ Column: "RPFlowNo", Value: rid }],
+          QyName: [
+            "CheckDay",
+            "TunnelID",
+            "Engineer",
+            "WorksChief",
+            "Supervisor",
+            "LineType",
+            "Length",
+            "Start",
+            "Finish",
+            "Type",  
+            "Slope", 
+            "Height",
+            "CurveRadius",
+            "CheckOption1",
+            "CheckOptionLv1",
+            "CheckOption1_1",
+            "CheckOption1_2",
+            "CheckOption1_3",
+            "CheckOption2",
+            "CheckOptionLv2",
+            "CheckOption3",
+            "CheckOptionLv3",
+            "CheckOption4",
+            "CheckOptionLv4",
+            "CheckOption5",
+            "CheckOptionLv5",
+            "CheckOption6",
+            "CheckOptionLv6",
+            "CheckOption7",
+            "CheckOptionLv7",
+            "CheckOption8",
+            "CheckOptionLv8",
+            "CheckOption9",
+            "CheckOptionLv9",
+            "CheckOption10",
+            "CheckOptionLv10",
+            "CheckOption11",
+            "CheckOptionLv11",
+            "CheckOption12",
+            "CheckOptionLv12",
+            "CheckOption13",
+            "CheckOptionLv13",
+            "CheckOption14",
+            "CheckOptionLv14",
+            "CheckOption15",
+            "CheckOptionLv15",
+            "CheckOption16",
+            "CheckOptionLv16",
+            "CheckOption17",
+            "CheckOptionLv17",
+            "CheckOption18",
+            "CheckOptionLv18",
+            "CheckOption19",
+            "CheckOptionLv19",
+            "CheckOption20",
+            "CheckOptionLv20",
+            "CheckOption21",
+            "CheckOptionLv21",
+            "CheckOption22",
+            "CheckOption22_1",
+            "CheckOption22_2",
+            "CheckOption22_3",
+            "Memo"
+          ],
+        })
+          .then((res) => {
+            let dat = (JSON.parse(res.data.DT))[0];
+            this.tunnelNum = '編號' + dat.TunnelID
+            this.CheckDate = dat.CheckDay
+            this.LineType = dat.LineType
+            this.tunnelType = dat.Type
+            this.sirName1 = dat.Engineer
+            this.sirName2 = dat.WorksChief
+            this.sirName3 = dat.Supervisor
+            this.v3 = dat.Length
+            this.v1 = dat.Start
+            this.v2 = dat.Finish
+            this.v5 = dat.Slope
+            this.v6 = dat.Height
+            this.v4 = dat.CurveRadius
+            this.CheckOption1_1 = dat.CheckOption1_1
+            this.CheckOption1_2 = dat.CheckOption1_2
+            this.CheckOption1_3 = dat.CheckOption1_3
+            this.ipt.items1[0].discrip = dat.CheckOption1
+            this.ipt.items1[0].damLv = dat.CheckOptionLv1
+            this.ipt.items1[1].discrip = dat.CheckOption2
+            this.ipt.items1[1].damLv = dat.CheckOptionLv2
+            this.ipt.items1[2].discrip = dat.CheckOption3
+            this.ipt.items1[2].damLv = dat.CheckOptionLv3
+            this.ipt.items1_2.discrip = dat.CheckOption4
+            this.ipt.items1_2.damLv = dat.CheckOptionLv4
+            this.ipt.items2[0].discrip = dat.CheckOption5
+            this.ipt.items2[0].damLv = dat.CheckOptionLv5
+            this.ipt.items2[1].discrip = dat.CheckOption6
+            this.ipt.items2[1].damLv = dat.CheckOptionLv6
+            this.ipt.items2[2].discrip = dat.CheckOption7
+            this.ipt.items2[2].damLv = dat.CheckOptionLv7
+            this.ipt.items3[0].discrip = dat.CheckOption8
+            this.ipt.items3[0].damLv = dat.CheckOptionLv8
+            this.ipt.items3[1].discrip = dat.CheckOption9
+            this.ipt.items3[1].damLv = dat.CheckOptionLv9
+            this.ipt.items3[2].discrip = dat.CheckOption10
+            this.ipt.items3[2].damLv = dat.CheckOptionLv10
+            this.ipt.items3[3].discrip = dat.CheckOption11
+            this.ipt.items3[3].damLv = dat.CheckOptionLv11
+            this.ipt.items3[4].discrip = dat.CheckOption12
+            this.ipt.items3[4].damLv = dat.CheckOptionLv12
+            this.ipt.items3[5].discrip = dat.CheckOption13
+            this.ipt.items3[5].damLv = dat.CheckOptionLv13
+            this.ipt.items4[0].discrip = dat.CheckOption14
+            this.ipt.items4[0].damLv = dat.CheckOptionLv14
+            this.ipt.items4[1].discrip = dat.CheckOption15
+            this.ipt.items4[1].damLv = dat.CheckOptionLv15
+            this.ipt.items5[0].discrip = dat.CheckOption16
+            this.ipt.items5[0].damLv = dat.CheckOptionLv16
+            this.ipt.items5[1].discrip = dat.CheckOption17
+            this.ipt.items5[1].damLv = dat.CheckOptionLv17
+            this.ipt.items5[2].discrip = dat.CheckOption18
+            this.ipt.items5[2].damLv = dat.CheckOptionLv18
+            this.ipt.items6[0].discrip = dat.CheckOption19
+            this.ipt.items6[0].damLv = dat.CheckOptionLv19
+            this.ipt.items6[1].discrip = dat.CheckOption20
+            this.ipt.items6[1].damLv = dat.CheckOptionLv20
+            this.ipt.items6[2].discrip = dat.CheckOption21
+            this.ipt.items6[2].damLv = dat.CheckOptionLv21
+            this.ipt.items6_2.discrip = dat.CheckOption22
+            this.CheckOption22_1 = dat.CheckOption22_1
+            this.CheckOption22_2 = dat.CheckOption22_2
+            this.CheckOption22_3 = dat.CheckOption22_3
+            this.note = dat.Memo
+            this.s01Change();
+          })
+          .catch((err) => {
+            this.chMsgbar({ success: false, msg: Constrant.query.failed });
+          })
+          .finally(() => {
+            this.chLoadingShow({ show: false});
+          });
+      }
+    },
   methods: {
-    // 更換頁數
-    initInput(){
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      for (step = 0; step < 7; step++) {
-        this.ipt.items[step].status = "0"
-        this.ipt.items[step].note = ''
-      }
-      this.Advice = "";
-      this.Measures = ""
-    },
-    unique(list){
-      var arr = [];
-      let b = false;
-      for (var i = 0; i < list.length; i++) {
-        if (i == 0) arr.push(list[i]);
-        b = false;
-        if (arr.length > 0 && i > 0) {
-          for (var j = 0; j < arr.length; j++) {
-            if (arr[j].RPFlowNo == list[i].RPFlowNo) {
-              b = true;
-              //break;
-            }
-          }
-          if (!b) {
-            arr.push(list[i]);
-          }
-        }
-      }
-      return arr;
-    },
-    newOne(){
-     
-      this.Add = true
-     
-      this.initInput();
-    },
-    chPage(n) {
-      this.pageOpt.page = n;
-    },
-    
-    s01Change(selectObj){
+    ...mapActions('system', [
+      "chMsgbar", // messageBar
+        'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
+    s01Change(){
       this.showImg = true;
-      if(selectObj == undefined){
-        selectObj = this.tunnelNum
-      }
       var i = -1;
-      i = Number(selectObj.substr(2)) - 1;
+      i = Number(this.tunnelNum.substr(2)) - 1;
       this.i_num = i;
       if(i > -1){
         this.v1 = this.vn[i].start;
@@ -768,48 +880,9 @@ export default {
         // this.manImg2 = this.vn[i].imgUrl2;
       }
     },
-    // 新增監工區塊欄位
-    addSupervisor() {},
-    // 搜尋
-    search() {
-      
-      this.chLoadingShow({show:true})
-      fetchFormOrderList({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
-                ],
-        QyName:[
-          // "DISTINCT (RPFlowNo)",
-          // // "ID",
-          // // "Name",
-          // // "CheckDay",
-          // // "CheckStatus",
-          // " * "
-          "RPFlowNo",
-          "ID",
-          "Name",
-          "CheckDay",
-          "CheckStatus",
-          "FlowId", "DepartName"
-        ],
-      }).then(res => {
-        let tbBuffer = JSON.parse(res.data.DT)
-        let aa = unique(tbBuffer)
-        this.tableItems = aa
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({show:false})
-      })
-    },
     // 存
     save() {
+      this.chLoadingShow({show:true})
       this.CheckOption1_1 = (this.CheckOption1_1 == undefined)?"0":this.CheckOption1_1;
       this.CheckOption1_2 = (this.CheckOption1_2 == undefined)?"0":this.CheckOption1_2;
       this.CheckOption1_3 = (this.CheckOption1_3 == undefined)?"0":this.CheckOption1_3;
@@ -817,6 +890,7 @@ export default {
       this.CheckOption22_2 = (this.CheckOption22_2 == undefined)?"0":this.CheckOption22_2;
       this.CheckOption22_3 = (this.CheckOption22_3 == undefined)?"0":this.CheckOption22_3;
       if (this.action == Actions.add){
+        console.log("new one!")
         //-----新增-----
         createFormOrder0({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -824,7 +898,7 @@ export default {
           // OperatorID: "16713",  // 操作人id
           KeyName: this.DB_Table,  // DB table
           KeyItem:[
-            {Column:"CheckDay", Value: this.zs },
+            {Column:"CheckDay", Value: this.CheckDate },
             {Column:"TunnelID", Value: this.tunnelNum.substr(2) },
             {Column:"Engineer",Value:this.sirName1},
             {Column:"WorksChief",Value:this.sirName2},
@@ -833,11 +907,12 @@ export default {
             {Column:"Length",Value:this.v3},
             {Column:"Start",Value:this.v1},
             {Column:"Finish",Value:this.v2},
-            {Column:"Type",Value:this.tunnelType.id},
+            {Column:"Type",Value:this.tunnelType},
             {Column:"Slope",Value:this.v5},
             {Column:"Height",Value:this.v6},
             {Column:"CurveRadius",Value:this.v4},
             {Column:"CheckOption1",Value:this.ipt.items1[0].discrip},
+            {Column:"CheckOptionLv1",Value:this.ipt.items1[0].damLv},
             {Column:"CheckOption1_1",Value:this.CheckOption1_1},
             {Column:"CheckOption1_2",Value:this.CheckOption1_2},
             {Column:"CheckOption1_3",Value:this.CheckOption1_3},
@@ -888,16 +963,96 @@ export default {
             {Column:"Memo",Value:this.note},
           ]
         }).then(res => {
-         
+         this.chMsgbar({ success: true, msg: Constrant.insert.success });
         }).catch(err => {
-          //console.log(err)
-          alert('查詢時發生問題，請重新查詢!')
+          this.chMsgbar({ success: true, msg: Constrant.insert.failed });
         }).finally(() => {
+          this.chLoadingShow({show:false})
           // this.chLoadingShow({show:true})
         })
       }
       else{
         //-----編輯-----
+        console.log("update!")
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          RPFlowNo: this.RPFlowNo,
+          KeyItem:[
+            {Column:"CheckDay", Value: this.CheckDate },
+            {Column:"TunnelID", Value: this.tunnelNum.substr(2) },
+            {Column:"Engineer",Value:this.sirName1},
+            {Column:"WorksChief",Value:this.sirName2},
+            {Column:"Supervisor",Value:this.sirName3},
+            {Column:"LineType",Value:this.LineType},
+            {Column:"Length",Value:this.v3},
+            {Column:"Start",Value:this.v1},
+            {Column:"Finish",Value:this.v2},
+            {Column:"Type",Value:this.tunnelType.id},
+            {Column:"Slope",Value:this.v5},
+            {Column:"Height",Value:this.v6},
+            {Column:"CurveRadius",Value:this.v4},
+            {Column:"CheckOption1",Value:this.ipt.items1[0].discrip},
+            {Column:"CheckOptionLv1",Value:this.ipt.items1[0].damLv},
+            {Column:"CheckOption1_1",Value:this.CheckOption1_1},
+            {Column:"CheckOption1_2",Value:this.CheckOption1_2},
+            {Column:"CheckOption1_3",Value:this.CheckOption1_3},
+            {Column:"CheckOption2",Value:this.ipt.items1[1].discrip},
+            {Column:"CheckOptionLv2",Value:this.ipt.items1[1].damLv},
+            {Column:"CheckOption3",Value:this.ipt.items1[2].discrip},
+            {Column:"CheckOptionLv3",Value:this.ipt.items1[2].damLv},
+            {Column:"CheckOption4",Value:this.ipt.items1_2.discrip},
+            {Column:"CheckOptionLv4",Value:this.ipt.items1_2.damLv},
+            {Column:"CheckOption5",Value:this.ipt.items2[0].discrip},
+            {Column:"CheckOptionLv5",Value:this.ipt.items2[0].damLv},
+            {Column:"CheckOption6",Value:this.ipt.items2[1].discrip},
+            {Column:"CheckOptionLv6",Value:this.ipt.items2[1].damLv},
+            {Column:"CheckOption7",Value:this.ipt.items2[2].discrip},
+            {Column:"CheckOptionLv7",Value:this.ipt.items2[2].damLv},
+            {Column:"CheckOption8",Value:this.ipt.items3[0].discrip},
+            {Column:"CheckOptionLv8",Value:this.ipt.items3[0].damLv},
+            {Column:"CheckOption9",Value:this.ipt.items3[1].discrip},
+            {Column:"CheckOptionLv9",Value:this.ipt.items3[1].damLv},
+            {Column:"CheckOption10",Value:this.ipt.items3[2].discrip},
+            {Column:"CheckOptionLv10",Value:this.ipt.items3[2].damLv},
+            {Column:"CheckOption11",Value:this.ipt.items3[3].discrip},
+            {Column:"CheckOptionLv11",Value:this.ipt.items3[3].damLv},
+            {Column:"CheckOption12",Value:this.ipt.items3[4].discrip},
+            {Column:"CheckOptionLv12",Value:this.ipt.items3[4].damLv},
+            {Column:"CheckOption13",Value:this.ipt.items3[5].discrip},
+            {Column:"CheckOptionLv13",Value:this.ipt.items3[5].damLv},
+            {Column:"CheckOption14",Value:this.ipt.items4[0].discrip},
+            {Column:"CheckOptionLv14",Value:this.ipt.items4[0].damLv},
+            {Column:"CheckOption15",Value:this.ipt.items4[1].discrip},
+            {Column:"CheckOptionLv15",Value:this.ipt.items4[1].damLv},
+            {Column:"CheckOption16",Value:this.ipt.items5[0].discrip},
+            {Column:"CheckOptionLv16",Value:this.ipt.items5[0].damLv},
+            {Column:"CheckOption17",Value:this.ipt.items5[1].discrip},
+            {Column:"CheckOptionLv17",Value:this.ipt.items5[1].damLv},
+            {Column:"CheckOption18",Value:this.ipt.items5[2].discrip},
+            {Column:"CheckOptionLv18",Value:this.ipt.items5[2].damLv},
+            {Column:"CheckOption19",Value:this.ipt.items6[0].discrip},
+            {Column:"CheckOptionLv19",Value:this.ipt.items6[0].damLv},
+            {Column:"CheckOption20",Value:this.ipt.items6[1].discrip},
+            {Column:"CheckOptionLv20",Value:this.ipt.items6[1].damLv},
+            {Column:"CheckOption21",Value:this.ipt.items6[2].discrip},
+            {Column:"CheckOptionLv21",Value:this.ipt.items6[2].damLv},
+            {Column:"CheckOption22",Value:this.ipt.items6_2.discrip},
+            {Column:"CheckOption22_1",Value:this.CheckOption22_1},
+            {Column:"CheckOption22_2",Value:this.CheckOption22_2},
+            {Column:"CheckOption22_3",Value:this.CheckOption22_3},
+            {Column:"Memo",Value:this.note},
+          ]
+        }).then(res => {
+          if(res.data.ErrorCode == 0) this.chMsgbar({ success: true, msg: Constrant.update.success });
+        }).catch(err => {
+          this.chMsgbar({ success: true, msg: Constrant.update.failed });
+        }).finally(() => {
+          this.chLoadingShow({show:false})
+          // this.chLoadingShow({show:true})
+        })
       }
       this.$router.push({ path: "/form-manage/maintain/tunnel-visual-safety-checklist" });
     },
@@ -905,66 +1060,6 @@ export default {
     closeWorkLogModal() {
       this.AddWorkLogModal = false;
     },
-    viewPage(item) {
-      // this.chLoadingShow({show:true})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
-        ],
-      }).then(res => {
-        this.initInput();
-       
-        let dat = JSON.parse(res.data.DT)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        // this.chLoadingShow({show:true})
-      })
-    },//viewPage
   },
 };
 </script>

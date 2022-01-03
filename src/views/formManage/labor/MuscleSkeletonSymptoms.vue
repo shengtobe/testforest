@@ -720,13 +720,9 @@ export default {
           FunCode: 'C',
           KeyItem:ki
         }).then(res=>{
-          if(!res.data.ErrorCode==0){
-            console.error(res.data.Msg)
-            alert('儲存時發生問題，請重新儲存!')
-          }
+          this.chMsgbar({ success: true, msg: Constrant.insert.success });
         }).catch(err => {
-          console.warn(err)
-          alert('儲存時發生問題，請重新儲存!')
+          this.chMsgbar({ success: true, msg: Constrant.insert.failed });
         }).finally(() => {
           this.chLoadingShow({show:false})
         })
@@ -739,13 +735,9 @@ export default {
           RPFlowNo: this.flowNo,
           KeyItem:ki
         }).then(res=>{
-          if(!res.data.ErrorCode==0){
-            console.error(res.data.Msg)
-            alert('儲存時發生問題，請重新儲存!')
-          }
+          this.chMsgbar({ success: true, msg: Constrant.update.success });
         }).catch(err => {
-          console.warn(err)
-          alert('儲存時發生問題，請重新儲存!')
+          this.chMsgbar({ success: true, msg: Constrant.update.failed });
         }).finally(() => {
           this.chLoadingShow({show:false})
         })

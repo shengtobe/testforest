@@ -466,7 +466,7 @@ export default {
     // 存
     save() {
       
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
 
       let arr = new Array()
       let obj = new Object()

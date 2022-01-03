@@ -387,6 +387,7 @@ export default {
       this.$emit("search");
     },
     save() {
+      this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
@@ -419,6 +420,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             that.close();
           });
       } else {
@@ -447,6 +449,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             that.close();
           });
       }
