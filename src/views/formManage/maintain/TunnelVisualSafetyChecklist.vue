@@ -66,14 +66,23 @@
            <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2 btn-memo"
+              class="mr-2 btn-modify"
               small
               dark
               fab
               @click="viewPage(item)"
             >
-              <!--上面原程式: to="/form-manage/curing/railway-worklog-add" -->
               <v-icon dark>mdi-pen</v-icon>
+            </v-btn>
+            <v-btn
+              title="刪除"
+              class="mr-2 btn-delete"
+              small
+              dark
+              fab
+              @click="delItem(item)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>
 
@@ -84,6 +93,18 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="closeDialogDel"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -118,19 +139,20 @@ export default {
           department: "",
         },
       },
+      RPFlowNo: "",
+      DelDynamicKey: 0,
       n01: "0",
       CheckdayOn: "",
       QueryCheckdayOn: "",
       formDepartOptions: [
-      // 通報單位下拉選單
-      { text: "不限", value: "" },
-      ...formDepartOptions,
-    ],
+        // 通報單位下拉選單
+        { text: "不限", value: "" },
+        ...formDepartOptions,
+      ],
       CheckdayOff: "",
       QueryCheckdayOff: "",
       AddWorkLogModal: false,
       MaintenanceDay: "",
-      sbjNum: [],
       AddData: {
         // 新增表單資料
         MaintenanceDay: "", // 保養日
@@ -162,6 +184,7 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      dialogDel: false,
       //------
     };
   },
@@ -173,29 +196,31 @@ export default {
     dialogDelete,
   },
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
-    },
-    created() {
-      this.ipt = { ...this.defaultIpt }
-      //更新時間
-      var today=new Date();
-      let mStr = today.getMonth()+1;
-      let dStr = today.getDate();
-      if(mStr < 10){
-        mStr = '0' + mStr;
+    ...mapState ('user', {
+        userData: state => state.userData,  // 使用者基本資料
+    }),
+    sbjNum(){
+      let rtnArr = []
+      for(let i = 1 ; i <= 26 ; i++) {
+        rtnArr.push("編號" + i)
       }
-      if(dStr < 10){
-        dStr = '0' + dStr;
-      }
-      this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-      this.z = this.df = this.nowTime
-
-      var i = 1;
-    for(i; i <= 26; i++ ){
-      this.sbjNum.push("編號" + i);
+      return rtnArr
     }
+  },
+  created() {
+    this.ipt = { ...this.defaultIpt }
+    //更新時間
+    var today=new Date();
+    let mStr = today.getMonth()+1;
+    let dStr = today.getDate();
+    if(mStr < 10){
+      mStr = '0' + mStr;
+    }
+    if(dStr < 10){
+      dStr = '0' + dStr;
+    }
+    this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime
   },
   methods: {
     ...mapActions('system', [
@@ -253,8 +278,8 @@ export default {
     addSupervisor() {},
     // 搜尋
     search() {
-      let d1 = Date.parse(this._data.z)
-      let d2 = Date.parse(this._data.df)
+      let d1 = Date.parse(this.formData.searchItem.dateStart)
+      let d2 = Date.parse(this.formData.searchItem.dateEnd)
       if(d1 > d2){
         alert('時間範圍錯誤')
         return
@@ -265,9 +290,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'StartDayVlaue','Value':this._data.z},
-          {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.ipt2.depart},
+          {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
+          {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
+          {"Column":"DepartCode","Value":this.userData.DeptList[0].DeptId},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -288,7 +313,7 @@ export default {
         let aa = unique(tbBuffer)
         this.tableItems = aa
       }).catch(err => {
-        //console.log(err)
+        console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({show:false})
@@ -301,6 +326,14 @@ export default {
     viewPage(item) {
       this.$router.push(`/form-manage/maintain/tunnel-visual-safety-checklist-add/${item.RPFlowNo}/newone`)
     },//viewPage
+    delItem(item) {
+      this.RPFlowNo = item.RPFlowNo;
+      this.dialogDel = true
+      this.DelDynamicKey += 1;
+    },
+    closeDialogDel() {
+      this.dialogDel = false
+    },
   },
 };
 </script>

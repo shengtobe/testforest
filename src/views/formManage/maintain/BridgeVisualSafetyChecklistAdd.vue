@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="ma-4 mb-8" color="yellow lighten-2">
     <v-container style="max-width: 1200px" class="px-8">
-      <p class="font-weight-black title text-center label-title">新增{{ title }}</p>
+      <p class="font-weight-black title text-center label-title">{{this.$route.params.id.substr(0, 2) == "編號"?'新增':'編輯'}}{{ title }}</p>
       <v-row class="white px-4">
         <!-- 基本資料 -->
         <v-col cols="12" sm="8">
@@ -41,7 +41,7 @@
               </v-col>
               <v-col cols="12" sm="2">
                 <h3 class="mb-1">長度</h3>
-                <v-text-field dense v-on:click="showlog" single-line outlined readonly v-model="v3"><span slot="append">m</span></v-text-field>
+                <v-text-field dense single-line outlined readonly v-model="v3"><span slot="append">m</span></v-text-field>
               </v-col>
             </v-row>
             <!-- row2 -->
@@ -388,7 +388,6 @@
 </template>
 
 <script>
-import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
@@ -397,9 +396,7 @@ import deptSelect from "@/components/forManage/deptSelect";
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
-import dialogDelete from "@/components/forManage/dialogDelete";
-import ToolBar from "@/components/forManage/toolbar";
-
+import { Constrant } from "@/assets/js/constrant";
 export default {
   data() {
     return {
@@ -422,18 +419,7 @@ export default {
         depart: '',
         checkManName: ''
       },
-      ipt2: {},
-      defaultIpt: {  // 預設的欄位值
-          startDay: '',
-          EndDay: '',
-          depart: '',  // 單位
-        },
-      formDepartOptions: [
-        // 通報單位下拉選單
-        { text: "不限", value: "" },
-        ...formDepartOptions,
-      ],
-      note: "109年05月21日發生西南氣流豪雨，5/22日累積雨量達200mm以上，建立預警機制5/22日阿里山線暫時停駛。",
+      note: "",
       temp1: "../../../assets/images/brgImg1_1.jpg",
       sbjNum: [],
       i_num: 0,
@@ -677,63 +663,9 @@ export default {
         // 新增表單資料
         MaintenanceDay: "", // 保養日
       },
-      // 系統變數
-      pageOpt: { page: 1 }, // 目前頁數
-      headers: [
-        {
-          text: "項次",
-          value: "Item",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "檢查日期",
-          value: "Checkday",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        // {
-        //   text: "審查狀態",
-        //   value: "Review",
-        //   align: "center",
-        //   divider: true,
-        //   class: "subtitle-1 white--text font-weight-bold",
-        // },
-        {
-          text: "填寫人",
-          value: "Name",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "功能",
-          value: "Shop",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-      ],
-      tableItems: [
-        {
-          Item: "1",
-          Checkday: "2020-08-01",
-          Review: "已審查",
-          Name: "王大明",
-        },
-        {
-          Item: "2",
-          Checkday: "2020-08-10",
-          Review: "審查中",
-          Name: "王大明",
-        },
-      ],
     };
   },
-  components: { Pagination }, // 頁碼
-  
+  components: {}, 
   computed:{
     ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
@@ -746,7 +678,7 @@ export default {
       return require("../../../assets/images/" + this.arr[i_num]);
     }
   },
-  created:function(){
+  mounted(){
     this.nowTime = getTodayDateString();
     this.doMan.name = this.userData.UserName;
     
@@ -761,110 +693,14 @@ export default {
       this.s01Change();
     }
     else{
-      let aa = []
-      aa = this.$route.params.id.split(',')
-      this.bridgeNum = "編號" + String.fromCharCode(aa[1]);
-      this.s01Change();
-      //處理日期解碼
-      let bb = aa[0].split("_")
-      let cc = []
-      bb.forEach(element => 
-        cc.push(String.fromCharCode(element))
-      );
-      this.zs = cc.join('')
-      //LineType 路線
-      bb = aa[5].split("_")
-      cc = []
-      bb.forEach(element => 
-        cc.push(String.fromCharCode(element))
-      );
-      this.LineType = cc.join('')
-      //CheckOption
-      this.ipt.items1[0].result = String.fromCharCode(aa[6])
-      this.ipt.items1[0].damLv = String.fromCharCode(aa[7])
-      this.ipt.items1[1].result = String.fromCharCode(aa[8])
-      this.ipt.items1[1].damLv = String.fromCharCode(aa[9])
-      this.ipt.items1[2].result = String.fromCharCode(aa[10])
-      this.ipt.items1[2].damLv = String.fromCharCode(aa[11])
-      this.ipt.items2[0].result = String.fromCharCode(aa[12])
-      this.ipt.items2[0].damLv = String.fromCharCode(aa[13])
-      this.ipt.items2[1].result = String.fromCharCode(aa[14])
-      this.ipt.items2[1].damLv = String.fromCharCode(aa[15])
-      this.ipt.items2[2].result = String.fromCharCode(aa[16])
-      this.ipt.items2[2].damLv = String.fromCharCode(aa[17])
-      this.ipt.items2[3].result = String.fromCharCode(aa[18])
-      this.ipt.items2[3].damLv = String.fromCharCode(aa[19])
-      this.ipt.items3[0].result = String.fromCharCode(aa[20])
-      this.ipt.items4[0].result = String.fromCharCode(aa[21])
-      this.ipt.items4[0].damLv = String.fromCharCode(aa[22])
-      this.ipt.items5[0].result = String.fromCharCode(aa[23])
-      this.ipt.items5[1].result = String.fromCharCode(aa[24])
-      this.ipt.items5[2].result = String.fromCharCode(aa[25])
-      this.ipt.items5[3].result = String.fromCharCode(aa[26])
-      this.ipt.items5[4].result = String.fromCharCode(aa[27])
-      this.ipt.items5[5].result = String.fromCharCode(aa[28])
-      this.ipt.items5[6].result = String.fromCharCode(aa[29])
-      this.ipt.items5[7].result = String.fromCharCode(aa[30])
-      this.ipt.items5[8].result = String.fromCharCode(aa[31])
-      //Memo
-      bb = aa[32].split("_")
-      cc = []
-      bb.forEach(element => 
-        cc.push(String.fromCharCode(element))
-      );
-      this.note = cc.join('')
-      //三人名
-      bb = aa[2].split("_")
-      cc = []
-      bb.forEach(element => 
-        cc.push(String.fromCharCode(element))
-      );
-      this.sirName1 = cc.join('')
-      bb = aa[3].split("_")
-      cc = []
-      bb.forEach(element => 
-        cc.push(String.fromCharCode(element))
-      );
-      this.sirName2 = cc.join('')
-      bb = aa[4].split("_")
-      cc = []
-      bb.forEach(element => 
-        cc.push(String.fromCharCode(element))
-      );
-      this.sirName3 = cc.join('')
+      this.viewPage(this.$route.params.id)
     }
-    
   },
   methods: {
-    initInput(){
-      this.doMan.name = this.userData.UserName;
-      this.zs = this.nowTime;
-      var step;
-      // for (step = 0; step < 7; step++) {
-      //   this.ipt.items[step].status = ""
-      //   this.ipt.items2[step].status = ""
-      // }
-      // this.Advice = "";
-      // this.Measures = ""
-    },
     ...mapActions('system', [
             'chLoadingShow',  // 切換 loading 圖顯示
+            'chMsgbar'
         ]),
-    showlog(){
-      // this.bridgeNum = "編號3"
-      // this.s01Change();
-    },
-    newOne(){
-     
-      this.Add = true
-     
-      this.initInput();
-    },
-    // 更換頁數
-    chPage(n) {
-      this.pageOpt.page = n;
-    },
-    
     s01Change(selectObj){
       this.showImg = true;
       if(selectObj == undefined){
@@ -908,44 +744,20 @@ export default {
     save() {
       this.chLoadingShow({show:true})
 
-      if (this.action == Actions.add){
+      if (this.$route.params.id.substr(0, 2) == "編號"){
         //-----新增-----
         createFormOrder0({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
-          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
-          // OperatorID: "16713",  // 操作人id
+          OperatorID: this.userData.UserId,  // 操作人id
           KeyName: this.DB_Table,  // DB table
+          FunCode: "C",
           KeyItem:[
             {Column:"CheckDay", Value: this.zs },
             {Column:"BridgeID", Value: this.bridgeNum.substr(2) },
             {Column:"LineType",Value:this.LineType},
-            {Column:"Len",Value:this.v3},
-            {Column:"Start",Value:this.v1},
-            {Column:"Finish",Value:this.v2},
-            {Column:"Type",Value:this.v7},
-            {Column:"Slope",Value:this.v5},
-            {Column:"Height",Value:this.v6},
-            {Column:"CurveRadius",Value:this.v4},
-            {Column:"Holes",Value:this.v8},
-            {Column:"H_Chiayi",Value:this.v9},
-            {Column:"H_Alishan",Value:this.v10},
             {Column:"Engineer",Value:this.sirName1},
             {Column:"WorksChief",Value:this.sirName2},
             {Column:"Supervisor",Value:this.sirName3},
-            {Column:"BridgeHeight_1",Value:this.val1_1},
-            {Column:"BridgeHeight_2",Value:this.val1_2},
-            {Column:"BridgeHeight_3",Value:this.val1_3},
-            {Column:"BridgeHeight_4",Value:this.val1_4},
-            {Column:"BridgeHeight_5",Value:this.val1_5},
-            {Column:"BridgeHeight_6",Value:this.val1_6},
-            {Column:"BridgeHeight_7",Value:this.val1_7},
-            {Column:"BeamLength_1",Value:this.val2_1},
-            {Column:"BeamLength_2",Value:this.val2_2},
-            {Column:"BeamLength_3",Value:this.val2_3},
-            {Column:"BeamLength_4",Value:this.val2_4},
-            {Column:"BeamLength_5",Value:this.val2_5},
-            {Column:"BeamLength_6",Value:this.val2_6},
-            {Column:"BeamLength_7",Value:this.val2_7},
             {Column:"CheckOption1",Value:this.ipt.items1[0].result},
             {Column:"CheckOption1HazLv",Value:this.ipt.items1[0].damLv},
             {Column:"CheckOption2",Value:this.ipt.items1[1].result},
@@ -987,45 +799,33 @@ export default {
         updateFormOrder({
           ClientReqTime: getNowFullTime(), // client 端請求時間
           OperatorID: this.userData.UserId, // 操作人id
-          RPFlowNo: this.RPFlowNo,
-          // FunCode: "U",
+          RPFlowNo: this.$route.params.id,
+          FunCode: "U",
           KeyName: this.DB_Table, // DB table
           KeyItem:[
             {Column:"CheckDay", Value: this.zs },
+            {Column:"BridgeID", Value: this.bridgeNum.substr(2) },
             {Column:"LineType",Value:this.LineType},
-            {Column:"Len",Value:this.v3},
-            {Column:"Start",Value:this.v1},
-            {Column:"Finish",Value:this.v2},
-            {Column:"Type",Value:this.v7},
-            {Column:"Slope",Value:this.v5},
-            {Column:"Height",Value:this.v6},
-            {Column:"CurveRadius",Value:this.v4},
-            {Column:"Holes",Value:this.v8},
-            {Column:"H_Chiayi",Value:this.v9},
-            {Column:"H_Alishan",Value:this.v10},
-            {Column:"BridgeHeight_1",Value:this.val1_1},
-            {Column:"BridgeHeight_2",Value:this.val1_2},
-            {Column:"BridgeHeight_3",Value:this.val1_3},
-            {Column:"BridgeHeight_4",Value:this.val1_4},
-            {Column:"BridgeHeight_5",Value:this.val1_5},
-            {Column:"BridgeHeight_6",Value:this.val1_6},
-            {Column:"BridgeHeight_7",Value:this.val1_7},
-            {Column:"BeamLength_1",Value:this.val2_1},
-            {Column:"BeamLength_2",Value:this.val2_2},
-            {Column:"BeamLength_3",Value:this.val2_3},
-            {Column:"BeamLength_4",Value:this.val2_4},
-            {Column:"BeamLength_5",Value:this.val2_5},
-            {Column:"BeamLength_6",Value:this.val2_6},
-            {Column:"BeamLength_7",Value:this.val2_7},
+            {Column:"Engineer",Value:this.sirName1},
+            {Column:"WorksChief",Value:this.sirName2},
+            {Column:"Supervisor",Value:this.sirName3},
             {Column:"CheckOption1",Value:this.ipt.items1[0].result},
+            {Column:"CheckOption1HazLv",Value:this.ipt.items1[0].damLv},
             {Column:"CheckOption2",Value:this.ipt.items1[1].result},
+            {Column:"CheckOption2HazLv",Value:this.ipt.items1[1].damLv},
             {Column:"CheckOption3",Value:this.ipt.items1[2].result},
+            {Column:"CheckOption3HazLv",Value:this.ipt.items1[2].damLv},
             {Column:"CheckOption4",Value:this.ipt.items2[0].result},
+            {Column:"CheckOption4HazLv",Value:this.ipt.items2[0].damLv},
             {Column:"CheckOption5",Value:this.ipt.items2[1].result},
+            {Column:"CheckOption5HazLv",Value:this.ipt.items2[1].damLv},
             {Column:"CheckOption6",Value:this.ipt.items2[2].result},
+            {Column:"CheckOption6HazLv",Value:this.ipt.items2[2].damLv},
             {Column:"CheckOption7",Value:this.ipt.items2[3].result},
+            {Column:"CheckOption7HazLv",Value:this.ipt.items2[3].damLv},
             {Column:"CheckOption8",Value:this.ipt.items3[0].result},
             {Column:"CheckOption9",Value:this.ipt.items4[0].result},
+            {Column:"CheckOption9HazLv",Value:this.ipt.items4[0].damLv},
             {Column:"CheckOption10",Value:this.ipt.items5[0].result},
             {Column:"CheckOption11",Value:this.ipt.items5[1].result},
             {Column:"CheckOption12",Value:this.ipt.items5[2].result},
@@ -1038,76 +838,101 @@ export default {
             {Column:"Memo",Value:this.note},
           ]
         })
-          .then((res) => {
+        .then((res) => {
            this.chMsgbar({ success: true, msg: Constrant.update.success });
         }).catch(err => {
+          console.warn(err)
           this.chMsgbar({ success: true, msg: Constrant.update.failed });
-          })
-          .finally(() => {
-            this.chLoadingShow({show:false})
-          });
+        })
+        .finally(() => {
+          this.chLoadingShow({show:false})
+        });
       }
       this.$router.push({ path: "/form-manage/maintain/bridge-visual-safety-checklist" });
     },
-    // 關閉 dialogx
-    closeWorkLogModal() {
-      this.AddWorkLogModal = false;
-    },
-    viewPage(item) {
-      this.chLoadingShow({show:true})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
+    viewPage(id) {
+      // this.chLoadingShow({show:true})
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
         OperatorID: this.userData.UserId,  // 操作人id
         KeyName: this.DB_Table,  // DB table
         KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
+          {'Column':'RPFlowNo','Value':id},
                 ],
         QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
+          "CheckDay",//0
+          "BridgeID",//1
+          "Engineer",//2
+          "WorksChief",//3
+          "Supervisor",//4
+          "LineType",//5
+          "CheckOption1",//6
+          "CheckOption1HazLv",//7
+          "CheckOption2",//8
+          "CheckOption2HazLv",//9
+          "CheckOption3",//10
+          "CheckOption3HazLv",//11
+          "CheckOption4",//12
+          "CheckOption4HazLv",//13
+          "CheckOption5",//14
+          "CheckOption5HazLv",//15
+          "CheckOption6",//16
+          "CheckOption6HazLv",//17
+          "CheckOption7",//18
+          "CheckOption7HazLv",//19
+          "CheckOption8",//20
+          "CheckOption9",//21
+          "CheckOption9HazLv",//22
+          "CheckOption10",//23
+          "CheckOption11",//24
+          "CheckOption12",//25
+          "CheckOption13",//26
+          "CheckOption14",//27
+          "CheckOption15",//28
+          "CheckOption16",//29
+          "CheckOption17",//30
+          "CheckOption18",//31
+          "Memo",//32
         ],
       }).then(res => {
-        this.initInput();
-       
-        let dat = JSON.parse(res.data.DT)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
+        let dat = JSON.parse(res.data.DT)[0]
+        this.zs = dat.CheckDay
+        this.bridgeNum = "編號" + dat.BridgeID
+        this.LineType = dat.LineType
+        this.ipt.items1[0].result = dat.CheckOption1
+        this.ipt.items1[0].damLv = dat.CheckOption1HazLv
+        this.ipt.items1[1].result = dat.CheckOption2
+        this.ipt.items1[1].damLv = dat.CheckOption2HazLv
+        this.ipt.items1[2].result = dat.CheckOption3
+        this.ipt.items1[2].damLv = dat.CheckOption3HazLv
+        this.ipt.items2[0].result = dat.CheckOption4
+        this.ipt.items2[0].damLv = dat.CheckOption4HazLv
+        this.ipt.items2[1].result = dat.CheckOption5
+        this.ipt.items2[1].damLv = dat.CheckOption5HazLv
+        this.ipt.items2[2].result = dat.CheckOption6
+        this.ipt.items2[2].damLv = dat.CheckOption6HazLv
+        this.ipt.items2[3].result = dat.CheckOption7
+        this.ipt.items2[3].damLv = dat.CheckOption7HazLv
+        this.ipt.items3[0].result = dat.CheckOption8
+        this.ipt.items4[0].result = dat.CheckOption9
+        this.ipt.items4[0].damLv = dat.CheckOption9HazLv
+        this.ipt.items5[0].result = dat.CheckOption10
+        this.ipt.items5[1].result = dat.CheckOption11
+        this.ipt.items5[2].result = dat.CheckOption12
+        this.ipt.items5[3].result = dat.CheckOption13
+        this.ipt.items5[4].result = dat.CheckOption14
+        this.ipt.items5[5].result = dat.CheckOption15
+        this.ipt.items5[6].result = dat.CheckOption16
+        this.ipt.items5[7].result = dat.CheckOption17
+        this.ipt.items5[8].result = dat.CheckOption18
+        this.sirName1 = dat.Engineer
+        this.sirName2 = dat.WorksChief
+        this.sirName3 = dat.Supervisor
+        this.s01Change()
+        this.note = dat.Memo
       }).catch(err => {
-        //console.log(err)
+        console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

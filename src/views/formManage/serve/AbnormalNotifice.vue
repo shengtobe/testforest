@@ -102,6 +102,10 @@
             <span class="red--text subtitle-1">資料讀取中...</span>
           </template>
 
+          <template v-slot:item.CheckDay="{ item }">
+            {{item.CheckDay.substr(0, 10)}}
+          </template>
+
           <!-- headers 的 content 欄位 (檢視內容) -->
           <template v-slot:item.content="{ item }">
             <v-btn
@@ -510,7 +514,7 @@ export default {
       this.chLoadingShow({show:true});
       fetchFormOrderList({
         ClientReqTime: getNowFullTime(), // client 端請求時間
-        OperatorID: this.doMan.UserId, // 操作人id
+        OperatorID: this.doMan.id, // 操作人id
         KeyName: this.DB_Table, // DB table
         KeyItem: [
           { Column: "StartDayVlaue", Value: this.input.dateStart },
@@ -524,8 +528,6 @@ export default {
           "DepartName",
           "Name",
           "CheckDay",
-          "CheckStatus",
-          "FlowId",
         ],
       })
         .then((res) => {
@@ -599,6 +601,7 @@ export default {
             this.search();
           });
       }
+      this.search()
       this.ShowDetailDialog = false;
     },
     // 關閉 dialog

@@ -354,7 +354,7 @@
               </v-col>
             </v-row>
           </v-alert>
-          <v-alert dense border="top" colored-border color="teal" elevation="4" class="mb-6">
+          <v-alert dense border="top" colored-border color="border-bg-dark-yellow" elevation="4" class="mb-6">
             <v-row no-gutter>
               <v-col cols="12" sm="3">號誌</v-col>
               <v-col cols="12" sm="4">
@@ -449,7 +449,7 @@ export default {
           EndDay: '',
           depart: '',  // 單位
         },
-      note: "109年05月21日發生西南氣流豪雨，5/22日累積雨量達200mm以上，建立預警機制5/22日阿里山線暫時停駛。",
+      note: "",
       temp1: "../../../assets/images/brgImg1_1.jpg",
       sbjNum: [],
       formDepartOptions: [
