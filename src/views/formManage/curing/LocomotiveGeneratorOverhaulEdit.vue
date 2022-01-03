@@ -255,6 +255,7 @@ export default {
       this.$emit("search");
     },
     save() {
+      this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];
       // deal with option1~4
@@ -298,6 +299,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             that.close();
           });
       } else {
@@ -326,6 +328,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
+          this.chLoadingShow({ show: false});
             that.close();
           });
       }

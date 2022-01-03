@@ -589,10 +589,9 @@ export default {
           KeyName: this.DB_Table,  // DB table
           KeyItem:arr,
         }).then(res => {
-         
+          this.chMsgbar({ success: true, msg: Constrant.insert.success });
         }).catch(err => {
-          //console.log(err)
-          alert('查詢時發生問題，請重新查詢!')
+          this.chMsgbar({ success: true, msg: Constrant.insert.failed });
         }).finally(() => {
           this.chLoadingShow({show:false})
         })
@@ -607,17 +606,15 @@ export default {
           KeyName: this.DB_Table, // DB table
           KeyItem: arr,
         })
-          .then((res) => {
-           
-          })
-          .catch((err) => {
-            ////console.log(err);
-            // this.chMsgbar({ success: false, msg: Constrant.update.failed });
-            alert('查詢時發生問題，請重新查詢!')
-          })
-          .finally(() => {
-            this.chLoadingShow({show:false})
-          });
+        .then((res) => {
+          this.chMsgbar({ success: true, msg: Constrant.update.success });
+        })
+        .catch((err) => {
+          this.chMsgbar({ success: true, msg: Constrant.update.failed });
+        })
+        .finally(() => {
+          this.chLoadingShow({show:false})
+        });
       }
       this.Add = false;
     },

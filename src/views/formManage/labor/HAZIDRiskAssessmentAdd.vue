@@ -357,6 +357,7 @@ export default {
       });
 
       encodeObject(rtnObj);
+      this.chLoadingShow({ show: true});
      
       if (this.editType == this.actions.add) {
         createFormOrder0({
@@ -382,6 +383,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.insert.failed });
           })
           .finally(() => {
+           this.chLoadingShow({ show: false});
             this.close();
           });
       } else {
@@ -410,6 +412,7 @@ export default {
             this.chMsgbar({ success: false, msg: Constrant.update.failed });
           })
           .finally(() => {
+           this.chLoadingShow({ show: false});
             this.close();
           });
       }

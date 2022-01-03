@@ -23,7 +23,7 @@
       </v-col>
       <!-- 功能 -->
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search" @click="search">
+        <v-btn dark large class="mb-sm-8 mb-md-1 btn-search" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -37,7 +37,7 @@
       </v-col>
       <v-col cols="12" sm="3" >
         <v-btn style="margin-top:10%" class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add" elevation="3" dark large 
-        @click="btnNew">
+        @click="newOne">
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </v-col>
@@ -212,6 +212,7 @@ export default {
       }
       this.Advice = "";
       this.Measures = ""
+      console.log("initinput done!");
     },
     unique(list){
       var arr = [];
@@ -233,12 +234,6 @@ export default {
       }
       return arr;
     },
-    newOne(){
-     
-      this.Add = true
-     
-      this.initInput();
-    },
     chPage(n) {
       
       this.pageOpt.page = n;
@@ -246,7 +241,7 @@ export default {
     s01Change(selectObj){
       this.n01 = selectObj;
     },
-    btnNew(){
+    newOne(){
       if(this.n01 != "0"){
         this.$router.push(`/form-manage/maintain/tunnel-visual-safety-checklist-add/${this.n01}/newone`)
       }
@@ -286,7 +281,7 @@ export default {
           "Name",
           "CheckDay",
           "CheckStatus",
-          "FlowId", "DepartName"
+          "FlowId", "DepartName", "TunnelID"
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
@@ -304,64 +299,7 @@ export default {
       this.AddWorkLogModal = false;
     },
     viewPage(item) {
-      this.chLoadingShow({show:true})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",
-          "DepartName",
-          "Name",
-          "CheckMan",
-          "CheckOption1",
-          "Memo_1",
-          "CheckOption2",
-          "Memo_2",
-          "CheckOption3",
-          "Memo_3",
-          "Advice",
-          "Measures",
-
-        ],
-      }).then(res => {
-        this.initInput();
-       
-        let dat = JSON.parse(res.data.DT)
-        this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        this.doMan.name = dat[0].Name
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        var i = 0, j = 0;
-          for(let key of Object.keys(dat[0])){
-            if(i > 3 && i < 52){
-              if(i % 2 == 0){
-                  this.ipt.items[j].status = (dat[0])[key]
-              }
-              else{
-                this.ipt.items[j].note = (dat[0])[key]
-                j++
-              }
-            }
-            i++
-          }
-        this.memo_2 = dat[0].Advice
-        this.memo_3 = dat[0].Measures
-
-        
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({ show: false})
-      })
+      this.$router.push(`/form-manage/maintain/tunnel-visual-safety-checklist-add/${item.RPFlowNo}/newone`)
     },//viewPage
   },
 };
