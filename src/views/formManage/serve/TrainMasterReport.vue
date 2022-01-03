@@ -481,7 +481,7 @@
         <v-card-actions class="px-5 pb-5">
           <v-spacer />
           <v-btn class="mr-2 btn-close white--text" elevation="4" @click="CloseJobApplication">取消</v-btn>
-          <v-btn class="btn-add white--text" elevation="4" :loading="isLoading" @click="save">送出</v-btn>
+          <v-btn class="btn-add white--text" elevation="4" v-if="!isView" :loading="isLoading" @click="save">送出</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -624,6 +624,7 @@ export default {
         {value: ''},
         {value: ''},
       ],
+      CheckDay:'',
       StartNo: '',
       EndNo: '',
       AmountTick: '',
@@ -659,6 +660,7 @@ export default {
       fileItems: [],
       //------
       suggest: "", // 改善建議
+      isView: false
     };
   },
   components: { 
@@ -788,6 +790,7 @@ export default {
     },
     newOne(){
       this.Add = true
+      this.isView = false
       this.initInput();
     },
     unique(list){
@@ -862,7 +865,7 @@ export default {
     },
     // 存
     save() {
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
       let arr = new Array()
       let obj = new Object()
 
@@ -1030,7 +1033,7 @@ export default {
       this.Add = false;
     },
     viewPage(item) {
-      this.chLoadingShow({show:false})
+      this.chLoadingShow({show:true})
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
         fetchFormOrderOne({
         ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -1269,11 +1272,7 @@ export default {
           i++
         }
 
-      
-        
-        
-
-        
+        this.isView = true
       }).catch(err => {
         //console.log(err)
         alert('查詢時發生問題，請重新查詢!')

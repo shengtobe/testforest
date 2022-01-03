@@ -1,8 +1,8 @@
 <template>
   <v-container style="max-width: 1200px">
-    <h2 class="mb-4 px-2">{{ title }}</h2>
+    <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
@@ -182,15 +182,15 @@
                 key="dateStart"
                 :showIcon="formIconShow"
               />
-              <dateSelect
-                label="異常狀況時間"
-                v-model="datePickerShowControl.alarmDate"
-                key="dateStart"
-                :showIcon="formIconShow"
-              />
             </v-col>
             <v-col cols="8" sm="4">
-              <h3 class="mb-1">異常狀況時間</h3>
+              <dateSelect
+                label="異常狀況時間"
+                v-model="AlarmDay"
+                key="errStart"
+                :showIcon="formIconShow"
+              />
+              <!-- <h3 class="mb-1">異常狀況時間</h3>
               <v-menu
                 v-model="datePickerShowControl.alarmDate"
                 :close-on-content-click="false"
@@ -215,7 +215,7 @@
                   @input="datePickerShowControl.alarmDate = false"
                   locale="zh-tw"
                 />
-              </v-menu>
+              </v-menu> -->
             </v-col>
             <!-- 填寫人 -->
             <!-- <v-col cols="8" sm="4">

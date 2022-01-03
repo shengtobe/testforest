@@ -3,7 +3,7 @@
     <!-- 標題 -->
     <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 查詢區塊 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
       <!-- 日期-起 -->
       <v-col cols="12" sm="3" md="3">
         <dateSelect
@@ -146,7 +146,7 @@ export default {
         depart: '',
         checkManName: ''
       },
-      ipt2: {},
+      ipt: {},
       defaultIpt: {  // 預設的欄位值
           startDay: '',
           EndDay: '',
@@ -178,7 +178,7 @@ export default {
         }),
     },
     created() {
-      this.ipt2 = { ...this.defaultIpt }
+      this.ipt = { ...this.defaultIpt }
       //更新時間
       var today=new Date();
       let mStr = today.getMonth()+1;
@@ -357,7 +357,7 @@ export default {
 
         
       }).catch(err => {
-        //console.log(err)
+        console.log(err)
         alert('查詢時發生問題，請重新查詢!')
       }).finally(() => {
         this.chLoadingShow({ show: false})

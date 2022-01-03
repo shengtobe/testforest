@@ -19,7 +19,7 @@
           label="檢查日期(迄)"
           key="dateStart"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateStart"
+          v-model="formData.searchItem.dateEnd"
         />
       </v-col>
     </v-row>

@@ -299,11 +299,11 @@ export default {
           "Memo2",
         ],
       }).then(res => {
-        let tableItems = this.arrGroup(decodeObject(unique(JSON.parse(res.data.DT))),'Type')
-        this.tableItem1 = tableItems[1]
-        this.tableItem2 = tableItems[2]
+        let tableItems = this.arrGroup(decodeObject(JSON.parse(res.data.DT)),'Type')
+        this.tableItem1 = (tableItems[1]?.length||0)>0?unique(tableItems[1]):[]
+        this.tableItem2 = (tableItems[2]?.length||0)>0?unique(tableItems[2]):[]
       }).catch(err => {
-        //console.log(err)
+        // console.log(err)
         this.chMsgbar({ success: false, msg: Constrant.query.failed });
       }).finally(() => {
         this.chLoadingShow({show:false})

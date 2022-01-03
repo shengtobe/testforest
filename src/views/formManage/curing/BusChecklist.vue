@@ -2,7 +2,7 @@
   <v-container style="max-width: 1200px">
     <h2 class="mb-4 px-2 label-title">{{ title }}</h2>
     <!-- 第一排選項 -->
-    <v-row class="px-2">
+    <v-row class="px-2 label-header">
      <v-col cols="12" sm="3" md="3">
         <dateSelect
           label="檢查日期(起)"
