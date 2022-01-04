@@ -73,7 +73,7 @@
               small
               dark
               fab
-              class="Btn-delete"
+              class="btn-delete"
               @click="deleteRecord(item.RPFlowNo)"
             >
               <v-icon dark>mdi-delete</v-icon>
@@ -101,7 +101,7 @@
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" persistent max-width="680px">
-      <v-card class="thmem-card">
+      <v-card class="theme-card">
         <v-card-title class="white--text px-4 py-1">
           新增{{ title }}
           <v-spacer></v-spacer>
@@ -148,7 +148,7 @@
                 colored-border
                 color="border-bg-dark-yellow"
                 elevation="4"
-                v-for="(item, idx) in items"
+                v-for="item, idx in items"
                 :key="idx"
                 class="mb-6"
               >
@@ -179,8 +179,8 @@
                 colored-border
                 color="border-bg-dark-yellow"
                 elevation="4"
-                v-for="(item, idx) in items2"
-                :key="idx"
+                v-for="item, idx in items2"
+                :key="'a' + idx"
                 class="mb-6"
               >
                 <v-row no-gutter>
@@ -243,7 +243,7 @@
             </v-col>
             <v-expansion-panels :disabled="disabled" multiple>
               <v-expansion-panel>
-                <v-expansion-panel-header color="border-bg-dark-yellow" class="white--text">
+                <v-expansion-panel-header color="#3E2723" class="white--text">
                   個人疲勞
                   <template v-slot:actions>
                     <v-icon color="dropdownicon">
@@ -269,8 +269,8 @@
                     colored-border
                     color="border-bg-dark-yellow"
                     elevation="4"
-                    v-for="(item, idx) in itemSc1"
-                    :key="idx"
+                    v-for="item, idx in itemSc1"
+                    :key="'b'+idx"
                     class="mb-6 mt-4"
                   >
                     <v-row no-gutter>
@@ -282,7 +282,7 @@
                 </v-expansion-panel-content>
               </v-expansion-panel>
               <v-expansion-panel>
-                <v-expansion-panel-header color="border-bg-dark-yellow" class="white--text">
+                <v-expansion-panel-header color="brown darken-3" class="white--text">
                   工作疲勞
                   <template v-slot:actions>
                     <v-icon color="dropdownicon">
@@ -308,7 +308,7 @@
                     colored-border
                     color="border-bg-dark-yellow"
                     elevation="4"
-                    v-for="(item, idx) in itemSc2"
+                    v-for="item, idx in itemSc2"
                     :key="idx"
                     class="mb-6 mt-4"
                   >
