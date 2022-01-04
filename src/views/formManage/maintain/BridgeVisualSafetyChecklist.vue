@@ -23,7 +23,7 @@
       </v-col>
       <!-- 功能 -->
       <v-col cols="12" sm="3" md="3" class="d-flex align-end">
-        <v-btn dark large class="mb-sm-8 mb-md-8 btn-search" @click="search">
+        <v-btn dark large class="mb-sm-8 mb-md-1 btn-search" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
       </v-col>
@@ -66,7 +66,7 @@
            <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
-              class="mr-2 btn-memo"
+              class="mr-2 btn-modify"
               small
               dark
               fab
@@ -93,6 +93,18 @@
         </v-data-table>
       </v-card>
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="closeDialogDel"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -171,6 +183,9 @@ export default {
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
       tableItems: [],
+      dialogDel: false,
+      RPFlowNo: "",
+      DelDynamicKey: 0,
       //------
     };
   },
@@ -199,7 +214,7 @@ export default {
       dStr = '0' + dStr;
     }
     this.nowTime = today.getFullYear()+'-'+ mStr +'-'+ dStr;
-    this.z = this.df = this.nowTime
+    this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime
 
     var i = 1;
     for(i; i <= 26; i++ ){
@@ -313,91 +328,98 @@ export default {
       this.AddWorkLogModal = false;
     },
     viewPage(item) {
-      this.chLoadingShow({show:true})
+      // this.chLoadingShow({show:true})
+      this.$router.push(`/form-manage/maintain/bridge-visual-safety-checklist-add/${item.RPFlowNo}/newone`)
         // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",//0
-          "BridgeID",//1
-          "Engineer",//2
-          "WorksChief",//3
-          "Supervisor",//4
-          "LineType",//5
-          "CheckOption1",//6
-          "CheckOption1HazLv",//7
-          "CheckOption2",//8
-          "CheckOption2HazLv",//9
-          "CheckOption3",//10
-          "CheckOption3HazLv",//11
-          "CheckOption4",//12
-          "CheckOption4HazLv",//13
-          "CheckOption5",//14
-          "CheckOption5HazLv",//15
-          "CheckOption6",//16
-          "CheckOption6HazLv",//17
-          "CheckOption7",//18
-          "CheckOption7HazLv",//19
-          "CheckOption8",//20
-          "CheckOption9",//21
-          "CheckOption9HazLv",//22
-          "CheckOption10",//23
-          "CheckOption11",//24
-          "CheckOption12",//25
-          "CheckOption13",//26
-          "CheckOption14",//27
-          "CheckOption15",//28
-          "CheckOption16",//29
-          "CheckOption17",//30
-          "CheckOption18",//31
-          "Memo",//32
-        ],
-      }).then(res => {
-        // this.initInput();
+      //   fetchFormOrderOne({
+      //   ClientReqTime: getNowFullTime(),  // client 端請求時間
+      //   OperatorID: this.userData.UserId,  // 操作人id
+      //   KeyName: this.DB_Table,  // DB table
+      //   KeyItem: [ 
+      //     {'Column':'RPFlowNo','Value':item.RPFlowNo},
+      //           ],
+      //   QyName:[
+      //     "CheckDay",//0
+      //     "BridgeID",//1
+      //     "Engineer",//2
+      //     "WorksChief",//3
+      //     "Supervisor",//4
+      //     "LineType",//5
+      //     "CheckOption1",//6
+      //     "CheckOption1HazLv",//7
+      //     "CheckOption2",//8
+      //     "CheckOption2HazLv",//9
+      //     "CheckOption3",//10
+      //     "CheckOption3HazLv",//11
+      //     "CheckOption4",//12
+      //     "CheckOption4HazLv",//13
+      //     "CheckOption5",//14
+      //     "CheckOption5HazLv",//15
+      //     "CheckOption6",//16
+      //     "CheckOption6HazLv",//17
+      //     "CheckOption7",//18
+      //     "CheckOption7HazLv",//19
+      //     "CheckOption8",//20
+      //     "CheckOption9",//21
+      //     "CheckOption9HazLv",//22
+      //     "CheckOption10",//23
+      //     "CheckOption11",//24
+      //     "CheckOption12",//25
+      //     "CheckOption13",//26
+      //     "CheckOption14",//27
+      //     "CheckOption15",//28
+      //     "CheckOption16",//29
+      //     "CheckOption17",//30
+      //     "CheckOption18",//31
+      //     "Memo",//32
+      //   ],
+      // }).then(res => {
+      //   // this.initInput();
        
-        let dat = JSON.parse(res.data.DT)
-        // this.Add = true
-        // this.zs = res.data.DT.CheckDay
-        let time1 = dat[0].CheckDay.substr(0,10)
-        this.zs = time1
-        //123資料
-        let ad = Object.keys(dat[0])
-        let dataArr = []
-        var i = 0;
-        for(let key of Object.keys(dat[0])){
-          let vv = ((dat[0])[key] == null)?' ':(dat[0])[key];
-          let asciiCode = ""
-          if(vv.length > 1){
-            let charArr = []
-            for (var i = 0; i < vv.length; i++) {
-              charArr.push(vv[i].charCodeAt(0))
-            }
-            asciiCode = charArr.join('_')
-          }
-          else{
-            asciiCode = vv.charCodeAt(0)
-          }
+      //   let dat = JSON.parse(res.data.DT)
+      //   // this.Add = true
+      //   // this.zs = res.data.DT.CheckDay
+      //   let time1 = dat[0].CheckDay.substr(0,10)
+      //   this.zs = time1
+      //   //123資料
+      //   let ad = Object.keys(dat[0])
+      //   let dataArr = []
+      //   var i = 0;
+      //   for(let key of Object.keys(dat[0])){
+      //     let vv = ((dat[0])[key] == null)?' ':(dat[0])[key];
+      //     let asciiCode = ""
+      //     if(vv.length > 1){
+      //       let charArr = []
+      //       for (var i = 0; i < vv.length; i++) {
+      //         charArr.push(vv[i].charCodeAt(0))
+      //       }
+      //       asciiCode = charArr.join('_')
+      //     }
+      //     else{
+      //       asciiCode = vv.charCodeAt(0)
+      //     }
           
-          dataArr.push(asciiCode);
-          i++
-        }
-        let StrForNextPage = "";
-        StrForNextPage = dataArr.join();
-        this.$router.push(`/form-manage/maintain/bridge-visual-safety-checklist-add/${StrForNextPage}/newone`)
-
-        
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({ show: false})
-      })
+      //     dataArr.push(asciiCode);
+      //     i++
+      //   }
+      //   let StrForNextPage = "";
+      //   StrForNextPage = dataArr.join();
+      //   this.$router.push(`/form-manage/maintain/bridge-visual-safety-checklist-add/${StrForNextPage}/newone`)
+      // }).catch(err => {
+      //   //console.log(err)
+      //   alert('查詢時發生問題，請重新查詢!')
+      // }).finally(() => {
+      //   this.chLoadingShow({ show: false})
+      // })
     },//viewPage
+    deleteRecord(RPFlowNo) {
+      this.RPFlowNo = RPFlowNo;
+      this.dialogDel = true
+      this.DelDynamicKey += 1;
+    },
+    closeDialogDel() {
+      this.dialogDel = false
+    },
   },
 };
 </script>

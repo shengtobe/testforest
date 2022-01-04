@@ -188,14 +188,14 @@ export default {
       tableItems: [],
       settings: {
         qestions: [
-            { question: "1. 檢查道岔材料(組裝前)" },
-            { question: "2. 基礎整地是否水平" },
-            { question: "3. 組裝工作是否依規章執行" },
-            { question: "4. 抽換工作前複檢工作" },
-            { question: "5. 檢驗密貼情形" },
-            { question: "6. 施工前工具及人力檢查" },
-            { question: "7. 施工完後軌距、水平、高低、方向、平面等檢查" },
-            { question: "8. 施工完竣測試運轉" },
+            { question: "1. 檢查道岔材料(組裝前)" },
+            { question: "2. 基礎整地是否水平" },
+            { question: "3. 組裝工作是否依規章執行" },
+            { question: "4. 抽換工作前複檢工作" },
+            { question: "5. 檢驗密貼情形" },
+            { question: "6. 施工前工具及人力檢查" },
+            { question: "7. 施工完後軌距、水平、高低、方向、平面等檢查" },
+            { question: "8. 施工完竣測試運轉" },
         ],
         columns: {
           option: "CheckOption",
