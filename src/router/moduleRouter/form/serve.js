@@ -2,6 +2,12 @@
 
 export const FormServeRouter = [
     {
+        linkText: '保安裝置檢查紀錄表', // 11
+        path: '/form-manage/serve/security-checklist',
+        component: () => import('@/views/formManage/serve/SecurityChecklist.vue'),
+        formGroup: ['serve']
+    },
+    {
         linkText: '保安裝置檢查紀錄表-北門車站', // 11
         path: '/form-manage/serve/security-checklist1',
         component: () => import('@/views/formManage/serve/SecurityChecklist1.vue'),
