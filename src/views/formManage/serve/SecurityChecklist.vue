@@ -64,6 +64,10 @@
               <span class="red--text subtitle-1">資料讀取中...</span>
             </template>
 
+            <template v-slot:item.StationCode="{ item }">
+              {{ stationList.find(e=>e.value==item.StationCode).text }}
+            </template>
+
             <!-- headers 的 content 欄位 (檢視內容) -->
             <template v-slot:item.content="{ item }">
               <v-btn
@@ -72,9 +76,19 @@
                 small
                 dark
                 fab
-                @click="viewPage(item)"
+                @click="viewPage(item.RPFlowNo)"
               >
-                <v-icon dark>mdi-magnify</v-icon>
+                <v-icon dark>mdi-pen</v-icon>
+              </v-btn>
+              <v-btn
+                title="刪除"
+                small
+                dark
+                fab
+                class="btn-delete"
+                @click="del(item.RPFlowNo)"
+              >
+                <v-icon dark>mdi-delete</v-icon>
               </v-btn>
             </template>
 
@@ -86,6 +100,7 @@
         </v-card>
       </v-col>
     </v-row>
+    <Edit ref="EditPage" @goSearch="search"/>
   </v-container>
 </template>
 <style scope>
@@ -94,11 +109,14 @@
 <script>
 import Pagination from "@/components/Pagination.vue";
 import dateSelect from "@/components/forManage/dateSelect";
+import Edit from "./SecurityChecklistEdit";
 
 import { mapState, mapActions } from "vuex";
 import { getNowFullTime, getTodayDateString, unique } from "@/assets/js/commonFun";
+import { securityQuerylist } from '@/apis/formManage/serve';
 
 import { stations } from "@/assets/js/securitySettings";
+import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data() {
@@ -114,10 +132,10 @@ export default {
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
-        { text: "車站", value: "stationCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "車站", value: "StationCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         // { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
-        { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "填寫人", value: "Man", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "功能", value: "content", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
       ],
@@ -127,8 +145,9 @@ export default {
   },
   components: { 
     Pagination, 
-    dateSelect
-  }, // 頁碼
+    dateSelect,
+    Edit
+  },
   computed: {
     ...mapState ('user', {
         userData: state => state.userData,  // 使用者基本資料
@@ -158,6 +177,33 @@ export default {
     chPage(n) {
       this.pageOpt.page = n;
     },
+    newOne() {
+      //直接呼叫component裡面的事件
+      this.$refs.EditPage.newOne()
+    },
+    search() {
+      securityQuerylist({
+        ClientReqTime: getNowFullTime(),
+        OperatorID: this.userData.UserId,  // 操作人id
+        StartDayVlaue: this.input.dateStart?this.input.dateStart:"",
+        EndDayVlaue: this.input.dateEnd?this.input.dateEnd:"",
+        StationCode: this.input.stationId
+      }).then(res=>{
+        if(res.data.ErrorCode == 0) {
+          this.tableItems = unique(res.data.Data)
+        } else {
+          this.chMsgbar({ success: false, msg: Constrant.query.failed })
+        }
+      })
+    },
+    viewPage(RPFlowNo) {
+      //直接呼叫component裡面的事件
+      this.$refs.EditPage.editOne(RPFlowNo)
+    },
+    del(RPFlowNo) {
+      //直接呼叫component裡面的事件
+      this.$refs.EditPage.del(RPFlowNo)
+    }
   },
 };
 </script>
