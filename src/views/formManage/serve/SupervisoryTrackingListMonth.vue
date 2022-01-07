@@ -80,6 +80,16 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
+             <v-btn
+              title="刪除"
+              small
+              dark
+              fab
+              class="btn-delete"
+              @click="deleteRecord(item.RPFlowNo)"
+            >
+              <v-icon dark>mdi-delete</v-icon>
+            </v-btn>
           </template>
 
           <!-- 頁碼 -->
@@ -92,6 +102,18 @@
     <v-col cols="12">
       <fileList :fileItems="fileItems" />
     </v-col>
+    <!-- 刪除確認視窗 -->
+    <v-dialog v-model="dialogDel" persistent max-width="290">
+      <dialogDelete
+        :id="userData.UserId"
+        :DB_Table="DB_Table"
+        :RPFlowNo="RPFlowNo"
+        :key="'d' + DelDynamicKey"
+        @search="search"
+        @close="close"
+        @cancel="closeDialogDel"
+      />
+    </v-dialog>
     <!-- 新增自動檢點表 modal -->
     <v-dialog v-model="Add" persistent max-width="1000px">
       <v-card class="theme-card">
@@ -214,6 +236,7 @@ import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 import dateSelect from "@/components/forManage/dateSelect";
 import fileList from "@/components/forManage/fileList";
+import dialogDelete from "@/components/forManage/dialogDelete";
 class Question {
   constructor(description, method, result, memo) {
     this.description = description;
@@ -230,6 +253,8 @@ export default {
       newText: "追蹤表",
       isLoading: false,
       disabled: false,
+      action: Actions.add,
+      actions: Actions,
       file: null,
       input: {
         dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
@@ -320,7 +345,8 @@ export default {
     dateSelect, 
     deptSelect, 
     UploadOneFileAdd,
-    fileList 
+    fileList,
+    dialogDelete
   }, // 頁碼
   computed: {
         ...mapState ('user', {
@@ -390,6 +416,7 @@ export default {
       }
     },
     newOne(){
+      this.action = Actions.add;
       this.Add = true
       this.initInput();
     },
@@ -505,21 +532,39 @@ export default {
         arr = arr.concat(obj)
       }
 
+      // 修改
+      if (this.action == Actions.edit) {
+        updateFormOrder({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:arr,
+        }).then(res => {
+        }).catch(err => {
+          //console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+      }
+      else{
+        createFormOrder0({
+          ClientReqTime: getNowFullTime(),  // client 端請求時間
+          OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
+          // OperatorID: "16713",  // 操作人id
+          KeyName: this.DB_Table,  // DB table
+          KeyItem:arr,
+        }).then(res => {
+        }).catch(err => {
+          //console.log(err)
+          alert('查詢時發生問題，請重新查詢!')
+        }).finally(() => {
+          this.chLoadingShow({ show: false})
+        })
+      }
 
-      createFormOrder0({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
-        // OperatorID: "16713",  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem:arr,
-      }).then(res => {
-       
-      }).catch(err => {
-        //console.log(err)
-        alert('查詢時發生問題，請重新查詢!')
-      }).finally(() => {
-        this.chLoadingShow({ show: false})
-      })
       this.Add = false;
     },
     // 關閉 dialog
@@ -616,6 +661,11 @@ export default {
         this.chLoadingShow({ show: false})
       })
     },//viewPage
+    deleteRecord(RPFlowNo) {
+      this.dialogDel = true;
+      this.DelDynamicKey += 1;
+      this.RPFlowNo = RPFlowNo;
+    },
   },
 };
 </script>

@@ -4,13 +4,13 @@
     <Show :itemData="itemData" v-if="status == 1" />
 
     <!-- 審核中、已完備資料 -->
-    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3" />
+    <ReviewComplated :itemData="itemData" v-if="status == 2 || status == 3 " />
 
     <!-- 審核中、風險已可接受 -->
     <Fulfill :itemData="itemData" v-if="status == 4 || status == 5" />
 
     <!-- 審核中(審核更新) -->
-    <UpdateReview :itemData="itemData" v-if="status == 6" />
+    <UpdateReview :itemData="itemData" v-if="status == 6 || status == 7" />
 </div>
 </template>
 

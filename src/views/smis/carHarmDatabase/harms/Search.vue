@@ -808,6 +808,7 @@ export default {
                         case '2':
                         case '4':
                         case '6':
+                        case '7':
                             this.tableItems.push(element)
                             this.checkFetchCount++
                             break;
