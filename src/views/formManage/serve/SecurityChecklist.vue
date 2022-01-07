@@ -202,7 +202,7 @@ export default {
     },
     del(RPFlowNo) {
       //直接呼叫component裡面的事件
-      this.$refs.EditPage.del(RPFlowNo)
+      this.$refs.EditPage.befDel(RPFlowNo)
     }
   },
 };
