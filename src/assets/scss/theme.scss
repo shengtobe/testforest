@@ -265,11 +265,20 @@ body, #main-nav{
       button{
         color:#fff;
       }
+      position: sticky;
+      top: 0;
+      z-index: 3;
     }
     &text{
       h3{
         color: #70886f;
       }
+    }
+    &actions{
+      background-color: #fff;
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
     }
   }
 }

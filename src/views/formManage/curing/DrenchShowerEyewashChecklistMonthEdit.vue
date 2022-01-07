@@ -31,7 +31,7 @@
         >刪除</v-btn
       >
       <v-spacer></v-spacer>
-      <v-btn class="mr-2 btn-cancel white--text" elevation="4" @click="close">取消</v-btn>
+      <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">取消</v-btn>
       <v-btn
         class="btn-add white--text"
         elevation="4"
