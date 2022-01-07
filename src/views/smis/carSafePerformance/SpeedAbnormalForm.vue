@@ -48,7 +48,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-account</v-icon>駕駛姓名
             </h3>
-            <PeopleSelect v-model="ipt.ErrPeopleId" :isMuti="false" :key="componentKey" @change="getPeopleData" />
+            <PeopleSelect v-model="ipt.ErrPeopleId" :isMuti="false" :key="componentKey" singleDept="車輛養護科" @change="getPeopleData" />
         </v-col>
 
         <v-col cols="12" sm="4" md="3">
@@ -234,7 +234,7 @@ import PeopleSelect from '@/components/PeopleSelect'
 import { mapState, mapActions } from 'vuex'
 import { login } from '@/apis/login'
 import { carspeedQuery,carspeedInsert,carspeedUpdate } from '@/apis/smis/safetyPerformance'
-import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
+import { getNowFullTime,encodeObject,decodeObject, getOrg } from '@/assets/js/commonFun'
 
 export default {
     props:['id'],
@@ -334,6 +334,9 @@ export default {
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
+            let aa = getOrg(this.userData.UserId)
+            console.log("aa: ", getOrg(this.userData.UserId));
+
             // -------------- 編輯時 -------------- 
             if (this.id) {
                 this.chLoadingShow({show:true})
@@ -362,6 +365,7 @@ export default {
                 this.ipt.PeopleName = this.userData.UserName
                 this.ipt.DepartCode = this.userData.DeptList[0].DeptId
                 this.ipt.Depart = this.userData.DeptList[0].DeptDesc
+                
             }
         },
         // 更換頁數

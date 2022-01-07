@@ -25,7 +25,13 @@ import { fetchOrganization } from '@/apis/organization'
   可以直接綁定原生事件
 */
 export default {
-	props: ['value','isMuti','disabled','outdata'],
+	props: [
+    'value',
+    'isMuti',
+    'disabled',
+    'outdata',
+    'singleDept'
+  ],
 	data: () => ({
     orgList:[],
     orgIsLoading:false,
@@ -34,18 +40,20 @@ export default {
     inputName:'',
 	}),
 	mounted() {
-    if(this.outData){
-      this.orgList = this.outdata.orgList
-      this.people = this.outdata.people
-    }else{
-      this._getOrg()
-    }
     if(this.isMuti){
       this.inputValue = []  
     } else {
       this.inputValue = ""
     }
     this.inputValue = this.value
+
+    if(this.outData){
+      this.orgList = this.outdata.orgList
+      this.people = this.outdata.people
+    }else{
+      this._getOrg()
+    }
+    
 	},
 	computed: {
 		...mapState ('user', {
@@ -146,11 +154,24 @@ export default {
               })
             })
           })
+          if(that.singleDept) {
+            const getFOList = function(deptArr){
+              let FOList = that.orgList.filter(e=>(deptArr.includes(e.group)||deptArr.includes(e.text))&&e.header).map(e=>e.text)
+              if(deptArr.length==FOList.length){
+                return FOList
+              } else {
+                return getFOList(FOList)
+              }
+            }
+            let FOList = getFOList([that.singleDept])
+            that.orgList = that.orgList.filter(e=>FOList.includes(e.group))
+          }
         }else{
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
         }
       }).catch( err => {
+        console.warn(err)
         this.chMsgbar({ success: false, msg: '伺服器發生問題，資料讀取失敗' })
       }).finally(() => {
         this.orgIsLoading = false

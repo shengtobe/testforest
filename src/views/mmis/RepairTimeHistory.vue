@@ -332,6 +332,13 @@
               <v-divider class="mt-2 mb-3" />
             </v-col>
             <v-col cols="12">
+              <v-icon class="mr-1 mb-1">mdi-clipboard-text</v-icon>
+              故障主旨： {{ content.WorkSubject }}
+            </v-col>
+            <v-col cols="12">
+              <v-divider class="mt-2 mb-3" />
+            </v-col>
+            <v-col cols="12">
               <v-icon class="mr-1 mb-1">mdi-more</v-icon>
               設備標示編號： {{ content.wbs }}
             </v-col>
@@ -470,6 +477,13 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
+        text: "故障主旨",
+        value: "WorkSubject",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
+      {
         text: "科室",
         value: "Dept",
         align: "center",
@@ -484,7 +498,14 @@ export default {
         class: "subtitle-1 white--text font-weight-bold",
       },
       {
-        text: "立單日期",
+        text: "故障描述",
+        value: "Malfunction",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
+      {
+        text: "立單時間",
         value: "Established",
         align: "center",
         divider: true,
@@ -567,6 +588,8 @@ export default {
             rtnObj.id=i+1
             rtnObj.WorkNumber = e.WorkOrderID
             rtnObj.Dept= e.DispatchDepart
+            rtnObj.WorkSubject= e.WorkSubject
+            rtnObj.Malfunction= e.Malfunction
             // rtnObj.wbs = e.MaintainCode_System + '-' + e.MaintainCode_Loc + '-' + e.MaintainCode_Eqp + '-' + e.MaintainCode_Seq
             rtnObj.wbs = e.MaintainCode_AllName
             rtnObj.Established = e.CallWorkDTime
@@ -665,6 +688,7 @@ export default {
           const dataList = decodeObject(res.data.WorkDataList[0])
           this.content.WorkNumber = dataList.WorkOrderID
           this.content.Dept= dataList.DispatchDepart
+          this.content.WorkSubject = dataList.WorkSubject
           // this.content.wbs = dataList.MaintainCode_System + '-' + dataList.MaintainCode_Loc + '-' + dataList.MaintainCode_Eqp + '-' + dataList.MaintainCode_Seq
           this.content.wbs = dataList.MaintainCode_AllName
           this.content.Established = dataList.CallWorkDTime
@@ -674,7 +698,7 @@ export default {
           this.content.AcceptanceDate = dataList.AcceptDTime
           this.content.closDate = dataList.CloseDTime
           this.content.WorkTotalHours = dataList.TotalWorkTime
-          this.content.FaultDepict = dataList.Malfunctiont
+          this.content.FaultDepict = dataList.Malfunction
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           this.$router.push({ path: '/error' })
