@@ -352,6 +352,7 @@
                 }
               })
               that.eqCodes[toObject] = decodeObject(that.eqCodes[toObject])
+              that.eqCodes[toObject] = [{EquipCode:'',EquipName:'請選擇',FullShowName:'請選擇'},...res.data.code_list]
             }
           }else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
