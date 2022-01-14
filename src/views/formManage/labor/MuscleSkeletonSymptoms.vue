@@ -363,6 +363,8 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { fetchFormOrderList, fetchFormOrderOne, updateFormOrder, createFormOrder0, deleteFormOrder } from '@/apis/formManage/serve'
+import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 import deptSelect from '@/components/forManage/deptSelect'
 import dateSelect from '@/components/forManage/dateSelect'
 import peopleSelect from '@/components/PeopleSelectMuti'
@@ -581,8 +583,9 @@ export default {
       this.Add = true
     },
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;

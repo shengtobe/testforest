@@ -111,7 +111,7 @@
         :key="'d' + DelDynamicKey"
         @search="search"
         @close="close"
-        @cancel="closeDialogDel"
+        @cancel="close"
       />
     </v-dialog>
     <!-- 新增自動檢點表 modal -->
@@ -251,8 +251,10 @@ export default {
     return {
       title: "各級主管走動管理督檢紀錄暨追蹤表(每月2 次)",
       newText: "追蹤表",
+      DelDynamicKey: 0,
       isLoading: false,
       disabled: false,
+      dialogDel: false,
       action: Actions.add,
       actions: Actions,
       file: null,
@@ -278,6 +280,8 @@ export default {
       ii: "",
       uu: "",
       yy: "",
+      RPFlowNo: "",
+      CheckDay: "",
       Add: false,
       dialog3: false,
       place:"",
@@ -538,7 +542,7 @@ export default {
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName
           // OperatorID: "16713",  // 操作人id
-          
+          RPFlowNo: this.RPFlowNo,
           KeyName: this.DB_Table,  // DB table
           KeyItem:arr,
         }).then(res => {
@@ -581,48 +585,50 @@ export default {
     },
     viewPage(item) {
       this.chLoadingShow({show:false})
-        // 依業主要求變更檢式頁面的方式，所以改為另開分頁
-        fetchFormOrderOne({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-        KeyName: this.DB_Table,  // DB table
-        KeyItem: [ 
-          {'Column':'RPFlowNo','Value':item.RPFlowNo},
-                ],
-        QyName:[
-          "CheckDay",//0
-          "DepartName",//1
-          "Name",//2
-          "Place",//3
-          "CheckOption1",//4
-          "CheckAdvice1",//5
-          "CheckDescription1",//6
-          "CheckMemo1",//7
-          "CheckOption2",//8
-          "CheckAdvice2",//9
-          "CheckDescription2",//10
-          "CheckMemo2",//11
-          "CheckOption3",//12
-          "CheckAdvice3",//13
-          "CheckDescription3",//14
-          "CheckMemo3",//15
-          "CheckOption4",//16
-          "CheckAdvice4",//17
-          "CheckDescription4",//18
-          "CheckMemo4",//19
-          "CheckOption5",//20
-          "CheckAdvice5",//21
-          "CheckDescription5",//22
-          "CheckMemo5",//23
-          "CheckOption6",//24
-          "CheckAdvice6",//25
-          "CheckDescription6",//26
-          "CheckMemo6",//27
-          "CheckOption7",//28
-          "CheckAdvice7",//29
-          "CheckDescription7",//30
-          "CheckMemo7",//31
-        ],
+      this.action = Actions.edit;
+      this.RPFlowNo = item.RPFlowNo;
+      // 依業主要求變更檢式頁面的方式，所以改為另開分頁
+      fetchFormOrderOne({
+      ClientReqTime: getNowFullTime(),  // client 端請求時間
+      OperatorID: this.userData.UserId,  // 操作人id
+      KeyName: this.DB_Table,  // DB table
+      KeyItem: [ 
+        {'Column':'RPFlowNo','Value':item.RPFlowNo},
+              ],
+      QyName:[
+        "CheckDay",//0
+        "DepartName",//1
+        "Name",//2
+        "Place",//3
+        "CheckOption1",//4
+        "CheckAdvice1",//5
+        "CheckDescription1",//6
+        "CheckMemo1",//7
+        "CheckOption2",//8
+        "CheckAdvice2",//9
+        "CheckDescription2",//10
+        "CheckMemo2",//11
+        "CheckOption3",//12
+        "CheckAdvice3",//13
+        "CheckDescription3",//14
+        "CheckMemo3",//15
+        "CheckOption4",//16
+        "CheckAdvice4",//17
+        "CheckDescription4",//18
+        "CheckMemo4",//19
+        "CheckOption5",//20
+        "CheckAdvice5",//21
+        "CheckDescription5",//22
+        "CheckMemo5",//23
+        "CheckOption6",//24
+        "CheckAdvice6",//25
+        "CheckDescription6",//26
+        "CheckMemo6",//27
+        "CheckOption7",//28
+        "CheckAdvice7",//29
+        "CheckDescription7",//30
+        "CheckMemo7",//31
+      ],
       }).then(res => {
         this.initInput();
        

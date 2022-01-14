@@ -181,6 +181,16 @@
 
             <v-col cols="12" sm="4" md="3">
                 <h3 class="mb-1">
+                    <v-icon class="mr-1 mb-1">mdi-speedometer</v-icon>BMI
+                </h3>
+                <v-text-field readonly
+                    v-model="BMI"
+                    solo maxlength="5"
+                ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="4" md="3">
+                <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-source-branch</v-icon>血壓收縮壓
                 </h3>
                 <v-text-field
@@ -958,7 +968,27 @@ export default {
             else{
               return '--'
             }
-    },
+      },
+      BMI(){
+        if(this.ipt.PeopleHeight.length < 3 || this.ipt.PeopleWeight.length < 2) return '--';
+        let val = this.ipt.PeopleWeight / Math.pow(this.ipt.PeopleHeight/100, 2)
+        let text
+        if(val < 18.5){
+            text = '體重過輕'
+        }
+        else if(val < 24 && val >= 18.5){
+            text = '正常'
+        }else if(val < 27 && val >= 24){
+            text = '過重'
+        }else if(val < 30 && val >= 27){
+            text = '輕度肥胖'
+        }else if(val < 35 && val >= 30){
+            text = '中度肥胖'
+        }else if(val >= 35){
+            text = '重度肥胖'
+        }
+        return val.toFixed(1) + '  ' + text
+      },
     },
     methods: {
       ...mapActions('system', [
@@ -969,6 +999,7 @@ export default {
       ...mapActions('user', [
         'saveUserGroup',  // 儲存使用者權限(群組)資料
       ]),
+      
       // 初始化資料
       initData() {
         this.ipt = { ...this.defaultIpt }  // 初始化表單

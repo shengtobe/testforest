@@ -273,6 +273,7 @@ import UploadOneFileAdd from '@/components/UploadOneFileAdd.vue';
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 import fileList from "@/components/forManage/fileList";
@@ -359,28 +360,28 @@ export default {
         // name: JSON.parse(localStorage.getItem("user")).name,
         // date: new Date().toISOString().substr(0, 10),
         items: [
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
-          { status: 0, note: "" },
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
+          { status: 0},
         ],
         score1: [
           { status: 1, note: "" },
@@ -473,14 +474,11 @@ export default {
       this.doMan.name = this.userData.UserName;
       this.zs = this.nowTime;
       var step;
-      this.CheckOption1=""
-      this.CheckOption2=""
-      this.CheckOption3=""
-      this.CheckOption4=""
-      this.CheckOption5=""
-      this.CheckOption6=""
-      this.CheckOption7=""
-      this.CheckOption8=""
+      for (let index = 0; index < this.ipt.items.length; index++) {
+        this.ipt.items[index].status = 0;
+        this.ipt.items[index].note = '';
+      }
+      
     },
     unique(list){
       var arr = [];
@@ -510,7 +508,8 @@ export default {
       this.initInput();
     },
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
         ]),
     reset() {
       this.formData.searchItem.dateStart = "";

@@ -5,7 +5,7 @@
     <v-row class="px-2 mb-8">
         <v-col cols="12" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-3}}年總工時(小時)
+                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-3}}年總經歷工時(小時)
             </h3>
             <v-text-field
                 v-model="searchIpt.YearHr_belast"
@@ -16,7 +16,7 @@
         </v-col>
         <v-col cols="12" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-2}}年總工時(小時)
+                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-2}}年總經歷工時(小時)
             </h3>
             <v-text-field
                 v-model="searchIpt.YearHr_last"
@@ -27,7 +27,7 @@
         </v-col>
         <v-col cols="12" md="3">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-1}}年總工時(小時)
+                <v-icon class="mr-1 mb-1">mdi-calendar-clock</v-icon>{{time-1}}年總經歷工時(小時)
             </h3>
             <v-text-field
                 v-model="searchIpt.YearHr_this"

@@ -308,6 +308,10 @@ export default {
       this.$emit('close')
     },
     save() {
+      if(this.materDetail.DepartCode = ''){
+        alert("請選擇單位")
+        return
+      }
       const that = this
       if(Object.values(this.necCheck).every(e=>!e)){
         this.$emit('save',that.materDetail)

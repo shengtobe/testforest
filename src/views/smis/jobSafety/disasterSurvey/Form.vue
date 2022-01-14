@@ -169,7 +169,7 @@
             <v-text-field
                 v-model.trim="ipt.workYear"
                 solo
-                placeholder="請輸入經驗年數"
+                placeholder="範例 : OO年OO月"
             ></v-text-field>
         </v-col>
 
@@ -180,7 +180,7 @@
             <v-text-field
                 v-model.trim="ipt.trainingDate"
                 solo
-                placeholder="請輸入訓練日期"
+                placeholder="範例 : 2022/01/01"
             ></v-text-field>
         </v-col>
     </v-row>

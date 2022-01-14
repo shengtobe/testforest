@@ -112,6 +112,11 @@
                     v-if="status == 2 && isShowBtn"
                 >退回</v-btn>
 
+                <v-btn dark class="ma-2 btn-add"
+                    v-if="true"
+                    @click="word"
+                >列印</v-btn>
+
                 <v-btn dark  class="ma-2" color="success"
                     @click="save"
                     v-if="status == 2 && isShowBtn"
@@ -184,7 +189,7 @@ import HurtPeopleShow from '@/views/smis/carAccidentEvent/HurtPeopleShow.vue'
 import ImproveMeasureShow from '@/views/smis/carAccidentEvent/ImproveMeasureShow.vue'
 import UploadFileAdd from '@/components/UploadFileAdd.vue'
 import { harmNotifyStatus } from '@/assets/js/smisData'
-import { passData, deleteData, closeData, withdrawData, resetData } from '@/apis/smis/carAccidentEvent'
+import { passData, deleteData, closeData, withdrawData, resetData, wordData } from '@/apis/smis/carAccidentEvent'
 import { fetchList } from '@/apis/smis/harmNotify'
 
 export default {
@@ -352,6 +357,26 @@ export default {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，操作失敗' })
             }).finally(() => {
                 this.isLoading = this.dialog = false
+            })
+        },
+        // 列印
+        word() {
+            wordData({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                AccidentCode: this.id,  // 操作人id
+            }).then(res => {
+                if(res.data.ErrorCode == 0){
+                    let link = document.createElement('a')
+                    link.href = `/downloads/${res.data.file_name}`
+                    link.setAttribute('download', res.data.file_name)
+                    document.body.appendChild(link)
+                    link.click()
+                }
+                else{
+                }
+            }).catch(function (err) {
+                alert('匯出失敗')
             })
         },
         // 同意措施執行

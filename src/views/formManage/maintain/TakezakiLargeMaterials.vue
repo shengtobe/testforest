@@ -236,6 +236,7 @@ import deptSelect from "@/components/forManage/deptSelect";
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import { Actions } from "@/assets/js/actions";
+import { Constrant } from "@/assets/js/constrant";
 import dialogDelete from "@/components/forManage/dialogDelete";
 import ToolBar from "@/components/forManage/toolbar";
 
@@ -386,8 +387,9 @@ export default {
   },
   methods: {
     ...mapActions('system', [
-            'chLoadingShow',  // 切換 loading 圖顯示
-        ]),
+      "chMsgbar", // messageBar
+      'chLoadingShow',  // 切換 loading 圖顯示
+    ]),
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";

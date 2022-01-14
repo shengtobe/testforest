@@ -16,7 +16,7 @@
           label="評估日期(起)"
           key="dateStart"
           :showIcon="formData.settings.formIconShow"
-          v-model="formData.searchItem.dateStart"
+          v-model="formData.searchItem.dateEnd"
         />
       </v-col>
       <v-col cols="12" sm="3" md="3">
@@ -219,13 +219,9 @@ export default {
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
     newOne() {
-      this.chLoadingShow({show:true});
       this.$router.push(
         "/form-manage/labor/hazid-risk-assessment-add?editType=1"
       );
-      setTimeout(() => {
-        this.chLoadingShow({show:false});
-      }, 300);
     },
     reset() {
       this.formData.searchItem.dateStart = "";

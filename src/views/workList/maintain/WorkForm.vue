@@ -637,6 +637,12 @@ export default {
             }
         },
         save() {
+            // combineCode 必須四碼
+            let arr = this.combineCode.split('-')
+            if(arr.includes('')){
+                alert("設備標示編號未填滿四層")
+                return
+            }
             if(this.ipt.agent.name == ''){
                 alert("代理人未填")
                 return

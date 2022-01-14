@@ -32,7 +32,7 @@
         </v-col>
         <v-col cols="12" sm="4">
           <h3 class="mb-1">審核者</h3>
-          <v-text-field solo v-model.lazy="inputData.CheckMan" />
+          <v-text-field solo v-model.lazy="inputData.editableData.CheckMan" />
         </v-col>
         <hr />
       </v-row>
@@ -230,6 +230,7 @@ export default {
       Name: "",
       editableData: {
         Location: "",
+        CheckMan: "",
         Memo1: "",
         CheckDay: "",
       },
@@ -295,6 +296,7 @@ export default {
     } else {
       this.editType = this.actions.edit;
       this.RPFlowNo = this.$route.query.RPFlowNo;
+      console.log("this.RPFlowNo: ", this.RPFlowNo)
     }
   },
   mounted() {
@@ -431,6 +433,7 @@ export default {
         QyName: [
           "RPFlowNo",
           "CheckDay",
+          "CheckMan",
           "DepartName",
           "DepartCode",
           "ID",
@@ -618,6 +621,7 @@ export default {
           const that = this;
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
+          console.log("data: ", data);
          
           data.CheckDay = data.CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = RPFlowNo;
