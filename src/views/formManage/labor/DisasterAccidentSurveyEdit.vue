@@ -760,7 +760,6 @@ export default {
       keyArr.forEach((e) => {
         if(e == 'CheckOption5' || e == 'CheckOption12'){
           let a = new Date(that.inputData.editableData[e])
-          console.log("a: ", a);
           rtnObj.push({ Column: e, Value: a });
         }
         else{

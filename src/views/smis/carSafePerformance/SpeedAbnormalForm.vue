@@ -335,7 +335,6 @@ export default {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
 
             let aa = getOrg(this.userData.UserId)
-            console.log("aa: ", getOrg(this.userData.UserId));
 
             // -------------- 編輯時 -------------- 
             if (this.id) {

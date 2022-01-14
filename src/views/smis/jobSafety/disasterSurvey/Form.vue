@@ -1195,7 +1195,6 @@ export default {
             }
         },
         getPeople(value) {
-            console.log("value: ", value)
             if(value){
                 this.ipt.name = value.UserName
                 this.ipt.workDepart = value.DepartName
@@ -1236,7 +1235,6 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
-                            console.log("res.data.user_list_group_4: ", res.data.user_list_group_4);
                             let arrTwo = res.data.user_list_group_4.map(e => e.JobName)
                             this.jobTitles = arrTwo.filter(function(ele , pos){
                                 return arrTwo.indexOf(ele) == pos;

@@ -243,9 +243,7 @@ export default {
             this.tableItems_fee = [ ...obj.WorkMaterialList ]  // 費用資料
             this.totalJobHour = obj.TotalWorkTime  // 總工時
             this.totalMoney = obj.TotalSpent  // 工時統計的總金額
-            console.log("this.status: ", this.status);
             if(this.status == "4"){
-                console.log("obj.AllDepartorID: ", obj.AllDepartorID);
                 this.isShowBtn = obj.AllDepartorID == this.userData.UserId
                 //查詢員工所屬的部門主管資料
                 fetchSupervisor({
@@ -286,15 +284,10 @@ export default {
                 WorkOrderID: this.workNumber
             }).then(res => {
                 let link = document.createElement('a')
-                console.log("1");
                 link.href = `/downloads/${res.data.file_name}`
-                console.log("2");
                 link.setAttribute('download', res.data.file_name)
-                console.log("3");
                 document.body.appendChild(link)
-                console.log("4");
                 link.click()
-                console.log("5");
             }).catch(function (err) {
                 alert('匯出失敗')
             })

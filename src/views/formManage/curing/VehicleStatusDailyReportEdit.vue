@@ -704,7 +704,6 @@ export default {
           this.inputData.Name = dat[0].Name;
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);
-          console.log("inputArr: ", inputArr);
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });

@@ -604,7 +604,6 @@ export default {
         this.EmpDepartName = ""
       }
       else{
-        console.log("departOptions: ", departOptions);
         this.EmpDepartName = departOptions.find(ele => ele.value == this.EmpDepartCode).text
       }
 

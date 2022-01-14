@@ -224,7 +224,6 @@ export default {
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
     this.type = this.$route.query.type;
-    console.log("this.$route.query.type: ", this.$route.query.type);
     this.typeStr = this.type == 1 ? "本處員工" : "承攬商";
   },
   mounted() {

@@ -237,7 +237,6 @@ export default {
       }
       this.Advice = "";
       this.Measures = ""
-      console.log("initinput done!");
     },
     unique(list){
       var arr = [];

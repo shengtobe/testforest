@@ -391,7 +391,6 @@ export default {
         this.initInput();
        
         let dat = JSON.parse(res.data.DT)
-        console.log("dat: ", dat);
         this.$router.push({ path: `/form-manage/curing/${dat}/level-crossing-function-checklist-add` })
         
       }).catch(err => {

@@ -455,7 +455,6 @@ export default {
         ],
       }).then(res => {
         let tbBuffer = JSON.parse(res.data.DT)
-        console.log("tbBuffer: ", tbBuffer);
         let aa = unique(tbBuffer)
         this.tableItems = aa
         this.fileItems = res.data.FileCount||[];
@@ -593,7 +592,6 @@ export default {
        
         let dat = (JSON.parse(res.data.DT))[0]
         this.Add = true
-        console.log("dat: ", dat)
         // this.zs = res.data.DT.CheckDay
         this.RPFlowNo = dat.RPFlowNo;
         this.doMan.name = dat.Name

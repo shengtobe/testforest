@@ -511,7 +511,6 @@ export default {
         DTime_End: this.yearSelect[0],
         AcdOption: this.acdcode,
       }
-      console.log("getData: ", getData)
       accidentTrendQuery(
         getData
       ).then(res=>{ 

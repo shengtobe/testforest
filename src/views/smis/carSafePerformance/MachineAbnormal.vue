@@ -312,7 +312,6 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then( res => {
                 if (res.data.ErrorCode == 0) {
-                    console.log("res.data.DataList.length: ", res.data.DataList.length)
                     if(res.data.DataList.length > 0){
                          this.tableItems = decodeObject(res.data.DataList)
                          this.tableItems.forEach(e => {

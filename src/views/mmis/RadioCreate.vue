@@ -187,7 +187,6 @@
       },
       getDefaultSelect(defDeptId) {
         //defDeptId
-        console.log("defDeptId: ", defDeptId);
         if(this.opts.lv1.findIndex(e=>e.value==defDeptId)>-1){
           this.detailItem.DepartCode = defDeptId
           this.detailItem.DepartName = this.opts.lv1.find(e=>e.value==defDeptId).text
@@ -234,8 +233,6 @@
           }).then( res => {
             if (res.data.ErrorCode == 0) {
               let nnn = res.data.Name
-              console.log("111 res.data: ", res.data)
-              console.log("111 res.data.ManID: ", res.data.ManID)
               that.detailItem = res.data
               fetchOrganization().then(res2 => {
                 if (res2.data.ErrorCode == 0) {
@@ -248,11 +245,9 @@
 
                   // that.detailItem = res.data
                   let a = this.users.find(e => e.text == nnn).DepartCode
-                  console.log("a: ", a);
                   this.getDefaultSelect(a)
                 }
                 this.pskey+=1
-                console.log("this.pskey++")
               }).catch( err => {
                 this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
               })

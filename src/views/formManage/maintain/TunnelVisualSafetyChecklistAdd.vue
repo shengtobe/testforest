@@ -890,7 +890,6 @@ export default {
       this.CheckOption22_2 = (this.CheckOption22_2 == undefined)?"0":this.CheckOption22_2;
       this.CheckOption22_3 = (this.CheckOption22_3 == undefined)?"0":this.CheckOption22_3;
       if (this.action == Actions.add){
-        console.log("new one!")
         //-----新增-----
         createFormOrder0({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -973,7 +972,6 @@ export default {
       }
       else{
         //-----編輯-----
-        console.log("update!")
         updateFormOrder({
           ClientReqTime: getNowFullTime(),  // client 端請求時間
           OperatorID: this.userData.UserId,  // 操作人id this.doMan.name = this.userData.UserName

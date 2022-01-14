@@ -8,13 +8,27 @@
       <!-- 查詢欄位 -->
       <v-col cols="12" sm="4" md="3">
         <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
+          <v-icon class="mr-1 mb-1">mdi-bank</v-icon>科室
         </h3>
         <v-select 
           solo 
           hide-details 
           v-model="ipt.depart" 
           :items="deptData" 
+          item-text="value" 
+          @change="depChange"
+          item-value="key" 
+          label="選擇科室"/>
+      </v-col>
+      <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-bank</v-icon>單位
+        </h3>
+        <v-select 
+          solo
+          hide-details 
+          v-model="ipt.depart2" 
+          :items="deptData2" 
           item-text="value" 
           item-value="key" 
           label="選擇單位"/>
@@ -114,6 +128,7 @@ export default {
     sortBy: 'id',
     sortDesc: false,
     pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數 
+    group2: [],
     typeData: [   //H:手持式、S:固定式、C:車裝台
         {
           key: 'H',
@@ -129,6 +144,12 @@ export default {
         },
       ],
     deptData: [
+        {
+          key: '',
+          value: '選擇科室'
+        }
+      ],
+      deptData2: [
         {
           key: '',
           value: '選擇單位'
@@ -195,6 +216,7 @@ export default {
     ],
     ipt: {
       depart: '',
+      depart2: '',
       man: ''
     },
     tableItem: [],
@@ -220,6 +242,7 @@ export default {
           that.deptData.push(...res.data.user_depart_list_group_1.map((item) => {
             return {key:item.DepartCode,value:item.DepartName}
           }))
+          this.group2 = [...res.data.user_depart_list_group_2]
         }else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -227,6 +250,15 @@ export default {
       }).catch( err => {
         this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
       })
+    },
+    depChange(){
+      this.ipt.depart2 = '';
+      let chName = this.deptData.find(e => e.key == this.ipt.depart).value
+      let temp2 = this.group2.filter(e => e.DepartParentName == chName).map(item => ({
+        key: item.DepartCode,
+        value: item.DepartName,
+      }))
+      this.deptData2 = [{key: '', value: '選擇單位'}, ...temp2]
     },
     setDataList() {
       const that = this
@@ -239,12 +271,21 @@ export default {
       }).then(res => {
         if (res.data.ErrorCode == 0) {
           //that.chMsgbar({ success: true, msg: '送出成功' })
-          that.tableItem = [...res.data.query_list]
-          that.tableItem.forEach(function(e,i){
+          let tempTable = [...res.data.query_list]
+          tempTable.forEach(function(e,i){
             e.id=i+1
             var indexFind = that.typeData.findIndex((ele) => ele.key == e.Type)
             e.Type = that.typeData[indexFind].value
           })
+          // 前端自行篩選廠庫
+          if(that.ipt.depart2 == null || that.ipt.depart2 == ''){
+            that.tableItem = tempTable
+          }
+          else{
+            let a = this.deptData2.find(e=>e.key == that.ipt.depart2).value
+            that.tableItem = [...[]]
+            that.tableItem = tempTable.filter(e => e.DepartUnit == a)
+          }
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -273,7 +314,6 @@ export default {
       this.Edit = true
     },
     openDelete(flowId) {
-      console.log("flowId: ", flowId);
       this.Delete = true
       this.nowFlow = flowId
     },
