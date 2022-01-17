@@ -296,6 +296,7 @@ export default {
         that.chLoadingShow({show:false})
         that.tableItem = decodeObject(that.tableItem)
         this._getOrg()
+        this.chPage(1)
       })
     },
     // 更換頁數

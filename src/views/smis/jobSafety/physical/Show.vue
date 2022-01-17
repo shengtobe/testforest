@@ -86,6 +86,7 @@ export default {
             userData: state => state.userData,  // 使用者基本資料
             groupData: state => state.groupData,
         }),
+        
     },
     methods: {
         ...mapActions('system', [
@@ -95,6 +96,26 @@ export default {
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
+        getBMI(h,w){
+            if(h < 110 || w < 30) return '--';
+            let val = w / Math.pow(h/100, 2)
+            let text
+            if(val < 18.5){
+                text = '體重過輕'
+            }
+            else if(val < 24 && val >= 18.5){
+                text = '正常'
+            }else if(val < 27 && val >= 24){
+                text = '過重'
+            }else if(val < 30 && val >= 27){
+                text = '輕度肥胖'
+            }else if(val < 35 && val >= 30){
+                text = '中度肥胖'
+            }else if(val >= 35){
+                text = '重度肥胖'
+            }
+            return val.toFixed(1) + '  ' + text
+        },
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow({show:true})
@@ -134,6 +155,7 @@ export default {
                     this.bottomItems = [
                         { dataType: 'text', oneline: true, icon: 'none', title: '身高(cm)', text: Fdata.PeopleHeight + ' cm' },
                         { dataType: 'text', oneline: true, icon: 'none', title: '體重(kg)', text: Fdata.PeopleWeight + ' kg' },
+                        { dataType: 'text', oneline: true, icon: 'none', title: 'BMI', text: this.getBMI(Fdata.PeopleHeight, Fdata.PeopleWeight) },
                         { dataType: 'text', oneline: true, icon: 'none', title: '血壓收縮壓(mmHg)', text: Fdata.BloodShrink + ' mmHg' },
                         { dataType: 'text', oneline: true, icon: 'none', title: '血壓舒張壓(mmHg)', text: Fdata.BloodDiastole + ' mmhg' },
                         { dataType: 'text', oneline: true, icon: 'none', title: '脈搏(次/分鐘)', text: Fdata.Pulse + ' 次/分鐘' },

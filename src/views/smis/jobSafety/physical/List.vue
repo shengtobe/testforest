@@ -76,12 +76,12 @@ export default {
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
-            { text: '健檢日期', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '部門', value: 'DepartName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '適任性', value: 'Competence', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
-            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold light-blue darken-1' },
+            { text: '健檢日期', value: 'HealthCheckDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold darken-1' },
+            { text: '部門', value: 'DepartName', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold darken-1' },
+            { text: '姓名', value: 'Name', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold darken-1' },
+            { text: '健檢評級', value: 'HealthResultLevel', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold darken-1' },
+            { text: '適任性', value: 'Competence', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold darken-1' },
+            { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold darken-1' },
         ],
         dialog: false,  // dialog 是否顯示
         isLoading: false,  // 是否讀取中
