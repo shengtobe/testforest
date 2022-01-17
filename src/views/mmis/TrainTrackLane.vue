@@ -96,8 +96,10 @@
                       v-for="(pics,index) in item.FileListPic"
                       :key="'Pic'+item.FlowId+index"
                       :src="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath.replace(/\\/g,'/')))?pics.FileFullPath.replace(/\\/g,'/') : '/images/file.jpg'"
+                      @click="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath))?goViewPic(pics.FileFullPath.replace(/\\/g,'/')):false"
                       max-height="172"
                       max-width="280"
+                      :class="{'cursor-pointer':/png|jpeg|jpg|gif$/.test(pics.FileFullPath)}"
                     ></v-img>
                     <v-chip v-if="item.FileListPic.length==0">無上傳照片</v-chip>
                   </div>
@@ -157,6 +159,13 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <!--  -->
+      <v-dialog v-model="PicView.show" max-width="800px">
+        <v-img
+          :key="'PicShow'+PicView.key"
+          :src="PicView.src"
+        ></v-img>
+      </v-dialog>
       <!-- 檔案上傳 modal -->
       <v-dialog v-model="UpFile" max-width="900px">
         <v-card class="theme-card">
@@ -197,7 +206,11 @@
     </v-row>
   </v-container>
 </template>
-
+<style scoped>
+.cursor-pointer{
+  cursor: pointer;
+}
+</style>
 <script>
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
@@ -211,6 +224,11 @@ export default {
     Edit: false,
     UpFile: false,
     Delete: false,
+    PicView: {
+      show: false,
+      key: 0,
+      src: ""
+    },
     url: "@/public/demofile/demo3.jpg",
     pageOpt: { page: 1 },
     expanded: [],
@@ -590,6 +608,12 @@ export default {
         that.chLoadingShow({show:false})
       })
     },
+    //看照片
+    goViewPic(picPath) {
+      this.PicView.src = picPath
+      this.PicView.key ++
+      this.PicView.show = true
+    }
   },
   filters: {
     picStatus:(data) => data=='Y'?'有':'無'
