@@ -109,7 +109,7 @@ import { mapState, mapActions } from 'vuex'
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
 import { materialInventoryQuery, materialSpecQuery } from '@/apis/materialManage/material'
 import equipRepairObject from '@/components/EquipRepairCode'
-import DeptSelect from '@/components/forManage/deptSelect'
+import DeptSelect from '@/components/forManage/deptSelect2'
 export default {
   props: {
     materCode: String,
