@@ -60,7 +60,32 @@
                 ></v-date-picker>
             </v-menu>
         </v-col>
-
+        <v-col cols="12" sm="4" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇機客車編號
+        </h3>
+        <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
+        <v-dialog v-model="eqCode" max-width="700px">
+            <v-card class="theme-card">
+                <v-card-title class="px-4 py-1">
+                    車輛型號
+                    <v-spacer></v-spacer>
+                    <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn> 
+                </v-card-title>
+                <div class="px-4 py-3">
+                    <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
+                    @getEqCode="getRtnCode" @getEqName="getRtnName"/>
+                </div>
+                <v-card-actions class="px-5 pb-5">
+                    <v-spacer></v-spacer>
+                    <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                    <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+      </v-col>
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
@@ -225,6 +250,7 @@ import { mapState, mapActions } from 'vuex'
 import Pagination from '@/components/Pagination.vue'
 import { brakeQueryList,brakeUpdate } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime,decodeObject, objToArr } from '@/assets/js/commonFun'
+import EquipCode from '@/components/EquipRepairCode'
 export default {
     data: () => ({
         searchIpt: {},
@@ -264,7 +290,8 @@ export default {
         DeleteItem: '',
     }),
     components: { 
-        Pagination
+        Pagination,
+        EquipCode,
     },
     computed: {
         ...mapState ('user', {
