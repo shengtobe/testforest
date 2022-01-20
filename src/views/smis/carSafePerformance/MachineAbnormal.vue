@@ -60,33 +60,33 @@
                 ></v-date-picker>
             </v-menu>
         </v-col>
-        <v-col cols="12" sm="4" md="3">
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇機客車編號
-        </h3>
-        <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
-        <v-dialog v-model="eqCode" max-width="700px">
-            <v-card class="theme-card">
-                <v-card-title class="px-4 py-1">
-                    車輛型號
-                    <v-spacer></v-spacer>
-                    <v-btn fab small text @click="eqCode = false" class="mr-n2">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn> 
-                </v-card-title>
-                <div class="px-4 py-3">
-                    <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
-                    @getEqCode="getRtnCode" @getEqName="getRtnName"/>
-                </div>
-                <v-card-actions class="px-5 pb-5">
-                    <v-spacer></v-spacer>
-                    <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
-                    <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-      </v-col>
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="4" md="4">
+            <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車號
+            </h3>
+            <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchIpt.CarCode" clearable @click:clear="clickCleanCode()"/>
+            <v-dialog v-model="eqCode" max-width="700px">
+                <v-card class="theme-card">
+                    <v-card-title class="px-4 py-1">
+                        車輛型號
+                        <v-spacer></v-spacer>
+                        <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn> 
+                    </v-card-title>
+                    <div class="px-4 py-3">
+                        <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
+                        @getEqCode="getRtnCode" @getEqName="getRtnName"/>
+                    </div>
+                    <v-card-actions class="px-5 pb-5">
+                        <v-spacer></v-spacer>
+                        <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                        <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-col>
+        <v-col cols="12" sm="4" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
             </h3>
@@ -97,7 +97,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="4" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
             </h3>
@@ -259,7 +259,14 @@ export default {
             DTime_End: '',  // 日期(迄)
             Option: 'T',  // 機車'1'或客車'2'
             CarCode: '',  // 車號
+            MaintainCode_System: 'RST',  // 類型
+            MaintainCode_Loc: ''
         },
+        key: 0,
+        preSetEqcode: '',
+        preSerEqName: '',
+        isLoading: false,
+        eqCode: false,
         dateAMax: '',
         dateBMin: '',
         dateMenuShow: {
@@ -297,6 +304,18 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        com_equipCode: {
+            get: function() {
+                return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+            },
+            set: function(value) {
+                if(value != ''){
+                    let splitArr = value.split('-')
+                    this.searchIpt.MaintainCode_System = splitArr[0]
+                    this.searchIpt.MaintainCode_Loc = splitArr[1]
+                }
+            }
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -304,9 +323,19 @@ export default {
             'chLoadingShow',  // 切換 loading 圖顯示
             'chViewDialog',  // 檢視內容 dialog
         ]),
+        clickCleanCode(){
+            this.searchIpt.MaintainCode_System = 'RST'
+            this.searchIpt.MaintainCode_Loc = ''
+            this.com_equipCode = 'RST-'
+            this.searchIpt.CarCode = ''
+        },
         // 清除搜尋內容
         reset() {
             this.searchIpt = { ...this.searchDefault }
+            this.searchIpt.MaintainCode_System = 'RST'
+            this.searchIpt.MaintainCode_Loc = ''
+            this.com_equipCode = 'RST-'
+            this.searchIpt.CarCode = ''
         },
         time(i){
             if(i == 1){
@@ -333,6 +362,7 @@ export default {
             // return
             this.chLoadingShow({show:true})
             this.pageOpt.page = 1  // 頁碼初始化
+            if(this.searchIpt.CarCode == null) this.searchIpt.CarCode = ''
             brakeQueryList({
                 ...this.searchIpt,
                 ClientReqTime: getNowFullTime(),
@@ -358,6 +388,21 @@ export default {
                 this.chLoadingShow({show:false})
             })
         },
+        //機車回傳中文
+        getRtnName(cName) {
+            (cName)
+            // this.preSerEqName = cName.replace('車輛(RST)-','')
+            // if(cName.includes('客車') || cName.includes('工程車')){
+            //     this.searchIpt.Option = '2'
+            // }
+            // else{
+            //     this.searchIpt.Option = '1'
+            // }
+        },
+        //機車回傳
+        getRtnCode(code) {
+            this.preSetEqcode = code
+        },
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
@@ -365,6 +410,12 @@ export default {
         // 顯示檢視內容
         showContent(txt) {
             this.chViewDialog({ show: true, content: txt.replace(/\n/g, '<br>') })
+        },
+        //機車送出按鈕
+        selectEQ() {
+            this.com_equipCode = this.preSetEqcode
+            this.searchIpt.CarCode = this.preSetEqcode
+            this.eqCode = false
         },
         // 刪除控制措施
         delControl(id) {

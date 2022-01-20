@@ -32,8 +32,33 @@
                 ></v-date-picker>
             </v-menu>
         </v-col>
-
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="5" md="4">
+            <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車號
+            </h3>
+            <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
+            <v-dialog v-model="eqCode" max-width="700px">
+                <v-card class="theme-card">
+                    <v-card-title class="px-4 py-1">
+                        車輛型號
+                        <v-spacer></v-spacer>
+                        <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn> 
+                    </v-card-title>
+                    <div class="px-4 py-3">
+                        <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
+                        @getEqCode="getRtnCode" @getEqName="getRtnName" ref="rkey"/>
+                    </div>
+                    <v-card-actions class="px-5 pb-5">
+                        <v-spacer></v-spacer>
+                        <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                        <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-col>
+        <v-col cols="12" sm="4" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-train</v-icon>機車或客車
             </h3>
@@ -44,7 +69,7 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="4" md="3" v-if="false">
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-tag-multiple</v-icon>車號
             </h3>
@@ -143,6 +168,7 @@ import UploadFileEdit from '@/components/UploadFileEdit.vue'
 import { mapState, mapActions } from 'vuex'
 import { brakeInsert,brakeQuery,brakeUpdate } from '@/apis/smis/safetyPerformance'
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
+import EquipCode from '@/components/EquipRepairCode'
 export default {
     props:['id'],
     data: () => ({
@@ -163,7 +189,15 @@ export default {
             ErrorDesp:'',
             ErrorCheckStatus:'',
             FileCount: [],
+            MaintainCode_System: 'RST',  // 類型
+            MaintainCode_Loc: ''
         },
+        key: 0,
+        searchName: '',
+        preSetEqcode: '',
+        preSerEqName: '',
+        isLoading: false,
+        eqCode: false,
         BarkeID: '',
         FileCount: [],
         dateMenuShow: false,  // 日曆是否顯示
@@ -171,6 +205,7 @@ export default {
     components: {
         UploadFileAdd,
         UploadFileEdit,
+        EquipCode,
     },
     watch: {
         // 路由參數變化時，重新向後端取資料
@@ -182,6 +217,18 @@ export default {
         ...mapState ('user', {
             userData: state => state.userData,  // 使用者基本資料
         }),
+        com_equipCode: {
+            get: function() {
+                return this.ipt.MaintainCode_System + (this.ipt.MaintainCode_Loc==''?'':'-' + this.ipt.MaintainCode_Loc)
+            },
+            set: function(value) {
+                if(value != ''){
+                    let splitArr = value.split('-')
+                    this.ipt.MaintainCode_System = splitArr[0]
+                    this.ipt.MaintainCode_Loc = splitArr[1]
+                }
+            }
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -192,6 +239,10 @@ export default {
         // 初始化資料
         initData() {
             this.ipt = { ...this.defaultIpt }  // 初始化表單
+            this.ipt.MaintainCode_System = 'RST'
+            this.ipt.MaintainCode_Loc = ''
+            this.com_equipCode = 'RST-'
+            this.searchName = ''
             // -------------- 編輯時 -------------- 
             if (this.id) {
                 this.chLoadingShow({show:true})
@@ -204,6 +255,9 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.ipt = {FileCount: [], ...decodeObject(res.data.DataList[0]), BarkeID: res.data.DataList[0].BarkeID}  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
+                        this.com_equipCode = this.ipt.CarCode
+                        this.searchName = this.ipt.CarCode
+                        this.key++
                     }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -224,6 +278,28 @@ export default {
         // 更換頁數
         chPage(n) {
             this.pageOpt.page = n
+        },
+        //機車回傳中文
+        getRtnName(cName) {
+            (cName)
+            this.preSerEqName = cName.replace('車輛(RST)-','')
+            if(cName.includes('客車') || cName.includes('工程車')){
+                this.ipt.CarType = '2'
+            }
+            else{
+                this.ipt.CarType = '1'
+            }
+        },
+        //機車回傳
+        getRtnCode(code) {
+            this.preSetEqcode = code
+            this.ipt.CarCode = code
+        },
+        //機車送出按鈕
+        selectEQ() {
+            this.com_equipCode = this.preSetEqcode
+            this.searchName = this.preSetEqcode
+            this.eqCode = false
         },
         // 送出
         save() {
@@ -287,6 +363,12 @@ export default {
             } else {
                 this.showFiles.push(obj)  // 加入要顯示的縮圖
             }
+        },
+        clickCleanCode(){
+            this.ipt.MaintainCode_System = 'RST'
+            this.ipt.MaintainCode_Loc = ''
+            this.com_equipCode = 'RST-'
+            this.searchName = ''
         },
         // 移除要上傳的檔案 (組件用)
         rmFile(idx) {
