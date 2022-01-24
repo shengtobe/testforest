@@ -36,7 +36,7 @@
             <h3 class="mb-1">
             <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車號
             </h3>
-            <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
+            <v-text-field solo @click="carCodeClick" readonly v-model="searchName" @click:clear="clickCleanCode()"/>
             <v-dialog v-model="eqCode" max-width="700px">
                 <v-card class="theme-card">
                     <v-card-title class="px-4 py-1">
@@ -85,7 +85,7 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.CarVersion"
-                solo
+                solo maxlength="10"
             ></v-text-field>
         </v-col>
 
@@ -242,7 +242,6 @@ export default {
             this.ipt.MaintainCode_System = 'RST'
             this.ipt.MaintainCode_Loc = ''
             this.com_equipCode = 'RST-'
-            this.searchName = ''
             // -------------- 編輯時 -------------- 
             if (this.id) {
                 this.chLoadingShow({show:true})
@@ -255,9 +254,7 @@ export default {
                     if (res.data.ErrorCode == 0) {
                         this.ipt = {FileCount: [], ...decodeObject(res.data.DataList[0]), BarkeID: res.data.DataList[0].BarkeID}  
                         this.ipt.CheckDate = this.ipt.CheckDate.split(' ')[0].replace(/\//g,"-")
-                        this.com_equipCode = this.ipt.CarCode
                         this.searchName = this.ipt.CarCode
-                        this.key++
                     }else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                         this.$router.push({ path: '/error' })
@@ -298,8 +295,14 @@ export default {
         //機車送出按鈕
         selectEQ() {
             this.com_equipCode = this.preSetEqcode
-            this.searchName = this.preSetEqcode
+            this.searchName = this.preSerEqName
+            this.ipt.CarCode = this.searchName
             this.eqCode = false
+        },
+        carCodeClick(){
+            if(this.id) return
+            this.eqCode=true;
+            this.key++
         },
         // 送出
         save() {
@@ -368,7 +371,6 @@ export default {
             this.ipt.MaintainCode_System = 'RST'
             this.ipt.MaintainCode_Loc = ''
             this.com_equipCode = 'RST-'
-            this.searchName = ''
         },
         // 移除要上傳的檔案 (組件用)
         rmFile(idx) {

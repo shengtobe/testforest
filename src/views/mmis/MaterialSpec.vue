@@ -188,7 +188,7 @@ export default {
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
     _dataInit() {
-      this.searchData()
+      // this.searchData()
     },
     //清單查詢
     searchData() {
