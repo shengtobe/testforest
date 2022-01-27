@@ -302,10 +302,10 @@ export const riskFrequency = [
 
 // 危害資料庫 - 風險等級
 export const riskLevel = [
-    { text: '非常高度風險 (R1)', value: 'R1' },
-    { text: '中高度風險 (R2)', value: 'R2' },
-    { text: '中度風險 (R3)', value: 'R3' },
-    { text: '可接受，持續控管 (R4)', value: 'R4' },
+    { text: '非常高度風險 (R4)', value: 'R4' },
+    { text: '中高度風險 (R3)', value: 'R3' },
+    { text: '中度風險 (R2)', value: 'R2' },
+    { text: '可接受，持續控管 (R1)', value: 'R1' },
     { text: '未選擇', value: '' },
 ]
 
