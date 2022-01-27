@@ -75,6 +75,32 @@ export function materialSpecDelete(data) {
     }
 )}
 
+// 料件規格檔案相關
+export function materialSpecFileAdd(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialspecfileadd',
+        method: 'post',
+        data,
+    }
+)}
+export function materialSpecFileView(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialspecfileview',
+        method: 'post',
+        data,
+    }
+)}
+export function materialSpecFileDelete(data) { 
+    return axios(
+    {
+        url: '/mmis/equipdata/materialspecfiledelete',
+        method: 'post',
+        data,
+    }
+)}
+
 //庫存
 export function materialInventoryQueryList(data) { 
   return axios(

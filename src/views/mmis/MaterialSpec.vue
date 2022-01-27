@@ -26,6 +26,10 @@
           <v-data-table
             :headers="headers"
             :items="tableItem"
+            :single-expand="true"
+            :expanded.sync="expanded"
+            item-key="MaterialCode"
+            show-expand
             :options.sync="pageOpt"
             disable-sort
             disable-filtering
@@ -33,9 +37,36 @@
             :sort-by.sync="sortBy"
             :sort-desc.sync="sortDesc"
             class="theme-table"
+            @item-expanded="whenExpanded"
           >
             <template v-slot:no-data>
               <span class="red--text subtitle-1">沒有資料</span>
+            </template>
+
+            <template v-slot:expanded-item="{ headers, item }">
+              <td :colspan="headers.length">
+                <div class="row">
+                  <div class="col-12 col-md-8">
+                    <v-chip class="ma-2" color="dropdownicon" label>規格</v-chip>
+                    {{ item.Specification }}
+                    <br />
+                    <v-chip class="ma-2" color="dropdownicon" label>備註</v-chip>
+                    {{ item.Memo }}
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <!-- <v-img
+                      v-for="(pics,index) in item.FileListPic"
+                      :key="'Pic'+item.FlowId+index"
+                      :src="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath.replace(/\\/g,'/')))?pics.FileFullPath.replace(/\\/g,'/') : '/images/file.jpg'"
+                      @click="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath))?goViewPic(pics.FileFullPath.replace(/\\/g,'/')):false"
+                      max-height="172"
+                      max-width="280"
+                      :class="{'cursor-pointer':/png|jpeg|jpg|gif$/.test(pics.FileFullPath)}"
+                    ></v-img> -->
+                    <!-- <v-chip v-if="item.FileListPic.length==0">無上傳照片</v-chip> -->
+                  </div>
+                </div>
+              </td>
             </template>
 
             <template v-slot:item.MaterialCode="{ item }">
@@ -46,6 +77,17 @@
             <template v-slot:item.a8="{ item }">
               <v-btn fab small dark class="mr-2 btn-modify" @click="goEdit(item.MaterialCode)">
                 <v-icon>mdi-pen</v-icon>
+              </v-btn>
+
+              <v-btn
+                title="檔案"
+                class="mr-2 btn-memo"
+                small
+                dark
+                fab
+                @click="goUpfile(item.MaterialCode)"
+              >
+                <v-icon dark>mdi-file</v-icon>
               </v-btn>
 
               <v-btn fab small dark class="btn-delete" @click="wantDelete(item.MaterialCode)">
@@ -66,6 +108,29 @@
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
         <CmaterialEdit @close="close" :materCode="nowMaterial" DType="edit" :key="componentKey" @save="save" />
+      </v-dialog>
+      <!-- 檔案上傳 modal -->
+      <v-dialog v-model="UpFile" max-width="900px">
+        <v-card class="theme-card">
+          <v-card-title class="white--text px-4 py-1">
+            檔案管理
+            <v-spacer></v-spacer>
+            <v-btn dark fab small text @click="close" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-lazy>
+            <v-row>
+              <v-col cols="12">
+                <UploadFileEdit title="上傳照片" :fileList="fileUpload" :uploadDisnable="false" @uploadFile="joinFilePic" @deleteFile="rmFilePic" class="mb-10"/>
+              </v-col>
+            </v-row>
+          </v-lazy>
+          <v-card-actions class="px-5 pb-5">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-2 btn-close white--text" elevation="4" @click="close">關閉</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
       <!-- 停用 modal -->
       <v-dialog v-model="Delete" persistent max-width="290">
@@ -93,7 +158,8 @@
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
-import { materialSpecQueryList,materialSpecDelete,materialSpecEdit } from '@/apis/materialManage/material'
+import { materialSpecQueryList,materialSpecDelete,materialSpecEdit, materialSpecFileAdd, materialSpecFileView, materialSpecFileDelete } from '@/apis/materialManage/material'
+import UploadFileEdit from "@/components/UploadFileEdit.vue";
 import CmaterialEdit from '@/views/mmis/MaterialSpecEdit'
 import MaterialRequistision from '@/views/mmis/MaterialRequistision'
 export default {
@@ -101,11 +167,13 @@ export default {
     return {
       searchDepartName: '',
       searchMaterialName: '',
+      expanded: [],
       tableItem: [],
       sortBy: 'id',
       sortDesc: false,
       detailItem:{},
       nowMaterial: '',
+      fileUpload: [],
       pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數
       headers: [
         {
@@ -155,11 +223,19 @@ export default {
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
         },
+        {
+        text: "",
+        value: "data-table-expand",
+        divider: true,
+        sortable: false,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
       ],
       contentShow: false, // 詳細內容 dialog 是否顯示
       content: {}, // 詳細內容欄位
       Add: false,
       Edit: false,
+      UpFile: false,
       Delete: false,
       Del: false,
       snack: false,
@@ -176,6 +252,7 @@ export default {
     Pagination,
     CmaterialEdit,
     MaterialRequistision,
+    UploadFileEdit,
   },
   computed: {
     ...mapState ('user', {
@@ -189,6 +266,70 @@ export default {
     ]),
     _dataInit() {
       // this.searchData()
+    },
+    //按下檔案按鈕
+    async goUpfile(flowId){
+      //打API
+      this.nowMaterial = flowId
+      let fileRtn = await this.getFiles(flowId)
+      this.fileUpload = fileRtn.Pics
+      this.UpFile = true
+    },
+    async getFiles(Material){
+      let Pics = []
+      let Tech = []
+      await materialSpecFileView({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaterialCode: Material,
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          Pics = res.data.FileCount
+        } else {
+          this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+        }
+      }).catch(err => {
+        this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+      }).finally(() => {
+      })
+      return Pics
+    },
+    //檔案上傳
+    joinFilePic(obj){
+      //打API
+      this.fileUpload = []
+      materialSpecFileAdd({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaterialCode: this.nowMaterial,
+        FileCount: obj
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          this.chMsgbar({ success: true, msg: '檔案上傳成功' })
+          this.fileUpload = res.data.FileCount
+        } else {
+          this.chMsgbar({ success: false, msg: '檔案上傳失敗' })
+          this.fileUpload = res.data.FileCount
+        }
+      })
+    },
+    //刪除檔案
+    rmFilePic(index){
+      //抓出flowNo然後打API
+      materialSpecFileDelete({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaterialCode: this.nowMaterial,
+        FlowNo: this.fileUpload[index].FlowNo
+      }).then(res=>{
+        if(res.data.ErrorCode==0){
+          this.chMsgbar({ success: true, msg: '檔案刪除成功' })
+          this.fileUpload = res.data.FileCount
+        } else {
+          this.chMsgbar({ success: false, msg: '檔案刪除失敗' })
+          this.fileUpload = res.data.FileCount
+        }
+      })
     },
     //清單查詢
     searchData() {
@@ -250,6 +391,12 @@ export default {
         that.searchData()
       })
     },
+    async whenExpanded(item){
+      if(item.value){
+        let fileRtn = await this.getFiles(item.item.MaterialCode)
+        item.item.FileListPic = fileRtn.Pics
+      }
+    },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
@@ -286,6 +433,7 @@ export default {
       this.Edit = false;
       this.Delete = false;
       this.Del = false;
+      this.UpFile = false;
     },
     // 顯示詳細資訊
     view(item) {
