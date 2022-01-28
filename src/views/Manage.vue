@@ -271,7 +271,7 @@
                             </v-list>
                         </v-card>
                         <div id="versionArea" class="mt-10">
-                            <p class="text-end text--disabled font-weight-bold">v0.7.6</p>
+                            <p class="text-end text--disabled font-weight-bold">{{version}}</p>
                             <!-- 建置 修正危害通報pick1導致連錯誤 改為新變數 -->
                         </div>
                     </v-col>
@@ -328,6 +328,7 @@
 </style>
 <script>
 import { mapState, mapActions } from 'vuex'
+import { version } from "@/../package.json"
 import aesjs from 'aes-js'
 import SystemDialog from '@/components/SystemDialog.vue'
 import SystemLoading from '@/components/SystemLoading.vue'
@@ -339,6 +340,7 @@ export default {
         // mainColor: 'light-blue darken-1',
         funcShow: [],
         role: null,
+        version: version,
         mainColor: 'top-nav',
         showNav: false,  // 導覽列是否顯示
         titleColor1: 'blue lighten-4',
