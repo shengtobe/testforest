@@ -10,6 +10,7 @@
             >
               <!-- <v-toolbar-title>林鐵<span @dblclick="submit(false)">資</span>訊管理系統</v-toolbar-title> -->
               <v-toolbar-title>林鐵資訊管理系統</v-toolbar-title>
+              <p class="text--disabled mt-6 ml-2">v0.7.6</p>
             </v-toolbar>
 
             <v-card-text>
