@@ -54,7 +54,7 @@
                     {{ item.Memo }}
                   </div>
                   <div class="col-12 col-md-4">
-                    <!-- <v-img
+                    <v-img
                       v-for="(pics,index) in item.FileListPic"
                       :key="'Pic'+item.FlowId+index"
                       :src="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath.replace(/\\/g,'/')))?pics.FileFullPath.replace(/\\/g,'/') : '/images/file.jpg'"
@@ -62,8 +62,8 @@
                       max-height="172"
                       max-width="280"
                       :class="{'cursor-pointer':/png|jpeg|jpg|gif$/.test(pics.FileFullPath)}"
-                    ></v-img> -->
-                    <!-- <v-chip v-if="item.FileListPic.length==0">無上傳照片</v-chip> -->
+                    ></v-img>
+                    <v-chip v-if="item.FileListPic.length==0">無上傳照片</v-chip>
                   </div>
                 </div>
               </td>
@@ -108,6 +108,12 @@
       <!-- 編輯資料 modal -->
       <v-dialog v-model="Edit" max-width="900px">
         <CmaterialEdit @close="close" :materCode="nowMaterial" DType="edit" :key="componentKey" @save="save" />
+      </v-dialog>
+      <v-dialog v-model="PicView.show" max-width="800px">
+        <v-img
+          :key="'PicShow'+PicView.key"
+          :src="PicView.src"
+        ></v-img>
       </v-dialog>
       <!-- 檔案上傳 modal -->
       <v-dialog v-model="UpFile" max-width="900px">
@@ -173,6 +179,11 @@ export default {
       sortDesc: false,
       detailItem:{},
       nowMaterial: '',
+      PicView: {
+        show: false,
+        key: 0,
+        src: ""
+      },
       fileUpload: [],
       pageOpt: { page: 1 }, // 控制措施權責部門的表格目前頁數
       headers: [
@@ -346,6 +357,7 @@ export default {
           if(that.tableItem.length == 0) {
             that.chMsgbar({ success: false, msg: '查無資料，請輸入其他條件進行查詢' })
           }
+          that.tableItem = that.tableItem.map(e => ({...e, FileListPic:[]}))
         } else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -439,6 +451,12 @@ export default {
     view(item) {
       this.contentShow = true;
       this.content = { ...item };
+    },
+    //看照片
+    goViewPic(picPath) {
+      this.PicView.src = picPath
+      this.PicView.key ++
+      this.PicView.show = true
     },
   },
   created() {},
