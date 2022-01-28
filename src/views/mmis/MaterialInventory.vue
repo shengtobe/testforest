@@ -142,6 +142,26 @@
               </v-col>
 
               <v-col cols="12">
+                <v-divider class="mt-2 mb-3" />
+              </v-col>
+
+              <v-col cols="12">
+                <v-icon class="mr-1 mb-1">mdi-panorama</v-icon>
+                規格照片：
+                <v-img
+                  v-for="(pics,index) in FileListPic"
+                  :key="'Pic'+ detailItem.MaterialCode +index"
+                  :src="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath.replace(/\\/g,'/')))?pics.FileFullPath.replace(/\\/g,'/') : '/images/file.jpg'"
+                  @click="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath))?goViewPic(pics.FileFullPath.replace(/\\/g,'/')):false"
+                  max-height="172"
+                  max-width="280"
+                  :class="{'cursor-pointer':/png|jpeg|jpg|gif$/.test(pics.FileFullPath)}"
+                ></v-img>
+                <v-chip v-if="FileListPic.length==0">無上傳照片</v-chip>
+              </v-col>
+
+
+              <v-col cols="12">
                 <v-divider class="mt-2" />
                 <v-divider class="mb-3" />
               </v-col>
@@ -230,7 +250,7 @@
 import { mapState, mapActions } from 'vuex'
 import Pagination from "@/components/Pagination.vue";
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
-import { materialInventoryQueryList,materialInventoryQuery,materialInventoryDelete,materialInventoryEdit } from '@/apis/materialManage/material'
+import { materialInventoryQueryList,materialInventoryQuery,materialInventoryDelete,materialInventoryEdit, materialSpecFileView } from '@/apis/materialManage/material'
 import CmaterialEdit from '@/views/mmis/MaterialInventoryEdit'
 import MaterialRequistision from '@/views/mmis/MaterialRequistision'
 import DeptSelect from '@/components/forManage/deptSelect'
@@ -239,6 +259,7 @@ export default {
     return {
       searchDepartName: '',
       searchMaterialName: '',
+      FileListPic: [],
       tableItem: [],
       sortBy: 'id',
       sortDesc: false,
@@ -392,6 +413,22 @@ export default {
           that.detailItem = res.data
           delete that.detailItem.ErrorCode
           delete that.detailItem.Msg
+
+          // 顯示縮圖
+          materialSpecFileView({
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+            OperatorID: this.userData.UserId,  // 操作人id
+            MaterialCode: that.detailItem.MaterialCode,
+          }).then(resp=>{
+            if(resp.data.ErrorCode==0){
+              this.FileListPic = resp.data.FileCount
+            } else {
+              this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+            }
+          }).catch(err => {
+            this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+          }).finally(() => {
+          })
         } else {
           console.error(res.data)
           // sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

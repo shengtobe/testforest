@@ -39,7 +39,20 @@
             <v-col cols="12">
               <h3 class="mb-1">規格備註</h3>
               {{ showDetail.SpecMemo }}
-            </v-col>           
+            </v-col>
+            <v-col cols="12">
+              <h3 class="mb-1">規格照片</h3>
+              <v-img
+                v-for="(pics,index) in FileListPic"
+                :key="'Pic'+ materDetail.MaterialCode +index"
+                :src="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath.replace(/\\/g,'/')))?pics.FileFullPath.replace(/\\/g,'/') : '/images/file.jpg'"
+                @click="(/png|jpeg|jpg|gif$/.test(pics.FileFullPath))?goViewPic(pics.FileFullPath.replace(/\\/g,'/')):false"
+                max-height="172"
+                max-width="280"
+                :class="{'cursor-pointer':/png|jpeg|jpg|gif$/.test(pics.FileFullPath)}"
+              ></v-img>
+              <v-chip v-if="FileListPic.length==0">無上傳照片</v-chip>
+            </v-col>
             <v-col cols="12" sm="4">
               <h3 class="mb-1">上月結存數量</h3>
               <v-text-field type="number" min="0" solo v-model="materDetail.LastMonthAmount"  />
@@ -107,7 +120,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime,encodeObject,decodeObject } from '@/assets/js/commonFun'
-import { materialInventoryQuery, materialSpecQuery } from '@/apis/materialManage/material'
+import { materialInventoryQuery, materialSpecQuery, materialSpecFileView } from '@/apis/materialManage/material'
 import equipRepairObject from '@/components/EquipRepairCode'
 import DeptSelect from '@/components/forManage/deptSelect2'
 export default {
@@ -118,6 +131,7 @@ export default {
   }
   ,
   data: () => ({
+    FileListPic: [],
     materDetail:{
       DepartCode: '',
       MaterialCode: '',
@@ -203,6 +217,22 @@ export default {
       'chMsgbar',  // messageBar
       'chLoadingShow'  // 切換 loading 圖顯示
     ]),
+    getFiles(){
+      materialSpecFileView({
+        ClientReqTime: getNowFullTime(),  // client 端請求時間
+        OperatorID: this.userData.UserId,  // 操作人id
+        MaterialCode: this.materDetail.MaterialCode,
+      }).then(resp=>{
+        if(resp.data.ErrorCode==0){
+          this.FileListPic = resp.data.FileCount
+        } else {
+          this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+        }
+      }).catch(err => {
+        this.chDialog({ show: true, msg: '伺服器發生問題，照片查詢失敗' })
+      }).finally(() => {
+      })
+    },
     //詳細查詢
     getDetail(matCode,deptCode) {
       const that = this
@@ -221,6 +251,8 @@ export default {
             for(let sKey in that.showDetail){
               that.showDetail[sKey] = res.data[sKey]
             }
+             // 顯示縮圖
+            this.getFiles()
           } else {
             console.warn(res.data)
             // sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -263,6 +295,8 @@ export default {
       this.LCEquipCode = this.tempMaterialCode.equipCode
       this.LCWorkCode = this.tempMaterialCode.workCode
       this.showDetail.MaterialCodeName = this.tempMaterialCode.equipName + '-' + this.tempMaterialCode.workName
+      
+
       materialSpecQuery({
         MaterialCode: this.materDetail.MaterialCode,
         DepartCode: this.materDetail.DepartCode,  
@@ -270,6 +304,9 @@ export default {
         OperatorID: this.userData.UserId,  // 操作人id
       }).then(res => {
         if(res.data.ErrorCode == 0) {
+          // 顯示縮圖
+          this.getFiles()
+          
           materialInventoryQuery({
             MaterialCode: this.materDetail.MaterialCode,
             DepartCode: this.materDetail.DepartCode,  
@@ -308,7 +345,7 @@ export default {
       this.$emit('close')
     },
     save() {
-      if(this.materDetail.DepartCode = ''){
+      if(this.materDetail.DepartCode == ''){
         alert("請選擇單位")
         return
       }
@@ -319,7 +356,13 @@ export default {
       } else {
         this.chMsgbar({ success: false, msg: '欄位未填寫完成，請完成填寫後再送出' })
       }
-    }
+    },
+    //看照片
+    goViewPic(picPath) {
+      this.PicView.src = picPath
+      this.PicView.key ++
+      this.PicView.show = true
+    },
   },
   filters: {
     getType: function(value){
@@ -331,6 +374,7 @@ export default {
       this.getDetail(this.materCode)
     }
   },
+  
   created() {},
 };
 </script>

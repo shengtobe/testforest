@@ -97,9 +97,9 @@ export default {
       })
     },
     filterDept(item, queryText, itemText) {
-      console.log(item)
-      console.log(queryText)
-      console.log(itemText)
+      // console.log(item)
+      // console.log(queryText)
+      // console.log(itemText)
       return item.key.includes(queryText) || itemText.includes(queryText)
     }
   },

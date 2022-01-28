@@ -283,7 +283,7 @@ export default {
       //打API
       this.nowMaterial = flowId
       let fileRtn = await this.getFiles(flowId)
-      this.fileUpload = fileRtn.Pics
+      this.fileUpload = fileRtn
       this.UpFile = true
     },
     async getFiles(Material){
@@ -406,7 +406,7 @@ export default {
     async whenExpanded(item){
       if(item.value){
         let fileRtn = await this.getFiles(item.item.MaterialCode)
-        item.item.FileListPic = fileRtn.Pics
+        item.item.FileListPic = fileRtn
       }
     },
     // 更換頁數
