@@ -10,7 +10,7 @@
             >
               <!-- <v-toolbar-title>林鐵<span @dblclick="submit(false)">資</span>訊管理系統</v-toolbar-title> -->
               <v-toolbar-title>林鐵資訊管理系統</v-toolbar-title>
-              <p class="text--disabled mt-6 ml-2">v0.7.6</p>
+              <p class="text--disabled mt-6 ml-2">{{version}}</p>
             </v-toolbar>
 
             <v-card-text>
@@ -88,6 +88,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { version } from "@/../package.json"
 import { getNowFullTime } from '@/assets/js/commonFun'
 import { login } from '@/apis/login'
 import aesjs from 'aes-js'
@@ -99,6 +100,7 @@ export default {
     isLoading: false,
     hasError: false,
     errMsg: '',
+    version: version,
     ipt: {
       account: '',
       pwd: ''
