@@ -1,6 +1,6 @@
 {
   "name": "forest_railway",
-  "version": "0.7.6",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
