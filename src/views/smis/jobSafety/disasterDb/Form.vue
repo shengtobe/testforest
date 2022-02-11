@@ -99,6 +99,17 @@
                 placeholder="例：電能"
             ></v-text-field>
         </v-col>
+        
+        <v-col cols="12" md="6">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>作業資格
+            </h3>
+            <v-text-field
+                v-model.trim="ipt.JobProd"
+                solo
+                placeholder="例：安全衛生法規證照"
+            ></v-text-field>
+        </v-col>
 
         <v-col cols="12" sm="4" md="3">
             <h3 class="mb-1">
@@ -111,16 +122,6 @@
             ></v-select>
         </v-col>
 
-        <v-col cols="12" md="6">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file-document</v-icon>作業資格
-            </h3>
-            <v-text-field
-                v-model.trim="ipt.JobProd"
-                solo
-                placeholder="例：安全衛生法規證照"
-            ></v-text-field>
-        </v-col>
 
         <v-col cols="12">
             <h3 class="mb-1">
