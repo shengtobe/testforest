@@ -420,6 +420,7 @@ export default {
                     { tableColumn: 'CauseAnaly', columnValue: this.ipt.reason },  // 原因分析
                     { tableColumn: 'RemarkDesp', columnValue: this.ipt.note },  // 備註說明
                     { tableColumn: 'AccidentStatus', columnValue: this.ipt.status },  // 事故事件狀態
+                    { tableColumn: 'DelStatus', columnValue: 'F' },  // 是否已被刪除
                 ],
                 QyName: [    // 欲回傳的欄位資料
                     'AccidentCode',

@@ -934,6 +934,7 @@ export default {
                     SaftyCodeLv3: this.ipt.accidentFactors3,  // 安全績效指標第三層代碼
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
                     OperatorID: this.userData.UserId,  // 操作人id
+                    FunCode: '1'
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
                         this.chMsgbar({ success: true, msg: '更新成功' })

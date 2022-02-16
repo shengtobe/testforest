@@ -18,6 +18,18 @@
                         <span class="red--text subtitle-1">沒有資料</span>
                     </template>
 
+                    <template v-slot:item.type="{ item }">
+                        {{ opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')}}
+                    </template>
+
+                    <template v-slot:item.hurtPeople="{ item }">
+                        {{ (item.HurtPeopleCount == 'F')? '未填寫' : item.hurt_people_count }}
+                    </template>
+
+                    <template v-slot:item.status="{ item }">
+                        {{ accidentEventStatus.find(ele => ele.value == item.AccidentStatus).text }}
+                    </template>
+
                     <template v-slot:item.action="{ item }">
                         <v-btn class="btn-add" dark
                             @click="recovery(item)"
@@ -45,25 +57,41 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import { carAccidentEventStatus, evtTypes, locationOpts } from '@/assets/js/smisData'
+import { getNowFullTime } from '@/assets/js/commonFun'
 import Pagination from '@/components/Pagination.vue'
 import { canInUpdate } from '@/apis/access'
+import { fetchList, fetchEvtTypes, updateData } from '@/apis/smis/carAccidentEvent'
 
 export default {
     data: () => ({
         routeId: '',
+        ipt: {},
+        arr1: [], // 重大事故
+        arr2: [], // 一般事故
+        arr3: [], // 異常事件
         tableItems: [],  // 表格資料
+        opsList: '', // 完整事故類型清單
         pageOpt: { page: 1 },  // 目前頁數
+        accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'id', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '發生日期', value: 'date', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '發生地點', value: 'location', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '事故類型', value: 'evtType', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '傷亡人數', value: 'deathCount', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
             { text: '復原', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
     }),
     components: { Pagination },
+    computed: {
+        ...mapState ('user', {
+            userData: state => state.userData,  // 使用者基本資料
+            groupData: state => state.groupData,
+        }),
+    },
     methods: {
         ...mapActions('system', [
             'chMsgbar',  // 改變 messageBar
@@ -77,20 +105,75 @@ export default {
         fetchData() {
             this.chLoadingShow({show:true})
 
-            // 新增測試用資料
-            setTimeout(() => {
-                this.tableItems = [
-                    {
-                        id: 65,
-                        date: '2020-06-18 09:16:00',
-                        location: '主線 9K+15M',
-                        evtType: '平交道事故',
-                        deathCount: 0,
-                    },
-                ]
+            this.pageOpt.page = 1  // 頁碼初始化
 
+            fetchList({
+                ClientReqTime: getNowFullTime(),  // client 端請求時間
+                OperatorID: this.userData.UserId,  // 操作人id
+                KeyName: 'SMS_AccidentEventData',  // DB table
+                KeyItem: [
+                    { tableColumn: 'CreateDTime_Start', columnValue: '' },  // 發生日期(起) ipt.evtType2
+                    { tableColumn: 'CreateDTime_End', columnValue: '' },  // 發生日期(迄)
+                    { tableColumn: 'DeviceLost', columnValue: '' },  // 設備受損情形
+                    { tableColumn: 'OperationLost', columnValue: '' },  // 運轉影響情形
+                    { tableColumn: 'ReviewProcess', columnValue: '' },  // 處置過程
+                    { tableColumn: 'CauseAnaly', columnValue: '' },  // 原因分析
+                    { tableColumn: 'RemarkDesp', columnValue: '' },  // 備註說明
+                    { tableColumn: 'AccidentStatus', columnValue: '' },  // 事故事件狀態
+                    { tableColumn: 'DelStatus', columnValue: 'T' },  // 是否已被刪除
+                ],
+                QyName: [    // 欲回傳的欄位資料
+                    'AccidentCode',
+                    'AccidentFindDate',
+                    'FindLine',
+                    'LineK',
+                    'LineM',
+                    'FindLineOther',
+                    'AccidentType',
+                    'HurtPeopleCount',
+                    'AccidentStatus',
+                    'DelStatus',
+                    'CancelStatus',
+                ],
+            }).then(res => {
+                this.tableItems = [...[]]
+                let tempTable = JSON.parse(res.data.order_list)
+                console.log("tempTable: ", tempTable);
+                tempTable.forEach(element => {
+                    for(let ele in element){
+                        if(element[ele] == null){
+                            element[ele] = '';
+                        }
+                    }
+                    // 解決AccidentType有空字串問題:
+                    // if(element.AccidentType == '') element.AccidentType = 'Other'
+
+                    // 組合發生地點文字 AccidentCode
+                    
+                    let findLocationText = locationOpts.find(item => item.value == element.FindLine).text
+                    if (['l1', 'l2', 'l3', 'l4'].includes(element.FindLine)) {
+                        findLocationText += ` (${element.LineK}K+${element.LineM}M)`  // 本線、祝山線、眠月線、水山線
+                        
+                    } else if(element.FindLine == 'other') {
+                        findLocationText += ` (${element.FindLineOther})`  // 其他地點
+                    } else if(element.FindLine == '') {
+                        findLocationText = element.FindLineOther
+                    }
+                    element.FindLine = findLocationText
+                            console.log("element: ", element);
+                    this.tableItems.push(element)
+                    
+                    // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
+                });
+                //splice
+                // this.tableItems.splice(1, 3);
+
+            }).catch(err => {
+                //console.log(err)
+                alert('查詢時發生問題，請重新查詢!')
+            }).finally(() => {
                 this.chLoadingShow({show:false})
-            }, 1000)
+            })
         },
         // 更換頁數
         chPage(n) {
@@ -99,19 +182,80 @@ export default {
         // 復原
         recovery(item) {
             let index = this.tableItems.indexOf(item)
-            if (confirm(`你確定要復原編號「${item.id}」的資料嗎?`)) {
+            if (confirm(`你確定要復原編號「${item.AccidentCode}」的資料嗎?`)) {
                 this.chLoadingShow({show:true})
 
-                setTimeout(() => {
-                    this.tableItems.splice(index, 1)
-                    this.chMsgbar({ success: true, msg: '復原成功'})
+                updateData({
+                    ClientReqTime: getNowFullTime(),  // client 端請求時間
+                    OperatorID: this.userData.UserId,  // 操作人id
+                    AccidentCode: item.AccidentCode,
+                    FunCode: '2'
+                }).then(res => {
+                    if (res.data.ErrorCode == 0) {
+                        this.chMsgbar({ success: true, msg: '復原成功' })
+                        this.fetchData()
+                    } else {
+                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                        this.$router.push({ path: '/error' })
+                    }
+                }).catch(err => {
+                    this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                }).finally(() => {
                     this.chLoadingShow({show:false})
-                }, 1000)
+                })
             }
         },
     },
     created() {
+        // 初始化事故類型 fetchEvtTypes
+        this.chLoadingShow({show:true})
+        fetchEvtTypes({
+            OperatorID: this.userData.UserId,  // 事故事件編號 (從路由參數抓取)
+            ClientReqTime: getNowFullTime(),  // client 端請求時間
+        }).then(res => {
+            if (res.data.ErrorCode == 0) {
+                    //抽離 其他
+                    this.opsList = JSON.parse(res.data.order_list)
+                    let tempOps = this.opsList.map(e=>e.text)
+                    let firstLv = [];
+                    tempOps.forEach(element => { 
+                        if(element.indexOf("-") >= 0) firstLv.push((element.split('-'))[0])
+                    });
+                    this.FirstLvFiltered = [...new Set(firstLv)]
+                    this.FirstLvFiltered.push("其他")
+                    tempOps.forEach(e => {
+                        if(e.indexOf("-") >= 0){
+                            let arr = e.split('-')
+                            firstLv.push(arr[0])
+                            arr[1] = arr[1].replace('率', '')
+                            if(arr[0] == this.FirstLvFiltered[0]){
+                                this.arr1.push(arr[1])
+                            }
+                            else if(arr[0] == this.FirstLvFiltered[1]){
+                                this.arr2.push(arr[1])
+                            }
+                            else if(arr[0] == this.FirstLvFiltered[2]){
+                                this.arr3.push(arr[1])
+                            }
+                        }
+                        // evtTypeOpts
+                    });
+                } else {
+                    // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
+                    sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                    this.$router.push({ path: '/error' })
+                }
+                console.log("OK");
+        }).catch(err => {
+            //console.log(err)
+            alert('伺服器發生問題，事故類型讀取失敗')
+        }).finally(() => {
+            this.chLoadingShow({show:false})
+        })
+
         this.fetchData()
+
+        
     }
 }
 </script>
