@@ -177,6 +177,13 @@ export default {
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
         },
+        {
+          text: "岔道編號",
+          value: "SwitchNo",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
         // {
         //   text: "審查狀態",
         //   value: "CheckStatus",
@@ -274,6 +281,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "SwitchNo",
           "CheckDay",
           "CheckStatus",
           "FlowId",

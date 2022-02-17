@@ -45,7 +45,7 @@
               class="label-header darken-2 d-none d-sm-flex font-weight-black"
               v-if="index % 3 == 0"
             >
-              <v-col><h3 class="mb-1">檢查項目</h3></v-col>
+              <v-col><h3 class="mb-1">岔道編號</h3></v-col>
               <v-col><h3 class="mb-1">1. 轉轍器基座清潔潤滑</h3></v-col>
               <v-col><h3 class="mb-1">2. 轉轍器連桿滑動部位清潔潤滑</h3></v-col>
               <v-col><h3 class="mb-1">3. 滑板表面清潔潤滑</h3></v-col>
@@ -61,8 +61,12 @@
               :key="index"
             >
               <v-row>
+                  <!-- <v-text-field solo v-model="inputData.editableData.SwitchNo"  -->
                 <v-col>
-                  {{ question.description }}
+                  <v-text-field
+                    label="岔道編號" class="centered-input "
+                    outlined v-model="inputData.editableData.SwitchNo"
+                  ></v-text-field>
                 </v-col>
                 <v-col
                   v-for="(item, index2) in ddf"
@@ -163,26 +167,11 @@ export default {
         Name: "",
         editableData: {
           CheckDay: "",
+          SwitchNo: "",
           CheckOption1_1: "",
           CheckOption1_2: "",
           CheckOption1_3: "",
           CheckOption1_4: "",
-          CheckOption2_1: "",
-          CheckOption2_2: "",
-          CheckOption2_3: "",
-          CheckOption2_4: "",
-          CheckOption3_1: "",
-          CheckOption3_2: "",
-          CheckOption3_3: "",
-          CheckOption3_4: "",
-          CheckOption4_1: "",
-          CheckOption4_2: "",
-          CheckOption4_3: "",
-          CheckOption4_4: "",
-          CheckOption5_1: "",
-          CheckOption5_2: "",
-          CheckOption5_3: "",
-          CheckOption5_4: "",
         },
       },
       settings: {
@@ -205,60 +194,13 @@ export default {
           b1: "4. 檢查岔道針是否密合",
         },
       ],
-      fwcd: [
-        // 表格顯示的欄位
-        {
-          text: "檢查項目",
-          value: "b1",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "岔道編號：1",
-          value: "b2",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "岔道編號：3",
-          value: "b3",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "岔道編號：5",
-          value: "b4",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "岔道編號：9",
-          value: "b5",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-        {
-          text: "岔道編號：11",
-          value: "b6",
-          align: "center",
-          divider: true,
-          class: "subtitle-1 white--text font-weight-bold",
-        },
-      ],
+      
 
       questions: [
         { description: "岔道編號：1" },
-        { description: "岔道編號：3" },
-        { description: "岔道編號：5" },
-        { description: "岔道編號：9" },
-        { description: "岔道編號：11" },
       ],
 
-      itemNumbers: [1, 3, 5, 9, 11],
+      itemNumbers: [1],
     };
   },
   components: {
@@ -303,26 +245,11 @@ export default {
           "DepartName",
           "ID",
           "Name",
+          "SwitchNo",
           "CheckOption1_1",
           "CheckOption1_2",
           "CheckOption1_3",
           "CheckOption1_4",
-          "CheckOption2_1",
-          "CheckOption2_2",
-          "CheckOption2_3",
-          "CheckOption2_4",
-          "CheckOption3_1",
-          "CheckOption3_2",
-          "CheckOption3_3",
-          "CheckOption3_4",
-          "CheckOption4_1",
-          "CheckOption4_2",
-          "CheckOption4_3",
-          "CheckOption4_4",
-          "CheckOption5_1",
-          "CheckOption5_2",
-          "CheckOption5_3",
-          "CheckOption5_4",
         ],
       })
         .then((res) => {
@@ -358,6 +285,10 @@ export default {
       this.$emit("search");
     },
     save() {
+      if(!this.inputData.editableData.SwitchNo || isNaN(this.inputData.editableData.SwitchNo)){
+        alert("請輸入正確的岔道編號")
+        return
+      }
       this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];
@@ -435,3 +366,9 @@ export default {
   watch: {},
 };
 </script>
+<style scoped>
+    .centered-input >>> input {
+      text-align: center;
+      font-size: 1.2em;
+    }
+</style>
