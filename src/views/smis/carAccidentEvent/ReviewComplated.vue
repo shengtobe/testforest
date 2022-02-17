@@ -347,7 +347,7 @@ export default {
                 OperatorID: this.userData.UserId,  // 操作人id
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
-                    this.chMsgbar({ success: true, msg: this.dialogReturnMsg })
+                    this.chMsgbar({ success: true, msg: '退回成功' })
                     this.done = true  // 隱藏頁面操作按鈕
                 } else {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })

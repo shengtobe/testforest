@@ -1,5 +1,5 @@
 <template>
-<v-container style="max-width: 1200px">
+<v-container style="max-width: 1300px">
     <h2 class="mb-4 label-title">復原刪除</h2>
 
     <v-row no-gutters class="mb-8">
@@ -16,6 +16,12 @@
                 >
                     <template v-slot:no-data>
                         <span class="red--text subtitle-1">沒有資料</span>
+                    </template>
+
+                    <template v-slot:item.CauseAnaly="{ item }">
+                        <v-btn fab small dark class="btn-detail" @click="getDetail(item.CauseAnaly)">
+                            <v-icon>mdi-file-document</v-icon>
+                        </v-btn>
                     </template>
 
                     <template v-slot:item.type="{ item }">
@@ -46,7 +52,26 @@
                 </v-data-table>
             </v-card>
         </v-col>
+        <!-- 詳細資料 -->
+      <v-dialog v-model="contentShow" max-width="900px">
+        <v-card class="theme-card">
+          <v-card-title class="px-4 py-1">
+            原因分析
+            <v-spacer />
+            <v-btn fab small text @click="contentShow = false" class="mr-n2">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
 
+          <div class="px-4 py-3 label-header">
+            <v-row no-gutters>
+              <v-col cols="12">
+                {{ viewAn }}
+              </v-col>
+            </v-row>
+          </div>
+        </v-card>
+      </v-dialog>
         <v-col cols="12">
             <v-btn dark class="mr-3 btn-close"
                 @click="closeWindow"
@@ -67,6 +92,8 @@ import { fetchList, fetchEvtTypes, updateData } from '@/apis/smis/carAccidentEve
 export default {
     data: () => ({
         routeId: '',
+        contentShow: false,
+        viewAn: '',
         ipt: {},
         arr1: [], // 重大事故
         arr2: [], // 一般事故
@@ -76,12 +103,14 @@ export default {
         pageOpt: { page: 1 },  // 目前頁數
         accidentEventStatus: carAccidentEventStatus,  // 表格顯示的行車事故事件狀態
         headers: [  // 表格顯示的欄位
-            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 150 },
-            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 120 },
-            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 160 },
-            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 220 },
-            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 100 },
-            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold', width: 140 },
+            { text: '編號', value: 'AccidentCode', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '發生日期', value: 'convert_findDate', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '發生地點', value: 'FindLine', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '事故類型', value: 'type', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '事故摘要', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '原因分析', value: 'CauseAnaly', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '傷亡人數', value: 'hurtPeople', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
+            { text: '事故事件狀態', value: 'status', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold'},
             { text: '復原', value: 'action', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
     }),
@@ -101,6 +130,10 @@ export default {
         ...mapActions('user', [
             'saveUserGroup',  // 儲存使用者權限(群組)資料
         ]),
+        getDetail(txt){
+            this.contentShow = true
+            this.viewAn = txt
+        },
         // 向後端取得資料
         fetchData() {
             this.chLoadingShow({show:true})

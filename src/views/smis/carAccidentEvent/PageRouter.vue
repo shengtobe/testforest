@@ -133,6 +133,10 @@ export default {
                                 { dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '檢討過程', text: res.data.ReviewProcess.replace(/\n/g, '<br>') },
                                 { dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '備註說明', text: res.data.RemarkDesp.replace(/\n/g, '<br>') },
                             ]
+                            // 如果有退回原因 就顯示這欄
+                            if(res.data.ReturnReason){
+                                bottomItems.push({ dataType: 'text', oneline: false, icon: 'mdi-file-document', title: '退回原因', text: res.data.ReturnReason.replace(/\n/g, '<br>') })
+                            }
 
                             // 設定其他資訊的資料
                             let otherInfo = [
