@@ -31,7 +31,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
             </h3>
-            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" />
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable/>
             <v-dialog v-model="eqCode" max-width="700px">
                 <v-card class="theme-card">
                     <v-card-title class="px-4 py-1">
@@ -263,6 +263,10 @@ export default {
             MaintainCode_System: 'RST',  // 類型
             MaintainCode_Loc: ''
         },
+        eqCode: false,
+        preSetEqcode: '',
+        preSerEqName: '',
+        //
         tableItems: [],  // 表格資料
         pageOpt: { page: 1 },  // 目前頁數
         headers: [  // 表格顯示的欄位
@@ -286,10 +290,7 @@ export default {
         isLoading: false,  // 是否讀取中
         itemIndex: -1,  // 作用中的物件索引值 (小於0為新增的情況)
         contentShow: false,  // 詳細內容 dialog 是否顯示
-        eqCode: false,
         content: {},  // 詳細內容欄位
-        preSetEqcode: '',
-        preSerEqName: ''
     }),
     components: { 
         Pagination,     // 頁碼
@@ -421,6 +422,7 @@ export default {
         add() {
             this.formKey ++
             this.dialog = true
+            this.itemIndex = -1
         },
         edit(flowNo) {
             this.itemIndex = flowNo

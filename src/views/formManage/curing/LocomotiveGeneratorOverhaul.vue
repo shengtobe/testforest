@@ -19,13 +19,31 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
-      <v-col cols="12" sm="4" md="3" >
-        <h3 class="mb-1">
-          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>選擇車輛編號
-        </h3>
-        <!-- <v-select v-model="formData.searchItem.carNo" :items="CarNos" solo /> -->
-        <v-text-field v-model="formData.searchItem.carNo" solo clearable/>
-      </v-col>
+      <v-col cols="12" sm="4" md="4">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+            </h3>
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
+            <v-dialog v-model="eqCode" max-width="700px">
+                <v-card class="theme-card">
+                    <v-card-title class="px-4 py-1">
+                        車輛型號
+                        <v-spacer></v-spacer>
+                        <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <div class="px-4 py-3">
+                        <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+                    </div>
+                    <v-card-actions class="px-5 pb-5">
+                        <v-spacer></v-spacer>
+                        <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                        <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 動力車保養紀錄 -->
@@ -125,6 +143,7 @@ import {
 } from "@/assets/js/commonFun";
 import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList, deleteFormOrder } from "@/apis/formManage/serve";
+import EquipCode from '@/components/EquipRepairCode'
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import EditPage from "@/views/formManage/curing/LocomotiveGeneratorOverhaulEdit";
@@ -135,6 +154,18 @@ import { Constrant } from "@/assets/js/constrant";
 
 export default {
   data: () => ({
+    searchName: '',
+    searchIpt: {  // 搜尋欄位
+        year: new Date().getFullYear(),
+        month: '',  // 月
+        MaintainCode_System: 'RST',  // 類型
+        MaintainCode_Loc: ''
+    },
+    eqCode: false,
+    preSetEqcode: '',
+    preSerEqName: '',
+    eqcKey: 0,
+    //
     title: "柴油液力機車發電機檢修",
     newText: "檢修紀錄",
     actions: Actions,
@@ -148,6 +179,7 @@ export default {
 
     //---api---
     DB_Table: "RP048",
+    DB_Table_097: "RP097",
     RPFlowNo: "",
     //搜尋欄位設定
     formData: {
@@ -177,6 +209,13 @@ export default {
       {
         text: "保養日期",
         value: "CheckDay",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
+      {
+        text: "車輛編號",
+        value: "CarNo",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
@@ -211,14 +250,7 @@ export default {
       },
     ],
     tableItems: [],
-    // TODO: 應從資料庫取
-    CarNos: [
-      { text: "A0001", value: "A" },
-      { text: "A0002", value: "B" },
-      { text: "A0003", value: "C" },
-      { text: "A0004", value: "D" },
-      { text: "A0005", value: "E" },
-    ],
+
     //------
   }),
   components: {
@@ -228,25 +260,61 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    EquipCode
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+          return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.searchIpt.MaintainCode_System = 'RST';
+          this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+        }
+        else{
+          let splitArr = value.split('-')
+          this.searchIpt.MaintainCode_System = splitArr[0]
+          this.searchIpt.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
   },
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   mounted() {
-    this.search();
+    // this.getCarNoList()
+    // this.search();
   },
   methods: {
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    //機車回傳
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+        (cName)
+        this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+        this.com_equipCode = this.preSetEqcode
+        this.searchName = this.preSerEqName
+        this.eqCode = false
+    },
+    eqClear(){
+      this.com_equipCode = ""
+    },
     newOne() {
-     ;
       this.Add = true;
       this.DynamicKey += 1;
       this.editType = this.actions.add;
@@ -279,13 +347,14 @@ export default {
             Value: this.formData.searchItem.dateStart,
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
-          // { Column: "CarNo", Value: this.formData.searchItem.carNo },
+          { Column: "CarNo", Value: this.searchName },
         ],
         QyName: [
           "RPFlowNo",
           "ID",
           "Name",
           "CheckDay",
+          "CarNo",
           "CheckStatus",
           "FlowId",
           "DepartName",

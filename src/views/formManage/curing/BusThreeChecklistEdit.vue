@@ -28,7 +28,7 @@
               <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車輛編號
               </h3>
-              <v-text-field solo v-model="inputData.editableData.TrainNo" />
+              <v-text-field solo v-model="carNo" readonly/>
             </v-col>
           </v-row>
           <v-row no-gutter class="label-header">
@@ -198,6 +198,7 @@ export default {
     item: Object,
     editType: String,
     DB_Table: String,
+    carNo: String,
   },
   data() {
     return {
@@ -217,7 +218,6 @@ export default {
         Name: "",
         editableData: {
           LastChkDay: "",
-          TrainNo: "",
           BgChkDay: "",
           EndChkDay: "",
           CheckDay: "",
@@ -852,6 +852,7 @@ export default {
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
+      rtnObj.push({ Column: "TrainNo", Value: that.carNo });
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });

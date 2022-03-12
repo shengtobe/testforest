@@ -120,6 +120,7 @@
         :DB_Table="DB_Table"
         :title="title"
         :inputData="inputData"
+        :defInputData="inputDefData"
         :itemsList="itemsList"
         :QyName="QyName"
         :subtitles="subtitles"
@@ -173,6 +174,7 @@ export default {
     pageOpt: { page: 1 }, // 目前頁數
     //---api---
     DB_Table: "RP052",
+    DB_Table_097: "RP097",
     RPFlowNo: "",
     //搜尋欄位設定
     formData: {
@@ -203,6 +205,13 @@ export default {
       {
         text: "保養日期",
         value: "CheckDay",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
+      {
+        text: "車號",
+        value: "CarID",
         align: "center",
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
@@ -250,7 +259,9 @@ export default {
       Name: "",
       editableData: {
         CheckDay: "",
-        CarId: "",
+        // CarId: "",
+        MaintainCode_System: "RST",
+        MaintainCode_Loc: "",
         LastChkDay: "",
         LastKm: "",
         BgChkDay: "",
@@ -438,7 +449,9 @@ export default {
       Name: "",
       editableData: {
         CheckDay: "",
-        CarId: "",
+        // CarId: "",
+        MaintainCode_System: "RST",
+        MaintainCode_Loc: "",
         LastChkDay: "",
         LastKm: "",
         BgChkDay: "",
@@ -918,8 +931,12 @@ export default {
       "CheckDay",
       "DepartCode",
       "DepartName",
+      "CarID",
       "ID",
       "Name",
+      "MaintainCode_System",
+      "MaintainCode_Loc",
+      "CarID",
       "LastKm",
       "Km",
       "LastChkDay",
@@ -1195,7 +1212,8 @@ export default {
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "DepartCode", Value: this.formData.searchItem.department },
-          { Column: "CarId", Value: this.searchName },
+          { Column: "CarID", Value: this.searchName },
+          // { Column: "CarId", Value: this.searchName },
         ],
         QyName: [
           "RPFlowNo",
@@ -1205,7 +1223,7 @@ export default {
           "CheckStatus",
           "FlowId",
           "DepartName",
-          "CarId",
+          "CarID",
         ],
       })
         .then((res) => {
@@ -1229,8 +1247,6 @@ export default {
       this.dialogDel = false;
     },
     viewPage(item) {
-     
-     
       this.DynamicKey += 1;
       this.editType = this.actions.edit;
       this.editItem = item;

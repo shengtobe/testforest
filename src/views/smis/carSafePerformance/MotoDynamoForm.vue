@@ -227,9 +227,10 @@ export default {
     },
     dateMenuShow: false,  // 日曆是否顯示
     contentShow: false,  // 詳細內容 dialog 是否顯示
+    content: {},  // 詳細內容欄位
+    //
     eqCode: false,
     eqName: '',
-    content: {},  // 詳細內容欄位
     preSetEqcode: '',
     preSerEqName: ''
   }),

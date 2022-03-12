@@ -131,6 +131,7 @@
         :DB_Table="DB_Table"
         :title="title"
         :inputData="inputData"
+        :defInputData="inputDefData"
         :itemsList="itemsList"
         :QyName="QyName"
         :subtitles="subtitles"
@@ -219,6 +220,13 @@ export default {
         divider: true,
         class: "subtitle-1 white--text font-weight-bold",
       },
+      {
+        text: "車號",
+        value: "CarID",
+        align: "center",
+        divider: true,
+        class: "subtitle-1 white--text font-weight-bold",
+      },
       // {
       //   text: "審查狀態",
       //   value: "CheckStatus",
@@ -262,7 +270,9 @@ export default {
       Name: "",
       editableData: {
         CheckDay: "",
-        CarId: "",
+        // CarId: "",
+        MaintainCode_System: "RST",
+        MaintainCode_Loc: "",
         LastChkDay: "",
         LastKm: "",
         BgChkDay: "",
@@ -428,7 +438,9 @@ export default {
       Name: "",
       editableData: {
         CheckDay: "",
-        CarId: "",
+        // CarId: "",
+        MaintainCode_System: "RST",
+        MaintainCode_Loc: "",
         LastChkDay: "",
         LastKm: "",
         BgChkDay: "",
@@ -854,6 +866,9 @@ export default {
       "DepartName",
       "ID",
       "Name",
+      "MaintainCode_System",
+      "MaintainCode_Loc",
+      "CarID",
       "LastKm",
       "Km",
       "LastChkDay",
@@ -1108,7 +1123,8 @@ export default {
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "DepartCode", Value: this.formData.searchItem.department },
-          { Column: "CarId", Value: this.searchName },
+          { Column: "CarID", Value: this.searchName },
+          // { Column: "CarId", Value: this.searchName },
         ],
         QyName: [
           "RPFlowNo",
@@ -1118,7 +1134,7 @@ export default {
           "CheckStatus",
           "FlowId",
           "DepartName",
-          "CarId",
+          "CarID",
         ],
       })
         .then((res) => {

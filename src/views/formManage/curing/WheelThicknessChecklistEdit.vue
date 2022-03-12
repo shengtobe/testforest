@@ -31,7 +31,7 @@
             </v-col>
             <v-col cols="12" sm="4" md="4">
               <h3 class="mb-1">車號</h3>
-              <v-text-field solo v-model="inputData.editableData.CarNo" />
+              <v-text-field solo v-model="carNo" readonly/>
             </v-col>
           </v-row>
           <v-row
@@ -173,6 +173,7 @@ export default {
     item: Object,
     editType: String,
     DB_Table: String,
+    carNo: String,
   },
   data() {
     return {
@@ -216,7 +217,6 @@ export default {
         Name: "",
         editableData: {
           CheckDay: "",
-          CarNo: "",
           CheckThickness_1: "",
           CheckHeight_1: "",
           CheckCorner_1: "",
@@ -377,6 +377,7 @@ export default {
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
+      rtnObj.push({ Column: "CarNo", Value: that.carNo });
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });

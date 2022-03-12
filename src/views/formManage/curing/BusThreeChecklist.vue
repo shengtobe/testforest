@@ -23,10 +23,11 @@
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車輛編號
         </h3>
-        <v-text-field
+        <v-select
+          v-model="formData.searchItem.carNo"
+          v-on:change="search()"
+          :items="carNos"
           solo
-          v-model="formData.searchItem.trainNo"
-          key="trainNo"
         />
       </v-col>
     </v-row>
@@ -104,6 +105,7 @@
         :item="editItem"
         :editType="editType"
         :DB_Table="DB_Table"
+        :carNo="formData.searchItem.carNo"
       />
     </v-dialog>
   </v-container>
@@ -134,6 +136,7 @@ export default {
       newText: "記錄表",
       action: Actions.add,
       actions: Actions,
+      carNos: [],
       panel: [0, 1, 2],
       isLoading: false,
       disabled: false,
@@ -144,6 +147,7 @@ export default {
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP060",
+      DB_Table_097: "RP097",
       RPFlowNo: "",
       //搜尋欄位設定
       formData: {
@@ -175,6 +179,13 @@ export default {
         {
           text: "保養日期",
           value: "CheckDay",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
+        {
+          text: "車輛編號",
+          value: "TrainNo",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
@@ -228,6 +239,7 @@ export default {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   mounted() {
+    this.getCarNoList();
     this.search();
   },
   methods: {
@@ -239,6 +251,46 @@ export default {
       this.Add = true;
       this.DynamicKey += 1;
       this.editType = this.actions.add;
+    },
+    // 載入車號
+    getCarNoList() {
+      const that = this;
+      that.isLoading = true;
+      let keys = new Set();
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table_097, // DB table
+        KeyItem: [],
+        QyName: ["Distinct RPFlowNo", "FlowId", "CarNo"],
+      })
+        .then((res) => {
+          if (res.data.ErrorCode == 0) {
+            let dat = JSON.parse(res.data.DT);
+            dat.forEach((item) => {
+              let carNo = item.CarNo;
+              if (!keys.has(carNo)) {
+                keys.add(carNo);
+              }
+            });
+          } else {
+            sessionStorage.errData = JSON.stringify({
+              errCode: res.data.Msg,
+              msg: res.data.Msg,
+            });
+            that.$router.push({ path: "/error" });
+          }
+        })
+        .catch((err) => {
+          ////console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          that.isLoading = false;
+          let tmp = [...keys];
+          tmp.sort();
+          that.carNos = ["", ...tmp];
+        });
     },
     reset() {
       this.formData.searchItem.dateStart = "";

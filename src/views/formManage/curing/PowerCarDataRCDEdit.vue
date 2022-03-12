@@ -28,7 +28,34 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" sm="4" md="3">
+        <v-col cols="12" sm="8">
+          <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+          </h3>
+          <v-text-field solo @click="eqCode=true" v-model="eqName" readonly />
+          <v-dialog v-model="eqCode" max-width="700px">
+            <v-card class="theme-card">
+              <v-card-title class="px-4 py-1">
+                車輛型號
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <div class="px-4 py-3">
+                <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+              </div>
+              <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="commonSettings.isLoading" @click="eqCode = false">取消</v-btn>
+                <v-btn class="btn-add" dark elevation="4"  :loading="commonSettings.isLoading" @click="selectEQ">確認</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="4" md="3" v-if="true">
           <h3 class="mb-1">車號</h3>
           <v-text-field
             v-model.trim="inputData.editableData.CarNo"
@@ -191,6 +218,7 @@ import {
 } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import EquipCode from '@/components/EquipRepairCode'
 import { Actions } from "@/assets/js/actions";
 import { Constrant } from "@/assets/js/constrant";
 
@@ -202,12 +230,16 @@ export default {
   },
   data: () => ({
     actions: Actions,
+    eqCode: false,
+    eqName: '',
     commonSettings: {
       iconShow: true,
       title: "動力車資料",
       isLoading: false,
       deptReadonly: true,
     },
+    preSetEqcode: '',
+    preSerEqName: '',
     // TODO: 應避免寫死在程式裡
     carHeadCodes: [
       { text: "SL", value: "sl" },
@@ -220,6 +252,7 @@ export default {
       ID: "",
       Name: "",
       editableData: {
+        MaintainCode_System: 'RST',
         CheckDay: "",
         DelStatus: "",
         CarNo: "",
@@ -244,6 +277,7 @@ export default {
   components: {
     dateSelect,
     deptSelect,
+    EquipCode
   },
   mounted() {
     this.editType == this.actions.edit
@@ -254,6 +288,16 @@ export default {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+        return this.inputData.editableData.MaintainCode_System + (this.inputData.editableData.CarNo==''?'':'-' + this.inputData.editableData.CarNo)
+      },
+      set: function(value) {
+        let splitArr = value.split('-')
+        this.inputData.editableData.MaintainCode_System = splitArr[0]
+        this.inputData.editableData.CarNo = splitArr[1]
+      }
+    },
     newItemList: function () {
       let rtnObj = [...this.itemsList];
       rtnObj.forEach((element, index) => {
@@ -273,6 +317,20 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    //機車回傳
+    getRtnCode(code) {
+      this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+      this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+      this.com_equipCode = this.preSetEqcode
+      this.eqName = this.preSerEqName
+      this.eqCode = false
+    },
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
@@ -312,6 +370,7 @@ export default {
           "DistBogie",
           "Wheelbase",
           "LinkerHeight",
+          "MaintainCode_System",
         ],
       })
         .then((res) => {
@@ -323,7 +382,7 @@ export default {
           this.inputData.DepartCode = data.DepartCode;
           this.inputData.Name = data.Name;
           this.inputData.DepartName = data.DepartName;
-          data = decodeObject(data);
+          this.eqName = data.MaintainCode_System+'-'+data.CarNo;
           const inputArr = Object.keys(this.inputData.editableData);
           inputArr.forEach((e) => {
             var tmp = data[e];

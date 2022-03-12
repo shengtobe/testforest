@@ -62,6 +62,17 @@
           ></v-date-picker>
         </v-menu>
       </v-col>
+      <v-col cols="12" sm="3" md="3">
+        <h3 class="mb-1">
+          <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>車輛編號
+        </h3>
+        <v-select
+          v-model="ipt.carNo"
+          v-on:change="search()"
+          :items="carNos"
+          solo
+        />
+      </v-col>
       <v-col cols="12" sm="8" md="9" align-self="end" class="mb-5 text-md-left">
         <v-btn dark large class="mr-3 mb-3 btn-search" @click="search">
           <v-icon>mdi-magnify</v-icon>查詢
@@ -327,7 +338,9 @@ export default {
     isLoading: false,
     disabled: false,
     DB_Table: "RP047",
+    DB_Table_097: "RP097",
     //
+    carNos: [],
     RPFlowNo: "",
     nowTime: "",
     doMan: {
@@ -344,6 +357,7 @@ export default {
     ipt: {
       dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
       dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
+      carNo: "",
       Km: "",
       Item: "",
       Memo: "",
@@ -351,6 +365,7 @@ export default {
     defaultIpt: {
       dateStart: "", // 通報日期(起)
       dateEnd: "", // 通報日期(迄)
+      carNo: "",
       Km: "",
       Item: "",
       Memo: "",
@@ -651,6 +666,7 @@ export default {
     this.doMan.id = this.userData.UserId;
     this.doMan.depart = this.userData.DeptList[0].DeptDesc;
     this.doMan.departId = this.userData.DeptList[0].DeptId;
+    this.getCarNoList()
   },
   methods: {
     // 更新資料
@@ -679,6 +695,46 @@ export default {
       this.action = this.actions.add;
       this.ShowDetailDialog = true;
       this.initInput();
+    },
+    // 載入車號
+    getCarNoList() {
+      const that = this;
+      that.isLoading = true;
+      let keys = new Set();
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table_097, // DB table
+        KeyItem: [],
+        QyName: ["Distinct RPFlowNo", "FlowId", "CarNo"],
+      })
+        .then((res) => {
+          if (res.data.ErrorCode == 0) {
+            let dat = JSON.parse(res.data.DT);
+            dat.forEach((item) => {
+              let carNo = item.CarNo;
+              if (!keys.has(carNo)) {
+                keys.add(carNo);
+              }
+            });
+          } else {
+            sessionStorage.errData = JSON.stringify({
+              errCode: res.data.Msg,
+              msg: res.data.Msg,
+            });
+            that.$router.push({ path: "/error" });
+          }
+        })
+        .catch((err) => {
+          ////console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          that.isLoading = false;
+          let tmp = [...keys];
+          tmp.sort();
+          that.carNos = ["", ...tmp];
+        });
     },
     // 更換頁數
     chPage(n) {

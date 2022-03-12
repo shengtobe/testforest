@@ -21,7 +21,12 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">車輛編號</h3>
-        <v-text-field solo />
+        <v-select
+          v-model="formData.searchItem.carNo"
+          v-on:change="search()"
+          :items="carNos"
+          solo
+        />
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -99,6 +104,7 @@
         :item="editItem"
         :editType="editType"
         :DB_Table="DB_Table"
+        :carNo="formData.searchItem.carNo"
       />
     </v-dialog>
   </v-container>
@@ -117,6 +123,7 @@ import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList } from "@/apis/formManage/serve";
 import { formDepartOptions } from "@/assets/js/departOption";
 import dateSelect from "@/components/forManage/dateSelect";
+import EquipCode from '@/components/EquipRepairCode'
 import EditPage from "@/views/formManage/curing/WheelThicknessChecklistEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
@@ -127,9 +134,23 @@ export default {
     return {
       title: "車輪輪緣高度、厚度檢查紀錄表",
       newText: "紀錄表",
+      //
+      searchName: '',
+      searchIpt: {  // 搜尋欄位
+          year: new Date().getFullYear(),
+          month: '',  // 月
+          MaintainCode_System: 'RST',  // 類型
+          MaintainCode_Loc: ''
+      },
+      eqCode: false,
+      preSetEqcode: '',
+      preSerEqName: '',
+      eqcKey: 0,
+      //
       action: Actions.add,
       actions: Actions,
       isLoading: false,
+      carNos: [],
       disabled: false,
       panel: [0, 1, 2],
       readonly: false,
@@ -145,6 +166,7 @@ export default {
       pageOpt: { page: 1 }, // 目前頁數
       //---api---
       DB_Table: "RP056",
+      DB_Table_097: "RP097",
       RPFlowNo: "",
       //搜尋欄位設定
       formData: {
@@ -155,6 +177,7 @@ export default {
           dateStart: "",
           dateEnd: "",
           department: "",
+          carNo: "",
         },
       },
       DynamicKey: 0,
@@ -174,6 +197,13 @@ export default {
         {
           text: "保養日期",
           value: "CheckDay",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
+        {
+          text: "車輛編號",
+          value: "CarNo",
           align: "center",
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
@@ -216,6 +246,7 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    EquipCode
   },
   computed: {
     ...mapState("user", {
@@ -226,6 +257,7 @@ export default {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   mounted() {
+    this.getCarNoList();
     this.search();
   },
   methods: {
@@ -233,17 +265,59 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    // 載入車號
+    getCarNoList() {
+      const that = this;
+      that.isLoading = true;
+      let keys = new Set();
+      fetchFormOrderList({
+        ClientReqTime: getNowFullTime(), // client 端請求時間
+        OperatorID: this.userData.UserId, // 操作人id
+        KeyName: this.DB_Table_097, // DB table
+        KeyItem: [],
+        QyName: ["Distinct RPFlowNo", "FlowId", "CarNo"],
+      })
+        .then((res) => {
+          if (res.data.ErrorCode == 0) {
+            let dat = JSON.parse(res.data.DT);
+            dat.forEach((item) => {
+              let carNo = item.CarNo;
+              if (!keys.has(carNo)) {
+                keys.add(carNo);
+              }
+            });
+          } else {
+            sessionStorage.errData = JSON.stringify({
+              errCode: res.data.Msg,
+              msg: res.data.Msg,
+            });
+            that.$router.push({ path: "/error" });
+          }
+        })
+        .catch((err) => {
+          ////console.log(err);
+          this.chMsgbar({ success: false, msg: Constrant.query.failed });
+        })
+        .finally(() => {
+          that.isLoading = false;
+          let tmp = [...keys];
+          tmp.sort();
+          that.carNos = ["", ...tmp];
+        });
+    },
     newOne() {
-     ;
-      this.Add = true;
-     
-      this.DynamicKey += 1;
-      this.editType = this.actions.add;
+      console.log("this.formData.searchItem.carNo: ", this.formData.searchItem.carNo);
+      if (this.formData.searchItem.carNo != ""){
+        this.Add = true;
+        this.DynamicKey += 1;
+        this.editType = this.actions.add;
+      }
+      else{ alert("請選擇車輛編號") }
     },
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
-      this.formData.searchItem.department = "";
+      this.formData.searchItem.carNo = "";
     },
     // 更換頁數
     chPage(n) {
@@ -274,6 +348,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "CarNo",
           "CheckDay",
           "CheckStatus",
           "FlowId",

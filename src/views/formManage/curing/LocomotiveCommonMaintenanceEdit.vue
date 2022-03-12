@@ -26,49 +26,44 @@
                 label="上次檢驗完成日期"
                 :key="'lastChkDay'+keyNum"
                 :showIcon="commonSettings.iconShow"
-                v-model="inputData.editableData.LastChkDay"
+                v-model="inputData2.editableData.LastChkDay"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col cols="12" sm="4" md="3">
               <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>上次累積公里數
               </h3>
               <v-text-field
                 solo
                 clearable
+                :rules="nameRules"
                 value="202020"
-                v-model="inputData.editableData.LastKm"
+                v-model="inputData2.editableData.LastKm"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col cols="12" sm="4" md="5">
               <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>機車編號
+                <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
               </h3>
-              <!-- <v-text-field
-                solo
-                value="EZ-555555"
-                v-model="inputData.editableData.CarId"
-              /> -->
-              <v-text-field solo @click="eqCode=true;key++" readonly v-model="searchName" clearable @click:clear="clickCleanCode()"/>
+              <v-text-field solo @click="eqCode=true" v-model="searchName" readonly clearable  @click:clear="eqClear"/>
               <v-dialog v-model="eqCode" max-width="700px">
-                  <v-card class="theme-card">
-                      <v-card-title class="px-4 py-1">
-                          車輛型號
-                          <v-spacer></v-spacer>
-                          <v-btn fab small text @click="eqCode = false" class="mr-n2">
-                              <v-icon>mdi-close</v-icon>
-                          </v-btn> 
-                      </v-card-title>
-                      <div class="px-4 py-3">
-                          <EquipCode :key="'eq_' + key" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" 
-                          @getEqCode="getRtnCode" @getEqName="getRtnName"/>
-                      </div>
-                      <v-card-actions class="px-5 pb-5">
-                          <v-spacer></v-spacer>
-                          <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="commonSettings.isLoading" @click="eqCode = false">取消</v-btn>
-                          <v-btn class="btn-add" dark elevation="4"  :loading="commonSettings.isLoading" @click="selectEQ">確認</v-btn>
-                      </v-card-actions>
-                  </v-card>
+                <v-card class="theme-card">
+                  <v-card-title class="px-4 py-1">
+                    車輛型號
+                    <v-spacer></v-spacer>
+                    <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </v-card-title>
+                  <div class="px-4 py-3">
+                    <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" ref="ref1" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+                  </div>
+                  <v-card-actions class="px-5 pb-5">
+                    <v-spacer></v-spacer>
+                    <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="commonSettings.isLoading" @click="eqCode = false">取消</v-btn>
+                    <v-btn class="btn-add" dark elevation="4"  :loading="commonSettings.isLoading" @click="selectEQ">確認</v-btn>
+                  </v-card-actions>
+                </v-card>
               </v-dialog>
             </v-col>
           </v-row>
@@ -78,7 +73,7 @@
                 label="本次檢修開始日期"
                 :key="'bgChkDay'+keyNum"
                 :showIcon="commonSettings.iconShow"
-                v-model="inputData.editableData.BgChkDay"
+                v-model="inputData2.editableData.BgChkDay"
               />
             </v-col>
             <v-col cols="12" sm="3">
@@ -86,7 +81,7 @@
                 label="本次檢修完成日期"
                 :key="'endChkDay'+keyNum"
                 :showIcon="commonSettings.iconShow"
-                v-model="inputData.editableData.EndChkDay"
+                v-model="inputData2.editableData.EndChkDay"
               />
             </v-col>
             <v-col cols="12" sm="3">
@@ -95,15 +90,16 @@
               </h3>
               <v-text-field
                 solo
+                :rules="nameRules"
                 value="208080"
-                v-model="inputData.editableData.Km"
+                v-model="inputData2.editableData.Km"
               />
             </v-col>
             <v-col cols="12" sm="3">
               <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>檢修人員
               </h3>
-              <v-text-field solo v-model.trim="inputData.Name" readonly />
+              <v-text-field solo v-model.trim="inputData2.Name" readonly />
             </v-col>
           </v-row>
           <!-- for loop -->
@@ -151,7 +147,7 @@
                           dense
                           row
                           v-model="
-                            inputData.editableData[
+                            inputData2.editableData[
                               settings.columns.option + (list.startIndex + idx2)
                             ]
                           "
@@ -186,7 +182,7 @@
                           outlined
                           rows="2"
                           v-model="
-                            inputData.editableData[
+                            inputData2.editableData[
                               settings.columns.memo + (list.startIndex + idx2)
                             ]
                           "
@@ -251,28 +247,37 @@ export default {
     editType: String,
     DB_Table: String,
     inputData: Object,
+    defInputData: Object,
     itemsList: Array,
     QyName: Array,
   },
   data: () => ({
+    //
+    eqcKey: 0,
+    eqCode: false,
+    eqName: '',
+    preSetEqcode: '',
+    preSerEqName: '',
+    nameRules: [(v) => !!v || "時數必須填寫", (v) => v > 0 || "時數必須大於0"],
+    //
     actions: Actions,
     searchName: '',
     key: 0,
     preSetEqcode: '',
     preSerEqName: '',
-    searchIpt: {  // 搜尋欄位
-        year: new Date().getFullYear(),
-        month: '',  // 月
-        MaintainCode_System: 'RST',  // 類型
-        MaintainCode_Loc: ''
-    },
+    // searchIpt: {  // 搜尋欄位
+    //     year: new Date().getFullYear(),
+    //     month: '',  // 月
+    //     MaintainCode_System: 'RST',  // 類型
+    //     MaintainCode_Loc: ''
+    // },
     eqCode: false,
     commonSettings: {
       iconShow: true,
       isLoading: false,
       deptReadonly: true,
     },
-
+    inputData2: {},
     settings: {
       columns: {
         option: "CheckOption",
@@ -287,27 +292,28 @@ export default {
     EquipCode,
   },
   mounted() {
-    this.editType == this.actions.edit
-      ? this.viewPage(this.item)
-      : this.newPage();
+    
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
     com_equipCode: {
-        get: function() {
-            return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
-        },
-        set: function(value) {
-          if(value != ''){
-            let splitArr = value.split('-')
-            this.searchIpt.MaintainCode_System = splitArr[0]
-            this.searchIpt.MaintainCode_Loc = splitArr[1]
-            this.searchName = value
-            this.inputData.editableData.CarId = this.preSerEqName
-          }
+      get: function() {
+        return this.inputData2.editableData.MaintainCode_System + (this.inputData2.editableData.MaintainCode_Loc==''?'':'-' + this.inputData2.editableData.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.inputData2.editableData.MaintainCode_System = 'RST';
+          this.inputData2.editableData.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
         }
+        else{
+          let splitArr = value.split('-')
+          this.inputData2.editableData.MaintainCode_System = splitArr[0]
+          this.inputData2.editableData.MaintainCode_Loc = splitArr[1]
+        }
+      }
     },
     newItemList: function () {
       let rtnObj = [...this.itemsList];
@@ -327,23 +333,26 @@ export default {
     }
   },
   created() {
+    // this.inputData2 = {...this.inputData}
+    this.editType == this.actions.edit
+      ? this.viewPage(this.item)
+      : this.newPage();
   },
   methods: {
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    clickCleanCode(){
-      this.searchIpt.MaintainCode_System = 'RST'
-      this.searchIpt.MaintainCode_Loc = ''
-    },
+    // clickCleanCode(){
+    //   this.searchIpt.MaintainCode_System = 'RST'
+    //   this.searchIpt.MaintainCode_Loc = ''
+    // },
     //機車回傳
     getRtnCode(code) {
         this.preSetEqcode = code
     },
     //機車回傳中文
     getRtnName(cName) {
-        (cName)
         this.preSerEqName = cName.replace('車輛(RST)-','')
     },
     //機車送出按鈕
@@ -351,20 +360,24 @@ export default {
         this.com_equipCode = this.preSetEqcode
         this.searchName = this.preSerEqName
         this.eqCode = false
-        // this.inputData.editableData.CarId = this.preSerEqName
+        // this.inputData2.editableData.CarId = this.preSerEqName
+    },
+    eqClear(){
+      this.com_equipCode = ""
     },
     newPage() {
-      this.inputData.editableData.CheckDay = getTodayDateString();
-      this.inputData.Name = this.userData.UserName;
-      this.inputData.ID = this.userData.UserId;
-      this.inputData.DepartCode = this.userData.DeptList[0].DeptId;
-      this.inputData.DepartName = this.userData.DeptList[0].DeptDesc;
-      // this.inputData.editableData.LastChkDay = ''
+      this.inputData2 = {...this.inputData}
+      this.inputData2.editableData.CheckDay = getTodayDateString();
+      this.inputData2.Name = this.userData.UserName;
+      this.inputData2.ID = this.userData.UserId;
+      this.inputData2.DepartCode = this.userData.DeptList[0].DeptId;
+      this.inputData2.DepartName = this.userData.DeptList[0].DeptDesc;
     },
     viewPage(item) {
       const that = this;
-     
-     
+      this.inputData2 = {...{}}
+      this.inputData2 = {...this.inputData}
+
       this.chLoadingShow({show:true});
       fetchFormOrderOne({
         ClientReqTime: getNowFullTime(), // client 端請求時間
@@ -377,23 +390,24 @@ export default {
           let dat = JSON.parse(res.data.DT);
           let data = dat[0];
           data.CheckDay = data.CheckDay.substr(0, 10);
-          this.inputData.RPFlowNo = this.item.RPFlowNo;
-          this.inputData.DepartCode = data.DepartCode;
-          this.inputData.Name = data.Name;
-          this.inputData.DepartName = data.DepartName;
-          let afterRev = data.CarId.split('').reverse()
-          this.com_equipCode = 'RST-' + afterRev.slice(1, afterRev.indexOf('(')).reverse().join('')
-          this.searchName = data.CarId
+          this.inputData2.RPFlowNo = this.item.RPFlowNo;
+          this.inputData2.DepartCode = data.DepartCode;
+          this.inputData2.Name = data.Name;
+          this.inputData2.DepartName = data.DepartName;
+          // let afterRev = data.CarId.split('').reverse()
+          // this.com_equipCode = 'RST-' + afterRev.slice(1, afterRev.indexOf('(')).reverse().join('')
+          // this.searchName = data.CarId
           data = decodeObject(data);
-          const inputArr = Object.keys(this.inputData.editableData);
+          const inputArr = Object.keys(this.inputData2.editableData);
           inputArr.forEach((e) => {
             var tmp = data[e];
             if (isDateObject(tmp)) {
-              that.inputData.editableData[e] = tmp.substr(0, 10);
+              that.inputData2.editableData[e] = tmp.substr(0, 10);
             } else {
-              that.inputData.editableData[e] = tmp;
+              that.inputData2.editableData[e] = tmp;
             }
           });
+          this.searchName = data.CarID
         })
         .catch((err) => {
           ////console.log(err);
@@ -411,9 +425,10 @@ export default {
       this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];
-      const keyArr = Object.keys(that.inputData.editableData);
+      const keyArr = Object.keys(that.inputData2.editableData);
+      rtnObj.push({ Column: "CarID", Value: that.searchName });
       keyArr.forEach((e) => {
-        rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
+        rtnObj.push({ Column: e, Value: that.inputData2.editableData[e] });
       });
       encodeObject(rtnObj);
       if (this.editType == this.actions.add) {
@@ -448,7 +463,7 @@ export default {
         updateFormOrder({
           ClientReqTime: getNowFullTime(), // client 端請求時間
           OperatorID: this.userData.UserId, // 操作人id
-          RPFlowNo: that.inputData.RPFlowNo,
+          RPFlowNo: that.inputData2.RPFlowNo,
           FunCode: "U",
           KeyName: this.DB_Table, // DB table
           KeyItem: rtnObj,
@@ -475,7 +490,7 @@ export default {
       }
     },
     deleteRecord() {
-      this.$emit("deleteRecord", this.inputData.RPFlowNo);
+      this.$emit("deleteRecord", this.inputData2.RPFlowNo);
     },
   },
   filters: {},

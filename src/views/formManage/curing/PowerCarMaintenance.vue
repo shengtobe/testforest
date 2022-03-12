@@ -40,7 +40,7 @@
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
           <v-expansion-panel>
-            <v-expansion-panel-header>
+            <v-expansion-panel-header class="btn-expansion">
               車歷卡資料
               <template v-slot:actions>
                 <v-icon color="dropdownicon">
@@ -192,7 +192,7 @@
       <v-col cols="12" sm="12" md="12">
         <v-expansion-panels :disabled="disabled" focusable>
           <v-expansion-panel>
-            <v-expansion-panel-header>
+            <v-expansion-panel-header class="btn-expansion">
               動力車保養紀錄
               <template v-slot:actions>
                 <v-icon color="dropdownicon">
@@ -439,9 +439,11 @@ export default {
     newOne() {
       if (this.powerCarData.CarNo != "") {
         this.Add = true;
-       
         this.DynamicKey += 1;
         this.editType = this.actions.add;
+      }
+      else{
+        alert("未查詢車歷卡資料")
       }
     },
     reset() {
