@@ -790,7 +790,13 @@ export default {
             return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
         },
         set: function(value) {
-          if(value != ''){
+          if(value == ""){
+            this.searchIpt.MaintainCode_System = 'RST';
+            this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+            this.eqcKey++
+            this.searchName = ""
+          }
+          else{
             let splitArr = value.split('-')
             this.searchIpt.MaintainCode_System = splitArr[0]
             this.searchIpt.MaintainCode_Loc = splitArr[1]
@@ -826,8 +832,7 @@ export default {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
       this.formData.searchItem.carId = "";
-      this.com_equipCode = 'RST-'
-      this.searchName = ''
+      this.com_equipCode = ''
     },
     // 更換頁數
     chPage(n) {

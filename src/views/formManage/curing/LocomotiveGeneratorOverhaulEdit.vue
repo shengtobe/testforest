@@ -279,7 +279,6 @@ export default {
       })
         .then((res) => {
           let dat = JSON.parse(res.data.DT);
-          console.log("dat: ", dat);
           let data = dat[0];
           data.CheckDay = data.CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
@@ -306,7 +305,6 @@ export default {
           }
           //eqname
           this.eqName = data.CarNo
-
         })
         .catch((err) => {
           console.log(err);

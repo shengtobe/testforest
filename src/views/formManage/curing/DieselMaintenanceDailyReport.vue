@@ -19,6 +19,31 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
+      <v-col cols="12" sm="4" md="4">
+        <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+        </h3>
+        <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
+        <v-dialog v-model="eqCode" max-width="700px">
+          <v-card class="theme-card">
+            <v-card-title class="px-4 py-1">
+              車輛型號
+              <v-spacer></v-spacer>
+              <v-btn fab small text @click="eqCodeCancel" class="mr-n2">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <div class="px-4 py-3">
+              <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+            </div>
+            <v-card-actions class="px-5 pb-5">
+              <v-spacer></v-spacer>
+              <v-btn class="mr-2 btn-close" dark elevation="4"  @click="eqCodeCancel">取消</v-btn>
+              <v-btn class="btn-add" dark elevation="4"  @click="selectEQ">確認</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
       <!-- <v-col cols="12" sm="3" md="3">
         <deptSelect
           label="管理單位"
@@ -133,6 +158,7 @@ import { maintainStatusOpts } from '@/assets/js/workList'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0 } from '@/apis/formManage/serve'
 import { fetchOrganization } from '@/apis/organization'
 import { formDepartOptions } from '@/assets/js/departOption'
+import EquipCode from '@/components/EquipRepairCode'
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
 import dialogDelete from "@/components/forManage/dialogDelete";
@@ -144,7 +170,19 @@ import fileList from "@/components/forManage/fileList";
 export default {
   data() {
     return {
-      title: "_____柴油液力機車行車紀錄表",
+      searchName: '',
+      searchIpt: {  // 搜尋欄位
+          year: new Date().getFullYear(),
+          month: '',  // 月
+          MaintainCode_System: 'RST',  // 類型
+          MaintainCode_Loc: ''
+      },
+      eqCode: false,
+      preSetEqcode: '',
+      preSerEqName: '',
+      eqcKey: 0,
+      //
+      title: "柴油液力機車行車紀錄表",
       newText: "紀錄表",
       file: null,
       pageOpt: { page: 1 }, // 目前頁數
@@ -154,6 +192,7 @@ export default {
         // 表格顯示的欄位 DepartCode ID Name
         { text: "項次", value: "ItemNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "保養日期", value: "CheckDay", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "車輛編號", value: "CarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold", },
         // { text: "審查狀態", value: "CheckStatus", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "填寫人", value: "Name", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "保養單位", value: "DepartName", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
@@ -201,12 +240,31 @@ export default {
     dialogDelete,
     EditPage,
     UploadOneFileAdd,
-    fileList
+    fileList,
+    EquipCode
   },
  computed: {
     ...mapState ('user', {
       userData: state => state.userData,  // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+          return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.searchIpt.MaintainCode_System = 'RST';
+          this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+          this.searchName = ""
+        }
+        else{
+          let splitArr = value.split('-')
+          this.searchIpt.MaintainCode_System = splitArr[0]
+          this.searchIpt.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
   },
   mounted() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.formData.default.dateStart = this.formData.default.dateEnd = getTodayDateString();
@@ -216,11 +274,29 @@ export default {
       "chMsgbar", // messageBar
       'chLoadingShow',  // 切換 loading 圖顯示
     ]),
+    //機車回傳
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+        this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+        this.com_equipCode = this.preSetEqcode
+        this.searchName = this.preSerEqName
+        this.eqCode = false
+    },
+    eqClear(){
+      this.com_equipCode = ""
+    },
     select() {
       this.$refs.upload.uploadFile()
     },
     reset(){
       this.formData.searchItem = {...this.formData.default}
+      this.com_equipCode = ""
     },
     newOne(){
       this.editLog.dealogEdit = true
@@ -230,6 +306,12 @@ export default {
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
+    },
+    eqCodeCancel(){
+      this.eqCode = false
+      if(this.searchName == ""){
+        this.com_equipCode = ""
+      }
     },
     // 搜尋
     search() {
@@ -247,12 +329,14 @@ export default {
         KeyItem: [ 
           {'Column':'StartDayVlaue','Value':this.formData.searchItem.dateStart},
           {"Column":"EndDayVlaue","Value":this.formData.searchItem.dateEnd},
-          {"Column":"DepartCode","Value":this.formData.searchItem.department},
+          { 'Column': "CarNo", 'Value': this.searchName },
+          // {"Column":"DepartCode","Value":this.formData.searchItem.department},
                 ],
         QyName:[
           "RPFlowNo",
           "ID",
           "Name",
+          "CarNo",
           "CheckDay",
           "CheckStatus",
           "FlowId", "DepartName"

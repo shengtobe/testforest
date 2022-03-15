@@ -19,7 +19,32 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3">
+      <v-col cols="12" sm="4" md="4">
+        <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+        </h3>
+        <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
+        <v-dialog v-model="eqCode" max-width="700px">
+          <v-card class="theme-card">
+            <v-card-title class="px-4 py-1">
+              車輛型號
+              <v-spacer></v-spacer>
+              <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <div class="px-4 py-3">
+              <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+            </div>
+            <v-card-actions class="px-5 pb-5">
+              <v-spacer></v-spacer>
+              <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+              <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+      <!-- <v-col cols="12" sm="3" md="3">
         <deptSelect
           label="管理單位"
           v-model="formData.searchItem.department"
@@ -27,7 +52,7 @@
           outType="key"
           key="department"
         />
-      </v-col>
+      </v-col> -->
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
@@ -121,6 +146,7 @@ import { maintainStatusOpts } from "@/assets/js/workList";
 import { fetchFormOrderList } from "@/apis/formManage/serve";
 import dateSelect from "@/components/forManage/dateSelect";
 import deptSelect from "@/components/forManage/deptSelect";
+import EquipCode from '@/components/EquipRepairCode'
 import EditPage from "@/views/formManage//curing/RescueCarChecklistEdit";
 import { Actions } from "@/assets/js/actions";
 import dialogDelete from "@/components/forManage/dialogDelete";
@@ -129,6 +155,18 @@ import ToolBar from "@/components/forManage/toolbar";
 export default {
   data() {
     return {
+      searchName: '',
+      searchIpt: {  // 搜尋欄位
+          year: new Date().getFullYear(),
+          month: '',  // 月
+          MaintainCode_System: 'RST',  // 類型
+          MaintainCode_Loc: ''
+      },
+      eqCode: false,
+      preSetEqcode: '',
+      preSerEqName: '',
+      eqcKey: 0,
+      //
       title: "搶修車設備定期保養紀錄表",
       newText: "紀錄表",
       action: Actions.add,
@@ -176,6 +214,13 @@ export default {
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
         },
+        {
+          text: "車輛編號",
+          value: "CarNo",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
         // {
         //   text: "審查狀態",
         //   value: "CheckStatus",
@@ -215,11 +260,30 @@ export default {
     EditPage,
     ToolBar,
     dialogDelete,
+    EquipCode
   },
   computed: {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+          return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.searchIpt.MaintainCode_System = 'RST';
+          this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+          this.searchName = ""
+        }
+        else{
+          let splitArr = value.split('-')
+          this.searchIpt.MaintainCode_System = splitArr[0]
+          this.searchIpt.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
   },
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
@@ -229,6 +293,24 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    //機車回傳
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+        (cName)
+        this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+        this.com_equipCode = this.preSetEqcode
+        this.searchName = this.preSerEqName
+        this.eqCode = false
+    },
+    eqClear(){
+      this.com_equipCode = ""
+    },
     newOne() {
      ;
       this.Add = true;
@@ -239,7 +321,8 @@ export default {
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
-      this.formData.searchItem.department = "";
+      this.com_equipCode = "";
+      // this.formData.searchItem.department = "";
     },
     // 更換頁數
     chPage(n) {
@@ -264,12 +347,14 @@ export default {
             Value: this.formData.searchItem.dateStart,
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
-          { Column: "DepartCode", Value: this.formData.searchItem.department },
+          { Column: "CarNo", Value: this.searchName },
+          // { Column: "DepartCode", Value: this.formData.searchItem.department },
         ],
         QyName: [
           "RPFlowNo",
           "ID",
           "Name",
+          "CarNo",
           "CheckDay",
           "CheckStatus",
           "FlowId",
@@ -277,7 +362,12 @@ export default {
         ],
       })
         .then((res) => {
-          this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          if(res.data.ErrorCode == 0)
+            this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          else{
+            this.chMsgbar({ success: false, msg: Constrant.query.failed });
+            console.log(res.data.Msg);
+          }
         })
         .catch((err) => {
           ////console.log(err);
@@ -297,8 +387,6 @@ export default {
       this.dialogDel = false;
     },
     viewPage(item) {
-     
-     
       this.DynamicKey += 1;
       this.editType = this.actions.edit;
       this.editItem = item;

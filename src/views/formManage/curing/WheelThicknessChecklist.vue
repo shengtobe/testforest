@@ -19,15 +19,31 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3">
-        <h3 class="mb-1">車輛編號</h3>
-        <v-select
-          v-model="formData.searchItem.carNo"
-          v-on:change="search()"
-          :items="carNos"
-          solo
-        />
-      </v-col>
+      <v-col cols="12" sm="4" md="4">
+            <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+            </h3>
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
+            <v-dialog v-model="eqCode" max-width="700px">
+                <v-card class="theme-card">
+                    <v-card-title class="px-4 py-1">
+                        車輛型號
+                        <v-spacer></v-spacer>
+                        <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                    </v-card-title>
+                    <div class="px-4 py-3">
+                        <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+                    </div>
+                    <v-card-actions class="px-5 pb-5">
+                        <v-spacer></v-spacer>
+                        <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                        <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 表格資料 -->
@@ -104,7 +120,6 @@
         :item="editItem"
         :editType="editType"
         :DB_Table="DB_Table"
-        :carNo="formData.searchItem.carNo"
       />
     </v-dialog>
   </v-container>
@@ -150,7 +165,6 @@ export default {
       action: Actions.add,
       actions: Actions,
       isLoading: false,
-      carNos: [],
       disabled: false,
       panel: [0, 1, 2],
       readonly: false,
@@ -252,12 +266,28 @@ export default {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+          return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.searchIpt.MaintainCode_System = 'RST';
+          this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+        }
+        else{
+          let splitArr = value.split('-')
+          this.searchIpt.MaintainCode_System = splitArr[0]
+          this.searchIpt.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
   },
   created() {
     this.formData.searchItem.dateStart = this.formData.searchItem.dateEnd = this.nowTime = getTodayDateString();
   },
   mounted() {
-    this.getCarNoList();
     this.search();
   },
   methods: {
@@ -265,54 +295,28 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    // 載入車號
-    getCarNoList() {
-      const that = this;
-      that.isLoading = true;
-      let keys = new Set();
-      fetchFormOrderList({
-        ClientReqTime: getNowFullTime(), // client 端請求時間
-        OperatorID: this.userData.UserId, // 操作人id
-        KeyName: this.DB_Table_097, // DB table
-        KeyItem: [],
-        QyName: ["Distinct RPFlowNo", "FlowId", "CarNo"],
-      })
-        .then((res) => {
-          if (res.data.ErrorCode == 0) {
-            let dat = JSON.parse(res.data.DT);
-            dat.forEach((item) => {
-              let carNo = item.CarNo;
-              if (!keys.has(carNo)) {
-                keys.add(carNo);
-              }
-            });
-          } else {
-            sessionStorage.errData = JSON.stringify({
-              errCode: res.data.Msg,
-              msg: res.data.Msg,
-            });
-            that.$router.push({ path: "/error" });
-          }
-        })
-        .catch((err) => {
-          ////console.log(err);
-          this.chMsgbar({ success: false, msg: Constrant.query.failed });
-        })
-        .finally(() => {
-          that.isLoading = false;
-          let tmp = [...keys];
-          tmp.sort();
-          that.carNos = ["", ...tmp];
-        });
+    //機車回傳
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+        (cName)
+        this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+        this.com_equipCode = this.preSetEqcode
+        this.searchName = this.preSerEqName
+        this.eqCode = false
+    },
+    eqClear(){
+      this.com_equipCode = ""
     },
     newOne() {
-      console.log("this.formData.searchItem.carNo: ", this.formData.searchItem.carNo);
-      if (this.formData.searchItem.carNo != ""){
-        this.Add = true;
-        this.DynamicKey += 1;
-        this.editType = this.actions.add;
-      }
-      else{ alert("請選擇車輛編號") }
+      this.Add = true;
+      this.DynamicKey += 1;
+      this.editType = this.actions.add;
     },
     reset() {
       this.formData.searchItem.dateStart = "";
@@ -342,7 +346,8 @@ export default {
             Value: this.formData.searchItem.dateStart,
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
-          { Column: "DepartCode", Value: this.formData.searchItem.department },
+          // { Column: "DepartCode", Value: this.formData.searchItem.department },
+          { Column: "CarNo", Value: this.searchName },
         ],
         QyName: [
           "RPFlowNo",

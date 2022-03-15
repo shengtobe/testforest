@@ -76,7 +76,7 @@
             </v-btn>
             <v-btn
               title="刪除"
-              class="mr-2 btn-delete"
+              class="mr-2 btn-delete  white--text"
               small
               dark
               fab

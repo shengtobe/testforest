@@ -40,17 +40,37 @@
             :min="dateBMin" locale="zh-tw"></v-date-picker>
         </v-menu>
       </v-col>
+      <v-col cols="12" sm="4" md="4">
+        <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+        </h3>
+        <v-text-field solo @click="eqCode_s=true" readonly v-model="searchName" clearable @click:clear="eqClear_s"/>
+        <v-dialog v-model="eqCode_s" max-width="700px">
+          <v-card class="theme-card">
+            <v-card-title class="px-4 py-1">
+              車輛型號
+              <v-spacer></v-spacer>
+              <v-btn fab small text @click="eqCode_s = false" class="mr-n2">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <div class="px-4 py-3">
+              <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode_s" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode_s" @getEqName="getRtnName_s" />
+            </div>
+            <v-card-actions class="px-5 pb-5">
+              <v-spacer></v-spacer>
+              <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode_s = false">取消</v-btn>
+              <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ_s">確認</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
       <div class="col-sm-4 col-md-8 col-12">
         <v-btn dark large class="mb-sm-8 mb-md-8 btn-search" @click="search">
           <v-icon class="mr-1">mdi-magnify</v-icon>查詢
         </v-btn>
         <v-btn
-          elevation="3"
-          dark
-          large
-          class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add"
-          @click="newOne"
-        >
+          elevation="3" dark large class="ml-4 ml-sm-4 ml-md-4 mb-sm-8 mb-md-8 btn-add" @click="newOne">
           <v-icon>mdi-plus</v-icon>新增{{ newText }}
         </v-btn>
       </div>
@@ -139,6 +159,31 @@
                     ></v-date-picker>
                 </v-menu>
                 </v-col>
+                <v-col cols="12" sm="8">
+                <h3 class="mb-1">
+                  <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+                </h3>
+                <v-text-field solo @click="eqCode=true" v-model="eqName" readonly clearable  @click:clear="eqClear"/>
+                <v-dialog v-model="eqCode" max-width="700px">
+                  <v-card class="theme-card">
+                    <v-card-title class="px-4 py-1">
+                      車輛型號
+                      <v-spacer></v-spacer>
+                      <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-card-title>
+                    <div class="px-4 py-3">
+                      <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" ref="ref1" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+                    </div>
+                    <v-card-actions class="px-5 pb-5">
+                      <v-spacer></v-spacer>
+                      <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+                      <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-col>
                 <v-col cols="12" sm="3">
                   <h3 class="mb-1">
                     <v-icon class="mr-1 mb-1">mdi-ray-vertex</v-icon>司機員
@@ -261,6 +306,7 @@ import Pagination from "@/components/Pagination.vue";
 import { mapState, mapActions } from 'vuex'
 import { getNowFullTime, getTodayDateString, unique} from "@/assets/js/commonFun";
 import { maintainStatusOpts } from '@/assets/js/workList'
+import EquipCode from '@/components/EquipRepairCode'
 import { fetchFormOrderList, fetchFormOrderOne, createFormOrder, createFormOrder0, updateFormOrder } from '@/apis/formManage/serve'
 import { formDepartOptions } from '@/assets/js/departOption'
 import { Constrant } from "@/assets/js/constrant";
@@ -268,6 +314,22 @@ import { Constrant } from "@/assets/js/constrant";
 export default {
   data() {
     return {
+      searchIpt: {  // 搜尋欄位
+        dateStart: new Date().toISOString().substr(0, 10), // 通報日期(起)
+        dateEnd: new Date().toISOString().substr(0, 10), // 通報日期(迄)
+        MaintainCode_System: 'RST',  // 類型
+        MaintainCode_Loc: ''
+      },
+      eqcKey: 0,
+      eqCode_s: false,
+      eqCode: false,
+      searchName: '',
+      eqName: '',
+      preSetEqcode_s: '',
+      preSetEqcode: '',
+      preSerEqName_s: '',
+      preSerEqName: '',
+      //
       title: "DL50號機車行駛公里及發電機工時統計表",
       newText: "統計表",
       isEdit: false,
@@ -315,6 +377,8 @@ export default {
       },
       ipt:{},
       defaultIpt: {
+        MaintainCode_System: 'RST',  // 類型
+        MaintainCode_Loc: '',
         driver: "", // 司機員
         section: "", // 區段
         currentKm: "", // 本次里程
@@ -347,11 +411,47 @@ export default {
       memo: "", // 保養記事
     };
   },
-  components: { Pagination }, // 頁碼
+  components: { Pagination,EquipCode }, // 頁碼
   computed: {
-        ...mapState ('user', {
-            userData: state => state.userData,  // 使用者基本資料
-        }),
+    ...mapState ('user', {
+        userData: state => state.userData,  // 使用者基本資料
+    }),
+    com_equipCode_s: {
+      get: function() {
+          return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.searchIpt.MaintainCode_System = 'RST';
+          this.searchIpt.MaintainCode_Loc = this.preSetEqcode_s = this.preSerEqName_s = ""
+          this.eqcKey++
+          this.searchName = ""
+        }
+        else{
+          let splitArr = value.split('-')
+          this.searchIpt.MaintainCode_System = splitArr[0]
+          this.searchIpt.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
+    com_equipCode: {
+      get: function() {
+          return this.ipt.MaintainCode_System + (this.ipt.MaintainCode_Loc==''?'':'-' + this.ipt.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.ipt.MaintainCode_System = 'RST';
+          this.ipt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+          this.eqName = ""
+        }
+        else{
+          let splitArr2 = value.split('-')
+          this.ipt.MaintainCode_System = splitArr2[0]
+          this.ipt.MaintainCode_Loc = splitArr2[1]
+        }
+      }
+    },
   },
   created() {
       this.iptSearch = { ...this.defaultSearchIpt }
@@ -377,6 +477,7 @@ export default {
       this.items1 = {...this.defaultItems1};
       this.items2 = {...this.defaultItems2};
       this.memo = ""
+      this.com_equipCode = ""
     },
     unique(list){
       var arr = [];
@@ -397,6 +498,37 @@ export default {
         }
       }
       return arr;
+    },
+    //機車回傳
+    getRtnCode_s(code) {
+        this.preSetEqcode_s = code
+    },
+    getRtnCode(code) {
+        this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName_s(cName) {
+      this.preSerEqName_s = cName.replace('車輛(RST)-','')
+    },
+    getRtnName(cName) {
+      this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ_s() {
+      this.com_equipCode_s = this.preSetEqcode_s
+      this.searchName = this.preSerEqName_s
+      this.eqCode_s = false
+    },
+    selectEQ() {
+      this.com_equipCode = this.preSetEqcode
+      this.eqName = this.preSerEqName
+      this.eqCode = false
+    },
+    eqClear_s(){
+      this.com_equipCode_s = ""
+    },
+    eqClear(){
+      this.com_equipCode = ""
     },
     newOne(){
       this.Add = true
@@ -445,7 +577,8 @@ export default {
         KeyItem: [ 
           {'Column':'StartDayVlaue','Value':this._data.z},
           {"Column":"EndDayVlaue","Value":this._data.df},
-          {"Column":"DepartCode","Value":this._data.iptSearch.depart},
+          { 'Column': "CarNo", 'Value': this.searchName },
+          // {"Column":"DepartCode","Value":this._data.iptSearch.depart},
                 ],
         QyName:[
           // "DISTINCT (RPFlowNo)",
@@ -457,6 +590,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "CarNo",
           "CheckDay",
           "CheckStatus",
           "FlowId", "DepartName"
@@ -487,6 +621,9 @@ export default {
           {'Column':'KmRecord','Value': this.ipt.section}, // 區段
           {'Column':'Km','Value': this.ipt.currentKm}, // 本次里程
           {'Column':'AccumKm','Value': this.ipt.totalKm}, // 累計里程
+          {'Column':'MaintainCode_System','Value': this.ipt.MaintainCode_System}, // 列車次
+          {'Column':'MaintainCode_Loc','Value': this.ipt.MaintainCode_Loc}, // 列車次
+          {'Column':'CarNo','Value': this.eqName}, // 列車次
           {'Column':'TrainNo','Value': this.ipt.carId}, // 列車次
           {'Column':'HourDay','Value': this.items1.dayTime}, // 發電機日工時
           {'Column':'Hours','Value': this.items1.totalTime}, // 發電機累計工時
@@ -502,8 +639,11 @@ export default {
         // 編輯
         updateFormOrder(data)
           .then((res) => {
-            // 
-            this.chMsgbar({ success: true, msg: Constrant.update.success });
+            if(res.data.ErrorCode==0) this.chMsgbar({ success: true, msg: Constrant.update.success });
+            else{
+              this.chMsgbar({ success: false, msg: Constrant.update.failed });
+              console.log(res.data.Msg);
+            }
           })
           .catch((err) => {
             //console.log(err);
@@ -520,7 +660,11 @@ export default {
         // 新增
         createFormOrder0(data)
           .then((res) => {
-            this.chMsgbar({ success: true, msg: Constrant.insert.success });
+            if(res.data.ErrorCode==0) this.chMsgbar({ success: true, msg: Constrant.insert.success });
+            else{
+              this.chMsgbar({ success: false, msg: Constrant.insert.failed });
+              console.log(res.data.Msg);
+            }
           })
           .catch((err) => {
             ////console.log(err);
@@ -573,6 +717,9 @@ export default {
           "Other",
           "TrainNo",
           "Memo",
+          "CarNo",
+          "MaintainCode_System",
+          "MaintainCode_Loc",
         ],
       }).then(res => {
         this.initInput();
@@ -596,7 +743,10 @@ export default {
         this.items2.other = dat[0].Other
         this.ipt.carId = dat[0].TrainNo
         this.memo = dat[0].Memo
-        //123資料
+        //
+        this.ipt.MaintainCode_System = dat[0].MaintainCode_System
+        this.ipt.MaintainCode_Loc = dat[0].MaintainCode_Loc
+        this.eqName = dat[0].CarNo;
         
       }).catch(err => {
         //console.log(err)

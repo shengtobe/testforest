@@ -1207,6 +1207,7 @@ export default {
           this.searchIpt.MaintainCode_System = 'RST';
           this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
           this.eqcKey++
+          this.searchName = ""
         }
         else{
           let splitArr = value.split('-')
@@ -1253,7 +1254,7 @@ export default {
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
-      this.formData.searchItem.carID = "";
+      this.com_equipCode = ""
     },
     // 更換頁數
     chPage(n) {

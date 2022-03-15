@@ -9,10 +9,32 @@
     </v-card-title>
     <commonQuestion v-model="inputData" :settings="setting" dateLabel="填寫日期">
       <template v-slot:moreDetails="item">
-        <v-col cols="12" sm="4">
-          <h3 class="mb-1">車輛編號</h3>
-          <v-text-field solo  v-model="item.editItem.CarNum"/>
+        <v-col cols="12" sm="8">
+          <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+          </h3>
+          <v-text-field solo @click="eqCode=true" v-model="eqName" readonly clearable  @click:clear="eqClear"/>
+          <v-dialog v-model="eqCode" max-width="700px">
+            <v-card class="theme-card">
+              <v-card-title class="px-4 py-1">
+                車輛型號
+                <v-spacer></v-spacer>
+                <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <div class="px-4 py-3">
+                <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" ref="ref1" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+              </div>
+              <v-card-actions class="px-5 pb-5">
+                <v-spacer></v-spacer>
+                <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="commonSettings.isLoading" @click="eqCode = false">取消</v-btn>
+                <v-btn class="btn-add" dark elevation="4"  :loading="commonSettings.isLoading" @click="selectEQ">確認</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-col>
+        <v-col cols="12" sm="4"/>
         <v-col cols="12" sm="4">
           <dateSelect
             label="上次檢修完成日期"
@@ -21,7 +43,6 @@
             v-model="item.editItem.LastChkDay"
            />
         </v-col>
-        <v-col cols="0" sm="4"/>
         <v-col cols="12" sm="4">
           <dateSelect
             label="本次檢修開始日期"
@@ -68,6 +89,7 @@ import {
   encodeObject,
   decodeObject,
 } from "@/assets/js/commonFun";
+import EquipCode from '@/components/EquipRepairCode'
 import { generateSettings } from "@/assets/js/commonQuestion2Generater";
 import {
   fetchFormOrderOne,
@@ -95,6 +117,13 @@ export default {
         isLoading: false,
         deptReadonly: true,
       },
+      //
+      eqcKey: 0,
+      eqCode: false,
+      eqName: '',
+      preSetEqcode: '',
+      preSerEqName: '',
+      //
       inputData: {
         RPFlowNo: "",
         DepartCode: "",
@@ -102,11 +131,12 @@ export default {
         ID: "",
         Name: "",
         editableData: {
+          MaintainCode_System: 'RST',
+          MaintainCode_Loc: '',
           CheckDay: "",
           LastChkDay: "",
           ChkDay: "",
           DoneDay: "",
-          CarNum: "",
           CheckOption1: "0",
           CheckOption2: "0",
           CheckOption3: "0",
@@ -558,6 +588,7 @@ export default {
     dateSelect,
     deptSelect,
     commonQuestion,
+    EquipCode
   },
   mounted() {
     this.editType == this.actions.edit
@@ -569,6 +600,23 @@ export default {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+        return this.inputData.editableData.MaintainCode_System + (this.inputData.editableData.MaintainCode_Loc==''?'':'-' + this.inputData.editableData.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.inputData.editableData.MaintainCode_System = 'RST';
+          this.inputData.editableData.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+        }
+        else{
+          let splitArr = value.split('-')
+          this.inputData.editableData.MaintainCode_System = splitArr[0]
+          this.inputData.editableData.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
     setting:function() {
       return generateSettings(this.testSettings)
     }
@@ -578,6 +626,23 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    //機車回傳
+    getRtnCode(code) {
+      this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+      this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+      this.com_equipCode = this.preSetEqcode
+      this.eqName = this.preSerEqName
+      this.eqCode = false
+    },
+    eqClear(){
+      this.com_equipCode = ""
+    },
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
@@ -599,10 +664,12 @@ export default {
           "DepartName",
           "ID",
           "Name",
+          "CarNo",
+          "MaintainCode_System",
+          "MaintainCode_Loc",
           "LastChkDay",
           "ChkDay",
           "DoneDay",
-          "CarNum",
           "CheckOption1",
           "CheckOption2",
           "CheckOption3",
@@ -788,6 +855,7 @@ export default {
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
+          this.eqName = dat[0].CarNo
         })
         .catch((err) => {
           ////console.log(err);
@@ -806,6 +874,7 @@ export default {
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
+      rtnObj.push({ Column: "CarNo", Value: that.eqName });
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });

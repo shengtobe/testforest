@@ -155,7 +155,7 @@
             >
               <v-icon dark>mdi-magnify</v-icon>
             </v-btn>
-            <v-btn title="刪除" small dark fab class="mr-2 btn-delete" @click="goDel(item)">
+            <v-btn title="刪除" small dark fab class="mr-2 btn-delete white--text" @click="goDel(item)">
               <v-icon dark>mdi-delete</v-icon>
             </v-btn>
           </template>

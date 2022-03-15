@@ -23,7 +23,7 @@
             <h3 class="mb-1">
                 <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
             </h3>
-            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable/>
+            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
             <v-dialog v-model="eqCode" max-width="700px">
                 <v-card class="theme-card">
                     <v-card-title class="px-4 py-1">
@@ -34,7 +34,7 @@
                         </v-btn>
                     </v-card-title>
                     <div class="px-4 py-3">
-                        <EquipCode :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+                        <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
                     </div>
                     <v-card-actions class="px-5 pb-5">
                         <v-spacer></v-spacer>
@@ -46,7 +46,7 @@
       </v-col>
       <v-col cols="12" sm="3" md="3">
         <h3 class="mb-1">車號</h3>
-        <v-text-field solo v-model="formData.searchItem.carNo"></v-text-field>
+        <v-text-field solo v-model="formData.searchItem.carNo" readonly></v-text-field>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -254,9 +254,18 @@ export default {
             return this.searchIpt.MaintainCode_System + (this.searchIpt.MaintainCode_Loc==''?'':'-' + this.searchIpt.MaintainCode_Loc)
         },
         set: function(value) {
+          if(value == ""){
+            this.searchIpt.MaintainCode_System = 'RST';
+            this.searchIpt.MaintainCode_Loc = this.preSetEqcode_s = this.preSerEqName_s = ""
+            this.eqcKey++
+            this.searchName = ""
+          }
+          else{
             let splitArr = value.split('-')
             this.searchIpt.MaintainCode_System = splitArr[0]
             this.searchIpt.MaintainCode_Loc = splitArr[1]
+          }
+            
         }
     },
   },
@@ -285,6 +294,7 @@ export default {
         this.com_equipCode = this.preSetEqcode
         this.searchName = this.preSerEqName
         this.eqCode = false
+        this.formData.searchItem.carNo = this.searchIpt.MaintainCode_Loc
     },
     newOne() {
       this.Add = true;
@@ -295,10 +305,15 @@ export default {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
       this.formData.searchItem.carNo = "";
+      this.com_equipCode = "";
     },
     // 更換頁數
     chPage(n) {
       this.pageOpt.page = n;
+    },
+    eqClear(){
+      this.com_equipCode = ""
+      this.formData.searchItem.carNo = ""
     },
     // 搜尋
     search() {
@@ -317,8 +332,6 @@ export default {
           { Column: "StartDayVlaue", Value: this.formData.searchItem.dateStart},
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
           { Column: "CarNo", Value: this.formData.searchItem.carNo },
-          { Column: "MaintainCode_System", Value: this.searchIpt.MaintainCode_System},
-          { Column: "MaintainCode_Loc", Value: this.searchIpt.MaintainCode_Loc},
           ],
         QyName: [
           "RPFlowNo",

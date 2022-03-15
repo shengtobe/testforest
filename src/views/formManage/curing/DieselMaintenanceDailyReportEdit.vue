@@ -12,13 +12,32 @@
       <v-col cols="12">
         <!-- 檢查項目 -->
         <v-row no-gutter class="label-header">
-          <v-col cols="12" sm="4">
-            <h3 class="mb-1">機車編號</h3>
-            <v-text-field solo v-model="inputData.editableData.CarNo">
-              <span slot="prepend-inner">DL</span>
-            </v-text-field>
+          <v-col cols="12" sm="4" md="5">
+            <h3 class="mb-1">
+              <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+            </h3>
+            <v-text-field solo @click="eqCode=true" v-model="eqName" readonly clearable  @click:clear="eqClear"/>
+            <v-dialog v-model="eqCode" max-width="700px">
+              <v-card class="theme-card">
+                <v-card-title class="px-4 py-1">
+                  車輛型號
+                  <v-spacer></v-spacer>
+                  <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-card-title>
+                <div class="px-4 py-3">
+                  <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" ref="ref1" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+                </div>
+                <v-card-actions class="px-5 pb-5">
+                  <v-spacer></v-spacer>
+                  <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="commonSettings.isLoading" @click="eqCode = false">取消</v-btn>
+                  <v-btn class="btn-add" dark elevation="4"  :loading="commonSettings.isLoading" @click="selectEQ">確認</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="3">
             <h3 class="mb-1">檢查日期</h3>
             <dateSelect
               key="dateEnd"
@@ -26,27 +45,27 @@
               :showIcon="commonSettings.iconShow"
             />
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="3">
             <h3 class="mb-1">氣候</h3>
             <v-text-field solo v-model="inputData.editableData.Weather"/>
           </v-col>
         </v-row>
         <v-row no-gutter class="label-header">
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="3">
             <h3 class="mb-1">本日行駛</h3>
-            <v-text-field solo v-model="inputData.editableData.Km">
+            <v-text-field solo v-model="inputData.editableData.Km" :rules="nameRules">
               <span slot="append">km</span>
             </v-text-field>
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="3">
             <h3 class="mb-1">累計公里</h3>
-            <v-text-field solo v-model="inputData.editableData.TotalKm">
+            <v-text-field solo v-model="inputData.editableData.TotalKm" :rules="nameRules">
               <span slot="append">km</span>
             </v-text-field>
           </v-col>
-          <v-col cols="12" sm="4">
+          <v-col cols="12" sm="3">
             <h3 class="mb-1">下次保養</h3>
-            <v-text-field solo v-model="inputData.editableData.NextChkDay">
+            <v-text-field solo v-model="inputData.editableData.NextChkDay" :rules="nameRules">
               <span slot="append">km</span>
             </v-text-field>
           </v-col>
@@ -440,6 +459,7 @@ import {
   createFormOrder0,
   updateFormOrder,
 } from "@/apis/formManage/serve";
+import EquipCode from '@/components/EquipRepairCode'
 import dateSelect from "@/components/forManage/dateSelect";
 import { fetchOrganization } from '@/apis/organization'
 import { Actions } from "@/assets/js/actions";
@@ -460,6 +480,7 @@ export default {
     },
     deptOptions:[],
     panel: [0, 1, 2, 3, 4, 5, 6, 7], // 摺疊預設展開
+    nameRules: [(v) => !!v || "時數必須填寫", (v) => v > 0 || "時數必須大於0"],
     inputData: {
       RPFlowNo: "",
       DepartCode: "",
@@ -468,7 +489,68 @@ export default {
       Name: "",
       CheckMan: "",
       editableData: {
-        CarNo: "",
+        // CarNo: "",
+        MaintainCode_System: 'RST',
+        MaintainCode_Loc: '',
+        CheckDay: "",
+        Weather: "",
+        Km: "",
+        TotalKm: "",
+        NextChkDay: "",
+        CheckOption1: "",
+        CheckOption2: "",
+        CheckOption3: "",
+        CheckOption4: "",
+        CheckOption5: "",
+        CheckOption6: "",
+        CheckOption7: "",
+        CheckOption8: "",
+        CheckOption9: "",
+        CheckOption10: "",
+        CheckOption11: "",
+        CheckOption12: "",
+        CheckOption13: "",
+        CheckOption14: "",
+        CheckOption15: "",
+        CheckOption16: "",
+        CheckOption17: "",
+        CheckOption18: "",
+        CheckOption19: "",
+        CheckOption20: "",
+        CheckOption21: "",
+        CheckOption22: "",
+        CheckOption23: "",
+        CheckOption24: "",
+        CheckOption25: "",
+        CheckOption26: "",
+        CheckOption27: "",
+        CheckOption28: "",
+        CheckOption29: "",
+        CheckOption30: "",
+        CheckOption31: "",
+        CheckOption32: "",
+        CheckOption33: "",
+        CheckOption34: "",
+        CheckOption35: "",
+        CheckOption36: "",
+        CheckOption37: "",
+        CheckOption38: "",
+        CheckOption39: "",
+        CheckOption40: "",
+        CheckOption41: "",
+      },
+    },
+    defInputData: {
+      RPFlowNo: "",
+      DepartCode: "",
+      DepartName: "",
+      ID: "",
+      Name: "",
+      CheckMan: "",
+      editableData: {
+        // CarNo: "",
+        MaintainCode_System: 'RST',
+        MaintainCode_Loc: '',
         CheckDay: "",
         Weather: "",
         Km: "",
@@ -518,9 +600,15 @@ export default {
       },
     },
     orgList: [],
+    //
+    eqcKey: 0,
+    eqCode: false,
+    eqName: '',
+    preSetEqcode: '',
+    preSerEqName: ''
   }),
   components: {
-    dateSelect
+    dateSelect, EquipCode
   },
   mounted() {
     this.editType == this.actions.edit
@@ -531,13 +619,48 @@ export default {
     ...mapState("user", {
       userData: (state) => state.userData, // 使用者基本資料
     }),
+    com_equipCode: {
+      get: function() {
+        return this.inputData.editableData.MaintainCode_System + (this.inputData.editableData.MaintainCode_Loc==''?'':'-' + this.inputData.editableData.MaintainCode_Loc)
+      },
+      set: function(value) {
+        if(value == ""){
+          this.inputData.editableData.MaintainCode_System = 'RST';
+          this.inputData.editableData.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
+          this.eqcKey++
+        }
+        else{
+          let splitArr = value.split('-')
+          this.inputData.editableData.MaintainCode_System = splitArr[0]
+          this.inputData.editableData.MaintainCode_Loc = splitArr[1]
+        }
+      }
+    },
   },
   methods: {
     ...mapActions("system", [
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
+    //機車回傳
+    getRtnCode(code) {
+      this.preSetEqcode = code
+    },
+    //機車回傳中文
+    getRtnName(cName) {
+      this.preSerEqName = cName.replace('車輛(RST)-','')
+    },
+    //機車送出按鈕
+    selectEQ() {
+      this.com_equipCode = this.preSetEqcode
+      this.eqName = this.preSerEqName
+      this.eqCode = false
+    },
+    eqClear(){
+      this.com_equipCode = ""
+    },
     newPage() {
+      // this.inputData = {...this.defInputData}
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
@@ -559,6 +682,8 @@ export default {
           "ID",
           "Name",
           "CarNo",
+          "MaintainCode_System",
+          "MaintainCode_Loc",
           "CheckDay",
           "Weather",
           "Km",
@@ -622,6 +747,7 @@ export default {
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
+          this.eqName = dat[0].CarNo
         })
         .catch((err) => {
           ////console.log(err);
@@ -636,10 +762,15 @@ export default {
       this.$emit("search");
     },
     save() {
+      if(this.com_equipCode.includes('DL') != true){
+        alert('車號未填或未選擇柴油車頭')
+        return
+      }
       this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];
       const keyArr = Object.keys(that.inputData.editableData);
+      rtnObj.push({ Column: "CarNo", Value: that.eqName });
       keyArr.forEach((e) => {
         rtnObj.push({ Column: e, Value: that.inputData.editableData[e] });
       });

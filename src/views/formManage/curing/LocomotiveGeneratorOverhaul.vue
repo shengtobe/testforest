@@ -20,30 +20,30 @@
         />
       </v-col>
       <v-col cols="12" sm="4" md="4">
-            <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
-            </h3>
-            <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
-            <v-dialog v-model="eqCode" max-width="700px">
-                <v-card class="theme-card">
-                    <v-card-title class="px-4 py-1">
-                        車輛型號
-                        <v-spacer></v-spacer>
-                        <v-btn fab small text @click="eqCode = false" class="mr-n2">
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                    </v-card-title>
-                    <div class="px-4 py-3">
-                        <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
-                    </div>
-                    <v-card-actions class="px-5 pb-5">
-                        <v-spacer></v-spacer>
-                        <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
-                        <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </v-col>
+        <h3 class="mb-1">
+            <v-icon class="mr-1 mb-1">mdi-file</v-icon>車輛型號
+        </h3>
+        <v-text-field solo @click="eqCode=true" readonly v-model="searchName" clearable @click:clear="eqClear"/>
+        <v-dialog v-model="eqCode" max-width="700px">
+          <v-card class="theme-card">
+            <v-card-title class="px-4 py-1">
+              車輛型號
+              <v-spacer></v-spacer>
+              <v-btn fab small text @click="eqCode = false" class="mr-n2">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <div class="px-4 py-3">
+              <EquipCode :key="'eqcKey' + eqcKey" :nowEqCode="com_equipCode" :toLv="2" :disableToLv="1" :needIcon="false" :noLabel="true" @getEqCode="getRtnCode" @getEqName="getRtnName" />
+            </div>
+            <v-card-actions class="px-5 pb-5">
+              <v-spacer></v-spacer>
+              <v-btn class="mr-2 btn-close" dark elevation="4"  :loading="isLoading" @click="eqCode = false">取消</v-btn>
+              <v-btn class="btn-add" dark elevation="4"  :loading="isLoading" @click="selectEQ">確認</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
     <!-- 動力車保養紀錄 -->
@@ -275,6 +275,7 @@ export default {
           this.searchIpt.MaintainCode_System = 'RST';
           this.searchIpt.MaintainCode_Loc = this.preSetEqcode = this.preSerEqName = ""
           this.eqcKey++
+          this.searchName = ""
         }
         else{
           let splitArr = value.split('-')
@@ -322,7 +323,7 @@ export default {
     reset() {
       this.formData.searchItem.dateStart = "";
       this.formData.searchItem.dateEnd = "";
-      this.formData.searchItem.carNo = "";
+      this.com_equipCode = "";
     },
     // 更換頁數
     chPage(n) {
@@ -361,7 +362,12 @@ export default {
         ],
       })
         .then((res) => {
-          this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          if(res.data.ErrorCode == 0)
+            this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)));
+          else{
+            this.chMsgbar({ success: false, msg: Constrant.query.failed });
+            console.log(res.data.Msg);
+          }
         })
         .catch((err) => {
           ////console.log(err);
@@ -381,8 +387,6 @@ export default {
       this.dialogDel = false;
     },
     viewPage(item) {
-     
-     
       this.DynamicKey += 1;
       this.editType = this.actions.edit;
       this.editItem = item;
