@@ -844,14 +844,8 @@ export default {
     },
     // 存
     save() {
-      let str0 = '';
-      for( let keyItem in this.itemlist){
-        this.itemlist[keyItem].forEach(Q => {
-          str0 += Q.status
-        });
-      }
-      if(str0.includes('0')){
-        alert("檢查結果未填妥。")
+      if(this.DeviceType == ''){
+        alert("設備未選。")
         return
       }
       this.chLoadingShow({show:true});
