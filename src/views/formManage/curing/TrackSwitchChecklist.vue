@@ -19,7 +19,7 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3">
+      <v-col cols="12" sm="3" md="3" v-if="false">
         <deptSelect
           label="管理單位"
           v-model="formData.searchItem.department"
@@ -48,6 +48,27 @@
 
           <template v-slot:loading>
             <span class="red--text subtitle-1">資料讀取中...</span>
+          </template>
+
+          <template v-slot:item.CheckOption1_1="{ item }">
+            <v-icon v-if="item.CheckOption1_1 == 1" large color="rgb(33,94,32,0.7)">mdi-check-circle</v-icon>
+            <v-icon v-else-if="item.CheckOption1_1 == 2" large color="rgb(245,127,23,0.7)">mdi-alert-circle</v-icon>
+            <v-icon v-else large color="rgb(216,67,21,0.7)">mdi-close-circle</v-icon>
+          </template>
+          <template v-slot:item.CheckOption1_2="{ item }">
+            <v-icon v-if="item.CheckOption1_2 == 1" large color="rgb(33,94,32,0.7)">mdi-check-circle</v-icon>
+            <v-icon v-else-if="item.CheckOption1_2 == 2" large color="rgb(245,127,23,0.7)">mdi-alert-circle</v-icon>
+            <v-icon v-else large color="rgb(216,67,21,0.7)">mdi-close-circle</v-icon>
+          </template>
+          <template v-slot:item.CheckOption1_3="{ item }">
+            <v-icon v-if="item.CheckOption1_3 == 1" large color="rgb(33,94,32,0.7)">mdi-check-circle</v-icon>
+            <v-icon v-else-if="item.CheckOption1_3 == 2" large color="rgb(245,127,23,0.7)">mdi-alert-circle</v-icon>
+            <v-icon v-else large color="rgb(216,67,21,0.7)">mdi-close-circle</v-icon>
+          </template>
+          <template v-slot:item.CheckOption1_4="{ item }">
+            <v-icon v-if="item.CheckOption1_4 == 1" large color="rgb(33,94,32,0.7)">mdi-check-circle</v-icon>
+            <v-icon v-else-if="item.CheckOption1_4 == 2" large color="rgb(245,127,23,0.7)">mdi-alert-circle</v-icon>
+            <v-icon v-else large color="rgb(216,67,21,0.7)">mdi-close-circle</v-icon>
           </template>
 
           <!-- headers 的 content 欄位 (檢視內容) -->
@@ -184,6 +205,34 @@ export default {
           divider: true,
           class: "subtitle-1 white--text font-weight-bold",
         },
+        {
+          text: "基座",
+          value: "CheckOption1_1",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
+        {
+          text: "連桿",
+          value: "CheckOption1_2",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
+        {
+          text: "表面",
+          value: "CheckOption1_3",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
+        {
+          text: "岔道針密合",
+          value: "CheckOption1_4",
+          align: "center",
+          divider: true,
+          class: "subtitle-1 white--text font-weight-bold",
+        },
         // {
         //   text: "審查狀態",
         //   value: "CheckStatus",
@@ -275,7 +324,7 @@ export default {
             Value: this.formData.searchItem.dateStart,
           },
           { Column: "EndDayVlaue", Value: this.formData.searchItem.dateEnd },
-          { Column: "DepartCode", Value: this.formData.searchItem.department },
+          // { Column: "DepartCode", Value: this.formData.searchItem.department },
         ],
         QyName: [
           "RPFlowNo",
@@ -286,6 +335,10 @@ export default {
           "CheckStatus",
           "FlowId",
           "DepartName",
+          "CheckOption1_1",
+          "CheckOption1_2",
+          "CheckOption1_3",
+          "CheckOption1_4",
         ],
       })
         .then((res) => {

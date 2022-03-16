@@ -315,7 +315,7 @@ export const FormCuringRouter = [{
     formGroup: ['curing']
 },
 {
-    linkText: '_____車庫動力車狀態日報表', // 16
+    linkText: '動力車狀態日報表', // 16
     path: '/form-manage/curing/chiayi-power-car-report',
     component: () =>
         import('@/views/formManage/curing/ChiayiPowerCarReport.vue'),

@@ -21,15 +21,16 @@
                 v-model="inputData.editableData.CheckDay"
               />
             </v-col>
-            <!-- <v-col cols="12" sm="3" md="4">
-              <h3 class="mb-1">車庫</h3>
-              <v-select :items="deptOptions" item-text="value" item-value="key" v-model="inputData.GarageCode" solo/>
-            </v-col> -->
             <v-col cols="12" sm="4">
               <h3 class="mb-1">檢查人員</h3>
               <v-text-field solo value v-model="inputData.Name"/>
             </v-col>
-            <v-col cols="12" sm="4"/>
+            <v-col cols="12" sm="4" md="4" v-if="true">
+              <h3 class="mb-1">
+                <v-icon class="mr-1 mb-1">mdi-domain</v-icon>車庫
+              </h3>
+              <v-select :items="garageList.slice(1)" item-text="value" item-value="key" v-model="inputData.editableData.GarageCode" solo/>
+            </v-col>
           </v-row>
           <v-row no-gutter class="label-header">
             <v-col cols="12" sm="4">
@@ -127,6 +128,7 @@ export default {
     editType: String,
     DB_Table: String,
     title: String,
+    garageList: Array
   },
   data: () => ({
     actions: Actions,
@@ -135,15 +137,14 @@ export default {
       isLoading: false,
       deptReadonly: true,
     },
-    deptOptions:[],
     inputData: {
       RPFlowNo: "",
-      GarageCode: "",
       DepartCode: "",
       DepartName: "",
       ID: "",
       Name: "",
       editableData: {
+        GarageCode: '',
         CheckDay: "",
         Type: "",
         Category: "",
@@ -168,7 +169,6 @@ export default {
     this.editType == this.actions.edit
       ? this.viewPage(this.item)
       : this.newPage();
-    this._getOrg()
   },
   computed: {
     ...mapState("user", {
@@ -180,32 +180,11 @@ export default {
       "chMsgbar", // messageBar
       "chLoadingShow", // 切換 loading 圖顯示
     ]),
-    //抓單位清單
-    _getOrg(){
-      const that = this
-      that.isLoading = true
-      fetchOrganization({
-        ClientReqTime: getNowFullTime(),  // client 端請求時間
-        OperatorID: this.userData.UserId,  // 操作人id
-      }).then(res => {
-        if (res.data.ErrorCode == 0) {
-          this.deptOptions = res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
-        }else {
-          sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-          that.$router.push({ path: '/error' })
-        }
-      }).catch( err => {
-        this.chMsgbar({ success: false, msg: '伺服器發生問題，單位查詢失敗' })
-      }).finally(() => {
-          that.deptOptions = decodeObject(that.deptOptions)
-          that.isLoading = false
-      })
-    },
     newPage() {
       this.inputData.editableData.CheckDay = getTodayDateString();
       this.inputData.Name = this.userData.UserName;
       this.inputData.ID = this.userData.UserId;
-      this.inputData.GarageCode = ""
+      this.inputData.editableData.GarageCode = ""
     },
     viewPage(item) {
       const that = this;
@@ -233,13 +212,14 @@ export default {
           let dat = JSON.parse(res.data.DT);
           dat[0].CheckDay = dat[0].CheckDay.substr(0, 10);
           this.inputData.RPFlowNo = this.item.RPFlowNo;
-          this.inputData.GarageCode = dat[0].GarageCode;
+          this.inputData.editableData.GarageCode = dat[0].GarageCode;
           this.inputData.Name = dat[0].Name;
           dat[0] = decodeObject(dat[0]);
           const inputArr = Object.keys(this.inputData.editableData);
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
+          console.log("inputData.editableData: ", this.inputData.editableData);
         })
         .catch((err) => {
           ////console.log(err);
@@ -254,6 +234,10 @@ export default {
       this.$emit("search");
     },
     save() {
+      if(this.inputData.editableData.GarageCode == ''){
+        alert('車庫未選')
+        return
+      }
       this.chLoadingShow({ show: true});
       const that = this;
       let rtnObj = [];

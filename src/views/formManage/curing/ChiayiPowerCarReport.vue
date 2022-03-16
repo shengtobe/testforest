@@ -21,11 +21,11 @@
           v-model="formData.searchItem.dateEnd"
         />
       </v-col>
-      <v-col cols="12" sm="3" md="3" v-if="false">
+      <v-col cols="12" sm="3" md="3" v-if="true">
         <h3 class="mb-1">
           <v-icon class="mr-1 mb-1" v-if="formData.settings.formIconShow">mdi-domain</v-icon>車庫
         </h3>
-        <v-select :items="formData.settings.deptOptions" item-text="value" item-value="key" v-model="formData.searchItem.department" solo/>
+        <v-select :items="formData.settings.deptOptions" item-text="value" item-value="key" v-model="formData.searchItem.garageCode" solo/>
       </v-col>
     </v-row>
     <ToolBar @search="search" @reset="reset" @newOne="newOne" :text="newText" />
@@ -68,6 +68,11 @@
             <span class="red--text subtitle-1">資料讀取中...</span>
           </template>
           <!-- headers 的 content 欄位 (檢視內容) -->
+
+          <template v-slot:item.GarageCode="{ item }">
+            {{ formData.settings.deptOptions.find(e=>e.key == item.GarageCode).value }}
+          </template>
+
           <template v-slot:item.content="{ item }">
             <v-btn
               title="詳細資料"
@@ -109,6 +114,7 @@
         :editType="editLog.editType"
         :DB_Table="DB_Table"
         :title="title"
+        :garageList="formData.settings.deptOptions"
       />
     </v-dialog>    
     <!-- 刪除確認視窗 -->
@@ -147,16 +153,18 @@ export default {
   data() {
     return {
       // 自定義變數
-      title:"嘉義車庫動力車狀態日報表",
+      title:"動力車狀態日報表",
       newText:"日報表",
       // 系統變數
       pageOpt: { page: 1 }, // 目前頁數
       pageOpts: { page: 1 }, // 目前頁數
+      garageOpts: ['修理工廠', '嘉義車庫','阿里山車庫'],
       //---api---
       DB_Table: "RP084",
       headers: [
         // 表格顯示的欄位 DepartCode ID Name
         { text: "車種", value: "Type", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
+        { text: "車庫", value: "GarageCode", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "車別", value: "Category", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "號碼", value: "CarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
         { text: "使用車次", value: "UsingCarNo", align: "center", divider: true, class: "subtitle-1 white--text font-weight-bold" },
@@ -245,6 +253,7 @@ export default {
             {key:'',value:'不限'},
             ...res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
           ]
+          console.log("formData.settings.deptOptions: ", this.formData.settings.deptOptions);
         }else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -294,6 +303,7 @@ export default {
           "RPFlowNo",
           "ID",
           "Name",
+          "GarageCode",
           "CheckDay",
           "CheckStatus",
           "FlowId",
@@ -307,6 +317,7 @@ export default {
         ],
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
+        console.log("this.tableItems: ", this.tableItems);
         this.tableItems.forEach(element=>{
           switch(element.Status) {
             case "0":
