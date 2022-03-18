@@ -639,6 +639,7 @@ export default {
         ]),
         // 初始化資料
         setShowData(obj) {
+            console.log("obj: ", obj);
             let workPeople = obj.PeopleLicense.map(e => e.PeopleId).concat(obj.PeopleNoLicense.map(e => e.PeopleId))
             //檢查登入者是否為工作者
             let IsWorker = workPeople.includes(this.userData.UserId)
@@ -771,6 +772,7 @@ export default {
         },
         // 填寫工時 (參數 isEdit 為 true 時為編輯模式，item 則為要編輯的資料)
         setJobHour(isEdit, item) {
+            console.log("nowEqCode: ", this.nowEqCode);
             this.selectWorkArr = [...[]]
             this.eqShow = false
             if (!isEdit) {
@@ -779,6 +781,7 @@ export default {
                 this.jobForm = { ...this.defaultJobForm }
                 this.jobHour.titleName = '新增資料'
                 this.nowEqCode = this.initCode
+                console.log("2nowEqCode: ", this.nowEqCode);
             } else {
                 // 編輯時
                 this.jobHour.isEdit = true
@@ -788,9 +791,11 @@ export default {
                 this.nowWorkCode = this.jobForm.JobCode
                 if(this.jobForm.eqCode != ''){
                     this.nowEqCode = this.jobForm.eqCode
+                    console.log("3nowEqCode: ", this.nowEqCode);
                 }
                 else{
                     this.nowEqCode = this.initCode
+                    console.log("4nowEqCode: ", this.nowEqCode);
                 }
                 if(this.jobForm.JobName != ''){
                     this.selectWorkArr.push(`${this.jobForm.JobName}(${this.jobForm.JobCode}) - ${this.jobForm.Workload}hr`)
@@ -799,6 +804,7 @@ export default {
             }
             this.jobHour.dialogShow = true
             this.eqShow = true
+            console.log("5nowEqCode: ", this.nowEqCode);
         },
         // 刪除工作項
         del(item) {

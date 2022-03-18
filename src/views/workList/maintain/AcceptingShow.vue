@@ -750,11 +750,11 @@ export default {
         }),
         // 工時統計的總金額
         totalHourCount() {
-            return this.tableItems.reduce((a,b)=>a + +b.WorkLoad, 0)
+            return this.tableItems.reduce((a,b)=>(a*1000 + +b.WorkLoad*1000)/1000, 0)
         },
         // 工時統計的總金額
         totalMoney() {
-            return this.tableItems_fee.reduce((a,b)=>a + +b.Price, 0)
+            return this.tableItems_fee.reduce((a,b)=>(a*1000 + +b.Price*1000)/1000, 0)
         }
         
     },

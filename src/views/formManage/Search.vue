@@ -40,6 +40,7 @@
             disable-sort
             hide-default-footer
             @click:row="rowclick"
+            :item-class="(item)=>'cursorPoint'"
             class="theme-table"
           >
             <template v-slot:no-data>
@@ -184,3 +185,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+>>>.cursorPoint{
+  cursor: pointer;
+}
+</style>
