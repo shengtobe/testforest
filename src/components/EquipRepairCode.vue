@@ -336,8 +336,8 @@
           OperatorID: this.userData.UserId,  // 操作人id
         }).then( res => {
           if (res.data.ErrorCode == 0) {
-            // if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
-            if(res.data.code_list.length > 0){
+            if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
+            // if(res.data.code_list.length > 0){
               that.eqCodes[toObject].push(...res.data.code_list)
               that.eqCodes[toObject].forEach((ele,index) => {
                 let NeqCode = ''

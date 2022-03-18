@@ -341,7 +341,8 @@ export default {
           OperatorID: this.userData.UserId,  // 操作人id
         }).then( res => {
           if (res.data.ErrorCode == 0) {
-            if(res.data.code_list.length > 0){
+            if(res.data.code_list.length > 0 && that.eqCodes[toObject].length == 0){
+            // if(res.data.code_list.length > 0){
               // that.eqCodes[toObject].push({EquipCode:'',EquipName:'請選擇'})
               that.eqCodes[toObject].push(...res.data.code_list)
               that.eqCodes[toObject].forEach(ele => {
@@ -351,7 +352,7 @@ export default {
                 ele.FullShowName = ele.EquipName + '(' + NeqCode +')'
               })
               that.eqCodes[toObject] = decodeObject(that.eqCodes[toObject])
-              that.eqCodes[toObject] = [{EquipCode:'',EquipName:'請選擇',FullShowName:'請選擇'},...res.data.code_list]
+              that.eqCodes[toObject] = [{EquipCode:'',EquipName:'請選擇',FullShowName:'請選擇'},...that.eqCodes[toObject]]
             }
           }else {
             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
