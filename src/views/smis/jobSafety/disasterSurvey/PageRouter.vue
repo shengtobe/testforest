@@ -70,7 +70,6 @@ export default {
                         { icon: 'mdi-school', title: '教育程度', text: res.data.EduLevel },
                         { icon: 'mdi-ray-vertex', title: '是否複核', text: (res.data.isReview)? '已複核' : '未核定' },
                     ]
-
                     // 設定下面的欄位資料
                         let hh
                         if(res.data.HurtMediumLv1 == '' || res.data.HurtMediumLv1 == null){
@@ -99,19 +98,19 @@ export default {
                         { dataType: 'text', oneline: true, icon: 'none', title: '傷害部位', text: res.data.HurtPart },
                         { dataType: 'text', oneline: true, icon: 'none', title: '災害類型', text: disasterTypeOpts.find(item => item.value == res.data.DisasterType).text },
                         { dataType: 'text', oneline: true, icon: 'none', title: '致傷媒介物', text: hh },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '直接原因', text: res.data.AccidentReason.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '間接原因', text: res.data.AccidentIndirect.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '基本原因', text: res.data.AccidentBase.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '傷者當時工作', text: res.data.HurtWorking.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '事故概況', text: res.data.AccidentDesp.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '緊急處理情形', text: res.data.EmergencyStatus.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '事故單位防範及改善對策', text: res.data.AccidentPolicy.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(起)', text: res.data.HurtDateStart.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(迄)', text: res.data.HurtDateEnd.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '通報勞檢', text: res.data.NoticeCheck.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '發生原因', text: res.data.HappenReason.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '備註', text: res.data.Memo.replace(/\n/g, '<br>') },
-                        { dataType: 'text', oneline: false, icon: 'none', title: '改善措施', text: res.data.ProcContent.replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '直接原因', text: (res.data.AccidentReason||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '間接原因', text: (res.data.AccidentIndirect||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '基本原因', text: (res.data.AccidentBase||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '傷者當時工作', text: (res.data.HurtWorking||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '事故概況', text: (res.data.AccidentDesp||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '緊急處理情形', text: (res.data.EmergencyStatus||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '事故單位防範及改善對策', text: (res.data.AccidentPolicy||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(起)', text: (res.data.HurtDateStart||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '公傷假(迄)', text: (res.data.HurtDateEnd||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '通報勞檢', text: (res.data.NoticeCheck||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '發生原因', text: (res.data.HappenReason||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '備註', text: (res.data.Memo||"").replace(/\n/g, '<br>') },
+                        { dataType: 'text', oneline: false, icon: 'none', title: '改善措施', text: (res.data.ProcContent||"").replace(/\n/g, '<br>') },
                         { dataType: 'text', oneline: false, icon: 'none', title: '是否已鎖定', text: (res.data.LockStatus == 'F')?'未鎖定':'已鎖定' },
                     ]
 
@@ -122,7 +121,6 @@ export default {
                     //     bottomItems.push({ oneline: false, title: '備註', text: res.data.note.replace(/\n/g, '<br>') })
                     //     bottomItems.push({ oneline: false, title: '改善措施', text: res.data.improve.replace(/\n/g, '<br>') })
                     // }
-
                     this.itemData = { ...res.data, topItems, bottomItems }  // demo 用時 ...res.data 先改為 obj
                     }
                 } else {
