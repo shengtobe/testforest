@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "serve:prod": "vue-cli-service serve --mode production",
     "build:dev": "vue-cli-service build --mode development",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build --mode production"
   },
   "dependencies": {
     "aes-js": "^3.1.2",

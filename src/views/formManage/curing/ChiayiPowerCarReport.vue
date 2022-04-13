@@ -253,7 +253,6 @@ export default {
             {key:'',value:'不限'},
             ...res.data.user_depart_list_group_2.filter(element=>element.DepartParentName=="車輛養護科").map(element=>({key:element.DepartCode,value:element.DepartName}))
           ]
-          console.log("formData.settings.deptOptions: ", this.formData.settings.deptOptions);
         }else {
           sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
           that.$router.push({ path: '/error' })
@@ -317,7 +316,6 @@ export default {
         ],
       }).then(res => {
         this.tableItems = decodeObject(unique(JSON.parse(res.data.DT)))
-        console.log("this.tableItems: ", this.tableItems);
         this.tableItems.forEach(element=>{
           switch(element.Status) {
             case "0":

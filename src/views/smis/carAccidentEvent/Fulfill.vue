@@ -257,7 +257,6 @@ export default {
             }).then(res => {
                 if (res.data.ErrorCode == 0) {
                     this.saveUserGroup(res.data.GroupData)
-                    console.log("groupData: ", this.groupData);
                     if(this.status == 4) // 需主管同意
                         this.isShowBtn = this.groupData.RoleLv4 == "T";
                     else if(this.status == 3) // 行安人員 申請結案

@@ -219,7 +219,6 @@ export default {
           inputArr.forEach((e) => {
             that.inputData.editableData[e] = dat[0][e];
           });
-          console.log("inputData.editableData: ", this.inputData.editableData);
         })
         .catch((err) => {
           ////console.log(err);

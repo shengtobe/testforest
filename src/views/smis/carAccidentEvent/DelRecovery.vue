@@ -171,7 +171,6 @@ export default {
             }).then(res => {
                 this.tableItems = [...[]]
                 let tempTable = JSON.parse(res.data.order_list)
-                console.log("tempTable: ", tempTable);
                 tempTable.forEach(element => {
                     for(let ele in element){
                         if(element[ele] == null){
@@ -193,7 +192,6 @@ export default {
                         findLocationText = element.FindLineOther
                     }
                     element.FindLine = findLocationText
-                            console.log("element: ", element);
                     this.tableItems.push(element)
                     
                     // opsList.find(ele => ele.Code == item.AccidentType).Name.replace('率', '')
@@ -278,7 +276,6 @@ export default {
                     sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
                     this.$router.push({ path: '/error' })
                 }
-                console.log("OK");
         }).catch(err => {
             //console.log(err)
             alert('伺服器發生問題，事故類型讀取失敗')

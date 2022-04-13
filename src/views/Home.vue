@@ -163,7 +163,7 @@ export default {
                     let tb = JSON.parse(res.data.order_list)
                     // 個人訊息
                     let psnal = tb.map(item => ({
-                        id: item.ModuleItemID,
+                        // id: item.ModuleItemID,
                         depart: item.DepartCode, 
                         // title: ((item.title == null)?'':item.title) + '(' + item.ModTitle + ')',
                         title: item.ModTitle,
@@ -185,6 +185,7 @@ export default {
                             this.tableItems.todo.push(element);
                         }
                     });
+
                     // this.tableItems.personal = [...psnal]
 
                     // 待辦事項

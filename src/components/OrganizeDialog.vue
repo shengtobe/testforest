@@ -218,8 +218,6 @@ export default {
         // 初始化資料
         initData() {
             // 初始化第一層下拉選單
-            console.log("派工this.all: ", this.all);
-            console.log("派工this.all.depart1: ", this.all.depart1);
             this.opts.lv1 = this.all.depart1.map(item => {
                 return {
                     text: item.DepartName,

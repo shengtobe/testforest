@@ -620,7 +620,6 @@ export default {
       },
       set: function(value) {
         if(value == ""){
-          console.log("set com_equipCode value: ", value);
           this.searchIpt.MaintainCode_System = 'RST';
           this.searchIpt.MaintainCode_Loc = this.preSetEqcode_s = this.preSerEqName_s = ""
           this.eqcKey++
