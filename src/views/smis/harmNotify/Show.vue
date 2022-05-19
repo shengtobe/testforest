@@ -500,7 +500,7 @@
         <v-row class="ml-1 mr-1" v-if="shwoPick2_2Form">
             <v-col cols="12">
                 <h3 >
-                    <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有職災危害列表
+                    <v-icon class="mr-1 mb-1">mdi-bookmark-check</v-icon>既有危害鑑別與風險評估表
                 </h3>
             </v-col>
             <v-col cols="5">

@@ -1,7 +1,7 @@
 <template>
 <v-container style="max-width: 1200px" class="label-header">
     <!-- <h2 class="mb-4 label-title">職災危害編號：{{ code1 }}{{ code2 }}{{ code3 }}</h2> -->
-    <h2 class="mb-4 label-title">職災危害編號：{{ id }}</h2>
+    <h2 class="mb-4 label-title">危害鑑別與風險評估編號：{{ id }}</h2>
 
     <v-row no-gutters class="mt-8">
         <BottomTable :items="bottomItems" />
