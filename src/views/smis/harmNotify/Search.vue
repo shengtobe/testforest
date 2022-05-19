@@ -207,7 +207,7 @@ export default {
             { text: '通報主旨', value: 'ReportTitle', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '通報狀態', value: 'ReportStatus', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '行安', value: 'CarSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
-            { text: '職安/職災', value: 'JobSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
+            { text: '職安', value: 'JobSafe', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
             { text: '檢視內容', value: 'content', align: 'center', divider: true, class: 'subtitle-1 white--text font-weight-bold' },
         ],
         isLoading: false,  // 是否讀取中

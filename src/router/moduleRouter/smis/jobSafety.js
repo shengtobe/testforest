@@ -61,7 +61,7 @@ export const JobSafetyRouter = [
 
     // ----------------- 職災危害資料庫 -----------------
     {
-        linkText: '職災危害資料庫查詢',  // 首頁
+        linkText: '危害鑑別與風險評估資料庫查詢',  // 首頁
         path: '/smis/jobsafety/disasterdb', 
         component: () => import('@/views/smis/jobSafety/disasterDb/Search.vue')
     },

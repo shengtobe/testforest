@@ -1,6 +1,6 @@
 <template>
 <v-container style="max-width: 1200px" class="label-header">
-    <h2 class="mb-4 label-title">職災危害資料庫查詢</h2>
+    <h2 class="mb-4 label-title">危害鑑別與風險評估資料庫查詢</h2>
 
     <v-row class="px-2 mb-8">
         <v-col cols="12" sm="4" md="3" class="mb-n7">

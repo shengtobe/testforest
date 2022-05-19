@@ -945,8 +945,8 @@ export default {
             { text: '不選擇', value: '' }, 
             { text: '新增職災事故', value: 'A' }, 
             { text: '既有職災事故', value: 'B' }, 
-            { text: '新增職安危害', value: 'C' }, 
-            { text: '既有職安危害', value: 'D' }, 
+            { text: '新增危害鑑別與風險評估', value: 'C' }, 
+            { text: '既有危害鑑別與風險評估', value: 'D' }, 
         ],
     }),
     components: {
