@@ -72,12 +72,12 @@ export const JobSafetyRouter = [
         props: true,
     },
     {
-        linkText: '職災危害資料庫新增',
+        linkText: '危害鑑別與風險評估資料庫新增',
         path: '/smis/jobsafety/disasterdb/add', 
         component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue')
     },
     {
-        linkText: '職災危害資料庫編輯',
+        linkText: '危害鑑別與風險評估資料庫編輯',
         path: '/smis/jobsafety/disasterdb/:id/edit', 
         component: () => import('@/views/smis/jobSafety/disasterDb/Form.vue'),
         props: true,

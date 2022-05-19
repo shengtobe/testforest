@@ -16,7 +16,7 @@ export const InfoBelongMod = [
     { text: '改善對策頁面', value: '12' },
     { text: '慢行通報', value: '13' },
     { text: '行車危害資料庫', value: '14' },
-    { text: '職災危害資料庫', value: '15' },
+    { text: '危害鑑別與風險評估資料庫', value: '15' },
     { text: '維修養護科工單', value: '16' },
     { text: '服務科工單', value: '17' },
     { text: '設備維修管理', value: '18' },

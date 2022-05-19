@@ -189,7 +189,7 @@
                                 <v-divider />
                                 <v-list-item @click="showNav = false" to="/smis/jobsafety/disaster-survey">職災事故事件管理</v-list-item>
                                 <v-divider />
-                                <v-list-item :disabled="FShow('SMS_25')" @click="showNav = false" to="/smis/jobsafety/disasterdb">職災危害資料庫</v-list-item>
+                                <v-list-item :disabled="FShow('SMS_25')" @click="showNav = false" to="/smis/jobsafety/disasterdb">危害鑑別與風險評估資料庫</v-list-item>
                                 <v-divider />
                                 <v-list-item :disabled="FShow('SMS_26')" @click="showNav = false" to="/smis/jobsafety/performance">職安績效</v-list-item>
                                 <v-divider />

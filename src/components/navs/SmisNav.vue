@@ -98,7 +98,7 @@
         </v-list-item>
 
         <v-list-item to="/smis/jobsafety/disasterdb" class="white--text">
-            <v-list-item-title>職災危害資料庫</v-list-item-title>
+            <v-list-item-title>危害鑑別與風險評估資料庫</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="/smis/jobsafety/performance" class="white--text">

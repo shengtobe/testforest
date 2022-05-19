@@ -250,7 +250,7 @@ export default {
         UserLv5: true,
       },
       { 
-        methodName:"職災危害資料庫頁面",	
+        methodName:"危害鑑別與風險評估資料庫頁面",	
         methodId:"SMS_20", 
         UserLv1: true,
         UserLv2: true,
