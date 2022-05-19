@@ -91,7 +91,11 @@ export default {
                 let srcType = item.slice(2,6)
                 let flowId = item.slice(item.indexOf('(')+1,item.indexOf(')'))
                 let src = ""
-                switch(srcType) {
+                if(item.indexOf('立案') == 11){
+                    src = `smis/jobsafety/disasterdb/${flowId}/show`
+                }
+                else{
+                    switch(srcType) {
                     case "行車事故":
                     case "行安事故":
                         src = `smis/car-accident-event/${flowId}/show`
@@ -106,12 +110,15 @@ export default {
                         break;
                     case "職災危害":
                     case "職安危害":
+                    // case "危害鑑別與風險評估":
                         src = `smis/jobsafety/disasterdb/${flowId}/show`
                         break;
                     default:
                         src = ""
                         break;
+                    }
                 }
+                
                 if(src!=""){
                   rtnArr.push(item.slice(0,item.indexOf('(')+1)+`<a target="_blank" href="#/${src}">`+item.slice(item.indexOf('(')+1,item.indexOf(')'))+'</a>'+item.slice(item.indexOf(')')))
                 }else{

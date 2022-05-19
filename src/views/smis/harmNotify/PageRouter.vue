@@ -69,6 +69,13 @@ export default {
                             { icon: 'mdi-map-marker', title: '發現地點', text: findLocationText },
                             { icon: 'mdi-ray-vertex', title: '通報狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
                         ]
+                        let memo_;
+                        if(res.data.Memo.substr(0,8) == "既有職安危害立案"){
+                            memo_ = res.data.Memo.replace("既有職安危害立案","既有危害鑑別與風險評估立案")
+                        }
+                        else{
+                            memo_ = res.data.Memo
+                        }
 
                         let bottomItems = [
                             { dataType: 'text', oneline: true, icon: 'mdi-pen', title: '通報主旨', text: res.data.ReportTitle },
@@ -76,7 +83,7 @@ export default {
                             { dataType: 'text', oneline: true, icon: 'mdi-calendar-text', title: '回覆日期', text: res.data.ReplyDTime.substr(0,10) },
                             { dataType: 'text', oneline: true, icon: 'mdi-message-processing', title: '回覆訊息', text: res.data.ReplyMsg },
                             { dataType: 'text', oneline: true, icon: 'mdi-ray-vertex', title: '立案狀態', text: harmNotifyStatus.find(ele => ele.value == res.data.ReportStatus).text },
-                            { dataType: 'notifyMemo', oneline: true, icon: 'mdi-note-outline', title: '備註', text: res.data.Memo },
+                            { dataType: 'notifyMemo', oneline: true, icon: 'mdi-note-outline', title: '備註', text: memo_ },
                         ]
 
                             // 設定下面的欄位資料
