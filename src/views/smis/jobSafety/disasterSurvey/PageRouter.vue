@@ -79,7 +79,8 @@ export default {
                             if(res.data.HurtMediumLv2 == '' || res.data.HurtMediumLv2 == null){
                                 hh = ''
                             }else{
-                                hh = vehicleOpts[res.data.HurtMediumLv1].find(item => item.value == res.data.HurtMediumLv2).text
+                                // hh = vehicleOpts[res.data.HurtMediumLv1].find(item => item.value == res.data.HurtMediumLv2).text
+                                hh = res.data.HurtMediumLv2
                             }
                         }
                     let bottomItems = [

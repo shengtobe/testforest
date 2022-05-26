@@ -356,7 +356,6 @@
         <v-col cols="12" sm="6" md="3" class="mt-n8 mt-sm-8">
             <v-select
                 v-model="ipt.vehicle"
-                item-value="text"
                 :items="vehicleLv2opts"
                 solo
             ></v-select>
@@ -985,14 +984,14 @@ export default {
         save() {
             if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow({show:true})
-                let idxx = 0;
-                try{
-                    idxx = this.ipt.vehicle.indexOf(' ')
-                }
-                catch(error){
-                }
-                if(idxx > 0) idxx++;
-                let vehicle2 = this.ipt.vehicle.substr(idxx);
+                // let idxx = 0;
+                // try{
+                //     idxx = this.ipt.vehicle.indexOf(' ')
+                // }
+                // catch(error){
+                // }
+                // if(idxx > 0) idxx++;
+                // let vehicle2 = this.ipt.vehicle.substr(idxx);
 
                 // 新增測試用資料
                 // setTimeout(() => {
@@ -1035,7 +1034,7 @@ export default {
                     HurtPart: this.ipt.injurySite, //22傷害部位
                     DisasterType: this.ipt.disasterType, //23災害類型
                     HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
-                    HurtMediumLv2: vehicle2, //致傷媒介物 第二層
+                    HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
                     AccidentReason: this.ipt.directReason, //19直接原因
                     AccidentIndirect: this.ipt.indirectReason, //20間接原因
                     AccidentBase: this.ipt.basicReason, //21基本原因
