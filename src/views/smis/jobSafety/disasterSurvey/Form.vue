@@ -666,6 +666,11 @@ export default {
         isEdit: false,  // 是否編輯中
         saveBtnShow: true, // 送出按鈕隱藏
         isShowBtn: false,
+        departList: {
+            lv1: [],
+            lv2: [],
+            lv3: []
+        },
         evidences: [],  // 改善措施證據
         showFiles: [],  // 要顯示的縮圖
         jobTitles: [],
@@ -1203,9 +1208,20 @@ export default {
             }
         },
         getPeople(value) {
+            if(value == undefined) return;
+
+            //抓一級單位
+            if(this.departList.lv3.map(e => e.DepartName).includes(value.DepartName)){
+                let templv2 = this.departList.lv3.find(e => e.DepartName == value.DepartName).DepartParentName;
+                this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == templv2).DepartParentName;
+            }
+            else if(this.departList.lv2.map(e => e.DepartName).includes(value.DepartName)){
+                this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == value.DepartName).DepartParentName;
+            }
+
             if(value){
                 this.ipt.name = value.UserName
-                this.ipt.workDepart = value.DepartName
+                // this.ipt.workDepart = value.DepartName
                 this.ipt.workDepartCode = value.DepartCode
                 login({
                     ClientReqTime: getNowFullTime(),  // client 端請求時間
@@ -1243,10 +1259,15 @@ export default {
                         ClientReqTime: getNowFullTime(),  // client 端請求時間
                     }).then(res => {
                         if (res.data.ErrorCode == 0) {
+                            this.departList.lv1 = res.data.user_depart_list_group_1
+                            this.departList.lv2 = res.data.user_depart_list_group_2
+                            this.departList.lv3 = res.data.user_depart_list_group_3
+
                             let arrTwo = res.data.user_list_group_4.map(e => e.JobName)
                             this.jobTitles = arrTwo.filter(function(ele , pos){
                                 return arrTwo.indexOf(ele) == pos;
                             }) 
+
                         } else {
                             // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
                             sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
