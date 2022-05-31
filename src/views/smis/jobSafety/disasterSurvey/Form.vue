@@ -987,6 +987,7 @@ export default {
         },
         // 送出
         save() {
+            console.log("this.ipt.workDepart: ", this.ipt.workDepart);
             if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow({show:true})
                 // let idxx = 0;
@@ -1060,7 +1061,6 @@ export default {
                     LockStatus: this.isLocked,
                 }).then(res => {
                     if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '更新成功' })
                         this.saveBtnShow = false
                     } else {
                         sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
@@ -1069,6 +1069,7 @@ export default {
                 }).catch(err => {
                     this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
                 }).finally(() => {
+                    this.chMsgbar({ success: true, msg: '更新成功' })
                     this.chLoadingShow({show:false})
                 })
             } else {
