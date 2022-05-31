@@ -1209,7 +1209,6 @@ export default {
         },
         getPeople(value) {
             if(value == undefined) return;
-
             //抓一級單位
             if(this.departList.lv3.map(e => e.DepartName).includes(value.DepartName)){
                 let templv2 = this.departList.lv3.find(e => e.DepartName == value.DepartName).DepartParentName;
@@ -1217,6 +1216,9 @@ export default {
             }
             else if(this.departList.lv2.map(e => e.DepartName).includes(value.DepartName)){
                 this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == value.DepartName).DepartParentName;
+            }
+            else{
+                this.ipt.workDepart = value.DepartName
             }
 
             if(value){
