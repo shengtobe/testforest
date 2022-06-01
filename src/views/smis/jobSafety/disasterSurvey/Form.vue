@@ -1211,13 +1211,18 @@ export default {
         getPeople(value) {
             if(value == undefined) return;
             //抓一級單位
+            //如果是三級單位
             if(this.departList.lv3.map(e => e.DepartName).includes(value.DepartName)){
-                let templv2 = this.departList.lv3.find(e => e.DepartName == value.DepartName).DepartParentName;
-                this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == templv2).DepartParentName;
+                // let templv2 = this.departList.lv3.find(e => e.DepartName == value.DepartName).DepartParentName;
+                // this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == templv2).DepartParentName;
+                this.ipt.workDepart = this.departList.lv3.find(e => e.DepartName == value.DepartName).DepartParentName;
             }
+            //如果是二級單位
             else if(this.departList.lv2.map(e => e.DepartName).includes(value.DepartName)){
-                this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == value.DepartName).DepartParentName;
+                this.ipt.workDepart = value.DepartName
+                // this.ipt.workDepart = this.departList.lv2.find(e => e.DepartName == value.DepartName).DepartParentName;
             }
+            //如果是一級單位
             else{
                 this.ipt.workDepart = value.DepartName
             }
