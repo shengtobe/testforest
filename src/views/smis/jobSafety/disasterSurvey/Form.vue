@@ -356,6 +356,7 @@
         <v-col cols="12" sm="6" md="3" class="mt-n8 mt-sm-8">
             <v-select
                 v-model="ipt.vehicle"
+                item-value="text"
                 :items="vehicleLv2opts"
                 solo
             ></v-select>
@@ -987,17 +988,16 @@ export default {
         },
         // 送出
         save() {
-            console.log("this.ipt.workDepart: ", this.ipt.workDepart);
             if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow({show:true})
-                // let idxx = 0;
-                // try{
-                //     idxx = this.ipt.vehicle.indexOf(' ')
-                // }
-                // catch(error){
-                // }
-                // if(idxx > 0) idxx++;
-                // let vehicle2 = this.ipt.vehicle.substr(idxx);
+                let idxx = 0;
+                try{
+                    idxx = this.ipt.vehicle.indexOf(' ')
+                }
+                catch(error){
+                }
+                if(idxx > 0) idxx++;
+                let vehicle2 = this.ipt.vehicle.substr(idxx);
 
                 // 新增測試用資料
                 // setTimeout(() => {
