@@ -861,6 +861,7 @@ export default {
         },
         // 送出
         save() {
+            var _accTypeCode = this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2).value
             if(this.ipt.subject == ''){
                 alert("事故摘要未填")
                 window.scroll(0,0)
@@ -903,7 +904,7 @@ export default {
                     FindMLine: this.ipt.locationM,  // 發生地點M路段
                     FindLineOther: this.ipt.locationOther,  // 發生地點其他路段
                     ReportTitle: this.ipt.subject,  // 事故摘要
-                    AccidentType: (this.ipt.evtType1 != '其他')?this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2).value:'Other' ,  // 事故類型
+                    AccidentType: (this.ipt.evtType1 != '其他')?_accTypeCode:'Other' ,  // 事故類型
                     EventWeather: this.ipt.climate,  // 氣候
                     RoadSlope: this.ipt.slope,  // 路線坡度
                     CurveRadius: this.ipt.curve,  // 曲線半徑
@@ -959,7 +960,7 @@ export default {
                     FindMLine: this.ipt.locationM,  // 發生地點M路段
                     FindLineOther: this.ipt.locationOther,  // 發生地點其他路段
                     ReportTitle: this.ipt.subject,  // 事故摘要
-                    AccidentType: (this.ipt.evtType1 != '其他')?this.opsList.find(ele => ele.text == this.ipt.evtType1 + '-' + this.ipt.evtType2).value:'Other' ,  // 事故類型
+                    AccidentType: (this.ipt.evtType1 != '其他')?_accTypeCode:'Other' ,  // 事故類型
                     EventWeather: this.ipt.climate,  // 氣候
                     RoadSlope: this.ipt.slope,  // 路線坡度
                     CurveRadius: this.ipt.curve,  // 曲線半徑
