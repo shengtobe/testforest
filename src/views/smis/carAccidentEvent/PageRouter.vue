@@ -115,7 +115,7 @@ export default {
                                 { icon: 'mdi-snowflake', title: '事故類型', text: this.opsList.find(item => item.value == res.data.AccidentType).text.replace('率', '') },
                                 { icon: 'mdi-stairs', title: '路線坡度', text: res.data.RoadSlope },
                                 { icon: 'mdi-image-filter-tilt-shift', title: '曲線半徑', text: res.data.CurveRadius },
-                                { icon: 'mdi-alert', title: '事發速限', text: res.data.IncidentLimit },
+                                { icon: 'mdi-alert', title: '事發速限', text: res.data.IncidentLimitSpeed },
                                 { icon: 'mdi-speedometer', title: '事發車速', text: res.data.IncidentSpeed },
                             ]
 
