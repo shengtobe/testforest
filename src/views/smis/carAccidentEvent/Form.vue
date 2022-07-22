@@ -804,6 +804,7 @@ export default {
             else{
                 this.ipt.evtType2 = ''
             }
+            var updateSpeed = (obj.IncidentSpeed != '')?obj.IncidentLimitSpeed+','+obj.IncidentSpeed :obj.IncidentLimitSpeed;
             this.ipt.evtType2 = tyArr[1].replace('率', '') // 事故類型
             this.ipt.location = obj.FindLine // 發生地點
             this.ipt.locationK = obj.FindKLine // 路線k
@@ -817,7 +818,7 @@ export default {
             this.ipt.aroundEnvOther = obj.SurroundElse  // 周邊環境其他內容
             this.ipt.fenceEq = [ ...obj.RailwayDevice ]  // 鐵路設施設備及圍籬之設置
             this.ipt.fenceEqOther = obj.RailwayDeviceElse  // 鐵路設施設備及圍籬之設置-其他的內容
-            this.ipt.speedLimit = obj.IncidentLimitSpeed  // 事發速限
+            this.ipt.speedLimit = updateSpeed // 事發速限
             this.ipt.carSpeed = obj.IncidentSpeed  // 事發車速
             this.ipt.runPlan = obj.CarOperation  // 列車運行計劃及運轉情形
             this.ipt.relatedPerson = obj.TalkSituation  // 關係者之職務、資歷、操作情形及訪談紀要
