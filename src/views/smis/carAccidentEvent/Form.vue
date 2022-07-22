@@ -327,7 +327,7 @@
             </h3>
             <v-text-field
                 v-model.trim="ipt.speedLimit"
-                solo
+                solo label="例 : 40,50"
             ></v-text-field>
         </v-col>
 
