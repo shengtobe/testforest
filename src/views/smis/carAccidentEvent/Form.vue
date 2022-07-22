@@ -323,7 +323,7 @@
     <v-row class="px-2" v-if="isUsual">
         <v-col cols="12" sm="6" md="6">
             <h3 class="mb-1">
-                <v-icon class="mr-1 mb-1">mdi-alert</v-icon>事發速限與事發車速(單位:Km/h)
+                <v-icon class="mr-1 mb-1">mdi-alert</v-icon>事發速限與事發車速<br/>(兩個數值以逗號隔開，例:40,50 ; 單位:Km/h)
             </h3>
             <v-text-field
                 v-model.trim="ipt.speedLimit"
