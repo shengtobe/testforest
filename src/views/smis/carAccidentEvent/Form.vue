@@ -831,6 +831,7 @@ export default {
             this.ipt.eqLoss = obj.DeviceLost  // 設備受損情形
             this.ipt.serviceShock = obj.OperationLost // 運轉影響情形
             this.ipt.review = obj.ReviewProcess // 檢討過程
+            this.ipt.FixProcess = obj.FixProcess // 處置過程
             this.ipt.reason = obj.CauseAnaly // 原因分析
             this.ipt.note = obj.RemarkDesp // 備註說明
             this.ipt.files = [ ...obj.FileCount ]  // 附件檔案
