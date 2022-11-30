@@ -1,6 +1,5 @@
 <template>
 <v-container style="max-width: 1200px">
-  
   <v-row>
     <v-col cols="12" md="2">
       <v-btn v-if="false" class="btn-close" dark large :to="`/smis/car-safe-performance-analysis`">
@@ -199,6 +198,7 @@ export default {
       }
       accidentQuery(getGraphData)
         .then(res=>{
+          console.log("accidentQuery res.data: ", res.data);
           res.data.DataList.forEach(element=>{
             that.chartdata.labels.push(element.Year)
             that.chartdata.datasets[0].data.push(element.Value)
@@ -210,6 +210,7 @@ export default {
         })
       accidentQueryList(getGraphData)
         .then(res=>{
+          console.log("accidentQueryList res.data: ", res.data);
           that.accidentTable.item = res.data.DataList
         })
         .catch( err => {

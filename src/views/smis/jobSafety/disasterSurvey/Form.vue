@@ -155,7 +155,7 @@
             <h3 class="mb-1" >
                 <v-icon class="mr-1 mb-1"></v-icon>
             </h3>
-            <v-text-field v-if="ipt.jobTitle0 == '其他'"
+            <v-text-field v-if="ipt.jobTitle0 == '其他(自行輸入)'"
                 v-model.trim="ipt.jobTitle"
                 solo
                 placeholder="請輸入職稱"
@@ -988,6 +988,10 @@ export default {
         },
         // 送出
         save() {
+            if(this.ipt.jobTitle == '其他(自行輸入)' && (this.ipt.jobTitle == '' || this.ipt.jobTitle == null)){
+                alert("職稱未正確填寫")
+                return
+            }
             if (confirm('你確定要送出嗎?')) {
                 this.chLoadingShow({show:true})
                 let idxx = 0;
@@ -1010,131 +1014,131 @@ export default {
                 //     this.chLoadingShow({show:true})
                 // }, 1000)
                 let finalJobTitle = '';
-                finalJobTitle = (this.ipt.jobTitle == '其他') ? this.ipt.jobTitle : this.ipt.jobTitle0;
+                finalJobTitle = (this.ipt.jobTitle == '其他(自行輸入)') ? this.ipt.jobTitle : this.ipt.jobTitle0;
                 if (this.isEdit) {
                 // ---------- 編輯時---------- 
-                updateData({
-                    HappenDepart: this.ipt.depart, //3發生單位
-                    HurtPeopleName: this.ipt.name, //4罹災者姓名
-                    HurtPeopleCardID: this.ipt.idCard, //身分證
-                    HurtPassportID: this.ipt.passport, //護照號碼
-                    PeopleAge: this.ipt.old, //5年齡
-                    PeopleSex: this.ipt.sex, //6性別
-                    PeopleDepart: this.ipt.workDepart, //7工作部門
-                    JobTitle: finalJobTitle, //8職稱
-                    PeopleAddress: this.ipt.address, //9住址
-                    WorkDate: this.ipt.startWorkDate, //10到職日期
-                    WorkExp: this.ipt.workYear, //11參加本項工作經驗年數
-                    EduLevel: this.ipt.education, //12教育程度
-                    TrainDate: this.ipt.trainingDate, //13本項工作相關訓練日期
-                    EmployType: this.ipt.type, //1勞工類型
-                    HappenDate: this.ipt.occurDate, //14發生日期(日)
-                    HappenDateHr: this.ipt.hour, //15發生日期(時)
-                    HappenDateMin: this.ipt.min, //16發生日期(分)
-                    Weather: this.ipt.weather, //15氣候
-                    HappenPlace: this.ipt.location, //16發生地點
-                    HappenPlaceLong: this.ipt.lng, //16發生地點(經度)
-                    HappenPlaceLat: this.ipt.lat, //16發生地點(緯度)
-                    AccidentType: this.ipt.accidentType, //17事故類別
-                    AccidentResult: this.ipt.accidentResult, //18事故結果
-                    HurtPart: this.ipt.injurySite, //22傷害部位
-                    DisasterType: this.ipt.disasterType, //23災害類型
-                    HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
-                    HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
-                    AccidentReason: this.ipt.directReason, //19直接原因
-                    AccidentIndirect: this.ipt.indirectReason, //20間接原因
-                    AccidentBase: this.ipt.basicReason, //21基本原因
-                    HurtWorking: this.ipt.workItem, //25傷者當時工作
-                    AccidentDesp: this.ipt.overview, //26事故概況
-                    EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
-                    AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
-                    HurtDateStart: this.ipt.injuryLeaveStart, // 公傷假(起)
-                    HurtDateEnd: this.ipt.injuryLeaveEnd, // 公傷假(迄)
-                    NoticeCheck: this.ipt.laborInspection, // 通報勞檢
-                    ProcContent: this.ipt.improve, // 發生原因
-                    HappenReason: this.ipt.cause, // 改善措施
-                    Memo: this.ipt.note, // 備註
-                    FileCount: this.evidences,
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                    AccidentCode: this.id,
-                    LockStatus: this.isLocked,
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.saveBtnShow = false
-                    } else {
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch(err => {
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
-                }).finally(() => {
-                    this.chMsgbar({ success: true, msg: '更新成功' })
-                    this.chLoadingShow({show:false})
-                })
-            } else {
-                // ---------- 新增時---------- 
-                createData({
-                    HappenDepart: this.ipt.depart, //3發生單位
-                    HurtPeopleName: this.ipt.name, //4罹災者姓名
-                    HurtPeopleCardID: this.ipt.idCard, //身分證
-                    HurtPassportID: this.ipt.passport, //護照號碼
-                    PeopleAge: this.ipt.old, //5年齡
-                    PeopleSex: this.ipt.sex, //6性別
-                    PeopleDepart: this.ipt.workDepart, //7工作部門
-                    JobTitle: this.ipt.jobTitle, //8職稱
-                    PeopleAddress: this.ipt.address, //9住址
-                    WorkDate: this.ipt.startWorkDate, //10到職日期
-                    WorkExp: this.ipt.workYear, //11參加本項工作經驗年數
-                    EduLevel: this.ipt.education, //12教育程度
-                    TrainDate: this.ipt.trainingDate, //13本項工作相關訓練日期
-                    EmployType: this.ipt.type, //1勞工類型
-                    HappenDate: this.ipt.occurDate, //14發生日期(日)
-                    HappenDateHr: this.ipt.hour, //15發生日期(時)
-                    HappenDateMin: this.ipt.min, //16發生日期(分)
-                    Weather: this.ipt.weather, //15氣候
-                    HappenPlace: this.ipt.location, //16發生地點
-                    HappenPlaceLong: this.ipt.lng, //16發生地點(經度)
-                    HappenPlaceLat: this.ipt.lat, //16發生地點(緯度)
-                    AccidentType: this.ipt.accidentType, //17事故類別
-                    AccidentResult: this.ipt.accidentResult, //18事故結果
-                    HurtPart: this.ipt.injurySite, //22傷害部位
-                    DisasterType: this.ipt.disasterType, //23災害類型
-                    HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
-                    HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
-                    AccidentReason: this.ipt.directReason, //19直接原因
-                    AccidentIndirect: this.ipt.indirectReason, //20間接原因
-                    AccidentBase: this.ipt.basicReason, //21基本原因
-                    HurtWorking: this.ipt.workItem, //25傷者當時工作
-                    AccidentDesp: this.ipt.overview, //26事故概況
-                    EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
-                    AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
-                    HurtDateStart: this.ipt.injuryLeaveStart, // 公傷假(起)
-                    HurtDateEnd: this.ipt.injuryLeaveEnd, // 公傷假(迄)
-                    NoticeCheck: this.ipt.laborInspection, // 通報勞檢
-                    ProcContent: this.ipt.improve, // 發生原因
-                    HappenReason: this.ipt.cause, // 改善措施
-                    Memo: this.ipt.note, // 備註
-                    FileCount: this.evidences,
-                    ClientReqTime: getNowFullTime(),  // client 端請求時間
-                    OperatorID: this.userData.UserId,  // 操作人id
-                }).then(res => {
-                    if (res.data.ErrorCode == 0) {
-                        this.chMsgbar({ success: true, msg: '新增成功' })
-                        this.ipt = { ...this.defaultIpt }  // 初始化新增表單
-                        this.ipt.controlChoose = [ ...[]]
-                        this.tableItems = [ ...[]]
-                        this.saveBtnShow = false
-                    } else {
-                        sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
-                        this.$router.push({ path: '/error' })
-                    }
-                }).catch(err => {
-                    this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
-                }).finally(() => {
-                    this.chLoadingShow({show:false})
-                })
-            }
+                    updateData({
+                        HappenDepart: this.ipt.depart, //3發生單位
+                        HurtPeopleName: this.ipt.name, //4罹災者姓名
+                        HurtPeopleCardID: this.ipt.idCard, //身分證
+                        HurtPassportID: this.ipt.passport, //護照號碼
+                        PeopleAge: this.ipt.old, //5年齡
+                        PeopleSex: this.ipt.sex, //6性別
+                        PeopleDepart: this.ipt.workDepart, //7工作部門
+                        JobTitle: finalJobTitle, //8職稱
+                        PeopleAddress: this.ipt.address, //9住址
+                        WorkDate: this.ipt.startWorkDate, //10到職日期
+                        WorkExp: this.ipt.workYear, //11參加本項工作經驗年數
+                        EduLevel: this.ipt.education, //12教育程度
+                        TrainDate: this.ipt.trainingDate, //13本項工作相關訓練日期
+                        EmployType: this.ipt.type, //1勞工類型
+                        HappenDate: this.ipt.occurDate, //14發生日期(日)
+                        HappenDateHr: this.ipt.hour, //15發生日期(時)
+                        HappenDateMin: this.ipt.min, //16發生日期(分)
+                        Weather: this.ipt.weather, //15氣候
+                        HappenPlace: this.ipt.location, //16發生地點
+                        HappenPlaceLong: this.ipt.lng, //16發生地點(經度)
+                        HappenPlaceLat: this.ipt.lat, //16發生地點(緯度)
+                        AccidentType: this.ipt.accidentType, //17事故類別
+                        AccidentResult: this.ipt.accidentResult, //18事故結果
+                        HurtPart: this.ipt.injurySite, //22傷害部位
+                        DisasterType: this.ipt.disasterType, //23災害類型
+                        HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
+                        HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
+                        AccidentReason: this.ipt.directReason, //19直接原因
+                        AccidentIndirect: this.ipt.indirectReason, //20間接原因
+                        AccidentBase: this.ipt.basicReason, //21基本原因
+                        HurtWorking: this.ipt.workItem, //25傷者當時工作
+                        AccidentDesp: this.ipt.overview, //26事故概況
+                        EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
+                        AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
+                        HurtDateStart: this.ipt.injuryLeaveStart, // 公傷假(起)
+                        HurtDateEnd: this.ipt.injuryLeaveEnd, // 公傷假(迄)
+                        NoticeCheck: this.ipt.laborInspection, // 通報勞檢
+                        ProcContent: this.ipt.improve, // 發生原因
+                        HappenReason: this.ipt.cause, // 改善措施
+                        Memo: this.ipt.note, // 備註
+                        FileCount: this.evidences,
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                        AccidentCode: this.id,
+                        LockStatus: this.isLocked,
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.saveBtnShow = false
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，更新失敗' })
+                    }).finally(() => {
+                        this.chMsgbar({ success: true, msg: '更新成功' })
+                        this.chLoadingShow({show:false})
+                    })
+                } else {
+                    // ---------- 新增時---------- 
+                    createData({
+                        HappenDepart: this.ipt.depart, //3發生單位
+                        HurtPeopleName: this.ipt.name, //4罹災者姓名
+                        HurtPeopleCardID: this.ipt.idCard, //身分證
+                        HurtPassportID: this.ipt.passport, //護照號碼
+                        PeopleAge: this.ipt.old, //5年齡
+                        PeopleSex: this.ipt.sex, //6性別
+                        PeopleDepart: this.ipt.workDepart, //7工作部門
+                        JobTitle: finalJobTitle, //8職稱
+                        PeopleAddress: this.ipt.address, //9住址
+                        WorkDate: this.ipt.startWorkDate, //10到職日期
+                        WorkExp: this.ipt.workYear, //11參加本項工作經驗年數
+                        EduLevel: this.ipt.education, //12教育程度
+                        TrainDate: this.ipt.trainingDate, //13本項工作相關訓練日期
+                        EmployType: this.ipt.type, //1勞工類型
+                        HappenDate: this.ipt.occurDate, //14發生日期(日)
+                        HappenDateHr: this.ipt.hour, //15發生日期(時)
+                        HappenDateMin: this.ipt.min, //16發生日期(分)
+                        Weather: this.ipt.weather, //15氣候
+                        HappenPlace: this.ipt.location, //16發生地點
+                        HappenPlaceLong: this.ipt.lng, //16發生地點(經度)
+                        HappenPlaceLat: this.ipt.lat, //16發生地點(緯度)
+                        AccidentType: this.ipt.accidentType, //17事故類別
+                        AccidentResult: this.ipt.accidentResult, //18事故結果
+                        HurtPart: this.ipt.injurySite, //22傷害部位
+                        DisasterType: this.ipt.disasterType, //23災害類型
+                        HurtMediumLv1: this.ipt.vehicleLv1, //24致傷媒介物
+                        HurtMediumLv2: this.ipt.vehicle, //致傷媒介物 第二層
+                        AccidentReason: this.ipt.directReason, //19直接原因
+                        AccidentIndirect: this.ipt.indirectReason, //20間接原因
+                        AccidentBase: this.ipt.basicReason, //21基本原因
+                        HurtWorking: this.ipt.workItem, //25傷者當時工作
+                        AccidentDesp: this.ipt.overview, //26事故概況
+                        EmergencyStatus: this.ipt.emergentWork, //27緊急處理情形
+                        AccidentPolicy: this.ipt.improveStrategy, //28事故單位防範及改善對策
+                        HurtDateStart: this.ipt.injuryLeaveStart, // 公傷假(起)
+                        HurtDateEnd: this.ipt.injuryLeaveEnd, // 公傷假(迄)
+                        NoticeCheck: this.ipt.laborInspection, // 通報勞檢
+                        ProcContent: this.ipt.improve, // 發生原因
+                        HappenReason: this.ipt.cause, // 改善措施
+                        Memo: this.ipt.note, // 備註
+                        FileCount: this.evidences,
+                        ClientReqTime: getNowFullTime(),  // client 端請求時間
+                        OperatorID: this.userData.UserId,  // 操作人id
+                    }).then(res => {
+                        if (res.data.ErrorCode == 0) {
+                            this.chMsgbar({ success: true, msg: '新增成功' })
+                            this.ipt = { ...this.defaultIpt }  // 初始化新增表單
+                            this.ipt.controlChoose = [ ...[]]
+                            this.tableItems = [ ...[]]
+                            this.saveBtnShow = false
+                        } else {
+                            sessionStorage.errData = JSON.stringify({ errCode: res.data.Msg, msg: res.data.Msg })
+                            this.$router.push({ path: '/error' })
+                        }
+                    }).catch(err => {
+                        this.chMsgbar({ success: false, msg: '伺服器發生問題，新增失敗' })
+                    }).finally(() => {
+                        this.chLoadingShow({show:false})
+                    })
+                }
             }
         },
         // 加入要上傳的檔案 (新增時)
@@ -1274,7 +1278,8 @@ export default {
                             let arrTwo = res.data.user_list_group_4.map(e => e.JobName)
                             this.jobTitles = arrTwo.filter(function(ele , pos){
                                 return arrTwo.indexOf(ele) == pos;
-                            }) 
+                            })
+                            this.jobTitles.push('其他(自行輸入)')
 
                         } else {
                             // 請求發生問題時(ErrorCode 不為 0 時)，重導至錯誤訊息頁面
@@ -1284,7 +1289,7 @@ export default {
                         this.initData()
                     }).catch(err => {
                         //console.log(err)
-                        alert('伺服器發生問題，資料讀取失敗')
+                        alert('伺服器發生問題，職稱資料讀取失敗')
                     }).finally(() => {
                         this.chLoadingShow({show:false})
                     })
